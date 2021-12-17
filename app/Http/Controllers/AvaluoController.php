@@ -20,7 +20,9 @@ use App\Obs_avaluos;
 
 class AvaluoController extends Controller
 {
+    /* Funcion para guardar el registro del avaluo */
     public function store(Request $request){
+        //Se valida que la petición sea Ajax y que sea la peticion no sea por un directivo.
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avaluo = new Avaluo();
         $avaluo->contrato_id = $request->folio;
@@ -29,10 +31,12 @@ class AvaluoController extends Controller
         $avaluo->valor_requerido = $request->valor_requerido;
         $avaluo->save();
 
+        //Se registra la fecha de solicitud en el contrato correspondiente
         $contrato = Contrato::findOrFail($request->folio);
         $contrato->avaluo_preventivo = $request->fecha_solicitud;
         $contrato->save();
 
+        //Se crea la notificación 
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
                 $msj = "Nueva solicitud de avaluo para el contrato #" . $request->folio;
@@ -47,12 +51,14 @@ class AvaluoController extends Controller
                 ];
 
 
-                User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+                //Se envia notificacion a usuario.
+                User::findOrFail(10)->notify(new NotifyAdmin($arregloAceptado));
                 //User::findOrFail(23680)->notify(new NotifyAdmin($arregloAceptado));
-
-
     }
 
+    /*  Función para indicar que el contrato no requiere avaluo, para esto se 
+        almacena una fecha default en el campo correspondiente
+    */
     public function noAplicaAvaluo(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contrato = Contrato::findOrFail($request->folio);
@@ -60,15 +66,19 @@ class AvaluoController extends Controller
         $contrato->save();
     }
 
+    //Función que retorna los avaluos registrados segun criterios a buscar.
     public function index(Request $request){
+        //Se valida que la peticion sea Ajax.
         if(!$request->ajax())return redirect('/');
+        //Variables que almacenan los criterios a buscar.
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
-        $query = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+        //Query base.
+        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                     ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
@@ -85,136 +95,47 @@ class AvaluoController extends Controller
 
         );
 
-                    if($request->b_status != ''){
-                        $query = $query->where('avaluos.status','=',$request->b_status);
-                    }
-
-        if($buscar == ''){
-            $avaluos = $query
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('avaluos.fecha_recibido','=',NULL)
-                    ->where('contratos.status','!=',2)
-                    ->where('contratos.status','!=',0);
-
+        /*Validacion de status a filtrar: 
+            * Pendiente
+            * Revisión
+            * Reconsideración
+            * Visto bueno
+            * Detenido
+            * En Elaboración
+            * Cancelado
+        */
+        if($request->b_status != ''){
+            $avaluos = $avaluos->where('avaluos.status','=',$request->b_status);
         }
-        else{
+
+        if($buscar != ''){
+            //Validación de cada uno de los casos a filtrar en la busqueda
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
-                    elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
-                        $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->where('avaluos.fecha_recibido','=',NULL)
-                        ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0);
-
-                    }
+                        $avaluos = $avaluos->where('lotes.fraccionamiento_id','=',$buscar);
+                        if($b_etapa != '')
+                            $avaluos = $avaluos->where('lotes.etapa_id','=',$b_etapa);
+                        if($b_manzana != '')
+                            $avaluos = $avaluos->where('lotes.manzana','=',$b_manzana);
+                        if($b_lote != '')
+                            $avaluos = $avaluos->where('lotes.num_lote','=',$b_lote);
                     break;
                 }
                 case 'licencias.visita_avaluo':{
-                    $avaluos = $query
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('licencias.visita_avaluo','=',$buscar)
-                    ->where('avaluos.fecha_recibido','=',NULL)
-                    ->where('contratos.status','!=',2)
-                    ->where('contratos.status','!=',0);
+                    $avaluos = $avaluos
+                    ->where('licencias.visita_avaluo','=',$buscar);
                     break;
                 }
                 case 'contratos.id':{
-                    $avaluos = $query
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('contratos.id','=',$buscar)
-                    ->where('avaluos.fecha_recibido','=',NULL)
-                    ->where('contratos.status','!=',2)
-                    ->where('contratos.status','!=',0);
+                    $avaluos = $avaluos
+                    ->where('contratos.id','=',$buscar);
                     break;
-
                 }
 
                 case 'cliente':{
-                    $avaluos = $query
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->where('avaluos.fecha_recibido','=',NULL)
-                    ->where('contratos.status','!=',2)
-                    ->where('contratos.status','!=',0);
+                    $avaluos = $avaluos
+                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
-
                 }
             }
         }
@@ -223,7 +144,12 @@ class AvaluoController extends Controller
             $avaluos= $avaluos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
+                   
+        $avaluos = $avaluos ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
         
         return [
@@ -236,7 +162,6 @@ class AvaluoController extends Controller
             'to'            => $avaluos->lastItem(),
         ],'avaluos' => $avaluos];
     }
-
 
     //// FUNCIONES PARA HISTORIAL DE AVALUOS
         private function getHistorial($buscar, $b_etapa, $b_manzana, $b_lote, $criterio){
@@ -658,7 +583,6 @@ class AvaluoController extends Controller
 
     public function downloadFile($fileName)
     {
-
         $pathtoFile = public_path() . '/files/avaluos/' . $fileName;
         return response()->download($pathtoFile);
     }

@@ -2,6 +2,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\NotifyAdmin;
+use App\Mail\NotificationReceived;
+use App\Http\Controllers\ReubicacionController;
+use Carbon\Carbon;
 use App\Credito;
 use App\Contrato;
 use App\Pago_contrato;
@@ -9,16 +14,10 @@ use App\Apartado;
 use App\Pagos_lotes;
 use App\Cotizacion_lotes;
 use App\datos_calc_lotes;
-use DB;
-use Auth;
-
 use App\Precio_etapa;
 use App\Precio_modelo;
 use App\Sobreprecio_modelo;
-
 use App\Solic_equipamiento;
-
-use Carbon\Carbon;
 use App\inst_seleccionada;
 use App\Cliente;
 use App\Personal;
@@ -34,19 +33,20 @@ use App\Precios_terreno;
 use App\Lote;
 use App\Modelo;
 use App\Cuenta;
-use NumerosEnLetras;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificationReceived;
 use App\User;
-use App\Notifications\NotifyAdmin;
-use App\Http\Controllers\ReubicacionController;
+use NumerosEnLetras;
+use DB;
+use Auth;
 use Excel;
 use File;
 
+// Controlador para contratos.
 class ContratoController extends Controller
 {
+    // Función para retornar los contratos registrados.
     public function indexContrato(Request $request)
     {
+        // Se verifica que la petición sea ajax
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar3 = $request->buscar3;
@@ -60,7 +60,126 @@ class ContratoController extends Controller
         $f_fin = $request->f_fin;
         $publicidad = $request->publicidad;
 
-        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+        //Llamada a la función privada que retorna la query
+        $contratos = $this->getContratos();
+        //Muestra la institución de financiamiento elegida.
+        $contratos = $contratos->where('inst_seleccionadas.elegido', '=', '1');
+
+        if($request->b_empresa != '')
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        if($b_status != '')
+            $contratos= $contratos->where('contratos.status','=',$b_status);
+        if(Auth::user()->rol_id == 2)
+            $contratos= $contratos->where('creditos.vendedor_id', '=', Auth::user()->id);
+
+        
+        if($buscar != '') {
+            switch ($criterio) {
+                case 'personal.nombre': {
+                    $contratos = $contratos
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
+                case 'v.nombre': {
+                    $contratos = $contratos
+                        ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
+                case 'inst_seleccionadas.tipo_credito': {
+                    $contratos = $contratos
+                        ->where($criterio, 'like', '%' . $buscar . '%');
+                    break;
+                }
+                case 'creditos.id': {
+                    $contratos = $contratos
+                        ->where($criterio, 'like', '%' . $buscar . '%');
+                    break;
+                }
+                case 'creditos.vendedor_id': {
+                    $contratos = $contratos
+                        ->where($criterio, '=',$buscar);
+                        if($buscar3 != "")
+                            $contratos = $contratos->where('lotes.fraccionamiento_id','=',$buscar3);
+                        if($b_etapa != "")
+                            $contratos = $contratos->where('lotes.etapa_id','=',$b_etapa);
+                        if($f_ini !='' && $f_fin !='')
+                            $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
+                    break;
+                }
+                case 'contratos.fecha': {
+                    $contratos = $contratos
+                        ->whereBetween($criterio, [$buscar, $buscar3]);
+                    break;
+                }
+                case 'contratos.fecha_status': {
+                    $contratos = $contratos
+                        ->whereBetween($criterio, [$buscar,  $buscar3]);
+                    break;
+                }
+                case 'creditos.fraccionamiento': {
+                    
+                    $contratos = $contratos->where('lotes.fraccionamiento_id', '=',  $buscar);
+
+                        if($publicidad != '')
+                            $contratos  = $contratos->where('contratos.publicidad_id', '=',  $publicidad);
+                        if($b_modelo != '')
+                            $contratos  = $contratos->where('lotes.modelo_id', '=',  $b_modelo);
+                        if($b_etapa != '')
+                            $contratos  = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                        if($b_manzana != '')
+                            $contratos  = $contratos->where('lotes.manzana', '=', $b_manzana);
+                        if($b_lote != '')
+                            $contratos  = $contratos->where('lotes.num_lote', '=', $b_lote);
+                        if($f_ini != '' && $f_fin != '')
+                            $contratos  = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
+
+                    break;
+                }  
+            }
+        } 
+
+        $contratos = $contratos->orderBy('id', 'desc')->paginate(20);
+        
+        if(sizeOf($contratos)){
+            //Se recorren los resultados de contratos para verificar si la casa se ha individualizado.
+            foreach($contratos as $index => $contrato) 
+            {
+                if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
+                    $contrato->status2 = 1;
+                }
+                elseif($contrato->tipo_credito != 'Crédito Directo' && $contrato->fecha_firma_esc != NULL){
+                    $contrato->status2 = 1;
+                }
+                else{
+                    $contrato->status2 = 0;
+                }
+
+                $expediente = Expediente::select('liquidado','fecha_firma_esc')->where('id','=',$contrato->id)->get();
+
+                if(sizeOf($expediente)){
+                    $contrato->liquidado = $expediente[0]->liquidado;
+                    $contrato->fecha_firma_esc = $expediente[0]->fecha_firma_esc;
+                }
+                
+            }
+        }
+
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ], 'contratos' => $contratos, 'contadorContrato' => $contratos->total()
+        ];
+    }
+
+    // Función privada para obtener la query de contratos.
+    private function getContratos()
+    {
+        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -194,158 +313,10 @@ class ContratoController extends Controller
                     'contratos.exp_bono',
                     'lotes.fraccionamiento_id'
         );
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        if($b_status != '')
-            $query= $query->where('contratos.status','=',$b_status);
-
-        if(Auth::user()->rol_id == 2)
-            $query= $query->where('creditos.vendedor_id', '=', Auth::user()->id);
-
-        
-            if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
-                $contratos = $query
-                    ->where('inst_seleccionadas.elegido', '=', '1')
-                    ->orderBy('id', 'desc')->paginate(20);
-
-            } 
-            else {
-                switch ($criterio) {
-                    case 'personal.nombre': {
-                        $contratos = $query
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'v.nombre': {
-                        $contratos = $query
-
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'inst_seleccionadas.tipo_credito': {
-                        $contratos = $query
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'creditos.id': {
-                        $contratos = $query
-
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'creditos.vendedor_id': {
-                        $contratos = $query
-                            ->where($criterio, '=',$buscar)
-                            ->where('inst_seleccionadas.elegido', '=', '1');
-
-                            if($buscar != "")
-                                $contratos = $contratos->where($criterio, '=',$buscar);
-                            if($buscar3 != "")
-                                $contratos = $contratos->where('lotes.fraccionamiento_id','=',$buscar3);
-                            if($b_etapa != "")
-                                $contratos = $contratos->where('lotes.etapa_id','=',$b_etapa);
-
-                            if($f_ini !='' && $f_fin !='')
-                                $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
-
-                            $contratos = $contratos->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'contratos.fecha': {
-                        $contratos = $query
-                            ->whereBetween($criterio, [$buscar, $buscar3])
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'contratos.fecha_status': {
-                        $contratos = $query
-                            ->whereBetween($criterio, [$buscar,  $buscar3])
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento': {
-                        
-                        $contratos = $query
-                            ->where('inst_seleccionadas.elegido', '=', '1');
-                            
-                            if($buscar != '')
-                                $contratos  = $contratos->where('lotes.fraccionamiento_id', '=',  $buscar);
-                            if($publicidad != '')
-                                $contratos  = $contratos->where('contratos.publicidad_id', '=',  $publicidad);
-                            if($b_modelo != '')
-                                $contratos  = $contratos->where('lotes.modelo_id', '=',  $b_modelo);
-                            if($b_etapa != '')
-                                $contratos  = $contratos->where('lotes.etapa_id', '=', $b_etapa);
-                            if($b_manzana != '')
-                                $contratos  = $contratos->where('lotes.manzana', '=', $b_manzana);
-                            if($b_lote != '')
-                                $contratos  = $contratos->where('lotes.num_lote', '=', $b_lote);
-                            if($f_ini != '' && $f_fin != '')
-                                $contratos  = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
-                            
-                        $contratos  = $contratos->orderBy('id', 'desc')->paginate(20);
-
-                    
-                        break;
-                    }  
-                }
-            } 
-        
-
-
-        if(sizeOf($contratos)){
-            foreach($contratos as $index => $contrato) 
-            {
-                if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
-                    $contrato->status2 = 1;
-                }
-                elseif($contrato->tipo_credito != 'Crédito Directo' && $contrato->fecha_firma_esc != NULL){
-                    $contrato->status2 = 1;
-                }
-                else{
-                    $contrato->status2 = 0;
-                }
-
-                $expediente = Expediente::select('liquidado','fecha_firma_esc')->where('id','=',$contrato->id)->get();
-
-                if(sizeOf($expediente)){
-                    $contrato->liquidado = $expediente[0]->liquidado;
-                    $contrato->fecha_firma_esc = $expediente[0]->fecha_firma_esc;
-                }
-                
-
-            }
-        }
-
-        return [
-            'pagination' => [
-                'total'         => $contratos->total(),
-                'current_page'  => $contratos->currentPage(),
-                'per_page'      => $contratos->perPage(),
-                'last_page'     => $contratos->lastPage(),
-                'from'          => $contratos->firstItem(),
-                'to'            => $contratos->lastItem(),
-            ], 'contratos' => $contratos, 'contadorContrato' => $contratos->total()
-        ];
+        return $contratos;
     }
 
+    // Función para obtener las simulacipnes de creditos aprobados sin contrato.
     public function indexCreditosAprobados(Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -355,10 +326,11 @@ class ContratoController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
 
-        $query = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+        $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
             ->select(
                 'creditos.id',
                 'creditos.prospecto_id',
@@ -380,73 +352,36 @@ class ContratoController extends Controller
                 'clientes.id as prospecto_id',
                 'v.nombre as vendedor_nombre',
                 'v.apellidos as vendedor_apellidos'
-            );
-
-        if ($buscar == '') {
-            $creditos = $query
-                ->where('creditos.status', '=', '2')
-                ->where('inst_seleccionadas.elegido', '=', '1')
-                ->where('creditos.contrato', '=', '0');
-        } 
-        else {
+            )
+            ->where('creditos.status', '=', '2')
+            ->where('inst_seleccionadas.elegido', '=', '1')
+            ->where('creditos.contrato', '=', '0');
+        
+        if($buscar != '') {
             switch ($criterio) {
                 case 'personal.nombre': {
-                    $creditos = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.contrato', '=', '0')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.contrato', '=', '0');
+                    $creditos = 
+                        $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'v.nombre': {
-                    $creditos = $query
-
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.contrato', '=', '0')
-                        ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.contrato', '=', '0');
-                    break;
-                }
-                case 'inst_seleccionadas.tipo_credito': {
-                    $creditos = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.contrato', '=', '0');
-                    break;
-                }
-                case 'creditos.id': {
-                    $creditos = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.contrato', '=', '0');
+                    $creditos = $creditos->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'creditos.fraccionamiento': {
-                    $creditos = $query
-                        ->where('creditos.status', '=', '2')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
+                    $creditos = $creditos
                         ->where('lotes.fraccionamiento_id', '=',  $buscar);
-
                         if ($b_etapa != '' )
                             $creditos = $creditos->where('lotes.etapa_id', '=', $b_etapa);
-
                         if ($b_manzana != '')
                             $creditos = $creditos->where('lotes.manzana', '=', $b_manzana);
-
                         if ($b_lote != '')
                             $creditos = $creditos->where('lotes.num_lote', '=', $b_lote);
-
-                        $creditos = $creditos->where('creditos.contrato', '=', '0');
+                    break;
+                }
+                default:{
+                    $creditos = $creditos
+                        ->where($criterio, 'like', '%' . $buscar . '%');
                     break;
                 }
             }
@@ -466,163 +401,54 @@ class ContratoController extends Controller
         ];
     }
 
+    // Funcion para obtener los datos de la simulación
     public function getDatosCredito(Request $request)
     {
         if(!$request->ajax())return redirect('/');
         $folio = $request->folio;
         $creditos = Credito::join('datos_extra', 'creditos.id', '=', 'datos_extra.id')
                     ->join('lotes','lotes.id','=','creditos.lote_id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->join('inst_seleccionadas','creditos.id','inst_seleccionadas.credito_id')
             ->select(
-                'lotes.sobreprecio',
-                'lotes.fraccionamiento_id',
-                'creditos.id',
-                'creditos.prospecto_id',
-                'creditos.num_dep_economicos',
-                'creditos.tipo_economia',
-                'creditos.nombre_primera_ref',
-                'creditos.telefono_primera_ref',
-                'creditos.celular_primera_ref',
-                'creditos.nombre_segunda_ref',
-                'creditos.telefono_segunda_ref',
-                'creditos.celular_segunda_ref',
-                'creditos.etapa',
-                'creditos.manzana',
-                'creditos.num_lote',
-                'creditos.modelo',
-                'creditos.precio_base',
-                'creditos.precio_obra_extra',
-                'creditos.superficie',
-                'creditos.terreno_excedente',
-                'creditos.precio_terreno_excedente',
-                'creditos.promocion',
-                'creditos.descripcion_promocion',
-                'creditos.descuento_promocion',
-                'creditos.paquete',
-                'creditos.descripcion_paquete',
-                'creditos.precio_venta',
-                'creditos.plazo',
-                'creditos.credito_solic',
-                'creditos.lote_id',
-                'creditos.fraccionamiento as proyecto',
-                'creditos.costo_paquete',
-                'creditos.status'
+                'lotes.sobreprecio', 'lotes.fraccionamiento_id', 'creditos.id',
+                'creditos.prospecto_id', 'creditos.num_dep_economicos', 'creditos.tipo_economia',
+                'creditos.nombre_primera_ref', 'creditos.telefono_primera_ref', 'creditos.celular_primera_ref',
+                'creditos.nombre_segunda_ref', 'creditos.telefono_segunda_ref', 'creditos.celular_segunda_ref',
+                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.modelo',
+                'creditos.precio_base', 'creditos.precio_obra_extra', 'creditos.superficie',
+                'creditos.terreno_excedente', 'creditos.precio_terreno_excedente', 'creditos.promocion',
+                'creditos.descripcion_promocion', 'creditos.descuento_promocion', 'creditos.paquete',
+                'creditos.descripcion_paquete', 'creditos.precio_venta', 'creditos.plazo',
+                'creditos.credito_solic', 'creditos.lote_id', 'creditos.fraccionamiento as proyecto',
+                'creditos.costo_paquete', 'creditos.status', 'personal.nombre', 'personal.apellidos',
+                'clientes.sexo', 'clientes.nombre_recomendado', 'clientes.publicidad_id as publicidadId',
+                'personal.telefono', 'personal.celular', 'personal.email',
+                'personal.direccion', 'personal.cp', 'personal.clv_lada',
+                'personal.colonia', 'clientes.ciudad', 'clientes.estado',
+                'personal.f_nacimiento', 'clientes.nacionalidad', 'clientes.curp',
+                'personal.rfc', 'personal.homoclave', 'clientes.nss',
+                'clientes.empresa', 'clientes.puesto', 'clientes.email_institucional',
+                'clientes.tipo_casa', 'clientes.edo_civil', 'clientes.coacreditado',
+                'clientes.nombre_coa', 'clientes.apellidos_coa', 'clientes.f_nacimiento_coa',
+                'clientes.rfc_coa', 'clientes.homoclave_coa', 'clientes.direccion_coa',
+                'clientes.cp_coa', 'clientes.colonia_coa', 'clientes.estado_coa',
+                'clientes.ciudad_coa', 'clientes.celular_coa', 'clientes.telefono_coa',
+                'clientes.email_coa', 'clientes.email_institucional_coa', 'clientes.parentesco_coa',
+                'clientes.empresa_coa', 'clientes.curp_coa', 'clientes.nss_coa',
+                'clientes.nacionalidad_coa',
+                'clientes.lugar_nacimiento',
+                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                'inst_seleccionadas.elegido'
             )
+            ->where('inst_seleccionadas.elegido', '=', 1)
             ->where('creditos.id', '=', $folio)->get();
-
-        foreach ($creditos as $index => $credito) {
-            $prospecto = [];
-            $prospecto = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
-                ->select(
-                    'personal.nombre',
-                    'personal.apellidos',
-                    'clientes.sexo',
-                    'clientes.nombre_recomendado',
-                    'clientes.publicidad_id',
-                    'personal.telefono',
-                    'personal.celular',
-                    'personal.email',
-                    'personal.direccion',
-                    'personal.cp',
-                    'personal.clv_lada',
-                    'personal.colonia',
-                    'clientes.ciudad',
-                    'clientes.estado',
-                    'personal.f_nacimiento',
-                    'clientes.nacionalidad',
-                    'clientes.curp',
-                    'personal.rfc',
-                    'personal.homoclave',
-                    'clientes.nss',
-                    'clientes.empresa',
-                    'clientes.puesto',
-                    'clientes.email_institucional',
-                    'clientes.tipo_casa',
-                    'clientes.edo_civil',
-                    'clientes.coacreditado',
-                    'clientes.nombre_coa',
-                    'clientes.apellidos_coa',
-                    'clientes.f_nacimiento_coa',
-                    'clientes.rfc_coa',
-                    'clientes.homoclave_coa',
-                    'clientes.direccion_coa',
-                    'clientes.cp_coa',
-                    'clientes.colonia_coa',
-                    'clientes.estado_coa',
-                    'clientes.ciudad_coa',
-                    'clientes.celular_coa',
-                    'clientes.telefono_coa',
-                    'clientes.email_coa',
-                    'clientes.email_institucional_coa',
-                    'clientes.parentesco_coa',
-                    'clientes.empresa_coa',
-                    'clientes.curp_coa',
-                    'clientes.nss_coa',
-                    'clientes.nacionalidad_coa',
-                    'clientes.lugar_nacimiento'
-                    
-                )
-                ->where('clientes.id', '=', $credito->prospecto_id)->get();
-
-            $institucion = [];
-            $institucion = inst_seleccionada::select('tipo_credito', 'institucion', 'elegido')
-                ->where('credito_id', '=', $credito->id)
-                ->where('elegido', '=', 1)->get();
-            if (sizeof($prospecto) > 0) {
-                $credito->nombre = $prospecto[0]->nombre;
-                $credito->apellidos = $prospecto[0]->apellidos;
-                $credito->sexo = $prospecto[0]->sexo;
-                $credito->telefono = $prospecto[0]->telefono;
-                $credito->celular = $prospecto[0]->celular;
-                $credito->email = $prospecto[0]->email;
-                $credito->direccion = $prospecto[0]->direccion;
-                $credito->cp = $prospecto[0]->cp;
-                $credito->colonia = $prospecto[0]->colonia;
-                $credito->ciudad = $prospecto[0]->ciudad;
-                $credito->clv_lada = $prospecto[0]->clv_lada;
-                $credito->estado = $prospecto[0]->estado;
-                $credito->f_nacimiento = $prospecto[0]->f_nacimiento;
-                $credito->nacionalidad = $prospecto[0]->nacionalidad;
-                $credito->curp = $prospecto[0]->curp;
-                $credito->rfc = $prospecto[0]->rfc;
-                $credito->homoclave = $prospecto[0]->homoclave;
-                $credito->nss = $prospecto[0]->nss;
-                $credito->empresa = $prospecto[0]->empresa;
-                $credito->puesto = $prospecto[0]->puesto;
-                $credito->email_institucional = $prospecto[0]->email_institucional;
-                $credito->tipo_casa = $prospecto[0]->tipo_casa;
-                $credito->edo_civil = $prospecto[0]->edo_civil;
-                $credito->coacreditado = $prospecto[0]->coacreditado;
-                $credito->nombre_coa = $prospecto[0]->nombre_coa;
-                $credito->apellidos_coa = $prospecto[0]->apellidos_coa;
-                $credito->f_nacimiento_coa = $prospecto[0]->f_nacimiento_coa;
-                $credito->rfc_coa = $prospecto[0]->rfc_coa;
-                $credito->curp_coa = $prospecto[0]->curp_coa;
-                $credito->nss_coa = $prospecto[0]->nss_coa;
-                $credito->homoclave_coa = $prospecto[0]->homoclave_coa;
-                $credito->direccion_coa = $prospecto[0]->direccion_coa;
-                $credito->cp_coa = $prospecto[0]->cp_coa;
-                $credito->nacionalidad_coa = $prospecto[0]->nacionalidad_coa;
-                $credito->colonia_coa = $prospecto[0]->colonia_coa;
-                $credito->estado_coa = $prospecto[0]->estado_coa;
-                $credito->ciudad_coa = $prospecto[0]->ciudad_coa;
-                $credito->celular_coa = $prospecto[0]->celular_coa;
-                $credito->telefono_coa = $prospecto[0]->telefono_coa;
-                $credito->email_coa = $prospecto[0]->email_coa;
-                $credito->email_institucional_coa = $prospecto[0]->email_institucional_coa;
-                $credito->empresa_coa = $prospecto[0]->empresa_coa;
-                $credito->nombre_recomendado = $prospecto[0]->nombre_recomendado;
-                $credito->tipo_credito = $institucion[0]->tipo_credito;
-                $credito->institucion = $institucion[0]->institucion;
-                $credito->elegido = $institucion[0]->elegido;
-                $credito->publicidadId = $prospecto[0]->publicidad_id;
-                $credito->lugar_nacimiento = $prospecto[0]->lugar_nacimiento;
-            }
-        }
-
 
         return ['creditos' => $creditos];
     }
 
+    // Función para actualizar los datos almacenados en la tabla Creditos
     public function updateDatosCredito(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -676,7 +502,6 @@ class ContratoController extends Controller
         $cliente->email_coa = $request->email_coa;
         $cliente->parentesco_coa = $request->parentesco_coa;
         $cliente->lugar_nacimiento = $request->lugar_nacimiento;
-        
         $cliente->publicidad_id = $request->publicidad_id;
         $cliente->nombre_recomendado = $request->nombre_recomendado;
 
@@ -697,53 +522,48 @@ class ContratoController extends Controller
         $lote->contrato = 1;
 
         //////
-            //Guardar el costo del lote
+            //Calcular porcentaje correspondiente de terreno y construcción
             $loteId = $credito->lote_id;
             //Guardar el costo del lote
-                $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
-                ->where('lotes.id', '=', $loteId)->get();
+            $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
+                        ->where('lotes.id', '=', $loteId)->get();
 
+                //Precio del terreno por m2
                 $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
                     ->where('estatus', '=', 1)
                 ->first();
 
-                
-
                 if($precioT){
-                    if($etapa[0]->tipo == 2){
+                    //Departamento
+                    if($etapa[0]->tipo == 2)
                         $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
-                    }
-                    else{
+                    //Casa
+                    else
                         $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
-                        
-                    //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
-                        
-                    }
+                    //Calculo del procentaje.
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
                     
                 }
             //Guardar el costo del lote
-
             $credito->save();
-
         /////
-
         $lote->save();
         $credito->save();
         $personal->save();
         $cliente->save();
     }
 
+    // Función para crear un contrato.
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $id = $request->id;
+        //Se obtiene el avance de construcción del lote.
         $lote = Licencia::select('avance')
-            ->where('id', '=', $request->lote_id)->get();
-
+            ->where('id', '=', $request->lote_id)->first();
         
         try {
             DB::beginTransaction();
@@ -776,7 +596,7 @@ class ContratoController extends Controller
             $contrato->total_pagar = $request->total_pagar;
             $contrato->monto_total_credito = $request->monto_total_credito;
             $contrato->enganche_total = $request->enganche_total;
-            $contrato->avance_lote = $lote[0]->avance;
+            $contrato->avance_lote = $lote->avance;
             $contrato->observacion = $request->observacion;
 
             $credito = Credito::findOrFail($request->id);
@@ -800,43 +620,39 @@ class ContratoController extends Controller
             $credito->precio_venta = $request->precio_venta;
             
             $loteId = $credito->lote_id;
-            //Guardar el costo del lote
+            //Calcular porcentaje correspondiente de terreno y construcción
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
                             ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
                 ->where('lotes.id', '=', $loteId)->get();
-
+            //Precio del terreno por m2
                 $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
                     ->where('estatus', '=', 1)
                 ->first();
 
-                
-
                 if($precioT){
-                    if($etapa[0]->tipo == 2){
+                    //Departamento
+                    if($etapa[0]->tipo == 2)
                         $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
-                    }
-                    else{
+                    //Casa
+                    else
                         $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
-                        
-                    //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
-                        
-                    }
+                    //Calculo de porcentaje
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
                     
                 }
             //Guardar el costo del lote
             $credito->save();
 
+            //Vendedor externo
             if($vendedor->tipo == 1){
                 $contrato->porcentaje_exp = 100;
             }
 
             $contrato->save();
 
-            $pagos = $request->data; //Array de detalles
+            $pagos = $request->data; //Pagares del contrato
             //Recorro todos los elementos
-
             foreach ($pagos as $ep => $det) {
                 $pagos = new Pago_contrato();
                 $pagos->contrato_id = $id;
@@ -853,6 +669,7 @@ class ContratoController extends Controller
         }
     }
 
+    // Función para retornar los pagares del contrato.
     public function listarPagos(Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -865,6 +682,7 @@ class ContratoController extends Controller
         return ['pagos' => $pagos];
     }
 
+    // Función privada para obtener los datos del contrato
     private function getDatosContrato($id){
         return Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -875,138 +693,65 @@ class ContratoController extends Controller
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('medios_publicitarios', 'contratos.publicidad_id', '=', 'medios_publicitarios.id')
             ->select(
-                'creditos.id',
-                'creditos.prospecto_id',
-                'creditos.num_dep_economicos',
-                'creditos.tipo_economia',
-                'creditos.nombre_primera_ref',
-                'creditos.telefono_primera_ref',
-                'creditos.celular_primera_ref',
-                'creditos.nombre_segunda_ref',
-                'creditos.telefono_segunda_ref',
-                'creditos.celular_segunda_ref',
-                'creditos.etapa',
-                'creditos.manzana',
-                'creditos.num_lote',
-                'creditos.modelo',
-                'creditos.precio_base',
-                'creditos.superficie',
-                'creditos.terreno_excedente',
-                'creditos.precio_terreno_excedente',
-                'creditos.porcentaje_terreno',
-                'creditos.promocion',
-                'creditos.descripcion_promocion',
-                'creditos.descuento_promocion',
-                'creditos.paquete',
-                'creditos.descripcion_paquete',
-                'creditos.precio_venta',
-                'creditos.plazo',
-                'creditos.credito_solic',
-                'creditos.costo_paquete',
-                'inst_seleccionadas.tipo_credito',
-                'inst_seleccionadas.id as inst_credito',
-                'creditos.precio_obra_extra',
-                'creditos.fraccionamiento as proyecto',
-                'creditos.lote_id',
+                'creditos.id', 'creditos.prospecto_id', 'creditos.num_dep_economicos',
+                'creditos.tipo_economia', 'creditos.nombre_primera_ref', 'creditos.telefono_primera_ref',
+                'creditos.celular_primera_ref', 'creditos.nombre_segunda_ref',
+                'creditos.telefono_segunda_ref', 'creditos.celular_segunda_ref',
+                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                'creditos.modelo', 'creditos.precio_base', 'creditos.superficie',
+                'creditos.terreno_excedente', 'creditos.precio_terreno_excedente',
+                'creditos.porcentaje_terreno', 'creditos.promocion',
+                'creditos.descripcion_promocion', 'creditos.descuento_promocion',
+                'creditos.paquete', 'creditos.descripcion_paquete',
+                'creditos.precio_venta', 'creditos.plazo', 'creditos.credito_solic',
+                'creditos.costo_paquete', 'inst_seleccionadas.tipo_credito',
+                'inst_seleccionadas.id as inst_credito', 'creditos.precio_obra_extra',
+                'creditos.fraccionamiento as proyecto', 'creditos.lote_id',
                 'fraccionamientos.tipo_proyecto',
 
-                'lotes.calle',
-                'lotes.numero',
-                'lotes.interior',
-                'lotes.terreno',
-                'lotes.construccion',
-                'lotes.sobreprecio',
-                'lotes.fecha_termino_ventas',
+                'lotes.calle', 'lotes.numero', 'lotes.interior',
+                'lotes.terreno', 'lotes.construccion',
+                'lotes.sobreprecio', 'lotes.fecha_termino_ventas',
                 'medios_publicitarios.nombre as medio_publicidad',
-                'lotes.ajuste',
-                'lotes.emp_constructora',
-                'lotes.emp_terreno',
+                'lotes.ajuste', 'lotes.emp_constructora', 'lotes.emp_terreno',
 
                 'inst_seleccionadas.institucion',
-                'personal.nombre',
-                'personal.apellidos',
-                'personal.telefono',
-                'personal.celular',
-                'personal.clv_lada',
-                'personal.email',
-                'clientes.email_institucional',
-                'personal.direccion',
-                'personal.cp',
-                'personal.colonia',
-                'personal.f_nacimiento',
-                'personal.rfc',
-                'personal.homoclave',
-                'creditos.fraccionamiento',
-                'clientes.id as prospecto_id',
-                'clientes.edo_civil',
-                'clientes.nss',
-                'clientes.curp',
-                'clientes.empresa',
-                'clientes.coacreditado',
-                'clientes.estado',
-                'clientes.ciudad',
-                'clientes.puesto',
-                'clientes.nacionalidad',
-                'clientes.sexo',
-                'clientes.sexo_coa',
-                'clientes.email_institucional_coa',
-                'clientes.empresa_coa',
-                'clientes.edo_civil_coa',
-                'clientes.nss_coa',
-                'clientes.curp_coa',
-                'clientes.nombre_coa',
-                'clientes.apellidos_coa',
-                'clientes.f_nacimiento_coa',
-                'clientes.nacionalidad_coa',
-                'clientes.rfc_coa',
-                'clientes.homoclave_coa',
-                'clientes.direccion_coa',
-                'clientes.colonia_coa',
-                'clientes.ciudad_coa',
-                'clientes.estado_coa',
-                'clientes.cp_coa',
-                'clientes.telefono_coa',
-                'clientes.ext_coa',
-                'clientes.celular_coa',
-                'clientes.email_coa',
-                'clientes.parentesco_coa',
-                'clientes.lugar_nacimiento_coa',
-                'clientes.nombre_recomendado',
-                'v.nombre as vendedor_nombre',
-                'v.apellidos as vendedor_apellidos',
+                'personal.nombre', 'personal.apellidos', 'personal.telefono',
+                'personal.celular', 'personal.clv_lada', 'personal.email',
+                'clientes.email_institucional', 'personal.direccion',
+                'personal.cp', 'personal.colonia', 'personal.f_nacimiento',
+                'personal.rfc', 'personal.homoclave', 'creditos.fraccionamiento',
+                'clientes.id as prospecto_id', 'clientes.edo_civil',
+                'clientes.nss', 'clientes.curp', 'clientes.empresa',
+                'clientes.coacreditado', 'clientes.estado', 'clientes.ciudad',
+                'clientes.puesto', 'clientes.nacionalidad', 'clientes.sexo',
+                'clientes.sexo_coa', 'clientes.email_institucional_coa',
+                'clientes.empresa_coa', 'clientes.edo_civil_coa', 'clientes.nss_coa',
+                'clientes.curp_coa', 'clientes.nombre_coa', 'clientes.apellidos_coa',
+                'clientes.f_nacimiento_coa', 'clientes.nacionalidad_coa',
+                'clientes.rfc_coa', 'clientes.homoclave_coa', 'clientes.direccion_coa',
+                'clientes.colonia_coa', 'clientes.ciudad_coa', 'clientes.estado_coa',
+                'clientes.cp_coa', 'clientes.telefono_coa', 'clientes.ext_coa',
+                'clientes.celular_coa', 'clientes.email_coa', 'clientes.parentesco_coa',
+                'clientes.lugar_nacimiento_coa', 'clientes.nombre_recomendado',
+                'v.nombre as vendedor_nombre', 'v.apellidos as vendedor_apellidos',
 
-                'contratos.infonavit',
-                'contratos.vendedor_aux',
-                'contratos.fovisste',
-                'contratos.comision_apertura',
-                'clientes.lugar_nacimiento',
-                'contratos.investigacion',
-                'contratos.avaluo',
-                'contratos.prima_unica',
-                'contratos.escrituras',
-                'contratos.credito_neto',
-                'contratos.status',
-                'contratos.avaluo_cliente',
-                'contratos.fecha',
-                'contratos.direccion_empresa',
-                'contratos.cp_empresa',
-                'contratos.colonia_empresa',
-                'contratos.estado_empresa',
-                'contratos.ciudad_empresa',
-                'contratos.telefono_empresa',
-                'contratos.ext_empresa',
-                'contratos.direccion_empresa_coa',
-                'contratos.cp_empresa_coa',
-                'contratos.colonia_empresa_coa',
-                'contratos.estado_empresa_coa',
-                'contratos.ciudad_empresa_coa',
-                'contratos.telefono_empresa_coa',
-                'contratos.ext_empresa_coa',
-                'contratos.total_pagar',
-                'contratos.monto_total_credito',
-                'contratos.enganche_total',
-                'contratos.avance_lote',
-                'contratos.observacion',
+                'contratos.infonavit', 'contratos.vendedor_aux',
+                'contratos.fovisste', 'contratos.comision_apertura',
+                'clientes.lugar_nacimiento', 'contratos.investigacion',
+                'contratos.avaluo', 'contratos.prima_unica',
+                'contratos.escrituras', 'contratos.credito_neto',
+                'contratos.status', 'contratos.avaluo_cliente',
+                'contratos.fecha', 'contratos.direccion_empresa',
+                'contratos.cp_empresa', 'contratos.colonia_empresa',
+                'contratos.estado_empresa', 'contratos.ciudad_empresa',
+                'contratos.telefono_empresa', 'contratos.ext_empresa',
+                'contratos.direccion_empresa_coa', 'contratos.cp_empresa_coa',
+                'contratos.colonia_empresa_coa', 'contratos.estado_empresa_coa',
+                'contratos.ciudad_empresa_coa', 'contratos.telefono_empresa_coa',
+                'contratos.ext_empresa_coa', 'contratos.total_pagar',
+                'contratos.monto_total_credito', 'contratos.enganche_total',
+                'contratos.avance_lote', 'contratos.observacion',
                 'contratos.exp_bono'
             )
             ->where('inst_seleccionadas.elegido', '=', '1')
@@ -1014,35 +759,38 @@ class ContratoController extends Controller
             ->orderBy('id', 'desc')->get();
     }
 
+    // Función para imprimir la solicitud de compra en PDF
     public function contratoCompraVentaPdf(Request $request, $id)
     {
         $contratos = $this->getDatosContrato($id);
-
 
             // if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratos[0]->institucion == 'Crea Más' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
             //     $contratos[0]->institucion = 'INFONAVIT';
             // }
 
-            if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
-                $contratos[0]->institucion = 'INFONAVIT';
-            }
+        // Se cambia a infonavit si la institución de financiamiento es GAMU
+        if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
+            $contratos[0]->institucion = 'INFONAVIT';
+        }
 
         setlocale(LC_TIME, 'es_MX.utf8');
+        // Se da formato a la fecha de creación del contrato
         $tiempo = new Carbon($contratos[0]->fecha);
         $contratos[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
-
+        // Se da formato mes, año a la fecha de termino de la vivienda
         $fecha_termino_ventas = new Carbon($contratos[0]->fecha_termino_ventas);
         $contratos[0]->fecha_termino_ventas = $fecha_termino_ventas->formatLocalized('%B de %Y');
-
+        // Se da formato mes, año a la fecha de nacimiento del cliente
         $fecha_nac = new Carbon($contratos[0]->f_nacimiento);
         $contratos[0]->f_nacimiento = $fecha_nac->formatLocalized('%d-%m-%Y');
-
+        // Se da formato mes, año a la fecha de nacimiento del coacreditado
         $fecha_nac_coa = new Carbon($contratos[0]->f_nacimiento_coa);
         $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
-
+        // Se calcula el precio base de la casa
         $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
         $descuentoPromo = $contratos[0]->descuento_promocion;
 
+        // Se da formato numerico
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
         $contratos[0]->precio_terreno_excedente = number_format((float)$contratos[0]->precio_terreno_excedente, 2, '.', ',');
@@ -1068,6 +816,7 @@ class ContratoController extends Controller
             $contratos[0]->terreno_excedente = 0;
         }
 
+        // Se obtienen los pagares del contrato y se da formato numerico al monto.
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)
         ->where('tipo_pagare','=',0)
         ->orderBy('fecha_pago', 'asc')->get();
@@ -1077,9 +826,12 @@ class ContratoController extends Controller
             $pagos[$i]->fecha_pago = $fecha_pago->formatLocalized('%d-%m-%Y');
         }
 
+        // Llamada al pdf para venta de casa
         if($contratos[0]->modelo != 'Terreno')
             $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta', ['contratos' => $contratos, 'pagos' => $pagos]);
+        // PDF para venta de Terreno
         else{
+            // Se obtiene la cotización del terreno
             $cotizacion = Cotizacion_lotes::join('clientes', 'cotizacion_lotes.cliente_id', '=', 'clientes.id')
                 ->join('personal', 'clientes.id', '=', 'personal.id')
                 ->join('lotes', 'cotizacion_lotes.lotes_id', '=', 'lotes.id')
@@ -1104,7 +856,9 @@ class ContratoController extends Controller
                 
             ->first();
 
+            // Valor por m2
             $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
+            // Valor de venta sin descuento
             $cotizacion->valorVenta2 = $cotizacion->valor_venta + $descuentoPromo;
             $contratos[0]->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
             $contratos[0]->interes = $cotizacion->interes;
@@ -1164,6 +918,7 @@ class ContratoController extends Controller
         return $pdf->stream('ContratoCompraVenta.pdf');
     }
 
+    // Función para imprimir los pagares
     public function pagareContratopdf(Request $request, $id)
     {
 
@@ -1216,67 +971,13 @@ class ContratoController extends Controller
         // return ['cabecera' => $cabecera];
     }
 
+    // Función para impriimr contratos de compra Directa
     public function contratoConReservaDeDominio(Request $request, $id)
     {
 
-        $contratosDom = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
-            ->select(
-                'creditos.id',
-                'creditos.prospecto_id',
-                'creditos.etapa',
-                'creditos.manzana',
-                'creditos.num_lote',
-                'creditos.superficie',
-                'creditos.valor_terreno',
-                'creditos.porcentaje_terreno',
-                'inst_seleccionadas.id as inst_credito',
-                'inst_seleccionadas.tipo_credito',
-                'creditos.fraccionamiento as proyecto',
-                'lotes.construccion',
-                'lotes.regimen_condom',
-                'lotes.emp_constructora',
-                'lotes.emp_terreno',
-                'creditos.precio_venta',
+        $contratosDom = $this->datosContratoImprimir();
 
-                'fraccionamientos.estado as est_proy',
-                'fraccionamientos.ciudad as ciudad_proy',
-
-                'personal.nombre',
-                'personal.apellidos',
-                'personal.telefono',
-                'personal.celular',
-                'personal.direccion',
-                'personal.cp',
-                'personal.colonia',
-                'creditos.fraccionamiento',
-                'clientes.id as prospecto_id',
-                'clientes.edo_civil',
-                'clientes.nss',
-                'clientes.curp',
-                'clientes.empresa',
-                'clientes.coacreditado',
-                'clientes.nombre_coa',
-                'clientes.apellidos_coa',
-                'clientes.f_nacimiento_coa',
-                'clientes.nacionalidad_coa',
-                'clientes.estado',
-                'clientes.ciudad',
-
-                'contratos.enganche_total',
-                'contratos.fecha',
-                'contratos.avaluo_cliente',
-                'contratos.total_pagar'
-            )
-            ->where('inst_seleccionadas.elegido', '=', '1')
-            ->where('contratos.id', '=', $id)
-            ->get();
-
+        // Calculo para obtener el valor de construcción de la casa
         $contratosDom[0]->valor_construccion = $contratosDom[0]->enganche_total - $contratosDom[0]->valor_terreno;
 
         setlocale(LC_TIME, 'es_MX.utf8');
@@ -1291,11 +992,10 @@ class ContratoController extends Controller
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
         ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
 
-
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 
-            $posMayor=0;
+        $posMayor=0;
         for ($i = 0; $i < count($pagos); $i++) {
             if($contratosDom[0]->avaluo_cliente < $pagos[$i]->monto_pago)
             {
@@ -1310,8 +1010,6 @@ class ContratoController extends Controller
             if($pagos[0]->monto_pago<0)
                 $pagos[0]->monto_pago = 0;
         }
-            
-
 
         for ($i = 0; $i < count($pagos); $i++) {
             $tiempo = new Carbon($pagos[$i]->fecha_pago);
@@ -1367,17 +1065,18 @@ class ContratoController extends Controller
             }
         }
 
+        // Contrato para ventas sin alianza
         if($contratosDom[0]->emp_constructora == $contratosDom[0]->emp_terreno)
             $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
+        // Contrato para ventas por alianza
         else
             $pdf = \PDF::loadview('pdf.contratos.contratoContado', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
         return $pdf->stream('contrato_reserva_de_dominio.pdf');
     }
 
-    public function contratoDePromesaCredito(Request $request, $id)
-    {
-
-        $contratoPromesa = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+    // Función privada para obtener la query con los datos para imprimir.
+    private function datosContratoImprimir($id){
+        $datos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -1406,7 +1105,8 @@ class ContratoController extends Controller
                 'lotes.indivisos',
                 'modelos.tipo',
 
-                'fraccionamientos.ciudad as ciudad_proy','fraccionamientos.estado as estado_proy',
+                'fraccionamientos.ciudad as ciudad_proy',
+                'fraccionamientos.estado as estado_proy',
                 'fraccionamientos.calle as direccionProyecto',
 
                 'personal.nombre',
@@ -1441,20 +1141,28 @@ class ContratoController extends Controller
             )
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
-            ->where('inst_seleccionadas.tipo_credito', '!=', 'Crédito Directo')
             ->get();
 
-            // if($contratoPromesa[0]->avaluo_cliente>0){
-            //     $contratoPromesa[0]->credito_neto = $contratoPromesa[0]->credito_neto - $contratoPromesa[0]->avaluo_cliente;
-            // }
+        return $datos;
+    }
 
+    // Función para impriimr contratos de compra financiamiento bancario.
+    public function contratoDePromesaCredito(Request $request, $id)
+    {
+
+        //Llamada a la función privada que obtiene los datos del contrato.
+        $contratoPromesa = $this->datosContratoImprimir($id);
+
+        //En caso de no tener enganche el credito total es la diferencia entre el credito y el monto del avaluo por parte del cliente.
         if($contratoPromesa[0]->enganche_total == 0){
             $contratoPromesa[0]->credito_neto = $contratoPromesa[0]->credito_neto - $contratoPromesa[0]->avaluo_cliente;
         }
 
+        //Valor de construcción de la vivienda.
         $contratoPromesa[0]->valor_construccion = $contratoPromesa[0]->precio_venta - $contratoPromesa[0]->valor_terreno;
 
         setlocale(LC_TIME, 'es_MX.utf8');
+        //Se obtiene el valor de enganche en letra
         if($contratoPromesa[0]->avaluo_cliente>=0 && $contratoPromesa[0]->enganche_total >0){
             $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir(($contratoPromesa[0]->enganche_total - $contratoPromesa[0]->avaluo_cliente), 'Pesos', true, 'Centavos');
         }
@@ -1483,6 +1191,7 @@ class ContratoController extends Controller
         $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
         $contratoPromesa[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
 
+        //Se obtinene los pagares del contrato.
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
         ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
 
@@ -1567,12 +1276,15 @@ class ContratoController extends Controller
             }
         }
 
+        //Contrato para departamentos.
         if($contratoPromesa[0]->tipo == 2){
             $pdf = \PDF::loadview('pdf.contratos.contratoCreditoDepartamento', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);   
         }
+        //Contratos para viviendas
         else{
             if($contratoPromesa[0]->emp_constructora == $contratoPromesa[0]->emp_terreno)
                 $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+            //Contrato alianza
             else
                 $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         }
@@ -1581,84 +1293,31 @@ class ContratoController extends Controller
         $pdf->stream('contrato_promesa_credito.pdf');
     }
 
+    // Función para impriimr contratos de compra de terrenos
     public function contratoLote(Request $request, $id)
     {
 
+        //Se obtiene la cotización 
         $cotizacion = Cotizacion_lotes::select('id','mensualidades','interes')->where('num_contrato','=',$id)->first();
+        //Se obtienen los pagos de la cotización
         $p_lote = Pagos_lotes::where('cotizacion_lotes_id','=',$cotizacion->id)->orderBy('folio','asc')->get();
+        //Datos sobre %interes y %descuento
         $opc_lotes = datos_calc_lotes::get();
-
-        $contratoPromesa = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
-            ->select(
-                'creditos.id',
-                'creditos.prospecto_id',
-                'creditos.etapa',
-                'creditos.manzana',
-                'creditos.num_lote',
-                'creditos.superficie',
-                'inst_seleccionadas.id as inst_credito',
-                'inst_seleccionadas.tipo_credito',
-                'creditos.precio_venta',
-                'inst_seleccionadas.institucion',
-                'creditos.fraccionamiento as proyecto',
-
-                'fraccionamientos.ciudad as ciudad_proy','fraccionamientos.estado as estado_proy',
-
-                'personal.nombre',
-                'personal.apellidos',
-                'personal.telefono',
-                'personal.celular',
-                'personal.direccion',
-                'personal.cp',
-                'personal.colonia',
-                'creditos.fraccionamiento',
-                'clientes.id as prospecto_id',
-                'clientes.edo_civil',
-                'clientes.nss',
-                'clientes.curp',
-                'clientes.empresa',
-                'clientes.coacreditado',
-                'clientes.nombre_coa',
-                'clientes.apellidos_coa',
-                'clientes.f_nacimiento_coa',
-                'clientes.nacionalidad_coa',
-                'clientes.estado',
-                'clientes.ciudad',
-
-                'contratos.monto_total_credito',
-                'contratos.enganche_total',
-                'contratos.fecha',
-                'contratos.infonavit',
-                'contratos.fovisste',
-                'contratos.avaluo_cliente',
-                'contratos.credito_neto',
-                'contratos.total_pagar'
-            )
-            ->where('inst_seleccionadas.elegido', '=', '1')
-            ->where('contratos.id', '=', $id)
-            ->get();
+        //Llamada a la función privada que obtiene los datos del contrato.
+        $contratoPromesa = $this->datosContratoImprimir($id);
 
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
             ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
         
         setlocale(LC_TIME, 'es_MX.utf8');
-        
 
         $contratoPromesa[0]->mensualidades = $cotizacion->mensualidades;
         $contratoPromesa[0]->interes = $cotizacion->interes;
         $contratoPromesa[0]->porcentajeValor = ($p_lote[0]->total_a_pagar * 100)/$contratoPromesa[0]->precio_venta;
         $contratoPromesa[0]->porcentajeValor = round($contratoPromesa[0]->porcentajeValor,2);
         
-        //$contratoPromesa[0]->avaluoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->avaluo_cliente, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->valorTerrenoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_terreno, 'Pesos', true, 'Centavos');
-        //$contratoPromesa[0]->valorConstruccionLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_construccion, 'Pesos', true, 'Centavos');
 
         $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos', true, 'Centavos');
 
@@ -1692,6 +1351,13 @@ class ContratoController extends Controller
         $pdf->stream('contrato_promesa_credito.pdf');
     }
 
+    //Función para cambiar el estatus del contrato
+    /*
+        0 = Cancelado
+        1 = Pendiente
+        2 = No firmado
+        3 = Firmado
+    */
     public function statusContrato(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1701,6 +1367,8 @@ class ContratoController extends Controller
             $id_lote = $request->lote_id;
             $equipo='';
 
+            // Equipamientos instalados
+            // Costo total de equipamiento instalado
             $equipamientosCost = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
                 ->select(DB::raw("SUM(solic_equipamientos.costo) as sumCosto"))
                 ->where('lotes.id','=',$id_lote)
@@ -1714,12 +1382,14 @@ class ContratoController extends Controller
                 ->where('solic_equipamientos.fin_instalacion','!=',NULL)
                 ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
 
+            //Equipamiento con pago de anticipo
             $equipamientosAntc = Solic_equipamiento::select('id')
                 ->where('solic_equipamientos.lote_id','=',$id_lote)
                 ->where('solic_equipamientos.fin_instalacion','=',NULL)
                 ->where('solic_equipamientos.fecha_anticipo','!=',NULL)
                 ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
             
+            //Equipamientos solicitados sin instalarse ni pago de anticipo
             $equipamientosCancel = Solic_equipamiento::select('id')
                 ->where('solic_equipamientos.lote_id','=',$id_lote)
                 ->where('solic_equipamientos.fin_instalacion','=',NULL)
@@ -1733,7 +1403,6 @@ class ContratoController extends Controller
                     $antc_equip->save();
                 }
             }
-
             if(sizeof($equipamientosInst) != 0){
                 foreach ($equipamientosInst as $inst){
                     $equipo = $inst->equipamiento.', '.$equipo;
@@ -1742,9 +1411,7 @@ class ContratoController extends Controller
                     $cancel_equip->save();
                 }
             }
-
-            
-
+            // Se almacena el costo del equipamiento ya instalado.
             if(sizeof($equipamientosCost)){
                 if($equipamientosCost[0]->sumCosto != 0)
                     $ajuste = $equipamientosCost[0]->sumCosto;
@@ -1752,79 +1419,38 @@ class ContratoController extends Controller
                     $ajuste = 0;
             }
            
-
-            if ($request->fecha_status == '') {
+            $contrato = Contrato::findOrFail($request->id);
+            $contrato->status = $request->status;
+            $contrato->motivo_cancel = $request->motivo_cancel;
+            if ($request->fecha_status == ''){
                 $fecha = Carbon::now();
-                $status = Contrato::findOrFail($request->id);
-                $status->status = $request->status;
-                $status->fecha_status = $fecha;
-                $status->motivo_cancel = $request->motivo_cancel;
-                $status->save();
+                $contrato->fecha_status = $fecha;
+            }
+            else{
+                $contrato->fecha_status = $request->fecha_status;
+            }
+            $contrato->save();
 
-                if ($request->status == 1) {
-                    $contrato = Lote::findOrFail($id_lote);
-                    $contrato->contrato = 1;
-                    $contrato->save();
-                }
+            $lote = Lote::findOrFail($id_lote);
 
-                if ($request->status == 0 || $request->status == 2) {
-                    $contrato = Lote::findOrFail($id_lote);
-                    $contrato->contrato = 0;
-                    $contrato->apartado = 0;
-                    $contrato->ajuste += $ajuste;
+            if ($request->status == 1) {
+                //Se indica al lote que ya se encuentra vendido.
+                $lote->contrato = 1;
+                $lote->save();
 
-                    if($ajuste != 0)
-                        $contrato->comentarios ='Lote con equipamiento: '.$equipo.'. '.$contrato->comentarios;
-
-                    $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
-                    foreach($apartado as $ap){
-                        $borrarApartado = Apartado::findOrFail($ap->id);
-                        $borrarApartado->delete();
-                    }
-                    $modelo = Modelo::select('terreno','nombre')->where('id','=',$contrato->modelo_id)->get();
-
-                    if($modelo[0]->nombre != 'Terreno'){
-                        $precio_etapa = Precio_etapa::select('id','precio_excedente')
-                        ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
-                        ->where('etapa_id','=',$contrato->etapa_id)->get();
-
-                        $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
-                                        ->where('modelo_id','=',$contrato->modelo_id)->get();
-
-                        $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-                        ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-                        ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
-
-                        
-                        $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
-                        if((double)$terrenoExcedente > 0)
-                            $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
-                        else {
-                            $contrato->excedente_terreno = 0;
-                        }
-
-                        $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
-                        $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
-                        $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
-                    
-                    }
-
-                    
-                    $contrato->save();
-                }
             } else {
-                $status = Contrato::findOrFail($request->id);
-                $status->status = $request->status;
-                $status->fecha_status = $request->fecha_status;
-                $status->motivo_cancel = $request->motivo_cancel;
-                $status->save();
-                
+                // Ventas canceladas o No firmadas
                 if ($request->status == 0 || $request->status == 2) {
-                    $contrato = Lote::findOrFail($id_lote);
-                    $contrato->contrato = 0;
-                    $contrato->apartado = 0;
-                    $contrato->ajuste += $ajuste;
+                    //El lote se habilita para venta.
+                    $lote->contrato = 0;
+                    $lote->apartado = 0;
+                    // En caso de tener equipamiento instalado se ajusta el precio 
+                    $lote->ajuste += $ajuste;
+                    // Se indica que el lote cuenta con equipamiento
+                    if($ajuste != 0)
+                        $lote->comentarios ='Lote con equipamiento: '.$equipo.'. '.$lote->comentarios;
 
+                    //Se cancelan los equipamientos solicitados.
                     if(sizeof($equipamientosCancel) != 0){
                         foreach ($equipamientosCancel as $canc){
                             $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
@@ -1834,44 +1460,57 @@ class ContratoController extends Controller
                         }
                     }
                     
-                    if($ajuste != 0)
-                        $contrato->comentarios ='Lote con equipamiento: '.$equipo.'. '.$contrato->comentarios;
-
+                    //Se elimina el apartado asignado al lote.
                     $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
-                    foreach($apartado as $ap){
-                        $borrarApartado = Apartado::findOrFail($ap->id);
-                        $borrarApartado->delete();
-                    }
+                    if(sizeof($apartado))
+                        foreach($apartado as $ap){
+                            $borrarApartado = Apartado::findOrFail($ap->id);
+                            $borrarApartado->delete();
+                        }
+                        // Se obtiene el nombre y superficie de terreno del modelo asignado al lote.
+                    $modelo = Modelo::select('terreno','nombre')->where('id','=',$lote->modelo_id)->get();
 
-                    $modelo = Modelo::select('terreno','nombre')->where('id','=',$contrato->modelo_id)->get();
-
+                    // Ventas que no sean terrenos
                     if($modelo[0]->nombre != 'Terreno'){
+                        //Se obtiene el precio por excedente en la etapa actual.
                         $precio_etapa = Precio_etapa::select('id','precio_excedente')
-                        ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
-                        ->where('etapa_id','=',$contrato->etapa_id)->get();
+                        ->where('fraccionamiento_id','=',$lote->fraccionamiento_id)
+                        ->where('etapa_id','=',$lote->etapa_id)->get();
 
+                        // Se obtiene el precio del modelo actual.
                         $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
-                                        ->where('modelo_id','=',$contrato->modelo_id)->get();
+                                        ->where('modelo_id','=',$lote->modelo_id)->get();
 
+                        // Se obtienen los sobreprecios del lote.
                         $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
                         ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
                         ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
 
-                        
-                        $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                        //Se calcula el terreno excedente
+                        $terrenoExcedente = round(($lote->terreno - $modelo[0]->terreno),2);
                         if((double)$terrenoExcedente > 0)
-                            $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                            //Se calcula el monto por terreno excedente.
+                            $lote->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
                         else {
-                            $contrato->excedente_terreno = 0;
+                            $lote->excedente_terreno = 0;
                         }
-
-                        $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
-                        $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
-                        $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                        //Se asigna el precio base
+                        $lote->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+                        //Se calcula el precio de venta del lote.
+                        $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra),2);
                         
                     }
-                    $contrato->save();
-                    
+                    else{
+                        $cotizadorLote = Cotizacion_lotes::select('id')->where('lotes_id','=',$id_lote)
+                            ->where('num_contrato','=',$request->id)->get();
+
+                        if(sizeOf($cotizadorLote)){
+                            $cotizadorLote = Cotizacion_lotes::findOrFail($cotizadorLote[0]->id);
+                            $cotizadorLote->estatus = 2;
+                            $cotizadorLote->save();
+                        }
+                    }
+                    $lote->save();
 
                     $credito = Credito::select('prospecto_id')
                         ->where('id', '=', $request->id)
@@ -1880,19 +1519,25 @@ class ContratoController extends Controller
                     $cliente->clasificacion = 6;
                     $cliente->save();
                 }
+                // Venta firmada
                 if ($request->status == 3) {
+                    //Se obtienen la información del paquete asignado.
                     $credito = Credito::select('prospecto_id', 'descripcion_paquete', 'num_lote', 'fraccionamiento', 'etapa')
                         ->where('id', '=', $request->id)
                         ->get();
-                    $paquete = Lote::findOrFail($id_lote);
-                    $paquete->paquete = $credito[0]->descripcion_paquete;
-                    $paquete->contrato = 1;
-                    $paquete->save();
+                    //Se asigna el paquete al registro del lote
+                    $lote->paquete = $credito[0]->descripcion_paquete;
+                    //El lote se indica como vendido.
+                    $lote->contrato = 1;
+                    $lote->save();
+                    // Se accede al registro del Cliente.
                     $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                    // Cliente clasificado como ventas
                     $cliente->clasificacion = 5;
                     $vendedorid = $cliente->vendedor_id;
                     $cliente->save();
 
+                    //Se manda notificación sobre la venta.
                     $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
                     $fecha = Carbon::now();
                     $msj = "Se ha vendido el lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa;
@@ -1908,15 +1553,14 @@ class ContratoController extends Controller
 
                     $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.id', '=', $vendedorid)->get();
 
+                    if(sizeof($personal))
                     foreach ($personal as $personas) {
-                        //$correo = $personas->email;
-                        //Mail::to($correo)->send(new NotificationReceived($msj));
+                        $correo = $personas->email;
+                        Mail::to($correo)->send(new NotificationReceived($msj));
                         User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                     }
                     
                 }
-
-                
             }
 
             $typCredit = inst_seleccionada::where('credito_id', '=', $request->id)->where('elegido', '=', 1)->get();
@@ -1924,6 +1568,7 @@ class ContratoController extends Controller
             $inst->status = 2;
             $inst->save();
 
+            //Se envia notificacion a Depto de Cobranza sobre la venta (Venta directa)
             if($request->status == 3 && $typCredit[0]->tipo_credito == "Crédito Directo"){
                 $c = Personal::findOrFail($credito[0]->prospecto_id);
                 $toAlert = [24706, 24705];
@@ -1942,31 +1587,18 @@ class ContratoController extends Controller
                         ]
                     ];
                     User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
-
                     $persona = Personal::findOrFail($id);
-
                     Mail::to($persona->email)->send(new NotificationReceived($msj));
                     
                 }
             }
 
-            if($request->status == 0 || $request->status == 2){
-                $cotizadorLote = Cotizacion_lotes::select('id')->where('lotes_id','=',$id_lote)
-                    ->where('num_contrato','=',$request->id)->get();
-
-                if(sizeOf($cotizadorLote)){
-                    $cotizadorLote = Cotizacion_lotes::findOrFail($cotizadorLote[0]->id);
-                    $cotizadorLote->estatus = 2;
-                    $cotizadorLote->save();
-                }
-            }
-
-            
         // } catch (Exception $e){
         //     DB::rollBack();
         // }
     }
 
+    // Función para añadir un nuevo pagare.
     public function agregarPago(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1978,7 +1610,8 @@ class ContratoController extends Controller
         $pago->restante = $request->monto_pago;
         $pago->save();
 
-        $pagos = Pago_contrato::select('id')->where('contrato_id','=',$request->contrato_id)->orderBy('fecha_pago','asc')->get();
+        $pagos = Pago_contrato::select('id')->where('contrato_id','=',$request->contrato_id)
+            ->where('tipo_pagare','=',0)->orderBy('fecha_pago','asc')->get();
 
         if(sizeOf($pagos))
             foreach($pagos as $index => $p){
@@ -1988,6 +1621,7 @@ class ContratoController extends Controller
             }
     }
 
+    //Función para actualizar el pagare
     public function actualizarPago(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1997,6 +1631,7 @@ class ContratoController extends Controller
         $pago->save();
     }
 
+    //Función para eliminar un pagare
     public function eliminarPago(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -2004,13 +1639,14 @@ class ContratoController extends Controller
         $pago->delete();
     }
 
+    // Función para actualizar contrato
     public function actualizarContrato(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
-        //datos del cliente que se guardan en la tabla personal
         try {
             DB::beginTransaction();
+            //Datos del cliente que se guardan en la tabla personal
             $personal = Personal::findOrFail($request->prospecto_id);
                 $personal->apellidos = $request->apellidos;
                 $personal->nombre = $request->nombre;
@@ -2025,6 +1661,7 @@ class ContratoController extends Controller
                 $personal->celular = $request->celular;
                 $personal->email = $request->email;
 
+            //Datos del cliente que se guardan en la tabla clientes
             $cliente = Cliente::findOrFail($request->prospecto_id);
                 $cliente->sexo = $request->sexo;
                 $cliente->email_institucional = $request->email_institucional;
@@ -2059,10 +1696,10 @@ class ContratoController extends Controller
                 $cliente->email_coa = $request->email_coa;
                 $cliente->parentesco_coa = $request->parentesco_coa;
                 $cliente->lugar_nacimiento = $request->lugar_nacimiento;
-
                 $cliente->publicidad_id = $request->publicidad_id;
                 $cliente->nombre_recomendado = $request->nombre_recomendado;
 
+            //Datos que se almacenan en la tabla Creditos
             $credito = Credito::findOrFail($request->contrato_id);
                 $credito->num_dep_economicos =  $request->num_dep_economicos;
                 $credito->nombre_primera_ref = $request->nombre_primera_ref;
@@ -2079,15 +1716,18 @@ class ContratoController extends Controller
                 $credito->plazo = $request->plazo_credito;
                 $credito->contrato = 1;
 
+            // Se obtiene la institución de financiamiento actual del contrato
             $inst_sel = inst_seleccionada::select('id')
                 ->where('credito_id','=',$request->contrato_id)
                 ->where('elegido','=',1)->get();
 
             $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
                 $credito_sol->monto_credito = $request->credito_solic;
+                //Se valida si hay algun cambio de financiamiento
                 if($credito_sol->tipo_credito != $request->tipo_credito && $credito_sol->tipo_credito != 'Apartado'){
-
+                    //En caso de detectarse un cambio, se crea el registro de la reubicación
                     $reubicacion = new ReubicacionController();
+                    //Llamada a la función de reubicación desde el controlador de Reubicación.
                     $reubicacion->createReubicacion(
                                 $credito->id,
                                 $credito->lote_id,
@@ -2101,14 +1741,17 @@ class ContratoController extends Controller
                                 ''
                             );
                 }
+                //Se guarda el cambio del nuevo credito.
                 $credito_sol->tipo_credito = $request->tipo_credito;
                 $credito_sol->institucion = $request->institucion;
                 $credito_sol->plazo_credito = $request->plazo_credito;
                 $credito_sol->save();
 
+            //Se indica que el lote ha sido vendido.
             $lote = Lote::findOrFail($request->lote_id);
             $lote->contrato = 1;
 
+            // Datos ue se almacenan en la tabla Contratos
             $contrato = Contrato::findOrFail($request->contrato_id);
                 $contrato->infonavit = $request->infonavit;
                 $contrato->fovisste = $request->fovisste;
@@ -2140,27 +1783,31 @@ class ContratoController extends Controller
                 $contrato->observacion = $request->observacion;
                 $contrato->publicidad_id = $request->publicidad_id;
 
+            //Se obtienen los intereses generados, en caso de tener
             $sumaIntereses = Expediente::select(DB::raw("SUM(interes_ord) as suma"))->where('id','=',$request->contrato_id)->get();
                 if($sumaIntereses[0]->suma == NULL){
                     $sumaIntereses[0]->suma = 0;
                 }
+            //Se obtienen los descuentos generados, en caso de tener
             $sumaDescuento = Expediente::select(DB::raw("SUM(descuento) as suma"))->where('id','=',$request->contrato_id)->get();
                 if($sumaDescuento[0]->suma == NULL){
                     $sumaDescuento[0]->suma = 0;
                 }
 
+            //Se obtienen la suma de gastos administrativos, en caso de tener
             $sumaGastos = Gasto_admin::select(DB::raw("SUM(costo) as suma"))->where('contrato_id','=',$request->contrato_id)->get();
                 if($sumaGastos[0]->suma == NULL){
                     $sumaGastos[0]->suma = 0;
                 }
 
+            //Se obtiene la suma de depositos realizados
             $sumaDeposito = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.cant_depo) as suma"))->where('contratos.id','=',$request->contrato_id)->get();
                 if($sumaDeposito[0]->suma == NULL){
                     $sumaDeposito[0]->suma = 0;
                 }
-
+            //Se obtiene la suma de credito principal cobrados
             $sumaDepositoCredit = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
@@ -2171,8 +1818,10 @@ class ContratoController extends Controller
                     $sumaDepositoCredit[0]->suma = 0;
                 }
 
+            //Llamada a la función privada para calcular el monto cobrado del terreno para lotes con alianza.
             $this->calculateSaldoTerreno($request->contrato_id);
 
+            //Se obtiene la suma de segundo credito cobrado
             $sumaDepositoCredit2 = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
@@ -2182,8 +1831,9 @@ class ContratoController extends Controller
                 if($sumaDepositoCredit[0]->suma == NULL){
                     $sumaDepositoCredit[0]->suma = 0;
                 }
-                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma - $sumaDescuento[0]->suma;
-
+            
+            $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma - $sumaDescuento[0]->suma;
+            // Se almacena el saldo.
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
 
             //Guardar el costo del lote
@@ -2194,27 +1844,25 @@ class ContratoController extends Controller
                             ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
                 ->where('lotes.id', '=', $loteId)->get();
 
+                //Se obtiene el precio por m2 del terreno para esa etapa
                 $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
                     ->where('estatus', '=', 1)
                 ->first();
 
-                
-
                 if($precioT){
+                    //Se calcula el valor de terreno para departamentos
                     if($etapa[0]->tipo == 2){
                         $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
                     }
+                    //Se calcula el valor de terreno para vivienda
                     else{
                         $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
                         
                     //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
-                        
                     }
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
-                    
                 }
             //Guardar el costo del lote
-
             $lote->save();
             $credito->save();
             $personal->save();

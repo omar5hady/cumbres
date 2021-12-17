@@ -22,17 +22,21 @@ use App\Comision_venta;
 use App\Bono_venta;
 use App\Det_com_cambio;
 
+// Controlador para la comisión de ventas para asesores.
 class ComisionesVentaController extends Controller
 {
 
+    //Función para obtener los movimientos del asesor en el periodo.
     public function getComision(Request $request){
 
+        //Se obtienen los datos del vendedor.
         $vendedor = Vendedor::findOrFail($request->vendedor);
         $tipo = $vendedor->tipo;
         $esquema = $vendedor->esquema;
         $isr = $vendedor->isr;
         $retencion = $vendedor->retencion;
 
+        //Total de ventas en el mes.
         $numVentas = Contrato::join('creditos','contratos.id','=','creditos.id')
                     ->join('lotes','creditos.lote_id','lotes.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -47,6 +51,7 @@ class ComisionesVentaController extends Controller
                     ->whereYear('contratos.fecha',$request->anio)
                     ->count();
 
+        //Se determina si el asesor paga sueldo segun la fecha de ingreso.
         $sueldo = !Carbon::parse($vendedor->fecha_sueldo)->gt(Carbon::now());
         
         $ventas = $this->getVentas($request->vendedor, $request->mes, $request->anio);
@@ -56,83 +61,108 @@ class ComisionesVentaController extends Controller
         $pendientes = $this->getPendientes($request->vendedor);
 
         if(sizeof($ventas))
-        foreach ($ventas as $index => $venta) {
-            if($tipo == 0){
-                if($numVentas == 1){
-                    if($venta->avance_lote<=90)
-                        $venta->porcentaje_comision = $venta->extra + ( 0.80 * ($venta->porcentaje_exp/100) );
-                    else{
-                        $venta->porcentaje_comision = $venta->extra + ($venta->porcentaje_exp/100 );
+            foreach ($ventas as $index => $venta) {
+                //Asesores internos
+                if($tipo == 0){
+                    //Una venta en el mes
+                    if($numVentas == 1){
+                        //Avance menor de 90%
+                        if($venta->avance_lote<=90)
+                            //0.8% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( 0.80 * ($venta->porcentaje_exp/100) );
+                        else{
+                            //.65% o 1% + %extra
+                            $venta->porcentaje_comision = $venta->extra + ($venta->porcentaje_exp/100 );
+                        }
                     }
-                }
-                elseif($numVentas == 2){
-                    if($venta->avance_lote<=90)
-                        $venta->porcentaje_comision = $venta->extra + ( 1.00 * ($venta->porcentaje_exp/100) );
-                    else{
-                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.25 );
+                    //Dos ventas en el mes
+                    elseif($numVentas == 2){
+                        //Avance menor de 90%
+                        if($venta->avance_lote<=90)
+                            //1% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( 1.00 * ($venta->porcentaje_exp/100) );
+                        else{
+                            //1.25% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.25 );
+                        }
                     }
-                }
-                elseif($numVentas == 3){
-                    if($venta->avance_lote<=90)
-                        $venta->porcentaje_comision = $venta->extra + ( 1.30 * ($venta->porcentaje_exp/100) );
-                    else{
-                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.55 );
+                    //Tres ventas en el mes
+                    elseif($numVentas == 3){
+                        //Avance menor de 90%
+                        if($venta->avance_lote<=90)
+                            //1.3% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( 1.30 * ($venta->porcentaje_exp/100) );
+                        else{
+                            //1.55% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.55 );
+                        }
                     }
-                }
-                elseif($numVentas == 4){
-                    if($venta->avance_lote<=90)
-                        $venta->porcentaje_comision = $venta->extra + ( 1.50 * ($venta->porcentaje_exp/100) );
-                    else{
-                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.75 );
+                    //Cuatro ventas en el mes
+                    elseif($numVentas == 4){
+                        //Avance menor de 90%
+                        if($venta->avance_lote<=90)
+                            //1.5% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( 1.50 * ($venta->porcentaje_exp/100) );
+                        else{
+                            //1.75% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.75 );
+                        }
                     }
-                }
-                elseif($numVentas == 5){
-                    if($venta->avance_lote<=90)
-                        $venta->porcentaje_comision = $venta->extra + ( 1.70 * ($venta->porcentaje_exp/100) );
-                    else{
-                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*2.0 );
+                    //Cinco ventas en el mes
+                    elseif($numVentas == 5){
+                        //Avance menor de 90%
+                        if($venta->avance_lote<=90)
+                            //1.7% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( 1.70 * ($venta->porcentaje_exp/100) );
+                        else{
+                            //2% * (.65% o 1%) + %extra
+                            $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*2.0 );
+                        }
                     }
+                    //Seis o mas ventas
+                    elseif($numVentas >= 6){
+                        //Avance menor de 90%
+                        //2% * (.65% o 1%) + %extra
+                        if($venta->avance_lote<=90)
+                            $venta->porcentaje_comision = $venta->extra + ( 2.0 * ($venta->porcentaje_exp/100) );
+                        else{
+                            $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*2.0 );
+                        }
+                    }
+
                 }
-    
-                elseif($numVentas >= 6){
-                    if($venta->avance_lote<=90)
-                        $venta->porcentaje_comision = $venta->extra + ( 2.0 * ($venta->porcentaje_exp/100) );
-                    else{
-                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*2.0 );
+                //Asesores externos
+                else{
+                    //Se calcula el porcentaje de venta, en caso de tener extra la casa.
+                    $venta->porcentaje_comision = ($venta->extra_ext + $esquema);
+                }
+
+                //Se calcula el monto de la comisión.
+                $venta->comision_pagar = ($venta->precio_venta * ($venta->porcentaje_comision/100));
+                
+                if($tipo == 0){
+                    // Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                    if($venta->indiv == 0 && $venta->pagado > 1){
+                        $venta->este_pago = ($venta->comision_pagar / 2);
+                        $venta->por_pagar = ($venta->comision_pagar / 2);
+                    }
+                    elseif($venta->indiv == 1 && $venta->pagado > 1){
+                        $venta->este_pago = ($venta->comision_pagar);
+                        $venta->por_pagar = 0;
+                    }
+                    elseif($venta->pagado < 2){
+                        $venta->este_pago = 0;
+                        $venta->por_pagar = $venta->comision_pagar;
                     }
                 }
 
+                $venta->porcentaje_comision = (float)number_format($venta->porcentaje_comision, 3, '.', '');
+                $venta->comision_pagar = (double)number_format($venta->comision_pagar, 2, '.', '');
+                $venta->este_pago = (double)number_format($venta->este_pago, 2, '.', '');
+                $venta->por_pagar = (double)number_format($venta->por_pagar, 2, '.', '');
             }
-            else{
-                $venta->porcentaje_comision = ($venta->extra_ext + $esquema);
-            }
-            
 
-            $venta->comision_pagar = ($venta->precio_venta * ($venta->porcentaje_comision/100));
-            
-            if($tipo == 0){
-                // Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                if($venta->indiv == 0 && $venta->pagado > 1){
-                    $venta->este_pago = ($venta->comision_pagar / 2);
-                    $venta->por_pagar = ($venta->comision_pagar / 2);
-                }
-                elseif($venta->indiv == 1 && $venta->pagado > 1){
-                    $venta->este_pago = ($venta->comision_pagar);
-                    $venta->por_pagar = 0;
-                }
-                elseif($venta->pagado < 2){
-                    $venta->este_pago = 0;
-                    $venta->por_pagar = $venta->comision_pagar;
-                }
-            }
-
-            $venta->porcentaje_comision = (float)number_format($venta->porcentaje_comision, 3, '.', '');
-            $venta->comision_pagar = (double)number_format($venta->comision_pagar, 2, '.', '');
-            $venta->este_pago = (double)number_format($venta->este_pago, 2, '.', '');
-            $venta->por_pagar = (double)number_format($venta->por_pagar, 2, '.', '');
-
-        }
-
+        //Se obtienen las reubicaciones.
         $cambios = $this->getCambios($request->vendedor);
 
         //$numVentas = $ventas->count();
@@ -158,10 +188,10 @@ class ComisionesVentaController extends Controller
             'individualizadas'=>$individualizadas,
             'pendientes'=>$pendientes,
             'cambios'=>$cambios
-            
         ];
     }
 
+    //Función para obtener las comisiones generadas.
     public function indexComisiones(Request $request){
         $mes = $request->b_mes;
         $anio = $request->b_anio;
@@ -174,26 +204,26 @@ class ComisionesVentaController extends Controller
         $query = Comision_venta::join('vendedores','comisiones_ventas.asesor_id', '=','vendedores.id')
             ->join('personal','vendedores.id','=','personal.id')
             ->select('comisiones_ventas.mes','comisiones_ventas.anio',
-                        'comisiones_ventas.total_pagado',
-                        'comisiones_ventas.total_comision',
-                        'comisiones_ventas.apoyo_mes',
-                        'comisiones_ventas.asesor_id',
-                        'comisiones_ventas.apoyo_mes',
-                        'comisiones_ventas.total_porPagar',
-                        'comisiones_ventas.restanteAnt',
-                        'comisiones_ventas.id',
-                        'comisiones_ventas.total_bono', 
-                        'comisiones_ventas.total_anticipo', 
-                        'comisiones_ventas.tipo_vendedor',
-                        'comisiones_ventas.mes',
-                        'comisiones_ventas.anio',
-                        'comisiones_ventas.autorizacion1',
-                        'comisiones_ventas.autorizacion2',
-                        'comisiones_ventas.fecha_aut1',
-                        'comisiones_ventas.fecha_aut2',
-                        
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                        'vendedores.tipo'
+                'comisiones_ventas.total_pagado',
+                'comisiones_ventas.total_comision',
+                'comisiones_ventas.apoyo_mes',
+                'comisiones_ventas.asesor_id',
+                'comisiones_ventas.apoyo_mes',
+                'comisiones_ventas.total_porPagar',
+                'comisiones_ventas.restanteAnt',
+                'comisiones_ventas.id',
+                'comisiones_ventas.total_bono', 
+                'comisiones_ventas.total_anticipo', 
+                'comisiones_ventas.tipo_vendedor',
+                'comisiones_ventas.mes',
+                'comisiones_ventas.anio',
+                'comisiones_ventas.autorizacion1',
+                'comisiones_ventas.autorizacion2',
+                'comisiones_ventas.fecha_aut1',
+                'comisiones_ventas.fecha_aut2',
+                
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
+                'vendedores.tipo'
             );
 
             $comisiones = $query;
@@ -224,21 +254,19 @@ class ComisionesVentaController extends Controller
         ];
     }
 
+    //Función para descartas las ventas que no corresponden como cambio.
     public function desartarCambio(Request $request){
         $contrato = Contrato::FindOrFail($request->id);
         $contrato->comision = 1;
         $contrato->save();
     }
 
+    //Función para obtener el detalle de la comisión generada
     public function getDetalle(Request $request){
         $ventas = $this->getVentasDetalle($request->comision_id);
-
         $individualizadas = $this->getIndividualizadasDetalle($request->comision_id);
-
         $canceladas = $this->getCanceladasDetalle($request->comision_id);
-
         $pendientes = $this->getPendienteDetalle($request->comision_id);
-
         $cambios = $this->getCambioDetalle($request->comision_id);
 
         return [
@@ -255,6 +283,7 @@ class ComisionesVentaController extends Controller
         ];
     }
 
+    //Función para crear la comisión
     public function storeComision(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -278,11 +307,11 @@ class ComisionesVentaController extends Controller
 
             $comision_id = $comision->id;
 
-            $detalle = $request->dataVentas;//Array de detalles de ventas en el mes
-            $individualizadas = $request->dataIndividualizadas;//Array de detalles de ventas en el mes
-            $canceladas = $request->dataCanceladas;//Array de detalles de ventas en el mes
-            $pendientes = $request->dataPendientes;//Array de detalles de ventas en el mes
-            $cambios = $request->dataCambios;
+            $detalle = $request->dataVentas;//Array de detalles de ventas en el mes.
+            $individualizadas = $request->dataIndividualizadas;//Array de detalles de ventas en el mes.
+            $canceladas = $request->dataCanceladas;//Array de detalles de ventas en el mes.
+            $pendientes = $request->dataPendientes;//Array de detalles de ventas en el mes.
+            $cambios = $request->dataCambios; //Array de detalles de ventas reubicadas.
             //Recorro todos los elementos
 
             if(sizeof($detalle))
@@ -444,6 +473,7 @@ class ComisionesVentaController extends Controller
         $comision->save();
     }
 
+    //Función privada para obtener las ventas del asesor en el mes.
     private function getVentas($vendedor, $mes, $anio){
 
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -469,8 +499,9 @@ class ComisionesVentaController extends Controller
                             'lotes.emp_terreno',
                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                             'lotes.extra_ext')
-                            
+                    //Contratos firmados
                     ->where('contratos.status','=',3)
+                    //Sin comisión creada
                     ->where('contratos.comision','=',0)
                     ->where('inst_seleccionadas.elegido', '=', '1')
                     ->where('creditos.vendedor_id','=',$vendedor)
@@ -481,6 +512,7 @@ class ComisionesVentaController extends Controller
 
         if(sizeOf($ventas)){
             foreach($ventas as $index => $venta){
+                //Se verifica que el apartado este pagado
                 $pagos = Pago_contrato::select('pagado')
                                         ->where('contrato_id','=',$venta->id)
                                         ->where('tipo_pagare','=',0)
@@ -496,13 +528,16 @@ class ComisionesVentaController extends Controller
                 $venta->retencion = 0;
                 $venta->iva = 0;
 
+                //Se revisa el tipo de financiamiento
                 if($venta->tipo_credito == 'Crédito Directo'){
+                    //Para créditos directos tiene que estar liquidada la casa para que se considere individualizada.
                     $expedientes = Expediente::select('liquidado')->where('id','=',$venta->id)->where('liquidado','=',1)->get();
                     if(sizeof($expedientes)){
                         $venta->indiv = 1;
                     }
                 }
                 else{
+                    //Para otro financiamiento debe estar firmadas las escrituras para considerarse como individualizada.
                     $expedientes = Expediente::select('liquidado')->where('id','=',$venta->id)->where('fecha_firma_esc','!=',NULL)->get();
                     if(sizeof($expedientes)){
                         $venta->indiv = 1;
@@ -514,6 +549,7 @@ class ComisionesVentaController extends Controller
         return $ventas;
     }
 
+    // Función privada para obtener saldo a pagar por parte del asesor
     private function getAcumuladoAnt($vendedor, $mes, $anio){
         if($mes == '01'){
             $mesAnt = 12;
@@ -536,6 +572,7 @@ class ComisionesVentaController extends Controller
         return $acum;
     }
 
+    // Función privada para obtener las ventas canceladas en el periodo
     private function getCanceladas($vendedor, $mes, $anio){
 
         $cancelaciones = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
@@ -569,6 +606,7 @@ class ComisionesVentaController extends Controller
                                             ->get();
 
         if(sizeOf($cancelaciones)){
+            // por cada venta cancelada se busca los bonos pagados
             foreach($cancelaciones as $index => $cancelada){
                 $bonos = Bono_venta::select( DB::raw("SUM(monto) as bono") )->where('contrato_id','=',$cancelada->id)->get();
                 $cancelada->bono = $bonos[0]->bono;
@@ -583,6 +621,7 @@ class ComisionesVentaController extends Controller
         return $cancelaciones;
     }
 
+    // Función privada para obtener las ventas individualizadas en el periodo.
     private function getIndividualizadas($vendedor, $mes, $anio){
         $individualizadas = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
                         ->join('creditos','contratos.id','=','creditos.id')
@@ -609,37 +648,47 @@ class ComisionesVentaController extends Controller
                                 'det_com_ventas.retencion',
                                 'det_com_ventas.este_pago',
                                 'det_com_ventas.por_pagar')
-                                            ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('contratos.status','=',3)
-                                            ->where('contratos.comision','=',1)
-                                            ->where('expedientes.liquidado','=',1)
-                                            ->where('det_com_ventas.pendiente','=',0)
-                                            ->where('creditos.vendedor_id','=',$vendedor)
-                                            ->whereMonth('expedientes.fecha_liquidacion',$mes)
-                                            ->whereYear('expedientes.fecha_liquidacion',$anio)
-                                            ->orWhere('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('contratos.status','=',3)
-                                            ->where('det_com_ventas.pendiente','=',0)
-                                            ->where('contratos.comision','=',1)
-                                            ->where('creditos.vendedor_id','=',$vendedor)
-                                            ->whereMonth('expedientes.fecha_firma_esc',$mes)
-                                            ->whereYear('expedientes.fecha_firma_esc',$anio)
-                                            ->get();
+                            // Crédito Directo
+                        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        // Contrato firmado
+                        ->where('contratos.status','=',3)
+                        // Contratos con una comision creada
+                        ->where('contratos.comision','=',1)
+                        // Contrato liquidado
+                        ->where('expedientes.liquidado','=',1)
+                        ->where('det_com_ventas.pendiente','=',0)
+                        ->where('creditos.vendedor_id','=',$vendedor)
+                        // La fecha en que se liquido el contrato
+                        ->whereMonth('expedientes.fecha_liquidacion',$mes)
+                        ->whereYear('expedientes.fecha_liquidacion',$anio)
+                            // Otro tipo de financiamiento
+                        ->orWhere('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('contratos.status','=',3)
+                        ->where('det_com_ventas.pendiente','=',0)
+                        // Contrato con una comisión creada
+                        ->where('contratos.comision','=',1)
+                        ->where('creditos.vendedor_id','=',$vendedor)
+                        // Las escrituras han sido firmadas en el periodo.
+                        ->whereMonth('expedientes.fecha_firma_esc',$mes)
+                        ->whereYear('expedientes.fecha_firma_esc',$anio)
+                        ->get();
 
         if(sizeOf($individualizadas)){
-            foreach($individualizadas as $index => $indiv)
-            $pendiente = Det_com_pendiente::select('monto_pagado','por_pagar')->where('detalle_id','=',$indiv->detalle_id)->get();
-            if(sizeof($pendiente)){
-                $indiv->este_pago = $pendiente[0]->monto_pago;
-                $indiv->por_pagar = $pendiente[0]->por_pagar;
+            foreach($individualizadas as $index => $indiv){
+                $pendiente = Det_com_pendiente::select('monto_pagado','por_pagar')->where('detalle_id','=',$indiv->detalle_id)->get();
+                if(sizeof($pendiente)){
+                    $indiv->este_pago = $pendiente[0]->monto_pago;
+                    $indiv->por_pagar = $pendiente[0]->por_pagar;
+                }
             }
         }
         
         return $individualizadas;
     }
 
+    // Función privada para obtener las comisiones anteriores que quedaron pendientes por pagar
     private function getPendientes($vendedor){
         $pendientes = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
                         ->join('creditos','contratos.id','=','creditos.id')
@@ -666,28 +715,34 @@ class ComisionesVentaController extends Controller
                                     'det_com_ventas.retencion',
                                     'det_com_ventas.este_pago',
                                     'det_com_ventas.por_pagar')
-                                        ->where('contratos.comision','=',1)
-                                        ->where('det_com_ventas.este_pago','=',0)
-                                        ->where('det_com_ventas.pendiente','=',1)
-                                        ->where('pagos_contratos.num_pago','=',0)
-                                        ->where('pagos_contratos.pagado','>',1)
-                                        ->where('pagos_contratos.tipo_pagare','=',0)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('creditos.vendedor_id','=',$vendedor)
-                                        ->get();
+                        ->where('contratos.comision','=',1)
+                        ->where('det_com_ventas.este_pago','=',0)
+                        // Comision pendiente
+                        ->where('det_com_ventas.pendiente','=',1)
+                        ->where('pagos_contratos.num_pago','=',0)
+                        // Pago de apartado hecho.
+                        ->where('pagos_contratos.pagado','>',1)
+                        ->where('pagos_contratos.tipo_pagare','=',0)
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.vendedor_id','=',$vendedor)
+                        ->get();
 
         if(sizeOf($pendientes)){
+            // Se recorren todos los resultados
             foreach($pendientes as $index => $pendiente){
-                
+                // Se inicializa una variable que nos indicara si el contrato se ha individualizado
                 $pendiente->indiv = 0;
 
+                // Para creditos directos, contrato liquidado
                 if($pendiente->tipo_credito == 'Crédito Directo'){
                     $expedientes = Expediente::select('liquidado')->where('id','=',$pendiente->id)->where('liquidado','=',1)->get();
                     if(sizeof($expedientes)){
+                        //Si se cumple la varible se activa
                         $pendiente->indiv = 1;
                     }
                 }
                 else{
+                    //Para otros financiamientos, la firma de escrituras se ha realizado.
                     $expedientes = Expediente::select('liquidado')->where('id','=',$pendiente->id)->where('fecha_firma_esc','!=',NULL)->get();
                     if(sizeof($expedientes)){
                         $pendiente->indiv = 1;
@@ -700,6 +755,7 @@ class ComisionesVentaController extends Controller
         return $pendientes;
     }
 
+    // Función privada para obtener los contratos que han tenido un cambio de ubicación.
     private function getCambios($vendedor){
         $cambios = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
                         ->join('creditos','contratos.id','=','creditos.id')
@@ -731,7 +787,9 @@ class ComisionesVentaController extends Controller
                                     'det_com_ventas.lote as lote_ant',
                                     'det_com_ventas.retencion',
                                     'det_com_ventas.este_pago as pago_ant')
+                        // La comision del contrato debe estar en estatus 3
                         ->where('contratos.comision','=',3)
+                        // Se verifica que el apartado se ha pagado
                         ->where('pagos_contratos.num_pago','=',0)
                         ->where('pagos_contratos.pagado','>',1)
                         ->where('pagos_contratos.tipo_pagare','=',0)
@@ -741,23 +799,26 @@ class ComisionesVentaController extends Controller
                         ->get();
 
         if(sizeOf($cambios)){
+            // Se recorren todos los resultados
             foreach($cambios as $index => $cambio){
-                
+                // Se inicializa una variable que nos indicara si el contrato se ha individualizado
                 $cambio->indiv = 0;
 
                 if($cambio->tipo_credito == 'Crédito Directo'){
+                    // Para creditos directos, contrato liquidado
                     $expedientes = Expediente::select('liquidado')->where('id','=',$cambio->id)->where('liquidado','=',1)->get();
                     if(sizeof($expedientes)){
+                        //Si se cumple la varible se activa
                         $cambio->indiv = 1;
                     }
                 }
                 else{
+                    //Para otros financiamientos, la firma de escrituras se ha realizado.
                     $expedientes = Expediente::select('liquidado')->where('id','=',$cambio->id)->where('fecha_firma_esc','!=',NULL)->get();
                     if(sizeof($expedientes)){
                         $cambio->indiv = 1;
                     }
                 }
-
             }
         }
 
@@ -765,6 +826,7 @@ class ComisionesVentaController extends Controller
 
     }
 
+    // Función privada para ver el detalle de ventas creadas en la comisión
     private function getVentasDetalle($id){
         $ventas = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
                         ->join('creditos','creditos.id','=','contratos.id')
@@ -805,6 +867,7 @@ class ComisionesVentaController extends Controller
         return $ventas;
     }
 
+    // Función privada para ver el detalle de ventas individualizadas en la comisión
     private function getIndividualizadasDetalle($id){
         $individualizadas = Det_com_individualizada::join('det_com_ventas','det_com_ventas.id','=','det_com_individualizadas.detalle_id')
                         ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
@@ -845,6 +908,7 @@ class ComisionesVentaController extends Controller
         return $individualizadas;
     }
 
+    // Función privada para ver el detalle de ventas canceladas en la comisión
     private function getCanceladasDetalle($id){
         $canceladas = Det_com_cancelada::join('det_com_ventas','det_com_ventas.id','=','det_com_canceladas.detalle_id')
                         ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
@@ -886,6 +950,7 @@ class ComisionesVentaController extends Controller
         return $canceladas;
     }
 
+    // Función privada para ver el detalle de ventas pendientes por cobrar en la comisión
     private function getPendienteDetalle($id){
         $pendientes = Det_com_pendiente::join('det_com_ventas','det_com_ventas.id','=','det_com_pendientes.detalle_id')
                         ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
@@ -926,14 +991,17 @@ class ComisionesVentaController extends Controller
         return $pendientes;
     }
 
+    // Función privada para ver el detalle de ventas con cambio de ubicación en la comisión
     private function getCambioDetalle($id){
         $cambios = Det_com_cambio::select('monto as pago_ant','descripcion')->where('comision_id','=',$id)->get();
 
         return $cambios;
     }
 
+    // Función para importar la comisión creada a excel.
     public function excelDetalle(Request $request){
 
+        //Llamada a las funciones privadas que obtendran el detalle de la comisión.
         $arrayVentas = $this->getVentasDetalle($request->comision_id);
         $arrayIndividualizadas = $this->getIndividualizadasDetalle($request->comision_id);
         $arrayCanceladas = $this->getCanceladasDetalle($request->comision_id);
@@ -1033,6 +1101,7 @@ class ComisionesVentaController extends Controller
             $restante = $request->restante;
             $total_a_pagar = $request->total_a_pagar;
         
+        //Vendedor interno
         if($tipoVendedor == 0){
             return Excel::create('Comision', function($excel) 
                 use (
@@ -1420,6 +1489,7 @@ class ComisionesVentaController extends Controller
                 }
             )->download('xls');
         }
+        //Vendedor externo
         else{
             return Excel::create('Comision', function($excel) 
                 use (

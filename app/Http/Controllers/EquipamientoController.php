@@ -117,13 +117,13 @@ class EquipamientoController extends Controller
             $contratos = $query
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
-                ->where('contratos.entregado', '=',0)
+                //->where('contratos.entregado', '=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
                 ->where('inst_seleccionadas.status','=',2)
                 ->whereNotNull('creditos.descripcion_paquete')
                 ->orWhere('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
-                ->where('contratos.entregado', '=',0)
+                //->where('contratos.entregado', '=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
                 ->where('inst_seleccionadas.status','=',2)
                 ->whereNotNull('creditos.descripcion_promocion');
@@ -134,7 +134,7 @@ class EquipamientoController extends Controller
 
                     $contratos = $contratos->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=',0)
+                        //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2);
 
@@ -150,7 +150,7 @@ class EquipamientoController extends Controller
                     $contratos = $contratos->whereNotNull('creditos.descripcion_paquete')
                         ->orWhere('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=',0)
+                        //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->whereNotNull('creditos.descripcion_promocion');
@@ -170,14 +170,14 @@ class EquipamientoController extends Controller
                     $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=',0)
+                        //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                         ->whereNotNull('creditos.descripcion_paquete')
                         ->orWhere('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=',0)
+                        //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
@@ -188,14 +188,14 @@ class EquipamientoController extends Controller
                     $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=',0)
+                        //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->where($criterio, '=', $buscar)
                         ->whereNotNull('creditos.descripcion_paquete')
                         ->orWhere('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=',0)
+                        //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->where($criterio, '=', $buscar)

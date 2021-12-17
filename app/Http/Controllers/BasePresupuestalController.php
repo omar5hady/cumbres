@@ -19,9 +19,10 @@ use App\Http\Controllers\CreditoPuenteController;
 
 class BasePresupuestalController extends Controller
 {
+    //Funcion para almacenar la base presupuestal a partir de la importacion de un archivo excel.
     public function storeBases(Request $request){
 
-        //validate the xls file
+        //Validacion de archivo
         $this->validate($request, array(
             'file'      => 'required'
         ));
@@ -37,6 +38,7 @@ class BasePresupuestalController extends Controller
 
                 //return $request->fraccionamiento;
     
+                //llamada a la creación de la base
                 $this->createBase($data,$request->fraccionamiento,$request->credito);
     
             }else {
@@ -47,18 +49,25 @@ class BasePresupuestalController extends Controller
 
     }
 
+    //Función privada para la creacion de la base presupuestal.
     private function createBase($data,$fraccionamiento,$credito){
         $contAviso = 0;
 
+        //Se recorren las paginas que tiene el excel.
         foreach($data as $index => $pagina){
 
+            //Se almacena nombre de la pagina
             $namePagina = $pagina->getTitle();
             echo($namePagina);
 
+            //Se busca el modelo que corresponda al nombre de la pagina.
             $modelo = Modelo::select('id','fraccionamiento_id','nombre')->where('fraccionamiento_id','=',$fraccionamiento)->where('nombre','like','%'.$namePagina.'%')->get();
             echo($modelo);
+            //Si se obtiene resultado
             if(sizeof($modelo)){
+                //Almacenamos el id del modelo en una variable.
                 $modelo_id = $modelo[0]->id;
+                //Se busca el registro de una base presupuestal anterior que corresponda al modelo.
                 $baseAnt = Base_presupuestal::select('id')->where('modelo_id','=',$modelo_id)->get();
                 /// SE ELIMINA REGISTRO ANTERIOR
                 if(sizeOf($baseAnt)){
@@ -67,6 +76,7 @@ class BasePresupuestalController extends Controller
                     $bAnt->save();
                 }
 
+                //Creación de nueva base presupuestal
                 $newBase = new Base_presupuestal();
                     $newBase->modelo_id = $modelo_id;
                     if($credito != '')
@@ -105,6 +115,7 @@ class BasePresupuestalController extends Controller
 
                     $newBase->save();
 
+                    //se crea notificación 
                     if($newBase->credito_id > 0 && $contAviso==0){
                         $credito_puente = Credito_puente::findOrFail($credito);
                         $obs = new CreditoPuenteController();
@@ -144,6 +155,7 @@ class BasePresupuestalController extends Controller
 
     }
 
+    // Función para obtener bases presupuestal activa
     public function getBaseActiva(Request $request){
         $bases = Base_presupuestal::join('modelos','bases_presupuestales.modelo_id','=','modelos.id')
         ->leftJoin('creditos_puente','bases_presupuestales.credito_id','=','creditos_puente.id')
@@ -162,14 +174,3 @@ class BasePresupuestalController extends Controller
 
     }
 }
-
-
-// /**
-//  * SELECT p.nombre, p.apellidos, p.email FROM cliente` 
-//     inner join personal as p on p.id = clientes.id 
-//     inner JOIN creditos as c on c.prospecto_id = p.id
-//     inner JOIN contratos as cont on cont.id = c.id
-//     inner JOIN expedientes as ex on ex.id = cont.id
-//     where ex.fecha_firma_esc is not null and cont.status = 3  
-//     ORDER BY `p`.`nombre` ASC
-//  */

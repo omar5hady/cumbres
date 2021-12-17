@@ -821,7 +821,7 @@ class DepositoController extends Controller
             $deposito->lote_id = $credit->lote_id;
 
             if($credit->porcentaje_terreno > 0){
-                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+                $saldo = $credit->valor_terreno - $credit->saldo_terreno;
 
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $pago*$porcentaje;
@@ -1025,12 +1025,12 @@ class DepositoController extends Controller
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
 
             if($credit->porcentaje_terreno > 0){
-                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+                $saldo = $credit->valor_terreno - $credit->saldo_terreno;
 
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $pago*$porcentaje;
                 
-                if($deposito->monto_terreno > $saldo)
+                if($monto_terreno > $saldo)
                     $deposito->monto_terreno = $saldo;
                 else
                     $deposito->monto_terreno = $monto_terreno;
@@ -1818,7 +1818,7 @@ class DepositoController extends Controller
             ->where('lotes.emp_constructora','=','Concretania')
             ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
             ->where('monto_terreno','>',0)
-            ->where('contratos.status','!=',0)
+            ->where('contratos.status','!=',2)
             ->whereIn('depositos.banco',$cuentas)
             ->where('fecha_ingreso_concretania','=',NULL);
             if($fecha1 != '' && $fecha2 != ''){
@@ -1852,7 +1852,7 @@ class DepositoController extends Controller
                 ->where('lotes.emp_constructora','=','Concretania')
                 ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                 ->where('monto_terreno','>',0)
-                ->where('contratos.status','!=',0)
+                ->where('contratos.status','!=',2)
                 ->whereIn('depositos.banco',$cuentas)
                 ->where('fecha_ingreso_concretania','=',NULL);
                 if($fecha1 != '' && $fecha2 != ''){
@@ -1861,7 +1861,7 @@ class DepositoController extends Controller
                 $depositosAnt = $depositosAnt->orWhere('lotes.emp_constructora','=','Concretania')
                 ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                 ->where('monto_terreno','>',0)
-                ->where('contratos.status','!=',0)
+                ->where('contratos.status','!=',2)
                 ->whereIn('depositos.banco',$cuentas)
                 ->where('fecha_ingreso_concretania','=',NULL);
                 if($fecha1 != '' && $fecha2 != ''){

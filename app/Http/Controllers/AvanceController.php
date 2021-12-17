@@ -18,6 +18,9 @@ use App\Http\Controllers\NotificacionesAvisosController;
 
 class AvanceController extends Controller
 {
+    /*  Función para crear el registro para avance por cada partida que 
+        le corresponde al modelo del lote.
+    */
     public function store($lote_id, $partida_id){
         if(Auth::user()->rol_id == 11)return redirect('/');
         $avance = new Avance();
@@ -26,10 +29,13 @@ class AvanceController extends Controller
         $avance->save();
     }
 
+    // Función para crear el registro para avances de urbanización 
     public function storeUrbanizcion($lote){
         if(Auth::user()->rol_id == 11)return redirect('/');
+        //Se obtienen todas las partidas de urbanizacion
         $partidas = Partida_urbanizacion::select('id')->get();
 
+        //Se asignan crea el registro de avance por cada partida 
         foreach($partidas as $index => $partida) {
             $avance = new Avance_urbanizacion();
             $avance->lote_id = $lote;
@@ -55,6 +61,7 @@ class AvanceController extends Controller
     }
 
 
+    // Función para obtener el promedio de avance por lote
     public function indexProm(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -178,6 +185,8 @@ class AvanceController extends Controller
             ];
     }
 
+    //funcion para obtener todas las partidas con su avance correspondiente.
+    // Se toma como filtro los lotes con un aviso de obra ya creado
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -190,8 +199,10 @@ class AvanceController extends Controller
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->join('partidas','avances.partida_id','=','partidas.id')
                     ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
-                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id','partidas.porcentaje'
-                    ,'partidas.partida','licencias.visita_avaluo','avances.partida_id','avances.cambio_avance','lotes.aviso')
+                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id',
+                        'avances.id','partidas.porcentaje','partidas.partida','licencias.visita_avaluo',
+                        'avances.partida_id','avances.cambio_avance','lotes.aviso'
+                    )
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->addSelect('fraccionamientos.nombre as proyecto')
                     ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -199,9 +210,7 @@ class AvanceController extends Controller
         
         if($buscar==''){
             $avance = $query 
-
-            
-            ->addSelect('lotes.contrato','lotes.firmado')
+                ->addSelect('lotes.contrato','lotes.firmado')
                 ->where('lotes.aviso', '!=', '0')
                 ->orderBy('avances.id','ASC')->distinct()->paginate(49);
         }
@@ -239,6 +248,8 @@ class AvanceController extends Controller
         ];
     }
 
+    //funcion para obtener todas las partidas de urbanización con su avance correspondiente.
+    // Se toma como filtro el lote seleccionado
     public function indexUrbanizacion(Request $request){
 
         $partidas = Lote::join('avances_urbanizacion as au','lotes.id','=','au.lote_id')
@@ -252,16 +263,22 @@ class AvanceController extends Controller
 
     }
 
+    //Se asigna con 1 al avance de ubanización concluido.
     public function setAvanceUrb(Request $request){
         $avance = Avance_urbanizacion::findOrFail($request->id);
         $avance->avance = 1;
         $avance->save();
     }
 
+    //Funcion para asignar el avance obtenido de una partida
     public function update(Request $request)
     {
+        //Se verifica que la peticion sea Ajax
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avance = Avance::findOrFail($request->id);
+        /*  Se verifica que el nuevo avance sea mayor al anterior, de no ser asi
+            se activa el campo cambio_avance para indicar que hubo un decremento.
+        */
         if($avance->avance > $request->avance)
             $avance->cambio_avance = 1;
         else
@@ -286,6 +303,7 @@ class AvanceController extends Controller
             $suma[0]->porcentajeTotal = 100;
         $licencia->avance = $suma[0]->porcentajeTotal;
 
+        //Aqui se verifica que el avance total del lote sea mayor a 90% para mandar una notificación de aviso.
         if($licencia->avance >= 90 && $licencia->avance <= 95 && $licencia->term_ingreso == NULL){
             $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->select('num_lote','manzana','fraccionamientos.nombre')
@@ -305,6 +323,7 @@ class AvanceController extends Controller
         $licencia->save();
     }
 
+    //Funcion para exportar a excel un resumen de avances por partidas para cada lote dentro del contrato elegido.
     public function excelLotesPartidas(Request $request, $contrato)
     {
 
@@ -706,6 +725,7 @@ class AvanceController extends Controller
         )->download('xls');
     }
 
+    // Función para exportar a excel el promedio de avance por lote.
     public function exportExcel(Request $request)
     {
         $buscar = $request->buscar;

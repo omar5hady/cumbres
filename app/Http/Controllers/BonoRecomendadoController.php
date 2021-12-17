@@ -13,8 +13,18 @@ use DB;
 use Auth;
 use Excel;
 
+// Controlador para bonos de clientes que recomiendan casa.
+/* Status posibles del bono
+    0 = Pendiente
+    1 = Aprobado
+    2 = Autorizado
+    3 = Pagado
+    5 = Cancelado
+*/
+
 class BonoRecomendadoController extends Controller
 {
+    //Función para crear registro.
     public function store($id,$etapa,$cliente,$fecha){
         
         $bono = new Bono_recomendado();
@@ -24,11 +34,14 @@ class BonoRecomendadoController extends Controller
         $cliente = Cliente::findOrFail($cliente);
         $bono->recomendado = $cliente->nombre_recomendado;
 
+        // Aqui se busca en el catalogo si existe algun bono extraordinario segun etapa y fecha.
         $datosBono = Catalogo_bono::select('id','fecha_ini','fecha_fin','descripcion','monto','etapa_id')
             ->where('etapa_id','=',$etapa)
             ->where('fecha_fin','>=',$fecha)
             ->where('fecha_ini','<=',$fecha)
             ->orderBy('id','desc')->get();
+        
+        // Si hay bono extraordinario se almacenan esos datos obtenidos, caso contrario se crea con valores de defecto.
         if(sizeof($datosBono) > 0){
             $bono->monto = $datosBono[0]->monto;
             $bono->descripcion = $datosBono[0]->descripcion;
@@ -38,8 +51,8 @@ class BonoRecomendadoController extends Controller
         $bono->save();
     }
 
+    //Función privada para la obtención de bonos por recomendación
     private function bonoRecIndex($criterio, $buscar, $etapa, $manzana, $lote, $status, $empresa){
-
         $bonos = Bono_recomendado::join('contratos as con','bonos_recomendados.id','=','con.id')
                     ->join('creditos as cre','con.id','=','cre.id')
                     ->join('lotes as l','cre.lote_id','=','l.id')
@@ -53,7 +66,7 @@ class BonoRecomendadoController extends Controller
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                                 'l.manzana','con.fecha', 'bonos_recomendados.*'
-        );      
+                    );
 
         
         switch($criterio){
@@ -103,6 +116,7 @@ class BonoRecomendadoController extends Controller
 
     }
 
+    //Funcion que retorna los bonos de recomendado creados
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
 
@@ -115,7 +129,7 @@ class BonoRecomendadoController extends Controller
         $empresa = $request->b_empresa;
 
         
-
+        //Llamada a la funcion privada
         $bonos = $this->bonoRecIndex($criterio, $buscar, $etapa, $manzana, $lote, $status, $empresa);
         $bonos = $bonos->paginate(8);
 
@@ -132,8 +146,8 @@ class BonoRecomendadoController extends Controller
 
     }
 
+    //Funcion que retorna los bonos de recomendado creados a un excel.
     public function excel(Request $request){
-
         $criterio = $request->criterio;
         $buscar = $request->buscar;
         $etapa = $request->b_etapa;
@@ -143,7 +157,7 @@ class BonoRecomendadoController extends Controller
         $empresa = $request->b_empresa;
 
         
-
+        // Llamada a la funcion privada.
         $bonos = $this->bonoRecIndex($criterio, $buscar, $etapa, $manzana, $lote, $status, $empresa);
         $bonos = $bonos->get();
 
@@ -193,10 +207,6 @@ class BonoRecomendadoController extends Controller
                     });
     
                   
-    
-                   
-    
-    
                         $sheet->cells('A6:T6', function ($cells) {
                             $cells->setBackground('#052154');
                             $cells->setFontColor('#ffffff');
@@ -288,13 +298,9 @@ class BonoRecomendadoController extends Controller
                                     $pago,
                                     
                                 ]);	
-        
                         }
-    
                         $num='A5:T' . $cont;
     
-                    
-                    
                     $sheet->setBorder($num, 'thin');
                     
                 });
@@ -305,6 +311,7 @@ class BonoRecomendadoController extends Controller
 
     }
 
+    //Función para obtener los comentarios del bono.
     public function listarObservaciones(Request $request){
         if(!$request->ajax())return redirect('/');
         $observaciones = Obs_bono::select('observacion','usuario','created_at')
@@ -313,6 +320,7 @@ class BonoRecomendadoController extends Controller
         return ['observacion' => $observaciones];
     }
 
+    //Función para almacenar un comentario al bono elegido.
     public function storeObservacion(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -323,15 +331,19 @@ class BonoRecomendadoController extends Controller
         $observacion->save();
     }
 
+    // Función aprobar un bono
     public function aprobarBono(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
 
+        // Se asigna la priemra fecha de autorización
         $bono = Bono_recomendado::findOrFail($request->id);
         $bono->fecha_aut1 = $fecha;
+        //status 1 para aprobar bono.
         $bono->status = 1;
         $bono->save();
 
+        // Se almacena un comentario al bono para indicar que esta aprobado.
         $observacion = new Obs_bono();
         $observacion->bono_id = $request->id;
         $observacion->observacion = 'Bono aprobado.';
@@ -339,13 +351,16 @@ class BonoRecomendadoController extends Controller
         $observacion->save();
     }
 
+    // Función para cancelar un bono.
     public function cancelarBono(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $bono = Bono_recomendado::findOrFail($request->id);
+        //En el bono se indica con el status 5 como cancelado
         $bono->status = 5;
         $bono->save();
 
+        //Se registra un comentario 
         $observacion = new Obs_bono();
         $observacion->bono_id = $request->id;
         $observacion->observacion = 'Bono cancelado.';
@@ -353,15 +368,19 @@ class BonoRecomendadoController extends Controller
         $observacion->save();
     }
 
+    // Función para indicar que el bono ha sido autorizado
     public function autorizarBono(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
 
         $bono = Bono_recomendado::findOrFail($request->id);
+        // Se almacena la fecha de auroización
         $bono->fecha_aut2 = $fecha;
+        // Se indica con el status 2 como autorizado.
         $bono->status = 2;
         $bono->save();
 
+        // Se registra comentario sobre autorización.
         $observacion = new Obs_bono();
         $observacion->bono_id = $request->id;
         $observacion->observacion = 'Bono autorizado.';
@@ -369,9 +388,12 @@ class BonoRecomendadoController extends Controller
         $observacion->save();
     }
 
+    /* 
+        Función para generar el pago correspondiente al bono
+        Se indica la fecha del pago, observación, cuenta bancaria y numero de recibo.
+    */
     public function generarPago(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         $bono = Bono_recomendado::findOrFail($request->id);
         $bono->fecha_pago = $request->fecha_pago;
         $bono->obs = $request->obs;
@@ -387,6 +409,7 @@ class BonoRecomendadoController extends Controller
         $observacion->save();
     }
 
+    // Función para actualizar los datos del bono.
     public function update(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 

@@ -9,6 +9,10 @@ use App\Cliente;
 use App\Contrato;
 use DB;
 
+/* Controlador utilizado para la obtencion de datos sobre los clientes que han adquirido una casa, 
+    esta información se usa para la app movil.
+*/
+
 class ApiMovilController extends Controller
 {
     public function index(){
@@ -39,7 +43,8 @@ class ApiMovilController extends Controller
                                         ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                         ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as privada',
                                                 'lotes.manzana','lotes.num_lote as lote', 'lotes.fraccionamiento_id',
-                                                'lotes.etapa_id'
+                                                'lotes.etapa_id',
+                                                'lotes.calle','lotes.numero','lotes.interior'
                                         )
                                         ->where('creditos.prospecto_id','=',$cliente->id)
                                         ->where('entregas.status','=',1)

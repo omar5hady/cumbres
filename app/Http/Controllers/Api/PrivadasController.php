@@ -9,6 +9,10 @@ use App\Etapa;
 use App\Fraccionamiento;
 use DB;
 
+/* Controlador utilizado para la obtencion de privadas que administra el sistema. 
+    esta información se usa para la app movil.
+*/
+
 class PrivadasController extends Controller
 {
     public function index(){

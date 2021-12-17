@@ -12,14 +12,16 @@ use DB;
 use Auth;
 use Carbon\Carbon;
 
+// Controlador para bonos por venta para asesores.
+/*  Por cada venta se le da un bono al asesor independiente a la comision generada.*/
 
 class BonoVentaController extends Controller
 {
+    //Funcion que retorna los contratos que aun no tienen un bono de venta generado.
     public function indexContratos(Request $request){
         //if(!$request->ajax())return redirect('/');
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
-
         $asesor = $request->b_asesor;
 
         $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -40,137 +42,43 @@ class BonoVentaController extends Controller
                                         'creditos.precio_venta',
                                         'pc.num_pago','pc.fecha_pago','pc.pagado',
                                         'vendedores.tipo'
-                            );
-                            
+                            ); 
 
-        if($request->b_proyecto == '' && $asesor == ''){
+            /*
+                Los campos a considerar son:
+                    Primer pagare (apartado) abonado o pagado, 
+                    el vendedor es interno
+                    el expediente debe estar entregado y el contrato firmado.
+            */
             $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','>=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->orWhere('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',3)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('contratos.status','=',3);
-        }
-        elseif($request->b_proyecto != '' && $asesor == '' && $request->b_etapa == ''){
-                $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','>=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
-                                        ->orWhere('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',3)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('contratos.status','=',3)
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
-        }
-        elseif($request->b_etapa != '' && $asesor == ''){
-                $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','>=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
-                                        ->where('lotes.etapa_id','=',$request->b_etapa)
-                                        ->orWhere('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',3)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('contratos.status','=',3)
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
-                                        ->where('lotes.etapa_id','=',$request->b_etapa);
-            }
-            elseif($request->b_proyecto == '' && $asesor != ''){
-                $contratos = $contratos->where('pc.num_pago','=',0)
-                                            ->where('pc.pagado','>=',1)
-                                            ->where('vendedores.tipo','=',0)
-                                            ->where('pc.tipo_pagare','=',0)
-                                            ->where('contratos.exp_bono','=',1)
-                                            ->where('contratos.status','=',3)
-                                            ->where('creditos.bono','=',0)
-                                            ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                            ->where('creditos.vendedor_id','=',$asesor)
-                                            ->orWhere('pc.num_pago','=',0)
-                                            ->where('pc.pagado','=',3)
-                                            ->where('pc.tipo_pagare','=',0)
-                                            ->where('contratos.exp_bono','=',1)
-                                            ->where('vendedores.tipo','=',0)
-                                            ->where('creditos.bono','=',0)
-                                            ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                            ->where('contratos.status','=',3)
-                                            ->where('creditos.vendedor_id','=',$asesor);
-            }
-            elseif($request->b_proyecto != '' && $asesor != '' && $request->b_etapa == ''){
-                $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','>=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('creditos.vendedor_id','=',$asesor)
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
-                                        ->orWhere('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',3)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.vendedor_id','=',$asesor)
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
-        }
-        elseif($request->b_etapa != '' && $asesor != ''){
-                $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','>=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('creditos.vendedor_id','=',$asesor)
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
-                                        ->where('lotes.etapa_id','=',$request->b_etapa)
-                                        ->orWhere('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',3)
-                                        ->where('pc.tipo_pagare','=',0)
-                                        ->where('contratos.exp_bono','=',1)
-                                        ->where('vendedores.tipo','=',0)
-                                        ->where('creditos.bono','=',0)
-                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
-                                        ->where('contratos.status','=',3)
-                                        ->where('creditos.vendedor_id','=',$asesor)
-                                        ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
-                                        ->where('lotes.etapa_id','=',$request->b_etapa);
-            }
-
-            
+                        ->where('pc.pagado','>=',1)
+                        ->where('vendedores.tipo','=',0)
+                        ->where('pc.tipo_pagare','=',0)
+                        ->where('contratos.exp_bono','=',1)
+                        ->where('contratos.status','=',3)
+                        ->where('creditos.bono','=',0)
+                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%');
+                        if($request->b_proyecto != '')
+                            $contratos = $contratos->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
+                        if($request->b_etapa != '')
+                            $contratos = $contratos->where('lotes.etapa_id','=',$request->b_etapa);
+                        if($asesor != '')
+                            $contratos = $contratos->where('creditos.vendedor_id','=',$asesor);
+                        $contratos = $contratos->orWhere('pc.num_pago','=',0)
+                        ->where('pc.pagado','=',3)
+                        ->where('pc.tipo_pagare','=',0)
+                        ->where('contratos.exp_bono','=',1)
+                        ->where('vendedores.tipo','=',0)
+                        ->where('creditos.bono','=',0)
+                        ->where('contratos.status','=',3)
+                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%');
+                        if($request->b_proyecto != '')
+                            $contratos = $contratos->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
+                        if($request->b_etapa != '')
+                            $contratos = $contratos->where('lotes.etapa_id','=',$request->b_etapa);
+                        if($asesor != '')
+                            $contratos = $contratos->where('creditos.vendedor_id','=',$asesor);
+                                        
 
             $contratos = $contratos
                             ->orderBy('contratos.id','desc')
@@ -188,6 +96,7 @@ class BonoVentaController extends Controller
             'contratos'=>$contratos, 'hoy'=>$hoy ];
     }
 
+    // Función para crear el registro del bono
     public function storeBono(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -199,12 +108,14 @@ class BonoVentaController extends Controller
         $bono_num_bono = $request->num_bono;
         $bono->save();
 
+        // Se busca el registro del credito y se habilita el campo bono en 1 para indicar que ya fue creado.
         $credito = Credito::findOrFail($request->contrato_id);
         $credito->bono = 1;
         $credito->save();
 
     }
 
+    // Función para retornar los bonos creados.
     public function indexBonos(Request $request){
         
         $bonos = Bono_venta::join('contratos','bonos_ventas.contrato_id','=','contratos.id')
@@ -260,6 +171,7 @@ class BonoVentaController extends Controller
         $bonos = $bonos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                             ->orderBy('bonos_ventas.fecha_pago','desc')->paginate(8);
 
+        //Se verifica que el bono se pueda duplicar 
         if(sizeOf($bonos)){
             foreach($bonos as $index => $bono){
                 $fechaIni = $bono->year.'-'.$bono->month.'-01';
@@ -310,6 +222,7 @@ class BonoVentaController extends Controller
             'bonos'=>$bonos];
     }
 
+    // Función para crear el segundo bono
     public function segundoBono(Request $request){
 
         $bono = new Bono_venta();
@@ -320,11 +233,13 @@ class BonoVentaController extends Controller
         $bono->num_bono = 2;
         $bono->save();
 
+        //El bono se le asigna un status en 2 para indicar que ya fue creado el segundo.
         $primerBono = Bono_venta::findOrFail($request->id);
         $primerBono->status = 2;
         $primerBono->save();
     }
 
+    // Función para retornar los comentarios del bono.
     public function listarObservaciones(Request $request){
         if(!$request->ajax())return redirect('/');
         $observaciones = Obs_bono_venta::select('observacion','usuario','created_at')
@@ -333,6 +248,7 @@ class BonoVentaController extends Controller
         return ['observacion' => $observaciones];
     }
 
+    // Funcion para almacenar comentario.
     public function storeObservacion(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -343,6 +259,7 @@ class BonoVentaController extends Controller
         $observacion->save();
     }
 
+    // Función para imprimir el recibo de pago para el bono.
     public function reciboPDF($id){
         $bonos = Bono_venta::join('contratos','bonos_ventas.contrato_id','=','contratos.id')
         ->join('creditos','contratos.id','=','creditos.id')

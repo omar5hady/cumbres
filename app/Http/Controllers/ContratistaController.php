@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Contratista;
-
 use App\Personal;
 use App\User;
-use Illuminate\Support\Facades\DB;
 use Auth;
 
+// Controlador para contratistas
 class ContratistaController extends Controller
 {
+    // Función que devuelve el listado de contratistas.
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -40,6 +41,7 @@ class ContratistaController extends Controller
         ];
     }
 
+    // Función para busqueda de contratistas con Vue
     public function selectContratistaVue(Request $request){
         if(!$request->ajax())return redirect('/');
         $filtro = $request->filtro;
@@ -53,11 +55,13 @@ class ContratistaController extends Controller
 
     }
 
+    // Función para almacenar un nuevo contratista.
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+            // Primero se crea el registro en la tabla de Personal
             $persona = new Personal();
             $persona->departamento_id = 11;
             $persona->nombre = $request->nombre;
@@ -73,6 +77,7 @@ class ContratistaController extends Controller
             $persona->empresa_id = 1;
             $persona->save();
 
+            // Se crea el registro en la tabla de contratista.
             $contratistas = new Contratista();
             $contratistas->id = $persona->id;
             $contratistas->nombre = $request->nombre;
@@ -88,6 +93,7 @@ class ContratistaController extends Controller
             $contratistas->telefono = $request->telefono;
             $contratistas->save();
 
+            // Se crea el usuario para acceso al sistema.
             $user = new User();
             $user->id = $persona->id;
             $user->usuario = $request->usuario;
@@ -101,7 +107,7 @@ class ContratistaController extends Controller
         }       
     }
 
-    //funcion para actualizar los datos
+    //funcion para actualizar los datos del contratista
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -121,6 +127,7 @@ class ContratistaController extends Controller
         $contratistas->save();
     }
 
+    // Función para eliminar el contratista
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -128,6 +135,7 @@ class ContratistaController extends Controller
         $contratistas->delete();
     }
 
+    // Función para retornar los contratistas para selector.
     public function selectContratista(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');

@@ -7,6 +7,7 @@ use App\Ciudad; //Importar el modelo
 
 class CiudadController extends Controller
 {
+    // Función para retornar las ciudades segun el estado a buscar
     public function selectCiudades(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -18,6 +19,7 @@ class CiudadController extends Controller
         return['ciudades' => $ciudades];
     }
 
+    //Función para retornar colonias segun el CP a buscar
     public function selectColonias(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -42,6 +44,7 @@ class CiudadController extends Controller
     }
 
 
+    //Función para retornar estados
     public function selectEstados (Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');

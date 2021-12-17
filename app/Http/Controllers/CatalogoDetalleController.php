@@ -9,8 +9,10 @@ use App\Cat_detalle;
 use Auth;
 use Illuminate\Support\Facades\DB;
 
+// Controlador para el catalogo de detalles en casas
 class CatalogoDetalleController extends Controller
 {
+    // Función para retornar la clasificacion de detalles generales
     public function indexGenerales(Request $request){
         if($request->buscar == '')
         {
@@ -33,6 +35,7 @@ class CatalogoDetalleController extends Controller
         ];
     }
 
+    // Función para registrar el catalogo de un detalle general
     public function storeGenerales (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $generales = new Cat_detalle_general();
@@ -41,6 +44,7 @@ class CatalogoDetalleController extends Controller
         $generales->save();
     }
 
+    // Función para actualizar el catalogo de un detalle general
     public function updateGenerales (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $generales = Cat_detalle_general::findOrFail($request->id);
@@ -49,8 +53,8 @@ class CatalogoDetalleController extends Controller
         $generales->save();
     }
 
+    // Función retornar las subcategorias ligadas al categoria general que le corresponde.
     public function indexSubCategoria(Request $request){
-
         $id_gral = $request->id_gral;
         $subconcepto = $request->b_subconcepto;
 
@@ -77,6 +81,7 @@ class CatalogoDetalleController extends Controller
         ];
     }
 
+    // Función para retornar el listado de detalles que pertenecen a la subcategoria elegida.
     public function indexDetalles(Request $request){
 
         $id_sub = $request->id_sub;
@@ -105,6 +110,7 @@ class CatalogoDetalleController extends Controller
         ];
     }
 
+    // Función que retorna el id y el nombre de la categoria del catalogo general
     public function selectGeneral(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -113,6 +119,7 @@ class CatalogoDetalleController extends Controller
         return['general' => $general];
     }
 
+    // Función que retorna el id y el nombre del subconcepto del catalogo general elegido.
     public function selectSub(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -122,6 +129,7 @@ class CatalogoDetalleController extends Controller
         return['subconcepto' => $subconcepto];
     }
 
+    // Función que retorna el id y el catalogo del detalles del subcatalogo elegido.
     public function selectDetalle(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -131,6 +139,7 @@ class CatalogoDetalleController extends Controller
         return['detalle' => $detalle];
     }
 
+    // Función que retorna los datos del detalle elegido.
     public function getDatosDetalle(Request $request){
        $datosDetalle = Cat_detalle::join('cat_detalles_subconceptos as sub','cat_detalles.id_sub','=','sub.id')
                                     ->join('cat_detalles_generales as gen','sub.id_gral','=','gen.id')
@@ -142,6 +151,7 @@ class CatalogoDetalleController extends Controller
         return['datosDetalle' => $datosDetalle];
     }
 
+    // Funcion para registrar un nuevo subconcepto
     public function storeSubconcepto(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -151,6 +161,7 @@ class CatalogoDetalleController extends Controller
         $subconcepto->save();
     }
 
+    // Función para actualizar un subconcepto
     public function updateSubconcepto(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -160,6 +171,7 @@ class CatalogoDetalleController extends Controller
         $subconcepto->save();
     }
 
+    // Función para registrar un nuevo detalle
     public function storeDetalle(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $detalles = new Cat_detalle();
@@ -168,6 +180,7 @@ class CatalogoDetalleController extends Controller
         $detalles->save();
     }
 
+    // Función para actualizar algun catalogo de detallle
     public function updateDetalle(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -176,6 +189,7 @@ class CatalogoDetalleController extends Controller
         $detalle->save();
     }
 
+    // Función para activar un catalogo de detalle
     public function activarDetalle(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -184,6 +198,7 @@ class CatalogoDetalleController extends Controller
         $detalle->save();
     }
 
+    // Función para desactivar un catalogo de detalle
     public function desactivarDetalle(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 

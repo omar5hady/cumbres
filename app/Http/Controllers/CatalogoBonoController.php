@@ -8,8 +8,10 @@ use Auth;
 use Carbon\Carbon;
 use DB;
 
+// Controlador para los bonos extraordinarios para clientes que recomiendan.
 class CatalogoBonoController extends Controller
 {
+    // Función para retornar el catalogo de bonos extraordinarios
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
         $current = Carbon::today()->format('ymd');
@@ -44,7 +46,7 @@ class CatalogoBonoController extends Controller
             'catalogo'=>$catalogo ];
     }
 
-
+    // Función para crear un nuevo registro para bonos extraordinario
     public function store(Request $request){
         $catalogo = new Catalogo_bono();
         $catalogo->fecha_ini = $request->fecha_ini;
@@ -55,6 +57,7 @@ class CatalogoBonoController extends Controller
         $catalogo->save();
     }
 
+    // Función para actualizar los datos del registro para bonos extraordinario
     public function update(Request $request){
         $catalogo = Catalogo_bono::findOrFail($request->id);
         $catalogo->fecha_ini = $request->fecha_ini;
@@ -65,6 +68,7 @@ class CatalogoBonoController extends Controller
         $catalogo->save();
     }
 
+    // Función para eliminar el registro seleccionado.
     public function delete(Request $request){
         $catalogo = Catalogo_bono::findOrFail($request->id);
         $catalogo->delete();

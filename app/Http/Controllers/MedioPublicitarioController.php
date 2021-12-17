@@ -95,7 +95,7 @@ class MedioPublicitarioController extends Controller
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id','contratos.id as contrato')->where('contratos.status','=',3);
+                        ->select('clientes.id','contratos.id as contrato')->where('contratos.status','!=',2);
 
                         if($proyecto != '')
                             $clientesID_contrato = $clientesID_contrato->where('lotes.fraccionamiento_id','=',$proyecto);

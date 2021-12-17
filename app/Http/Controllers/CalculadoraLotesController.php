@@ -24,14 +24,16 @@ use Illuminate\Support\Facades\DB;
 
 use App\Modelo;
 
+// Controlador para cotizador de venta de Lotes
 class CalculadoraLotesController extends Controller
 {
+    //Funcion para retornar los porcentajes de interes segun corresponde el tiempo de financiamiento.
     public function listarPorcentaje(){
-
         $lista = datos_calc_lotes::all();
         return $lista;
     }
 
+    // Función para modificar el porcentaje de interes.
     public function editaPorcentaje(Request $request){
         if (!$request->ajax()) return redirect('/');
 
@@ -42,8 +44,8 @@ class CalculadoraLotesController extends Controller
         $element->save();
     }
 
+    // Función que retorna el costo por m2 por etapa.
     public function listarPrecios(){
-
         $lotes = lotes_individuales::join('etapas', 'lotes_individuales.etapa_id', '=', 'etapas.id')
         ->join('fraccionamientos', 'etapas.fraccionamiento_id', 'fraccionamientos.id')
             ->select('lotes_individuales.id', 'lotes_individuales.etapa_id', 'lotes_individuales.costom2', 
@@ -52,17 +54,22 @@ class CalculadoraLotesController extends Controller
         return $lotes;
     }
 
+    // Función para cambiar el valor de venta del terreno
     public function editEnterPrice(Request $request){
         if (!$request->ajax()) return redirect('/');
 
+        // Primero se actualiza el precio por etapa
         $lote = lotes_individuales::findOrFail($request->id);
-
         $lote->costom2 = $request->costom2;
         $lote->save();
 
+        /*  Llamado a la función que modificara el precio a todos los lotes que
+            en venta que correspondan a esa etapa y esten habilitados.
+        */
         $this->actPrecioLotes($lote->etapa_id, $request->costom2);
     }
 
+    // Función para crear un nuevo costo de venta de tereno para etapa.
     public function addWindowPrice(Request $request){
         if (!$request->ajax()) return redirect('/');
         $lote = new lotes_individuales();
@@ -72,6 +79,7 @@ class CalculadoraLotesController extends Controller
         $lote->save();
     }
 
+    // Función para actualizar el valor de venta de terreno.
     public function editWindowPrice(Request $request){
         if (!$request->ajax()) return redirect('/');
 
@@ -81,9 +89,13 @@ class CalculadoraLotesController extends Controller
         $lote->costom2 = $request->costom2;
         $lote->save();
 
+         /*  Llamado a la función que modificara el precio a todos los lotes que
+            en venta que correspondan a esa etapa y esten habilitados.
+        */
         $this->actPrecioLotes($request->etapa_id, $request->costom2);
     }
 
+    // Funcion privada para actualizar el costo de venta del terreno para todos los lotes de una etapa.
     private function actPrecioLotes($etapa, $costom2){
         $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
             ->select('lotes.id')->where('lotes.etapa_id','=',$etapa)
@@ -99,6 +111,7 @@ class CalculadoraLotesController extends Controller
         }
     }
 
+    // Función para retornar los Proyectos con disponibilidad de venta de terrenos.
     public function selectFraccionamientoLotes(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -114,6 +127,7 @@ class CalculadoraLotesController extends Controller
         return['fraccionamientos' => $fraccionamientos];
     }
 
+    // Función para retornar las etapas con disponibilidad de venta de terrenos tomando como criterio de busqueda el proyecto seleccionado.
     public function selectEtapa_proyectoLotes(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -129,6 +143,11 @@ class CalculadoraLotesController extends Controller
         return['etapas' => $etapas];
     }
 
+    /* 
+        Función para retornar los lotes con disponibilidad de venta de terrenos.
+        Se toma como criterio los lotes habilitados para venta,
+        Sin contrato y que no esten apartados.
+    */
     public function lotesDisponiblesLotes (Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -150,7 +169,8 @@ class CalculadoraLotesController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                         'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
                         'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
-        'v.nombre as v_nombre', 'apartados.fecha_apartado','lotes.regimen_condom');
+                        'v.nombre as v_nombre', 'apartados.fecha_apartado','lotes.regimen_condom'
+                    );
                         
         $lotes = $query->where('modelos.nombre', '=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
@@ -180,9 +200,11 @@ class CalculadoraLotesController extends Controller
 
     }
 
+    // Función para crear la cotización del terreno
     public function guardaCotizacion(Request $request){
         if (!$request->ajax()) return redirect('/');
 
+        // Arreglo de pagos generados
         $arrayPagos = $request->pago;
 
         $cotizacion = new Cotizacion_lotes();
@@ -196,6 +218,7 @@ class CalculadoraLotesController extends Controller
         $cotizacion->interes = $request->interes;
         $cotizacion->save();
         
+        // Se rrecorre el arrego de pagos para almacenar cada uno de los registros.
         foreach($arrayPagos as $pago){
             if($pago['cantidad'] != 0){
                 $newPago = new Pagos_lotes();
@@ -211,7 +234,6 @@ class CalculadoraLotesController extends Controller
                 $newPago->interes_monto = $pago['interesMont'];
                 $newPago->total_a_pagar = $pago['totalAPagar'];
                 $newPago->saldo = $pago['saldo'];
-    
                 $newPago->save();
             }
         }
@@ -219,6 +241,7 @@ class CalculadoraLotesController extends Controller
         return $cotizacion->id;
     }
 
+    // Función para crear la vista en pdf de la cotización
     public function generaPdf(Request $request){
         //if (!$request->ajax()) return redirect('/');
 
@@ -254,7 +277,9 @@ class CalculadoraLotesController extends Controller
         $fecha= new Carbon($cotizacion->fecha);
         $cotizacion->fecha = $fecha->formatLocalized('%d/%m/%Y');
 
+        // Se calcula el costo por m2 de la cotizacion
         $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
+        // Total a pagar descontando descuento generado si lo hay.
         $cotizacion->total_pagar = $cotizacion->valor_venta-$cotizacion->valor_descuento;
 
         $cotizacion->valor_descuento = number_format((float)$cotizacion->valor_descuento, 2, '.', ',');
@@ -280,27 +305,29 @@ class CalculadoraLotesController extends Controller
             }
         }
 
-        //return $cotizacion;
-
+        //Retorno de la vista en pdf
         $pdf = \PDF::loadview('pdf.calculadoraLotes.cotizacionLote', ['cotizacion' => $cotizacion, 'pago' => $pago]);
         return $pdf->stream('cotizacion_lote_con_servicios.pdf');
     }
 
+    // Función para obtener las cotizaciones creadas.
+    /*
+        Los estatus posibles en una cotizacion son:
+            0 = Pendiente
+            1 = Aprobado
+            2 = Cancelada
+    */
     public function getClientes(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
-
         $queryGen = Cliente::join('personal','clientes.id','=','personal.id')
             ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-
             ->join('cotizacion_lotes', 'clientes.id', '=', 'cotizacion_lotes.cliente_id')
             //->join('pagos_lotes', 'cotizacion_lotes.id', '=', 'pagos_lotes.cotizacion_lotes_id')
             ->join('lotes', 'cotizacion_lotes.lotes_id', '=', 'lotes.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-
             ->leftJoin('contratos','cotizacion_lotes.num_contrato','=','contratos.id')
-
             ->select(
                 'clientes.coacreditado', 'clientes.lugar_nacimiento_coa', 'clientes.nombre_coa',
                 'clientes.apellidos_coa', 'clientes.f_nacimiento_coa','clientes.direccion_coa',
@@ -375,6 +402,7 @@ class CalculadoraLotesController extends Controller
         return $personas;
     }
 
+    // Función para cancelar la cotización
     public function cancelaCotizacion(Request $request){
         if (!$request->ajax()) return redirect('/');
 
@@ -383,11 +411,19 @@ class CalculadoraLotesController extends Controller
         $cotizacion->save();
     }
 
+    // Función para aprobar la cotización
+    /*
+        Al aprobar la cotización se genera en BD el registro en la tabla de Creditos
+        y registro en la tabla contratos, ya que se crea una venta.
+
+        Tambien se crean los pagos correspondientes.
+    */
     public function aprovarCotizacion(Request $request){
         if (!$request->ajax()) return redirect('/');
         $cotizacion = Cotizacion_lotes::findOrFail($request->id);
         $datos = $request->datos;
 
+        // Primero se verifica que la venta correspondiente a la cotizacion no se haya creado antes.
         $contrato = Contrato::join('creditos','creditos.id','=','contratos.id')
                                 ->select('creditos.lote_id')
                                 ->where('contratos.status','=',1)
@@ -403,11 +439,8 @@ class CalculadoraLotesController extends Controller
             try {
                 DB::beginTransaction();
     
-    
-                
+                // Se pone estatus de aprobado.
                 $cotizacion->estatus = 1;
-                
-    
                 $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                             ->join('etapas','lotes.etapa_id','=','etapas.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -421,6 +454,7 @@ class CalculadoraLotesController extends Controller
                 $empresa = Empresa::where('id','=',$datos['empresa_id'])->get();
                 
     
+                // Se actualizan los datos del Cliente segun lo capturado en la cotización.
                 // PERSONAL
                     $persona = Personal::findOrFail($datos['personalId']);
                     $persona->direccion = $datos['direccion'];
@@ -452,7 +486,7 @@ class CalculadoraLotesController extends Controller
                     
                     $cliente->save();
                 
-                //Credito
+                //Se crea el registro del Credito
                     $credito = new Credito();
                     $credito->prospecto_id = $datos['personalId'];
                     $credito->num_dep_economicos = $request->num_dep_economicos;
@@ -495,7 +529,7 @@ class CalculadoraLotesController extends Controller
                     $inst_seleccionada->elegido = 1;
                     $inst_seleccionada->save();
     
-                //Contrato
+                // Se genera el registro en la tabla de Contratos
                     $contrato = new Contrato();
                     $contrato->id = $credito->id;
                     $contrato->total_pagar = $credito->precio_venta;
@@ -525,7 +559,7 @@ class CalculadoraLotesController extends Controller
     
                     $cotizacion->num_contrato = $credito->id;
                 
-                //Pagos
+                //Generación de pagos
                 foreach ($pagos as $ep => $det) {
                     $pago = new Pago_contrato();
                     $pago->contrato_id = $credito->id;
@@ -535,6 +569,7 @@ class CalculadoraLotesController extends Controller
                     $pago->fecha_pago = $det['fecha'];
                     $pago->save();
     
+                    //Al los pagos de la cotizacion se indica el pago del contrato que le corresponde.
                     $pagoLote = Pagos_lotes::findOrFail($det['id']);
                     $pagoLote->pagare_id = $pago->id;
                     $pagoLote->save();
@@ -548,6 +583,7 @@ class CalculadoraLotesController extends Controller
     
                     $cotizacion->save();
     
+                // En caso de existir mas cotizaciones del mismo lote se cancelan.
                 $this->cancelaOtros($cotizacion->id, $cotizacion->lotes_id);
                 DB::commit();
             } catch (Exception $e) {
@@ -559,6 +595,7 @@ class CalculadoraLotesController extends Controller
 
     }
 
+    // Funcion para cancelar otras cotizaciones de un lote.
     private function cancelaOtros($id,$lote){
         $cotizacion = Cotizacion_lotes::select('id')
         ->where('lotes_id','=',$lote)
@@ -576,6 +613,7 @@ class CalculadoraLotesController extends Controller
         $lote->save();
     }
 
+    // Funcion para obtener los datos de una cotizacion segun la cotizacion seleccionada.
     public function getCotizacionEdita(Request $request){
         //if (!$request->ajax()) return redirect('/');
 
@@ -613,6 +651,7 @@ class CalculadoraLotesController extends Controller
         ];
     }
 
+    // Funcion para actualizar datos en la cotización
     public function actualizarCotizacion(Request $request){
         //if (!$request->ajax()) return redirect('/');
 
@@ -692,6 +731,7 @@ class CalculadoraLotesController extends Controller
         return $cotizacion->id;
     }
 
+    // Funcion para retornar los pagos de una cotización.
     public function getDatosPago(Request $request){
         $pago = Pagos_lotes::select('id','dias','interes_monto','pagare_id')->where('pagare_id','=',$request->pagare_id)->get();
 
