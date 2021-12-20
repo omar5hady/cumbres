@@ -21,6 +21,7 @@ class CreateHistEstimacionesTable extends Migration
             $table->float('vol');
             $table->double('costo',10,2)->default(0);
             $table->double('total_estimacion',10,2)->default(0);
+            $table->double('total_pagado',10,2)->default(0);
             $table->date('ini')->nullable();
             $table->date('fin')->nullable();
             $table->timestamps();

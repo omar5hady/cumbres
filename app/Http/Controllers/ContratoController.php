@@ -975,7 +975,7 @@ class ContratoController extends Controller
     public function contratoConReservaDeDominio(Request $request, $id)
     {
 
-        $contratosDom = $this->datosContratoImprimir();
+        $contratosDom = $this->datosContratoImprimir($id);
 
         // Calculo para obtener el valor de construcción de la casa
         $contratosDom[0]->valor_construccion = $contratosDom[0]->enganche_total - $contratosDom[0]->valor_terreno;

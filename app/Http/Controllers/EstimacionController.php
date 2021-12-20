@@ -20,16 +20,16 @@ class EstimacionController extends Controller
 {
     public function prueba(Request $request){
         //$obraC = new IniObraController();
-        $fraccionamiento = 4;
-        $contratista = 25527;
-        $constructora = 'Grupo Constructor Cumbres';
+        $fraccionamiento = $request->fraccionamiento;
+        $contratista = $request->contratista;
+        $constructora = $request->constructora;
 
         $iniObras = Ini_obra::select('id')
             ->where('fraccionamiento_id','=',$fraccionamiento)
             ->where('emp_constructora','=',$constructora)
             ->where('contratista_id','=',$contratista)->get();
 
-        $contratos = $this->getContratos(25527, 4, 'Grupo Constructor Cumbres');
+        $contratos = $this->getContratos($contratista, $fraccionamiento, $constructora);
         $fondoGarantia = $this->getFG($iniObras);
         $anticipos = $this->getAnticipos($iniObras);
         $titulo = 'Resumen de estimaciones Fraccionamiento ';
@@ -43,8 +43,6 @@ class EstimacionController extends Controller
                 $contrato->numEst = $anterior['num'];
             }
         }
-
-      
 
         return Excel::create($titulo , function($excel) use ($fondoGarantia, $anticipos, $contratos){
             $excel->sheet($contratos[0]->proyecto, function($sheet) use ($fondoGarantia, $anticipos, $contratos){

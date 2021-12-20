@@ -513,7 +513,6 @@
                         </div>
                     </template>
                         
-                    
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -1251,6 +1250,11 @@
             storeEstimacion(data){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
+
+                let amorEstimacion = me.total2*me.porc_anticipo;
+                let totalGarantia = me.total2*me.porc_garantia;
+
+                let totalPagar = me.total2 - (amorEstimacion + totalGarantia);
                 
                 Swal({
                     title: '¿Desea continuar?',
@@ -1274,6 +1278,7 @@
                                     'vol' : element.num_estimacion,
                                     'num_estimacion' : this.num_estimacion,
                                     'total_estimacion' : this.total2,
+                                    'total_pagado' : totalPagar,
                                     'periodo1' : this.periodo1,
                                     'periodo2' : this.periodo2,
                                 }); 

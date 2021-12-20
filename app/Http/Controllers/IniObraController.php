@@ -1595,6 +1595,7 @@ class IniObraController extends Controller
         $estimacion->vol = $request->vol;
         $estimacion->costo = $request->costo;
         $estimacion->total_estimacion = $request->total_estimacion;
+        $estimacion->total_pagado = $request->total_pagado;
         $estimacion->ini = $request->periodo1;
         $estimacion->fin = $request->periodo2;
         $estimacion->save();
@@ -1871,7 +1872,7 @@ class IniObraController extends Controller
 
         $clave = $request->clave;
 
-        $totalAnt = $totalFG = $totalEst = 0;
+        $totalAnt = $totalFG = $totalEst = $totalExtra = 0;
 
         $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
@@ -1881,6 +1882,7 @@ class IniObraController extends Controller
 
         $anticipos = $this->getAnticipos($clave);
         $fg = $this->getFG($clave);
+        $conceptosExtra = $this->getConceptosExtra($clave);
 
         if(sizeof($anticipos))
             foreach($anticipos as $index => $ant)
@@ -1890,6 +1892,10 @@ class IniObraController extends Controller
             foreach($fg as $index => $f)
                 $totalFG += $f->monto_fg;
 
+        if(sizeof($conceptosExtra))
+            foreach($conceptosExtra as $index => $c)
+                $totalExtra += $c->importe;
+
 
         $estimaciones = Estimacion::select('id')->where('aviso_id','=',$clave)->get();
         $arrayEst = [];
@@ -1898,12 +1904,12 @@ class IniObraController extends Controller
             array_push($arrayEst,$est->id);
         }
 
-        $number_est = Hist_estimacion::select('num_estimacion','ini','total_estimacion')
+        $number_est = Hist_estimacion::select('num_estimacion','ini','total_estimacion','total_pagado')
                     ->whereIn('estimacion_id',$arrayEst)->where('ini','!=',NULL)->orderBy('num_estimacion','asc')->distinct()->get();
 
         if(sizeof($number_est))
             foreach($number_est as $index => $n)
-                $totalEst += $n->total_estimacion;
+                $totalEst += $n->total_pagado;
 
         // return [
         //     'contrato' => $contrato,
@@ -1916,8 +1922,11 @@ class IniObraController extends Controller
         //     'totalEst' => $totalEst
         // ];
 
-        return Excel::create('Resumen Estimaciones' , function($excel) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG , $totalEst){
-            $excel->sheet($contrato[0]->clave, function($sheet) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG, $totalEst){
+        return Excel::create('Resumen Estimaciones' , function($excel) use (
+            $contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG , $totalEst, $conceptosExtra, $totalExtra
+            
+            ){
+            $excel->sheet($contrato[0]->clave, function($sheet) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG, $totalEst, $conceptosExtra, $totalExtra){
                 
                 $sheet->mergeCells('A1:J1');
                 $sheet->mergeCells('A3:J3');
@@ -2106,7 +2115,7 @@ class IniObraController extends Controller
                         $sheet->row($renglon, [
                             $est->num_estimacion,
                             $est->ini,
-                            $est->total_estimacion
+                            $est->total_pagado
                         ]);	  
                         $renglon++;
                     }
@@ -2138,11 +2147,48 @@ class IniObraController extends Controller
                     $saldo
                     
                 ]);
-           
-
-            
                 
+                if(sizeof($conceptosExtra)){
+                    $renglon+=2;
+                    $sheet->cell('A'.$renglon, function($cell) {
+
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(12);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    
+                    });
     
+                    $sheet->row($renglon, [
+                        'Obra extra: ', 
+                    ]);
+    
+                    $renglon++;
+    
+                    foreach($conceptosExtra as $index => $cext) {     
+    
+                        $sheet->row($renglon, [
+                            $cext->concepto,
+                            $cext->fecha,
+                            $cext->importe
+                        ]);	  
+                        $renglon++;
+                    }
+    
+                    $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('right');
+                    });
+                    $sheet->row($renglon, [
+                        '',
+                        'TOTAL:',
+                        $totalExtra
+                    ]);
+    
+                    $renglon+=2;
+                }
+
 
             
             });
