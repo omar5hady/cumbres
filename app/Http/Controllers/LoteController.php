@@ -1839,6 +1839,14 @@ class LoteController extends Controller
         if(sizeOf($lotes)){
             foreach($lotes as $index => $lote){
                 $lote->indiv = 0;
+                $lote->precio_venta = $lote->precio_base + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio + $lote->ajuste;
+
+                $contrato = Contrato::join('creditos','creditos.id','=','contratos.id')
+                                        ->select('creditos.precio_venta')
+                                        ->where('creditos.lote_id','=',$lote->id)
+                                        ->where('contratos.status','=',3)
+                                        ->get();
+
                 $expedientes = Expediente::join('contratos','expedientes.id','=','contratos.id')
                                             ->join('creditos','creditos.id','=','contratos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1854,6 +1862,8 @@ class LoteController extends Controller
                 if(sizeOf($expedientes)){
                     $lote->indiv = 1;
                 }
+                if(sizeof($contrato))
+                    $lote->precio_venta = $contrato[0]->precio_venta;
             }
             
 
@@ -1864,11 +1874,11 @@ class LoteController extends Controller
                 
                 $sheet->row(1, [
                     'Proyecto', 'Etapa comercial', 'Etapa de servicio', 'Manzana', 'Lote', 'Modelo',
-                    'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Canal de ventas' 
+                    'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Precio de Venta','Canal de ventas' 
                 ]);
 
 
-                $sheet->cells('A1:O1', function ($cells) {
+                $sheet->cells('A1:P1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1881,6 +1891,10 @@ class LoteController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
+
+                $sheet->setColumnFormat(array(
+                    'O' => '$#,##0.00',
+                ));
 
                 
                 $cont=1;
@@ -1928,11 +1942,12 @@ class LoteController extends Controller
                         $lote->avance.'%',
                         $casaenventa,
                         $status,
+                        $lote->precio_venta,
                         $lote->comentarios,
                         
                     ]);	
                 }
-                $num='A1:O' . $cont;
+                $num='A1:P' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             $excel->sheet('Habilitados renta', function($sheet) use ($rentas){
@@ -2189,6 +2204,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                   'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                   'lotes.fecha_termino_ventas',
+                  'lotes.precio_base','lotes.obra_extra','lotes.excedente_terreno','lotes.sobreprecio','lotes.ajuste',
                   'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id', 'lotes.casa_renta', 'lotes.precio_renta',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
                   'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',

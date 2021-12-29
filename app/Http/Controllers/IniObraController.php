@@ -932,8 +932,6 @@ class IniObraController extends Controller
             'ini_obras.porc_garantia_ret',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
         
-        
-         
         if ($buscar==''){
             $ini_obra = $query;
         }
@@ -1868,17 +1866,14 @@ class IniObraController extends Controller
         $concepto->save();
     }
 
-    public function excelEdoCuenta(Request $request){
-
-        $clave = $request->clave;
-
+    public function getEdoCuenta($clave){
         $totalAnt = $totalFG = $totalEst = $totalExtra = 0;
 
         $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                         ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave',
                                 'total_importe2 as total_importe','contratistas.nombre as contratista'
-                        )->where('ini_obras.id','=',$request->clave)->get();
+                        )->where('ini_obras.id','=',$clave)->get();
 
         $anticipos = $this->getAnticipos($clave);
         $fg = $this->getFG($clave);
@@ -1911,20 +1906,39 @@ class IniObraController extends Controller
             foreach($number_est as $index => $n)
                 $totalEst += $n->total_pagado;
 
-        // return [
-        //     'contrato' => $contrato,
-        //     'anticipos' => $anticipos,
-        //     'fg' => $fg,
-        //     'estimaciones' => $arrayEst,
-        //     'num_est' => $number_est,
-        //     'totalAnt' => $totalAnt,
-        //     'totalFG' => $totalFG,
-        //     'totalEst' => $totalEst
-        // ];
+        return [
+            'contrato' => $contrato,
+            'anticipos' => $anticipos,
+            'fg' => $fg,
+            'estimaciones' => $arrayEst,
+            'num_est' => $number_est,
+            'totalAnt' => $totalAnt,
+            'totalFG' => $totalFG,
+            'totalEst' => $totalEst,
+            'totalExtra' => $totalExtra,
+            'conceptosExtra' => $conceptosExtra,
+        ];
+
+    }
+
+    public function excelEdoCuenta(Request $request){
+
+        $clave = $request->clave;
+        $respuesta = $this->getEdoCuenta($clave);
+
+        $contrato = $respuesta['contrato'];
+        $anticipos = $respuesta['anticipos'];
+        $fg = $respuesta['fg'];
+        $arrayEst = $respuesta['estimaciones'];
+        $number_est = $respuesta['num_est'];
+        $totalAnt = $respuesta['totalAnt'];
+        $totalFG = $respuesta['totalFG'];
+        $totalEst = $respuesta['totalEst'];
+        $totalExtra = $respuesta['totalExtra'];
+        $conceptosExtra = $respuesta['conceptosExtra'];
 
         return Excel::create('Resumen Estimaciones' , function($excel) use (
             $contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG , $totalEst, $conceptosExtra, $totalExtra
-            
             ){
             $excel->sheet($contrato[0]->clave, function($sheet) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG, $totalEst, $conceptosExtra, $totalExtra){
                 

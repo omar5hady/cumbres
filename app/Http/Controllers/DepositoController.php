@@ -1,7 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
+use App\Notifications\NotifyAdmin;
 use Illuminate\Http\Request;
 use App\Deposito;
 use App\Deposito_conc;
@@ -10,223 +12,34 @@ use App\Contrato;
 use App\Cuenta;
 use App\Credito;
 use App\Pago_contrato;
-use Carbon\Carbon;
-use DB;
-use NumerosEnLetras;
+use App\inst_seleccionada;
 use App\Gasto_admin;
 use App\Dep_credito;
+use App\Personal;
 use App\Devolucion;
+use App\User;
+use Carbon\Carbon;
+use NumerosEnLetras;
 use Excel;
 use Auth;
 use File;
-use App\Notifications\NotifyAdmin;
-use App\User;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificationReceived;
-use App\Personal;
-use App\inst_seleccionada;
+use DB;
 
+// Controlador para Depositos bancarios.
 class DepositoController extends Controller
 {
+    // Función que retorna los pagares creados.
     public function indexPagares(Request $request){
         if(!$request->ajax())return redirect('/');
         setlocale(LC_TIME, 'es_MX.utf8');
+        // Se almacena la fecha actual.
         $hoy = Carbon::today()->toDateString();
-
-        $vencido = $request->b_vencidos;
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $buscar3 = $request->buscar3;
-        $criterio =  $request->criterio;
-
-        $query = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-            ->join('creditos','creditos.id','=','contratos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                    'modelos.nombre as modelo',
-                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                    'contratos.ext_empresa','contratos.colonia_empresa',
-                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-        DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"));
-
-        if($vencido == 1){ //VENCIDOS
-            if($buscar == ''){
-                $pagares = $query;
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        $pagares = $query
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                        break;
-                    }
-                    case 'pagos_contratos.fecha_pago':{
-                        $pagares = $query
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':{
-                        
-                        $pagares = $query;
-                            if($buscar!='')
-                                $pagares = $pagares->where($criterio,'=',$buscar);
-                            if($buscar2!='')
-                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                            if($buscar3!='')
-                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-                        break;
-                    }
-                    default:{
-                        $pagares = $query
-                            ->where($criterio,'=',$buscar);
-                        break;
-                    }
-                }
-            }
-
-            $pagares = $pagares->where('pagos_contratos.pagado','!=',2)
-                ->where('pagos_contratos.pagado','!=',3)
-                ->where('contratos.status','!=',0)
-                ->where('contratos.status','!=',2) 
-                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                ->where('pagos_contratos.fecha_pago','<',$hoy);
-            
-        } 
-        elseif($vencido == 2){ //CANCELADOS
-            if($buscar == ''){
-                $pagares = $query
-                    //
-                
-                    ->where('contratos.status','=',0)
-                    ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                    ->orWhere('contratos.status','=',2)
-                    ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        $pagares = $query
-                            //
-                        
-                            ->where('contratos.status','=',0)
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-
-                            ->orWhere('contratos.status','=',2)
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        break;
-                    }
-                    case 'pagos_contratos.fecha_pago':{
-                        $pagares = $query
-                            
-                            ->where('contratos.status','=',0)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-
-                            ->orWhere('contratos.status','=',2)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':{
-                    
-                        $pagares = $query;
-                        
-                        $pagares = $pagares->where('contratos.status','=',0)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-
-                            if($buscar!='')
-                                $pagares = $pagares->where($criterio,'=',$buscar);
-                            if($buscar2 !='')
-                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                            if($buscar3 != '')
-                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-
-                            
-                        $pagares = $pagares->orWhere('contratos.status','=',2)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                            
-                            if($buscar!='')
-                                $pagares = $pagares->where($criterio,'=',$buscar);
-                            if($buscar2 !='')
-                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                            if($buscar3 != '')
-                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-                        break;
-                    }
-                    default:{
-                        $pagares = $query
-                            
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        break;
-                    }
-                }
-            }
-            
-        }
-        else{ //TODOS
-            if($buscar==''){
-                $pagares = $query;
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        $pagares = $query
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                        break;
-                    }
-                    case 'pagos_contratos.fecha_pago':{
-                        $pagares = $query
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':{
-                        $pagares = $query;
-                        if($buscar != '')
-                            $pagares = $pagares->where($criterio,'=',$buscar);
-                        if($buscar2 != '')
-                            $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                        if($buscar3 != '')
-                            $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-                        
-                        break;
-                    }
-                    default:{
-                        $pagares = $query
-                            ->where($criterio,'=',$buscar);
-                        break;
-                    }
-                }
-            }
-
-            $pagares = $pagares->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-        }
-
-        $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
-                        ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                        ->orderBy('pagos_contratos.pagado', 'asc')
-                        ->paginate(10);
+        // Llamada a la función privada que retorna los pagares
+        $pagares = $this->getPagares($request, $hoy);
+        // Se ordenan primero los pendientes y por fecha de pago.
+        $pagares = $pagares ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->paginate(10);
 
         return[
             'pagination' => [
@@ -240,196 +53,18 @@ class DepositoController extends Controller
             'pagares' => $pagares, $hoy
         ];
     }
-
+    // Función que retorna los pagares en excel.
     public function excelPagares(Request $request){
         setlocale(LC_TIME, 'es_MX.utf8');
+        // Se almacena la fecha actual.
         $hoy = Carbon::today()->toDateString();
-
-        $vencido = $request->b_vencidos;
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $buscar3 = $request->buscar3;
-        $criterio =  $request->criterio;
-        
-        $query = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-            ->join('creditos','creditos.id','=','contratos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                    'contratos.ext_empresa','contratos.colonia_empresa',
-                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"));
-
-        if($vencido == 1){ //VENCIDOS
-            if($buscar == ''){
-                $pagares = $query;
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        $pagares = $query
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                        break;
-                    }
-                    case 'pagos_contratos.fecha_pago':{
-                        $pagares = $query
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':{
-                        
-                        $pagares = $query;
-                            if($buscar!='')
-                                $pagares = $pagares->where($criterio,'=',$buscar);
-                            if($buscar2!='')
-                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                            if($buscar3!='')
-                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-                        break;
-                    }
-                    default:{
-                        $pagares = $query
-                            ->where($criterio,'=',$buscar);
-                        break;
-                    }
-                }
-            }
-
-            $pagares = $pagares->where('pagos_contratos.pagado','!=',2)
-                ->where('pagos_contratos.pagado','!=',3)
-                ->where('contratos.status','!=',0)
-                ->where('contratos.status','!=',2) 
-                ->where('pagos_contratos.fecha_pago','<',$hoy);
-            
-        } 
-        elseif($vencido == 2){ //CANCELADOS
-            if($buscar == ''){
-                $pagares = $query
-                    //
-                
-                    ->where('contratos.status','=',0)
-                    ->orWhere('contratos.status','=',2);
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        $pagares = $query
-                            //
-                        
-                            ->where('contratos.status','=',0)
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-
-                            ->orWhere('contratos.status','=',2)
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                        break;
-                    }
-                    case 'pagos_contratos.fecha_pago':{
-                        $pagares = $query
-                            
-                            ->where('contratos.status','=',0)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-
-                            ->orWhere('contratos.status','=',2)
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':{
-                    
-                        $pagares = $query;
-                        
-                        $pagares = $pagares->where('contratos.status','=',0);
-
-                            if($buscar!='')
-                                $pagares = $pagares->where($criterio,'=',$buscar);
-                            if($buscar2 !='')
-                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                            if($buscar3 != '')
-                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-
-                            
-                        $pagares = $pagares->orWhere('contratos.status','=',2);
-                            
-                            if($buscar!='')
-                                $pagares = $pagares->where($criterio,'=',$buscar);
-                            if($buscar2 !='')
-                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                            if($buscar3 != '')
-                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-                        break;
-                    }
-                    default:{
-                        $pagares = $query
-                            
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar);
-                        break;
-                    }
-                }
-            }
-            
-        }
-        else{ //TODOS
-            if($buscar==''){
-                $pagares = $query;
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        $pagares = $query
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                        break;
-                    }
-                    case 'pagos_contratos.fecha_pago':{
-                        $pagares = $query
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':{
-                        $pagares = $query;
-                        if($buscar != '')
-                            $pagares = $pagares->where($criterio,'=',$buscar);
-                        if($buscar2 != '')
-                            $pagares = $pagares->where('creditos.etapa','=',$buscar2);
-                        if($buscar3 != '')
-                            $pagares = $pagares->where('creditos.manzana','=',$buscar3);
-                        
-                        break;
-                    }
-                    default:{
-                        $pagares = $query
-                            ->where($criterio,'=',$buscar);
-                        break;
-                    }
-                }
-            }
-
-            $pagares = $pagares->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2);
-        }
-
-        if($request->b_empresa != ''){
-            $pagares= $pagares->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
+        // Llamada a la función privada que retorna los pagares.
+        $pagares = $this->getPagares($request, $hoy);
+        // Se ordenan primero los pendientes y por fecha de pago.
         $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
                         ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                        ->orderBy('pagos_contratos.pagado', 'asc')
                         ->get();
-        
+        // Se crea el excel y retorna.
         return Excel::create('Pagares', function($excel) use ($pagares){
             $excel->sheet('pagares', function($sheet) use ($pagares){
                 
@@ -497,7 +132,144 @@ class DepositoController extends Controller
             }
         )->download('xls');
     }
+    // Función privada que obtiene los pagares
+    private function getPagares(Request $request, $hoy){
+        $vencido = $request->b_vencidos;
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $buscar3 = $request->buscar3;
+        $criterio =  $request->criterio;
+        // Query principal.
+        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                    'modelos.nombre as modelo',
+                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                    'contratos.ext_empresa','contratos.colonia_empresa',
+                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor")
+            );
 
+        // Busqueda por empresa constructora
+        if($request->b_empresa != '')
+            $pagares = $pagares->where('lotes.emp_constructora','=', $request->b_empresa);
+
+        if($vencido == 1){ //PAGARES VENCIDOS
+            if($buscar != ''){
+                switch($criterio){
+                    case 'personal.nombre':{ // Busqueda por cliente
+                        $pagares = $pagares
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                        break;
+                    }
+                    case 'pagos_contratos.fecha_pago':{ // Busqueda por fecha de pago
+                        $pagares = $pagares->whereBetween($criterio, [$buscar,$buscar2]);
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':{ // Busqueda por lote
+                        $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2!='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3!='')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+                        break;
+                    }
+                    default:{
+                        $pagares = $pagares->where($criterio,'=',$buscar);
+                        break;
+                    }
+                }
+            }
+            // Contratos activos y pagares pendientes.
+            $pagares = $pagares->where('pagos_contratos.pagado','!=',2)
+                ->where('pagos_contratos.pagado','!=',3)
+                ->where('contratos.status','!=',0)
+                ->where('contratos.status','!=',2) 
+                // Fecha de pago anterior a fecha actual.
+                ->where('pagos_contratos.fecha_pago','<',$hoy);
+        } 
+        elseif($vencido == 2){ //CANCELADOS
+            //Contratos cancelados y no firmados.
+            $pagares = $pagares->whereIn('contratos.status',[0,2]);
+            if($buscar != ''){
+                switch($criterio){
+                    case 'personal.nombre':{ // Busqueda por cliente
+                        $pagares = $pagares
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                        break;
+                    }
+                    case 'pagos_contratos.fecha_pago':{ // Busqeuda por fecha de pago
+                        $pagares = $pagares
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':{ // Busqueda por lote
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2 !='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3 != '')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+                        break;
+                    }
+                    default:{
+                        $pagares = $pagares
+                            ->where($criterio,'=',$buscar);
+                        break;
+                    }
+                }
+            }
+        }
+        else{ //TODOS
+            if($buscar != ''){
+                switch($criterio){
+                    case 'personal.nombre':{ // Busqueda por cliente
+                        $pagares = $pagares
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                        break;
+                    }
+                    case 'pagos_contratos.fecha_pago':{ // Busqueda por fecha de pago
+                        $pagares = $pagares
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':{ // Busqueda por lote
+                        if($buscar != '')
+                            $pagares = $pagares->where($criterio,'=',$buscar);
+                        if($buscar2 != '')
+                            $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                        if($buscar3 != '')
+                            $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+                        break;
+                    }
+                    default:{
+                        $pagares = $pagares
+                            ->where($criterio,'=',$buscar);
+                        break;
+                    }
+                }
+            }
+            // Contratos activos.
+            $pagares = $pagares->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2);
+        }
+        return $pagares;
+    }
+    // Función que retorna los depositos correspondientes a un pagare.
     public function indexDepositos(Request $request){
         if(!$request->ajax())return redirect('/');
         $depositos = Deposito::select('id', 'pago_id', 'cant_depo','interes_mor','interes_ord',
@@ -506,52 +278,18 @@ class DepositoController extends Controller
                                 )
                             ->where('pago_id','=',$request->buscar)
                             ->get();
-        
         $pagares = Pago_contrato::select('restante')
-        ->where('id','=',$request->buscar)->get();
-            return ['depositos' => $depositos, 'restante' => $pagares[0]->restante];
-    }
+            ->where('id','=',$request->buscar)->get();
 
+        return ['depositos' => $depositos, 'restante' => $pagares[0]->restante];
+    }
+    // Función que retorna todos los depositos registrados.
     public function historialDepositos(Request $request){
         if(!$request->ajax())return redirect('/');
-        $fecha1 = $request->fecha1;
-        $fecha2 = $request->fecha2;
-        $banco = $request->banco;
-        $monto = $request->monto;
-        $nombre = $request->nombre;
-
-        $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-            ->join('creditos','creditos.id','=','contratos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->select('contratos.id',
-                    'depositos.id as depId',
-                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                    'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-        'depositos.banco','depositos.concepto','depositos.fecha_pago');
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        $depositos = $query;
-
-        if($fecha1 != '' && $fecha2 != '')
-            $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
-        if($banco != '')
-            $depositos = $depositos->where('depositos.banco','=',$banco);
-        if($monto != '')
-            $depositos = $depositos->where('depositos.cant_depo','=',$monto);
-
-        if($nombre != '')
-            $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $nombre . '%');
-
+        // Llamada a la función privada que retorna los depositos.
+        $depositos = $this->getHistorialDep($request);
         $depositos = $depositos->orderBy('depositos.fecha_pago','desc')->paginate(8);
 
-        
         return[
             'pagination' => [
                 'total'         => $depositos->total(),
@@ -565,41 +303,12 @@ class DepositoController extends Controller
         ];
 
     }
-
+    // Función que retorna en excel todos los depositos registrados.
     public function excelHistorialDepositos(Request $request){
-        
-        $fecha1 = $request->fecha1;
-        $fecha2 = $request->fecha2;
-        $banco = $request->banco;
-        $monto = $request->monto;
-
-        $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-            ->join('creditos','creditos.id','=','contratos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->select('contratos.id', 
-                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                    'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-        'depositos.banco','depositos.concepto','depositos.fecha_pago');
-        
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        $depositos = $query;
-
-        if($fecha1 != '' && $fecha2 != '')
-            $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
-        if($banco != '')
-            $depositos = $depositos->where('depositos.banco','=',$banco);
-        if($monto != '')
-            $depositos = $depositos->where('depositos.cant_depo','=',$monto);
-
+        // Llamada a la función privada que retorna los depositos.
+        $depositos = $this->getHistorialDep($request);
         $depositos = $depositos->orderBy('depositos.fecha_pago','desc')->get();
-
+        // Creación de excel.
         return Excel::create('Depositos', function($excel) use ($depositos){
             $excel->sheet('Depositos', function($sheet) use ($depositos){
                 
@@ -655,9 +364,44 @@ class DepositoController extends Controller
         )->download('xls');
 
     }
+    // Función privada que obtiene el historial de depositos.
+    private function getHistorialDep(Request $request){
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $banco = $request->banco;
+        $monto = $request->monto;
+        $nombre = $request->nombre;
+        // Query
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id',
+                    'depositos.id as depId',
+                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                    'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                    'depositos.banco','depositos.concepto','depositos.fecha_pago'
+                );
 
+        if($request->b_empresa != '') // Busqueda por empresa
+            $depositos= $depositos->where('lotes.emp_constructora','=',$request->b_empresa);
+        if($fecha1 != '' && $fecha2 != '') // Busqueda por fecha de deposito
+            $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+        if($banco != '') // Busqueda por cuenta bancaria
+            $depositos = $depositos->where('depositos.banco','=',$banco);
+        if($monto != '') // Busqueda por monto
+            $depositos = $depositos->where('depositos.cant_depo','=',$monto);
+        if($nombre != '') // Busqueda por cliente.
+            $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $nombre . '%');
+
+        return $depositos;
+    }
+    // Funcion que retorna en excel depositos en un rango de fecha y por cuenta bancaria.
     public function excelDepositos(Request $request){
-
+        // Query
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','contratos.id','=','creditos.id')
@@ -665,14 +409,13 @@ class DepositoController extends Controller
                     'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
                     'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
 
-
-        if($banco != '')
+        if($banco != '') // Busqueda por cuenta bancaria
             $depositos = $depositos->where('depositos.banco','=',$request->banco);
-        if($desde != '')
+        if($desde != '') // Busqueda por fecha de deposito
             $depositos = $depositos->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta]);
 
         $depositos = $depositos->get();
-
+        // Retorno en excel.
         return Excel::create('Depositos', function($excel) use ($depositos){
                 $excel->sheet('Depositos', function($sheet) use ($depositos){
                     
@@ -730,12 +473,12 @@ class DepositoController extends Controller
                 }
         )->download('xls');
     }
-
+    // Funciíon para registrar depositos.
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
-
+            // Registro en la Tabla Depositos
             $deposito = new Deposito();
             $deposito->pago_id = $request->pago_id;
             $deposito->cant_depo = $request->cant_depo;
@@ -747,24 +490,25 @@ class DepositoController extends Controller
             $deposito->banco = $request->banco;
             $deposito->concepto = $request->concepto;
             $deposito->fecha_pago = $request->fecha_pago;
-
             $deposito->interes_pago = $request->pago_interes;
             $deposito->pago_capital = $request->pago_capital;
             $deposito->desc_interes = $request->descuento;
-
+            // Pago sin interes
             $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
             $descuento = $request->descuento;
-
+            // Se accede al pagare correspondiente del deposito.
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
+            // Se calcula el monto restante del pagare
             $pago_contrato->restante =  $pago_contrato->restante - $pago;
+            // Si el monto del pagare ha sido cubierto completamente.
             if($pago_contrato->restante <= 0){
-                $pago_contrato->pagado = 2;
-                if($pago_contrato->restante < 0){
-                    $restante = abs($pago_contrato->restante);
-                    $pago_contrato->restante = 0;
-                    $pago_contrato->save();
+                $pago_contrato->pagado = 2; // Pagare pagado.
+                if($pago_contrato->restante < 0){ // Si el restante supera el monto del pagare
+                    $restante = abs($pago_contrato->restante); // Se calcula el monto sobrante
+                    $pago_contrato->restante = 0; // El pagare se iguala a 0
+                    $pago_contrato->save(); // Guardan cambios
                     
-                    $nextPago = Pago_contrato::select('id')
+                    $nextPago = Pago_contrato::select('id') // El restante se añade al siguiente pagare
                                 ->where('contrato_id','=',$pago_contrato->contrato_id)
                                 ->where('pagado','<',2)
                                 ->where('tipo_pagare','=',$pago_contrato->tipo_pagare)
@@ -789,12 +533,13 @@ class DepositoController extends Controller
                         
                 }
             }
-            else{
-                $pago_contrato->pagado = 1;
+            else{ // Si el monto del pagare no ha sido cubierto.
+                $pago_contrato->pagado = 1; // El pagare queda como abonado.
             }
 
-            if($request->interes_ord != 0){
-                $gasto = new Gasto_admin();
+            if($request->interes_ord != 0){ // En caso de tener intereses ordinarios.
+                // El interes se almacena en la tabla de Gastos Administrativos.
+                $gasto = new Gasto_admin(); 
                 $gasto->contrato_id = $pago_contrato->contrato_id;
                 $gasto->concepto = 'Interes Ordinario';
                 $gasto->costo = $request->interes_ord;
@@ -803,7 +548,8 @@ class DepositoController extends Controller
                 $gasto->save();
             }
 
-            if($request->interes_mor != 0){
+            if($request->interes_mor != 0){ // En caso de tener intereses moratorios.
+                // El interes se almacena en la tabla de Gastos Administrativos.
                 $gasto = new Gasto_admin();
                 $gasto->contrato_id = $pago_contrato->contrato_id;
                 $gasto->concepto = 'Interes Moratorio';
@@ -812,33 +558,28 @@ class DepositoController extends Controller
                 $gasto->observacion = '';
                 $gasto->save();
             }
-
+            // Se actualiza el saldo del contrato.
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
             $contrato->saldo = round($contrato->saldo - $pago - $descuento,2);
             
-
+            // Se indica a que lote pertenece el deposito.
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
             $deposito->lote_id = $credit->lote_id;
-
+            // En caso de ser un lote alianza
             if($credit->porcentaje_terreno > 0){
+                // Se calcula el monto correspondiente al terreno.
                 $saldo = $credit->valor_terreno - $credit->saldo_terreno;
-
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $pago*$porcentaje;
-                
+                // En caso de ser mayor el monto calculado al saldo del terreno
                 if($monto_terreno > $saldo)
-                    $deposito->monto_terreno = $saldo;
+                    $deposito->monto_terreno = $saldo; // monto se iguala al saldo
                 else
                     $deposito->monto_terreno = $monto_terreno;
-
             }
             
             $contrato->save(); 
-
             $pago_contrato->save();
-
-            
-
             $deposito->save();
 
             $tCredito = inst_seleccionada::select('tipo_credito')
@@ -850,14 +591,13 @@ class DepositoController extends Controller
             
             //alerta cuando la suma de lo depositos alcanza 50mil y esta como apartado
             if($tCredito->tipo_credito == "Apartado"){
-                
                 $saldo = Pago_contrato::select(
                             DB::raw('SUM(monto_pago) as monto'), 
                             DB::raw('SUM(restante) as restante')
                         )->groupBy('contrato_id')
                         ->where('contrato_id', '=', $contrato->id)
                 ->get();
-                
+                // Se envia notificación en caso de ser Apartado y al alcanzar deposito mayor a 50'000.00
                 if(($saldo[0]->monto - $saldo[0]->restante) >= 50000){
                     
                     $toAlert1 = [12];
@@ -875,22 +615,17 @@ class DepositoController extends Controller
                             ]
                         ];
                         User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
-                        
-
                         $persona = Personal::findOrFail($id);
-
                         // Mail::to($persona->email)->send(new NotificationReceived($msj1));
                     }
                 }
             }
-
             //alerta cuando se realiza un nuevo deposito
             if($request->banco != "0102030405-Scotiabank"){
                 $toAlert = [24706, 24705];
                 $msj = 'Se ha realizado un nuevo depósito de pagare';
                 foreach($toAlert as $index => $id){
                     $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
-
                     $dataAr = [
                         'notificacion'=>[
                             'usuario' => $senderData[0]->usuario,
@@ -901,46 +636,49 @@ class DepositoController extends Controller
                         ]
                     ];
                     User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
-
                     $persona = Personal::findOrFail($id);
-
                     // Mail::to($persona->email)->send(new NotificationReceived($msj));
                 }
             }
-
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
         }       
     }
-
+    // Función para actualizar depositos.
     public function update(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+            // Se accede al deposito
             $deposito = Deposito::findOrFail($request->id);
+            // Se accede al pagare correspondiente.
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
             $diferencia = 0;
-
+            // Se verifica si el monto ha cambiado
             if($deposito->cant_depo != $request->cant_depo){
+                // Se calcula la diferencia de montos entre el registrado contra la actualización
                 $diferencia = $deposito->cant_depo - $request->cant_depo;
             }
-
+            // Se obtiene el monto Anterior
             $pagoAnt = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
+            // Se obtiene el nuevo monto
             $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
-            
+            // Se verifica si hay interes ordinario
             if($request->interes_ord != $deposito->interes_ord  && $request->interes_ord>0){
+                // Se busca si existe registro de un interes ordinario anterior.
                 $b_gasto = Gasto_admin::select('id')
                             ->where('concepto','=','Interes Ordinario')
                             ->where('costo','=',$deposito->interes_ord)
                             ->where('contrato_id','=',$pago_contrato->contrato_id)
                             ->get();
+                // Se actualiza el interes ordinario existente
                 if(sizeof($b_gasto) != 0){
                     $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
                     $gasto->costo = $request->interes_ord;
                     $gasto->save();
                 }
-                else{
+                else{ // En caso de no tener interes ordinario, se crea uno nuevo.
                     $gasto = new Gasto_admin();
                     $gasto->contrato_id = $pago_contrato->contrato_id;
                     $gasto->concepto = 'Interes Ordinario';
@@ -950,29 +688,33 @@ class DepositoController extends Controller
                     $gasto->save();
                 }              
             }
+            // Si la actualización no incluye interes ordinario
             elseif($request->interes_ord != $deposito->interes_ord  && $request->interes_ord==0){
+                // Se busca el registro anterior
                 $b_gasto = Gasto_admin::select('id')
                             ->where('concepto','=','Interes Ordinario')
                             ->where('costo','=',$deposito->interes_ord)
                             ->where('contrato_id','=',$pago_contrato->contrato_id)
                             ->get();
-                
+                    // Se elimina el interes ordinario anterior.
                     $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
                     $gasto->delete();
             }
-
+            // Se verifica si hay interes moratorio.
             if($request->interes_mor != $deposito->interes_mor  && $request->interes_mor>0){
+                // Se busca el registro del interes moratorio
                 $b_gasto = Gasto_admin::select('id')
                             ->where('concepto','=','Interes Moratorio')
                             ->where('costo','=',$deposito->interes_mor)
                             ->where('contrato_id','=',$pago_contrato->contrato_id)
                             ->get();
+                // Se actualiza el registro existente
                 if(sizeof($b_gasto) != 0){
                     $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
                     $gasto->costo = $request->interes_mor;
                     $gasto->save();
                 }
-                else{
+                else{   // En caso de no tener interes anterior, se crea uno nuevo.
                     $gasto = new Gasto_admin();
                     $gasto->contrato_id = $pago_contrato->contrato_id;
                     $gasto->concepto = 'Interes Moratorio';
@@ -982,17 +724,18 @@ class DepositoController extends Controller
                     $gasto->save();
                 }              
             }
+            // Si la actualización no incluye interes moratorio.
             elseif($request->interes_mor != $deposito->interes_mor  && $request->interes_mor==0){
                 $b_gasto = Gasto_admin::select('id')
                             ->where('concepto','=','Interes Moratorio')
                             ->where('costo','=',$deposito->interes_mor)
                             ->where('contrato_id','=',$pago_contrato->contrato_id)
                             ->get();
-                
+                    // Se elimina el registro anterior.
                     $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
                     $gasto->delete();
             }
-
+            // Se actualiza el registro del deposito.
             $deposito->cant_depo = $request->cant_depo;
             $deposito->interes_mor = $request->interes_mor;
             $interesAnt = $deposito->interes_ord;
@@ -1010,70 +753,87 @@ class DepositoController extends Controller
             $deposito->interes_pago = $request->pago_interes;
             $deposito->pago_capital = $request->pago_capital;
             $deposito->desc_interes = $request->descuento;
-           
+           // Calculo del saldo para el pagare.
             $pago_contrato->restante = $pago_contrato->restante + $diferencia;
             if($pago_contrato->restante == 0)
+                // Si el pagare ha sido liquidado.
                 $pago_contrato->pagado = 2;
             else{
+                // Si el pagare tiene saldo pendiente.
                 $pago_contrato->pagado = 1;
             }
-
+            // Se accede al registro del contrato
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
+            // Se actualiza el nuevo saldo del contrato.
             $contrato->saldo = round($contrato->saldo + $pagoAnt + $descAnt - $descuento - $pago,2);
             $contrato->save(); 
-
+            // Se accede al registro del crédito.
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
-
+            // En caso de ser un lote de alianza.
             if($credit->porcentaje_terreno > 0){
+                // Se calcula el saldo actual del terreno.
                 $saldo = $credit->valor_terreno - $credit->saldo_terreno;
-
                 $porcentaje = $credit->porcentaje_terreno/100;
+                // Calculo del porcentaje de monto correspondiente al deposito.
                 $monto_terreno = $pago*$porcentaje;
-                
+                // Si el monto calculado supera al saldo actual
                 if($monto_terreno > $saldo)
+                    // El monto se iguala al saldo
                     $deposito->monto_terreno = $saldo;
                 else
                     $deposito->monto_terreno = $monto_terreno;
             }
 
             $pago_contrato->save();
-
             $deposito->save();
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
         }       
     }
-
+    // Función para eliminar el registro de un deposito.
     public function delete(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         try{
             DB::beginTransaction();
+            // Se accede al registro del deposito.
             $deposito = Deposito::findOrFail($request->id);
-
+            // Se calcula el pago realizado.
             $pagoAnt = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
-
+            // Se accede al pagare.
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
             $pago = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
+            // Se actualiza el saldo del pagare sumandole el monto depositado que se eliminara.
             $pago_contrato->restante = $pago_contrato->restante + $pago;
-
+            // Se accede al registro del contrato.
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
+            // Actualización del saldo.
             $contrato->saldo = round($contrato->saldo + $pagoAnt, 2);
-
+            // Se verifica que exista un registro por interes ordinario
             if($deposito->interes_ord != 0){
                 $b_gasto = Gasto_admin::select('id')
                             ->where('concepto','=','Interes Ordinario')
                             ->where('costo','=',$deposito->interes_ord)
                             ->where('contrato_id','=',$pago_contrato->contrato_id)
                             ->get();
-
+                // Se elimina el registro.
                 $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
                 $gasto->delete();
             }
+            // Se verifica que exista un registro por interes moratorio
+            if($deposito->interes_mor != 0){
+                $b_gasto = Gasto_admin::select('id')
+                            ->where('concepto','=','Interes Moratorio')
+                            ->where('costo','=',$deposito->interes_mor)
+                            ->where('contrato_id','=',$pago_contrato->contrato_id)
+                            ->get();
+                // Se elimina el registro.
+                $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+                $gasto->delete();
+            }
+            
 
             $contrato->save(); 
-
             $pago_contrato->save();
 
             $deposito->delete();
@@ -1083,28 +843,34 @@ class DepositoController extends Controller
         }     
     
     }
-
+    // Función para imprimir el recibo del deposito en PDF.
     public function reciboPDF($id){
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                            ->join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('depositos.id', 'depositos.pago_id', 'depositos.cant_depo','depositos.interes_mor','depositos.interes_ord',
-                                    'lotes.emp_constructora','lotes.emp_terreno',
-                                     'depositos.obs_mor','depositos.obs_ord','depositos.num_recibo','depositos.banco','depositos.concepto','depositos.fecha_pago'
-                                     ,'creditos.manzana', 'creditos.num_lote','personal.nombre','personal.apellidos','creditos.fraccionamiento')
-                                    ->where('depositos.id','=',$id)
-                                    ->get();
+                    ->join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                    ->join('creditos','creditos.id','=','contratos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                    ->select('depositos.id', 'depositos.pago_id', 'depositos.cant_depo',
+                            'depositos.interes_mor','depositos.interes_ord',
+                            'lotes.emp_constructora','lotes.emp_terreno',
+                            'depositos.obs_mor','depositos.obs_ord','depositos.num_recibo',
+                            'depositos.banco','depositos.concepto','depositos.fecha_pago',
+                            'creditos.manzana', 'creditos.num_lote','personal.nombre',
+                            'personal.apellidos','creditos.fraccionamiento'
+                            )
+                    ->where('depositos.id','=',$id)
+                    ->get();
+        // Se da formato a la cantidad depositada
         $depositos[0]->cantdepLetra = NumerosEnLetras::convertir($depositos[0]->cant_depo,'Pesos',true,'Centavos');
         $fechaDeposito = new Carbon($depositos[0]->fecha_pago);
+        // Se da formato a la fecha.
         $depositos[0]->fecha_pago = $fechaDeposito->formatLocalized('%d días de %B de %Y');
+        // Se carga la vista blade con el formado del deposito.
         $pdf = \PDF::loadview('pdf.reciboDePagos',['depositos' => $depositos]);
         return $pdf->stream('recibo_de_pago.pdf');
     }
-
-    public function indexEstadoCuenta(Request $request){
-        //if(!$request->ajax())return redirect('/');
+    // Función privada que obtiene los contratos para el estado de cuenta.
+    private function getContratosEdoCuenta(Request $request){
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_lote = $request->b_lote;
@@ -1114,7 +880,8 @@ class DepositoController extends Controller
         $credito = $request->credito;
         $b_direccion = $request->b_direccion;
 
-        $query = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+        // Query
+        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
             ->leftJoin('creditos','contratos.id','=','creditos.id')
             ->join('lotes','creditos.lote_id','=','lotes.id')
             ->join('licencias','lotes.id','=','licencias.id')
@@ -1147,11 +914,6 @@ class DepositoController extends Controller
                         'lotes.calle','lotes.numero',
 
                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id 
                             GROUP BY pagos_contratos.contrato_id) as totalRestante"),
                         
@@ -1169,30 +931,28 @@ class DepositoController extends Controller
                             GROUP BY gastos_admin.contrato_id) as gastos")
 
             );
-
-        $query = $query->where('i.elegido', '=', 1);
-
+        $contratos = $contratos->where('i.elegido', '=', 1);
+        // Estatus del contrato
         if($b_status != '')
-            $query = $query
+            $contratos = $contratos
                 ->where('contratos.status','=',$b_status);
-
+        // Dirección oficial
         if($b_direccion != '')
-            $query = $query->where(DB::raw("CONCAT(lotes.calle,' ',lotes.numero)"), 'like', '%'. $b_direccion . '%');
+            $contratos = $contratos->where(DB::raw("CONCAT(lotes.calle,' ',lotes.numero)"), 'like', '%'. $b_direccion . '%');
                 
-
-
         switch($criterio){
+            // Busqueda por cliente
             case 'c.nombre':{
-                $contratos = $query;
+                $contratos = $contratos;
                 if($buscar != '')
                     $contratos = $contratos->where('c.nombre','like','%'. $buscar . '%');
                 if($buscar2 != '')
                     $contratos = $contratos->where('c.apellidos','like','%'. $buscar2 . '%');
                 break;
             }
-
+            // Busqueda por folio de contrato
             case 'contratos.id':{
-                $contratos = $query;
+                $contratos = $contratos;
                 if($buscar != '')
                     $contratos = $contratos->where('contratos.id','=', $buscar );
                 break;
@@ -1200,18 +960,18 @@ class DepositoController extends Controller
 
             case 'contratos.fecha':{
                 if($buscar2 == '' && $buscar != ''){
-                    $contratos = $query
+                    $contratos = $contratos
                         ->where('contratos.fecha','=', $buscar );
                 }
                 else{
-                    $contratos = $query
+                    $contratos = $contratos
                         ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
                 }
                 break;
             }
 
             case 'lotes.fraccionamiento_id':{
-                $contratos = $query;
+                $contratos = $contratos;
 
                 if($credito != '')
                     $contratos = $contratos->where('i.tipo_credito','=',$credito);
@@ -1231,21 +991,49 @@ class DepositoController extends Controller
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
+        return $contratos;
+
+    }
+    // Función que retorna los contratos para estado de cuenta.
+    public function indexEstadoCuenta(Request $request){
+        if(!$request->ajax())return redirect('/');
+        // Llamada a la función privada para obtener los contratos para el edo de cuenta.
+        $contratos = $this->getContratosEdoCuenta($request);
         $contratos = $contratos->orderBy('contratos.saldo','desc')
                         ->orderBy('contratos.id','asc')
                         ->paginate(15);
+
         if(sizeOf($contratos)){
+            // Se recorren todos los contratos
             foreach($contratos as $index => $contrato){
+                // Se obtienen las instituciones de financiamiento del contrato
                 $instEle = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('elegido','=',1)->get();
                 $instEle2 = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('tipo','=',1)->get();
                 $cobrado = 0;
                 $monto_credito = 0;
-                if(sizeOf($instEle2)){
+                if(sizeOf($instEle2)){ // Se obtienen los montos cobrados
+                    // Para el segundo financiamiento.
                     $cobrado = $instEle2[0]->cobrado;
                     $monto_credito = $instEle2[0]->monto_credito;
                 }
+                // Se obtiene el monto cobrado para el primer financiamiento.
                 $contrato->cobrado = $instEle[0]->cobrado + $cobrado;
+                // La suma total de crédito solicitado.
                 $contrato->credito_solic = $instEle[0]->monto_credito + $monto_credito;
+                $contrato->depositos = 0;
+                // Se obtienen todos los depositos
+                $depositos = Deposito::join('pagos_contratos as pg','depositos.pago_id','=','pg.id')
+                    ->select('depositos.id','depositos.cant_depo')
+                    ->where('pg.contrato_id','=',$contrato->folio)
+                    ->get();
+                
+                if(sizeof($depositos))
+                    foreach ($depositos as $key => $deposito) {
+                        // Se suman los depositos.
+                        $contrato->depositos += $deposito->cant_depo;
+                    }
+                // Se calcula el monto pendiente por cobrar del enganche.
+                $contrato->pendiente_enganche = $contrato->enganche_total - $contrato->depositos;
             }
         }
 
@@ -1259,150 +1047,48 @@ class DepositoController extends Controller
                 'to'            => $contratos->lastItem(),
             ],'contratos' => $contratos,'contador' => $contratos->total()];
     }
-
+    // Función que retorna los contratos para estado de cuenta en excel.
     public function excelEstadoCuenta(Request $request){
-
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $b_lote = $request->b_lote;
-        $b_manzana = $request->b_manzana;
-        $criterio = $request->criterio;
-        $b_status = $request->b_status;
-        $credito = $request->credito;
-        $b_direccion = $request->b_direccion;
-
-        $query = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-            ->leftJoin('creditos','contratos.id','=','creditos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
-            ->join('licencias','lotes.id','=','licencias.id')
-            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as c', 'clientes.id', '=', 'c.id')
-            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-            
-            ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                    'licencias.avance',
-                    'creditos.manzana','creditos.num_lote',
-                    'creditos.precio_venta',
-                    'expedientes.valor_escrituras', 
-                    'expedientes.descuento', 
-                    'contratos.enganche_total',
-                    'contratos.saldo',
-                    'i.monto_credito as credito_solic',
-                    'i.cobrado',
-                    'i.segundo_credito',
-                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                    'c.f_nacimiento','c.rfc',
-                    'c.homoclave','c.direccion','c.colonia','c.cp',
-                    'c.telefono','c.email','creditos.num_dep_economicos',
-                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                    'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                    'contratos.ext_empresa','contratos.colonia_empresa',
-                    'lotes.calle','lotes.numero',
-
-                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id AND 
-                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                        GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id 
-                        GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                    
-                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id 
-                        GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id AND 
-                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                        GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                    DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                        WHERE gastos_admin.contrato_id = contratos.id 
-                        GROUP BY gastos_admin.contrato_id) as gastos")
-
-        );
-
-        $query = $query->where('i.elegido', '=', 1);
-
-        if($b_status != '')
-            $query = $query
-                ->where('contratos.status','=',$b_status);
-
-        if($b_direccion != '')
-            $query = $query->where(DB::raw("CONCAT(lotes.calle,' ',lotes.numero)"), 'like', '%'. $b_direccion . '%');
-                
-        switch($criterio){
-            case 'c.nombre':{
-                $contratos = $query;
-                if($buscar != '')
-                    $contratos = $contratos->where('c.nombre','like','%'. $buscar . '%');
-                if($buscar2 != '')
-                    $contratos = $contratos->where('c.apellidos','like','%'. $buscar2 . '%');
-                break;
-            }
-
-            case 'contratos.id':{
-                $contratos = $query;
-                if($buscar != '')
-                    $contratos = $contratos->where('contratos.id','=', $buscar );
-                break;
-            }
-
-            case 'contratos.fecha':{
-                if($buscar2 == '' && $buscar != ''){
-                    $contratos = $query
-                        ->where('contratos.fecha','=', $buscar );
-                }
-                else{
-                    $contratos = $query
-                        ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
-                }
-                break;
-            }
-
-            case 'lotes.fraccionamiento_id':{
-                $contratos = $query;
-
-                if($credito != '')
-                    $contratos = $contratos->where('i.tipo_credito','=',$credito);
-                if($buscar != '')
-                    $contratos = $contratos->where($criterio, '=', $buscar);
-                if($buscar2 != '')
-                    $contratos = $contratos->where('lotes.etapa_id', '=', $buscar2);
-                if($b_manzana != '')
-                    $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
-                if($b_lote != '')
-                    $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
-                break;
-            }
-        }
-
-        if($request->b_empresa != ''){
-            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
+        // Llamada a la función privada para obtener los contratos para el edo de cuenta.
+        $contratos = $this->getContratosEdoCuenta($request);
         $contratos = $contratos->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->get();        
 
         if(sizeOf($contratos)){
+            // Se recorren todos los contratos
             foreach($contratos as $index => $contrato){
+                // Se obtienen las instituciones de financiamiento del contrato
                 $instEle = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('elegido','=',1)->get();
                 $instEle2 = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('tipo','=',1)->get();
                 $cobrado = 0;
                 $monto_credito = 0;
-                if(sizeOf($instEle2)){
+                if(sizeOf($instEle2)){ // Se obtienen los montos cobrados
+                    // Para el segundo financiamiento.
                     $cobrado = $instEle2[0]->cobrado;
                     $monto_credito = $instEle2[0]->monto_credito;
                 }
+                // Se obtiene el monto cobrado para el primer financiamiento.
                 $contrato->cobrado = $instEle[0]->cobrado + $cobrado;
+                // La suma total de crédito solicitado.
                 $contrato->credito_solic = $instEle[0]->monto_credito + $monto_credito;
+                $contrato->depositos = 0;
+                // Se obtienen todos los depositos
+                $depositos = Deposito::join('pagos_contratos as pg','depositos.pago_id','=','pg.id')
+                    ->select('depositos.id','depositos.cant_depo')
+                    ->where('pg.contrato_id','=',$contrato->folio)
+                    ->get();
+                
+                if(sizeof($depositos))
+                    foreach ($depositos as $key => $deposito) {
+                        // Se suman los depositos.
+                        $contrato->depositos += $deposito->cant_depo;
+                    }
+                // Se calcula el monto pendiente por cobrar del enganche.
+                $contrato->pendiente_enganche = $contrato->enganche_total - $contrato->depositos;
             }
         }
-
+        // Créación de Excel.
         return Excel::create('Relacion estado de cuenta', function($excel) use ($contratos){
             $excel->sheet('Contratos', function($sheet) use ($contratos){
                 
@@ -1442,7 +1128,7 @@ class DepositoController extends Controller
                 
                 foreach($contratos as $index => $contrato) {
                     $cont++;
-                    $depositos = $contrato->totalPagares - $contrato->totalRestante;
+                    //$depositos = $contrato->totalPagares - $contrato->totalRestante;
                     $pendienteCredito = $contrato->credito_solic - $contrato->cobrado;
                    
                     $contrato->avance = $contrato->avance.'%';
@@ -1460,7 +1146,7 @@ class DepositoController extends Controller
                         $contrato->valor_escrituras,
                         $contrato->pagares,
                         $contrato->enganche_total,
-                        $depositos,
+                        $contrato->depositos,
                         $contrato->pendiente_enganche,
                         $credito,
                         $contrato->cobrado,
@@ -1480,103 +1166,87 @@ class DepositoController extends Controller
         
         )->download('xls');
     }
-
+    // Función para retornar el estado de cuenta por cliente.
     public function estadoPDF ($id){
         setlocale(LC_TIME, 'es_MX.utf8');
+        // Fecha actual
         $tiempo = new Carbon();
         $tiempo = $tiempo->formatLocalized('%d de %B de %Y');
-
-        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-        ->leftJoin('creditos','contratos.id','=','creditos.id')
-        ->leftJoin('lotes','creditos.lote_id','=','lotes.id')
-        ->leftJoin('modelos','lotes.modelo_id','modelos.id')
-        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-        ->join('personal as c', 'clientes.id', '=', 'c.id')
-        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-        
-        ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                'creditos.manzana','creditos.num_lote','creditos.modelo',
-                'creditos.precio_venta',
-                'expedientes.valor_escrituras', 
-                'expedientes.descuento', 
-                'expedientes.obs_descuento', 
-                'expedientes.fecha_liquidacion',
-                'expedientes.fecha_firma_esc',
-                'lotes.credito_puente',
-                'lotes.emp_constructora',
-                'lotes.emp_terreno',
-                'modelos.nombre as modelo',
-                'contratos.enganche_total',
-                'contratos.fecha',
-                'contratos.saldo',
-                'contratos.status',
-                'i.tipo_credito',
-                'i.institucion',
-                'i.monto_credito as credito_solic',
-                'i.cobrado',
-                'i.segundo_credito',
-                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                'c.rfc','c.homoclave',
-
-                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                    WHERE pagos_contratos.contrato_id = contratos.id AND 
-                    (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                    GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                    WHERE pagos_contratos.contrato_id = contratos.id 
-                    GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                
-                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                    WHERE pagos_contratos.contrato_id = contratos.id 
-                    GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                    WHERE pagos_contratos.contrato_id = contratos.id AND 
-                    (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                    GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                    WHERE gastos_admin.contrato_id = contratos.id 
-                    GROUP BY gastos_admin.contrato_id) as gastos")
-
-                )
-        ->where('i.elegido', '=', 1)
-        ->where('contratos.id',$id)
-        ->get();
-        $contratos[0]->interesGen = 0;
-
-        if($contratos[0]->modelo == 'Terreno'){
+        // Se obtienen los datos del contrato.
+        $contrato = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftJoin('creditos','contratos.id','=','creditos.id')
+            ->leftJoin('lotes','creditos.lote_id','=','lotes.id')
+            ->leftJoin('modelos','lotes.modelo_id','modelos.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id') 
+            ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
+                    'creditos.manzana','creditos.num_lote','creditos.modelo',
+                    'creditos.precio_venta',
+                    'expedientes.valor_escrituras', 
+                    'expedientes.descuento', 
+                    'expedientes.obs_descuento', 
+                    'expedientes.fecha_liquidacion',
+                    'expedientes.fecha_firma_esc',
+                    'lotes.credito_puente',
+                    'lotes.emp_constructora',
+                    'lotes.emp_terreno',
+                    'modelos.nombre as modelo',
+                    'contratos.enganche_total',
+                    'contratos.fecha',
+                    'contratos.saldo',
+                    'contratos.status',
+                    'i.tipo_credito',
+                    'i.institucion',
+                    'i.monto_credito as credito_solic',
+                    'i.cobrado',
+                    'i.segundo_credito',
+                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    'c.rfc','c.homoclave',
+                    DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                        WHERE gastos_admin.contrato_id = contratos.id 
+                        GROUP BY gastos_admin.contrato_id) as gastos")
+                    )
+            ->where('i.elegido', '=', 1)
+            ->where('contratos.id',$id)
+        ->first();
+        // variable para almacenar los intereses
+        $contrato->interesGen = 0;
+        // Venta de terrenos
+        if($contrato->modelo == 'Terreno'){
+            // Se obtienen los pagos del contrato con los interes correspondientes a cada pagare
             $pagos = Pago_contrato::join('pagos_lotes','pagos_contratos.id','=','pagos_lotes.pagare_id')
                         ->select('pagos_lotes.interes_monto')
-                        ->where('pagos_contratos.contrato_id','=',$contratos[0]->folio)->get();
+                        ->where('pagos_contratos.contrato_id','=',$contrato->folio)->get();
 
             foreach ($pagos as $key => $pago) {
-                $contratos[0]->interesGen += $pago->interes_monto;
+                // Se suma el total de intereses por cada pagare.
+                $contrato->interesGen += $pago->interes_monto;
             }
-
-            $contratos[0]->ventaCInteres = $contratos[0]->interesGen + $contratos[0]->precio_venta;
-            $contratos[0]->ventaCInteres = number_format((float)$contratos[0]->ventaCInteres, 2, '.', ',');
+            // Precio de venta con intereses.
+            $contrato->ventaCInteres = $contrato->interesGen + $contrato->precio_venta;
+            $contrato->ventaCInteres = number_format((float)$contrato->ventaCInteres, 2, '.', ',');
         }
-
+        // Llamada a la función privada para calcular el saldo del terreno para venta por alianza.
         $this->calculateSaldoTerreno($id);
-
-        if($contratos[0]->descuento == NULL)
-            $contratos[0]->descuento = 0;
-
-        $contratos[0]->totalCargo = $contratos[0]->precio_venta + $contratos[0]->gastos + $contratos[0]->interesGen;
-
-        if($contratos[0]->status== 0 || $contratos[0]->status == 2){
-            $contratos[0]->saldo = $contratos[0]->saldo - $contratos[0]->precio_venta - $contratos[0]->interesGen;
-            $contratos[0]->totalCargo = $contratos[0]->totalCargo - $contratos[0]->precio_venta - $contratos[0]->interesGen;
+        // Si no hay un descuento registrado, se iguala la variable a 0
+        if($contrato->descuento == NULL)
+            $contrato->descuento = 0;
+        // Suma total de cargos a la venta.
+        $contrato->totalCargo = $contrato->precio_venta + $contrato->gastos + $contrato->interesGen;
+        // Contratos cancelados o no firmados.
+        if($contrato->status== 0 || $contrato->status == 2){
+            // Calculo para el saldo de la venta.
+            $contrato->saldo = $contrato->saldo - $contrato->precio_venta - $contrato->interesGen;
+            $contrato->totalCargo = $contrato->totalCargo - $contrato->precio_venta - $contrato->interesGen;
         }
-
+        // Query para obtener los depositos realizados a la venta.
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                              ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                              ->select('depositos.cant_depo','depositos.interes_mor','depositos.num_recibo','depositos.fecha_pago','depositos.banco')
                              ->where('contratos.id','=',$id)
                              ->get();
-
+        // Query para obtener los descuentos a intereses generados.
         $desc_interes = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                              ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                              ->select('depositos.desc_interes','depositos.num_recibo','depositos.fecha_pago','depositos.banco')
@@ -1585,45 +1255,50 @@ class DepositoController extends Controller
                              ->get();
 
         for ($i = 0; $i < count($depositos); $i++) {
+            // Se calcula el monto depositado a capital
             $depositos[$i]->cant_depo = $depositos[$i]->cant_depo - $depositos[$i]->interes_mor;
             if($depositos[$i]->cant_depo < 0)
+                // En caso de solo cubrir intereses, el monto a capital se iguala a 0
                 $depositos[$i]->cant_depo = 0;
+            // Se da formato numerico para el pdf.
             $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
             $depositos[$i]->interes_mor = number_format((float)$depositos[$i]->interes_mor, 2, '.', ',');
         }
-
+        // Formato a los descuento de intereses.
         for ($i = 0; $i < count($desc_interes); $i++) {
             $desc_interes[$i]->desc_interes = number_format((float)$desc_interes[$i]->desc_interes, 2, '.', ',');
         }
-
+        // Query para obtener la suma total de monto depositado y monto total de intereses moratorios
         $totalDepositos =  Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
         ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
         ->select(DB::raw("SUM(depositos.cant_depo) as sumDeposito"),DB::raw("SUM(depositos.interes_mor) as sumMor"))
         ->where('contratos.id','=',$id)
         ->get();
-
+        // Query para obtener la suma total de descuento de intereses
         $totalDesc =  Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
         ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
         ->select(DB::raw("SUM(depositos.desc_interes) as sumDesc"))
         ->where('contratos.id','=',$id)
         ->get();
-
-        $contratos[0]->sumDeposito = $totalDepositos[0]->sumDeposito;
-
-        $contratos[0]->gastos = number_format((float)$contratos[0]->gastos, 2, '.', ',');
-        $contratos[0]->precio_venta = number_format((float)$contratos[0]->precio_venta, 2, '.', ',');
-        $contratos[0]->valor_escrituras = number_format((float)$contratos[0]->valor_escrituras, 2, '.', ',');
-
-        $contratos[0]->interesTerreno = number_format((float)$contratos[0]->interesGen, 2, '.', ',');
-
+        // Se almacena la suma de depositos.
+        $contrato->sumDeposito = $totalDepositos[0]->sumDeposito;
+        // Se aplica formato numerico.
+        $contrato->gastos = number_format((float)$contrato->gastos, 2, '.', ',');
+        $contrato->precio_venta = number_format((float)$contrato->precio_venta, 2, '.', ',');
+        $contrato->valor_escrituras = number_format((float)$contrato->valor_escrituras, 2, '.', ',');
+        $contrato->interesTerreno = number_format((float)$contrato->interesGen, 2, '.', ',');
+        // Query para obtener los gastos administrativos.
         $gastos_admin = Gasto_admin::select('concepto','costo','fecha')
         ->where('contrato_id','=',$id)
         ->get();
 
         if(sizeof($gastos_admin)){
+            // Recorren los gastos administrativos
             foreach ($gastos_admin as $key => $gasto) {
                 $gasto->cuenta = '';
+                // Para los gastos por devolución
                 if($gasto->concepto == 'Devolución por cancelación' || $gasto->concepto == 'Devolución'){
+                    // Se busca la devolución correspondiente para obtener la cuenta bancaria.
                     $dev = Devolucion::select('cuenta')->where('contrato_id','=',$id)
                                 ->where('devolver','=',$gasto->costo)
                                 ->where('fecha','=',$gasto->fecha)->first();
@@ -1633,59 +1308,57 @@ class DepositoController extends Controller
                 }
             }
         }
-
+        // Formato numerico para cada gasto administrativo.
         for($i = 0; $i < count($gastos_admin); $i++){
             $gastos_admin[$i]->costo = number_format((float)$gastos_admin[$i]->costo, 2, '.', ',');
         }
-
+        // Query para obtener los depositos por crédito bancario.
         $depositos_credito = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                                         ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                                         ->select('dep_creditos.cant_depo','dep_creditos.banco','dep_creditos.fecha_deposito','inst_seleccionadas.institucion')
                                         ->where('creditos.id','=',$id)
                                         ->get();
-
+        $contrato->sumDepositoCredito = 0;
+        
         for($i = 0; $i < count($depositos_credito); $i++){
+            // Se suman todos los depositos institucionales
+            $contrato->sumDepositoCredito += $depositos_credito[$i]->cant_depo;
+            // Formato numerco para cada deposito institucional
             $depositos_credito[$i]->cant_depo = number_format((float)$depositos_credito[$i]->cant_depo, 2, '.', ',');
         }
-
-        $total_depositos_credito = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
-                                        ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-                                        ->select(DB::raw("SUM(dep_creditos.cant_depo) as sumDepositoCredito"))
-                                        ->where('creditos.id','=',$id)
-                                        ->get();
-
-        $totalDesc[0]->sumDesc += $contratos[0]->descuento;
-
-        
-        $contratos[0]->sumDepositoCredito = $total_depositos_credito[0]->sumDepositoCredito;
-        $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito + $totalDesc[0]->sumDesc;
-        $contratos[0]->saldo = $contratos[0]->totalCargo - $contratos[0]->totalAbono;
-
+       
+        $totalDesc[0]->sumDesc += $contrato->descuento;
+        // Se calcula el total de abonos a la venta.
+        $contrato->totalAbono = $contrato->sumDeposito + $contrato->sumDepositoCredito + $totalDesc[0]->sumDesc;
+        // Calculo del saldo pendiente.
+        $contrato->saldo = $contrato->totalCargo - $contrato->totalAbono;
+        // Se actualiza el saldo actual de la venta.
         $contratoChange = Contrato::findOrFail($id);
-        $contratoChange->saldo = $contratos[0]->totalCargo - $contratos[0]->totalAbono;
+        $contratoChange->saldo = $contrato->totalCargo - $contrato->totalAbono;
         $contratoChange->save();
-
-        $contratos[0]->sumDepositoCredito = number_format((float)$contratos[0]->sumDepositoCredito, 2, '.', ',');
-        $contratos[0]->sumDeposito = number_format((float)$contratos[0]->sumDeposito, 2, '.', ',');
-        $contratos[0]->totalAbono = number_format((float)$contratos[0]->totalAbono, 2, '.', ',');
-        $contratos[0]->totalCargo = number_format((float)$contratos[0]->totalCargo, 2, '.', ',');
-        $contratos[0]->saldo = number_format((float)$contratos[0]->saldo, 2, '.', ',');
-        $contratos[0]->descuento = number_format((float)$contratos[0]->descuento, 2, '.', ',');
-        $contratos[0]->totalDesc = number_format((float)$totalDesc[0]->sumDesc, 2, '.', ',');
-
-        if($contratos[0]->status== 0 || $contratos[0]->status == 2){
-            $contratos[0]->precio_venta = ' 0.00';
+        // Formato numerico.
+        $contrato->sumDepositoCredito = number_format((float)$contrato->sumDepositoCredito, 2, '.', ',');
+        $contrato->sumDeposito = number_format((float)$contrato->sumDeposito, 2, '.', ',');
+        $contrato->totalAbono = number_format((float)$contrato->totalAbono, 2, '.', ',');
+        $contrato->totalCargo = number_format((float)$contrato->totalCargo, 2, '.', ',');
+        $contrato->saldo = number_format((float)$contrato->saldo, 2, '.', ',');
+        $contrato->descuento = number_format((float)$contrato->descuento, 2, '.', ',');
+        $contrato->totalDesc = number_format((float)$totalDesc[0]->sumDesc, 2, '.', ',');
+        // Si la venta esta cancelada, el precio de venta queda en 0
+        if($contrato->status== 0 || $contrato->status == 2){
+            $contrato->precio_venta = ' 0.00';
         }
-        
-        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'descuentos' => $desc_interes, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito, 'fecha'=> $tiempo]);
+        // Retorno del PDF
+        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contrato' => $contrato, 'depositos' => $depositos, 'descuentos' => $desc_interes, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito, 'fecha'=> $tiempo]);
         return $pdf->stream('EstadoDeCuenta.pdf');
     }
-
+    // Función para calcular el saldo del terreno para ventas por alianza.
     private function calculateSaldoTerreno($id){
-
+        // Accede al registro en la tabla de Creditos.
         $credito = Credito::findOrFail($id);
+        // Se obtienen las cuentas bancarias de Cumbres.
         $cuentas = $this->getCuentas('Grupo Constructor Cumbres');
-
+            // Se obtiene la sumatoria porcentual de depositos institucionales ingresados a cumbres
             $sumaDepositoCreditTerreno = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
@@ -1696,7 +1369,7 @@ class DepositoController extends Controller
                 if($sumaDepositoCreditTerreno[0]->suma == NULL){
                     $sumaDepositoCreditTerreno[0]->suma = 0;
                 }
-
+            // Se obtiene la sumatoria porcentual de depositos de enganche ingresados a cumbres
             $sumaDepositoTerreno = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.monto_terreno) as suma"))->where('contratos.id','=',$id)
@@ -1706,7 +1379,7 @@ class DepositoController extends Controller
                 if($sumaDepositoTerreno[0]->suma == NULL){
                     $sumaDepositoTerreno[0]->suma = 0;
                 }
-
+            // Sumatoria de depositos ingresados cuentas cumbres.
             $sumaCuentaCumbres = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.cant_depo) as suma"))
@@ -1717,7 +1390,7 @@ class DepositoController extends Controller
                 if($sumaCuentaCumbres[0]->suma == NULL){
                     $sumaCuentaCumbres[0]->suma = 0;
                 }
-
+            // Sumatoria de depositos reubicados a de cuentas cumbres
             $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
                 ->where('depositos_gcc.contrato_id','=',$id)
                 ->where('depositos_gcc.lote_id','=',$credito->lote_id)
@@ -1725,7 +1398,7 @@ class DepositoController extends Controller
                 if($depositoGCC[0]->suma == NULL){
                     $depositoGCC[0]->suma = 0;
                 }
-
+            // Sumatoria de depositos reubicados a de cuentas concretania
             $depositoConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as suma"))
                 ->where('depositos_conc.contrato_id','=',$id)
                 ->where('depositos_conc.lote_id','=',$credito->lote_id)
@@ -1734,24 +1407,24 @@ class DepositoController extends Controller
                 if($depositoConc[0]->suma == NULL){
                     $depositoConc[0]->suma = 0;
                 }
-        
+        // Calculo del saldo.
         $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma + 
                 $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
         $credito->save();
-
     }
-
+    // Función para retornar los ingresos pendientes por ingresar a cumbres, para ventas por alianza.
     public function pendeintesIngresar(Request $request){
         if(!$request->ajax())return redirect('/');
+        // Llamada a la función privada que obtiene los ingresos.
         $pendientes = $this->pendientesIngresoConcretania($request->b_fecha,$request->b_fecha2);
         return['pendientes' => $pendientes];
     }
-
+    // Función para retornar en Excel los ingresos pendientes por ingresar a cumbres, para ventas por alianza.
     public function pendeintesIngresarExcel(Request $request){
         //if(!$request->ajax())return redirect('/');
+        // Llamada a la función privada que obtiene los ingresos.
         $pendientes = $this->pendientesIngresoConcretania($request->b_fecha,$request->b_fecha2);
-        //return['pendientes' => $pendientes];
-        
+        // Se crea el documento Excel.
         return Excel::create('Pendientes de ingresar', function($excel) use ($pendientes){
             $excel->sheet('Pendientes', function($sheet) use ($pendientes){
                 
@@ -1805,16 +1478,15 @@ class DepositoController extends Controller
                 
             });
         }
-        
         )->download('xls');
     }
-
+    // Funcion para obtener todos los ingresos pendientes por ingresar a cumbres.
     private function pendientesIngresoConcretania($fecha1, $fecha2){
+        // Se obtienen las cuentas bancarias de Concretania.
         $cuentas = $this->getCuentas('CONCRETANIA');
-        $depositos = $this->getDepositosConc();
-        $ingresosCreditos = $this->getIngresosConc();
-
-        $depositos = $depositos
+        $depositos = $this->getDepositosConc();// Query para depositos de enganche.
+        $ingresosCreditos = $this->getIngresosConc();// Query para ingresos institucionales.
+        $depositos = $depositos // Filtros para depositos de enganche
             ->where('lotes.emp_constructora','=','Concretania')
             ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
             ->where('monto_terreno','>',0)
@@ -1826,7 +1498,7 @@ class DepositoController extends Controller
             }
             $depositos = $depositos->get();
 
-        $ingresosCreditos = $ingresosCreditos
+        $ingresosCreditos = $ingresosCreditos // Filtros para ingresos institucionales.
             ->where('lotes.emp_constructora','=','Concretania')
             ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
             ->where('monto_terreno','>',0)
@@ -1843,7 +1515,7 @@ class DepositoController extends Controller
 
         
         $cont =1;
-
+        
         if($fecha1 != '' && $fecha2 != ''){
             $depositosAnt = $this->getDepositosConc();
             $ingresosCreditosAnt = $this->getIngresosConc();
@@ -1904,20 +1576,17 @@ class DepositoController extends Controller
                 $dep->tipo = 0;
                 $cont++;
             }
-
         if(sizeof($ingresosCreditos))
             foreach($ingresosCreditos as $index => $dep){
                 $dep->cont = $cont;
                 $dep->tipo = 1;
                 $cont++;
             }
-
+        // Se juntan los depositos de enganche e ingresos bancarios en un solo arreglo
         $pendienteIngresar = collect($depositos)->merge(collect($ingresosCreditos));
-
         return $pendienteIngresar;
-
     }
-
+    // Función privada para obtener los depositos por pago de enganche.
     private function getDepositosConc(){
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
@@ -1935,6 +1604,7 @@ class DepositoController extends Controller
         return $depositos;
 
     }
+    // Función privada para obtener los ingresos institucionales
     private function getIngresosConc(){
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1950,11 +1620,12 @@ class DepositoController extends Controller
 
         return $ingresosCreditos;
     }
-
+    // Función para guardar ingreso a cumbres en modalidad alianza.
     public function guardarIngreso(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        // Se accede al registro del crédito.
         $credito = Credito::findOrFail($request->id);
-        if($request->tipo == 0){
+        if($request->tipo == 0){ // Depositos por pago de enganche
             $deposito = Deposito::findOrFail($request->depId);
             $deposito->cuenta = $request->cuenta;
             $deposito->lote_id = $credito->lote_id;
@@ -1962,22 +1633,22 @@ class DepositoController extends Controller
             $deposito->obs_ingreso = $request->observacion;
             $deposito->save();
         }
-        else{
+        else{ // Depositos institucionales.
             $deposito = Dep_credito::findOrFail($request->depId);
             $deposito->cuenta = $request->cuenta;
             $deposito->fecha_ingreso_concretania = $request->fecha_ingreso_concretania;
             $deposito->obs_ingreso = $request->observacion;
             $deposito->save();
         }
-
+        // Se actualiza el saldo del terreno.
         $credito = Credito::findOrFail($request->id);
         $credito->saldo_terreno += $request->monto_terreno;
         $credito->save();
-
     }
-
+    // Funcion para retornar el historial de ingresos por alianza.
     public function historialIngresos(Request $request){
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
+        // Depositos por pago de enganche 
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','creditos.id','=','contratos.id')
@@ -1994,7 +1665,7 @@ class DepositoController extends Controller
                     'depositos.fecha_pago as fecha','depositos.cuenta','depositos.obs_ingreso')
             ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
-
+        // Depositos por ingresos institucionales.
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
@@ -2011,42 +1682,37 @@ class DepositoController extends Controller
             ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
 
-            if($request->cuenta != ''){
+            if($request->cuenta != ''){// Filtro si se especifica una cuenta bancaria.
                 $depositos = $depositos->where('depositos.cuenta','=',$request->cuenta);
                 $ingresosCreditos = $ingresosCreditos->where('dep_creditos.cuenta','=',$request->cuenta);
             }
-
         
         if($request->buscar != '')                            
         switch($request->criterio){
-            case 'cliente':{
+            case 'cliente':{ // Busqueda por cliente.
                 $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
                 $ingresosCreditos = $ingresosCreditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
                 break;
             }
-            case 'fraccionamiento':{
+            case 'fraccionamiento':{ // Busqueda por proyecto.
                 $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);
                 $ingresosCreditos = $ingresosCreditos->where('lotes.fraccionamiento_id','=',$request->buscar);
                 
-                if($request->etapa != '')
+                if($request->etapa != '')// Etapa
                     $depositos = $depositos->where('lotes.etapa_id','=',$request->etapa);
                     $ingresosCreditos = $ingresosCreditos->where('lotes.etapa_id','=',$request->etapa);
-                if($request->manzana != '')
+                if($request->manzana != '')// Manzana
                     $depositos = $depositos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
                     $ingresosCreditos = $ingresosCreditos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
-                if($request->lote != '')
+                if($request->lote != '')// Lote
                     $depositos = $depositos->where('lotes.num_lote','=',$request->lote);
                     $ingresosCreditos = $ingresosCreditos->where('lotes.num_lote','=',$request->lote);
                 break;
             }
         }
 
-            
-
-        $depositos = $depositos
-                    ->get();
-        $ingresosCreditos = $ingresosCreditos
-                    ->get();
+        $depositos = $depositos->get();
+        $ingresosCreditos = $ingresosCreditos->get();
 
         $cont =1;
         if(sizeof($depositos))
@@ -2055,16 +1721,14 @@ class DepositoController extends Controller
             $dep->tipo = 0;
             $cont++;
         }
-
         if(sizeof($ingresosCreditos))
         foreach($ingresosCreditos as $index => $dep){
             $dep->cont = $cont;
             $dep->tipo = 1;
             $cont++;
         }
-
+        // Se juntan los depositos de enganche e ingresos bancarios en un solo arreglo
         $ingresos = collect($depositos)->merge(collect($ingresosCreditos));
-
 
         return[//'depositos' => $depositos,
                 //'ingresosCreditos' => $ingresosCreditos,
@@ -2072,7 +1736,7 @@ class DepositoController extends Controller
                 
             ];
     }
-
+    // Función para obtener los pagos vencidos.
     public function getPagosVencidos(Request $request){
         $hoy = new Carbon();
         $pagos = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
@@ -2096,19 +1760,12 @@ class DepositoController extends Controller
 
         return $pagos;
     }
-
     public function asignarLotes(){
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                                 ->join('creditos','contratos.id','=','creditos.id')
                                 ->select('depositos.id','pagos_contratos.contrato_id','creditos.lote_id','depositos.lote_id as dep_lote')
                                 ->get();
-
-        // foreach ($depositos as $key => $d) {
-        //     $deposito = Deposito::findOrFail($d->id);
-        //     $deposito->lote_id = $d->lote_id;
-        //     $deposito->save();
-        // }
 
         return $depositos;
     }
@@ -2124,7 +1781,5 @@ class DepositoController extends Controller
         return $arrayCuentas;
 
     }
-
-    
 
 }

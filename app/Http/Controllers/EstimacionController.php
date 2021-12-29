@@ -535,5 +535,313 @@ class EstimacionController extends Controller
                 'totalAnt'=>$totalEstimacionAnt,
                 'num' => $num_est];
     }
+
+    public function resumenEdoCuenta(Request $request){
+        //if (!$request->ajax()) 
+ 
+        $obraC = new IniObraController();
+        $contratos = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+            ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('ini_obras.id')
+            ->where('ini_obras.num_casas','!=',0)
+            ->where('contratistas.id','=', $request->contratista)
+            ->whereMonth('ini_obras.f_fin','=',$request->mes)
+            ->whereYear('ini_obras.f_fin','=',$request->anio)
+            ->orderBy('ini_obras.clave', 'desc')->get();
+
+        if(sizeof($contratos)){
+            foreach ($contratos as $key => $contrato) {
+                $datos = $obraC->getEdoCuenta($contrato->id);
+                $contrato->datos = $datos;
+            }
+
+            $excel = Excel::create('Reporte de finalización de obra' , function($excel) use ($contratos){
+                for($i=0; $i<sizeof($contratos); $i++){
+                    $contrato = $contratos[$i]['datos']['contrato'];
+                    $number_est = $contratos[$i]['datos']['num_est'];
+                    $anticipos = $contratos[$i]['datos']['anticipos'];
+                    $fg = $contratos[$i]['datos']['fg'];
+                    $totalAnt  = $contratos[$i]['datos']['totalAnt'];
+                    $totalFG = $contratos[$i]['datos']['totalFG'];
+                    $totalEst = $contratos[$i]['datos']['totalEst'];
+                    $conceptosExtra = $contratos[$i]['datos']['conceptosExtra'];
+                    $totalExtra = $contratos[$i]['datos']['totalExtra'];
+
+                    $excel->sheet($contrato[0]->clave, function($sheet) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG, $totalEst, $conceptosExtra, $totalExtra){
+                    
+                        $sheet->mergeCells('A1:J1');
+                        $sheet->mergeCells('A3:J3');
+                        $sheet->mergeCells('A4:J4');
+                        $sheet->mergeCells('A5:J5');
+        
+                        $sheet->mergeCells('A6:B6');
+                        
+                        
+                        $sheet->setSize('A1', 20, 60);
+                        $sheet->setSize('B1', 20, 60);
+                        $sheet->setSize('C1', 20, 20);
+        
+                        $sheet->setColumnFormat(array(
+                            'C' => '$#,##0.00',
+                            'B' => 'dd-mm-yyyy'
+                            
+                        ));
+            
+                        $objDrawing = new PHPExcel_Worksheet_Drawing;
+                        if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                            $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
+                        if($contrato[0]->emp_constructora == 'CONCRETANIA');
+                            $objDrawing->setPath(public_path('img/contratos/logoConcretaniaObra.png')); //your image path
+                        $objDrawing->setCoordinates('A2');
+                        $objDrawing->setWorksheet($sheet);
+        
+                        if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                            $sheet->cell('A1', function($cell) {
+        
+                                // manipulate the cell
+                                $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
+                                $cell->setFontFamily('Arial Narrow');
+                                $cell->setFontSize(18);
+                                $cell->setFontWeight('bold');
+                                $cell->setAlignment('center');
+                            
+                            });
+                        if($contrato[0]->emp_constructora == 'CONCRETANIA');
+                            $sheet->cell('A1', function($cell) {
+        
+                                // manipulate the cell
+                                $cell->setValue(  'CONCRETANIA, SA DE CV');
+                                $cell->setFontFamily('Arial Narrow');
+                                $cell->setFontSize(18);
+                                $cell->setFontWeight('bold');
+                                $cell->setAlignment('center');
+                            
+                            });
+                            
+                        $sheet->row(3, [
+                            'Resumen de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                        ]);
+                        $sheet->row(4, [
+                            'Contratista: '.$contrato[0]->contratista 
+                        ]);
+        
+                        $sheet->cell('A3', function($cell) {
+        
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(14);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        
+                        });
+                        $sheet->cell('A4', function($cell) {
+        
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(14);
+                        // $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        
+                        });
+        
+        
+                        $sheet->cells('A5:C10', function($cells) {
+        
+                            // manipulate the cell
+                            $cells->setFontFamily('Arial Narrow');
+                            $cells->setFontSize(12);
+                            $cells->setFontWeight('bold');
+                            $cells->setAlignment('center');
+                        
+                        });
+        
+        
+                        
+                        $sheet->row(8, [
+                            'Importe total: ', '',$contrato[0]->total_importe
+                        ]);
+        
+                        $renglon = 10;
+        
+                        if(sizeof($anticipos)){
+                            $sheet->row($renglon, [
+                                'Anticipos: ', 
+                            ]);
+            
+                            $renglon ++;
+            
+                            foreach($anticipos as $index => $ant) {     
+            
+                                $sheet->row($renglon, [
+                                    '',
+                                    $ant->fecha_anticipo,
+                                    $ant->monto_anticipo
+                                ]);	  
+                                $renglon++;
+                            }
+            
+                            $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('right');
+                            });
+                            $sheet->row($renglon, [
+                                '',
+                                'TOTAL:',
+                                $totalAnt
+                            ]);	 
+            
+                            $renglon+=2;
+        
+                        }
+        
+                        if(sizeof($anticipos)){
+                            $sheet->cell('A'.$renglon, function($cell) {
+        
+                                // manipulate the cell
+                                $cell->setFontFamily('Arial Narrow');
+                                $cell->setFontSize(12);
+                                $cell->setFontWeight('bold');
+                                $cell->setAlignment('center');
+                            
+                            });
+            
+                            $sheet->row($renglon, [
+                                'Fondos de Garantia: ', 
+                            ]);
+            
+                            $renglon++;
+            
+                            foreach($fg as $index => $f) {     
+            
+                                $sheet->row($renglon, [
+                                    '',
+                                    $f->fecha_fg,
+                                    $f->monto_fg
+                                ]);	  
+                                $renglon++;
+                            }
+            
+                            $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('right');
+                            });
+                            $sheet->row($renglon, [
+                                '',
+                                'TOTAL:',
+                                $totalFG
+                            ]);
+            
+                            $renglon+=2;
+                        }
+        
+                        if(sizeof($number_est)){
+                            $sheet->cell('A'.$renglon, function($cell) {
+        
+                                // manipulate the cell
+                                $cell->setFontFamily('Arial Narrow');
+                                $cell->setFontSize(12);
+                                $cell->setFontWeight('bold');
+                                $cell->setAlignment('center');
+                            
+                            });
+            
+                            $sheet->row($renglon, [
+                                'Estimaciones: ', 
+                            ]);
+            
+                            $renglon++;
+            
+                            foreach($number_est as $index => $est) {     
+            
+                                $sheet->row($renglon, [
+                                    $est->num_estimacion,
+                                    $est->ini,
+                                    $est->total_pagado
+                                ]);	  
+                                $renglon++;
+                            }
+            
+                            $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('right');
+                            });
+                            $sheet->row($renglon, [
+                                '',
+                                'TOTAL:',
+                                $totalEst
+                            ]);
+            
+                            $renglon+=2;
+                        }
+        
+                        $saldo = $totalFG + $totalAnt + $totalEst - $contrato[0]->total_importe;
+        
+                        $sheet->mergeCells('A'.$renglon.':B'.$renglon);
+                        $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
+                            $cells->setFontWeight('bold');
+                            $cells->setAlignment('right');
+                        });
+        
+                        $sheet->row($renglon, [
+                            'SALDO',
+                            '',
+                            $saldo
+                            
+                        ]);
+                        
+                        if(sizeof($conceptosExtra)){
+                            $renglon+=2;
+                            $sheet->cell('A'.$renglon, function($cell) {
+        
+                                // manipulate the cell
+                                $cell->setFontFamily('Arial Narrow');
+                                $cell->setFontSize(12);
+                                $cell->setFontWeight('bold');
+                                $cell->setAlignment('center');
+                            
+                            });
+            
+                            $sheet->row($renglon, [
+                                'Obra extra: ', 
+                            ]);
+            
+                            $renglon++;
+            
+                            foreach($conceptosExtra as $index => $cext) {     
+            
+                                $sheet->row($renglon, [
+                                    $cext->concepto,
+                                    $cext->fecha,
+                                    $cext->importe
+                                ]);	  
+                                $renglon++;
+                            }
+            
+                            $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('right');
+                            });
+                            $sheet->row($renglon, [
+                                '',
+                                'TOTAL:',
+                                $totalExtra
+                            ]);
+            
+                            $renglon+=2;
+                        }
+        
+        
+                    
+                    });
+                }
+            });
+
+            return $excel->download('xls');
+        }
+        else
+            return redirect('/');
+
+        
+    }
  
 }

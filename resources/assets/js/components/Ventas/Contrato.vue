@@ -1812,7 +1812,7 @@
                                         <div class="col-md-12" v-if="listado==4 && btn_actualizar==0">
                                             <div style="text-align: right;" v-if="rolId!=2">
                                                 <template v-if="modelo != 'Terreno'">
-                                                    <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
                                                     <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                 </template>
                                                 <template v-else>
@@ -1825,7 +1825,7 @@
                                             </div>
                                             <div style="text-align: right;" v-if="rolId==2 && status == 1">
                                                 <template v-if="modelo != 'Terreno'">
-                                                    <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
                                                     <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                 </template>
                                                 <template v-else>

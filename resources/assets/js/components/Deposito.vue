@@ -222,7 +222,7 @@
                         </button>
                         <a :href="'/depositos/historial/excel?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&banco=' + banco + 
                                 '&monto=' + b_deposito+'&b_empresa='+b_empresa"
-                            class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares
+                            class="btn btn-success"><i class="fa fa-file-text"></i> Excel Historial
                         </a>
                         <!---->
                     </div>

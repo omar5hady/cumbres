@@ -453,9 +453,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/storeImporteExtra','IniObraController@storeImporteExtra');
         Route::post('/estimaciones/storeConceptoExtra','IniObraController@storeConceptoExtra');
 
-
         Route::get('/estimaciones/prueba','EstimacionController@prueba');
         Route::get('/estimaciones/excelEdoCuenta','IniObraController@excelEdoCuenta');
+
+        Route::get('/estimaciones/resumenEdoCuenta','EstimacionController@resumenEdoCuenta');
 
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////

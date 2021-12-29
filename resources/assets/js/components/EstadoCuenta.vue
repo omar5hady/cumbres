@@ -147,7 +147,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(contratos.enganche_total)"></td>
 
                                         <td class="td2" v-text="'$'+formatNumber(
-                                            parseFloat(contratos.totalPagares)-parseFloat(contratos.totalRestante))"></td>
+                                            parseFloat(contratos.depositos))"></td>
 
                                         <td class="td2" v-text="'$'+formatNumber(contratos.pendiente_enganche)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.credito_solic)"></td>

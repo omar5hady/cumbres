@@ -3,20 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\DB;
 use App\Departamento; //Importar el modelo
 use Auth;
 
 class DepartamentoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    /*
-    Funcion para listar los registros de la tabla departamentos
-    */
+    //Funcion para listar los registros de la tabla departamentos
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -25,12 +17,10 @@ class DepartamentoController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         
-        if($buscar==''){
+        if($buscar=='')
             $departamentos = Departamento::orderBy('id_departamento','desc')->paginate(8);
-        }
-        else{
+        else
             $departamentos = Departamento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id_departamento','desc')->paginate(8);
-        }
 
         return [
             'pagination' => [
@@ -45,23 +35,6 @@ class DepartamentoController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
      //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -72,35 +45,6 @@ class DepartamentoController extends Controller
         $departamento->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -112,12 +56,7 @@ class DepartamentoController extends Controller
         $departamento->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // Función para eliminar el registro.
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -125,11 +64,12 @@ class DepartamentoController extends Controller
         $departamento->delete();
     }
 
+    // Función que retorna los departamentos en la empresa.
     public function selectDepartamento(Request $request){
-             //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-             if(!$request->ajax())return redirect('/');
-             $departamentos = Departamento::select('departamento','id_departamento')->get();
-             return['departamentos' => $departamentos];
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $departamentos = Departamento::select('departamento','id_departamento')->get();
+        return['departamentos' => $departamentos];
 
     }
 }

@@ -1875,6 +1875,7 @@ class ContratoController extends Controller
         }
     }
 
+    // Función privada para retornar un arreglo de cuentas bancarias por empresa.
     private function getCuentas($cuenta){
         $cuentas = Cuenta::select('num_cuenta','banco')->where('empresa','=',$cuenta)->get();
         $arrayCuentas = [];
@@ -1887,11 +1888,13 @@ class ContratoController extends Controller
 
     }
 
+    // Función privada para calcular el monto cobrado del terreno en lotes alianza.
     private function calculateSaldoTerreno($id){
-
         $credito = Credito::findOrFail($id);
+        // Se obtinene las cuentas bancarias de cumbres.
         $cuentas = $this->getCuentas('Grupo Constructor Cumbres');
 
+            // Se obtiene la suma de traspasos de créditos por alianza.
             $sumaDepositoCreditTerreno = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
@@ -1903,6 +1906,7 @@ class ContratoController extends Controller
                     $sumaDepositoCreditTerreno[0]->suma = 0;
                 }
 
+            // Se obtiene la suma de traspasos de depositos por alianza.
             $sumaDepositoTerreno = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.monto_terreno) as suma"))->where('contratos.id','=',$id)
@@ -1913,6 +1917,7 @@ class ContratoController extends Controller
                     $sumaDepositoTerreno[0]->suma = 0;
                 }
 
+            // Se obtinene la suma de depositos ingresados a cuentas Cumbres.
             $sumaCuentaCumbres = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.cant_depo) as suma"))
@@ -1924,6 +1929,7 @@ class ContratoController extends Controller
                     $sumaCuentaCumbres[0]->suma = 0;
                 }
 
+            // Se obtienen la suma de depositos virtuales a Cumbres
             $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
                 ->where('depositos_gcc.contrato_id','=',$id)
                 ->where('depositos_gcc.lote_id','=',$credito->lote_id)
@@ -1932,6 +1938,7 @@ class ContratoController extends Controller
                     $depositoGCC[0]->suma = 0;
                 }
 
+            // Se obtienen la suma de depositos virtuales a Concretania
             $depositoConc = Deposito_conc::select(DB::raw("SUM(monto) as suma"))
                 ->where('contrato_id','=',$id)
                 ->where('lote_id','=',$credito->lote_id)
@@ -1940,81 +1947,84 @@ class ContratoController extends Controller
                 if($depositoConc[0]->suma == NULL){
                     $depositoConc[0]->suma = 0;
                 }
-        
+        // Calcula el saldo.
         $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma + 
         $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
-        
         $credito->save();
-
     }
 
+    // Función para reubicar clientes con contrato a otros lotes.
     public function reasignarCliente(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         try {
+            //Variable para almacenar el nuevo lote.
             $loteNuevo_id = $request->sel_lote;
-
+            // Se obtienen los datos del lote anterior al cambio.
             $lote_ant = Lote::findOrFail($request->lote_id);
             $terrenoExcedenteOld = 0;
-
+                    // Precio actual de terreno por m2
                     $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
                     ->where('etapa_id','=',$lote_ant->etapa_id)
                     ->where('fraccionamiento_id','=',$lote_ant->fraccionamiento_id)->get();
-
+                    // Medida base de terreno para el modelo.
                     $terrenoModelo = Modelo::select('terreno')
                     ->where('id','=',$lote_ant->modelo_id)
                     ->get();
-                            
+                    // Precio base actual del modelo.
                     $precioBaseOld = Precio_modelo::select('precio_modelo')
                     ->where('modelo_id','=',$lote_ant->modelo_id)
                     ->where('precio_etapa_id', '=', $precioTerrenoOld[0]->id)
                     ->get();
-            
+                    // Sobreprecios del lote
                     $sobrepreciosOld = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
                     ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
                     ->where('sobreprecios_modelos.lote_id','=',$lote_ant->id)->get();
-
+                    // Se calcula el excedente de terreno
                     $terrenoExcedenteOld = ($lote_ant->terreno - $terrenoModelo[0]->terreno);
                     if($terrenoExcedenteOld > 0)
                         $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
-
+                    //Se asigna el precio de base actual del lote.
                     $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
-
+                    //Se asigna el valor de sobreprecio actual.
                     if($sobrepreciosOld[0]->sobreprecios != NULL)
                         $lote_ant->sobreprecio = $sobrepreciosOld[0]->sobreprecios;
                     else
                         $lote_ant->sobreprecio = 0;
 
-
+            //Variable para almacenar el estado del lote ant para venta.
             $varContrato = $lote_ant->contrato;
             $lote_ant->contrato = 0;
             $lote_ant->paquete = '';
             $lote_ant->save();
             DB::beginTransaction();
 
+            //Nuevo lote
             $lote_new = Lote::findOrFail($loteNuevo_id);
             $new_avance = Licencia::findOrFail($loteNuevo_id);
 
             /////////////////////////////////////////////////////////////////
+            // Se obtiene el valor de m2 por excedente para la etapa del nuevo lote.
             $precio_etapa = Precio_etapa::select('id','precio_excedente')
                             ->where('fraccionamiento_id','=',$lote_new->fraccionamiento_id)
                             ->where('etapa_id','=',$lote_new->etapa_id)->get();
-            
+            // Se obtiene el precio del modelo para el nuevo lote.
             $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
                             ->where('modelo_id','=',$lote_new->modelo_id)->get();
-            
+            // Se obtienen los sobreprecios del nuevo lote.
             $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
             ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
             ->where('sobreprecios_modelos.lote_id','=',$loteNuevo_id)->get();
-            
+            // Medida estandar del modelo para el nuevo lote.
             $modelo = Modelo::select('terreno')->where('id','=',$lote_new->modelo_id)->get();
+            // Se calcula el terreno excedente.
             $terrenoExcedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
                 if((double)$terrenoExcedente > 0)
                     $lote_new->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
                 else {
                     $lote_new->excedente_terreno = 0;
                 }
+            
             $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
             $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
@@ -2022,17 +2032,17 @@ class ContratoController extends Controller
             $lote_new->contrato = 1;
 
             ////////////////////////////////////////////////////////////////////////////////////////
-            
-
             $credito = Credito::findOrFail($request->id);
             $contrato = Contrato::findOrFail($request->id);
-
+            
+            //Se obtienen los datos sobre la institución de financiamiento actual.
             $institucion = inst_seleccionada::select('tipo_credito','institucion')
                         ->where('credito_id','=',$credito->id)
                         ->where('elegido','=',1)->first();
             
+            // Si se requiere registrar la reubicación
             if($request->reubicar == 1){
-
+                // Se crea el registro de reubicación.
                 $reubicacion = new ReubicacionController();
                 $reubicacion->createReubicacion(
                                 $credito->id,
@@ -2046,11 +2056,15 @@ class ContratoController extends Controller
                                 $request->observacion,
                                 ''
                             );
-
             }
             
 
+            //Se actualizan los datos en el registro de credito y contrato.
             $contrato->avance_lote = $new_avance->avance;
+            // Si el contrato ya tiene creada una comision, se indica que requiere una reubicacion de comisión.
+            if($contrato->comision == 1)
+                $contrato->comision = 3;
+
             $credito->fraccionamiento = $request->fraccionamiento;
             $credito->etapa = $request->etapa;
             $credito->manzana = $request->manzana;
@@ -2070,55 +2084,51 @@ class ContratoController extends Controller
             $credito->precio_venta = round($precio_venta - $request->descuento_promocion,2);
             $credito->lote_id = $loteNuevo_id;
             $credito->save();
+            $contrato->save();
             $lote_new->save();
             DB::commit();
-
-                $contratos = Contrato::select('comision')->where('id','=',$request->id)->get();
-
-                if(sizeOf($contratos))
-                    if($contratos[0]->comision == 1){
-                        $contrato = Contrato::findOrFail($request->id);
-                        $contrato->comision = 3;
-                        $contrato->save();
-                    }
-
-
-            } catch (Exception $e) { 
-                DB::rollBack();
+        } catch (Exception $e) { 
+            DB::rollBack();
         }
     }
 
+    // Función para reubicar clientes sin contrato a otros lotes.
     public function reasignarCliente2(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         try {
+            //Variable para almacenar el nuevo lote
             $loteNuevo_id = $request->sel_lote;
 
+            //Se accede al registro del lote actual
             $lote_ant = Lote::findOrFail($request->lote_id);
             $terrenoExcedenteOld = 0;
-
+                    // Se obtienen el precio de m2 por terreno excedente del lote actual
                     $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
                     ->where('etapa_id','=',$lote_ant->etapa_id)
                     ->where('fraccionamiento_id','=',$lote_ant->fraccionamiento_id)->get();
-
+                    // Se obtienen la medida base del modelo del lote actual
                     $terrenoModelo = Modelo::select('terreno')
                     ->where('id','=',$lote_ant->modelo_id)
                     ->get();
                             
+                    // Se obtienen el precio de m2 por terreno excedente del lote actual
                     $precioBaseOld = Precio_modelo::select('precio_modelo')
                     ->where('modelo_id','=',$lote_ant->modelo_id)
                     ->where('precio_etapa_id', '=', $precioTerrenoOld[0]->id)
                     ->get();
             
+                    // Se obtienen los sobreprecios del lote actual
                     $sobrepreciosOld = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
                     ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
                     ->where('sobreprecios_modelos.lote_id','=',$lote_ant->id)->get();
 
+                    // Se calcula el costo del terreno excedente actual para el lote.
                     $terrenoExcedenteOld = ($lote_ant->terreno - $terrenoModelo[0]->terreno);
                     if($terrenoExcedenteOld > 0)
                         $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
 
+                    // Se asigna el precio base actual al lote
                     $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
 
                     if($sobrepreciosOld[0]->sobreprecios != NULL)
@@ -2126,28 +2136,30 @@ class ContratoController extends Controller
                     else
                         $lote_ant->sobreprecio = 0;
 
-
             $varContrato = $lote_ant->contrato;
             $lote_ant->paquete = '';
             $lote_ant->save();
             DB::beginTransaction();
 
+            // Se accede al nuevo lote.
             $lote_new = Lote::findOrFail($loteNuevo_id);
             $new_avance = Licencia::findOrFail($loteNuevo_id);
 
             /////////////////////////////////////////////////////////////////
+            // Se obtiene el precio por m2 de terreno excedente para el nuevo lote
             $precio_etapa = Precio_etapa::select('id','precio_excedente')
                             ->where('fraccionamiento_id','=',$lote_new->fraccionamiento_id)
                             ->where('etapa_id','=',$lote_new->etapa_id)->get();
-            
+            // Se obtiene el precio base del nuevo lote
             $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
                             ->where('modelo_id','=',$lote_new->modelo_id)->get();
-            
+            // Se obtienen los sobreprecios del nuevo lote
             $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
             ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
             ->where('sobreprecios_modelos.lote_id','=',$loteNuevo_id)->get();
-            
+            // Se obtiene la superficie de terreno estandar para el modelo del nuevo lote.
             $modelo = Modelo::select('terreno')->where('id','=',$lote_new->modelo_id)->get();
+            // Se calcula el costo por terreno excedente.
             $terrenoExcedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
                 if((double)$terrenoExcedente > 0)
                     $lote_new->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
@@ -2156,12 +2168,11 @@ class ContratoController extends Controller
                 }
             $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
+            // Se calcula el precio de venta para el nuevo lote.
             $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
             $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
-
             ////////////////////////////////////////////////////////////////////////////////////////
-            
-
+            // Se actualiza los datos de la simulación de crédito.
             $credito = Credito::findOrFail($request->id);
             $credito->fraccionamiento = $request->fraccionamiento;
             $credito->etapa = $request->etapa;
@@ -2190,6 +2201,7 @@ class ContratoController extends Controller
         }
     }
 
+    // Función para retornar los contratos registrados en excel.
     public function excelContratos (Request $request){
         $buscar = $request->buscar;
         $buscar3 = $request->buscar3;
@@ -2202,204 +2214,69 @@ class ContratoController extends Controller
         $f_fin = $request->f_fin;
         $publicidad = $request->publicidad;
 
-        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-            ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
-            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as v', 'creditos.vendedor_id', 'v.id')
-            ->select(
-                'creditos.id',
-                'creditos.prospecto_id',
-                'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
-                'creditos.tipo_economia',
-                'creditos.nombre_primera_ref',
-                'creditos.telefono_primera_ref',
-                'creditos.celular_primera_ref',
-                'creditos.nombre_segunda_ref',
-                'creditos.telefono_segunda_ref',
-                'creditos.celular_segunda_ref',
-                'creditos.etapa',
-                'creditos.manzana',
-                'creditos.num_lote',
-                'creditos.modelo',
-                'creditos.precio_base',
-                'creditos.superficie',
-                'creditos.terreno_excedente',
-                'creditos.precio_terreno_excedente',
-                'creditos.promocion',
-                'creditos.descripcion_promocion',
-                'creditos.descuento_promocion',
-                'creditos.paquete',
-                'creditos.descripcion_paquete',
-                'creditos.precio_venta',
-                'creditos.plazo',
-                'creditos.credito_solic',
-                'creditos.costo_paquete',
-                'inst_seleccionadas.tipo_credito',
-                'inst_seleccionadas.id as inst_credito',
-                'creditos.precio_obra_extra',
-                'creditos.fraccionamiento as proyecto',
-                'creditos.lote_id',
+        // Llama a la función privada que retorna la query
+        $contratos = $this->getContratos();
+        $contratos = $contratos->where('inst_seleccionadas.elegido', '=', '1');
 
-                'inst_seleccionadas.institucion',
-                'personal.nombre',
-                'personal.apellidos',
-                'personal.telefono',
-                'personal.celular',
-                'personal.email',
-                'personal.direccion',
-                'personal.cp',
-                'personal.colonia',
-                'personal.f_nacimiento',
-                'personal.rfc',
-                'personal.homoclave',
-                'creditos.fraccionamiento',
-                'clientes.id as prospecto_id',
-                'clientes.edo_civil',
-                'clientes.nss',
-                'clientes.curp',
-                'clientes.empresa',
-                'clientes.coacreditado',
-                'clientes.estado',
-                'clientes.ciudad',
-                'clientes.puesto',
-                'clientes.nacionalidad',
-                'clientes.sexo',
-                'clientes.sexo_coa',
-                'clientes.email_institucional_coa',
-                'clientes.empresa_coa',
-                'clientes.edo_civil_coa',
-                'clientes.nss_coa',
-                'clientes.curp_coa',
-                'clientes.nombre_coa',
-                'clientes.apellidos_coa',
-                'clientes.f_nacimiento_coa',
-                'clientes.nacionalidad_coa',
-                'clientes.rfc_coa',
-                'clientes.homoclave_coa',
-                'clientes.direccion_coa',
-                'clientes.colonia_coa',
-                'clientes.ciudad_coa',
-                'clientes.estado_coa',
-                'clientes.cp_coa',
-                'clientes.telefono_coa',
-                'clientes.ext_coa',
-                'clientes.celular_coa',
-                'clientes.email_coa',
-                'clientes.parentesco_coa',
-                'clientes.lugar_nacimiento_coa',
-                'v.nombre as vendedor_nombre',
-                'v.apellidos as vendedor_apellidos',
-
-                'contratos.id as contratoId',
-                'contratos.infonavit',
-                'contratos.fovisste',
-                'contratos.comision_apertura',
-                'clientes.lugar_nacimiento',
-                'contratos.investigacion',
-                'contratos.avaluo',
-                'contratos.prima_unica',
-                'contratos.escrituras',
-                'contratos.credito_neto',
-                'contratos.status',
-                'contratos.fecha_status',
-                'contratos.avaluo_cliente',
-                'contratos.fecha',
-                'contratos.direccion_empresa',
-                'contratos.cp_empresa',
-                'contratos.colonia_empresa',
-                'contratos.estado_empresa',
-                'contratos.ciudad_empresa',
-                'contratos.telefono_empresa',
-                'contratos.ext_empresa',
-                'contratos.direccion_empresa_coa',
-                'contratos.cp_empresa_coa',
-                'contratos.colonia_empresa_coa',
-                'contratos.estado_empresa_coa',
-                'contratos.ciudad_empresa_coa',
-                'contratos.telefono_empresa_coa',
-                'contratos.ext_empresa_coa',
-                'contratos.total_pagar',
-                'contratos.monto_total_credito',
-                'contratos.enganche_total',
-                'contratos.avance_lote',
-                'contratos.observacion'
-        )->where('inst_seleccionadas.elegido', '=', '1');
-
+        // Filtro para empresa constructora
         if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
-
+        // Filtro para medio publicitario
         if($publicidad != '')
-            $query  = $query->where('contratos.publicidad_id', '=',  $publicidad);
-
+            $contratos  = $contratos->where('contratos.publicidad_id', '=',  $publicidad);
+        // Filtro para estatus de contrato
         if($b_status != ''){
-            $query= $query->where('contratos.status','=',$b_status);
+            $contratos= $contratos->where('contratos.status','=',$b_status);
         }
 
-        
-        if ($buscar == '') {
-            $contratos = $query;
-
-        } else {
+        if ($buscar != '') {
             switch ($criterio) {
                 case 'personal.nombre': {
-                        $contratos = $query
-
+                        $contratos = $contratos
                             ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-
                         break;
                     }
                 case 'v.nombre': {
-                        $contratos = $query
+                        $contratos = $contratos
                             ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
-
                         break;
                     }
                 case 'inst_seleccionadas.tipo_credito': {
-                        $contratos = $query
+                        $contratos = $contratos
                             ->where($criterio, 'like', '%' . $buscar . '%');
                         break;
                     }
                 case 'creditos.id': {
-                        $contratos = $query
-
+                        $contratos = $contratos
                             ->where($criterio, 'like', '%' . $buscar . '%');
-
                         break;
                     }
                 case 'creditos.vendedor_id': {
-                        
-                    $contratos = $query;
+                    $contratos = $contratos->where($criterio, '=',$buscar);
 
-                        if($buscar != '')
-                            $contratos = $contratos->where($criterio, '=',$buscar);
                         if($buscar3 != '')
                             $contratos = $contratos->where('lotes.fraccionamiento_id','=',$buscar3);
                         if($b_etapa != '')
                             $contratos = $contratos->where('lotes.etapa_id','=',$b_etapa);
                         if($f_fin != '' || $f_ini != '')
                             $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
-                        
                     break;
                     }
                 case 'contratos.fecha': {
-                        $contratos = $query
+                        $contratos = $contratos
                             ->whereBetween($criterio, [$buscar, $buscar3]);
                         break;
                     }
 
                 case 'contratos.fecha_status': {
-                        $contratos = $query
+                        $contratos = $contratos
                             ->whereBetween($criterio, [$buscar,  $buscar3]);
                         break;
                     }
                 
                 case 'creditos.fraccionamiento': {
-                        $contratos = $query;
-
+                        $contratos = $contratos;
                             if($buscar != '')
                                 $contratos = $contratos->where('lotes.fraccionamiento_id', '=',  $buscar);
                             if($b_etapa != '')
@@ -2410,16 +2287,13 @@ class ContratoController extends Controller
                                 $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
                             if($f_ini != '' || $f_fin != '')
                                 $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
-
                         break;
                     }
             }
         }
 
         $contratos = $contratos->orderBy('id', 'desc')->get();
-        
-
-
+        // Retorno de resultado en excel.
         return Excel::create('contratos', function($excel) use ($contratos){
             $excel->sheet('contratos', function($sheet) use ($contratos){
                 
@@ -2427,7 +2301,6 @@ class ContratoController extends Controller
                     '# Contrato', 'Cliente', 'Telefono', 'Celular','Email', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Modelo', 'Tipo de crédito', 'Institución','Fecha del contrato', 'Precio de Venta', 'Status', 'Publicidad'
                 ]);
-
 
                 $sheet->cells('A1:Q1', function ($cells) {
                     $cells->setBackground('#052154');
@@ -2442,8 +2315,7 @@ class ContratoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-
-                
+  
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
@@ -2506,6 +2378,7 @@ class ContratoController extends Controller
         )->download('xls');
     }
 
+    // Función que retorna si un contrato ya se encuentra en un contrato firmado o pendiente.
     public function validarLoteEnContrato(Request $request){
         if(!$request->ajax())return redirect('/');
         $idLote = $request->lote_id;
@@ -2520,14 +2393,14 @@ class ContratoController extends Controller
         return ['lote' => $lote];
     }
 
+    // Función para detener o reanudar proceso del contrato.
     public function cambiarProceso(Request $request){
-
         $contrato = Contrato::findOrFail($request->id);
         $contrato->detenido = $request->detenido;
         $contrato->save();
-
     }
 
+    // Función para indicar que el expediente del contrato ah sido integrado.
     public function entregarExp(Request $request){
         if(!$request->ajax())return redirect('/');
         $contrato = Contrato::findOrFail($request->id);
@@ -2535,6 +2408,7 @@ class ContratoController extends Controller
         $contrato->save();
     }
 
+    // Función para imprimir Anexo de contratos para departamento.
     public function printAnexoA($id){
         $contrato =  Credito::join('lotes','creditos.lote_id','=','lotes.id')
                         //->join('etapas','lotes.etapa_id','=','etapas.id')

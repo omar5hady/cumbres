@@ -677,7 +677,10 @@ class LicenciasController extends Controller
         $licencia->f_ingreso = $request->f_ingreso;
         $licencia->f_salida = $request->f_salida;
         $licencia->num_licencia = $request->num_licencia;
-        $licencia->perito_dro = $request->perito_dro;
+        if($request->perito_dro == 0)
+            $licencia->perito_dro = 1;
+        else
+            $licencia->perito_dro = $request->perito_dro;
         if ($request->num_licencia != '') {
             $modeloAnt = $licencia->modelo_ant;
 
@@ -696,7 +699,10 @@ class LicenciasController extends Controller
         $licencia->save();
 
         $lote = Lote::findOrFail($request->id);
-        $lote->arquitecto_id = $request->arquitecto_id;
+        if($request->perito_dro == 0)
+            $lote->arquitecto_id = 1;
+        else
+            $lote->arquitecto_id = $request->arquitecto_id;
 
 
 

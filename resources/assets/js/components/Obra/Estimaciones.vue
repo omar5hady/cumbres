@@ -20,6 +20,10 @@
                             <i class="icon-share-alt"></i>&nbsp;Resumen de estimaciones
                         </button>
 
+                        <button v-if="listado == 1" type="button" @click="abrirModal('reporte')" class="btn btn-dark">
+                            <i class="icon-share-alt"></i>&nbsp;Reporte de finalización de obra
+                        </button>
+
 
                     </div>
 
@@ -214,7 +218,7 @@
                                     <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <div class="col-md-2">
-                                                        <button type="button" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
+                                                        <button type="button" v-if="periodo1 != '' && periodo2 != ''" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
                                                             <i class="icon-check"></i>&nbsp;Guardar
                                                         </button>
                                                     </div>
@@ -675,7 +679,7 @@
                                 </div>
                             </template>
 
-                             <template v-else-if="tipoAccion == 3">
+                            <template v-else-if="tipoAccion == 3">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
                                     <div class="col-md-5">
@@ -706,8 +710,56 @@
                                     </div>
                                 </div>
                             </template>
-                                
-                                
+                            
+                            <template v-else-if="tipoAccion == 5">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="contratista">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input"></label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="mes">
+                                            <option value=''> Selec. Mes </option>
+                                            <option value='01'> Enero </option>
+                                            <option value='02'> Febrero </option>
+                                            <option value='03'> Marzo </option>
+                                            <option value='04'> Abril </option>
+                                            <option value='05'> Mayo </option>
+                                            <option value='06'> Junio </option>
+                                            <option value='07'> Julio </option>
+                                            <option value='08'> Agosto </option>
+                                            <option value='09'> Septiembre </option>
+                                            <option value='10'> Octubre </option>
+                                            <option value='11'> Noviembre </option>
+                                            <option value='12'> Diciembre </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="anio">
+                                            <option value=''> Selec. Año </option>
+                                            <option value='2021'> 2021 </option>
+                                            <option value='2022'> 2022 </option>
+                                            <option value='2023'> 2023 </option>
+                                            <option value='2024'> 2024 </option>
+                                            <option value='2025'> 2025 </option>
+                                            <option value='2026'> 2026 </option>
+                                            <option value='2027'> 2027 </option>
+                                            <option value='2028'> 2028 </option>
+                                            <option value='2029'> 2029 </option>
+                                            <option value='2030'> 2030 </option>
+                                            <option value='2031'> 2031 </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </template>
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -724,7 +776,12 @@
                             <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/prueba?fraccionamiento='+ fraccionamiento 
                                     + '&constructora='+ constructora + '&contratista='+ contratista">
                                     <i class="fa fa-file-text"></i>&nbsp; Descargar excel
-                                </a>
+                            </a>
+
+                            <a v-if="tipoAccion == 5" class="btn btn-success" v-bind:href="'/estimaciones/resumenEdoCuenta?contratista='+ contratista 
+                                + '&mes='+ mes + '&anio='+ anio">
+                                <i class="fa fa-file-text"></i>&nbsp; Descargar excel
+                            </a>
                         </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -840,6 +897,8 @@
                 fecha_extra:'',
                 concepto:'',
                 importe:0,
+                mes:'01',
+                anio:2021
             }
         },
         components:{
@@ -1242,6 +1301,18 @@
                         this.fraccionamiento = '';
                         this.contratista = '';
                         this.constructora = '';
+                        break;
+                    }
+
+                    case 'reporte':
+                    {
+                        this.selectContratistas();
+                        this.modal1 = 1;
+                        this.tipoAccion = 5;
+                        this.tituloModal = 'Reporte de finalización de obra';
+                        this.mes = '';
+                        this.contratista = '';
+                        this.anio = '';
                         break;
                     }
                     

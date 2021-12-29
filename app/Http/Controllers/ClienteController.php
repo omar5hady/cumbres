@@ -1273,7 +1273,6 @@ class ClienteController extends Controller
                     ->where('users.usuario','!=','oficina')
                     ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();
-
             }
             //Si el proyecto no cuenta con asesores asignados.
             else{
