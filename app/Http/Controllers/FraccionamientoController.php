@@ -12,12 +12,13 @@ use Excel;
 use File;
 use DB;
 use App\User;
+use App\Historial_escritura;
+use App\Historial_plano;
 use App\Notifications\NotifyAdmin;
 use Carbon\Carbon;
 
 class FraccionamientoController extends Controller
 {
-    
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -344,65 +345,64 @@ class FraccionamientoController extends Controller
         return['fraccionamientos' => $fraccionamiento];
     }
 
-     //funciones para carga y descarga de planos
-
-     public function formSubmitPlanos(Request $request, $id)
-     {
+    //funciones para carga y descarga de planos
+    public function formSubmitPlanos(Request $request, $id)
+    {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
- 
-         $fileName = time().'.'.$request->archivo_planos->getClientOriginalExtension();
-         $moved =  $request->archivo_planos->move(public_path('/files/fraccionamientos/planos'), $fileName);
- 
-         if($moved){
-             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-             $planos = Fraccionamiento::findOrFail($request->id);
-             $planos->archivo_planos = $fileName;
-             $planos->id = $id;
-             $planos->save(); //Insert
 
-             $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-             $fecha = Carbon::now();
-             $arregloSimPendientes = [
-                 'notificacion' => [
-                     'usuario' => $imagenUsuario[0]->usuario,
-                     'foto' => $imagenUsuario[0]->foto_user,
-                     'fecha' => $fecha,
-                     'msj' => 'Se han subido los planos para el proyecto '. $planos->nombre,
-                     'titulo' => 'Nuevos planos agregados'
-                 ]
-             ];
+        $fileName = time().'.'.$request->archivo_planos->getClientOriginalExtension();
+        $moved =  $request->archivo_planos->move(public_path('/files/fraccionamientos/planos'), $fileName);
 
-             $users = User::select('id')->where('rol_id','=','3')->get();
+        if($moved){
+            $planos = Fraccionamiento::findOrFail($request->id);
+            if( $planos->archivo_planos == NULL)
+                $planos->archivo_planos = $fileName;
+            else
+                $this->almacenarPlano($request,$fileName);
+            $planos->id = $id;
+            $planos->save(); //Insert
 
-             foreach($users as $notificar){
-                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
-             }
-     
-             }
-         
-         return response()->json(['success'=>'You have successfully upload file.']);
-     }
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $arregloSimPendientes = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => 'Se han subido los planos para el proyecto '. $planos->nombre,
+                    'titulo' => 'Nuevos planos agregados'
+                ]
+            ];
+
+            $users = User::select('id')->where('rol_id','=','3')->get();
+            foreach($users as $notificar){
+                User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+            }
+        }
+        
+        return response()->json(['success'=>'You have successfully upload file.']);
+    }
  
     public function downloadFilePlanos($fileName){       
         $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
         return response()->download($pathtoFile);
     }
 
-
-      //funciones para carga y descarga de archivos de escrituras
-
-      public function formSubmitEscrituras(Request $request, $id)
-      {
+    //funciones para carga y descarga de archivos de escrituras
+    public function formSubmitEscrituras(Request $request, $id)
+    {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-  
+
         $fileName = time().'.'.$request->archivo_escrituras->getClientOriginalExtension();
         $moved =  $request->archivo_escrituras->move(public_path('/files/fraccionamientos/escrituras'), $fileName);
 
         if($moved){
-            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
             $escrituras = Fraccionamiento::findOrFail($request->id);
-            $escrituras->archivo_escrituras = $fileName;
-            $escrituras->id = $id;
+            if( $escrituras->archivo_escrituras == NULL)
+                $escrituras->archivo_escrituras = $fileName;
+            else{
+                $this->almacenarEscritura($request,$fileName);
+            }
             $escrituras->save(); //Insert
 
             $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
@@ -422,45 +422,65 @@ class FraccionamientoController extends Controller
             foreach($users as $notificar){
                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
             }
-    
-            }
-        
+
+        }
         return response()->json(['success'=>'You have successfully upload file.']);
-      }
+    }
   
-      public function downloadFileEscrituras($fileName){
-          
-          $pathtoFile = public_path().'/files/fraccionamientos/escrituras/'.$fileName;
-          return response()->download($pathtoFile);
-      }
+    public function downloadFileEscrituras($fileName){
+        
+        $pathtoFile = public_path().'/files/fraccionamientos/escrituras/'.$fileName;
+        return response()->download($pathtoFile);
+    }
 
-      
      //funciones para carga y descarga de los logos de los fraccionamientos
-
-     public function formSubmitLogoFraccionamiento(Request $request, $id)
-     {
+    public function formSubmitLogoFraccionamiento(Request $request, $id)
+    {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
  
-         $fileName = time().'.'.$request->archivo_logo->getClientOriginalExtension();
-         $moved =  $request->archivo_logo->move(public_path('/img/logosFraccionamientos/'), $fileName);
- 
-         if($moved){
-             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-             $logo = Fraccionamiento::findOrFail($request->id);
-             $logo->logo_fracc = $fileName;
-             $logo->id = $id;
-             $logo->save(); //Insert
-     
-             }
-     }
- 
-     public function downloadFileLogoFraccionamiento($fileName){
-         
-         $pathtoFile = public_path().'/img/logosFraccionamientos/'.$fileName;
-         return response()->download($pathtoFile);
-     }
-   
+        $fileName = time().'.'.$request->archivo_logo->getClientOriginalExtension();
+        $moved =  $request->archivo_logo->move(public_path('/img/logosFraccionamientos/'), $fileName);
 
+        if($moved){
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+            $logo = Fraccionamiento::findOrFail($request->id);
+            $logo->logo_fracc = $fileName;
+            $logo->id = $id;
+            $logo->save(); //Insert
+    
+            }
+    }
+ 
+    public function downloadFileLogoFraccionamiento($fileName){
+        
+        $pathtoFile = public_path().'/img/logosFraccionamientos/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+   
+    private function almacenarPlano(Request $request, $filename){
+        $plano = new Historial_plano();
+        $plano->fraccionamiento_id = $request->fraccionamiento_id;
+        $plano->archivo = $filename;
+        $plano->version = $request->version;
+        $plano->save();
+    }
+    private function almacenarEscritura(Request $request, $filename){
+        $plano = new Historial_escritura();
+        $plano->fraccionamiento_id = $request->fraccionamiento_id;
+        $plano->archivo = $filename;
+        $plano->version = $request->version;
+        $plano->save();
+    }
+
+    public function getArchivos(Request $request){
+        $escrituras = Historial_escritura::where('fraccionamiento_id','=',$request->id)->get();
+        $planos = Historial_plano::where('fraccionamiento_id','=',$request->id)->get();
+
+        return [
+            'planos' => $planos,
+            'escrituras' => $escrituras
+        ];
+    }
 
 
 }

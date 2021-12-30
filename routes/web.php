@@ -178,6 +178,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitLogoFraccionamiento/{id}','FraccionamientoController@formSubmitLogoFraccionamiento');
         Route::get('/downloadLogoFraccionamiento/{fileName}' , 'FraccionamientoController@downloadFileLogoFraccionamiento');
         Route::get('/fraccionamiento/datos' , 'FraccionamientoController@getDatos');
+        Route::get('/fraccionamiento/getArchivos' , 'FraccionamientoController@getArchivos');
         
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');

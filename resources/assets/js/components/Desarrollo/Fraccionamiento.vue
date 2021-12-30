@@ -26,7 +26,6 @@
                                       <option value="fraccionamientos.tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
                                     
-                                    
                                     <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
@@ -65,15 +64,10 @@
                                             <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
                                             <i class="icon-trash"></i>
                                             </button>
-                                            <button title="Subir planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
+                                            <button title="Planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button>
-                                            <a  title="Descargar planos" v-if ="fraccionamiento.archivo_planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+fraccionamiento.archivo_planos">
-                                            <i class="fa fa-map fa-lg"></i>
-                                            </a>
-                                            <a  title="Descargar escrituras" v-if ="fraccionamiento.archivo_escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/'+fraccionamiento.archivo_escrituras">
-                                            <i class="fa fa-file-archive-o fa-lg"></i>
-                                            </a>
+                                            
                                         </td>
                                         <td class="td2" v-text="fraccionamiento.nombre"></td>
                                         <td class="td2" v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
@@ -273,27 +267,109 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div style="float:left;">
-                            <form  method="post" @submit="formSubmitPlanos" enctype="multipart/form-data">
+                            <div class="col-md-6" style="float:left;">
+                                <form  method="post" @submit="formSubmitPlanos" enctype="multipart/form-data">
+                                    <div class="form-group row">
+                                        <label class="col-md-12 form-control-label" for="text-input">
+                                            <strong>Sube aqui los planos</strong>
+                                        </label>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <input type="text" v-if="plano_original != null" class="form-control" v-model="nombre_plano" placeholder="Versión del plano">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <input type="file" class="form-control" v-on:change="onImageChangePlanos">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn btn-success">Cargar Planos</button>
+                                        </div>   
+                                    </div>
+                                </form>
+                                <br>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Version</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-if="plano_original != null">
+                                                <td>
+                                                    <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano_original">
+                                                        <i class="fa fa-map fa-md"></i>
+                                                    </a>
+                                                </td>
+                                                <td>Primera versión</td>
+                                            </tr>
+                                            <tr v-for="plano in arrayPlanos" :key="plano.id">
+                                                <td>
+                                                    <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano.archivo">
+                                                        <i class="fa fa-map fa-md"></i>
+                                                    </a>
+                                                </td>
+                                                <td v-text="plano.version"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-                                    <strong>Sube aqui los planos del fraccionamiento</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChangePlanos">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                     </div>
-
-                     <div style="float:right;">
-                             <form  method="post" @submit="formSubmitEscrituras" enctype="multipart/form-data">
-
-                                    <strong>Sube aqui los archivos de escrituras del fraccionamiento</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChangeEscrituras">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                     </div>
+                            <div class="col-md-6" style="float:right;">
+                                <form  method="post" @submit="formSubmitEscrituras" enctype="multipart/form-data">
+                                    <div class="form-group row">
+                                        <label class="col-md-12 form-control-label" for="text-input">
+                                            <strong>Sube aqui las escrituras</strong>
+                                        </label>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <input type="text" v-if="escritura_original != null" class="form-control" v-model="nombre_escritura" placeholder="Versión de escritura">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <input type="file" class="form-control" v-on:change="onImageChangeEscrituras">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn btn-success">Cargar Escrituras</button>
+                                        </div>   
+                                    </div>
+                                </form>
+                                <br>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Version</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-if="escritura_original != null">
+                                                <td>
+                                                    <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura_original">
+                                                        <i class="fa fa-file-archive-o fa-lg"></i>
+                                                    </a>
+                                                </td>
+                                                <td>Primera versión</td>
+                                            </tr>
+                                            <tr v-for="escritura in arrayEscrituras" :key="escritura.id">
+                                                <td>
+                                                    <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura.archivo">
+                                                        <i class="fa fa-file-archive-o fa-lg"></i>
+                                                    </a>
+                                                </td>
+                                                <td v-text="escritura.version"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
                         </div>
                         <!-- Botones del modal -->
@@ -337,9 +413,15 @@
                 fecha_ini_venta:'',
                 archivo_planos: '',
                 archivo_escrituras: '',
+                plano_original : '',
+                escritura_original : '',
+                nombre_escritura :'',
+                nombre_plano : '',
                 arrayFraccionamiento : [],
                 arrayGerentes : [],
                 arrayArquitectos :[],
+                arrayEscrituras : [],
+                arrayPlanos : [],
                 modal : 0,
                 modal4: 0,
                 tituloModal : '',
@@ -406,6 +488,8 @@
             
                 let formData = new FormData();
                 formData.append('archivo_planos', this.archivo_planos);
+                formData.append('version', this.nombre_plano);
+                formData.append('fraccionamiento_id', this.id);
                 let me = this;
                 axios.post('/formSubmitPlanos/'+this.id, formData)
                 .then(function (response) {
@@ -422,7 +506,6 @@
 
                 }).catch(function (error) {
                     currentObj.output = error;
-
                 });
 
             },
@@ -430,22 +513,17 @@
 //funciones para carga de las escrituras de los fraccionamientos
 
             onImageChangeEscrituras(e){
-
                 console.log(e.target.files[0]);
-
                 this.archivo_escrituras = e.target.files[0];
-
             },
 
             formSubmitEscrituras(e) {
-
                 e.preventDefault();
-
                 let currentObj = this;
-            
                 let formData = new FormData();
-           
                 formData.append('archivo_escrituras', this.archivo_escrituras);
+                formData.append('version', this.nombre_escritura);
+                formData.append('fraccionamiento_id', this.id);
                 let me = this;
                 axios.post('/formSubmitEscrituras/'+this.id, formData)
                 .then(function (response) {
@@ -489,6 +567,20 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayGerentes = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getArchivos(id){
+                let me = this;
+                me.arrayEscrituras = [];
+                me.arrayPlanos = [];
+                var url = '/fraccionamiento/getArchivos?id='+id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEscrituras = respuesta.escrituras;
+                    me.arrayPlanos = respuesta.planos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -678,6 +770,8 @@
                 this.tituloModal4 = '';
                 this.archivo_planos = '';
                 this.archivo_escrituras = '';
+                this.nombre_escritura = '';
+                this.nombre_plano = '';
                 this.errorFraccionamiento = 0;
                 this.errorMostrarMsjFraccionamiento = [];
 
@@ -734,8 +828,11 @@
                                 this.modal4 =1;
                                 this.tituloModal4='Subir Archivos';
                                 this.id=data['id'];
-                                this.archivo_planos=data['archivo_planos'];
-                                this.archivo_escrituras=data['archivo_escrituras'];
+                                this.archivo_planos='';
+                                this.archivo_escrituras='';
+                                this.plano_original = data['archivo_planos'];
+                                this.escritura_original=data['archivo_escrituras'];
+                                this.getArchivos(this.id);
                                 break;
                             }
                         }
