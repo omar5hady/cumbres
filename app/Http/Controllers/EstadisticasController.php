@@ -390,6 +390,46 @@ class EstadisticasController extends Controller
 
                         $origen = $origen->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
 
+                $colonias = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('personal.colonia')
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $colonias = $colonias->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $colonias = $colonias->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $colonias = $colonias->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                        $colonias = $colonias->orderBy('personal.colonia','asc')->distinct()->get();
+
+                        if(sizeof($colonias)){
+                                $colonias_cliente=[];
+                                foreach($colonias as $er=>$colonia){
+                                        $colonias_cliente[$er] = $colonia->colonia;
+                                        $colonia->num = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->select('personal.colonia')
+                                                ->where('contratos.status','=',3);
+
+                                                if($proyecto != '')
+                                                        $colonia->num = $colonia->num->where('lotes.fraccionamiento_id',$proyecto);
+                                                if($etapa != '')
+                                                        $colonia->num = $colonia->num->where('lotes.etapa_id',$etapa);
+                                                if($fecha != '' && $fecha2 != '')
+                                                        $colonia->num = $colonia->num->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                                
+                                                $colonia->num = $colonia->num->where('personal.colonia','=',$colonia->colonia)
+                                                ->count();
+                                }
+                        }
+
+
                 $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
@@ -588,6 +628,8 @@ class EstadisticasController extends Controller
                 'total' => $total,
                 'edadesVenta'=>$edadesVenta,
                 'origen'=>$origen,
+                'colonias_cliente'=> $colonias_cliente,
+                'colonias'=>$colonias,
                 'genero'=>$genero,
                 'estadoCivil'=> $edoCivil,
                 'participantes'=>$participantes,

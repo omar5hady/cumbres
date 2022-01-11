@@ -65,9 +65,17 @@
                                             <th v-text="lugar.num"></th>
                                         </tr>
                                     </template>
-                                    
-                                    
-                                    
+                                <tr>
+                                    <th @click="loadColonia()" style="text-align: center;" colspan="2">
+                                        <button v-if="ver_colonia == 0" @click="loadColonia()" class="btn btn-dark btn-sm"> Colonias </button>
+                                        <button v-if="ver_colonia == 1" @click="loadColonia()" class="btn btn-default btn-sm"> Colonias </button></th>
+                                </tr>
+                                    <template v-if="ver_colonia == 1">
+                                        <tr v-for="colonia in colonias" :key="colonia.colonia">
+                                            <th v-text="colonia.colonia"></th>
+                                            <th v-text="colonia.num"></th>
+                                        </tr>
+                                    </template>
                                 <tr>
                                     <th @click="loadEdoCivil()" style="text-align: center;" colspan="2">
                                         <button v-if="ver_edoCivil == 0" @click="loadEdoCivil()" class="btn btn-dark btn-sm">Estado Civil</button>
@@ -283,6 +291,14 @@
                                         <canvas style="width:100%; height:1800px;" id="lugar" >                                                
                                         </canvas>
                                     </div>
+                                    <div class="ct-chart" v-if="ver_colonia == 1 && colonias.length < 15">
+                                        <canvas style="width:100%; height:100%;" id="colonia" >                                                
+                                        </canvas>
+                                    </div>
+                                    <div class="ct-chart" v-if="ver_colonia == 1 && colonias.length > 15">
+                                        <canvas style="width:100%; height:1800px;" id="colonia" >                                                
+                                        </canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -398,6 +414,12 @@
                 ver_lugarNac:0,
                 ver_empresas:0,
                 ver_amasCasa:0,
+                ver_colonia:0,
+                
+                varColonia:null,
+                charColonia:null,
+                colonias_cliente:[],
+                colonias:[],
             }
         },
         methods : {
@@ -453,6 +475,9 @@
                     me.lugares = respuesta.lugarNacimiento;
                     me.lugarCant = respuesta.origen;
 
+                    me.colonias_cliente = respuesta.colonias_cliente;
+                    me.colonias = respuesta.colonias;
+
                     me.empresas = respuesta.empresas;
                     me.empresasCant = respuesta.empresasVentas;
 
@@ -486,6 +511,7 @@
                     me.ver_amasCasa=0;
                     me.ver_autos=0;
                     me.ver_empresas=0;
+                    me.ver_colonia=0;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -570,6 +596,7 @@
                 me.ver_lugarNac = 0;
                 me.ver_empresas = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_autos = 1;
                 me.grafico = 1;
 
@@ -620,6 +647,7 @@
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_discap = 1;
                 me.grafico = 1;
                 
@@ -668,6 +696,7 @@
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_edades = 1;
                 me.grafico = 1;
 
@@ -718,6 +747,7 @@
                 me.ver_empresas = 0;
                 me.ver_amasCasa = 0;
                 me.ver_lugarNac = 0;
+                me.ver_colonia = 0;
                 me.ver_edadesComp = 1;
                 me.grafico = 1;
 
@@ -772,6 +802,7 @@
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
+                me.ver_colonia = 0;
                 me.ver_amasCasa = 0;
                 me.ver_edoCivil = 1;
                 me.grafico = 1;
@@ -868,6 +899,7 @@
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_mascotas = 1;
                 me.grafico = 1;
                 
@@ -917,6 +949,7 @@
                 me.ver_autos = 0;
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
+                me.ver_colonia = 0;
                 me.ver_mascotas = 0;
                 me.ver_amasCasa = 1;
                 me.grafico = 1;
@@ -966,6 +999,7 @@
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_lugarNac = 1;
                 me.grafico = 1;
                 
@@ -1009,6 +1043,63 @@
                 });
             },
 
+            loadColonia(){
+                let me=this;
+                me.borrarGraficas();
+                me.titulo = 'Colonias';
+                me.ver_edades = 0;
+                me.ver_edadesComp = 0;
+                me.ver_mascotas = 0;
+                me.ver_genero = 0;
+                me.ver_empresas = 0;
+                me.ver_edoCivil = 0;
+                me.ver_discap = 0;
+                me.ver_autos = 0;
+                me.ver_amasCasa = 0;
+                me.ver_lugarNac = 0;
+                me.ver_colonia = 1
+                me.grafico = 1;
+                
+                me.varColonia=document.getElementById('colonia').getContext('2d');
+
+                me.colonias.sort((a, b) => (a.num < b.num) ? 1 : -1)
+
+                me.lista = [];
+                me.lista2 = [];
+                var i =0;
+                me.colonias_cliente.forEach(element => {
+                    me.lista.push(me.colonias[i].num);
+                    me.lista2.push(me.colonias[i].colonia);
+                    i++;
+                });
+
+                me.charColonia = new Chart(me.varColonia, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: me.lista2,
+                        datasets: [{
+                            label: '# ',
+                            data: me.lista,
+                            backgroundColor: 'rgba(102, 0, 0, 0.4)',
+                                                
+                            borderColor: 'rgba(102, 0, 0, 1)',
+                            borderWidth: 1
+                        },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        },
+                        legend: {display:false}
+                    }
+                });
+            },
+
             loadEmpresas(){
                 let me=this;
                 me.borrarGraficas();
@@ -1022,6 +1113,7 @@
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_empresas = 1;
                 me.grafico = 1;
                 
@@ -1078,6 +1170,7 @@
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_amasCasa = 0;
+                me.ver_colonia = 0;
                 me.ver_genero = 1;
                 me.grafico = 1;
                 
