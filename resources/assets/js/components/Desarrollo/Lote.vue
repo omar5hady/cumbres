@@ -194,8 +194,8 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="13" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                                    <div class="col-md-5">
+                                        <input type="text" pattern="\d*" maxlength="31" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
                                     </div>
                                 </div>
                                 <div class="form-group row">

@@ -31,6 +31,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text" disabled class="form-control col-md-3" placeholder="Inicio:">
+                                    <input type="date" v-model="fecha1" class="form-control col-md-3" placeholder="Inicio:">
+                                    <input type="text" disabled class="form-control col-md-3" placeholder="Fin:">
+                                    <input type="date" v-model="fecha2"  class="form-control col-md-3" placeholder="Inicio:">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group row">
@@ -113,6 +121,8 @@
                 meses : 0,
                
                 fecha:'',
+                fecha1:'',
+                fecha2:'',
                 proyecto:'',
                 b_etapa:'',
                 
@@ -126,7 +136,8 @@
             /**Metodo para mostrar los registros */
             listarReporte(page){
                 let me = this;
-                var url = '/reportes/reporteModelos?fraccionamiento=' + this.proyecto + '&etapa=' + this.b_etapa;
+                var url = '/reportes/reporteModelos?fraccionamiento=' + this.proyecto + '&etapa=' + this.b_etapa + 
+                    '&fecha1=' + this.fecha1 + '&fecha2=' + this.fecha2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.modelos;

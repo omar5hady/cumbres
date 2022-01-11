@@ -1770,6 +1770,7 @@ class DepositoController extends Controller
         return $depositos;
     }
 
+    // Función privada que retorna las cuentas bancarias por empresa.
     private function getCuentas($cuenta){
         $cuentas = Cuenta::select('num_cuenta','banco')->where('empresa','=',$cuenta)->get();
         $arrayCuentas = [];

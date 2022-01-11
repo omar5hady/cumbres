@@ -433,7 +433,7 @@ class FraccionamientoController extends Controller
         return response()->download($pathtoFile);
     }
 
-     //funciones para carga y descarga de los logos de los fraccionamientos
+    //funciones para carga y descarga de los logos de los fraccionamientos
     public function formSubmitLogoFraccionamiento(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -450,13 +450,13 @@ class FraccionamientoController extends Controller
     
             }
     }
- 
     public function downloadFileLogoFraccionamiento($fileName){
         
         $pathtoFile = public_path().'/img/logosFraccionamientos/'.$fileName;
         return response()->download($pathtoFile);
     }
    
+    // Funcion privada para guardar los planos del fraccionamiento para el historial de versiones
     private function almacenarPlano(Request $request, $filename){
         $plano = new Historial_plano();
         $plano->fraccionamiento_id = $request->fraccionamiento_id;
@@ -464,14 +464,15 @@ class FraccionamientoController extends Controller
         $plano->version = $request->version;
         $plano->save();
     }
+    // Funcion privada para guardar las escrituras del fraccionamiento para el historial de versiones
     private function almacenarEscritura(Request $request, $filename){
-        $plano = new Historial_escritura();
-        $plano->fraccionamiento_id = $request->fraccionamiento_id;
-        $plano->archivo = $filename;
-        $plano->version = $request->version;
-        $plano->save();
+        $escritura = new Historial_escritura();
+        $escritura->fraccionamiento_id = $request->fraccionamiento_id;
+        $escritura->archivo = $filename;
+        $escritura->version = $request->version;
+        $escritura->save();
     }
-
+    // Funcion para retornar todos los archivos del fraccionamiento.
     public function getArchivos(Request $request){
         $escrituras = Historial_escritura::where('fraccionamiento_id','=',$request->id)->get();
         $planos = Historial_plano::where('fraccionamiento_id','=',$request->id)->get();
@@ -481,6 +482,24 @@ class FraccionamientoController extends Controller
             'escrituras' => $escrituras
         ];
     }
+    // Funcion para eliminar la escritura del historial
+    public function deleteEscrituras(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
+        $pathAnterior = public_path().'/files/fraccionamientos/escrituras/'.$request->archivo;
+        File::delete($pathAnterior);
 
+        $escritura = Historial_escritura::findOrFail($request->id);
+        $escritura->delete();
+    }
+    // Funcion para eliminar el plano del historial
+    public function deletePlanos(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        $pathAnterior = public_path().'/files/fraccionamientos/planos/'.$request->archivo;
+        File::delete($pathAnterior);
+
+        $plano = Historial_plano::findOrFail($request->id);
+        $plano->delete();
+    }
 }

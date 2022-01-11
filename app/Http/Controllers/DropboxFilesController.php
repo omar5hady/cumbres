@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
  
+use App\Http\Controllers\CreditoPuenteController;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\DropboxFiles;
+use Illuminate\Http\Request;
 use Spatie\Dropbox\Client;
+use App\DropboxFiles;
 use App\Solic_detalle;
 use App\Doc_puente;
 use App\Credito_puente;
 use Auth;
-
-use App\Http\Controllers\CreditoPuenteController;
-
  
 class DropboxFilesController extends Controller
 {

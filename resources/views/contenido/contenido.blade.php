@@ -4,12 +4,9 @@
 
     @if(Auth::check())
 
-    <template v-if="menu==0">
-        <calendar-component rol-id="{{Auth::user()->rol_id}}"></calendar-component>
-    </template>
-
-    
-
+        <template v-if="menu==0">
+            <calendar-component rol-id="{{Auth::user()->rol_id}}"></calendar-component>
+        </template>
         <template v-if="menu==20">
             <perfil-user user-id="{{Auth::user()->id}}"
                 rol-id="{{Auth::user()->rol_id}}"
@@ -548,8 +545,10 @@
         <template v-if="menu==270">
             <vehiculos></vehiculos>
         </template>
+        <template v-if="menu==271">
+            <datos-admin></datos-admin>
+        </template>
 
     @endif
-
        
 @endsection

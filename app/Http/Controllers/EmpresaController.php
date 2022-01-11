@@ -7,22 +7,21 @@ use App\Empresa; //Importar el modelo
 use Auth;
 use App\Empresa_verificadora;
 
+//Controlador para modelo Empresa.
 class EmpresaController extends Controller
 {
+    // Función que retorna los registros de empresas registradas
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         
-        if($buscar==''){
+        if($buscar=='')
             $empresas = Empresa::orderBy('nombre','ASC')->paginate(15);
-        }
-        else{
+        else
             $empresas = Empresa::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','ASC')->paginate(15);
-        }
 
         return [
             'pagination' => [
@@ -37,19 +36,16 @@ class EmpresaController extends Controller
         ];
     }
 
+    // Función que retorna los registros de empresas verificadoras
     public function indexVerificadoras(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-
         $buscar = $request->buscar;
-        
-        if($buscar==''){
+        if($buscar=='')
             $empresas = Empresa_verificadora::orderBy('empresa','ASC')->paginate(10);
-        }
-        else{
+        else
             $empresas = Empresa_verificadora::where('empresa', 'like', '%'. $buscar . '%')->orderBy('empresa','ASC')->paginate(10);
-        }
 
         return [
             'pagination' => [
@@ -64,7 +60,7 @@ class EmpresaController extends Controller
         ];
     }
 
-    //funcion para insertar en la tabla
+    // Función para insertar registro en la tabla
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -80,7 +76,7 @@ class EmpresaController extends Controller
         $empresa->save();
     }
 
-    //funcion para insertar en la tabla
+    // Función para registrar empresa verificadora en la base de datos
     public function storeVerificadora(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -91,7 +87,7 @@ class EmpresaController extends Controller
         $empresa->save();
     }
 
-    //funcion para actualizar los datos
+    // Función para actualizar los datos de la empresa
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -120,7 +116,7 @@ class EmpresaController extends Controller
         $empresa->save();
     }
 
-
+    // Función para eliminar el registro de empresa verificadora.
     public function destroyVerificadora(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -128,6 +124,7 @@ class EmpresaController extends Controller
         $empresa->delete();
     }
 
+    // Función para eliminar registro de empresa
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -135,6 +132,7 @@ class EmpresaController extends Controller
         $empresa->delete();
     }
 
+    // Función que retorna las empresas, usando como filtro el nombre.
     public function selectEmpresa(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -145,6 +143,7 @@ class EmpresaController extends Controller
         return['empresas' => $empresas];
     }
 
+    // Función que retorna todas las empresas verificadoras.
     public function selectEmpresaVerificadora(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -153,6 +152,7 @@ class EmpresaController extends Controller
         return['empresas' => $empresas];
     }
 
+    // Funcion que retorna la información de una empresa, usando como filtro el nombre.
     public function getDatosEmpresa(Request $request)
     {
         if(!$request->ajax())return redirect('/');

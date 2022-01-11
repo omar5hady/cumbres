@@ -132,6 +132,7 @@ Vue.component('postventa-entrega', require('./components/Postventa/Entrega.vue')
 Vue.component('postventa-etapa', require('./components/Postventa/PostventaEtapa.vue'));
 Vue.component('solicitud-detalles', require('./components/Postventa/SolicitudDetalle.vue'));
 Vue.component('revision-previa', require('./components/Postventa/RevisionPrevia.vue'));
+Vue.component('datos-admin', require('./components/Postventa/DatosAdmin.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));

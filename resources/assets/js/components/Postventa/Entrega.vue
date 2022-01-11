@@ -13,7 +13,6 @@
                         &nbsp;&nbsp;<button type="submit" v-if="historial == 1" @click="historial = 0" class="btn btn-default"><i class="fa fa-mail-reply-all"></i> Regresar</button>
                         <a v-if="historial == 1" :href="'/postventa/excelEntregas?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                     </div>
-
                 <!-------------------  Div contratos pendientes por entregar --------------------->
                     <div class="card-body" v-if="historial == 0">
                         <div class="form-group row">
@@ -149,9 +148,11 @@
                                                 </td>
                                             </template>
                                             <template>
-                                                <td class="td2" v-if="contratos.paquete && contratos.promocion" v-text="'Paquete: '+contratos.paquete +' Promoción: '+contratos.promocion"></td>
-                                                <td class="td2" v-else-if="contratos.paquete && !contratos.promocion" v-text="'Paquete: '+contratos.paquete" ></td>
-                                                <td class="td2" v-else-if="!contratos.paquete && contratos.promocion" v-text="'Promoción: '+contratos.promocion" ></td>
+                                                <td class="td2" v-if="(contratos.paquete != '' || contratos.promocion != '') && (contratos.paquete != null || contratos.promocion != null)">
+                                                    <button title="Ver equipamiento" type="button" class="btn btn-primary pull-right" 
+                                                        @click="abrirModal('equipamiento', contratos)">Ver Equipamiento
+                                                    </button> 
+                                                </td>
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
                                             <template>
@@ -280,7 +281,6 @@
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
-
                 <!-------------------  Div historial de entregas --------------------->
                     <div class="card-body" v-if="historial == 1">
                         <div class="form-group row">
@@ -403,9 +403,11 @@
                                                 </td>
                                             </template>
                                             <template>
-                                                <td class="td2" v-if="entregas.paquete && entregas.promocion" v-text="'Paquete: '+entregas.paquete +' Promoción: '+entregas.promocion"></td>
-                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion" v-text="'Paquete: '+entregas.paquete" ></td>
-                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion" v-text="'Promoción: '+entregas.promocion" ></td>
+                                                <td class="td2" v-if="entregas.descripcion_paquete || entregas.descripcion_promocion">
+                                                    <button title="Ver equipamiento" type="button" class="btn btn-primary pull-right" 
+                                                        @click="abrirModal('equipamiento', entregas)">Ver Equipamiento
+                                                    </button> 
+                                                </td>
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
                                             <template>
@@ -478,8 +480,6 @@
                         <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
-
-
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -591,43 +591,61 @@
                                 <span aria-hidden="true">×</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <template v-if="tipoAccion == 1">
+                                <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="observacion" class="form-control">
+                                        </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="observacion" class="form-control">
+                                        <div class="col-md-3">
+                                            <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
+
+                                    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                        
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Usuario</th>
+                                                    <th>Observacion</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                                    
+                                                    <td v-text="observacion.usuario" ></td>
+                                                    <td v-text="observacion.comentario" ></td>
+                                                    <td v-text="observacion.created_at"></td>
+                                                </tr>                               
+                                            </tbody>
+                                        </table>
+                                        
+                                    </form>
+                                </div>
+                            </template>
+                            <template v-if="tipoAccion == 2">
+                                <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Promoción</label>
+                                        <div class="col-md-10">
+                                            <textarea disabled rows="5" cols="30" v-model="promocion" class="form-control" placeholder="Promoción"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Paquete</label>
+                                        <div class="col-md-10">
+                                            <textarea disabled rows="5" cols="30" v-model="paquete" class="form-control" placeholder="Paquete"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-
-
-                                <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                    
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Usuario</th>
-                                                <th>Observacion</th>
-                                                <th>Fecha</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                
-                                                <td v-text="observacion.usuario" ></td>
-                                                <td v-text="observacion.comentario" ></td>
-                                                <td v-text="observacion.created_at"></td>
-                                            </tr>                               
-                                        </tbody>
-                                    </table>
-                                    
-                                </form>
-                            </div>
+                            </template>
+                            
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -885,6 +903,7 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
     export default {
         data(){
             return{
@@ -926,7 +945,7 @@
                 lote_id: 0,
                 folio:0,
                 contrato_id: 0,
-                offset : 3,
+                offset : 2,
                 nombre_archivo_modelo:'',
                 fecha_program:'',
                 hora_entrega_prog:'',
@@ -968,6 +987,8 @@
                 depeconomicos_cliente:'',
 
                 mot_reprogra : '',
+                promocion :'',
+                paquete:'',
 
                 // Criterios para historial de contratos
                 pagination2 : {
@@ -1315,12 +1336,16 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayUltimaFecha = respuesta.fecha_ultima;
-                        if(me.arrayUltimaFecha[0] == null){
-                            me.fecha = "Sin fecha";
+                        if(me.arrayUltimaFecha[0].fin_instalacion == null){
+                            if(me.arrayUltimaFecha[0].fecha_colocacion != null){
+                                me.fecha ='Programada la instalación para el dia: ' + me.arrayUltimaFecha[0].fecha_colocacion;
                             }
-                        else{
-                            me.fecha = me.arrayUltimaFecha[0].fin_instalacion;
-                            }
+                            else
+                                me.fecha = "Sin fecha de instalación";
+                        }
+                        else
+                            me.fecha ='Instalado el dia: ' + me.arrayUltimaFecha[0].fin_instalacion;
+                            
                     Swal({
                     title: me.fecha,
                     animation: false,
@@ -1331,10 +1356,6 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-
-              
-                
-                 
             },
 
             finalizarEntrega(){
@@ -1429,133 +1450,133 @@
             },
 
             abrirModal(accion,data =[]){
-                    switch(accion){
+                switch(accion){
 
-                        case 'observaciones':{
-                            this.modal3 =1;
-                            this.modal1=0;
-                            this.tituloModal='Observaciones';
-                            this.folio = data['folio'];
-                            this.observacion = '';
-                            break;
+                    case 'observaciones':{
+                        this.modal3 =1;
+                        this.modal1=0;
+                        this.tituloModal='Observaciones';
+                        this.folio = data['folio'];
+                        this.observacion = '';
+                        this.tipoAccion = 1;
+                        break;
+                    }
+
+                    case 'equipamiento':{
+                        this.modal3 = 1;
+                        this.modal1 = 0;
+                        this.tituloModal = 'Equipamiento en la casa';
+                        this.promocion = data['descripcion_promocion'];
+                        this.paquete = data['descripcion_paquete'];
+                        this.tipoAccion = 2;
+                        break;
+                    }
+
+                    case 'ver_personal':
+                    {
+                        this.modal1 =1;
+                        this.tituloModal='Datos del prospecto';
+                        this.tipoAccion=3;
+                        this.nombre_cliente = data['nombre_cliente'];
+                        if(data['sexo'] == "M"){
+                            this.sexo_cliente= 'Masculino';
+                        }else{
+                            this.sexo_cliente= 'Femenino';
                         }
+                        this.telefono_cliente = data['telefono'];
+                        this.celular_cliente = data['celular'];
+                        this.email_cliente = data['email'];
+                        this.direccion_cliente =data['direccion'];
+                        this.cp_cliente= data['cp'];
+                        this.colonia_cliente = data['colonia'];
+                        this.estado_cliente=data['estado'];
+                        this.ciudad_cliente=data['ciudad'];
+                        this.fechanac_cliente=data['f_nacimiento'];
+                        this.curp_cliente=data['curp'];
+                        this.rfc_cliente=data['rfc'];
+                        this.homoclave_cliente=data['homoclave'];
+                        this.nss_cliente=data['nss'];
+                        this.tipoeconomia_cliente=data['tipo_economia'];
+                        this.empresa_cliente=data['empresa'];
+                        this.gironegocio_cliente=data['puesto'];
+                        this.domicilio_empresa=data['direccion_empresa'];
+                        this.cpempresa_cliente=data['cp_empresa'];
+                        this.coloniaempresa_cliente=data['colonia_empresa'];
+                        this.estadoempresa_cliente=data['estado_empresa'];
+                        this.ciudadempresa_cliente=data['ciudad_empresa'];
+                        this.emailinstitucional_cliente=data['email_institucional'];
+                        this.telefonoempresa_cliente=data['telefono_empresa'];
+                        this.ext_cliente=data['ext_empresa'];
 
-                        case 'ver_personal':
-                        {
-                            this.modal1 =1;
-                            this.tituloModal='Datos del prospecto';
-                            this.tipoAccion=3;
-                            this.nombre_cliente = data['nombre_cliente'];
-                            if(data['sexo'] == "M"){
-                                this.sexo_cliente= 'Masculino';
-                            }else{
-                                this.sexo_cliente= 'Femenino';
+                        switch(data['edo_civil']){
+                            case 1: {
+                                this.edocivil_cliente = 'Casado - separacion de bienes';
+                                break;
                             }
-                            this.telefono_cliente = data['telefono'];
-                            this.celular_cliente = data['celular'];
-                            this.email_cliente = data['email'];
-                            this.direccion_cliente =data['direccion'];
-                            this.cp_cliente= data['cp'];
-                            this.colonia_cliente = data['colonia'];
-                            this.estado_cliente=data['estado'];
-                            this.ciudad_cliente=data['ciudad'];
-                            this.fechanac_cliente=data['f_nacimiento'];
-                            this.curp_cliente=data['curp'];
-                            this.rfc_cliente=data['rfc'];
-                            this.homoclave_cliente=data['homoclave'];
-                            this.nss_cliente=data['nss'];
-                            this.tipoeconomia_cliente=data['tipo_economia'];
-                            this.empresa_cliente=data['empresa'];
-                            this.gironegocio_cliente=data['puesto'];
-                            this.domicilio_empresa=data['direccion_empresa'];
-                            this.cpempresa_cliente=data['cp_empresa'];
-                            this.coloniaempresa_cliente=data['colonia_empresa'];
-                            this.estadoempresa_cliente=data['estado_empresa'];
-                            this.ciudadempresa_cliente=data['ciudad_empresa'];
-                            this.emailinstitucional_cliente=data['email_institucional'];
-                            this.telefonoempresa_cliente=data['telefono_empresa'];
-                            this.ext_cliente=data['ext_empresa'];
-
-                            switch(data['edo_civil']){
-                                case 1: {
-                                    this.edocivil_cliente = 'Casado - separacion de bienes';
-                                    break;
-                                }
-                                case 2:{
-                                    this.edocivil_cliente = 'Casado - sociedad conyugal';
-                                    break;
-                                }
-                                case 3:{
-                                    this.edocivil_cliente = 'Divorciado';
-                                    break;
-                                }
-                                case 4:{
-                                    this.edocivil_cliente = 'Soltero';
-                                    break;
-                                }
-                                case 5:{
-                                    this.edocivil_cliente = 'Union libre';
-                                    break;
-                                }
-                                case 6:{
-                                    this.edocivil_cliente = 'Viudo';
-                                    break;
-                                }
-                                default:{
-                                    this.edocivil_cliente = 'Otro';
-                                    break;
-                                }
+                            case 2:{
+                                this.edocivil_cliente = 'Casado - sociedad conyugal';
+                                break;
                             }
-                            
-                            this.depeconomicos_cliente=data['num_dep_economicos'];
-                            break;
+                            case 3:{
+                                this.edocivil_cliente = 'Divorciado';
+                                break;
+                            }
+                            case 4:{
+                                this.edocivil_cliente = 'Soltero';
+                                break;
+                            }
+                            case 5:{
+                                this.edocivil_cliente = 'Union libre';
+                                break;
+                            }
+                            case 6:{
+                                this.edocivil_cliente = 'Viudo';
+                                break;
+                            }
+                            default:{
+                                this.edocivil_cliente = 'Otro';
+                                break;
+                            }
                         }
+                        
+                        this.depeconomicos_cliente=data['num_dep_economicos'];
+                        break;
+                    }
 
-                        case 'programar_fecha':{
-                            this.folio = data['folio'];
-                            this.modal2 = 1;
-                            this.tituloModal = "Programar Fecha";
-                            this.fecha_program = data['fecha_program'];
-                            if(data['fecha_program'] != null){
-                                this.reprogramar = 1;
-                            }
-                            this.mot_reprogra = '',
-                            this.tipoAccion = 1;
-                            break;
+                    case 'programar_fecha':{
+                        this.folio = data['folio'];
+                        this.modal2 = 1;
+                        this.tituloModal = "Programar Fecha";
+                        this.fecha_program = data['fecha_program'];
+                        if(data['fecha_program'] != null){
+                            this.reprogramar = 1;
                         }
+                        this.mot_reprogra = '',
+                        this.tipoAccion = 1;
+                        break;
+                    }
 
-                        case 'programar_hora':{
-                            this.folio = data['folio'];
-                            this.modal2 = 1;
-                            this.tituloModal = "Programar Hora";
-                            this.hora_entrega_prog = data['hora_entrega_prog'];
-                            this.tipoAccion = 2;
-                            break;
-                        }
+                    case 'programar_hora':{
+                        this.folio = data['folio'];
+                        this.modal2 = 1;
+                        this.tituloModal = "Programar Hora";
+                        this.hora_entrega_prog = data['hora_entrega_prog'];
+                        this.tipoAccion = 2;
+                        break;
+                    }
 
-                        case 'finalizar':{
-                            if(data['revision_previa'] == 0){
-                                Swal.fire({
-                                title: 'Sin revisión previa',
-                                text: "No se ha realizado la revision previa, ¿Desea Continuar?",
-                                type: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Si!'
-                                }).then((result) => {
-                                if (result.value) {
-                                    this.folio = data['folio'];
-                                    this.modal2 = 1;
-                                    this.tituloModal = "Finalizar entrega";
-                                    this.tipoAccion = 3;
-                                    this.cero_detalles = 1;
-                                    this.fecha_entrega_real = data['fecha_program'];
-                                    this.hora_entrega_real = data['hora_entrega_prog'];
-                                }
-                                })
-                            }
-                            else{
+                    case 'finalizar':{
+                        if(data['revision_previa'] == 0){
+                            Swal.fire({
+                            title: 'Sin revisión previa',
+                            text: "No se ha realizado la revision previa, ¿Desea Continuar?",
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Si!'
+                            }).then((result) => {
+                            if (result.value) {
                                 this.folio = data['folio'];
                                 this.modal2 = 1;
                                 this.tituloModal = "Finalizar entrega";
@@ -1564,12 +1585,21 @@
                                 this.fecha_entrega_real = data['fecha_program'];
                                 this.hora_entrega_real = data['hora_entrega_prog'];
                             }
-                            
-                            
-                            break;
+                            })
                         }
+                        else{
+                            this.folio = data['folio'];
+                            this.modal2 = 1;
+                            this.tituloModal = "Finalizar entrega";
+                            this.tipoAccion = 3;
+                            this.cero_detalles = 1;
+                            this.fecha_entrega_real = data['fecha_program'];
+                            this.hora_entrega_real = data['hora_entrega_prog'];
+                        }
+                        break;
                     }
                 }
+            }
             
         },
        

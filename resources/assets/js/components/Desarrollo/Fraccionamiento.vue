@@ -308,6 +308,9 @@
                                             </tr>
                                             <tr v-for="plano in arrayPlanos" :key="plano.id">
                                                 <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" @click="deletePlanos(plano)">
+                                                        <i class="icon-trash"></i>
+                                                    </button>
                                                     <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano.archivo">
                                                         <i class="fa fa-map fa-md"></i>
                                                     </a>
@@ -360,6 +363,9 @@
                                             </tr>
                                             <tr v-for="escritura in arrayEscrituras" :key="escritura.id">
                                                 <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" @click="deleteEscrituras(escritura)">
+                                                        <i class="icon-trash"></i>
+                                                    </button>
                                                     <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura.archivo">
                                                         <i class="fa fa-file-archive-o fa-lg"></i>
                                                     </a>
@@ -695,6 +701,7 @@
                     console.log(error);
                 });
             },
+
             eliminarFraccionamiento(data =[]){
                 this.id=data['id'];
                 this.nombre=data['nombre'];
@@ -733,7 +740,76 @@
                 }
                 })
             },
-             limpiarBusqueda(){
+
+            deleteEscrituras(data =[]){
+                let folio = data['id'];
+                let archivo = data['archivo'];
+                swal({
+                title: '¿Desea eliminar el archivo?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+                    axios.delete('/fraccionamiento/deleteEscrituras', 
+                        {params: {
+                            'id': folio,
+                            'archivo' : archivo
+                            }
+                        }).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Archivo borrado correctamente.',
+                        'success'
+                        )
+                        me.getArchivos(me.id);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
+            deletePlanos(data =[]){
+                let folio = data['id'];
+                let archivo = data['archivo'];
+                swal({
+                title: '¿Desea eliminar el archivo?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+                    axios.delete('/fraccionamiento/deletePlanos', 
+                        {params: {
+                            'id': folio,
+                            'archivo' : archivo
+                            }
+                        }).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Archivo borrado correctamente.',
+                        'success'
+                        )
+                        me.getArchivos(me.id);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+            
+            limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
             },

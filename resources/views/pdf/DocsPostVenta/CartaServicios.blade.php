@@ -20,8 +20,9 @@ body {
 <div style="display: inline-block; float: left;" >
     <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="17%" height="17%">
 </div>
-<div style="margin: 70px; margin-top: 120px;"> 
+<div style="margin: 40px; margin-top: 80px;"> 
     <hr>
+    <br><br>
     <h3 style="text-align: center;">¡BIENVENIDO!</h3> <br>
     <p>Después de saludarles, les damos la más cordial bienvenida a su Condominio y nos ponemos a sus órdenes como administradores de 
         {{mb_strtoupper($contratos[0]->proyecto)}} - {{mb_strtoupper($contratos[0]->etapa)}}. Nos encargaremos de llevar el mantenimiento en general de las áreas comunes del condominio, que incluyen:
@@ -49,14 +50,15 @@ body {
     </p>
 </div>
 
-<div style="margin: 70px;">
+<div style="margin: 40px;">
+    
     <p>DESCUENTO POR PAGO ANUAL: En el caso de hacer un pago anual por adelantado, se hará un descuento del 10%. Si tiene alguna duda en este 
         aspecto por favor comuniquese con nosotros.
     </p>
-    <p>Las formas de pago son: <br>
+    <p>Las formas de pago son: <br><br>
         <b>Depósito bancario:</b> En cualquier sucursal de banco SANTANDER se puede hacer el pago en ventanilla. Es una cuenta referenciada
             por lo que necesita dar el número de convenio <b>0291</b> más su referencia que se compone de 
-            <b>4 números, comenzando con un 1 más su número oficial</b> (por ejemplo, si su casa es Circuito Modena #200 su referencia es <b>1200</b>)
+            <b>4 números, comenzando con un 1 más su número oficial</b> (por ejemplo, si su casa es Circuito Modena #200 su referencia es <b>1200</b>).
     </p>
 
     <p><b>Transferencia Electrónica:</b> Los pagos pueden hacerse de cualquier banco a la cuenta:</p>
@@ -78,7 +80,7 @@ body {
 
     <p>Les pedimos actar el reglamento interno del condominio, en caso de no tenerlo por favor avísenos para proporcionarles una copia.</p>
 
-    <p>Nuevamente les damos la bienvenida y nos ponemos a sus órdenes para resolver cualquier duda o comentario.</p>
+    <p>Nuevamente les damos la bienvenida y nos ponemos a sus órdenes para resolver cualquier duda o comentario.</p><br><br>
 
     <p>Atentamente</p>
 

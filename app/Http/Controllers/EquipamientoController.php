@@ -140,11 +140,11 @@ class EquipamientoController extends Controller
 
                         if($buscar != '')
                             $contratos = $contratos->where($criterio, '=', $buscar);
-                        if($buscar != '')
+                        if($b_etapa != '')
                             $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
-                        if($buscar != '')
+                        if($b_lote != '')
                             $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
-                        if($buscar != '')
+                        if($b_manzana != '')
                             $contratos = $contratos->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
 
                     $contratos = $contratos->whereNotNull('creditos.descripcion_paquete')

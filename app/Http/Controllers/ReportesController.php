@@ -3727,13 +3727,15 @@ class ReportesController extends Controller
 
         if($fraccionamiento != ''){
             $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select('contratos.fecha')
-                                ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
-                                ->where('contratos.status','=',3)
-                                ->where('lotes.habilitado','=',1)
-                                ->orderBy('contratos.fecha','desc')
-                                ->get();
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->select('contratos.fecha')
+                            ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                            ->where('contratos.status','=',3)
+                            ->where('lotes.habilitado','=',1);
+                    if($fechaIni != '' && $fechaFin != ''){
+                        $vendidasFin = $vendidasFin->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
+                    }
+            $vendidasFin = $vendidasFin->orderBy('contratos.fecha','desc')->get();
 
                 $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$fraccionamiento)->get();
                 $fecha = $fracc[0]->fecha_ini_venta;
@@ -3751,10 +3753,12 @@ class ReportesController extends Controller
                                 ->select('contratos.fecha')
                                 ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                                 ->where('lotes.etapa_id','=',$etapa)
-                                ->where('lotes.habilitado','=',1)
                                 ->where('contratos.status','=',3)
-                                ->orderBy('contratos.fecha','desc')
-                                ->get();
+                                ->where('lotes.habilitado','=',1);
+                    if($fechaIni != '' && $fechaFin != ''){
+                        $vendidasFin = $vendidasFin->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
+                    }
+            $vendidasFin = $vendidasFin->orderBy('contratos.fecha','desc')->get();
 
                 $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$fraccionamiento)->get();
                 $fecha = $fracc[0]->fecha_ini_venta;
@@ -3768,6 +3772,33 @@ class ReportesController extends Controller
 
         foreach($modelos as $index => $modelo){
             $modelo->total = 0;
+
+            if($fechaIni != '' && $fechaFin != ''){
+                $dispTerm = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->where('licencias.avance','>=',90)
+                ->where('lotes.contrato','=',0)
+                ->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
+                $dispProc = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->where('licencias.avance','<',90)
+                ->where('lotes.contrato','=',0)
+                ->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
+                if($fraccionamiento != ''){
+                    $dispTerm = $dispTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                    $dispProc = $dispProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                }
+                    
+                if($etapa != ''){
+                    $dispTerm = $dispTerm->where('lotes.etapa_id','=',$etapa);
+                    $dispProc = $dispProc->where('lotes.etapa_id','=',$etapa);
+                }
+                    
+                $modelo->dispTerm = $dispTerm->count();
+                $modelo->dispProc = $dispProc->count();
+                $modelo->totalDisp = $modelo->dispTerm + $modelo->dispProc;
+            }
+
 
             $lotesTerm = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
                 ->join('licencias','lotes.id','=','licencias.id')
@@ -3831,6 +3862,11 @@ class ReportesController extends Controller
                                     $indivContadoTerm=$indivContadoTerm->where('lotes.etapa_id','=',$etapa);
                                     $indivContadoProc=$indivContadoProc->where('lotes.etapa_id','=',$etapa);
                                 }
+
+                                if($fechaIni != '' && $fechaFin != ''){
+                                    $indivContadoTerm=$indivContadoTerm->whereBetween('expedientes.fecha_liquidacion',[$fechaIni, $fechaFin]);
+                                    $indivContadoProc=$indivContadoProc->whereBetween('expedientes.fecha_liquidacion',[$fechaIni, $fechaFin]);
+                                }
                                 
                                 $indivContadoTerm = $indivContadoTerm->distinct('contratos.id')
                                                             ->count('contratos.id');
@@ -3873,7 +3909,12 @@ class ReportesController extends Controller
 
                                 if($etapa != ''){
                                     $indivCreditoTerm=$indivCreditoTerm->where('lotes.etapa_id','=',$etapa);
-                                    $indivCreditoProc=$indivCreditoProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                    $indivCreditoProc=$indivCreditoProc->where('lotes.etapa_id','=',$etapa);
+                                }
+
+                                if($fechaIni != '' && $fechaFin != ''){
+                                    $indivCreditoTerm=$indivCreditoTerm->whereBetween('expedientes.fecha_firma_esc',[$fechaIni, $fechaFin]);
+                                    $indivCreditoProc=$indivCreditoProc->whereBetween('expedientes.fecha_firma_esc',[$fechaIni, $fechaFin]);
                                 }
 
                                 $indivCreditoTerm=$indivCreditoTerm->distinct('contratos.id')
@@ -3893,9 +3934,11 @@ class ReportesController extends Controller
 
                             if($fraccionamiento != '')
                                 $contratosProc=$contratosProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-
                             if($etapa != '')
                                 $contratosProc=$contratosProc->where('lotes.etapa_id','=',$etapa);
+                            if($fechaIni != '' && $fechaFin != ''){
+                                $contratosProc = $contratosProc->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
+                            }
 
                             $contratosProc=$contratosProc->orWhere('contratos.status','=',1)
                                 ->where('licencias.avance','<',90)
@@ -3905,6 +3948,9 @@ class ReportesController extends Controller
                                 $contratosProc=$contratosProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
                             if($etapa != '')
                                 $contratosProc=$contratosProc->where('lotes.etapa_id','=',$etapa);
+                            if($fechaIni != '' && $fechaFin != ''){
+                                $contratosProc = $contratosProc->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
+                            }
                            
                             $contratosProc=$contratosProc->distinct('contratos.id')
                                 ->count('contratos.id');
@@ -3919,9 +3965,11 @@ class ReportesController extends Controller
 
                             if($fraccionamiento != '')
                                 $contratosTerm=$contratosTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-
                             if($etapa != '')
                                 $contratosTerm=$contratosTerm->where('lotes.etapa_id','=',$etapa);
+                            if($fechaIni != '' && $fechaFin != ''){
+                                $contratosTerm = $contratosTerm->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
+                            }
 
                             $contratosTerm=$contratosTerm->orWhere('contratos.status','=',1)
                                 ->where('licencias.avance','>=',90)
@@ -3931,6 +3979,9 @@ class ReportesController extends Controller
                                 $contratosTerm=$contratosTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
                             if($etapa != '')
                                 $contratosTerm=$contratosTerm->where('lotes.etapa_id','=',$etapa);
+                            if($fechaIni != '' && $fechaFin != ''){
+                                $contratosTerm = $contratosTerm->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
+                            }
                            
                             $contratosTerm=$contratosTerm->distinct('contratos.id')
                             ->count('contratos.id');
@@ -3945,10 +3996,14 @@ class ReportesController extends Controller
             $modelo->indiv = $indiv;
 
             $modelo->vendida = $contratos - $indiv;
-
+            if($modelo->vendida < 0)
+                $modelo->vendida = 0;
             $modelo->vendidaTerm = $contratosTerm - $indivTerm;
-
+            if($modelo->vendidaTerm < 0)
+                $modelo->vendidaTerm = 0;
             $modelo->vendidaProc = $contratosProc - $indivProc;
+            if($modelo->vendidaProc < 0)
+                $modelo->vendidaProc = 0;
 
             $modelo->total_vendidas = $modelo->indiv + $modelo->vendida;
 
@@ -3957,6 +4012,11 @@ class ReportesController extends Controller
             $modelo->disponibleProc = $lotesProc - ($indivProc + $modelo->vendidaProc );
 
             $modelo->disponibleTerm = $lotesTerm - ($indivTerm + $modelo->vendidaTerm );
+            if($fechaIni != '' && $fechaFin != ''){
+                $modelo->disponible = $modelo->totalDisp;
+                $modelo->disponibleProc = $modelo->dispProc;
+                $modelo->disponibleTerm = $modelo->dispTerm;
+            }
 
             
         }

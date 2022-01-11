@@ -179,6 +179,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadLogoFraccionamiento/{fileName}' , 'FraccionamientoController@downloadFileLogoFraccionamiento');
         Route::get('/fraccionamiento/datos' , 'FraccionamientoController@getDatos');
         Route::get('/fraccionamiento/getArchivos' , 'FraccionamientoController@getArchivos');
+        Route::delete('/fraccionamiento/deletePlanos','FraccionamientoController@deletePlanos');
+        Route::delete('/fraccionamiento/deleteEscrituras','FraccionamientoController@deleteEscrituras');
         
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');
@@ -504,7 +506,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/postventa/cartaRecepcion/{id}','EntregaController@cartaRecepcion');
 
-        Route::put('/postventa/datosDeposito/registrar/','EntregaController@setDatosCuenta');
+        Route::put('/postventa/datosDeposito/registrar','EntregaController@setDatosCuenta');
         Route::put('/postventa/actualizarCorreoAdmin','EntregaController@actualizarCorreoAdmin');
 
         /////////////////////////////    RUTAS SOLIC DETALLES        //////////////////////////
@@ -734,7 +736,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/detalleComision','ComisionesVentaController@getDetalle');
 
         Route::put('/comision/desartarCambio','ComisionesVentaController@desartarCambio');
-
         Route::get('/comision/excel','ComisionesVentaController@excelDetalle');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
@@ -791,10 +792,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/update/montocredito/liquidacion','ExpedienteController@updateMontoCredito');
 
         Route::post('/expediente/generarPagares','ExpedienteController@generarPagares');
-
         Route::get('/expediente/pagaresExpediente','ExpedienteController@pagaresExpediente');
         Route::get('/expediente/gastosExpediente','GastosAdministrativosController@getGastos');
-
         Route::get('/expediente/liquidacionPDF/{id}','ExpedienteController@liquidacionPDF');
 
     //////////////////////  RUTAS COBRO CREDITO //////////////////////////////////////
