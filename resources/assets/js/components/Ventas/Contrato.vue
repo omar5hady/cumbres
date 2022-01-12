@@ -773,7 +773,7 @@
                                                                     <div class="col-md-3">
                                                                             <div class="form-group">
                                                                         <label for="">Medio donde se entero de nosotros </label>
-                                                                        <select :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="publicidad_id" >
+                                                                        <select disabled class="form-control" v-model="publicidad_id" >
                                                                                 <option value="0">Seleccione</option>
                                                                                 <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
                                                                         </select>
@@ -783,7 +783,7 @@
                                                                     <div class="col-md-4" v-if="publicidad_id == 1">
                                                                             <div class="form-group">
                                                                         <label for="">Nombre de la persona que te recomendo </label>
-                                                                            <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
+                                                                            <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
                                                                     </div>
                                                                     </div> 
 

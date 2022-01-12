@@ -773,7 +773,7 @@
                             <button v-if="tipoAccion == 4 && importe != 0 " 
                                 type="button" class="btn btn-primary" @click="storeConceptoExtra()">Guardar importe extra</button>
                             
-                            <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/prueba?fraccionamiento='+ fraccionamiento 
+                            <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/resumen?fraccionamiento='+ fraccionamiento 
                                     + '&constructora='+ constructora + '&contratista='+ contratista">
                                     <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                             </a>

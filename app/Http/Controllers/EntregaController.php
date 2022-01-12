@@ -24,6 +24,7 @@ use Excel;
 use Auth;
 use DB;
 
+/*  Controlador para entregas de vivienda.  */
 class EntregaController extends Controller
 {
     // Función para registrar la petición de entrega de una vivienda en el sistema
@@ -826,6 +827,7 @@ class EntregaController extends Controller
         return ['fecha_ultima' => $fecha_ultima];
     }
 
+    // Función para registrar los datos necesarios para la administración de la privada
     public function setDatosCuenta (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $datoCuentas = Etapa::findOrFail($request->id);
@@ -837,6 +839,7 @@ class EntregaController extends Controller
         $datoCuentas->save();
     }
 
+    // Funcion para actualizar el correo de la administración.
     public function actualizarCorreoAdmin(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $correo = Fraccionamiento::findOrFail($request->id);
@@ -844,6 +847,7 @@ class EntregaController extends Controller
         $correo->save();
     }
 
+    // Función que retorna los datos de una entrega. 
     public function getDatosLoteEntregado(Request $request){
         if(!$request->ajax() )return redirect('/');
         $datosLote = Entrega::join('contratos','entregas.id','=','contratos.id')

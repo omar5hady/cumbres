@@ -456,6 +456,9 @@
 
                 if( me.charAmasCasa)
                     me.charAmasCasa.destroy();
+
+                if( me.charColonia)
+                    me.charColonia.destroy();
             },
             getDatos(){
                 let me=this;

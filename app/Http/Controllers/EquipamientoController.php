@@ -10,15 +10,15 @@ use Carbon\Carbon;
 use App\Solic_equipamiento;
 use Auth;
 
+/*  Controlador para equipamientos  */
 class EquipamientoController extends Controller
 {
-
+    // Función que retorna los equipamientos por proveedor.
     public function index(Request $request){
-
-            $equipamientos = Equipamiento::select('id','proveedor_id','equipamiento','activo')
-                ->where('proveedor_id','=', $request->proveedor_id)->orderBy('equipamiento','asc')
-                    ->paginate(20);
-        
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $equipamientos = Equipamiento::select('id','proveedor_id','equipamiento','activo')
+            ->where('proveedor_id','=', $request->proveedor_id)->orderBy('equipamiento','asc')
+            ->paginate(20);
 
         return [
             'pagination' => [
@@ -34,8 +34,8 @@ class EquipamientoController extends Controller
 
     }
 
+    // Función que registra un nuevo equipamiento al proveedor.
     public function store(Request $request){
-
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamiento = new Equipamiento();
         $equipamiento->proveedor_id = $request->proveedor_id;
@@ -43,6 +43,7 @@ class EquipamientoController extends Controller
         $equipamiento->save();
     }
 
+    // Función para borrar un equipamiento al proveedor.
     public function destroy(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamiento = Equipamiento::findOrFail($request->id);
@@ -50,6 +51,7 @@ class EquipamientoController extends Controller
         $equipamiento->save();
     }
 
+    // Función para desactivar uno de los equipamientos del inventario de proveedores.
     public function activar(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamiento = Equipamiento::findOrFail($request->id);
@@ -57,6 +59,7 @@ class EquipamientoController extends Controller
         $equipamiento->save();
     }
 
+    // Función que retorna los contratos con promocion o paquete.
     public function indexContratos(Request $request){
        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -65,7 +68,8 @@ class EquipamientoController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
-        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+        // Query principal.
+        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -107,37 +111,33 @@ class EquipamientoController extends Controller
                     'lotes.id as lote_id'
         );
 
-        //por el uso de "orWhere" se debe agregar al principo y al final de la qyery
+        //por el uso de "orWhere" se debe agregar al principo y al final de la query
         if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
         
         if ($buscar == '') {
-            
-            $contratos = $query
+            $contratos = $contratos
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
                 //->where('contratos.entregado', '=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
                 ->where('inst_seleccionadas.status','=',2)
-                ->whereNotNull('creditos.descripcion_paquete')
+                ->whereNotNull('creditos.descripcion_paquete')//Con paquete
                 ->orWhere('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
                 //->where('contratos.entregado', '=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
                 ->where('inst_seleccionadas.status','=',2)
-                ->whereNotNull('creditos.descripcion_promocion');
+                ->whereNotNull('creditos.descripcion_promocion');//Con promoción
         } else{
             switch($criterio){
-                case 'lotes.fraccionamiento_id':{
-                    $contratos = $query;
-
+                case 'lotes.fraccionamiento_id':{ // Busqueda por proyecto
                     $contratos = $contratos->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         //->where('contratos.entregado', '=',0)
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2);
-
                         if($buscar != '')
                             $contratos = $contratos->where($criterio, '=', $buscar);
                         if($b_etapa != '')
@@ -146,7 +146,6 @@ class EquipamientoController extends Controller
                             $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
                         if($b_manzana != '')
                             $contratos = $contratos->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-
                     $contratos = $contratos->whereNotNull('creditos.descripcion_paquete')
                         ->orWhere('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
@@ -154,7 +153,6 @@ class EquipamientoController extends Controller
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->whereNotNull('creditos.descripcion_promocion');
-
                         if($buscar != '')
                             $contratos = $contratos->where($criterio, '=', $buscar);
                         if($buscar != '')
@@ -166,8 +164,8 @@ class EquipamientoController extends Controller
                     break;
                 }
 
-                case 'c.nombre':{
-                    $contratos = $query
+                case 'c.nombre':{ // Busqueda por cliente
+                    $contratos = $contratos
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         //->where('contratos.entregado', '=',0)
@@ -184,8 +182,8 @@ class EquipamientoController extends Controller
                         ->whereNotNull('creditos.descripcion_promocion');
                     break;
                 }
-                case 'contratos.id':{
-                    $contratos = $query
+                case 'contratos.id':{ // Busqueda por folio
+                    $contratos = $contratos
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         //->where('contratos.entregado', '=',0)
@@ -228,42 +226,47 @@ class EquipamientoController extends Controller
         ];
     }
 
+    // Funcion que retorna el listado de equipamientos activos por proveedor
     public function selectEquipamiento(Request $request){
         if(!$request->ajax())return redirect('/');
         $equipamiento = Equipamiento::select('id','equipamiento')
                     ->where('proveedor_id','=',$request->buscar)->where('activo','=',1)->get();
-
         return ['equipamiento' => $equipamiento];
     }
 
+    // Función para registrar la solicitud de equipamiento.
     public function solicitud_equipamiento(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $fecha_hoy = Carbon::today()->toDateString();
+        $fecha_hoy = Carbon::today()->toDateString(); //Fecha actual
         $solicitud = new Solic_equipamiento();
         $solicitud->lote_id = $request->lote_id;
         $solicitud->contrato_id = $request->contrato_id;
         $solicitud->equipamiento_id = $request->equipamiento_id;
         $solicitud->fecha_solicitud = $fecha_hoy;
         $solicitud->save();
-
+        // En el registro del contrato se indica que ya se ha solicitado equipamiento.
         $contrato = Contrato::findOrFail($request->contrato_id);
         $contrato->equipamiento = 1;
         $contrato->save();
 
     }
 
+    // Funcion para eliminar la solicitud de equipamiento.
     public function eliminarSolicitud_lote(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamientoLote = Solic_equipamiento::findOrFail($request->id);
         $equipamientoLote->delete();
+        // Busca para el contrato si existe mas equipamiento solicitado.
         $sinEquipamiento = Solic_equipamiento::select('id')->where('contrato_id','=',$request->contrato_id)->count();
         if($sinEquipamiento < 1){
+            // En caso de no tener equipamiento.
             $contrato = Contrato::findOrFail($request->contrato_id);
             $contrato->equipamiento = 0;
             $contrato->save();
         }
     }
 
+    // Funcion que retorna los lotes por contrato con el equipamiento solicitado.
     public function index_equipamientos_lotes(Request $request){
         $lote_id = $request->lote_id;
         $contrato_id = $request->contrato_id;
@@ -277,9 +280,11 @@ class EquipamientoController extends Controller
         return ['equipamientos' => $equipamientos];
     }
 
+    // Función para finalizar la solicitud de equipamientos.
     public function terminarSolicitud (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contrato = Contrato::findOrFail($request->id);
+        // Estatus 2 para indicar la finalización de equipamiento.
         $contrato->equipamiento = 2;
         $contrato->save();
     }

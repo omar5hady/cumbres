@@ -18,39 +18,48 @@ use Carbon\Carbon;
 
 class EstimacionController extends Controller
 {
-    public function prueba(Request $request){
+    // Función para generar el resumen de estimaciones por contratista, proyecto y empresa constructora.
+    public function resumen(Request $request){
         //$obraC = new IniObraController();
         $fraccionamiento = $request->fraccionamiento;
         $contratista = $request->contratista;
         $constructora = $request->constructora;
 
+        // Query para obtner los folios de los contratos de obra segun criterios de busqueda.
         $iniObras = Ini_obra::select('id')
             ->where('fraccionamiento_id','=',$fraccionamiento)
             ->where('emp_constructora','=',$constructora)
             ->where('contratista_id','=',$contratista)->get();
 
+        // LLamada a la funcion que retorna la informacion de los contratos de obra
         $contratos = $this->getContratos($contratista, $fraccionamiento, $constructora);
+        // LLamada a la funcion que retorna los Fondos de Garantia para todos los contratos encontrados.
         $fondoGarantia = $this->getFG($iniObras);
+        // LLamada a la funcion que retorna los Anticipos para todos los contratos encontrados.
         $anticipos = $this->getAnticipos($iniObras);
         $titulo = 'Resumen de estimaciones Fraccionamiento ';
 
         if(sizeof($contratos)){
             $titulo = 'Resumen de estimaciones Fraccionamiento '.$contratos[0]->proyecto;
+            // Se recorre cada contrato.
             foreach ($contratos as $index => $contrato) {
+                //Llamda a la funcion que retorna el historial de estimaciones por contrato
                 $anterior = $this->calculos($contrato->id);
-                $contrato->estimadoAnt = $anterior['totalAnt'];
-                $contrato->estimadoAct = $anterior['totalAct'];
-                $contrato->numEst = $anterior['num'];
+                $contrato->estimadoAnt = $anterior['totalAnt']; // Total de estimaciones anteriores a la actual
+                $contrato->estimadoAct = $anterior['totalAct']; // Total estimación actual
+                $contrato->numEst = $anterior['num']; //Numero de estimaciones 
             }
         }
 
+        if(sizeof($contratos) == 0)
+            return redirect('/');
+        // Creación y retorno en excel.
         return Excel::create($titulo , function($excel) use ($fondoGarantia, $anticipos, $contratos){
             $excel->sheet($contratos[0]->proyecto, function($sheet) use ($fondoGarantia, $anticipos, $contratos){
                 
                 $sheet->mergeCells('A1:S1');
                 $sheet->mergeCells('A2:S2');
                 $sheet->mergeCells('A3:S3');
-                
                 
                 $sheet->setSize('A1', 25, 80);
                 $sheet->setSize('A4', 25, 50);
@@ -120,7 +129,6 @@ class EstimacionController extends Controller
                 ]);
 
                 $ini=5;
-
 
                 $sheet->cells('A5:S5', function ($cells) {
                     $cells->setBackground('#052154');
@@ -271,7 +279,6 @@ class EstimacionController extends Controller
                         $cells->setFontWeight('bold');
                     });
 
-
                     $sheet->row($cont, [
                         '', '', '', '', '', '', '', '', '', 
                         '', '', '', '', '', '', '', '', '', ''
@@ -301,7 +308,6 @@ class EstimacionController extends Controller
                         // manipulate the cell
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
                     });
 
                     $sheet->cells('K'.$cont.':S'.$cont, function ($cells) {
@@ -314,13 +320,11 @@ class EstimacionController extends Controller
                     ]);	
 
                     $sheet->setBorder('A'.$cont.':S'.$cont, 'thin');
-
                     $cont+=2;
                     $sheet->mergeCells('A'.$cont.':B'.$cont);
 
                 ///////////// INFORMACIÓN ADICIONAL
                     $sheet->cell('A'.$cont, function($cell) {
-
                         // manipulate the cell
                         $cell->setValue(  'INFORMACION ADICIONAL');
                         $cell->setFontSize(11);
@@ -356,9 +360,8 @@ class EstimacionController extends Controller
                         $cont++;
 
                         foreach($anticipos as $index => $detalle) {
-
                             $suma14 += $detalle->monto_anticipo;
-                            
+                        
                             $sheet->mergeCells('C'.$cont.':E'.$cont);
                             $sheet->mergeCells('F'.$cont.':G'.$cont);
                             $sheet->mergeCells('H'.$cont.':I'.$cont);
@@ -380,9 +383,7 @@ class EstimacionController extends Controller
                                 $detalle->fecha_anticipo
                             ]);	
                             $cont++;
-                            
                         }
-                        
 
                         $sheet->row($cont, [
                             '', '', $suma14, '','','','',''
@@ -401,20 +402,14 @@ class EstimacionController extends Controller
                         });
 
                         $sheet->setBorder('A'.$ini.':I'.$cont, 'thin');
-
                     }
 
-
                 ///////////// Fondo de Garantia
-                
-
                 if(sizeOf($fondoGarantia)){
                     $cont+=2;  
                     $ini = $cont;
                     $sheet->mergeCells('A'.$cont.':B'.$cont);
                     $sheet->mergeCells('C'.$cont.':E'.$cont);
-                   
-                    
 
                     $sheet->row($cont, [
                         'Fecha de entrega','','','','','Monto'
@@ -443,12 +438,8 @@ class EstimacionController extends Controller
                             $detalle->monto_fg
                         ]);	
                         $cont++;
-                        
                     }
-                
-
                    // $sheet->setBorder('A'.$ini.':I'.$cont, 'thin');
-
                 }
 
                     
@@ -460,6 +451,7 @@ class EstimacionController extends Controller
         })->download('xls');
     }
 
+    // Función privada que retorna los anticipos por contrato
     public function getAnticipos($aviso){
         $anticipos = Anticipo_estimacion::join('ini_obras','anticipos_estimaciones.aviso_id','=','ini_obras.id')
         ->select('anticipos_estimaciones.id','anticipos_estimaciones.fecha_anticipo','anticipos_estimaciones.monto_anticipo','ini_obras.clave')
@@ -470,6 +462,7 @@ class EstimacionController extends Controller
         return $anticipos;
     }
 
+    // Función que retorna los fondos de garantia por contrato
     public function getFG($aviso){
         $fondos = Fg_estimacion::join('ini_obras','fg_estimaciones.aviso_id','=','ini_obras.id')
             ->select('fg_estimaciones.id','fg_estimaciones.cantidad','fg_estimaciones.monto_fg','fg_estimaciones.fecha_fg','ini_obras.clave')
@@ -480,6 +473,7 @@ class EstimacionController extends Controller
         return $fondos;
     }
 
+    // Función que retorna la informacion de los contratos de obra
     public function getContratos($contratista, $fraccionamiento, $constructora){
         return $iniObras = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
@@ -500,11 +494,14 @@ class EstimacionController extends Controller
             ->where('ini_obras.contratista_id','=',$contratista)->get();
     }
 
+    // Función que retorna los calculas de las estimaciones por contrato
     public function calculos($clave){
+        // Numero de estimaciones y el total estimado del contrato actualmente.
         $est = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                                 ->select('num_estimacion','total_estimacion')
                                 ->where('estimaciones.aviso_id','=',$clave)
                                 ->orderBy('num_estimacion','desc')->distinct()->get();
+        // en caso de no tener estimaciones, se iniciaizan las variables en 0
         if(sizeof($est) == 0){
             $total_estimacion = 0;
             $num_est = 0;
@@ -514,6 +511,7 @@ class EstimacionController extends Controller
             $total_estimacion = $est[0]->total_estimacion;
         }
 
+        // Monto total de Estimaciones anteriores
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
         ->select(
             'total_estimacion'
@@ -527,6 +525,7 @@ class EstimacionController extends Controller
 
         if(sizeof($acumAntTotal)){
             foreach($acumAntTotal as $index => $acum){
+                // Se suman cada total registrado.
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
