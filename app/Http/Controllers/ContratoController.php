@@ -33,6 +33,7 @@ use App\Precios_terreno;
 use App\Lote;
 use App\Modelo;
 use App\Cuenta;
+use App\Avaluo;
 use App\User;
 use NumerosEnLetras;
 use DB;
@@ -2420,5 +2421,272 @@ class ContratoController extends Controller
         // return $contrato;
         $pdf = \PDF::loadview('pdf.contratos.anexoA', ['contrato' => $contrato]);
         return $pdf->stream('anexoA.pdf');
+    }
+
+
+    public function reportEli(Request $request){
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        ->leftJoin('personal as g','expedientes.gestor_id','=','g.id')
+                        ->join('personal as cli','creditos.prospecto_id','=','cli.id')
+                        ->join('personal as v','creditos.vendedor_id','=','v.id')
+                        ->join('vendedores','v.id','=','vendedores.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->select(
+                            'contratos.id',
+                            'contratos.saldo',
+                            'creditos.lote_id',
+                            'fraccionamientos.nombre as proyecto',
+                            'etapas.num_etapa as etapa',
+                            'lotes.manzana',
+                            'lotes.num_lote',
+                            'modelos.nombre as modelo',
+                            'lotes.calle', 'lotes.numero','lotes.interior',
+                            DB::raw("CONCAT(cli.nombre,' ',cli.apellidos) AS nombre_cliente"),
+                            'contratos.fecha',
+                            'lotes.fecha_termino_ventas',
+                            'contratos.status',
+                            'expedientes.fecha_firma_esc',
+                            'expedientes.liquidado',
+                            'i.tipo_credito',
+                            'i.institucion', 
+                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor"),
+                            'lotes.credito_puente',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_asesor"),
+                            'vendedores.tipo',
+                            'creditos.precio_venta',
+                            'expedientes.valor_escrituras',
+                            'contratos.integracion'
+                        )
+                        ->where('contratos.status','!=',0)
+                        ->where('contratos.status','!=',2)
+                        ->where('i.elegido', '=', 1)
+                        ->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')
+                        ->get();
+
+        $lotes = [];
+
+        foreach ($contratos as $key => $contrato) {
+            array_push($lotes,$contrato->lote_id);
+
+            $contrato->pagare = Pago_contrato::select('monto_pago','fecha_pago')
+                ->where('contrato_id','=',$contrato->id)->where('tipo_pagare','=',0)->orderBy('fecha_pago','desc')->first();
+
+                $contrato->avaluo_status = 'Sin solicitarse';
+                $contrato->fecha_avaluo = '';
+                $contrato->estado_casa = 'Vendida';
+                $contrato->responsable = $contrato->nombre_asesor;
+            $avaluo = Avaluo::where('contrato_id','=',$contrato->id)->orderBy('created_at','desc')->first();
+
+            if($avaluo){
+                $contrato->avaluo_status = $avaluo->status;
+
+                if($avaluo->fecha_solicitud != NULL)
+                    $contrato->fecha_avaluo = 'Fecha de solicitud: '.$avaluo->fecha_solicitud;
+
+                if($avaluo->fecha_recibido != NULL)
+                    $contrato->fecha_avaluo = 'Fecha recibido: '.$avaluo->fecha_recibido;
+
+                if($avaluo->fecha_concluido != NULL)
+                    $contrato->fecha_avaluo = 'Fecha concluido: '.$avaluo->fecha_concluido;
+            }
+
+            if($contrato->interior != NULL)
+                $contrato->numero = $contrato->numero.'-'.$contrato->interior;
+
+            if($contrato->tipo == 0)
+                $contrato->tipo = 'Interno';
+            else
+                $contrato->tipo = 'Externo';
+
+            if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1)
+                $contrato->estado_casa = 'Individualizada';
+            
+            if($contrato->tipo_credito != 'Crédito Directo' && $contrato->fecha_firma_esc != NULL)
+                $contrato->estado_casa = 'Individualizada';
+
+            if($contrato->integracion == 1 && $contrato->nombre_gestor == NULL || $contrato->integracion == 0 && $contrato->status == 1)
+                $contrato->responsable = 'Mary Dominguez';
+            if($contrato->nombre_gestor != NULL)
+                $contrato->responsable = $contrato->nombre_gestor;
+        }
+
+        $lotesDisp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->select(
+                    'fraccionamientos.nombre as proyecto',
+                    'etapas.num_etapa as etapa',
+                    'lotes.manzana',
+                    'lotes.num_lote',
+                    'modelos.nombre as modelo',
+                    'lotes.calle', 'lotes.numero','lotes.interior',
+                    'lotes.fecha_termino_ventas',
+                    'lotes.precio_base', 'lotes.obra_extra', 'lotes.excedente_terreno',
+                    'lotes.sobreprecio', 'lotes.credito_puente','lotes.habilitado'
+                )
+                ->whereNotIn('lotes.id',$lotes)
+                ->orderBy('fraccionamientos.nombre','asc')
+                ->orderBy('etapas.num_etapa','asc')
+                ->get();
+
+        foreach ($lotesDisp as $key => $lote) {
+            if($lote->habilitado == 1)
+                $lote->habilitado = 'Habilitado para venta';
+            else
+                $lote->habilitado = 'Deshabilitado';
+
+            $lote->precio_venta = $lote->precio_base + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio;
+        }
+
+        
+        //        return $lotesDisp;
+
+        return Excel::create('Modelo Caco', function($excel) use ($contratos,$lotesDisp){
+            
+            $excel->sheet('Ventas', function($sheet) use ($contratos){
+                
+                $sheet->row(1, [
+                    '#Folio', 'Fracc.', 'Etapa', 'Mnza', 'Lote', 'Modelo', 'Calle', 'No. Oficial', 'Cliente',
+                    'Fecha de venta', 'Fecha compromiso de termino', 'Estado de la casa', 'Crédito', 'Institución',
+                    'Gestor', 'Crédito Puente', 'Vigencia del Crédito', 'Responsable actual', 'Comentarios Eli', 
+                    'Status Avaluo', 'Fecha avaluo', 'Asesor', 'Tipo Asesor', 'Ultima fecha de enganche', 'Monto', 
+                    'Valor de venta', 'Valor a escriturar',
+                ]);
+
+                $sheet->cells('A1:AA1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+  
+                $cont=1;
+
+                $sheet->setColumnFormat(array(
+                    'Z' => '$#,##0.00',
+                    'Y' => '$#,##0.00',
+                    'AA' => '$#,##0.00'
+                ));
+
+                foreach($contratos as $index => $contrato) {
+                    $cont++;
+
+                    $sheet->row($index+2, [
+                        $contrato->id, 
+                        $contrato->proyecto,
+                        $contrato->etapa,
+                        $contrato->manzana,
+                        $contrato->num_lote,
+                        $contrato->modelo,
+                        $contrato->calle,
+                        $contrato->numero,
+                        $contrato->nombre_cliente,
+                        $contrato->fecha,
+                        $contrato->fecha_termino_ventas,
+                        $contrato->estado_casa,
+                        $contrato->tipo_credito,
+                        $contrato->institucion,
+                        $contrato->nombre_gestor,
+                        $contrato->credito_puente,
+                        '',
+                        $contrato->responsable,
+                        '',
+                        $contrato->avaluo_status,
+                        $contrato->fecha_avaluo,
+                        $contrato->nombre_asesor,
+                        $contrato->tipo,
+                        $contrato->pagare['fecha_pago'],
+                        $contrato->pagare['monto_pago'],
+                        $contrato->precio_venta,
+                        $contrato->valor_escrituras,
+                    ]);	
+                }
+                $num='A1:AA' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+
+            $excel->sheet('Lotes Disponibles', function($sheet) use ($lotesDisp){
+                
+                $sheet->row(1, [
+                    '#Folio', 'Fracc.', 'Etapa', 'Mnza', 'Lote', 'Modelo', 'Calle', 'No. Oficial', 'Cliente',
+                    'Fecha de venta', 'Fecha compromiso de termino', 'Estado de la casa', 'Crédito', 'Institución',
+                    'Gestor', 'Crédito Puente', 'Vigencia del Crédito', 'Responsable actual', 'Comentarios Eli', 
+                    'Status Avaluo', 'Fecha avaluo', 'Asesor', 'Tipo Asesor', 'Ultima fecha de enganche', 'Monto', 
+                    'Valor de venta', 'Valor a escriturar',          ]);
+
+                $sheet->cells('A1:AA1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+  
+                $cont=1;
+
+                $sheet->setColumnFormat(array(
+                    'Z' => '$#,##0.00',
+                    'Y' => '$#,##0.00',
+                    'AA' => '$#,##0.00'
+                ));
+
+                foreach($lotesDisp as $index => $lote) {
+                    $cont++;
+
+                    $sheet->row($index+2, [
+                        '',
+                        $lote->proyecto,
+                        $lote->etapa,
+                        $lote->manzana,
+                        $lote->num_lote,
+                        $lote->modelo,
+                        $lote->calle,
+                        $lote->numero,
+                        '',
+                        '',
+                        $lote->fecha_termino_ventas,
+                        $lote->habilitado,
+                        '',
+                        '',
+                        '',
+                        $lote->credito_puente,
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        $lote->precio_venta,
+                        ''
+                    ]);	
+                }
+                $num='A1:AA' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xls');
     }
 }

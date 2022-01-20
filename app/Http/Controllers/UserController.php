@@ -1102,6 +1102,8 @@ class UserController extends Controller
                                 'users.exp_comision','users.gen_comision','users.bono_com',
                                 //Acceso
                                 'users.usuarios','users.roles',
+                                //RH
+                                'users.vehiculos', 'users.mant_vehiculos','users.admin_mant_vehiculos',
                                 //Reportes
                                 'users.mejora','users.rep_proy','users.rep_publi','users.inventario','rep_venta_canc',
                                 'rep_asesores', 'users.rep_vent_modelos',
@@ -1219,6 +1221,10 @@ class UserController extends Controller
         //Postventa
         $user->entregas = $request->entregas;
         $user->solic_detalles = $request->solic_detalles;
+        //RH
+        $user->vehiculos = $request->vehiculos;
+        $user->mant_vehiculos = $request->mant_vehiculos;
+        $user->admin_mant_vehiculos = $request->admin_mant_vehiculos;
         //Comisiones
         $user->exp_comision = $request->exp_comision;
         $user->gen_comision = $request->gen_comision;

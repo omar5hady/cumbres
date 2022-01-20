@@ -119,6 +119,11 @@ class User extends Authenticatable
         'usuarios',
         'roles',
 
+        //RH
+        'vehiculos',
+        'mant_vehiculos',
+        'admin_mant_vehiculos',
+
         //Reportes
         'mejora',
         'rep_publi',

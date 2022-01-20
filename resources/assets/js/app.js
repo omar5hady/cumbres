@@ -195,6 +195,9 @@ Vue.component('puente-bbva', require('./components/CPuente/CreditoPuenteCuentaBB
 Vue.component('puente-avances', require('./components/CPuente/Avances.vue'));
 Vue.component('puente-resumen', require('./components/CPuente/Resumen.vue'));
 
+// RH
+Vue.component('vehiculo-comodato', require('./components/Rh/VehiculoComodato.vue'));
+
 
 //ENCUESTAS
 Vue.component('encuesta-venta', require('./components/Postventa/Encuestas/EncuestaVenta.vue'));

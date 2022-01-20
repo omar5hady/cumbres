@@ -124,6 +124,9 @@
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-commenting"></i><input v-model="notifications" type="checkbox" value="1"/> Centro de notificaciones </a>
                                             <a class="nav-link nav-dropdown-toggle"><i class="icon-energy"></i><input @click="limpiarAdministracion()" v-model="administracion" type="checkbox" value="1"/> Modulo Administración </a>
                                             <ul v-if="administracion==1" class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="fa fa-car"></i> <input v-model="vehiculos" type="checkbox" value="1"/> Vehiculos</a>
+                                                </li>
                                                 <li class="nav-item" >
                                                     <a class="nav-link"><i class="fa fa-object-group"></i> <input v-model="departamentos" type="checkbox" value="1"/> Departamentos</a>
                                                 </li>
@@ -166,6 +169,25 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="digital_campain" type="checkbox" value="1"/> Campañas digitales</a>
                                                 </li>
+                                                
+                                            </ul>
+                                    </div>
+                                </div> 
+
+                                <!-- RH -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                        <a class="nav-link nav-dropdown-toggle"><i class="fa fa-bank"></i> Modulo RH</a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="fa fa-car"></i> <input v-model="mant_vehiculos" type="checkbox" value="1"/> Mantenimiento de vehiculos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link">
+                                                        <i class="fa fa-car"></i><i class="icon-energy"></i><input v-model="admin_mant_vehiculos" type="checkbox" value="1"/> Admin. Mant. De vehiculos
+                                                    </a>
+                                                </li>
+                                                
                                             </ul>
                                     </div>
                                 </div> 
@@ -861,6 +883,11 @@
                     proveedores : 0,
                     digital_campain : 0,
 
+                    //RH
+                    vehiculos : 0,
+                    mant_vehiculos : 0,
+                    admin_mant_vehiculos : 0,
+
 
                     //Desarrollo
                     fraccionamiento:0,
@@ -1075,6 +1102,7 @@
             limpiarAdministracion(){
                 //Administracion
                 this.departamentos=0;
+                this.vehiculos=0;
                 this.personas=0;
                 this.empresas=0;
                 this.medios_public=0;
@@ -1254,6 +1282,11 @@
                     me.notaria = usuarios[0].notaria;
                     me.proveedores = usuarios[0].proveedores;
                     me.digital_campain = usuarios[0].digital_campain;
+
+                    //RH
+                    me.vehiculos = usuarios[0].vehiculos;
+                    me.mant_vehiculos = usuarios[0].mant_vehiculos;
+                    me.admin_mant_vehiculos = usuarios[0].admin_mant_vehiculos;
 
                     //Desarrollo
                     me.fraccionamiento=usuarios[0].fraccionamiento;
@@ -1586,6 +1619,10 @@
                     'notaria':this.notaria,
                     'proveedores':this.proveedores,
                     'digital_campain':this.digital_campain,
+                        //RH
+                    'vehiculos':this.vehiculos,
+                    'mant_vehiculos':this.mant_vehiculos,
+                    'admin_mant_vehiculos':this.admin_mant_vehiculos,
                         //Desarrollo
                     'fraccionamiento':this.fraccionamiento,
                     'etapas':this.etapas,
@@ -1909,6 +1946,11 @@
                 me.cuenta = 0;
                 me.notaria = 0;
                 me.proveedores = 0;
+
+                    //RH
+                me.mant_vehiculos = 0;
+                me.vehiculos = 0;
+                me.admin_mant_vehiculos = 0;
 
 
                     //Desarrollo

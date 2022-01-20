@@ -1937,7 +1937,7 @@
                                    <input type="checkbox" v-model="reubicacion" value="1">
                                 </div>
                                 <div class="col-md-7" v-if="reubicacion == 1">
-                                   <textarea rows="3" cols="30" class="form-control" v-model="observacion" placeholder="Observacion"></textarea>
+                                   <textarea rows="3" cols="30" class="form-control" v-model="observacion_r" placeholder="Observacion"></textarea>
                                 </div>
                             </div>
                       </form>
@@ -2199,6 +2199,7 @@
                 clv_lada:52,
                 arrayClaves:[],
                 tipo_proyecto:'',
+                observacion_r :''
             }
         },
         computed:{
@@ -3841,7 +3842,7 @@
                         this.tituloModal='Reasignar cliente';
                         this.tipoAccion = 2;
                         this.reubicacion = 0;
-                        this.observacion = '';
+                        this.observacion_r = '';
                         break;
                     }
                 }
@@ -3871,7 +3872,7 @@
                    'descuento_promocion':data['descuentoPromo'],
                    'precio_venta':data['precio_venta'] - data['descuentoPromo'],
                    'reubicar': me.reubicacion,
-                   'observacion' : me.observacion
+                   'observacion' : me.observacion_r
 
                 }).then(function (response){
                     me.getNewDatosLote(lote);

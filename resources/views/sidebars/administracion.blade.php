@@ -1,7 +1,7 @@
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
     <ul class="nav-dropdown-items">
-        @if(Auth::user()->rol_id == 1)
+        @if(Auth::user()->vehiculos == 1)
             <li @click="menu=270" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-car"></i> Vehiculos</a>
             </li>

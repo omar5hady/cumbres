@@ -539,6 +539,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/contrato/contratoLote/pdf/{id}','ContratoController@contratoLote')->name('contrato_promesa_credito.pdf');
     Route::get('/contrato/anexoA/{id}','ContratoController@printAnexoA')->name('anexoA.pdf');
 
+    Route::get('/contrato/reportEli','ContratoController@reportEli');
+
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');
         Route::get('/avance/urbanizacion','AvanceController@indexUrbanizacion');
@@ -1084,6 +1086,16 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/vehiculos/getMarcas','VehiculosController@getMarcas');
         Route::post('/vehiculos/store','VehiculosController@store');
         Route::put('/vehiculos/update','VehiculosController@update');
+
+        Route::get('/vehiculos/getComoDato','VehiculosController@getComoDato');
+        Route::get('/vehiculos/getSolicitudes','VehiculosController@getSolicitudes');
+        Route::post('/vehiculos/storeSolicitud','VehiculosController@storeSolicitud');
+
+        Route::put('/vehiculos/setRecepJefe','VehiculosController@setRecepJefe');
+        Route::put('/vehiculos/setRecepRH','VehiculosController@setRecepRH');
+        Route::put('/vehiculos/setRecepControl','VehiculosController@setRecepControl');
+        Route::put('/vehiculos/setRecepDireccion','VehiculosController@setRecepDireccion');
+        Route::put('/vehiculos/recep/changeStatus','VehiculosController@changeStatus');
 
 
     });

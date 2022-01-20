@@ -60,16 +60,16 @@ class PrecioEtapaController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $precio_etapa = Precio_etapa::findOrFail($request->id);
-        $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
-        $precio_etapa->etapa_id = $request->etapa_id;
+        // $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
+        // $precio_etapa->etapa_id = $request->etapa_id;
         $precio_etapa->precio_excedente = $request->precio_excedente;
         $precio_etapa->save();
 
         $lotes = Lote::select('modelo_id','id','terreno')
             ->where('contrato','=','0')
             ->where('habilitado','=','1')
-            ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
-            ->where('etapa_id','=',$request->etapa_id)
+            ->where('fraccionamiento_id','=',$precio_etapa->fraccionamiento_id)
+            ->where('etapa_id','=',$precio_etapa->etapa_id)
             ->get();
         
         //if($lotes)

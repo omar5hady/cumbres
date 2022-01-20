@@ -23,6 +23,7 @@ class CreateVehiculosTable extends Migration
             $table->string('numero_serie',20)->nullable();
             $table->string('numero_motor',10)->nullable();
             $table->integer('responsable_id');
+            $table->boolean('comodato')->default(0); // 0 No, 1 Si.
             $table->string('empresa')->default('Grupo Constructor Cumbres');
             $table->timestamps();
         });

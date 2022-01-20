@@ -564,9 +564,13 @@ export default {
                 
             let montoInteres = 0;
 
-            let intMes = this.valor_minMens*( 1-(Math.pow( (1+this.interesMensual),((-this.r_mensualidad)+(datos.folio-2))) ));
+            let intMes = this.arrayMensualidad[datos.folio-2].saldo * this.interesMensual;
+            intMes = intMes/30;
+            montoInteres = (intMes)*(dias-1);
 
-            montoInteres = ((intMes)/30)*(dias-1);
+            //let intMes = this.valor_minMens*( 1-(Math.pow( (1+this.interesMensual),((-this.r_mensualidad)+(datos.folio-2))) ));
+
+            //montoInteres = ((intMes)/30)*(dias-1);
 
             montoInteres = Number(montoInteres.toFixed(2));
 

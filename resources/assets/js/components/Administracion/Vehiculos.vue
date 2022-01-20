@@ -17,7 +17,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <select class="form-control" v-model="b_empresa" >
                                     <option value="">Empresa</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
@@ -25,17 +25,24 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-4">
-                                <select class="form-control" v-model="b_marca" >
-                                    <option value="">Marca</option>
-                                    <option v-for="marcas in marcasAutos" :key="marcas" :value="marcas" v-text="marcas"></option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="form-control col-md-4" v-model="b_marca" >
+                                        <option value="">Marca</option>
+                                        <option v-for="marcas in marcasAutos" :key="marcas" :value="marcas" v-text="marcas"></option>
+                                    </select>
+                                    <input type="text"  v-model="buscar" @keyup.enter="listarVehiculos(1)" class="form-control" placeholder="Vehiculo">
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="input-group">
-                                    <input type="text"  v-model="buscar" @keyup.enter="listarVehiculos(1)" class="form-control" placeholder="Vehiculo">
+                                    <select class="form-control" v-model="b_comodato" >
+                                        <option value="">Comodato</option>
+                                        <option value="0">No</option>
+                                        <option value="1">Si</option>
+                                    </select>
                                     <button type="submit" @click="listarVehiculos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -145,13 +152,17 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Vehiculo</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">
+                                        Vehiculo <span style="color:red;" v-show="vehiculo==''">*</span>
+                                    </label>
                                     <div class="col-md-6">
                                         <input type="text" v-model="vehiculo" class="form-control" placeholder="Nombre de vehiculo">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Marca</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">
+                                        Marca <span style="color:red;" v-show="marca==''">*</span>
+                                    </label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="marca" >
                                             <option value="">Seleccione</option>
@@ -160,7 +171,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input" >Modelo</label>
+                                    <label class="col-md-3 form-control-label" for="text-input" >
+                                        Modelo <span style="color:red;" v-show="modelo==''">*</span>
+                                    </label>
                                     <div class="col-md-3">
                                         <input type="text" v-model="modelo" maxlength="4" v-on:keypress="isNumber($event)" class="form-control" placeholder="Modelo">
                                     </div>
@@ -188,14 +201,18 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Número de Placa</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">
+                                        Número de Placa <span style="color:red;" v-show="placas==''">*</span>
+                                    </label>
                                     <div class="col-md-5">
                                         <input type="text" v-model="placas" maxlength="7" class="form-control" placeholder="Número de placa">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Responsable</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">
+                                        Responsable <span style="color:red;" v-show="responsable_id==''">*</span>
+                                    </label>
                                     <div class="col-md-6">
                                         <input v-if="vista==2" disabled type="text" v-model="nombre" class="form-control col-md-8">
                                         <button v-if="vista == 2" class="form-control btn btn-sm btn-secondary col-md-4" @click="vista = 1, responsable_id = ''">Cambiar</button>
@@ -206,6 +223,17 @@
                                         </datalist>
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Comodato?</label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" v-model="comodato" >
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
                                     <div class="col-md-9">
@@ -257,6 +285,7 @@
                 marca: '',
                 clave: '',
                 placas: '',
+                comodato:0,
                 numero_serie : '',
                 numero_motor : '',
                 empresa : 'Grupo Constructor Cumbres',
@@ -280,7 +309,8 @@
                 vista: 1,
                 nombre:'',
                 b_empresa : '',
-                b_marca:''
+                b_marca:'',
+                b_comodato:''
             }
         },
         computed:{
@@ -291,7 +321,8 @@
             listarVehiculos(page){
                 let me = this;
                 var url = '/vehiculos/index?page=' + page+'&b_vehiculo='
-                    +this.buscar + '&b_empresa='+this.b_empresa + '&b_marca='+this.b_marca;
+                    +this.buscar + '&b_empresa='+this.b_empresa + '&b_marca='+this.b_marca
+                    + '&b_comodato='+this.b_comodato;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayVehiculos = respuesta;
@@ -352,9 +383,10 @@
                     'clave' : this.clave,
                     'placas' : this.placas,
                     'numero_serie' : this.numero_serie,
-                    'numero_motor ' : this.numero_motor,
+                    'numero_motor' : this.numero_motor,
                     'responsable_id' : this.responsable_id,
-                    'empresa' : this.empresa
+                    'empresa' : this.empresa,
+                    'comodato' : this.comodato
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarVehiculos(1); //se enlistan nuevamente los registros
@@ -386,9 +418,10 @@
                     'clave' : this.clave,
                     'placas' : this.placas,
                     'numero_serie' : this.numero_serie,
-                    'numero_motor ' : this.numero_motor,
+                    'numero_motor' : this.numero_motor,
                     'responsable_id' : this.responsable_id,
-                    'empresa' : this.empresa
+                    'empresa' : this.empresa,
+                    'comodato' : this.comodato
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarVehiculos(1); //se enlistan nuevamente los registros
@@ -450,7 +483,8 @@
                         this.numero_serie = '';
                         this.numero_motor = '';
                         this.responsable_id = '';
-                        this.empresa = '';
+                        this.comodato = 0;
+                        this.empresa = 'Grupo Constructor Cumbres';
                         this.vista = 1;
                         break;
                     }
@@ -469,6 +503,7 @@
                         this.numero_motor = data['numero_motor'];
                         this.responsable_id = data['responsable_id'];
                         this.empresa = data['empresa'];
+                        this.comodato = data['comodato'];
                         this.vista = 2;
                         this.getNombre(this.responsable_id);
                         this.tipoAccion=2;

@@ -1241,7 +1241,7 @@ class ClienteController extends Controller
             ->where('users.condicion','=',1)
             //Que no se encuentren en el calendario de eventos.
             ->whereNotIn('users.id',$cal)
-            ->whereNotIn('users.id',[28020,28230,55,29051,27])
+            ->whereNotIn('users.id',[28020,28230,55,29051,27,35])
             ->where('users.usuario','!=','descartado')
             ->where('users.usuario','!=','oficina')
             ->orderBy('vendedores.cont_leads','asc')
@@ -1268,6 +1268,7 @@ class ClienteController extends Controller
                     ->where('vendedores.tipo','=',0)
                     ->where('users.condicion','=',1)
                     ->whereNotIn('users.id',$cal)
+                    ->whereNotIn('users.id',[35])
                     ->whereIn('users.id',$as)
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
@@ -1284,7 +1285,7 @@ class ClienteController extends Controller
                     ->where('vendedores.tipo','=',0)
                     ->where('users.condicion','=',1)
                     ->whereNotIn('users.id',$cal)
-                    ->whereNotIn('users.id',[28020,28230,29051,55])
+                    ->whereNotIn('users.id',[28020,28230,29051,55,35])
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
                     ->orderBy('vendedores.cont_leads','asc')
@@ -1317,7 +1318,7 @@ class ClienteController extends Controller
             //Se recorre el resultado de clientes
             foreach ($clientes as $index => $c) {
                 //Se buscan los comentarios que tengan por lo menos 7 dias de antiguedad
-                $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(8))
+                $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(9))
                 ->where('cliente_id','=',$c->id)
                 ->count();
 
@@ -1341,7 +1342,6 @@ class ClienteController extends Controller
         $cont = 0;
 
         if(sizeof($ids))
-        
             //$value = random_int ( 0 , (sizeOf($ids)-1) );
             $value = 0;
 

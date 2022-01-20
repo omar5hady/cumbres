@@ -884,6 +884,8 @@ class DigitalLeadController extends Controller
                                 
                         $vendedor->dif7 =  $vendedor->bd7 - $vendedor->reg; // Calculo de prospectos con mas de 7 dias sin seguimiento
                         $vendedor->dif15 = $vendedor->total - $vendedor->bd7 - $vendedor->reg; // Calculo de prospectos con menos de 15 dias sin seguimiento
+                        if($vendedor->dif15 < 0)
+                            $vendedor->dif15 = 0;
                     }
                 }
         

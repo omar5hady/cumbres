@@ -136,7 +136,10 @@ class CreateUsersTable extends Migration
            $table->boolean('seg_cp')->default(0);
            $table->boolean('edo_cta_bancrea')->default(0);
 
-        
+           //RH
+           $table->boolean('vehiculos')->default(0);
+           $table->boolean('mant_vehiculos')->default(0);
+           $table->boolean('admin_mant_vehiculos')->default(0);
 
             //Acceso
             $table->boolean('usuarios')->default(0);

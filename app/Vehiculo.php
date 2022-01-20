@@ -16,6 +16,7 @@ class Vehiculo extends Model
         'placas',
         'numero_serie',
         'numero_motor',
-        'responsable_id'
+        'responsable_id',
+        'comodato'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 }
