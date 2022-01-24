@@ -949,13 +949,15 @@ class IniObraController extends Controller
 
         if(sizeof($ini_obra))
             foreach($ini_obra as $index => $obra){
+                $obra->anticipo = 0;
                 $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
                                     ->where('aviso_id','=',$obra->id)->first();
                 $obra->total_anticipo = 0;
                 if($anticipoT->total != null)
                     $obra->total_anticipo = $anticipoT->total;
 
-                $obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
+                if($obra->total_importe != 0)
+                    $obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
                 
             }
         

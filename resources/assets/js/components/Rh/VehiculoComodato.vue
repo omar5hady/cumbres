@@ -63,6 +63,7 @@
                                         <th>RH</th>
                                         <th>Control</th>
                                         <th>Dirección</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -134,6 +135,10 @@
                                             </td>
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
                                         </template>
+                                        <td>
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',vehiculo)">Observaciones</button>
+                                        </td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -195,7 +200,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -336,7 +341,6 @@
                                                             Pago retenido el dia: {{retencion.fecha_real }}
                                                         </td>
                                                     </template>
-                                                    
                                                 </tr>     
                                                 <tr>
                                                     <td></td>
@@ -376,6 +380,60 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
         </main>
 </template>
 
@@ -393,6 +451,7 @@
                 arraySolicitudes : [],
                 arrayVehiculos : [],
                 arrayRetenciones :[],
+                arrayObservaciones : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -420,7 +479,8 @@
                 total_retener : 0,
                 saldo : 0,
                 revisado : 0,
-                status_rev : 0
+                status_rev : 0,
+                observacion:'',
             }
         },
         computed:{
@@ -456,7 +516,17 @@
                     console.log(error);
                 });
             },
-
+            getObservaciones(id){
+                let me = this;
+                var url = '/vehiculos/getObservaciones?id=' + id;;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservaciones = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             validarMonto(retencion){
                 let me = this;
                 me.saldo = parseFloat(me.monto_comp) - parseFloat(me.total_retener) + parseFloat(retencion.importe);
@@ -468,7 +538,6 @@
                     me.arrayRetenciones[retencion.id].importe = 0;
                     
             },
-
             getVehiculos(){
                 let me = this;
                 var url = '/vehiculos/getComoDato';
@@ -481,7 +550,6 @@
                     console.log(error);
                 });
             },
-
             getFechas(){
                 let me = this;
                 me.arrayRetenciones = [];
@@ -555,6 +623,26 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Solicitud registrada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/vehiculos/storeObs',{
+                    'id' : me.id,
+                    'obs' : me.observacion
+                }).then(function (response){
+                    me.getObservaciones(me.id); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comentario guardado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -690,6 +778,39 @@
                 });
                
             },
+            retenerPago(id){
+                let me = this;
+                Swal.fire({
+                    title: '¿Estas seguro de retener este pago?',
+                    text: "Este cambio no se podrá deshacer!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si continuar!',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.value) {
+                         axios.put('/vehiculos/retenerPago',{
+                            'id' : id
+                        }).then(function (response){
+                            me.cerrarModal();
+                            me.listarSolicitudes(1); //se enlistan nuevamente los registros
+                            //Se muestra mensaje Success
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'El pago seleccionado ha sido retenido',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                });
+               
+            },
             changeStatus(status){
                 let me = this;
                 let estado = '';
@@ -759,7 +880,6 @@
             cerrarModal(){
                this.modal = 0;
             },
-
             calcularMontos(){
                 let me = this;
                 switch(me.reparacion){
@@ -799,7 +919,6 @@
             daysInMonth (month, year) {
                 return new Date(year, month, 0).getDate();
             },
-            
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(accion,data =[]){
                 this.getVehiculos();
@@ -861,6 +980,15 @@
                         )   this.revisado = 1;
                         
                         
+                        break;
+                    }
+                    case 'observaciones':
+                    {
+                        this.modal = 2;
+                        this.tituloModal = 'Observaciones';
+                        this.id = data['id'];
+                        this.observacion = '';
+                        this.getObservaciones(this.id)
                         break;
                     }
                 }

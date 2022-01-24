@@ -1096,8 +1096,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/vehiculos/setRecepControl','VehiculosController@setRecepControl');
         Route::put('/vehiculos/setRecepDireccion','VehiculosController@setRecepDireccion');
         Route::put('/vehiculos/recep/changeStatus','VehiculosController@changeStatus');
+        Route::put('/vehiculos/retenerPago','VehiculosController@retenerPago');
 
-
+        Route::get('/vehiculos/getObservaciones','VehiculosController@getObservaciones');
+        Route::post('/vehiculos/storeObs','VehiculosController@storeObs');
     });
 
 

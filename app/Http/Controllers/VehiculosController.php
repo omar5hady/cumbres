@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Mant_vehiculo;
 use App\Mant_retencion;
+use App\Obs_mant_vehiculo;
 use App\Vehiculo;
 use App\Personal;
 use Carbon\Carbon;
@@ -30,7 +31,10 @@ class VehiculosController extends Controller
             'Kia',
             'Mazda',
             'Nissan',
+            'Polaris',
+            'Seat',
             'Suzuki',
+            'Toyota',
             'Volkswagen'
         ];
 
@@ -182,6 +186,8 @@ class VehiculosController extends Controller
         $solicitud = Mant_vehiculo::findOrFail($request->id);
         $solicitud->recep_jefe = Carbon::now();
         $solicitud->save();
+
+        $this->guardarObs($request->id, 'Autorizado por jefe inmediato.');
     }
 
     public function setRecepRH(Request $request){
@@ -189,6 +195,8 @@ class VehiculosController extends Controller
         $solicitud = Mant_vehiculo::findOrFail($request->id);
         $solicitud->recep_rh = Carbon::now();
         $solicitud->save();
+
+        $this->guardarObs($request->id, 'Autorizado por departamento de RH.');
     }
 
     public function setRecepControl(Request $request){
@@ -196,6 +204,8 @@ class VehiculosController extends Controller
         $solicitud = Mant_vehiculo::findOrFail($request->id);
         $solicitud->recep_control = Carbon::now();
         $solicitud->save();
+
+        $this->guardarObs($request->id, 'Autorizado por Control.');
     }
 
     public function setRecepDireccion(Request $request){
@@ -203,11 +213,59 @@ class VehiculosController extends Controller
         $solicitud = Mant_vehiculo::findOrFail($request->id);
         $solicitud->recep_direccion = Carbon::now();
         $solicitud->save();
+
+        $this->guardarObs($request->id, 'Autorizado por Dirección.');
     }
 
     public function changeStatus(Request $request){
         $solicitud = Mant_vehiculo::findOrFail($request->id);
         $solicitud->status = $request->status;;
         $solicitud->save();
+
+        if($request->status == 2)
+            $obs = 'La solicitud ha sido aprobada.';
+        if($request->status == 0)
+            $obs = 'La solicitud ha sido rechazada.';
+
+        $this->guardarObs($request->id, $obs);
+    }
+
+    public function guardarObs($mantenimiento_id, $observacion){
+        $obs = new Obs_mant_vehiculo();
+        $obs->mantenimiento_id = $mantenimiento_id;
+        $obs->observacion = $observacion;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+    }
+
+    public function storeObs(Request $request){
+        $this->guardarObs($request->id, $request->obs);
+    }
+
+    public function getObservaciones(Request $request){
+        $obs = Obs_mant_vehiculo::where('mantenimiento_id','=',$request->id)->get();
+        return $obs;
+    }
+
+    public function retenerPago(Request $request){
+        $usuario = Personal::select('nombre','apellidos')->where('id','=',Auth::user()->id)->first();
+        $pago = Mant_retencion::findOrFail($request->id);
+        $pago->status = 1;
+        $pago->fecha_real = Carbon::now();
+        $pago->autorizacion = $usuario->nombre.' '.$usuario->apellidos;
+        $pago->save();
+
+        $monto = number_format((float)$pago->importe, 2, '.', ',');
+        $this->guardarObs($pago->mantenimiento_id, 'Ha sido retenido el importe de $'.$monto);
+
+        $pagos = Mant_retencion::select(DB::raw("SUM(mant_retenciones.importe) as total"))
+            ->where('status','=',1)->first();
+
+        $solicitud = Mant_vehiculo::findOrFail($pago->mantenimiento_id);
+        if($pagos->total == $solicitud->monto_comp){
+            $solicitud->status = 3;
+            $this->guardarObs($pago->mantenimiento_id, 'La solicitud ha sido liquidada');
+            $solicitud->save();
+        }   
     }
 }
