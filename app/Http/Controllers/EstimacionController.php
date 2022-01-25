@@ -10,6 +10,7 @@ use Auth;
 use App\Ini_obra;
 use App\Lote;
 use App\Estimacion;
+use App\Concepto_extra;
 use App\Fg_estimacion;
 use App\Anticipo_estimacion;
 use App\Hist_estimacion;
@@ -35,27 +36,41 @@ class EstimacionController extends Controller
         $contratos = $this->getContratos($contratista, $fraccionamiento, $constructora);
         // LLamada a la funcion que retorna los Fondos de Garantia para todos los contratos encontrados.
         $fondoGarantia = $this->getFG($iniObras);
-        // LLamada a la funcion que retorna los Anticipos para todos los contratos encontrados.
-        $anticipos = $this->getAnticipos($iniObras);
-        $titulo = 'Resumen de estimaciones Fraccionamiento ';
+        
+        $titulo = 'Resumen de estimaciones';
 
         if(sizeof($contratos)){
-            $titulo = 'Resumen de estimaciones Fraccionamiento '.$contratos[0]->proyecto;
             // Se recorre cada contrato.
             foreach ($contratos as $index => $contrato) {
+                $contrato->porcAnticipo = 0;
                 //Llamda a la funcion que retorna el historial de estimaciones por contrato
                 $anterior = $this->calculos($contrato->id);
                 $contrato->estimadoAnt = $anterior['totalAnt']; // Total de estimaciones anteriores a la actual
                 $contrato->estimadoAct = $anterior['totalAct']; // Total estimación actual
                 $contrato->numEst = $anterior['num']; //Numero de estimaciones 
+
+
+                // LLamada a la funcion que retorna los Anticipos para todos los contratos encontrados.
+                $contrato->anticipos = $this->getAnticipos($contrato->id);
+                if(sizeof($contrato->anticipos)){
+                    $sumaAnticipo = 0;
+                    foreach ($contrato->anticipos as $index => $anticipo){
+                        $sumaAnticipo+=$anticipo->monto_anticipo;
+                    }
+                    if($sumaAnticipo > 0)
+                        $contrato->porcAnticipo = round(($sumaAnticipo/$contrato->total_importe)*100,3);
+                }
+                // LLamada a la funcion que retorna los Conceptos Extra para todos los contratos encontrados.
+                $contrato->conceptosExtra = $this->getConceptosExtra($contrato->id);
             }
         }
 
         if(sizeof($contratos) == 0)
             return redirect('/');
+
         // Creación y retorno en excel.
-        return Excel::create($titulo , function($excel) use ($fondoGarantia, $anticipos, $contratos){
-            $excel->sheet($contratos[0]->proyecto, function($sheet) use ($fondoGarantia, $anticipos, $contratos){
+        return Excel::create($titulo , function($excel) use ($fondoGarantia, $contratos){
+            $excel->sheet('Resumen', function($sheet) use ($fondoGarantia, $contratos){
                 
                 $sheet->mergeCells('A1:S1');
                 $sheet->mergeCells('A2:S2');
@@ -166,23 +181,24 @@ class EstimacionController extends Controller
                 $suma0 = $suma1 = $suma2 = $suma3 = $suma4 = $suma5 = 0;
                 $suma6 = $suma7 = $suma8 = $suma9 = $suma10 = $suma11 = $suma12 = $suma13 = 0;
 
-                $suma14 = $suma15  = 0;
+                $suma14 = $suma15 = $suma16 = $suma17 = 0;
                 
                 //////////////////// VIVIENDAS ///////////////////////
                     foreach($contratos as $index => $detalle) {
                         
                         $amortAnt = $detalle->estimadoAnt*($detalle->anticipo/100);
                         $fondoG = $detalle->estimadoAnt*($detalle->porc_garantia_ret/100);
-                        $netoPagado = $amortAnt + $fondoG + $detalle->estimadoAnt;
+                        $netoPagado = $detalle->estimadoAnt - ($amortAnt + $fondoG);
 
                         $amortAct = $detalle->estimadoAct*($detalle->anticipo/100);
                         $fondoGAct = $detalle->estimadoAct*($detalle->porc_garantia_ret/100);
-                        $netoAct = $amortAct + $fondoGAct + $detalle->estimadoAct;
+                        $netoAct = $detalle->estimadoAct - ($amortAct + $fondoGAct);
 
                         $importeAcum = $detalle->estimadoAnt + $detalle->estimadoAct;
                         $amortAcum = $amortAnt + $amortAct;
                         $fgAcum = $fondoG + $fondoGAct;
-                        $netoAcum = $netoPagado + $netoAct;
+                        $netoAcum =$importeAcum - ($fgAcum + $amortAcum);
+                        $porEstimar = $detalle->total_importe - $importeAcum;
 
                         $suma0+=$detalle->num_casas;
                         $suma1+=$detalle->total_importe;
@@ -198,6 +214,7 @@ class EstimacionController extends Controller
                         $suma11+=$amortAcum;
                         $suma12+=$fgAcum;
                         $suma13+=$netoAcum;
+                        $suma16+=$porEstimar;
 
                         $cont++;    
                         
@@ -229,7 +246,7 @@ class EstimacionController extends Controller
                             $amortAcum,
                             $fgAcum, 
                             $netoAcum, 
-                            'importe Por estimar'
+                            $porEstimar
                         ]);	  
                         
                     }
@@ -257,7 +274,7 @@ class EstimacionController extends Controller
                         $suma11,
                         $suma12, 
                         $suma13, 
-                        ''
+                        $suma16
                     ]);	  
 
                     $sheet->setBorder('A'.$ini.':S'.$cont, 'thin');
@@ -332,7 +349,80 @@ class EstimacionController extends Controller
                     
                     });
 
-                    if(sizeOf($anticipos)){
+                foreach($contratos as $index => $contrato) {
+                    $suma14 = 0;
+                    $suma17 = 0;
+                    if(sizeOf($contrato->anticipos)){
+                        $cont++;  
+                        $ini = $cont;
+                        $sheet->mergeCells('A'.$cont.':B'.$cont);
+                        $sheet->mergeCells('C'.$cont.':E'.$cont);
+                        $sheet->mergeCells('F'.$cont.':G'.$cont);
+                        $sheet->cells('A'.$cont.':H'.$cont, function($cell) {
+                        
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        
+                        });
+
+                        $sheet->row($cont, [
+                            'ANTICIPOS: '.$contrato->clave,
+                            '',
+                            'MONTO DE ANTICIPO',
+                            '',
+                            '',
+                            'FECHA PAGO DEL ANTICIPO',
+                            '',
+                            $contrato->porcAnticipo.'%'
+                        ]);	 
+                        $ant = '';
+                        $cont++;
+
+                        foreach($contrato->anticipos as $index => $detalle) {
+                            $suma14 += $detalle->monto_anticipo;
+                        
+                            $sheet->mergeCells('C'.$cont.':E'.$cont);
+                            $sheet->mergeCells('F'.$cont.':G'.$cont);
+
+                            $sheet->setColumnFormat(array(
+                                'C'.$cont.':E'.$cont => '$#,##0.00',
+                                'F'.$cont.':G'.$cont => 'dd-mm-yyyy'
+                            ));
+
+                            $sheet->row($cont, [
+                                '', 
+                                '', 
+                                $detalle->monto_anticipo, 
+                                '',
+                                '',
+                                $detalle->fecha_anticipo
+                            ]);	
+                            $cont++;
+                        }
+
+                        $sheet->row($cont, [
+                            '', '', $suma14, '','','','',''
+                        ]);	 
+
+                        $sheet->mergeCells('H'.$cont.':J'.$cont);
+
+                        $sheet->setColumnFormat(array(
+                            'C'.$cont.':E'.$cont => '$#,##0.00',
+                        ));
+                        $sheet->mergeCells('C'.$cont.':E'.$cont);
+
+                        $sheet->cells('C'.$cont.':E'.$cont, function($cell) {
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+
+                        $sheet->setBorder('A'.$ini.':H'.$cont, 'thin');
+                        
+                    }
+
+                    if(sizeOf($contrato->conceptosExtra)){
+                        //////// OBRA EXTRA
+
                         $cont++;  
                         $ini = $cont;
                         $sheet->mergeCells('A'.$cont.':B'.$cont);
@@ -347,49 +437,44 @@ class EstimacionController extends Controller
                         });
 
                         $sheet->row($cont, [
+                            'OBRA EXTRA'.$contrato->clave,
+                            '',
+                            'MONTO DE OBRA EXTRA',
                             '',
                             '',
-                            'MONTO DE ANTICIPO',
-                            '',
-                            '',
-                            'ANTICIPO POR AMORTIZAR',
-                            '',
-                            'FECHA PAGO DEL ANTICIPO'
+                            'FECHA',
+                            $contrato->porcAnticipo.'%'
                         ]);	 
                         $ant = '';
                         $cont++;
 
-                        foreach($anticipos as $index => $detalle) {
-                            $suma14 += $detalle->monto_anticipo;
+                        foreach($contrato->conceptosExtra as $index => $detalle) {
+                            $suma17 += $detalle->importe;
                         
                             $sheet->mergeCells('C'.$cont.':E'.$cont);
                             $sheet->mergeCells('F'.$cont.':G'.$cont);
-                            $sheet->mergeCells('H'.$cont.':I'.$cont);
 
                             $sheet->setColumnFormat(array(
                                 'C'.$cont.':E'.$cont => '$#,##0.00',
-                                'H'.$cont.':I'.$cont => 'dd-mm-yyyy'
+                                'F'.$cont.':G'.$cont => 'dd-mm-yyyy'
                             ));
 
                             $sheet->row($cont, [
-                                $detalle->clave, 
                                 '', 
-                                $detalle->monto_anticipo, 
+                                '', 
+                                $detalle->importe, 
                                 '',
                                 '',
-
-                                '',
-                                '',
-                                $detalle->fecha_anticipo
+                                $detalle->fecha
                             ]);	
                             $cont++;
                         }
 
                         $sheet->row($cont, [
-                            '', '', $suma14, '','','','',''
+                            '', '', $suma17, '','','','',''
                         ]);	 
 
-                        $sheet->mergeCells('H'.$cont.':I'.$cont);
+                        $sheet->mergeCells('H'.$cont.':J'.$cont);
 
                         $sheet->setColumnFormat(array(
                             'C'.$cont.':E'.$cont => '$#,##0.00',
@@ -401,8 +486,9 @@ class EstimacionController extends Controller
                             $cell->setAlignment('center');
                         });
 
-                        $sheet->setBorder('A'.$ini.':I'.$cont, 'thin');
+                        $sheet->setBorder('A'.$ini.':H'.$cont, 'thin');
                     }
+                }
 
                 ///////////// Fondo de Garantia
                 if(sizeOf($fondoGarantia)){
@@ -442,11 +528,6 @@ class EstimacionController extends Controller
                    // $sheet->setBorder('A'.$ini.':I'.$cont, 'thin');
                 }
 
-                    
-                
-                
-
-            
             });
         })->download('xls');
     }
@@ -455,11 +536,19 @@ class EstimacionController extends Controller
     public function getAnticipos($aviso){
         $anticipos = Anticipo_estimacion::join('ini_obras','anticipos_estimaciones.aviso_id','=','ini_obras.id')
         ->select('anticipos_estimaciones.id','anticipos_estimaciones.fecha_anticipo','anticipos_estimaciones.monto_anticipo','ini_obras.clave')
-            ->whereIn('aviso_id',$aviso)
+            ->where('aviso_id','=',$aviso)
             ->orderBy('aviso_id','asc')
             ->orderBy('fecha_anticipo','asc')->get();
         
         return $anticipos;
+    }
+
+    public function getConceptosExtra($aviso){
+        $conceptos = Concepto_extra::where('aviso_id','=',$aviso)
+            ->orderBy('aviso_id','asc')
+            ->orderBy('fecha','asc')->get();
+
+        return $conceptos;
     }
 
     // Función que retorna los fondos de garantia por contrato

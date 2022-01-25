@@ -924,23 +924,26 @@ class IniObraController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
-        $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe2 as total_importe', 'ini_obras.garantia_ret',
             'ini_obras.total_anticipo', 'ini_obras.num_casas',
             'ini_obras.anticipo',
             'ini_obras.porc_garantia_ret',
-            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
-        
-        if ($buscar==''){
-            $ini_obra = $query;
-        }
-        else{
-            $ini_obra = $query
-            ->where('ini_obras.clave','like','%'.$request->buscar.'%')
-            ->where('ini_obras.num_casas','!=',0)
-            ->orWhere('contratistas.nombre','like','%'.$request->buscar.'%')
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.num_casas','!=',0);
+        
+        if($request->proyecto != '')
+            $ini_obra = $ini_obra
+            ->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
+        
+        if($buscar != ''){
+            $ini_obra = $ini_obra
+            ->where('ini_obras.clave','like','%'.$request->buscar.'%')
+            ->orWhere('contratistas.nombre','like','%'.$request->buscar.'%');
+            if($request->proyecto != '')
+                $ini_obra = $ini_obra
+                ->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
         }
 
         $ini_obra = $ini_obra

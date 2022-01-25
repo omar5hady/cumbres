@@ -32,6 +32,15 @@
                     <template v-if="listado == 1">
                        <div class="card-body"> 
                             <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <select class="form-control" v-model="b_proyecto">
+                                            <option value="">Fraccionamiento</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-8">
                                     <div class="input-group">
                                         <input  type="text" v-model="buscar" @keyup.enter="indexEstimaciones(1)" class="form-control" placeholder="Texto a buscar">
@@ -39,7 +48,6 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    
                                     <div class="input-group">
                                         <button type="submit" @click="indexEstimaciones(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -840,6 +848,7 @@
                     'to' : 0,
                 },
                 buscar:'',
+                b_proyecto:'',
                 clave:'',
                 porcentaje_garantia:0,
                 total_importe:0,
@@ -1051,7 +1060,7 @@
                 this.total3 = 0;
                 this.total4 = 0;
                 this.total5 = 0;
-                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar;
+                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEstimaciones = respuesta.estimaciones.data;
@@ -1558,6 +1567,7 @@
         },
         mounted() {          
             this.indexEstimaciones(1);
+            this.selectFraccionamientos();
         }
     }
 </script>
