@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/asesores/getAsesoresProyecto','UserController@getAsesoresProyecto');
         Route::post('/asesores/asignarProyecto','UserController@asignarProyecto');
+        Route::post('/clientes/storeObsGerente','ClienteController@storeObsGerente');
         Route::delete('/asesores/deleteAsignarProy','UserController@deleteAsignarProy');
 
         Route::get('/pruebaLead','ClienteController@asignarClienteAleatorio');

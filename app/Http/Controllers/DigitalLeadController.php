@@ -815,9 +815,9 @@ class DigitalLeadController extends Controller
                                     ->where('motivo','=',1)
                                     ->groupBy('personal.id')
                                     ->get();
-
             foreach ($asesores as $asesor) { 
                 // Conteo de leads por asesor   
+               
                 $asesor->conteo = Digital_lead::select('vendedor_asign')
                                 ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1);
                                 if($fecha1 != '') // Fecha de registro
@@ -840,16 +840,27 @@ class DigitalLeadController extends Controller
             // Se obtienen todos los asesores internos registrados en el sistema 
             $vendedores = User::join('personal','users.id','=','personal.id')
                 ->join('vendedores','personal.id','vendedores.id')
+                ->join('personal as gerente','vendedores.supervisor_id','=','gerente.id')
                 ->select('personal.id',
+                        DB::raw("CONCAT(gerente.nombre,' ',gerente.apellidos) AS gerente"),
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
                 ->where('vendedores.tipo','=',0)
                 ->where('users.condicion','=',1)
                 ->where('users.usuario','!=','descartado')
                 ->where('users.usuario','!=','oficina')
+                ->orderBy('vendedores.supervisor_id','asc')
                 ->orderBy('vendedores.cont_leads','asc')
                 ->orderBy('vendedor','asc')->get();
-
+                $varGerente = '';
                 foreach ($vendedores as $index => $vendedor) {
+
+                    if($varGerente != $vendedor->gerente ){
+                        $varGerente = $vendedor->gerente;
+                    }
+                    else{
+                        $vendedor->gerente = '';
+                    }
+
                     $vendedor->total = 0; // Total de prospectos por asesor.
                     $vendedor->reg = 0; // Prospectos con atención regular.
                     $vendedor->bd7 = 0; // Prospectos con mas de 7 dias sin atencion y mens de 15 dias.
@@ -857,8 +868,12 @@ class DigitalLeadController extends Controller
                     $vendedor->dif = 0;
                     $vendedor->dif7 = 0;
                     $vendedor->dif15 = 0;
-        
-                    $clientes = Cliente::select('id')->where('vendedor_id','=',$vendedor->id)
+                    $vendedor->ger = 0;
+                    $vendedor->ger7 = 0;
+                    $vendedor->ger15 = 0;
+                    $now = Carbon::now();
+
+                    $clientes = Cliente::select('id','seguimiento')->where('vendedor_id','=',$vendedor->id)
                     ->where('clasificacion','!=',5)
                     ->where('clasificacion','!=',6)
                     ->where('clasificacion','!=',7)
@@ -868,12 +883,25 @@ class DigitalLeadController extends Controller
                     $vendedor->bd = 0;
         
                     foreach ($clientes as $index => $c) {
+                        $seguimiento = '';
+                        $fechaSeg = Carbon::parse($c->seguimiento);
+                        $seguimiento = $fechaSeg->diffInDays($now);
+
+                        if($seguimiento <= 7)
+                            $vendedor->ger++;
+                        if($seguimiento > 7 && $seguimiento <= 15)
+                            $vendedor->ger7++;
+                        if($seguimiento > 15)
+                            $vendedor->ger15++;
+
                         $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(7)) //Clientes con seguimiento
                         ->where('cliente_id','=',$c->id)
+                        ->where('gerente','=',0)
                         ->count();
 
                         $obs2 = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(16)) // Clientes con mas de 7 dias sin atención.
                         ->where('cliente_id','=',$c->id)
+                        ->where('gerente','=',0)
                         ->count();
         
                         if($obs > 0)

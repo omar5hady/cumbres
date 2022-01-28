@@ -95,7 +95,7 @@
                         <div class="form-group row">
                             <!-- Listado por ingresos -->
                                 
-                            <div class="col-md-5">
+                            <div class="col-md-8">
                                 <div class="table-responsive">
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
@@ -122,8 +122,12 @@
 
                             <div class="col-md-2">
                             </div>
+                            
+                        </div>
 
-                            <div class="col-md-5">
+                        <div class="form-group row">
+
+                            <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table2 table-light table-bordered table-striped table-sm">
                                         <thead>
@@ -131,7 +135,18 @@
                                                 <th colspan="3" class="text-center">SEGUIMIENTO DE PROSPECTOS</th>
                                             </tr>
                                             <tr>
+                                                <td colspan="2"></td>
+                                                <th colspan="3" class="text-center">Seguimiento asesor</th>
+                                                <td></td>
+                                                <th colspan="3" class="text-center">Seguimiento gerente</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Gerente</th>
                                                 <th> Asesor</th>
+                                                <th> Prospectos en verde</th>
+                                                <th> Prospectos amarillo</th>
+                                                <th> Prospectos rojo</th>
+                                                <th></th>
                                                 <th> Prospectos en verde</th>
                                                 <th> Prospectos amarillo</th>
                                                 <th> Prospectos rojo</th>
@@ -139,10 +154,15 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="asesor in arrayVendedores" :key="asesor.id">
+                                                <th class="td2" v-text="asesor.gerente"></th>
                                                 <td class="td2" v-text="asesor.vendedor"></td>
                                                 <td class="td2 table-success" v-text="asesor.reg"></td>
                                                 <td class="td2 table-warning" v-text="asesor.dif7"></td>
                                                 <td class="td2 table-danger" v-text="asesor.dif15"></td>
+                                                <td></td>
+                                                <td class="td2 table-success" v-text="asesor.ger"></td>
+                                                <td class="td2 table-warning" v-text="asesor.ger7"></td>
+                                                <td class="td2 table-danger" v-text="asesor.ger15"></td>
                                             </tr>     
                                                                   
                                         </tbody>
@@ -212,7 +232,7 @@
 
                     me.arrayLeads.sort((b, a) => a.conteo - b.conteo);
                     me.arrayAsesores.sort((b, a) => a.conteo - b.conteo);
-                    me.arrayVendedores.sort((b, a) => a.dif15 - b.dif15);
+                    //me.arrayVendedores.sort((b, a) => a.dif15 - b.dif15);
 
                 })
                 .catch(function (error) {

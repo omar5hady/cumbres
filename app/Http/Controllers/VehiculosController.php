@@ -9,8 +9,11 @@ use App\Mant_retencion;
 use App\Obs_mant_vehiculo;
 use App\Vehiculo;
 use App\Personal;
+use App\User;
 use Carbon\Carbon;
 use Auth;
+
+use App\Http\Controllers\NotificacionesAvisosController;
 
 class VehiculosController extends Controller
 {
@@ -53,6 +56,11 @@ class VehiculosController extends Controller
             $vehiculos = $vehiculos->where('vehiculos.marca','=',$request->b_marca);
         if($request->b_comodato != '')
             $vehiculos = $vehiculos->where('vehiculos.comodato','=',$request->b_comodato);
+
+        if(Auth::user()->usuario != 'marce.gaytan' && Auth::user()->usuario != 'karen.viramontes' 
+            && Auth::user()->usuario != 'uriel.al' && Auth::user()->usuario != 'shady'
+        ) $vehiculos = $vehiculos->where('vehiculos.responsable_id','=',Auth::user()->id);
+            
 
         $vehiculos = $vehiculos->orderBy('vehiculos.empresa','asc')
                 ->orderBy('vehiculos.marca','asc')
@@ -141,6 +149,16 @@ class VehiculosController extends Controller
                     $retencion->save();
                 }
             }
+
+            $msj = 'El colaborador '.$solicitud->solicitante.' ha generado una nueva solicitud para mantenimiento de su vehiculo';
+            $aviso = new NotificacionesAvisosController();
+            $usuarios = User::select('id')
+                                ->where('id','!=',Auth::user()->id)
+                                ->where('admin_mant_vehiculos','=',1)
+                                ->get();
+            foreach ($usuarios as $index => $user) {
+                $aviso->store($user->id,$msj);
+            }
         DB::commit();
  
         } catch (Exception $e){
@@ -157,7 +175,7 @@ class VehiculosController extends Controller
 
         $solicitudes = Mant_vehiculo::join('vehiculos','mant_vehiculos.vehiculo','=','vehiculos.id')
                                 ->select('mant_vehiculos.*','vehiculos.vehiculo as auto',
-                                            'vehiculos.marca','vehiculos.modelo');
+                                            'vehiculos.marca','vehiculos.modelo', 'vehiculos.responsable_id');
 
                 if($fecha1 != '' && $fecha2)
                     $solicitudes = $solicitudes->whereBetween('mant_vehiculos.created_at',[$fecha1, $fecha2.' 23:59:59']);
@@ -223,11 +241,23 @@ class VehiculosController extends Controller
         $solicitud->save();
 
         if($request->status == 2)
-            $obs = 'La solicitud ha sido aprobada.';
+            $obs = 'Se ha realizado el pago de la solicitud';
         if($request->status == 0)
             $obs = 'La solicitud ha sido rechazada.';
 
         $this->guardarObs($request->id, $obs);
+
+        if($request == 2){
+            $msj = $obs.' para el vehiculo '.$solicitud->vehiculo.' del colaborador '.$solicitud->solicitante;
+            $aviso = new NotificacionesAvisosController();
+            $usuarios = User::select('id')
+                                ->whereIn('usuario',['marce.gaytan','uriel.al','karen.viramontes','shady'])
+                                ->get();
+            foreach ($usuarios as $index => $user) {
+                $aviso->store($user->id,$msj);
+            }
+
+        }
     }
 
     public function guardarObs($mantenimiento_id, $observacion){

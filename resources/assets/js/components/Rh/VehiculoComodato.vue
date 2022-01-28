@@ -89,16 +89,18 @@
                                         <td></td>
                                         <template v-if="adminMant == '1'">
                                             <td class="td2" v-if="vehiculo.recep_jefe == null">
-                                                <button type="button" @click="firmaJefe(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Jefe inmediato">
+                                                <button v-if="userId != vehiculo.responsable_id" type="button" @click="firmaJefe(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Jefe inmediato">
                                                     <i class="icon-check"></i>
                                                 </button>
+                                                <label v-else>Sin Firma</label>
                                             </td>
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_jefe"></td>
 
                                             <td class="td2" v-if="vehiculo.recep_rh == null">
-                                                <button type="button" @click="firmaRH(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado RH">
+                                                <button v-if="userName == 'marce.gaytan'" type="button" @click="firmaRH(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado RH">
                                                     <i class="icon-check"></i>
                                                 </button>
+                                                <label v-else>Sin Firma</label>
                                             </td>
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
 
@@ -110,9 +112,10 @@
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_control"></td>
 
                                             <td class="td2" v-if="vehiculo.recep_direccion == null">
-                                                <button type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
+                                                <button v-if="userName=='karen.viramontes' || userName=='uriel.al'" type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
                                                     <i class="icon-check"></i>
                                                 </button>
+                                                <label v-else>Sin Firma</label>
                                             </td>
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
                                         </template>
@@ -333,9 +336,10 @@
                                                     </td>
                                                     <template v-if="adminMant == 1">
                                                         <td v-if="status_rev > 1 && retencion.status == 0">
-                                                            <button type="button" @click="retenerPago(retencion.id)" class="btn btn-success btn-sm" title="Retener pago">
+                                                            <button type="button" v-if="userName=='marce.gaytan'" @click="retenerPago(retencion.id)" class="btn btn-success btn-sm" title="Retener pago">
                                                                 <i class="icon-check"></i>
                                                             </button>
+                                                            <label v-else>Sin retener</label>
                                                         </td>
                                                         <td v-if="status_rev > 1 && retencion.status == 1">
                                                             Pago retenido el dia: {{retencion.fecha_real }}
@@ -368,8 +372,8 @@
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1 && total_retener == monto_comp && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
 
-                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
-                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
+                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1 && userName=='jorge.diaz'" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
+                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1 && userName=='jorge.diaz'" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
 
 
                             
@@ -444,7 +448,9 @@
 <script>
     export default {
         props:{
-            adminMant:{type: String}
+            adminMant:{type: String},
+            userName:{type: String},
+            userId:{type: String}
         },
         data(){
             return{

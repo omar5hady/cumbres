@@ -1332,7 +1332,8 @@
                                                         <div class="form-group">
                                                             <label for="">Paquete</label>
                                                             <select class="form-control" v-model="paquete_id" @change="datosPaquetes(paquete_id)">
-                                                                    <option value="0">Seleccione</option>
+                                                                    <option value="">Seleccione</option>
+                                                                    <option value="0">Sin paquete</option>
                                                                     <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
                                                             </select>
                                                         </div>
@@ -2839,20 +2840,20 @@
                 me.paquete = '';
                 me.precioVenta = me.precioVenta - me.costoPaquete;
                 if(paquete!=0){
-                me.arrayDatosPaquetes=[];
-                var url = '/select_datos_paquetes?buscar=' + paquete;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                     me.arrayDatosPaquetes = respuesta.datos_paquetes;
-                     me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
-                     me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
-                     me.paquete = me.arrayDatosPaquetes[0]['nombre'];
+                    me.arrayDatosPaquetes=[];
+                    var url = '/select_datos_paquetes?buscar=' + paquete;
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayDatosPaquetes = respuesta.datos_paquetes;
+                        me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
+                        me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
+                        me.paquete = me.arrayDatosPaquetes[0]['nombre'];
 
-                    me.precioVenta = me.precioVenta + me.costoPaquete;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                        me.precioVenta = me.precioVenta + me.costoPaquete;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 }
                 else{
                     me.descripcionPaquete='';

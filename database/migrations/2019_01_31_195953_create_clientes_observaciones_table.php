@@ -18,6 +18,7 @@ class CreateClientesObservacionesTable extends Migration
             $table->unsignedInteger('cliente_id');
             $table->text('comentario');
             $table->string('usuario',50);
+            $table->boolean('gerente')->default(0);
 
             $table->date('prox_cita')->nullable();
 

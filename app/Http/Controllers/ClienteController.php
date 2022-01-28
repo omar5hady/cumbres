@@ -130,10 +130,16 @@ class ClienteController extends Controller
 
         //Se recorre a los clientes y se busca la fecha del ultimo comentario. Despues se calcula el tiempo que ha pasado.
         foreach($personas as $index => $persona){
-            $ultimoCom = Cliente_observacion::select('created_at')->where('cliente_id','=',$persona->id)->orderBy('id','desc')->get();
+            $persona->diferenciaGer = 0;
+            $now = Carbon::now();
+            if($persona->clasificacion > 1 && $persona->clasificacion <= 4){
+                $fechaSeg = Carbon::parse($persona->seguimiento);
+                $persona->diferenciaGer = $fechaSeg->diffInDays($now);
+            }
+            
+            $ultimoCom = Cliente_observacion::select('created_at')->where('cliente_id','=',$persona->id)->where('gerente','=',0)->orderBy('id','desc')->get();
             if(sizeof($ultimoCom)){
                 $date = Carbon::parse($ultimoCom[0]->created_at);
-                $now = Carbon::now();
                 $persona->diferencia = $date->diffInDays($now);
             }
             else{
@@ -159,6 +165,7 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $now = Carbon::now();
          
         try{
             DB::beginTransaction();
@@ -221,6 +228,8 @@ class ClienteController extends Controller
 
             }
             $cliente->clasificacion = $request->clasificacion;
+
+            $cliente->seguimiento = $now;
             
             $cliente->sexo_coa = $request->sexo_coa;
             $cliente->tipo_casa_coa = $request->tipo_casa_coa;
@@ -1101,7 +1110,7 @@ class ClienteController extends Controller
                 'personal.email','personal.empresa_id', 
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                 'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 
-                'clientes.estado','clientes.ciudad','clientes.proyecto_interes_id',
+                'clientes.estado','clientes.ciudad','clientes.proyecto_interes_id', 'clientes.seguimiento',
                 'clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
                 'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado',
                 'clientes.clasificacion','clientes.created_at','clientes.precio_rango','clientes.ingreso',
@@ -1137,6 +1146,7 @@ class ClienteController extends Controller
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
                     DB::raw("CONCAT(vAux.nombre,' ',vAux.apellidos) AS vAux_completo"),
+                    'clientes.seguimiento',
                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 'clientes.estado','clientes.ciudad',
                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion', 'clientes.reasignar',
@@ -1318,7 +1328,8 @@ class ClienteController extends Controller
             //Se recorre el resultado de clientes
             foreach ($clientes as $index => $c) {
                 //Se buscan los comentarios que tengan por lo menos 7 dias de antiguedad
-                $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(9))
+                $obs = Cliente_observacion::where('gerente','=',0)
+                ->where('created_at','>=',Carbon::now()->subDays(9))
                 ->where('cliente_id','=',$c->id)
                 ->count();
 
@@ -1478,6 +1489,7 @@ class ClienteController extends Controller
                 foreach ($clientes as $index => $c) {
                     $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(16))
                     ->where('cliente_id','=',$c->id)
+                    ->where('gerente','=',0)
                     ->count();
     
                     if($obs > 0){
@@ -1530,6 +1542,19 @@ class ClienteController extends Controller
 
         }
         
+    }
+
+    public function storeObsGerente(Request $request){
+        $observacion = new Cliente_observacion();
+        $observacion->cliente_id = $request->id;
+        $observacion->comentario = $request->observacion;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->gerente = 1;
+        $observacion->save(); 
+
+        $cliente = Cliente::findOrFail($request->id);
+        $cliente->seguimiento = Carbon::now();
+        $cliente->save();
     }
     
 }

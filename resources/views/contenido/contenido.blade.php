@@ -549,7 +549,12 @@
             <datos-admin></datos-admin>
         </template>
         <template v-if="menu==272">
-            <vehiculo-comodato admin-mant="{{Auth::user()->admin_mant_vehiculos}}"></vehiculo-comodato>
+            <vehiculo-comodato 
+                admin-mant="{{Auth::user()->admin_mant_vehiculos}}"
+                user-name="{{Auth::user()->usuario}}"
+                user-id="{{Auth::user()->id}}"
+            >
+            </vehiculo-comodato>
         </template>
 
 

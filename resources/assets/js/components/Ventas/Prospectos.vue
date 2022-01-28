@@ -124,6 +124,7 @@
                                         <tr>
                                             <th>Opciones</th>
                                             <th>Nombre</th>
+                                            <th v-if="rolId != 2"></th>
                                             <th>Celular</th>
                                             <th>Email</th>
                                             <th>RFC</th>
@@ -141,17 +142,16 @@
                                     <tbody>
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td class="td2">
-                                            
-                                            <template v-if="prospecto.activo">
-                                                <button title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
-                                                <i class="fa fa-user-times"></i>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <button title="Activar cliente" type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                            </template>
+                                                <template v-if="prospecto.activo">
+                                                    <button title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-user-times"></i>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <button title="Activar cliente" type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
+                                                        <i class="icon-check"></i>
+                                                    </button>
+                                                </template>
                                                 <button  title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
@@ -168,6 +168,11 @@
                                                     <span class="badge2 badge-danger">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
                                                 </td>                                                
                                             </template>
+                                            <td v-if="rolId != 2">
+                                                <span class="badge2 badge-success" v-if="prospecto.diferenciaGer >= 0 && prospecto.diferenciaGer <= 7"><i class="fa fa-check"></i></span>
+                                                <span class="badge2 badge-warning" v-if="prospecto.diferenciaGer > 7 && prospecto.diferenciaGer <= 15"><i class="fa fa-exclamation-triangle"></i></span>
+                                                <span class="badge2 badge-danger" v-if="prospecto.diferenciaGer >15"><i class="fa fa-window-close-o"></i></span>
+                                            </td>
                                             <td class="td2" >
                                                  <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
                                                  <a title="Enviar whatsapp" class="btn btn-success" target="_blank" 
@@ -1206,6 +1211,16 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
+                                <div class="form-group row" v-if="rolId != 2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
                                 
                                 <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
                                     <thead>
@@ -1944,6 +1959,8 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayObservacion = respuesta.observacion.data;
+                    me.id = buscar;
+                    me.observacion = '';
                     console.log(url);
                 })
                 .catch(function (error) {
@@ -2032,6 +2049,28 @@
                 }).catch(function (error){
                     console.log(error);
                     this.proceso=false;
+                });
+            },
+
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store del controller
+                axios.post('/clientes/storeObsGerente',{
+                    'id':this.id,
+                    'observacion':this.observacion,
+                }).then(function (response){
+                    me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.cerrarModal3();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comentario guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
                 });
             },
 
