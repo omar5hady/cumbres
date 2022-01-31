@@ -13,6 +13,11 @@
                         <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nueva solicitud.
                         </button>
+
+                        <a v-if="adminMant == '1'" class="btn btn-success" v-bind:href="'/vehiculos/getSolicitudesExcel?b_fecha1=' + b_fecha1 + '&b_fecha2=' + b_fecha2
+                                    + '&b_status=' + b_status + '&buscar=' + buscar">
+                            <i class="fa fa-file-text"></i>&nbsp; Excel
+                        </a>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -56,6 +61,7 @@
                                         <th>Servicio</th>
                                         <th>Importe total</th>
                                         <th>Aportación compañero</th>
+                                        <th>Monto retenido</th>
                                         <th>Fecha de solic.</th>
                                         <th>Status</th>
                                         <th></th>
@@ -78,6 +84,7 @@
                                         <td class="td2" v-text="vehiculo.reparacion"></td>
                                         <td class="td2" v-text="'$' + formatNumber(vehiculo.importe_total)"></td>
                                         <td class="td2" v-text="'$' + formatNumber(vehiculo.monto_comp)"></td>
+                                        <td class="td2" v-text="'$' + formatNumber(vehiculo.totalRetenido)"></td>
                                         <td class="td2" v-text="this.moment(vehiculo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
                                             <!-- 0 Cancelado, 1 Pendiente, 2 Aprobado, 3 Liquidado -->

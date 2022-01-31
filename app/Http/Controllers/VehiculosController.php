@@ -12,6 +12,7 @@ use App\Personal;
 use App\User;
 use Carbon\Carbon;
 use Auth;
+use Excel;
 
 use App\Http\Controllers\NotificacionesAvisosController;
 
@@ -168,6 +169,131 @@ class VehiculosController extends Controller
 
     public function getSolicitudes(Request $request){
         if(!$request->ajax())return redirect('/');
+        $solicitudes = $this->getQuerySolic($request);
+                
+            $solicitudes = $solicitudes->orderBy('mant_vehiculos.id','desc')->paginate(10);
+
+        if(sizeOf($solicitudes)){
+            foreach ($solicitudes as $key => $solicitud) {
+                $solicitud->totalRetenido = 0;
+                $solicitud->retenciones = Mant_retencion::where('mantenimiento_id','=',$solicitud->id)->get();
+                if(sizeof($solicitud->retenciones)){
+                    foreach ($solicitud->retenciones as $key => $retencion) {
+                        if($retencion->status == 1)
+                            $solicitud->totalRetenido += $retencion->importe;
+                    }
+                }
+            }
+        }
+
+        return $solicitudes;
+    }
+
+    public function getSolicitudesExcel(Request $request){
+        $solicitudes = $this->getQuerySolic($request);
+                
+            $solicitudes = $solicitudes->orderBy('mant_vehiculos.id','desc')->paginate(10);
+
+        if(sizeOf($solicitudes)){
+            foreach ($solicitudes as $key => $solicitud) {
+                $solicitud->totalRetenido = 0;
+                $solicitud->retenciones = Mant_retencion::where('mantenimiento_id','=',$solicitud->id)->get();
+                if(sizeof($solicitud->retenciones)){
+                    foreach ($solicitud->retenciones as $key => $retencion) {
+                        if($retencion->status == 1)
+                            $solicitud->totalRetenido += $retencion->importe;
+                    }
+                }
+            }
+        }
+
+        return Excel::create('Solicitudes de Mant. Comodato', 
+                    function($excel) use ($solicitudes){
+                        $excel->sheet('Solicitudes', function($sheet) use ($solicitudes){
+                            
+                            $sheet->row(1, [
+                                'Vehiculo', 'Solicitante' ,'Servicio', 'Importe total', 'Aportación compañero', 'Monto retenido', 
+                                'Fecha de solic.', 'Status', 'RH'
+                            ]);
+
+
+                            $sheet->cells('A1:I1', function ($cells) {
+                                $cells->setBackground('#052154');
+                                $cells->setFontColor('#ffffff');
+                                // Set font family
+                                $cells->setFontFamily('Calibri');
+
+                                // Set font size
+                                $cells->setFontSize(13);
+
+                                // Set font weight to bold
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('center');
+                            });
+
+                            
+                            $cont=1;
+                            
+                            $sheet->setColumnFormat(array(
+                                'D' => '$#,##0.00',
+                                'E' => '$#,##0.00',
+                                'F' => '$#,##0.00'
+                            ));
+
+                            
+
+                            foreach($solicitudes as $index => $solicitud) {
+                                if($solicitud->recep_rh == NULL){
+                                    $solicitud->recep_rh = 'Sin firma';
+                                }
+
+                                switch($solicitud->status){
+                                    case 0:{
+                                        $solicitud->status = 'Rechazado';
+                                        break;
+                                    }
+                                    case 1:{
+                                        $solicitud->status = 'Pendiente';
+                                        break;
+                                    }
+                                    case 2:{
+                                        $solicitud->status = 'Aprobado';
+                                        break;
+                                    }
+                                    case 3:{
+                                        $solicitud->status = 'Liquidado';
+                                        break;
+                                    }
+                                }
+                                
+                                $sheet->row($index+2, [
+                                    $solicitud->marca.' '.$solicitud->auto.' '.$solicitud->modelo, 
+                                    $solicitud->solicitante,
+                                    $solicitud->reparacion,
+                                    $solicitud->importe_total, 
+                                    $solicitud->monto_comp, 
+                                    $solicitud->totalRetenido,
+                                    $solicitud->created_at,
+                                    $solicitud->status,
+                                    $solicitud->recep_rh
+                                ]);	
+                            }
+
+
+                            $num='A1:I' . $cont;
+                            $sheet->setBorder($num, 'thin');
+                            $sheet->cells('S1:S'.$cont, function($cells) {
+
+                                
+                                $cells->setFontColor('#ff4040');
+                            
+                            });
+                        });
+                    }
+                )->download('xls');
+    }
+
+    private function getQuerySolic(Request $request){
         $fecha1 = $request->b_fecha1;
         $fecha2 = $request->b_fecha2;
         $status = $request->b_status;
@@ -187,14 +313,6 @@ class VehiculosController extends Controller
                 if(Auth::user()->admin_mant_vehiculos != 1){
                     $solicitudes = $solicitudes->where('vehiculos.responsable_id','=',Auth::user()->id);
                 }
-                
-            $solicitudes = $solicitudes->orderBy('mant_vehiculos.id','desc')->paginate(10);
-
-        if(sizeOf($solicitudes)){
-            foreach ($solicitudes as $key => $solicitud) {
-                $solicitud->retenciones = Mant_retencion::where('mantenimiento_id','=',$solicitud->id)->get();
-            }
-        }
 
         return $solicitudes;
     }

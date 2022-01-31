@@ -1090,6 +1090,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/vehiculos/getComoDato','VehiculosController@getComoDato');
         Route::get('/vehiculos/getSolicitudes','VehiculosController@getSolicitudes');
+        Route::get('/vehiculos/getSolicitudesExcel','VehiculosController@getSolicitudesExcel');
         Route::post('/vehiculos/storeSolicitud','VehiculosController@storeSolicitud');
 
         Route::put('/vehiculos/setRecepJefe','VehiculosController@setRecepJefe');
