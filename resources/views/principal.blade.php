@@ -94,6 +94,11 @@
                         @if(Auth::user()->mant_vehiculos == 1 || Auth::user()->admin_mant_vehiculos == 1)
                             @include('sidebars.rh')
                         @endif
+
+                <!-- Oficina -->
+                        @if(Auth::user()->rol_id == 1)
+                            @include('sidebars.oficina')
+                        @endif
                         
                 <!-- Modulo para proveedor ---->
                         @if(Auth::user()->rol_id == 10 || Auth::user()->rol_id == 1 || Auth::user()->usuario == 'david.hh')

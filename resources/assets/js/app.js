@@ -198,6 +198,10 @@ Vue.component('puente-resumen', require('./components/CPuente/Resumen.vue'));
 // RH
 Vue.component('vehiculo-comodato', require('./components/Rh/VehiculoComodato.vue'));
 
+// Inventario
+Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));
+Vue.component('inv-proveedor', require('./components/Oficina/Proveedor.vue'));
+
 
 //ENCUESTAS
 Vue.component('encuesta-venta', require('./components/Postventa/Encuestas/EncuestaVenta.vue'));

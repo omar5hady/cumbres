@@ -304,13 +304,13 @@ class AvanceController extends Controller
         $licencia->avance = $suma[0]->porcentajeTotal;
 
         //Aqui se verifica que el avance total del lote sea mayor a 90% para mandar una notificación de aviso.
-        if($licencia->avance >= 90 && $licencia->avance <= 91 && $licencia->term_ingreso == NULL){
+        if($licencia->avance >= 80 && $licencia->avance <= 81 && $licencia->term_ingreso == NULL){
             $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->select('num_lote','manzana','fraccionamientos.nombre')
                         ->where('lotes.id','=',$licencia->id)
                         ->first();
 
-            $msj = 'El Lote #'.$lote->num_lote.' manzana '.$lote->manzana.' del fraccionamiento '.$lote->nombre.' alcanzo el 90% de avance';
+            $msj = 'El Lote #'.$lote->num_lote.' manzana '.$lote->manzana.' del fraccionamiento '.$lote->nombre.' alcanzo el 80% de avance';
             $aviso = new NotificacionesAvisosController();
             $user_proyectos = User::select('id')
                                 ->whereIn('usuario',['rocio.gim','alemunoz','shady'])

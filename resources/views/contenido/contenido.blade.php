@@ -556,6 +556,18 @@
             >
             </vehiculo-comodato>
         </template>
+        <template v-if="menu==273">
+            <inventarios 
+                user-name="{{Auth::user()->usuario}}"
+            >
+            </inventarios>
+        </template>
+        <template v-if="menu==274">
+            <inv-proveedor 
+                user-name="{{Auth::user()->usuario}}"
+            >
+            </inv-proveedor>
+        </template>
 
 
     @endif

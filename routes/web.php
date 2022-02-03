@@ -1102,6 +1102,15 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/vehiculos/getObservaciones','VehiculosController@getObservaciones');
         Route::post('/vehiculos/storeObs','VehiculosController@storeObs');
+
+        //////////////////////// RUTAS INVENTARIOS DE PRODUCTOS ///////////////////
+        Route::get('/inventarios/getInventario','InventariosController@getInventario');
+        Route::get('/inventarios/getProveedores','InventariosController@getProveedores');
+
+        Route::post('/inventarios/storeInventario','InventariosController@storeInventario');
+        Route::put('/inventarios/updateInventario','InventariosController@updateInventario');
+        Route::post('/inventarios/storeProveedor','InventariosController@storeProveedor');
+        Route::put('/inventarios/updateProveedor','InventariosController@updateProveedor');
     });
 
 
