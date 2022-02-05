@@ -1104,6 +1104,8 @@ class UserController extends Controller
                                 'users.usuarios','users.roles',
                                 //RH
                                 'users.vehiculos', 'users.mant_vehiculos','users.admin_mant_vehiculos',
+                                //Oficina
+                                'users.inventarios', 'users.prov_inventarios',
                                 //Reportes
                                 'users.mejora','users.rep_proy','users.rep_publi','users.inventario','rep_venta_canc',
                                 'rep_asesores', 'users.rep_vent_modelos',
@@ -1225,6 +1227,10 @@ class UserController extends Controller
         $user->vehiculos = $request->vehiculos;
         $user->mant_vehiculos = $request->mant_vehiculos;
         $user->admin_mant_vehiculos = $request->admin_mant_vehiculos;
+        //Oficina
+        $user->inventarios = $request->inventarios;
+        $user->prov_inventarios = $request->prov_inventarios;
+
         //Comisiones
         $user->exp_comision = $request->exp_comision;
         $user->gen_comision = $request->gen_comision;

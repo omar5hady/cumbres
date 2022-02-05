@@ -1106,11 +1106,18 @@ Route::group(['middleware' => ['auth']],function(){
         //////////////////////// RUTAS INVENTARIOS DE PRODUCTOS ///////////////////
         Route::get('/inventarios/getInventario','InventariosController@getInventario');
         Route::get('/inventarios/getProveedores','InventariosController@getProveedores');
+        Route::get('/inventarios/returnProveedor','InventariosController@returnProveedor');
 
         Route::post('/inventarios/storeInventario','InventariosController@storeInventario');
         Route::put('/inventarios/updateInventario','InventariosController@updateInventario');
         Route::post('/inventarios/storeProveedor','InventariosController@storeProveedor');
         Route::put('/inventarios/updateProveedor','InventariosController@updateProveedor');
+
+        Route::post('/inventarios/storeCompra','InventariosController@storeCompra');
+        Route::get('/inventarios/getCompras','InventariosController@getCompras');
+
+        Route::post('/inventarios/storeSalida','InventariosController@storeSalida');
+        Route::get('/inventarios/getSalidas','InventariosController@getSalidas');
     });
 
 

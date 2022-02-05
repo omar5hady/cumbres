@@ -96,7 +96,7 @@
                         @endif
 
                 <!-- Oficina -->
-                        @if(Auth::user()->rol_id == 1)
+                        @if(Auth::user()->inventarios == 1 || Auth::user()->prov_inventarios == 1)
                             @include('sidebars.oficina')
                         @endif
                         

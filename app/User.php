@@ -124,6 +124,10 @@ class User extends Authenticatable
         'mant_vehiculos',
         'admin_mant_vehiculos',
 
+        //Oficina
+        'inventarios',
+        'prov_inventarios',
+
         //Reportes
         'mejora',
         'rep_publi',

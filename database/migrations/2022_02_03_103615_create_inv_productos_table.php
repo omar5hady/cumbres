@@ -18,7 +18,7 @@ class CreateInvProductosTable extends Migration
             $table->increments('id');
             $table->date('fecha');
             $table->string('concepto',60);
-            $table->boolean('proveedor');
+            $table->integer('proveedor');
             $table->integer('num_factura')->nullable();
             $table->integer('cantidad')->default(0);
             $table->string('unidad')->nullable();

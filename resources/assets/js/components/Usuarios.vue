@@ -192,6 +192,24 @@
                                     </div>
                                 </div> 
 
+                                <!-- Oficina -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                        <a class="nav-link nav-dropdown-toggle"><i class="fa fa-building-o"></i> Oficina</a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="fa fa-coffee"></i> <input v-model="inventarios" type="checkbox" value="1"/> Inventarios</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link">
+                                                        <i class="fa fa-address-card"></i><input v-model="prov_inventarios" type="checkbox" value="1"/> Proveedores
+                                                    </a>
+                                                </li>
+                                                
+                                            </ul>
+                                    </div>
+                                </div>
+
                                 <!-- listado para privilegios del menu Desarrollo -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">
@@ -888,6 +906,10 @@
                     mant_vehiculos : 0,
                     admin_mant_vehiculos : 0,
 
+                    //Oficina
+                    inventarios : 0,
+                    prov_inventarios : 0,
+
 
                     //Desarrollo
                     fraccionamiento:0,
@@ -1288,6 +1310,10 @@
                     me.mant_vehiculos = usuarios[0].mant_vehiculos;
                     me.admin_mant_vehiculos = usuarios[0].admin_mant_vehiculos;
 
+                    // Oficina
+                    me.inventarios = usuarios[0].inventarios;
+                    me.prov_inventarios = usuarios[0].prov_inventarios;
+
                     //Desarrollo
                     me.fraccionamiento=usuarios[0].fraccionamiento;
                     me.etapas=usuarios[0].etapas;
@@ -1623,6 +1649,9 @@
                     'vehiculos':this.vehiculos,
                     'mant_vehiculos':this.mant_vehiculos,
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
+                        //Oficina
+                    'inventarios' : this.inventarios,
+                    'prov_inventarios' : this.prov_inventarios,
                         //Desarrollo
                     'fraccionamiento':this.fraccionamiento,
                     'etapas':this.etapas,

@@ -141,6 +141,10 @@ class CreateUsersTable extends Migration
            $table->boolean('mant_vehiculos')->default(0);
            $table->boolean('admin_mant_vehiculos')->default(0);
 
+           //OFICINA
+           $table->boolean('inventarios')->default(0);
+           $table->boolean('prov_inventarios')->default(0);
+
             //Acceso
             $table->boolean('usuarios')->default(0);
             $table->boolean('roles')->default(0);
