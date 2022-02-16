@@ -11,7 +11,8 @@
 |
 */
 
-// rutas usuarios invitados
+Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
+
 Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/','Auth\LoginController@showLoginForm');
@@ -20,6 +21,8 @@ Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
     Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
+    
+    
 
     
 });
@@ -1128,7 +1131,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/integracionCobros/storeCobro','CobrosController@storeCobro');
         Route::put('/integracionCobros/updateCobro','CobrosController@updateCobro');
         Route::put('/integracionCobros/finalizarIntegracion','CobrosController@finalizarIntegracion');
-        Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
+        //Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
     });
 
 

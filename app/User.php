@@ -105,6 +105,7 @@ class User extends Authenticatable
         'seg_tramite',
         'avaluos',
         'bonos_rec',
+        'int_cobros',
 
         //Postventa
         'entregas',

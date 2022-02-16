@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Proveedores
                         <!--   Boton Nuevo    -->
-                        <button type="button" v-if="vista== 0" @click="abrirModal('registrar')" class="btn btn-secondary">
+                        <button type="button" v-if="vista== 0 && userName == 'jovanni.t' || vista== 0 && userName == 'shady'" @click="abrirModal('registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->

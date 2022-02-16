@@ -348,6 +348,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="bonos_rec" type="checkbox" value="1"/> Bonos por recomendación</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-usd"></i> <input v-model="int_cobros" type="checkbox" value="1"/> Integración de cobros</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -972,6 +975,7 @@
                     seg_tramite:0,
                     avaluos:0,
                     bonos_rec:0,
+                    int_cobros:0,
 
                     //Postventa
                     entregas:0,
@@ -1377,6 +1381,7 @@
                     me.seg_tramite = usuarios[0].seg_tramite;
                     me.avaluos = usuarios[0].avaluos;
                     me.bonos_rec = usuarios[0].bonos_rec;
+                    me.int_cobros = usuarios[0].int_cobros;
 
                     //Postventa
                     me.entregas = usuarios[0].entregas;
@@ -1715,6 +1720,7 @@
                     'seg_tramite':this.seg_tramite,
                     'avaluos':this.avaluos,
                     'bonos_rec':this.bonos_rec,
+                    'int_cobros':this.int_cobros,
                         //Postventa
                     'entregas':this.entregas,
                     'solic_detalles':this.solic_detalles,

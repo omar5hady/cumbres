@@ -26,7 +26,7 @@
                 <a class="nav-link" href="#"><i class="fa fa-money"></i> Bonos por recomendación</a>
             </li>
         @endif
-        @if(Auth::user()->rol_id == 1)
+        @if(Auth::user()->int_cobros == 1)
             <li @click="menu=275" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-usd"></i> Integracion de cobros</a>
             </li>
