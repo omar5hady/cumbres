@@ -18,9 +18,11 @@ class NotificationReceived extends Mailable
      * @return void
      */
     public $mensaje;
-    public function __construct(String $mensaje1)
+    public $ruta;
+    public function __construct(String $mensaje1, String $ruta='')
     {
         $this->mensaje = $mensaje1;
+        $this->ruta = $ruta;
     }
 
     /**
@@ -30,6 +32,12 @@ class NotificationReceived extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.mail_notification',['mensaje' => $this->mensaje]);
+        if($this->ruta == '')
+            return $this->view('mails.mail_notification',['mensaje' => $this->mensaje]);
+        else
+            return $this->view('mails.mail_int_cobros',[
+                            'mensaje' => $this->mensaje,
+                            'ruta' => $this->ruta,
+                                ]);
     }
 }

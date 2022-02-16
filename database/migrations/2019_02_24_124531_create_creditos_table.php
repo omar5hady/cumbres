@@ -70,6 +70,17 @@ class CreateCreditosTable extends Migration
             $table->double('saldo_terreno',10,2)->default(0);
             $table->float('porcentaje_terreno',6,2)->default(0);
             $table->boolean('dev_terreno')->default(0);
+
+            //Datos fiscales
+            $table->string('email_fisc',60)->nullable();
+            $table->string('tel_fisc',10)->nullable();
+            $table->string('nombre_fisc',120)->nullable();
+            $table->string('direccion_fisc',100)->nullable();
+            $table->string('cp_fisc',5)->nullable();
+            $table->string('rfc_fisc',13)->nullable();
+
+            $table->boolean('notif_fisc')->default(0);
+            $table->boolean('integracion_cobro')->default(0);
         });
     }
 

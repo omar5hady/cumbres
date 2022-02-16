@@ -80,7 +80,7 @@ class CuentasController extends Controller
     // Función que retorna las cuentas bancarias para select, se puede filtrar por empresa.
     public function selectCuenta(Request $request){
         if(!$request->ajax())return redirect('/');
-        $cuentas = Cuenta::select('num_cuenta','sucursal','banco','empresa')
+        $cuentas = Cuenta::select('id','num_cuenta','sucursal','banco','empresa')
         ->where('empresa','like','%'.$request->empresa.'%')
         ->orderBy('banco','asc')->get();
 

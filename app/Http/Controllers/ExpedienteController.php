@@ -1737,7 +1737,7 @@ class ExpedienteController extends Controller
        $liquidacion[0]->sumaParcial = $liquidacion[0]->credito_solic + $liquidacion[0]->fovissste + $liquidacion[0]->infonavit + $liquidacion[0]->sumaDepositos;
 
        $liquidacion[0]->totalRestante = 
-            $liquidacion[0]->precio_venta + $liquidacion[0]->interes_ord - $liquidacion[0]->credito_solic -
+            $liquidacion[0]->precio_venta - $liquidacion[0]->credito_solic -
             $liquidacion[0]->fovissste - $liquidacion[0]->infonavit - $liquidacion[0]->sumaDepositos - $liquidacion[0]->descuento + $sumGastos;
 
         $liquidacion[0]->valor_escrituras = number_format((float)$liquidacion[0]->valor_escrituras, 2, '.', ',');

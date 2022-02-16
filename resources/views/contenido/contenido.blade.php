@@ -568,6 +568,12 @@
             >
             </inv-proveedor>
         </template>
+        <template v-if="menu==275">
+            <integracion-cobros 
+                user-name="{{Auth::user()->usuario}}"
+            >
+            </integracion-cobros>
+        </template>
 
 
     @endif

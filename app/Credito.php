@@ -18,9 +18,16 @@ class Credito extends Model
                             'credito_solic','status','lote_id','precio_obra_extra',
                             'costo_protecciones', 'costo_cuota_mant', 'costo_alarma',
                             'descuento_terreno', 'costo_descuento', 'valor_terreno', 'porcentaje_terreno',
+                            'email_fisc',
+                            'tel_fisc',
+                            'nombre_fisc',
+                            'direccion_fisc',
+                            'cp_fisc',
+                            'rfc_fisc',
+                            'notif_fisc',
+                            'integracion_cobro',
                             'contrato','fraccionamiento','bono', 'saldo_terreno'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
-
 
     public function prospecto(){
         return $this->belongsTo('App/Cliente');

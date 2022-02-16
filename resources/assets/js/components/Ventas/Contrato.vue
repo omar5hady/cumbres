@@ -1821,7 +1821,7 @@
                                                 </template>
                                                 <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
                                                 <a class="btn btn-scarlet btn-sm" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                <a class="btn btn-info btn-sm" v-if="modelo != 'Terreno'" @click="selectNombreArchivoModelo()">Especificaciones</a>
+                                                <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
                                                 <a class="btn btn-info btn-sm" v-if="tipo_proyecto == 2" v-bind:href="'/contrato/anexoA/'+id">Anexo A</a>
                                             </div>
                                             <div style="text-align: right;" v-if="rolId==2 && status == 1">
@@ -1834,7 +1834,7 @@
                                                 </template>
                                                 <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
                                                 <a class="btn btn-scarlet btn-sm" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                <a class="btn btn-info btn-sm" v-if="modelo != 'Terreno'" @click="selectNombreArchivoModelo()">Especificaciones</a>
+                                                <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
                                             </div>
                                         </div>
 
@@ -1875,15 +1875,63 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                 
-                      <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                            <div class="form-group row" v-if="tipoAccion==1">
-                                <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                <div class="col-md-9">
-                                    <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
+                            <template  v-if="tipoAccion==1">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-9">
+                                        <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
+                                    </div>
                                 </div>
-                            </div>
+                                <template v-if="status == 3">
+                                    <hr>
+                                    <div class="form-group row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4">
+                                            <center><h6>Datos Fiscales</h6></center>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
+                                        <div class="col-md-6">
+                                            <input type="email" v-model="datosFiscales.email_fisc" class="form-control" placeholder="Email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.tel_fisc" class="form-control" maxlength="10" placeholder="Telefono">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="datosFiscales.nombre_fisc" class="form-control" placeholder="Nombre completo">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="datosFiscales.direccion_fisc" class="form-control" placeholder="Dirección">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">C.P.</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.cp_fisc" class="form-control" placeholder="Código Postal">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                                        <div class="col-md-4">
+                                            <input type="text" maxlength="13"  style="text-transform:uppercase"
+                                            v-model="datosFiscales.rfc_fisc" class="form-control" placeholder="RFC">
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
 
                             <div class="form-group row" v-if="tipoAccion==1 && status == 0">
                                 <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
@@ -1892,62 +1940,72 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row" v-if="tipoAccion==2">
-                                <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_proyecto" @change="selectEtapa(sel_proyecto)">
-                                            <option value=0> Seleccione </option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                    </select>
+                            <template v-if="tipoAccion==2">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="sel_proyecto" @change="selectEtapa(sel_proyecto)">
+                                                <option value=0> Seleccione </option>
+                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row" v-if="tipoAccion==2">
-                                <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_etapa" @change="selectManzana(sel_etapa)">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
-                                    </select>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="sel_etapa" @change="selectManzana(sel_etapa)">
+                                                <option value=''> Seleccione </option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row" v-if="tipoAccion==2">
-                                <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_manzana" @change="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
-                                    </select>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="sel_manzana" @change="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
+                                                <option value=''> Seleccione </option>
+                                                <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row" v-if="tipoAccion==2">
-                                <label class="col-md-3 form-control-label" for="text-input">Lote</label>
-                                <div class="col-md-9">
-                                   <select class="form-control" v-model="sel_lote">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                    </select>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Lote</label>
+                                    <div class="col-md-9">
+                                    <select class="form-control" v-model="sel_lote">
+                                                <option value=''> Seleccione </option>
+                                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row" v-if="tipoAccion==2 && nuevo == 0">
-                                <label class="col-md-3 form-control-label" for="text-input">Reubicacion?</label>
-                                <div class="col-md-2">
-                                   <input type="checkbox" v-model="reubicacion" value="1">
+                                <div class="form-group row" v-if="nuevo == 0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Reubicacion?</label>
+                                    <div class="col-md-2">
+                                    <input type="checkbox" v-model="reubicacion" value="1">
+                                    </div>
+                                    <div class="col-md-7" v-if="reubicacion == 1">
+                                    <textarea rows="3" cols="30" class="form-control" v-model="observacion_r" placeholder="Observacion"></textarea>
+                                    </div>
                                 </div>
-                                <div class="col-md-7" v-if="reubicacion == 1">
-                                   <textarea rows="3" cols="30" class="form-control" v-model="observacion_r" placeholder="Observacion"></textarea>
-                                </div>
-                            </div>
-                      </form>
+                            </template>
 
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==1 && status != 3" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                            <button type="button" 
+                                v-if="tipoAccion==1 && status == 3
+                                    && datosFiscales.email_fisc != '' && datosFiscales.email_fisc != null
+                                    && datosFiscales.tel_fisc != '' && datosFiscales.tel_fisc != null
+                                    && datosFiscales.nombre_fisc != '' && datosFiscales.nombre_fisc != null
+                                    && datosFiscales.direccion_fisc != '' && datosFiscales.direccion_fisc != null
+                                    && datosFiscales.cp_fisc != '' && datosFiscales.cp_fisc != null" 
+                                class="btn btn-success" @click="registrarFechaStatus()"
+                            >Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="mostrarDatosLote(sel_lote)">reasignar</button>
                          </div>
                     </div> 
@@ -2008,6 +2066,8 @@
                 sobreprecio:0,
                 reubicacion:0,
                 nuevo:0,
+
+                datosFiscales:{},
 
                 /// variables datos del prospecto //
                     nombre:'',
@@ -3114,6 +3174,13 @@
             verContrato(data = []){
                 this.getDatosProyecto(data['fraccionamiento_id']);
 
+                this.datosFiscales.email_fisc = data['email_fisc'];
+                this.datosFiscales.tel_fisc = data['tel_fisc'];
+                this.datosFiscales.nombre_fisc = data['nombre_fisc'];
+                this.datosFiscales.direccion_fisc = data['direccion_fisc'];
+                this.datosFiscales.cp_fisc = data['cp_fisc'];
+                this.datosFiscales.rfc_fisc = data['rfc_fisc'];
+
                 this.detenido = data['detenido'];
                 this.publicidad_id = data['publicidadId'];
                 this.nombre_recomendado = data['nombre_recomendado'];
@@ -3408,6 +3475,7 @@
                     'fecha_status':this.fecha_status,
                     'lote_id':this.lote_id,
                     'motivo_cancel':this.motivo_cancel,
+                    'datosFiscales':this.datosFiscales
                     }).then(function (response){
                     me.listado=4;
                     me.cerrarModal();

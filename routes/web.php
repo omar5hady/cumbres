@@ -1118,6 +1118,17 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/inventarios/storeSalida','InventariosController@storeSalida');
         Route::get('/inventarios/getSalidas','InventariosController@getSalidas');
+
+
+        ///////////////////// RUTAS INTEGRACION DE COBROS //////////////
+        Route::get('/integracionCobros/getContratos','CobrosController@getContratos');
+        Route::get('/integracionCobros/getIntegraciones','CobrosController@getIntegraciones');
+        Route::get('/integracionCobros/getCobros','CobrosController@getCobros');
+        Route::post('/integracionCobros/generarIntegración','CobrosController@generarIntegración');
+        Route::post('/integracionCobros/storeCobro','CobrosController@storeCobro');
+        Route::put('/integracionCobros/updateCobro','CobrosController@updateCobro');
+        Route::put('/integracionCobros/finalizarIntegracion','CobrosController@finalizarIntegracion');
+        Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
     });
 
 
@@ -1201,10 +1212,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/asignarPartidasUrb','AvanceController@addPartidasUrbanizacion');
         Route::get('/asignarLotesDep','DepositoController@asignarLotes');
 
-        
-
-    
-    
 });
 
 // clave pusher: p3TvG4EPftYJPU7

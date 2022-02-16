@@ -223,6 +223,14 @@ class ContratoController extends Controller
                     'creditos.precio_obra_extra',
                     'creditos.fraccionamiento as proyecto',
                     'creditos.lote_id',
+                    
+                    'creditos.email_fisc',
+                    'creditos.tel_fisc',
+                    'creditos.nombre_fisc',
+                    'creditos.direccion_fisc',
+                    'creditos.cp_fisc',
+                    'creditos.rfc_fisc',
+
                     'contratos.publicidad_id as publicidadId','medios_publicitarios.nombre as publicidad',
                         'clientes.nombre_recomendado',
 
@@ -1367,6 +1375,7 @@ class ContratoController extends Controller
         //     DB::beginTransaction();
             $id_lote = $request->lote_id;
             $equipo='';
+            $datosFiscales = $request->datosFiscales;
 
             // Equipamientos instalados
             // Costo total de equipamiento instalado
@@ -1537,6 +1546,70 @@ class ContratoController extends Controller
                     $cliente->clasificacion = 5;
                     $vendedorid = $cliente->vendedor_id;
                     $cliente->save();
+
+
+                    // Actualización de datos fiscales
+                    $credit_fisc = Credito::findOrFail($request->id);
+                    
+                        if($datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 0 || $datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 1){
+                            $credit_fisc->notif_fisc = 2;
+                            //Se manda notificación sobre la venta.
+                            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+                            $fecha = Carbon::now();
+                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. " con RFC";
+                            $arregloAceptado = [
+                                'notificacion' => [
+                                    'usuario' => $imagenUsuario[0]->usuario,
+                                    'foto' => $imagenUsuario[0]->foto_user,
+                                    'fecha' => $fecha,
+                                    'msj' => $msj,
+                                    'titulo' => 'Venta con RFC'
+                                ]
+                            ];
+
+                            $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
+
+                            if(sizeof($personal))
+                            foreach ($personal as $personas) {
+                                $correo = $personas->email;
+                                Mail::to($correo)->send(new NotificationReceived($msj));
+                                User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                            }
+                        }
+                        if($datosFiscales['rfc_fisc'] == '' && $credit_fisc->notif_fisc == 0){
+                            $credit_fisc->notif_fisc = 1;
+                            //Se manda notificación sobre la venta.
+                            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+                            $fecha = Carbon::now();
+                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. " sin RFC";
+                            $arregloAceptado = [
+                                'notificacion' => [
+                                    'usuario' => $imagenUsuario[0]->usuario,
+                                    'foto' => $imagenUsuario[0]->foto_user,
+                                    'fecha' => $fecha,
+                                    'msj' => $msj,
+                                    'titulo' => 'Venta sin RFC'
+                                ]
+                            ];
+
+                            $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
+
+                            if(sizeof($personal))
+                            foreach ($personal as $personas) {
+                                $correo = $personas->email;
+                                Mail::to($correo)->send(new NotificationReceived($msj));
+                                User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                            }
+                        }
+                    
+                    
+                    $credit_fisc->email_fisc = $datosFiscales['email_fisc'];
+                    $credit_fisc->tel_fisc = $datosFiscales['tel_fisc'];
+                    $credit_fisc->nombre_fisc = $datosFiscales['nombre_fisc'];
+                    $credit_fisc->direccion_fisc = $datosFiscales['direccion_fisc'];
+                    $credit_fisc->cp_fisc = $datosFiscales['cp_fisc'];
+                    $credit_fisc->rfc_fisc = $datosFiscales['rfc_fisc'];
+                    $credit_fisc->save();
 
                     //Se manda notificación sobre la venta.
                     $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();

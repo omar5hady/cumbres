@@ -585,35 +585,38 @@ class LoteController extends Controller
                             $emp_constructora = 'CONCRETANIA';
                         }
 
-                        $insert[] = [
-                        'id' => $id,
-                        'fraccionamiento_id' => $request->fraccionamiento_id,
-                        'etapa_id' => $etapa[0]->id,
-                        'manzana' => $value->manzana,
-                        'num_lote' => $value->num_lote,
-                        'sublote' => $value->duplex,
-                        'modelo_id' => $modelo[0]->id,
-                        'empresa_id' => 1,
-                        'calle' => $value->calle,
-                        'numero' => $value->numero_oficial,
-                        'interior' => $value->interior,
-                        'terreno' => $value->superficie_terreno,
-                        'construccion' => $modelo[0]->construccion,
-                        'clv_catastral' =>$value->clave_catastral,
-                        'etapa_servicios' =>$value->etapa_servicios,
-                        'arquitecto_id' => 1,
-                        'emp_constructora' =>$emp_constructora,
-                        'emp_terreno' =>$emp_terreno
+                        if($value->num_lote != '' || $value->num_lote != 0)
+                        {
+                            $insert[] = [
+                                'id' => $id,
+                                'fraccionamiento_id' => $request->fraccionamiento_id,
+                                'etapa_id' => $etapa[0]->id,
+                                'manzana' => $value->manzana,
+                                'num_lote' => $value->num_lote,
+                                'sublote' => $value->duplex,
+                                'modelo_id' => $modelo[0]->id,
+                                'empresa_id' => 1,
+                                'calle' => $value->calle,
+                                'numero' => $value->numero_oficial,
+                                'interior' => $value->interior,
+                                'terreno' => $value->superficie_terreno,
+                                'construccion' => $modelo[0]->construccion,
+                                'clv_catastral' =>$value->clave_catastral,
+                                'etapa_servicios' =>$value->etapa_servicios,
+                                'arquitecto_id' => 1,
+                                'emp_constructora' =>$emp_constructora,
+                                'emp_terreno' =>$emp_terreno,
+                                'indivisos' => $value->indivisos
+                            ];
+    
+                            $insert2[]  = [
+                                'id' => $id++,
+                                'perito_dro' => 1
+                            ];
+
+                        }
+
                         
-                        
-                        ];
-
-                        $insert2[]  = [
-                            'id' => $id++,
-                            'perito_dro' => 1
-                        ];
-
-
                     }
  
                     if(!empty($insert)){

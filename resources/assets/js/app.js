@@ -202,6 +202,9 @@ Vue.component('vehiculo-comodato', require('./components/Rh/VehiculoComodato.vue
 Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));
 Vue.component('inv-proveedor', require('./components/Oficina/Proveedor.vue'));
 
+//Integración de cobros
+Vue.component('integracion-cobros', require('./components/IntegracionCobros/Integracion.vue'));
+
 
 //ENCUESTAS
 Vue.component('encuesta-venta', require('./components/Postventa/Encuestas/EncuestaVenta.vue'));
