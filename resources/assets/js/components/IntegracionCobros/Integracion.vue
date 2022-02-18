@@ -47,8 +47,16 @@
                                     <tr v-for="integracion in arrayIntegraciones.data" :key="integracion.id">
                                         <td class="td2">
                                             <button 
-                                            type="button" @click="verDetalle(integracion, 1)" class="btn btn-primary btn-sm">
+                                            type="button" @click="verDetalle(integracion, 1)" class="btn btn-primary btn-sm"
+                                                title="Ver Detalle"
+                                            >
                                                 <i class="icon-eye"></i>
+                                            </button>
+                                            <button title="Descargar integración"
+                                                type="button" class="btn btn-success btn-sm">
+                                                <a style="color:white" :href="'/integracionCobros/exportFormat?id=' + integracion.id">
+                                                    <i class="fa fa-file-text"></i>
+                                                </a>
                                             </button>
                                         </td>
                                         <td class="td2" v-text="integracion.contrato_id"></td>
@@ -63,6 +71,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <hr>
                         <nav>
                             <!--Botones de paginacion -->
                            <!--Botones de paginacion -->

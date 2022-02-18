@@ -53,6 +53,39 @@ class LoteController extends Controller
                         ->orderBy('lotes.num_lote','ASC')
                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
 
+        foreach ($lotes as $key => $lote) {
+            $lote->status = 0;
+            $expediente = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select('expedientes.liquidado','i.tipo_credito')
+                        ->where('expedientes.liquidado','=',1)
+                        ->where('contratos.status','=',3)
+                        ->where('i.tipo_credito','=','Crédito Directo')
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->orWhere('expedientes.fecha_firma_esc','!=',NULL)
+                        ->where('contratos.status','=',3)
+                        ->where('i.tipo_credito','!=','Crédito Directo')
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->get();
+
+            if(sizeof($expediente)){
+                $lote->status = 2;
+            }
+            else{
+                $contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->select('creditos.id')
+                    ->where('contratos.status','=',3)
+                    ->where('creditos.lote_id','=',$lote->id)
+                    ->get();
+                    if(sizeof($contrato))
+                        $lote->status = 1;
+
+            }
+        }
+
         $rentas = $rentas->where('lotes.habilitado','=', 1)
                         ->where('lotes.casa_renta','=', 1)
                         ->orderBy('fraccionamientos.nombre','ASC')
@@ -1877,11 +1910,12 @@ class LoteController extends Controller
                 
                 $sheet->row(1, [
                     'Proyecto', 'Etapa comercial', 'Etapa de servicio', 'Manzana', 'Lote', 'Modelo',
-                    'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Precio de Venta','Canal de ventas' 
+                    'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Precio de Venta','Canal de ventas',
+                     'Emp Constructora', 'Emp Terreno'
                 ]);
 
 
-                $sheet->cells('A1:P1', function ($cells) {
+                $sheet->cells('A1:R1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1947,10 +1981,12 @@ class LoteController extends Controller
                         $status,
                         $lote->precio_venta,
                         $lote->comentarios,
+                        $lote->emp_constructora,
+                        $lote->emp_terreno,
                         
                     ]);	
                 }
-                $num='A1:P' . $cont;
+                $num='A1:R' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             $excel->sheet('Habilitados renta', function($sheet) use ($rentas){
@@ -2206,7 +2242,7 @@ class LoteController extends Controller
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                   'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                  'lotes.fecha_termino_ventas',
+                  'lotes.fecha_termino_ventas', 'lotes.emp_constructora', 'lotes.emp_terreno',
                   'lotes.precio_base','lotes.obra_extra','lotes.excedente_terreno','lotes.sobreprecio','lotes.ajuste',
                   'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id', 'lotes.casa_renta', 'lotes.precio_renta',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',

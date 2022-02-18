@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_habilitado" >
@@ -100,7 +100,7 @@
 
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
@@ -282,6 +282,9 @@
                                                 <th>Avance</th>
                                                 <th>Casa en venta</th>
                                                 <th>Canal de ventas</th>
+                                                <th></th>
+                                                <th>Emp Constructora</th>
+                                                <th>Emp Terreno</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -323,6 +326,13 @@
                                                     <span v-else class="badge badge-danger">Inactivo</span>
                                                 </td> 
                                                 <td class="td2" v-text="lote.comentarios"></td>
+                                                <td class="td2">
+                                                    <span v-if="lote.status == 0" class="badge badge-primary">Disponible</span>
+                                                    <span v-if="lote.status == 1" class="badge badge-dark">Vendida</span>
+                                                    <span v-if="lote.status == 2" class="badge badge-success">Individualizada</span>
+                                                </td>
+                                                <td class="td2" v-text="lote.emp_constructora"></td>
+                                                <td class="td2" v-text="lote.emp_terreno"></td>
                                             </tr>                               
                                         </tbody>
                                     </table> 

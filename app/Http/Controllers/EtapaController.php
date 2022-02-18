@@ -16,50 +16,13 @@ use Auth;
 
 class EtapaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // Función para retornar las etapas registradas
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $criterio = $request->criterio;
-
-        $query = Etapa::join('personal','etapas.personal_id','=','personal.id')
-            ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('etapas.num_etapa','etapas.f_ini',
-                'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
-                'etapas.factibilidad', 'etapas.terreno_m2',
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento', 'etapas.plantilla_carta_servicios2',
-                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento', 'etapas.costo_mantenimiento2','etapas.plantilla_telecom','etapas.empresas_telecom',
-                'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida');
-        
-        if($buscar==''){
-            $etapas = $query
-                    ->where('etapas.num_etapa','!=','Sin Asignar');
-        }
-        else{
-            if($criterio == 'f_ini' || $criterio == 'f_fin')
-            {
-                $etapas = $query
-                        ->whereBetween($criterio, [$buscar,$buscar2])
-                        ->where('etapas.num_etapa','!=','Sin Asignar');
-            }
-            else{
-                $etapas = $query
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('etapas.num_etapa','!=','Sin Asignar');
-            }
-            
-        }
-
+        //Llamada a la función privada que retorna la query principal.
+        $etapas = $this->getEtapasQuery($request);
         $etapas = $etapas->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')->paginate(8);
 
@@ -78,44 +41,12 @@ class EtapaController extends Controller
 
     public function indexExcel(Request $request)
     {
-        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $criterio = $request->criterio;
-
-        $query = Etapa::join('personal','etapas.personal_id','=','personal.id')
-            ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('etapas.num_etapa','etapas.f_ini',
-                'etapas.f_fin','etapas.id','etapas.personal_id', 
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida');
-        
-        if($buscar==''){
-            $etapas = $query
-                    ->where('etapas.num_etapa','!=','Sin Asignar');
-        }
-        else{
-            if($criterio == 'f_ini' || $criterio == 'f_fin')
-            {
-                $etapas = $query
-                        ->whereBetween($criterio, [$buscar,$buscar2])
-                        ->where('etapas.num_etapa','!=','Sin Asignar');
-            }
-            else{
-                $etapas = $query
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('etapas.num_etapa','!=','Sin Asignar');
-            }
-            
-        }
-
+        // Llamada a la función privada que retorna la query principal.
+        $etapas = $this->getEtapasQuery($request);
         $etapas = $etapas->orderBy('fraccionamientos.nombre','asc')
                             ->orderBy('etapas.num_etapa','asc')->paginate(8);
 
+        // Creación y retorno del resultado en excel.
         return Excel::create('Etapas', function($excel) use ($etapas){
             $excel->sheet('Etapas', function($sheet) use ($etapas){
                 
@@ -162,12 +93,41 @@ class EtapaController extends Controller
         )->download('xls');
     }
 
-    //funcion para insertar en la tabla
+    // Función privada que retorna la query para las etapas privadas.
+    private function getEtapasQuery(Request $request){
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $criterio = $request->criterio;
+
+        $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
+            ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('etapas.num_etapa','etapas.f_ini',
+                'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
+                'etapas.factibilidad', 'etapas.terreno_m2',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento', 'etapas.plantilla_carta_servicios2',
+                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento', 'etapas.costo_mantenimiento2','etapas.plantilla_telecom','etapas.empresas_telecom',
+                'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                ->where('etapas.num_etapa','!=','Sin Asignar');
+        
+        if($buscar!=''){
+            if($criterio == 'f_ini' || $criterio == 'f_fin') // Busqueda por fecha
+                $etapas = $etapas->whereBetween($criterio, [$buscar,$buscar2]);
+            else // Busqueda general.
+                $etapas = $etapas->where($criterio, 'like', '%'. $buscar . '%');
+        }
+
+        return $etapas;
+    }
+
+    // Función para insertar en la tabla
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try {
             DB::beginTransaction();
+            // Crea registro en la BD de Etapas
             $etapa = new Etapa();
             $etapa->fraccionamiento_id = $request->fraccionamiento_id;
             $etapa->num_etapa = $request->num_etapa;
@@ -177,14 +137,14 @@ class EtapaController extends Controller
             $etapa->terreno_m2 = $request->terreno_m2;
             $etapa->save();
 
+            // Crea registro en la BD de precios por etapa para terreno excedente.
             $precio_etapa = new Precio_etapa();
             $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
             $precio_etapa->etapa_id = $etapa->id;
             $precio_etapa->precio_excedente = 0;
             $precio_etapa->save();
 
-
-
+            // Se asignan sobreprecios por etapa
             for($i=1;$i<=Sobreprecio::count();$i++){
                 $sobreprecio_etapa= new Sobreprecio_etapa();
                 $sobreprecio_etapa->etapa_id= $etapa->id;
@@ -192,8 +152,7 @@ class EtapaController extends Controller
                 $sobreprecio_etapa->sobreprecio = 0;
                 $sobreprecio_etapa->save();
             }
-        DB::commit();
-
+            DB::commit();
 
             } catch (Exception $e) { 
                 DB::rollBack();
@@ -206,6 +165,7 @@ class EtapaController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
+        //Se accede al registro buscado.
         $etapa = Etapa::findOrFail($request->id);
         $etapa->fraccionamiento_id = $request->fraccionamiento_id;
         $etapa->num_etapa = $request->num_etapa;
@@ -217,7 +177,7 @@ class EtapaController extends Controller
         $etapa->save();
     }
 
-
+    // Función para eliminar el registro de una etapa.
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -225,6 +185,7 @@ class EtapaController extends Controller
         $etapa->delete();
     }
 
+    // Funcion que retorna el numero de etapas por proyecto.
     public function contEtapa(Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -235,6 +196,7 @@ class EtapaController extends Controller
         return $contador + 1;
     }
 
+    // Funcion que retorna las etapas por proyecto.
     public function selectEtapa_proyecto(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -247,23 +209,26 @@ class EtapaController extends Controller
         return['etapas' => $etapas];
     }
 
+    // Funcion que retorna las etapas con lotes aun disponibles para venta.
     public function selectEtapaDisp(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $etapas = Etapa::join('lotes','etapas.id','lotes.etapa_id')
-        ->select('etapas.num_etapa','etapas.id')
-        ->where('lotes.habilitado','=',1)
-        ->where('lotes.contrato','=',0)
-        ->where('etapas.fraccionamiento_id', '=', $buscar )
-        //>where('num_etapa', '!=', 'Sin Asignar' )
-        ->orderBy('etapas.num_etapa','desc')
-        ->distinct()
-        ->get();
+            ->select('etapas.num_etapa','etapas.id')
+            ->where('lotes.habilitado','=',1)
+            ->where('lotes.contrato','=',0)
+            ->where('etapas.fraccionamiento_id', '=', $buscar )
+            //>where('num_etapa', '!=', 'Sin Asignar' )
+            ->orderBy('etapas.num_etapa','desc')
+            ->distinct()
+            ->get();
         return['etapas' => $etapas];
     }
 
+    /* Funcion que retorna las etapas filtrando por proyecto 
+        sin tomar en cuenta la etapa Sin asignar. */
     public function selectEtapa(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -277,6 +242,7 @@ class EtapaController extends Controller
             return['etapas' => $etapas];
     }
 
+    // Función para almacenar el reglamento de la etapa.
     public function uploadReglamento (Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $ultimoReglamento = Etapa::select('archivo_reglamento','id')
@@ -293,118 +259,106 @@ class EtapaController extends Controller
                 $reglamentoEtapa->archivo_reglamento = $fileName;
                 $reglamentoEtapa->id = $id;
                 $reglamentoEtapa->save(); //Insert
-        
-                }
-            return back();
-            }else{
-                $pathAnterior = public_path().'/files/etapas/reglamentos/'.$ultimoReglamento[0]->archivo_reglamento;
-                File::delete($pathAnterior);
-                $fileName = uniqid().'.'.$request->archivo_reglamento->getClientOriginalExtension();
-                $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
-        
-                if($moved){
-                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                    $reglamentoEtapa = Etapa::findOrFail($request->id);
-                    $reglamentoEtapa->archivo_reglamento = $fileName;
-                    $reglamentoEtapa->id = $id;
-                    $reglamentoEtapa->save(); //Insert
-            
-                    }
-                return back();
             }
-    }
-
-    public function uploadPlantillaCartaServicios (Request $request, $id){
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $ultimaPlantilla = Etapa::select('plantilla_carta_servicios','id')
-                                 ->where('id','=',$id)
-                                 ->get();
-
-        if($ultimaPlantilla->isEmpty()==1){
-            $fileName = uniqid().'.'.$request->plantilla_carta_servicios->getClientOriginalExtension();
-            $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+                return back();
+        }else{
+            $pathAnterior = public_path().'/files/etapas/reglamentos/'.$ultimoReglamento[0]->archivo_reglamento;
+            File::delete($pathAnterior);
+            $fileName = uniqid().'.'.$request->archivo_reglamento->getClientOriginalExtension();
+            $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
     
             if($moved){
                 if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                $plantillaCartaServicios = Etapa::findOrFail($request->id);
-                $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
-                $plantillaCartaServicios->id = $id;
-                $plantillaCartaServicios->save(); //Insert
-        
-                }
-            return back();
-            }else{
-                $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios;
-                File::delete($pathAnterior);
-
-                $fileName = uniqid().'.'.$request->plantilla_carta_servicios->getClientOriginalExtension();
-                $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
-    
-            if($moved){
-                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                $plantillaCartaServicios = Etapa::findOrFail($request->id);
-                $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
-                $plantillaCartaServicios->id = $id;
-                $plantillaCartaServicios->save(); //Insert
+                $reglamentoEtapa = Etapa::findOrFail($request->id);
+                $reglamentoEtapa->archivo_reglamento = $fileName;
+                $reglamentoEtapa->id = $id;
+                $reglamentoEtapa->save(); //Insert
         
                 }
             return back();
         }
     }
 
+    // Función para almacenar la Plantilla para Carta de Servicios
+    public function uploadPlantillaCartaServicios (Request $request, $id){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        // Se busca si el registro ya cuenta con una plantilla almacenada.
+        $ultimaPlantilla = Etapa::select('plantilla_carta_servicios','id')
+                                 ->where('id','=',$id)->get();
+
+        if($ultimaPlantilla->isEmpty()==1){ // Si no hay una plantilla registrada
+            // Se guarda el archivo en el servidor
+            $fileName = uniqid().'.'.$request->plantilla_carta_servicios->getClientOriginalExtension();
+            $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+        }else{
+            // si ya se cuenta con un archivo guardado se elimina el archivo anterior
+            $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios;
+            File::delete($pathAnterior);
+            // Se guarda el archivo nuevo en el servidor.
+            $fileName = uniqid().'.'.$request->plantilla_carta_servicios->getClientOriginalExtension();
+            $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+        }
+
+        // Se verifica que se guardo correctamente el servidor.
+        if($moved){
+            // Se actualiza el registro
+            $plantillaCartaServicios = Etapa::findOrFail($request->id);
+            $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
+            $plantillaCartaServicios->save(); //Insert
+        }
+        return back();
+    }
+
+    // Función para almacenar la Plantilla para Carta de Servicios para terrenos
     public function uploadPlantillaCartaServicios2 (Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        // Se busca si el registro ya cuenta con una plantilla almacenada.
         $ultimaPlantilla = Etapa::select('plantilla_carta_servicios2','id')
                                  ->where('id','=',$id)
                                  ->get();
 
-        if($ultimaPlantilla->isEmpty()==1){
+        if($ultimaPlantilla->isEmpty()==1){// Si no hay una plantilla registrada
+            // Se guarda el archivo en el servidor
             $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
             $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
     
-            if($moved){
-                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                $plantillaCartaServicios = Etapa::findOrFail($request->id);
-                $plantillaCartaServicios->plantilla_carta_servicios2 = $fileName;
-                $plantillaCartaServicios->id = $id;
-                $plantillaCartaServicios->save(); //Insert
-        
-                }
-            return back();
-            }else{
-                $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios2;
-                File::delete($pathAnterior);
-
-                $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
-                $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+        }else{
+            // si ya se cuenta con un archivo guardado se elimina el archivo anterior
+            $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios2;
+            File::delete($pathAnterior);
+            // Se guarda el archivo nuevo en el servidor.
+            $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
+            $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
     
-            if($moved){
-                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                $plantillaCartaServicios = Etapa::findOrFail($request->id);
-                $plantillaCartaServicios->plantilla_carta_servicios2 = $fileName;
-                $plantillaCartaServicios->id = $id;
-                $plantillaCartaServicios->save(); //Insert
-        
-                }
-            return back();
         }
+        // Se verifica que se guardo correctamente el servidor.
+        if($moved){
+            $plantillaCartaServicios = Etapa::findOrFail($request->id);
+            $plantillaCartaServicios->plantilla_carta_servicios2 = $fileName;
+            $plantillaCartaServicios->save(); //Insert
+        }
+        return back();
     }
 
+    // Función para descargar reglamento
     public function downloadReglamento ($fileName){
         $pathtoFile = public_path().'/files/etapas/reglamentos/'.$fileName;
         return response()->download($pathtoFile);
     }
 
+    // Funcion para descargar la plantilla para carta de servicios
     public function downloadPlantillaCartaServicios ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
         return response()->download($pathtoFile);
     }
 
+    // Funcion para descargar la plantilla para carta de servicios en terrenos
     public function downloadPlantillaCartaServicios2 ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
         return response()->download($pathtoFile);
     }
 
+    // Funcion para descargar reglamento por contrato de venta.
     public function descargarReglamentoContrato ($id)
     {
          $reglamento = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -417,75 +371,58 @@ class EtapaController extends Controller
         return response()->download($pathtoFile);
     }
 
-    
+    // Función para registrar el costo por cuota de mantenimiento
     public function registrarCostoMantenimiento(Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $costoAnterior = Etapa::select('costo_mantenimiento','empresas_telecom','empresas_telecom_satelital')
-                                             ->where('id','=',$id)
-                                             ->get();
-        if($costoAnterior->isEmpty()==1){
-            $costoMantenimiento = new Etapa();
-            $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
-            $costoMantenimiento->costo_mantenimiento2 = $request->costo_mantenimiento2;
-            $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
-            $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
-            $costoMantenimiento->save();
-        }else{
-            $costoMantenimiento = Etapa::findOrFail($request->id);
-            $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
-            $costoMantenimiento->costo_mantenimiento2 = $request->costo_mantenimiento2;
-            $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
-            $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
-            $costoMantenimiento->save();
-        }
         
+        $costoMantenimiento = Etapa::findOrFail($request->id);
+        $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+        $costoMantenimiento->costo_mantenimiento2 = $request->costo_mantenimiento2;
+        $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
+        $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
+        $costoMantenimiento->save();
     }
 
+    // Función para almacenar la Plantilla para Carta de Servicios de telecomunicaciones
     public function uploadPlantillaTelecom (Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        // Se busca si el registro ya cuenta con una plantilla almacenada.
         $plantillaAnterior = Etapa::select('plantilla_telecom','id')
                                             ->where('id','=',$id)
                                             ->get();
 
-                if($plantillaAnterior->isEmpty()==1){
-                $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
-                $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
+        if($plantillaAnterior->isEmpty()==1){// Si no hay una plantilla registrada
+            // Se guarda el archivo en el servidor
+            $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
+            $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
+        }
+        else{
+            // Si ya se encuentra registrado un archivo, se elimina el anterior.
+            $pathAnterior = public_path().'/files/etapas/plantillasTelecom/'.$plantillaAnterior[0]->plantilla_telecom;
+            File::delete($pathAnterior); 
+            // Se guarda el archivo nuevo en el servidor
+            $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
+            $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
 
-                if($moved){
-                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                    $plantillaTelecom = Etapa::findOrFail($request->id);
-                    $plantillaTelecom->plantilla_telecom = $fileName;
-                    $plantillaTelecom->id = $id;
-                    $plantillaTelecom->save(); //Insert
+        }
 
-                    }
-                return back();
-                }
-                else{
-                $pathAnterior = public_path().'/files/etapas/plantillasTelecom/'.$plantillaAnterior[0]->plantilla_telecom;
-                File::delete($pathAnterior); 
-                
-                $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
-                $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
-
-                if($moved){
-                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                    $plantillaTelecom = Etapa::findOrFail($request->id);
-                    $plantillaTelecom->plantilla_telecom = $fileName;
-                    $plantillaTelecom->id = $id;
-                    $plantillaTelecom->save(); //Insert
-
-                    }
-                return back();
-
-            }
+        // Se verifica que se guardo correctamente el servidor.
+        if($moved){
+            // se actualiza el registro.
+            $plantillaTelecom = Etapa::findOrFail($request->id);
+            $plantillaTelecom->plantilla_telecom = $fileName;
+            $plantillaTelecom->save(); //Insert
+        }
+        return back();
     }
 
+    // Función para descargar la plantilla de telecomunicaciones.
     public function downloadPlantillaTelecom ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasTelecom/'.$fileName;
         return response()->download($pathtoFile);
     }
 
+    // Funcion para descargar el reglamento de una etapa en especifico.
     public function descargaReglamentoDocs($etapa_id){
         $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
                           ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
@@ -499,85 +436,74 @@ class EtapaController extends Controller
         return response()->download($pathtoFile);
     }
 
+    // Función para almacenar la Carta de Bienvenida.
     public function uploadCartaBienvenida (Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        // Se busca si el registro ya cuenta con una plantilla almacenada.
         $ultimaCartaB = Etapa::select('carta_bienvenida','id')
                                  ->where('id','=',$id)
                                  ->get();
 
-        if($ultimaCartaB->isEmpty()==1){
+        if($ultimaCartaB->isEmpty()==1){// Si no hay una plantilla registrada
+            // Se guarda el archivo en el servidor
             $fileName = uniqid().'.'.$request->carta_bienvenida->getClientOriginalExtension();
             $moved =  $request->carta_bienvenida->move(public_path('/files/etapas/cartasBienvenida/'), $fileName);
-    
-            if($moved){
-                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                $reglamentoEtapa = Etapa::findOrFail($request->id);
-                $reglamentoEtapa->carta_bienvenida = $fileName;
-                $reglamentoEtapa->id = $id;
-                $reglamentoEtapa->save(); //Insert
-        
-                }
-            return back();
-            }else{
-                $pathAnterior = public_path().'/files/etapas/cartasBienvenida/'.$ultimaCartaB[0]->carta_bienvenida;
-                File::delete($pathAnterior);
-                $fileName = uniqid().'.'.$request->carta_bienvenida->getClientOriginalExtension();
-                $moved =  $request->carta_bienvenida->move(public_path('/files/etapas/cartasBienvenida/'), $fileName);
-        
-                if($moved){
-                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                    $reglamentoEtapa = Etapa::findOrFail($request->id);
-                    $reglamentoEtapa->carta_bienvenida = $fileName;
-                    $reglamentoEtapa->id = $id;
-                    $reglamentoEtapa->save(); //Insert
-            
-                    }
-                return back();
-            }
+
+        }else{
+            // Si ya se encuentra registrado un archivo, se elimina el anterior.
+            $pathAnterior = public_path().'/files/etapas/cartasBienvenida/'.$ultimaCartaB[0]->carta_bienvenida;
+            File::delete($pathAnterior);
+            // Se guarda el nuevo archivo en el servidor
+            $fileName = uniqid().'.'.$request->carta_bienvenida->getClientOriginalExtension();
+            $moved =  $request->carta_bienvenida->move(public_path('/files/etapas/cartasBienvenida/'), $fileName);
+        }
+
+         // Se verifica que se guardo correctamente el servidor.
+         if($moved){
+            // se actualiza el registro.
+            $reglamentoEtapa = Etapa::findOrFail($request->id);
+            $reglamentoEtapa->carta_bienvenida = $fileName;
+            $reglamentoEtapa->save(); //Insert
+        }
+        return back();
     }
 
+    // Función para descargar carta de bienvenida
     public function downloadCartaBienvenida ($fileName){
         $pathtoFile = public_path().'/files/etapas/cartasBienvenida/'.$fileName;
         return response()->download($pathtoFile);
     }
 
+    // Función para almacenar factibilidad
     public function formSubmitFactibilidad (Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $ultimaCartaB = Etapa::select('factibilidad','id')
-                                 ->where('id','=',$id)
-                                 ->get();
+        // Se busca si el registro ya cuenta con una plantilla almacenada.
+        $ultimaCartaB = Etapa::select('factibilidad','id')->where('id','=',$id)->get();
 
-        if($ultimaCartaB->isEmpty()==1){
+        if($ultimaCartaB->isEmpty()==1){// Si no hay una plantilla registrada
+            // Se guarda el archivo en el servidor
             $fileName = uniqid().'.'.$request->factibilidad->getClientOriginalExtension();
             $moved =  $request->factibilidad->move(public_path('/files/etapas/factibilidad/'), $fileName);
-    
-            if($moved){
-                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                $reglamentoEtapa = Etapa::findOrFail($request->id);
-                $reglamentoEtapa->factibilidad = $fileName;
-                $reglamentoEtapa->id = $id;
-                $reglamentoEtapa->save(); //Insert
-        
-                }
-            return back();
-            }else{
-                $pathAnterior = public_path().'/files/etapas/factibilidad/'.$ultimaCartaB[0]->factibilidad;
-                File::delete($pathAnterior);
-                $fileName = uniqid().'.'.$request->factibilidad->getClientOriginalExtension();
-                $moved =  $request->factibilidad->move(public_path('/files/etapas/factibilidad/'), $fileName);
-        
-                if($moved){
-                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-                    $reglamentoEtapa = Etapa::findOrFail($request->id);
-                    $reglamentoEtapa->factibilidad = $fileName;
-                    $reglamentoEtapa->id = $id;
-                    $reglamentoEtapa->save(); //Insert
-            
-                    }
-                return back();
-            }
+        }else{
+            // Si ya se encuentra registrado un archivo, se elimina el anterior.
+            $pathAnterior = public_path().'/files/etapas/factibilidad/'.$ultimaCartaB[0]->factibilidad;
+            File::delete($pathAnterior);
+            // Se guarda el archivo en el servidor
+            $fileName = uniqid().'.'.$request->factibilidad->getClientOriginalExtension();
+            $moved =  $request->factibilidad->move(public_path('/files/etapas/factibilidad/'), $fileName);
+        }
+
+        // Se verifica que se guardo correctamente el servidor.
+        if($moved){
+            // se actualiza el registro.
+            $reglamentoEtapa = Etapa::findOrFail($request->id);
+            $reglamentoEtapa->factibilidad = $fileName;
+            $reglamentoEtapa->save(); //Insert
+        }
+        return back();
     }
 
+    // Función para descargar la factibilidad.
     public function downloadFactibilidad ($fileName){
         $pathtoFile = public_path().'/files/etapas/factibilidad/'.$fileName;
         return response()->download($pathtoFile);

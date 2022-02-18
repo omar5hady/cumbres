@@ -426,8 +426,7 @@
                     'costo_mantenimiento2': this.costo_mantenimiento2,
                     'empresas_telecom': this.empresas_telecom,
                     'empresas_telecom_satelital': this.empresas_telecom_satelital,
-                    
-                    
+                    'id' : this.id
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal

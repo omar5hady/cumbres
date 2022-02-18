@@ -396,52 +396,52 @@ class CreditoController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
 
+        //Llamada a la funcion privada que retorna la query
         $creditos = $this->getHIstCreditos();
         
+            // Filtros de busqueda
             if($buscar != ''){
                 switch($criterio){
-                    case 'personal.nombre':
+                    case 'personal.nombre':// Filtro por nombre de cliente
                     {
                         $creditos = $creditos
                             ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
-                    case 'v.nombre':
+                    case 'v.nombre': // Filtro por nombre de asesor.
                     {
                         $creditos = $creditos
                             ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
-                    case 'inst_seleccionadas.tipo_credito':
+                    case 'inst_seleccionadas.tipo_credito': // Filtro por tipo de financiamiento.
                     {
                         $creditos = $creditos
                             ->where($criterio, 'like', '%'. $buscar . '%');
                         break;
                     }
-                    case 'creditos.id':
+                    case 'creditos.id': // Filtro por # de folio.
                     {
                         $creditos = $creditos
                             ->where($criterio, '=',$buscar);
                         break;
                     }
-                    case 'creditos.fraccionamiento':
+                    case 'creditos.fraccionamiento': // Filtro por proyecto.
                     {
                         $creditos = $creditos
                             ->where('lotes.fraccionamiento_id', '=',  $buscar);
-                            if($b_etapa != '')
+                            if($b_etapa != '') //Etapa
                                 $creditos = $creditos->where('creditos.etapa','=',$b_etapa);
-                            if($b_manzana != '')
+                            if($b_manzana != '') //Manzana
                                 $creditos = $creditos->where('creditos.manzana', '=', $b_manzana);
-                            if($b_lote != '')
+                            if($b_lote != '') // Numero de lote
                                 $creditos = $creditos->where('creditos.num_lote','=',$b_lote);
-
                         break;
                     }
                 }
-    
             }
 
-            if($criterio2 != '')
+            if($criterio2 != '') // Estatus del crédito.
                 $creditos = $creditos->where('creditos.status','=','1');
 
             $creditos = $creditos->where('inst_seleccionadas.elegido','=','1')
@@ -466,26 +466,25 @@ class CreditoController extends Controller
         $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
 
+        //Llamada a la funcion privada que retorna la query.
         $Historialcreditos = $this->getHIstCreditos();
 
-        if($buscar2 != ''){
+        if($buscar2 != ''){ // Filtro por estatus del crédito.
                 $Historialcreditos = $Historialcreditos
                     ->where('inst_seleccionadas.status','=',$buscar2);
         } 
         if($buscar != ''){
             switch($criterio){
-                case 'personal.nombre':{
+                case 'personal.nombre':{ //Filtro por nombre del cliente.
                     $Historialcreditos = $Historialcreditos 
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
-
-                case 'v.nombre':{
+                case 'v.nombre':{ //Filtro por nombre de asesor de ventas.
                     $Historialcreditos = $Historialcreditos
                         ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
-
                 default: {
                     $Historialcreditos = $Historialcreditos
                         ->where($criterio,'like','%'.$buscar.'%');
@@ -494,7 +493,6 @@ class CreditoController extends Controller
 
             }
         }
-
         $Historialcreditos = $Historialcreditos->orderBy('id','desc')->paginate(8);
         
         return[

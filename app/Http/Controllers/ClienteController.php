@@ -1544,6 +1544,8 @@ class ClienteController extends Controller
         
     }
 
+    // Funcion para guardar una observación por parte del gerente de ventas,
+    // Esto actualizara la fecha de seguimiento.
     public function storeObsGerente(Request $request){
         $observacion = new Cliente_observacion();
         $observacion->cliente_id = $request->id;

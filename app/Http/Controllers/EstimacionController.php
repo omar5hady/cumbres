@@ -532,7 +532,7 @@ class EstimacionController extends Controller
         })->download('xls');
     }
 
-    // Función privada que retorna los anticipos por contrato
+    // Función que retorna los anticipos por contrato
     public function getAnticipos($aviso){
         $anticipos = Anticipo_estimacion::join('ini_obras','anticipos_estimaciones.aviso_id','=','ini_obras.id')
         ->select('anticipos_estimaciones.id','anticipos_estimaciones.fecha_anticipo','anticipos_estimaciones.monto_anticipo','ini_obras.clave')
@@ -543,6 +543,7 @@ class EstimacionController extends Controller
         return $anticipos;
     }
 
+    // Función que retorna los conceptos extra por contrato
     public function getConceptosExtra($aviso){
         $conceptos = Concepto_extra::where('aviso_id','=',$aviso)
             ->orderBy('aviso_id','asc')
@@ -624,6 +625,7 @@ class EstimacionController extends Controller
                 'num' => $num_est];
     }
 
+    // Función que retorna en excel el estado de cuenta por contratista.
     public function resumenEdoCuenta(Request $request){
         //if (!$request->ajax()) 
  
@@ -929,7 +931,6 @@ class EstimacionController extends Controller
         else
             return redirect('/');
 
-        
     }
  
 }

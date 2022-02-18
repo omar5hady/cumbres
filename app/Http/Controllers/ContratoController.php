@@ -1602,7 +1602,7 @@ class ContratoController extends Controller
                             }
                         }
                     
-                    
+                    // Se capturan los datos fiscales del cliente.
                     $credit_fisc->email_fisc = $datosFiscales['email_fisc'];
                     $credit_fisc->tel_fisc = $datosFiscales['tel_fisc'];
                     $credit_fisc->nombre_fisc = $datosFiscales['nombre_fisc'];
@@ -1626,7 +1626,7 @@ class ContratoController extends Controller
                     ];
 
                     $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.id', '=', $vendedorid)->get();
-
+                    // Se envia notifivacion por correo y en el sistema para informar sobre la venta.
                     if(sizeof($personal))
                     foreach ($personal as $personas) {
                         $correo = $personas->email;
@@ -2496,7 +2496,7 @@ class ContratoController extends Controller
         return $pdf->stream('anexoA.pdf');
     }
 
-
+    // Funcion para generar reporte Modelo Caco
     public function reportEli(Request $request){
         $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
@@ -2616,9 +2616,6 @@ class ContratoController extends Controller
 
             $lote->precio_venta = $lote->precio_base + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio;
         }
-
-        
-        //        return $lotesDisp;
 
         return Excel::create('Modelo Caco', function($excel) use ($contratos,$lotesDisp){
             

@@ -1877,12 +1877,6 @@
                         <div class="modal-body">
 
                             <template  v-if="tipoAccion==1">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                    <div class="col-md-9">
-                                        <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
-                                    </div>
-                                </div>
                                 <template v-if="status == 3">
                                     <hr>
                                     <div class="form-group row">
@@ -1931,6 +1925,13 @@
                                         </div>
                                     </div>
                                 </template>
+                                <hr>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-9">
+                                        <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
+                                    </div>
+                                </div>
                             </template>
 
                             <div class="form-group row" v-if="tipoAccion==1 && status == 0">

@@ -18,8 +18,10 @@ use Excel;
 use Auth;
 use DB;
 
+// Controlador para integracion de cobros de escrituración
 class CobrosController extends Controller
 {
+    // Funcion que retorna los contratos que sin integración de cobros
     public function getContratos(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $buscar = $request->buscar;
@@ -44,20 +46,23 @@ class CobrosController extends Controller
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_completo"),
                         DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")
                     )
-                ->where('contratos.status','=',3)
-                ->where('creditos.integracion_cobro','=',0)
-                ->where('i.elegido','=',1)
-                ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                ->take(7)->get();
+                ->where('contratos.status','=',3) // Contrato firmado
+                ->where('creditos.integracion_cobro','=',0) // Contrato sin integración de cobros
+                ->where('i.elegido','=',1) // Financiamiento elegido
+                ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%') // Busqueda por nombre del cliente
+                ->take(7)->get();// Retorno de los primeros 7 resultados.
 
         if(sizeof($contratos))
+            // Se recorren los contratos encontrados
             foreach ($contratos as $key => $contrato) {
+                // Se obtienen los depositos asignados al contrato.
                 $contrato->depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                     ->select('depositos.cant_depo', 'depositos.banco','depositos.fecha_pago','depositos.id')
                     ->where('pagos_contratos.contrato_id','=',$contrato->id)
                     ->get();
                 
                 if(sizeof($contrato->depositos)){
+                    // Por cada deposito se separa la institucion de financiamiento y el banco en campos diferentes para mostrar en pantalla.
                     foreach ($contrato->depositos as $key => $deposito){
                         $pos = strpos($deposito->banco, '-');
                         $deposito->institucion = substr($deposito->banco, $pos+1);
@@ -69,12 +74,14 @@ class CobrosController extends Controller
         return $contratos;
     }
 
+    // Función para crear la integración de cobros.
     public function generarIntegración(Request $request){
+        // Veririca que la peticion sea ajax.
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         try{
             DB::beginTransaction();
 
+            // Se crea el registro para la integración del cobro.
             $integracion = new Int_cobro();
             $integracion->contrato_id = $request->contrato_id;
             $integracion->valor_terreno = $request->valor_terreno;
@@ -85,7 +92,7 @@ class CobrosController extends Controller
             $integracion->save();
 
             $pagos = $request->pagos;
-
+            // Se almacenen los pagos relacionados al contrato.
             if(sizeof($pagos)){
                 foreach ($pagos as $key => $pago) {
                     $cobro = new Pago_cobro();
@@ -93,15 +100,12 @@ class CobrosController extends Controller
                     $cobro->deposito_id = $pago['id'];
                     $cobro->fecha_pago = $pago['fecha_pago'];
                     $cobro->banco = $pago['banco'];
-                    //$cobro->num_cheque = $pago['num_cheque'];
-                    //$cobro->forma_pago = $pago['forma_pago'];
-                    //$cobro->clave = $pago['clave'];
-                    //$cobro->tarjeta = $pago['tarjeta'];
                     $cobro->cant_depo = $pago['cant_depo'];
                     $cobro->save();
                 }
             }
 
+            // Se accede al registro del Credito y se indica como integrado.
             $credito = Credito::findOrFail($request->contrato_id);
             $credito->integracion_cobro = 1;
             $credito->save();
@@ -114,6 +118,7 @@ class CobrosController extends Controller
                     'enrique.mag', 'antonio.nv'
             ])->get();
 
+            // Se envia notificación via correo electrónico.
             if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
@@ -128,6 +133,7 @@ class CobrosController extends Controller
         
     }
 
+    // Funcion para obtener los cobros de una integración.
     public function getCobros(Request $request){
         $cobros = Pago_cobro::where('integracion_id','=',$request->id)
         ->get();
@@ -143,6 +149,7 @@ class CobrosController extends Controller
         return $cobros;
     }
 
+    // Funcion para guardar un pago nuevo en la integración.
     public function storeCobro(Request $request){
         $cobro = new Pago_cobro();
         $cobro->integracion_id = $request->integracion_id;
@@ -156,6 +163,7 @@ class CobrosController extends Controller
         $cobro->save();
     }
 
+    // Función para actualizar un pago.
     public function updateCobro(Request $request){
         $cobro = Pago_cobro::findOrFail($request->id);
         $cobro->integracion_id = $request->integracion_id;
@@ -169,6 +177,7 @@ class CobrosController extends Controller
         $cobro->save();
     }
 
+    // Función privada que retorna la integracion de cobros.
     private function queryIntegracion(Request $request){
         $integraciones = Int_cobro::join('creditos','int_cobros.contrato_id','=','creditos.id')
         ->join('contratos','creditos.id','contratos.id')  
@@ -201,41 +210,46 @@ class CobrosController extends Controller
         return $integraciones;
     }
 
+    // Funcion que retorna las integraciones de cobros registradas.
     public function getIntegraciones(Request $request){
         $integraciones = $this->queryIntegracion($request);
         $integraciones = $integraciones->paginate(10);
 
-                    if(sizeof($integraciones)){
-                        foreach ($integraciones as $key => $integracion) {
-                            $integracion->depositos = Pago_cobro::where('integracion_id','=',$integracion->id)
-                                ->get();
-                            
-                            if(sizeof($integracion->depositos)){
-                                foreach ($integracion->depositos as $key => $deposito){
-                                    $pos = strpos($deposito->banco, '-');
-                                    $deposito->institucion = substr($deposito->banco, $pos+1);
-                                    $deposito->cuenta = substr($deposito->banco, 0,$pos);
-                                }
-                            }
+            // Se recorren los contratos encontrados
+            if(sizeof($integraciones)){
+                foreach ($integraciones as $key => $integracion) {
+                    // Se obtienen los depositos asignados al contrato.
+                    $integracion->depositos = Pago_cobro::where('integracion_id','=',$integracion->id)
+                        ->get();
+                    
+                    if(sizeof($integracion->depositos)){
+                        // Por cada deposito se separa la institucion de financiamiento y el banco en campos diferentes para mostrar en pantalla.
+                        foreach ($integracion->depositos as $key => $deposito){
+                            $pos = strpos($deposito->banco, '-');
+                            $deposito->institucion = substr($deposito->banco, $pos+1);
+                            $deposito->cuenta = substr($deposito->banco, 0,$pos);
                         }
                     }
+                }
+            }
 
         return $integraciones;
     }
 
+    // Función para terminar el proceso de integración.
     public function finalizarIntegracion(Request $request){
         $integracion = Int_cobro::findOrFail($request->id);
         $integracion->status = 1;
         $integracion->save();
 
-        $ruta = 'https://siicumbres.com//integracionCobros/exportFormat?id='.$request->id;
+        $ruta = 'https://siicumbres.com/integracionCobros/exportFormat?id='.$request->id;
         $msj = 'Se ha finalizado la integracion de cobros para el folio#: '.$integracion->contrato_id;
 
         $personal = Personal::join('users', 'personal.id', '=', 'users.id')
             ->select('personal.email', 'personal.id')->whereIn('users.usuario', [
                     'enrique.mag', 'jovanni.t', 'j.gaitan', 'ale.teran', 'sandra.rdz'
             ])->get();
-
+            // Se envia notificacion via correo electrónico.
             if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
@@ -243,6 +257,7 @@ class CobrosController extends Controller
                 }
     }
 
+    // Funcion para retornar la integracion en formato Excel.
     public function exportFormat(Request $request){
         $integracion = $this->queryIntegracion($request);
         $integracion = $integracion->where('int_cobros.id','=',$request->id)
@@ -267,8 +282,8 @@ class CobrosController extends Controller
             }
             $integracion->diferencia = $integracion->valor_escrituras - ($integracion->totalCredito + $integracion->totalCobrado);
 
-        //return $integracion;
-
+        
+        // Creación y retorno del excel
         return Excel::create('Integracion de cobros', function($excel) use ($integracion){
             $excel->sheet(''.$integracion->contrato_id, function($sheet) use ($integracion){
                 
