@@ -263,6 +263,7 @@ class CalculadoraLotesController extends Controller
                 'clientes.id as cliente_personal_id',
 
                 'lotes.num_lote',
+                'lotes.sublote',
                 'lotes.manzana',
                 'lotes.terreno as terreno_m2',
                 'etapas.num_etapa',
@@ -352,6 +353,7 @@ class CalculadoraLotesController extends Controller
 
                 'etapas.num_etapa',
                 'lotes.num_lote',
+                'lotes.sublote',
                 'lotes.manzana',
                 'fraccionamientos.nombre as fraccionamiento'
             );
@@ -633,6 +635,7 @@ class CalculadoraLotesController extends Controller
                 'clientes.id as cliente_personal_id',
 
                 'lotes.num_lote',
+                'lotes.sublote',
                 'lotes.manzana',
                 'lotes.terreno as terreno_m2',
                 'etapas.num_etapa',

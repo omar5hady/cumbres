@@ -56,7 +56,7 @@ class CreditoController extends Controller
                         'datos_extra.mascota','datos_extra.num_perros','datos_extra.rang010','datos_extra.rang1120',
                         'datos_extra.rang21','datos_extra.ama_casa','datos_extra.persona_discap','datos_extra.silla_ruedas',
                         'datos_extra.num_vehiculos',
-                        'lotes.fraccionamiento_id',
+                        'lotes.fraccionamiento_id', 'lotes.sublote',
 
                         'personal.nombre','personal.apellidos','clientes.sexo','personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.ciudad','clientes.estado',

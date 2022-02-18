@@ -40,7 +40,11 @@
 
                         <select class="form-control col-sm-2" v-model="r_lote" v-on:change="selccionaLote(r_lote)" >
                             <option value="">Lote</option>
-                            <option v-for="lote in arrayLotes" :key="lote.id" :value="lote" v-text="lote.num_lote">lote 1</option>
+                            <template v-for="lote in arrayLotes">
+                                <option v-if="lote.sublote != null" :key="lote.id" :value="lote" v-text="lote.num_lote + ' '+ lote.sublote"></option>
+                                <option v-else :key="lote.id" :value="lote" v-text="lote.num_lote"></option>
+                            </template>
+                            
                         </select>
                         
                         <div v-text="r_sup_terreno+' m²'" class="text-info form-control col-sm-2" title="Superficie de Terreno"></div>

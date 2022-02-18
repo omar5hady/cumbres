@@ -94,7 +94,8 @@
                                         <td v-text="cot.fraccionamiento"></td>
                                         <td v-text="cot.num_etapa"></td>
                                         <td v-text="cot.manzana"></td>
-                                        <td v-text="cot.num_lote"></td>
+                                        <td v-if="cot.sublote == null" v-text="cot.num_lote"></td>
+                                        <td v-else v-text="cot.num_lote + ' ' + cot.sublote"></td>
                                         <td v-text="'$'+cot.valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
                                         <td v-text="cot.mensualidades"></td>
                                         <td>
@@ -1387,7 +1388,10 @@ export default {
                     this.r_proyecto = cot.fraccionamiento;
                     this.r_etapa = cot.num_etapa;
                     this.r_manzana = cot.manzana;
-                    this.r_lote = cot.num_lote;
+                    if(cot.sublote == null)
+                        this.r_lote = cot.num_lote;
+                    else 
+                        this.r_lote = cot.num_lote + ' ' + cot.sublote;
                     this.r_sup_terreno = cot.terreno_m2;
                     this.r_valor_m2 = cot.valor_venta/cot.terreno_m2;
                     this.r_mensualidad = cot.mensualidades;

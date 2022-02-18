@@ -44,7 +44,8 @@
                                                 <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase()"></a>
                                             </td>
                                             <td v-text="prospecto.fraccionamiento"></td>
-                                            <td v-text="prospecto.num_lote"></td>
+                                            <td v-if="prospecto.sublote == null" v-text="prospecto.num_lote"></td>
+                                            <td v-else v-text="prospecto.num_lote+' '+prospecto.sublote"></td>
                                             <td v-text="prospecto.modelo"></td>
                                             <td v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
                                             <td v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
@@ -728,7 +729,11 @@
                                                     <div class="form-group">
                                                         <select class="form-control" v-model="lote" @change="mostrarDatosLote(lote)">
                                                             <option value=''> Seleccione </option>
-                                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                            <template  v-for="lotes in arrayLotes" >
+                                                                <option v-if="lotes.sublote != null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' ' + lotes.sublote"></option>
+                                                                <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                            </template>
+                                                            
                                                         </select>
                                                     </div>
                                                 </div>
@@ -1545,6 +1550,11 @@
                                                     <input disabled type="text" class="form-control" v-model="lote">
                                                 </div>
                                             </div>
+                                            <div class="col-md-2" v-if="sublote != null">
+                                                <div class="form-group">
+                                                    <input disabled type="text" class="form-control" v-model="sublote">
+                                                </div>
+                                            </div>
 
                                             <div class="col-md-12" ><h6></h6></div>
                         
@@ -2205,6 +2215,7 @@
                 etapa: '',
                 manzana: '',
                 lote: '',
+                sublote :'',
                 num_lote:'',
                 modelo: '',
                 superficie: '',
@@ -3044,6 +3055,7 @@
                 this.etapa = data['etapa'];
                 this.manzana = data['manzana'];
                 this.lote = data['num_lote'];
+                this.sublote = data['sublote'];
                 this.modelo = data['modelo'];
                 this.superficie = data['superficie'];
                 this.terreno_tam_excedente = data['terreno_excedente'];

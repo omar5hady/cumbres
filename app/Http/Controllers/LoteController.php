@@ -1175,7 +1175,7 @@ class LoteController extends Controller
         if(Auth::user()->id == 2){
             $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                    ->select('lotes.num_lote','lotes.id')
+                    ->select('lotes.num_lote','lotes.id', 'lotes.sublote')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.apartado','=',0)
                     ->where('lotes.contrato','=',0)
@@ -1196,7 +1196,7 @@ class LoteController extends Controller
         else{
             $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                    ->select('lotes.num_lote','lotes.id')
+                    ->select('lotes.num_lote','lotes.id','lotes.sublote')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.contrato','=',0)
                     ->where('lotes.casa_renta','=',0)

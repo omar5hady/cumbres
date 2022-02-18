@@ -70,7 +70,7 @@ body{
         <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110">
     </div>
 
-    <table class="myTable" style="margin-left:95px; margin-top:0px; width:95%;">
+    <table class="myTable" style="margin-left:110px; margin-top:0px; width:95%;">
         <thead>
             <tr>
                 <th class="text-right" colspan="4">Fecha de emisión: {{$cotizacion->fecha}}</th>
@@ -84,7 +84,11 @@ body{
             </tr>
             <tr>
                 <td>Manzana: {{mb_strtoupper($cotizacion->manzana)}}</td>
-                <td>Lote: {{mb_strtoupper($cotizacion->num_lote)}}</td>
+                @if($cotizacion->sublote == NULL )
+                    <td>Lote: {{mb_strtoupper($cotizacion->num_lote)}}</td>
+                @else
+                    <td>Lote: {{mb_strtoupper($cotizacion->num_lote)}} {{mb_strtoupper($cotizacion->sublote)}}</td>
+                @endif
                 <td>m²: {{round($cotizacion->terreno_m2,2)}}</td>
                 <td>Costo * m²: ${{$cotizacion->m2}}</td>
             </tr>
