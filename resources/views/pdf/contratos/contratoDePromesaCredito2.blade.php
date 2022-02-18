@@ -62,10 +62,15 @@ b) Que su representante, el Ing. Alejandro Francisco Pérez Espinosa,
 </p>
 
 <p>
-c) Que es única y legítimo propietario del Lote de terreno número <strong>{{$contratoPromesa[0]->num_lote}}</strong>, 
+c) Que es única y legítimo propietario del Lote de terreno número 
+    <strong>{{$contratoPromesa[0]->num_lote}}
+        @if($contratoPromesa[0]->sublote != NULL)
+            {{$contratoPromesa[0]->sublote}}
+        @endif
+    </strong>, 
     de la manzana <strong>{{mb_strtoupper($contratoPromesa[0]->manzana)}}</strong> del Fraccionamiento <strong>{{mb_strtoupper($contratoPromesa[0]->proyecto)}}</strong>, 
-   en esta ciudad de {{mb_strtoupper($contratoPromesa[0]->ciudad_proy)}}, {{mb_strtoupper($contratoPromesa[0]->estado_proy)}}, cuya superficie es de <strong>{{$contratoPromesa[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
-   para todos los efectos del presente contrato se le denominará como <strong>EL LOTE</strong>. 
+    en esta ciudad de {{mb_strtoupper($contratoPromesa[0]->ciudad_proy)}}, {{mb_strtoupper($contratoPromesa[0]->estado_proy)}}, cuya superficie es de <strong>{{$contratoPromesa[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
+    para todos los efectos del presente contrato se le denominará como <strong>EL LOTE</strong>. 
 </p>
 <br>
 

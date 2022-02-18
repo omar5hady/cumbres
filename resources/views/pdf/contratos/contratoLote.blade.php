@@ -96,7 +96,12 @@ body{
 
 <p>
     c) Que es única y legítima propietaria del Lote de terreno 
-    número <strong>{{$contratoPromesa[0]->num_lote}}</strong>, 
+    número 
+    <strong>{{$contratoPromesa[0]->num_lote}}
+        @if($contratoPromesa[0]->sublote != NULL)
+            {{$contratoPromesa[0]->sublote}}
+        @endif
+    </strong>, 
     de la manzana <strong>{{mb_strtoupper($contratoPromesa[0]->manzana)}} 
     del Fraccionamiento <strong>{{mb_strtoupper($contratoPromesa[0]->proyecto)}}</strong>, 
     en la ciudad de {{mb_strtoupper($contratoPromesa[0]->ciudad_proy)}}, {{mb_strtoupper($contratoPromesa[0]->estado_proy)}}, 

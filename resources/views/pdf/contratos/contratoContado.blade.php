@@ -63,7 +63,12 @@ body{
         </p>
 
         <p>
-            c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número <strong>{{$contratosDom[0]->num_lote}}</strong>, 
+            c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número 
+            <strong>{{$contratosDom[0]->num_lote}}
+                @if($contratoDom[0]->sublote != NULL)
+                    {{$contratosDom[0]->sublote}}
+                @endif
+            </strong>, 
             de la <strong>Manzana {{mb_strtoupper($contratosDom[0]->manzana)}}</strong> del Fraccionamiento <strong>{{mb_strtoupper($contratosDom[0]->proyecto)}}</strong>,
             en esta ciudad de {{mb_strtoupper($contratosDom[0]->estado_proy)}}, {{mb_strtoupper($contratosDom[0]->ciudad_proy)}}, 
             cuya superficie es de <strong>{{$contratosDom[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 

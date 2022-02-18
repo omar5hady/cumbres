@@ -318,7 +318,8 @@
                                             <td class="td2" v-text="contrato.fraccionamiento"></td>
                                             <td class="td2" v-text="contrato.etapa"></td>
                                             <td class="td2" v-text="contrato.manzana"></td>
-                                            <td class="td2" v-text="contrato.num_lote"></td>
+                                            <td v-if="contrato.sublote == null" class="td2" v-text="contrato.num_lote"></td>
+                                            <td v-else class="td2" v-text="contrato.num_lote + ' ' + contrato.sublote"></td>
                                             <td class="td2" v-text="contrato.modelo"></td>
                                             <td class="td2" v-text="contrato.tipo_credito"></td>
                                             <td class="td2" v-text="contrato.institucion"></td>
@@ -1223,6 +1224,12 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-md-1" v-if="sublote != null">
+                                                        <div class="form-group">
+                                                            <p v-text="sublote"></p>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="col-md-2" v-if="listado==3 || listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                             <button type="button" class="btn btn-default" @click="abrirModal('reasignar')"> 
@@ -1977,7 +1984,11 @@
                                     <div class="col-md-9">
                                     <select class="form-control" v-model="sel_lote">
                                                 <option value=''> Seleccione </option>
-                                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                <template v-for="lotes in arrayLotes">
+                                                    <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                    <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' '+ lotes.sublote"></option>
+                                                </template>
+                                                
                                         </select>
                                     </div>
                                 </div>
@@ -2153,6 +2164,7 @@
                     etapa: '',
                     manzana: '',
                     lote: '',
+                    sublote:'',
                     num_lote:'',
                     modelo: '',
                     superficie: '',
@@ -2730,6 +2742,7 @@
                     me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
                     me.terreno_tam_excedente= Math.round( me.arrayDatosLotes[0]['terreno_tam_excedente']*100)/100;
                     me.lote = me.arrayDatosLotes[0]['num_lote'];
+                    me.sublote = me.arrayDatosLotes[0]['sublote'];
                     me.manzana = me.arrayDatosLotes[0]['manzana'];
                     me.etapa = me.arrayDatosLotes[0]['etapa'];
                     me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
@@ -3266,6 +3279,7 @@
                 this.etapa = data['etapa'];
                 this.manzana = data['manzana'];
                 this.lote = data['num_lote'];
+                this.sublote = data['sublote'];
                 this.modelo = data['modelo'];
                 this.superficie = data['superficie'];
                 this.terreno_tam_excedente = data['terreno_excedente'];

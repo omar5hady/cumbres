@@ -71,7 +71,13 @@ body{
         </p>
 
         <p>
-        c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número <strong>{{$contratosDom[0]->num_lote}}</strong>, de la <strong>Manzana {{mb_strtoupper($contratosDom[0]->manzana)}}</strong> del Fraccionamiento <strong>{{mb_strtoupper($contratosDom[0]->proyecto)}}</strong>,
+        c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número 
+        <strong>{{$contratosDom[0]->num_lote}}
+            @if($contratoDom[0]->sublote != NULL)
+                {{$contratosDom[0]->sublote}}
+            @endif
+        </strong>
+        , de la <strong>Manzana {{mb_strtoupper($contratosDom[0]->manzana)}}</strong> del Fraccionamiento <strong>{{mb_strtoupper($contratosDom[0]->proyecto)}}</strong>,
            en esta ciudad de SAN LUIS POTOSÍ, SAN LUIS POTOSÍ, cuya superficie es de <strong>{{$contratosDom[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
            para todos los efectos del presente contrato se le denominará como <strong>EL LOTE</strong>. 
         </p>

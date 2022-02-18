@@ -83,9 +83,19 @@ body{
             </p>
 
             <p>
-                f)	Que forma parte de EL RÉGIMEN el departamento identificado con el número <strong>interior {{$contratoPromesa[0]->num_lote}}</strong>, con las medidas y 
+                f)	Que forma parte de EL RÉGIMEN el departamento identificado con el número 
+                <strong>interior {{$contratoPromesa[0]->num_lote}}
+                    @if($contratoPromesa[0]->sublote != NULL)
+                        -{{$contratoPromesa[0]->sublote}}
+                    @endif
+                </strong>, con las medidas y 
                 colindancias establecidas en el mismo anexo “A” de este contrato, en lo sucesivo <strong>“LA VIVIENDA”</strong> y 
-                que incluye la propiedad del cajón de estacionamiento número <strong>{{$contratoPromesa[0]->num_lote}}</strong>.
+                que incluye la propiedad del cajón de estacionamiento número 
+                <strong>{{$contratoPromesa[0]->num_lote}}
+                    @if($contratoPromesa[0]->sublote != NULL)
+                        -{{$contratoPromesa[0]->sublote}}
+                    @endif
+                </strong>.
             </p>
 
             <p>
@@ -120,9 +130,19 @@ body{
             </p>
 
             <p>
-                d) Que es propietario del departamento identificado con el número <strong>interior {{$contratoPromesa[0]->num_lote}}</strong>, 
+                d) Que es propietario del departamento identificado con el número 
+                <strong>interior {{$contratoPromesa[0]->num_lote}}
+                    @if($contratoPromesa[0]->sublote != NULL)
+                        -{{$contratoPromesa[0]->sublote}}
+                    @endif
+                </strong>, 
                 con las medidas y colindancias establecidas en el mismo anexo “A” de este contrato, en lo sucesivo <strong>“LA VIVIENDA”</strong> 
-                y que incluye la propiedad del cajón de estacionamiento <strong>{{$contratoPromesa[0]->num_lote}}</strong>.
+                y que incluye la propiedad del cajón de estacionamiento 
+                <strong>{{$contratoPromesa[0]->num_lote}}
+                    @if($contratoPromesa[0]->sublote != NULL)
+                        {{$contratoPromesa[0]->sublote}}
+                    @endif
+                </strong>.
             </p>
 
             <p>III.- Declara <strong>EL PROMITENTE COMPRADOR</strong> por su propio derecho:</p>

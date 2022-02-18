@@ -320,7 +320,8 @@ class ContratoController extends Controller
                     'contratos.avance_lote',
                     'contratos.observacion',
                     'contratos.exp_bono',
-                    'lotes.fraccionamiento_id'
+                    'lotes.fraccionamiento_id',
+                    'lotes.sublote'
         );
         return $contratos;
     }
@@ -719,7 +720,8 @@ class ContratoController extends Controller
                 'fraccionamientos.tipo_proyecto',
 
                 'lotes.calle', 'lotes.numero', 'lotes.interior',
-                'lotes.terreno', 'lotes.construccion',
+                'lotes.terreno', 'lotes.construccion', 
+                'lotes.sublote',
                 'lotes.sobreprecio', 'lotes.fecha_termino_ventas',
                 'medios_publicitarios.nombre as medio_publicidad',
                 'lotes.ajuste', 'lotes.emp_constructora', 'lotes.emp_terreno',
@@ -856,7 +858,7 @@ class ContratoController extends Controller
                     
                     'clientes.id as cliente_personal_id',
     
-                    'lotes.num_lote',
+                    'lotes.num_lote', 'lotes.sublote',
                     'lotes.terreno as terreno_m2',
                     'etapas.num_etapa',
                     'fraccionamientos.nombre as fraccionamiento'
@@ -1108,6 +1110,7 @@ class ContratoController extends Controller
                 'inst_seleccionadas.institucion',
                 'creditos.fraccionamiento as proyecto',
                 'lotes.construccion',
+                'lotes.sublote',
                 'lotes.regimen_condom',
                 'lotes.emp_constructora',
                 'lotes.emp_terreno',

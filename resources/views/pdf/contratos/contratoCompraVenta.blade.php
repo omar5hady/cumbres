@@ -207,13 +207,21 @@ body {
                 <div class="table-row">
                     <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
                     <div class="table-cell">MANZANA: <u>{{mb_strtoupper($contratos[0]->manzana)}}</u></div>
-                    <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
+                    @if($contratos[0]->num_lote == NULL)
+                        <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
+                    @else
+                        <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}} {{$contratos[0]->sublote}}</u></div>
+                    @endif
                 </div>
             @elseif($contratos[0]->tipo_proyecto == 1)
                 <div class="table-row">
                     <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
                     <div class="table-cell">NIVEL: <u>{{mb_strtoupper($contratos[0]->manzana)}}</u></div>
-                    <div class="table-cell">DEPARTAMENTO: <u>{{$contratos[0]->num_lote}}</u></div>
+                    @if($contratos[0]->num_lote == NULL)
+                        <div class="table-cell">DEPARTAMENTO: <u>{{$contratos[0]->num_lote}}</u></div>
+                    @else
+                        <div class="table-cell">DEPARTAMENTO: <u>{{$contratos[0]->num_lote}} {{$contratos[0]->sublote}}</u></div>
+                    @endif
                 </div>
             @endif
                 <div class="table-row">

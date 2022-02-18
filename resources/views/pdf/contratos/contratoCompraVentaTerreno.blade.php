@@ -235,7 +235,11 @@
                 <div class="table-row">
                     <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
                     <div class="table-cell">MANZANA: <u>{{mb_strtoupper($contratos[0]->manzana)}}</u></div>
-                    <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
+                    @if($contratos[0]->sublote == NULL)
+                        <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
+                    @else
+                        <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}} {{$contratos[0]->sublote}}</u></div>
+                    @endif
                 </div>
                 <div class="table-row">
                     <div class="table-cell">CALLE: <u>{{mb_strtoupper($contratos[0]->calle)}}</u></div>
@@ -368,7 +372,11 @@
                 <td>Etapa: {{mb_strtoupper($contratos[0]->num_etapa)}}</td>
             </tr>
             <tr>
-                <td>Lote: {{mb_strtoupper($contratos[0]->num_lote)}}</td>
+                @if($contratos[0]->sublote == NULL)
+                    <td>Lote: {{mb_strtoupper($contratos[0]->num_lote)}}</td>
+                @else
+                    <td>Lote: {{mb_strtoupper($contratos[0]->num_lote)}} {{mb_strtoupper($contratos[0]->sublote)}}</td>
+                @endif
                 <td>m²: {{round($contratos[0]->terreno,2)}}</td>
                 <td>Costo * m²: ${{$contratos[0]->m2}}</td>
             </tr>
