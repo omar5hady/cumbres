@@ -65,7 +65,7 @@ body{
         <p>
             c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número 
             <strong>{{$contratosDom[0]->num_lote}}
-                @if($contratoDom[0]->sublote != NULL)
+                @if($contratosDom[0]->sublote != NULL)
                     {{$contratosDom[0]->sublote}}
                 @endif
             </strong>, 

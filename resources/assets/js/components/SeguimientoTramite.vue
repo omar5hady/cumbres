@@ -179,7 +179,8 @@
                                                 <td class="td2" v-text="ingresar.etapa"></td>
                                                 <td class="td2" v-text="ingresar.manzana"></td>
                                                 <td class="td2" >
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}}</a>
+                                                    <a v-if="ingresar.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}}</a>
+                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}} {{ingresar.sublote}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-if ="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">Descargar predial</a>
                                                         <a v-if ="ingresar.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic">Descargar licencia</a>
@@ -396,7 +397,8 @@
                                                 <td class="td2" v-text="preautorizados.etapa"></td>
                                                 <td class="td2" v-text="preautorizados.manzana"></td>
                                                 <td class="td2" >
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}}</a>
+                                                    <a v-if="preautorizados.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}}</a>
+                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}} {{preautorizados.sublote}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-if ="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">Descargar predial</a>
                                                         <a v-if ="preautorizados.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic">Descargar licencia</a>
@@ -638,7 +640,8 @@
                                                 <td class="td2" v-text="liquidacion.etapa"></td>
                                                 <td class="td2" v-text="liquidacion.manzana"></td>
                                                 <td class="td2" >
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}}</a>
+                                                    <a v-if="liquidacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}}</a>
+                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}} {{liquidacion.sublote}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-if ="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+liquidacion.foto_predial">Descargar predial</a>
                                                         <a v-if ="liquidacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic">Descargar licencia</a>
@@ -867,7 +870,8 @@
                                                 <td class="td2" v-text="programacion.etapa"></td>
                                                 <td class="td2" v-text="programacion.manzana"></td>
                                                 <td class="td2" >
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                    <a v-if="programacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}} {{programacion.sublote}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
                                                         <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
@@ -1104,7 +1108,8 @@
                                                 <td class="td2" v-text="programacion.etapa"></td>
                                                 <td class="td2" v-text="programacion.manzana"></td>
                                                 <td class="td2" >
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                    <a v-if="programacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}} {{programacion.sublote}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
                                                         <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>

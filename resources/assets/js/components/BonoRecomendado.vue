@@ -139,7 +139,8 @@
                                         <td class="td2" v-text="bono.proyecto" ></td>
                                         <td class="td2" v-text="bono.num_etapa" ></td>
                                         <td class="td2" v-text="bono.manzana" ></td>
-                                        <td class="td2" v-text="bono.num_lote" ></td>
+                                        <td v-if="bono.sublote == null" class="td2" v-text="bono.num_lote" ></td>
+                                        <td v-else class="td2" v-text="bono.num_lote + ' ' + bono.sublote" ></td>
                                         <td class="td2" v-text="bono.nombre_cliente.toUpperCase()" ></td>
                                         <td class="td2" v-text="this.moment(bono.fecha).locale('es').format('DD/MMM/YYYY')" ></td>
                                         <td class="td2" v-text="bono.recomendado.toUpperCase()" ></td>

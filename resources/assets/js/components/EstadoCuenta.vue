@@ -129,7 +129,8 @@
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
                                                     <a class="dropdown-item" v-if="contratos.tipo_credito!='Crédito Directo'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+contratos.folio">Contrato</a>
-                                                    <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+contratos.folio">Contrato</a>
+                                                    <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo != 'Terreno'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+contratos.folio">Contrato</a>
+                                                    <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo == 'Terreno'" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+contratos.folio">Contrato</a>
                                                     <a v-if="contratos.liquidado == 1" class="dropdown-item" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+contratos.folio">Liquidación</a>
                                                 </div>
                                             </td>
@@ -307,8 +308,14 @@
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
-                                        <div class="col-md-5">
+                                        <div class="col-md-6">
                                             <input type="text" v-model="datosFiscales.direccion_fisc" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="datosFiscales.col_fisc" disabled class="form-control">
                                         </div>
 
                                         <label class="col-md-1 form-control-label" for="text-input">CP</label>
@@ -719,6 +726,7 @@
                                 this.datosFiscales.tel_fisc = data['tel_fisc'];
                                 this.datosFiscales.nombre_fisc = data['nombre_fisc'];
                                 this.datosFiscales.direccion_fisc = data['direccion_fisc'];
+                                this.datosFiscales.col_fisc = data['col_fisc'];
                                 this.datosFiscales.cp_fisc = data['cp_fisc'];
                                 this.datosFiscales.rfc_fisc = data['rfc_fisc'];
 

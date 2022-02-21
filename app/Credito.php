@@ -19,7 +19,7 @@ class Credito extends Model
                             'costo_protecciones', 'costo_cuota_mant', 'costo_alarma',
                             'descuento_terreno', 'costo_descuento', 'valor_terreno', 'porcentaje_terreno',
                             'email_fisc', 'tel_fisc', 'nombre_fisc',
-                            'direccion_fisc', 'cp_fisc', 'rfc_fisc',
+                            'direccion_fisc', 'col_fisc', 'cp_fisc', 'rfc_fisc',
                             'cfi_fisc', 'regimen_fisc',
                             'banco_fisc', 'num_cuenta_fisc',
                             'clabe_fisc', 'notif_fisc',

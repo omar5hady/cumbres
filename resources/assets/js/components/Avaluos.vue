@@ -119,7 +119,8 @@
                                         <td class="td2" v-text="avaluos.fraccionamiento"></td>
                                         <td class="td2" v-text="avaluos.etapa"></td>
                                         <td class="td2" v-text="avaluos.manzana"></td>
-                                        <td class="td2" v-text="avaluos.num_lote"></td>
+                                        <td v-if="avaluos.sublote == null" class="td2" v-text="avaluos.num_lote"></td>
+                                        <td v-else class="td2" v-text="avaluos.num_lote + ' ' + avaluos.sublote"></td>
                                         <td class="td2" v-text="avaluos.modelo"></td>
                                         <td class="td2" v-text="avaluos.avance + '%'"></td>
                                         <td class="td2" v-text="this.moment(avaluos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
@@ -283,7 +284,8 @@
                                         <td class="td2" v-text="avaluos.fraccionamiento"></td>
                                         <td class="td2" v-text="avaluos.etapa"></td>
                                         <td class="td2" v-text="avaluos.manzana"></td>
-                                        <td class="td2" v-text="avaluos.num_lote"></td>
+                                        <td v-if="avaluos.sublote == null" class="td2" v-text="avaluos.num_lote"></td>
+                                        <td v-else class="td2" v-text="avaluos.num_lote + ' ' + avaluos.sublote"></td>
                                         <td class="td2" v-text="avaluos.modelo"></td>
                                         <td class="td2" v-text="avaluos.avance + '%'"></td>
                                         <td class="td2" v-text="this.moment(avaluos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>

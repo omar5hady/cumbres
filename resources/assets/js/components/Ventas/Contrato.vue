@@ -1915,8 +1915,14 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="datosFiscales.direccion_fisc" class="form-control" placeholder="Dirección">
                                         </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="datosFiscales.col_fisc" class="form-control" placeholder="Colonia">
+                                        </div>
                                         <label class="col-md-2 form-control-label" for="text-input">C.P.</label>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.cp_fisc" class="form-control" placeholder="Código Postal">
                                         </div>
                                     </div>
@@ -3219,6 +3225,7 @@
                 this.datosFiscales.tel_fisc = data['tel_fisc'];
                 this.datosFiscales.nombre_fisc = data['nombre_fisc'];
                 this.datosFiscales.direccion_fisc = data['direccion_fisc'];
+                this.datosFiscales.col_fisc = data['col_fisc'];
                 this.datosFiscales.cp_fisc = data['cp_fisc'];
                 this.datosFiscales.rfc_fisc = data['rfc_fisc'];
 

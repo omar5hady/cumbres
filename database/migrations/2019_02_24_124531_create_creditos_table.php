@@ -76,6 +76,7 @@ class CreateCreditosTable extends Migration
             $table->string('tel_fisc',10)->nullable();
             $table->string('nombre_fisc',120)->nullable();
             $table->string('direccion_fisc',100)->nullable();
+            $table->string('col_fisc',40)->nullable();
             $table->string('cp_fisc',5)->nullable();
             $table->string('rfc_fisc',13)->nullable();
             $table->string('cfi_fisc',50)->nullable();

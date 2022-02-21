@@ -62,7 +62,7 @@ class BonoRecomendadoController extends Controller
                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
                     ->join('personal as v', 'vendedores.id', '=', 'v.id')
-                    ->select('con.id','l.num_lote','e.num_etapa','f.nombre as proyecto',
+                    ->select('con.id','l.num_lote','l.sublote','e.num_etapa','f.nombre as proyecto',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                                 'l.manzana','con.fecha', 'bonos_recomendados.*'

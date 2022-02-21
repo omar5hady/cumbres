@@ -83,7 +83,8 @@
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
-                                        <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td v-if="contratos.sublote == null" class="td2" v-text="contratos.num_lote"></td>
+                                        <td v-else class="td2" v-text="contratos.num_lote +' '+contratos.sublote"></td>
                                         <td class="td2" v-text="contratos.nombre_gestor"></td>
                                         <td class="td2" v-text="contratos.tipo_credito"></td>
                                         <td class="td2" v-text="contratos.institucion"></td>

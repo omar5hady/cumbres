@@ -86,7 +86,7 @@ class AvaluoController extends Controller
                     ->join('lotes','creditos.lote_id','=','lotes.id')
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->select(
-                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                        'contratos.id as folio','lotes.num_lote', 'lotes.sublote','personal.nombre','personal.apellidos',
                         'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
                         'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
                         'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
@@ -174,99 +174,40 @@ class AvaluoController extends Controller
                     ->join('lotes','creditos.lote_id','=','lotes.id')
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->select(
-                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                        'contratos.id as folio','lotes.num_lote', 'lotes.sublote', 'personal.nombre','personal.apellidos',
                         'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
                         'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
                         'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
                         'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
                         'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
 
-                    );
+                    )
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','!=',NULL);
 
-            if($buscar == ''){
-                $avaluos = $query
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('avaluos.fecha_recibido','!=',NULL);
-            }
-            else{
+            if($buscar != ''){
                 switch($criterio){
                     case 'lotes.fraccionamiento_id':{
-                        if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('lotes.etapa_id','=',$b_etapa)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('lotes.etapa_id','=',$b_etapa)
-                            ->where('lotes.manzana','=',$b_manzana)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('lotes.etapa_id','=',$b_etapa)
-                            ->where('lotes.manzana','=',$b_manzana)
-                            ->where('lotes.num_lote','=',$b_lote)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('lotes.etapa_id','=',$b_etapa)
-                            ->where('lotes.num_lote','=',$b_lote)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('lotes.num_lote','=',$b_lote)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
-                            $avaluos = $query
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('lotes.manzana','=',$b_manzana)
-                            ->where('lotes.num_lote','=',$b_lote)
-                            ->where('avaluos.fecha_recibido','!=',NULL);
-                        }
-                        break;
-                    }
-                    case 'licencias.visita_avaluo':{
                         $avaluos = $query
-                        ->where($criterio,'=',$buscar)
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('avaluos.fecha_recibido','!=',NULL);
-                        break;
-                    }
-
-                    case 'contratos.id':{
-                        $avaluos = $query
-                        ->where($criterio,'=',$buscar)
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('avaluos.fecha_recibido','!=',NULL);
+                        ->where('lotes.fraccionamiento_id','=',$buscar);
+                        if($b_etapa != '')
+                            $avaluos = $avaluos->where('lotes.etapa_id','=',$b_etapa);
+                        if($b_manzana != '')
+                            $avaluos = $avaluos->where('lotes.manzana','=',$b_manzana);
+                        if($b_lote != '')
+                            $avaluos = $avaluos->where('lotes.num_lote','=',$b_lote);
                         break;
                     }
 
                     case 'cliente':{
                         $avaluos = $query
-                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('avaluos.fecha_recibido','!=',NULL);
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                        break;
+                    }
+
+                    default:{
+                        $avaluos = $query
+                        ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -369,14 +310,18 @@ class AvaluoController extends Controller
                             else{
                                 $avaluo->seguro = 'No';
                             }
-                            
+
+                            $lote = $avaluo->num_lote;
+
+                            if($avaluo->sublote == NULL)
+                                $lote = $avaluo->num_lote.' '.$avaluo->sublote;
                             $sheet->row($index+2, [
                                 $avaluo->folio, 
                                 $avaluo->nombre.' '.$avaluo->apellidos,
                                 $avaluo->fraccionamiento, 
                                 $avaluo->etapa,
                                 $avaluo->manzana,
-                                $avaluo->num_lote,
+                                $lote,
                                 $avaluo->modelo,
                                 $avaluo->avance.'%',
                                 $avaluo->fecha_solicitud,

@@ -227,7 +227,7 @@ class ContratoController extends Controller
                     'creditos.email_fisc',
                     'creditos.tel_fisc',
                     'creditos.nombre_fisc',
-                    'creditos.direccion_fisc',
+                    'creditos.direccion_fisc', 'creditos.col_fisc',
                     'creditos.cp_fisc',
                     'creditos.rfc_fisc',
                     'cfi_fisc',
@@ -1615,6 +1615,7 @@ class ContratoController extends Controller
                     $credit_fisc->tel_fisc = $datosFiscales['tel_fisc'];
                     $credit_fisc->nombre_fisc = $datosFiscales['nombre_fisc'];
                     $credit_fisc->direccion_fisc = $datosFiscales['direccion_fisc'];
+                    $credit_fisc->col_fisc = $datosFiscales['col_fisc'];
                     $credit_fisc->cp_fisc = $datosFiscales['cp_fisc'];
                     $credit_fisc->rfc_fisc = $datosFiscales['rfc_fisc'];
 
