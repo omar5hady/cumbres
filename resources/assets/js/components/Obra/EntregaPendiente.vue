@@ -93,7 +93,8 @@
                                             <td class="td2" v-text="contratos.proyecto"></td>
                                             <td class="td2" v-text="contratos.etapa"></td>
                                             <td class="td2" v-text="contratos.manzana"></td>
-                                            <td class="td2" v-text="contratos.num_lote"></td>
+                                            <td v-if="contratos.sublote == null" class="td2" v-text="contratos.num_lote"></td>
+                                            <td v-else class="td2" v-text="contratos.num_lote + ' ' + contratos.sublote"></td>
                                             <td class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                             <template>
                                                 <td class="td2" v-if="contratos.fecha_entrega_obra && contratos.diferencia_obra < 2">

@@ -102,7 +102,8 @@
                                             <td class="td2" v-text="contratos.proyecto"></td>
                                             <td class="td2" v-text="contratos.etapa"></td>
                                             <td class="td2" v-text="contratos.manzana"></td>
-                                            <td class="td2" v-text="contratos.num_lote"></td>
+                                            <td v-if="contratos.sublote == null" class="td2" v-text="contratos.num_lote"></td>
+                                            <td v-else class="td2" v-text="contratos.num_lote + ' ' + contratos.sublote"></td>
                                             <td class="td2" v-text="'Paquete: '+contratos.paquete + ', Promoción: ' + contratos.promocion"></td>
                                             <td class="td2" v-text="contratos.avance_lote + '%'"></td>
                                             <td class="td2" v-text="contratos.tipo_credito"></td>
@@ -271,7 +272,8 @@
                                             <td class="td2" v-text="equipamientos.proyecto"></td>
                                             <td class="td2" v-text="equipamientos.etapa"></td>
                                             <td class="td2" v-text="equipamientos.manzana"></td>
-                                            <td class="td2" v-text="equipamientos.num_lote"></td>
+                                            <td v-if="equipamientos.sublote == null" class="td2" v-text="equipamientos.num_lote"></td>
+                                            <td v-else class="td2" v-text="equipamientos.num_lote + ' ' + equipamientos.sublote"></td>
                                             <td class="td2" v-text="equipamientos.avance + '%'"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
                                             <td class="td2" v-text="equipamientos.equipamiento"></td>

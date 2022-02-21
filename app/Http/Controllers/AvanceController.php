@@ -71,7 +71,7 @@ class AvanceController extends Controller
 
         $query = Avance::join('lotes','avances.lote_id','=','lotes.id')
                     //->join('licencias','lotes.id','=','licencias.id')
-                    ->select('lotes.num_lote as lote', //'licencias.f_planos_obra',
+                    ->select('lotes.num_lote as lote', 'lotes.sublote', //'licencias.f_planos_obra',
                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
         'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato');
@@ -201,7 +201,7 @@ class AvanceController extends Controller
                     ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id',
                         'avances.id','partidas.porcentaje','partidas.partida','licencias.visita_avaluo',
-                        'avances.partida_id','avances.cambio_avance','lotes.aviso'
+                        'avances.partida_id','avances.cambio_avance','lotes.aviso', 'lotes.sublote'
                     )
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->addSelect('fraccionamientos.nombre as proyecto')

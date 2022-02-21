@@ -94,7 +94,8 @@
                                             <td class="td2" v-text="equipamientos.proyecto"></td>
                                             <td class="td2" v-text="equipamientos.etapa"></td>
                                             <td class="td2" v-text="equipamientos.manzana"></td>
-                                            <td class="td2" v-text="equipamientos.num_lote"></td>
+                                            <td v-if="equipamientos.sublote == null" class="td2" v-text="equipamientos.num_lote"></td>
+                                            <td v-else class="td2" v-text="equipamientos.num_lote + ' ' + equipamientos.sublote"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
                                             <td class="td2" v-text="equipamientos.equipamiento"></td>
                                             <template>

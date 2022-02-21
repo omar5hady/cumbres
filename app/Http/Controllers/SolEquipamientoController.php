@@ -66,7 +66,7 @@ class SolEquipamientoController extends Controller
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                     'fraccionamientos.nombre as proyecto',
                     'etapas.num_etapa as etapa',
-                    'lotes.manzana',
+                    'lotes.manzana', 'lotes.sublote',
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                     DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),

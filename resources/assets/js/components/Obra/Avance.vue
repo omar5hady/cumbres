@@ -46,14 +46,15 @@
                             </div>
                             <div class="col-md-3">
                                 <h6 style="color:blue;" v-text="'# Lote: '"></h6>
-                                <h6 v-text="arrayAvance[0].lote"></h6>
+                                <h6 v-if="arrayAvance[0].sublote == null" v-text="arrayAvance[0].lote"></h6>
+                                <h6 v-else v-text="arrayAvance[0].lote + ' '+ arrayAvance[0].sublote"></h6>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <div class="col-md-3">
                                 <h6 style="color:blue;" v-text="'Modelo: '"></h6>
-                                <h6 v-text="arrayAvance[0].modelo"></h6>
+                                <h6 v-text="arrayAvance[0].modelos"></h6>
                             </div>
                             
                         </div>
@@ -96,23 +97,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="avance in arrayAvance" :key="avance.id" v-if="avance.porcentaje > 0">
-                                        <td style="width:9%">
-                                            <button type="button" @click="abrirModal('avance','actualizar',avance)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarAvance(avance)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        
-                                        <td v-text="avance.partida" style="width:30%"></td>
-                                        <td style="width:8%">
-                                            <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
-                                            <input v-else type="number" pattern="\d*" v-on:change="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
-                                        </td>
-                                        <td style="width:10%" v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
-                                        
+                                    <tr v-for="avance in arrayAvance" :key="avance.id">
+                                        <template v-if="avance.porcentaje > 0">
+                                            <td style="width:9%">
+                                                <button type="button" @click="abrirModal('avance','actualizar',avance)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
+                                                </button> &nbsp;
+                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarAvance(avance)">
+                                                <i class="icon-trash"></i>
+                                                </button>
+                                            </td>
+                                            
+                                            <td v-text="avance.partida" style="width:30%"></td>
+                                            <td style="width:8%">
+                                                <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
+                                                <input v-else type="number" pattern="\d*" v-on:change="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                            </td>
+                                            <td style="width:10%" v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
+                                        </template>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -233,10 +235,18 @@
                                         <td class="td2" v-else>
                                             <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.manzana"></span>
                                         </td>
-                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.lote"></td>
-                                        <td class="td2" v-else>
-                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
-                                        </td>
+                                        <template v-if="avancepro.sublote == null">
+                                            <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.lote"></td>
+                                            <td class="td2" v-else>
+                                                <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
+                                            </td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.lote + ' '+ avancepro.sublote"></td>
+                                            <td class="td2" v-else>
+                                                <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote + ' '+ avancepro.sublote"></span>
+                                            </td>
+                                        </template>
                                         <td class="td2" v-text="avancepro.etapa_servicios"></td>
                                          <template>
                                             <td class="td2" v-if="avancepro.f_planos_obra" v-text="this.moment(avancepro.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>

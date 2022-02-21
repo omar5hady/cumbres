@@ -78,6 +78,11 @@ class CreateCreditosTable extends Migration
             $table->string('direccion_fisc',100)->nullable();
             $table->string('cp_fisc',5)->nullable();
             $table->string('rfc_fisc',13)->nullable();
+            $table->string('cfi_fisc',50)->nullable();
+            $table->string('regimen_fisc',50)->nullable();
+            $table->string('banco_fisc',50)->nullable();
+            $table->string('num_cuenta_fisc',50)->nullable();
+            $table->string('clabe_fisc',50)->nullable();
 
             $table->boolean('notif_fisc')->default(0);
             $table->boolean('integracion_cobro')->default(0);

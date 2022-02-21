@@ -108,7 +108,8 @@ class EquipamientoController extends Controller
                     'contratos.aviso_prev',
                     'contratos.aviso_prev_venc',
                     'lotes.fraccionamiento_id',
-                    'lotes.id as lote_id'
+                    'lotes.id as lote_id',
+                    'lotes.sublote'
         );
 
         //por el uso de "orWhere" se debe agregar al principo y al final de la query

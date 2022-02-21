@@ -74,7 +74,8 @@
                                         <td v-text="lote.proyecto"></td>
                                         <td v-text="lote.etapas"></td>
                                         <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
+                                        <td v-if="lote.sublote == null" v-text="lote.num_lote"></td>
+                                        <td v-else v-text="lote.num_lote+' '+lote.sublote"></td>
                                         <td v-text="lote.modelo"></td>
                                         <td v-text="lote.terreno"></td>
                                         <td v-text="lote.construccion"></td>
@@ -167,7 +168,8 @@
                                         <td v-text="lote.proyecto"></td>
                                         <td v-text="lote.etapas"></td>
                                         <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
+                                        <td v-if="lote.sublote == null" v-text="lote.num_lote"></td>
+                                        <td v-else v-text="lote.num_lote+' '+lote.sublote"></td>
                                         <td v-text="lote.modelo"></td>
                                         <td v-text="lote.terreno"></td>
                                         <td v-text="lote.construccion"></td>

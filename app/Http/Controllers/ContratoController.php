@@ -230,6 +230,11 @@ class ContratoController extends Controller
                     'creditos.direccion_fisc',
                     'creditos.cp_fisc',
                     'creditos.rfc_fisc',
+                    'cfi_fisc',
+                    'creditos.regimen_fisc',
+                    'creditos.banco_fisc',
+                    'creditos.num_cuenta_fisc',
+                    'creditos.clabe_fisc',
 
                     'contratos.publicidad_id as publicidadId','medios_publicitarios.nombre as publicidad',
                         'clientes.nombre_recomendado',
@@ -1612,6 +1617,13 @@ class ContratoController extends Controller
                     $credit_fisc->direccion_fisc = $datosFiscales['direccion_fisc'];
                     $credit_fisc->cp_fisc = $datosFiscales['cp_fisc'];
                     $credit_fisc->rfc_fisc = $datosFiscales['rfc_fisc'];
+
+                    $credit_fisc->cfi_fisc = $datosFiscales['cfi_fisc'];
+                    $credit_fisc->regimen_fisc = $datosFiscales['regimen_fisc'];
+                    $credit_fisc->banco_fisc = $datosFiscales['banco_fisc'];
+                    $credit_fisc->num_cuenta_fisc = $datosFiscales['num_cuenta_fisc'];
+                    $credit_fisc->clabe_fisc = $datosFiscales['clabe_fisc'];
+
                     $credit_fisc->save();
 
                     //Se manda notificación sobre la venta.

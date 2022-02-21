@@ -71,6 +71,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
+                                        <th></th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -90,8 +91,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr @click="abrirModal('fecha',lotes)" v-for="lotes in arrayLotes" :key="lotes.id"> 
-                                        
+                                    <tr v-for="lotes in arrayLotes" :key="lotes.id"> 
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" @click="abrirModal('fecha',lotes)" title="Añadir fecha">
+                                                <i class="icon-pencil"></i>
+                                            </button>
+                                        </td>
                                         <td class="td2" v-text="lotes.proyecto"></td>
                                         <td class="td2" v-text="lotes.num_etapa"></td>
                                         <td class="td2" v-text="lotes.manzana"></td>

@@ -189,15 +189,17 @@ class IniObraController extends Controller
          
         return ['ini_obra' => $ini_obra];
     }
+
     public function obtenerDetalles(Request $request){
-        if (!$request->ajax()) return redirect('/');
+        //if (!$request->ajax()) return redirect('/');
  
         $id = $request->id;
-        $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
-        'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
-        'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
-        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
-        'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
+        $detalles = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+        ->select('ini_obra_lotes.costo_directo', 'lotes.sublote',
+            'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
+            'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
+            'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+            'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.lote', 'desc')->get();
          
@@ -313,7 +315,7 @@ class IniObraController extends Controller
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
-        $lotes = Lote::select('num_lote','id','fecha_fin','emp_constructora')
+        $lotes = Lote::select('num_lote','sublote', 'id','fecha_fin','emp_constructora')
                         ->where('fraccionamiento_id','=',$buscar2)
                         ->where('manzana','=',$buscar)
                         ->where('ini_obra', '=', '1')
@@ -328,7 +330,10 @@ class IniObraController extends Controller
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $lotesDatos = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
-        ->select('lotes.num_lote as num_lote','lotes.construccion as construccion','lotes.manzana as manzana','modelos.nombre as modelo','lotes.id as lote_id','lotes.emp_constructora')
+                    ->select('lotes.num_lote as num_lote','lotes.construccion as construccion',
+                            'lotes.manzana as manzana','modelos.nombre as modelo',
+                            'lotes.sublote',
+                        'lotes.id as lote_id','lotes.emp_constructora')
                         ->where('lotes.id','=',$buscar)
                         ->where('lotes.ini_obra', '=', '1')
                         ->where('lotes.aviso','=','0')
@@ -518,11 +523,12 @@ class IniObraController extends Controller
     {
         //Codigo para exportar vista PRE a excell
         $id = $request->id;
-        $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
-        'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
-        'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
-        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
-        'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
+        $detalles = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+        ->select('ini_obra_lotes.costo_directo', 'lotes.sublote',
+            'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
+            'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
+            'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+            'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.lote', 'desc')->get();
 
@@ -652,7 +658,7 @@ class IniObraController extends Controller
                 $sheet->row($index+8, [
                     $detalle->descripcion, 
                     $detalle->manzana, 
-                    $detalle->lote, 
+                    $detalle->lote.' '.$detalle->sublote, 
                     $detalle->construccion, 
                     $detalle->costo_directo,
                     $detalle->costo_indirecto,

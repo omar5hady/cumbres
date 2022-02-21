@@ -233,7 +233,13 @@
                                         <div class="form-inline">
                                         <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin"></option>
+                                            <template v-for="lotes in arrayLotes">
+                                                <option v-if="lotes.sublote == null" :key="lotes.id" 
+                                                    :value="lotes.id" v-text="lotes.num_lote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin">
+                                                </option>
+                                                <option v-else :key="lotes.id" :value="lotes.id" 
+                                                    v-text="lotes.num_lote + ' ' + lotes.sublote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin"></option>
+                                            </template>
                                         </select>
                                            
                                         </div>
@@ -292,9 +298,8 @@
                                                 <td>
                                                     <input v-model="detalle.descripcion" type="text" class="form-control">
                                                 </td>
-                                                <td v-text="detalle.lote">
-                                                    
-                                                </td>
+                                                <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
+                                                <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
                                                 <td v-text="detalle.manzana">
 
                                                 </td>
@@ -486,7 +491,11 @@
                                         <div class="form-inline">
                                         <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                            <template v-for="lotes in arrayLotes">
+                                                <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' ' + lotes.sublote"></option>
+                                            </template>
+                                            
                                         </select>
                                            
                                         </div>
@@ -545,9 +554,8 @@
                                                 <td>
                                                     <input v-model="detalle.descripcion" type="text" class="form-control">
                                                 </td>
-                                                <td v-text="detalle.lote">
-                                                    
-                                                </td>
+                                                <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
+                                                <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
                                                 <td v-text="detalle.manzana">
 
                                                 </td>
@@ -955,6 +963,7 @@
                 empresas:[],
                 lote_id:0,
                 lote:'',
+                sublote:'',
                 b_empresa:'',
                 manzana:'',
                 construccion:'',
@@ -1207,6 +1216,7 @@
                     var respuesta = response.data;
                     me.arrayDatosLotes = respuesta.lotesDatos;
                     me.lote = me.arrayDatosLotes[0].num_lote;
+                    me.sublote = me.arrayDatosLotes[0].sublote;
                     me.construccion = me.arrayDatosLotes[0].construccion;
                     me.manzana = me.arrayDatosLotes[0].manzana;
                     me.modelo=me.arrayDatosLotes[0].modelo;
@@ -1255,6 +1265,7 @@
                     me.arrayAvisoObraLotes.push({
                         lote_id: me.lote_id,
                         lote: me.lote,
+                        sublote: me.sublote,
                         superficie: me.construccion,
                         manzana: me.manzana,
                         descripcion: me.descripcion,

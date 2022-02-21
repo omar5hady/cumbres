@@ -86,7 +86,8 @@
                                             <td class="td2" v-text="equipamientos.proyecto"></td>
                                             <td class="td2" v-text="equipamientos.etapa"></td>
                                             <td class="td2" v-text="equipamientos.manzana"></td>
-                                            <td class="td2" v-text="equipamientos.num_lote"></td>
+                                            <td class="td2" v-if="equipamientos.sublote == null" v-text="equipamientos.num_lote"></td>
+                                            <td class="td2" v-else v-text="equipamientos.num_lote + ' ' + equipamientos.sublote"></td>
                                             <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-text="equipamientos.equipamiento"></td>
                                             <template>

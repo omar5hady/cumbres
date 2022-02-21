@@ -245,6 +245,7 @@ class EntregaController extends Controller
                     'expedientes.fecha_firma_esc',
                     'lotes.fecha_entrega_obra',
                     'lotes.id as loteId',
+                    'lotes.sublote',
                     'entregas.fecha_program',
                     'entregas.hora_entrega_prog',
                     'entregas.fecha_entrega_real',

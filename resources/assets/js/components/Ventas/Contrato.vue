@@ -1896,39 +1896,66 @@
                                     
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <input type="email" v-model="datosFiscales.email_fisc" class="form-control" placeholder="Email">
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono</label>
+                                        <div class="col-md-3">
                                             <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.tel_fisc" class="form-control" maxlength="10" placeholder="Telefono">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                        <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
                                         <div class="col-md-6">
                                             <input type="text" v-model="datosFiscales.nombre_fisc" class="form-control" placeholder="Nombre completo">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                        <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
                                         <div class="col-md-6">
                                             <input type="text" v-model="datosFiscales.direccion_fisc" class="form-control" placeholder="Dirección">
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">C.P.</label>
-                                        <div class="col-md-3">
+                                        <label class="col-md-2 form-control-label" for="text-input">C.P.</label>
+                                        <div class="col-md-2">
                                             <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.cp_fisc" class="form-control" placeholder="Código Postal">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                        <div class="col-md-4">
+                                        <label class="col-md-2 form-control-label" for="text-input">RFC</label>
+                                        <div class="col-md-3">
                                             <input type="text" maxlength="13"  style="text-transform:uppercase"
                                             v-model="datosFiscales.rfc_fisc" class="form-control" placeholder="RFC">
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
+                                        <div class="col-md-4">
+                                            <input type="text" style="text-transform:uppercase"
+                                            v-model="datosFiscales.cfi_fisc" class="form-control" placeholder="C.F.D.I.">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
+                                        <div class="col-md-4">
+                                            <input type="text" 
+                                            v-model="datosFiscales.regimen_fisc" class="form-control" placeholder="Régimen">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Banco</label>
+                                        <div class="col-md-4">
+                                            <input type="text" 
+                                            v-model="datosFiscales.banco_fisc" class="form-control" placeholder="Banco">
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-on:keypress="isNumber($event)" pattern="\d*"
+                                            v-model="datosFiscales.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
+                                        <div class="col-md-4">
+                                            <input type="text" 
+                                            v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
                                         </div>
                                     </div>
                                 </template>
@@ -3194,6 +3221,12 @@
                 this.datosFiscales.direccion_fisc = data['direccion_fisc'];
                 this.datosFiscales.cp_fisc = data['cp_fisc'];
                 this.datosFiscales.rfc_fisc = data['rfc_fisc'];
+
+                this.datosFiscales.cfi_fisc = data['cfi_fisc'];
+                this.datosFiscales.regimen_fisc = data['regimen_fisc'];
+                this.datosFiscales.banco_fisc = data['banco_fisc'];
+                this.datosFiscales.num_cuenta_fisc = data['num_cuenta_fisc'];
+                this.datosFiscales.clabe_fisc = data['clabe_fisc'];
 
                 this.detenido = data['detenido'];
                 this.publicidad_id = data['publicidadId'];
