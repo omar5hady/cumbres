@@ -225,10 +225,11 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Vehiculo
                                         <span style="color:red;" v-show="vehiculo==''">*</span>
                                     </label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-9">
                                         <select :disabled="tipoAccion==2" class="form-control" v-model="vehiculo" >
                                             <option value="">Seleccione vehiculo</option>
-                                            <option v-for="vehiculo in arrayVehiculos" :key="vehiculo.id" :value="vehiculo.id" v-text="vehiculo.marca + ' ' + vehiculo.vehiculo"></option>
+                                            <option v-for="vehiculo in arrayVehiculos" :key="vehiculo.id" :value="vehiculo.id" 
+                                                v-text="vehiculo.marca + ' ' + vehiculo.vehiculo + ' - ' + vehiculo.nombre + ' '+vehiculo.apellidos"></option>
                                         </select>
                                     </div>
                                 </div>

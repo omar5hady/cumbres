@@ -108,9 +108,10 @@ class VehiculosController extends Controller
 
     public function getComoDato(Request $request){
         if(!$request->ajax())return redirect('/');
-        $vehiculos = Vehiculo::select('id','vehiculo','marca', 'modelo')
+        $vehiculos = Vehiculo::join('personal','vehiculos.responsable_id','=','personal.id')
+                ->select('vehiculos.id','vehiculos.vehiculo','vehiculos.marca', 'vehiculos.modelo','personal.nombre','personal.apellidos')
                     ->where('comodato','=',1);
-        if(Auth::user()->rol_id != 1)
+        if(Auth::user()->rol_id != 1 && Auth::user()->usuario != 'zaira.valt')
             $vehiculos = $vehiculos->where('responsable_id','=',Auth::user()->id);
         $vehiculos = $vehiculos->get();
         return $vehiculos;

@@ -1131,6 +1131,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/integracionCobros/storeCobro','CobrosController@storeCobro');
         Route::put('/integracionCobros/updateCobro','CobrosController@updateCobro');
         Route::put('/integracionCobros/finalizarIntegracion','CobrosController@finalizarIntegracion');
+        Route::delete('/integracionCobros/eliminarCobro','CobrosController@eliminarCobro');
         //Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
     });
 

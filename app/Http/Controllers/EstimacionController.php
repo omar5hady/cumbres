@@ -8,6 +8,7 @@ use Excel;
 use PHPExcel_Worksheet_Drawing;
 use Auth;
 use App\Ini_obra;
+use App\Ini_obra_lote;
 use App\Lote;
 use App\Estimacion;
 use App\Concepto_extra;
@@ -26,14 +27,31 @@ class EstimacionController extends Controller
         $contratista = $request->contratista;
         $constructora = $request->constructora;
 
+        if($request->etapa != ''){
+            $etapas = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->select('ini_obra_lotes.ini_obra_id')
+                        ->where('lotes.etapa_id','=',$request->etapa)
+                        ->get();
+
+            $arrayId = [];
+
+            foreach($etapas as $index => $etapa){
+                array_push($arrayId,$etapa->ini_obra_id);
+            }
+        }
+
         // Query para obtner los folios de los contratos de obra segun criterios de busqueda.
         $iniObras = Ini_obra::select('id')
             ->where('fraccionamiento_id','=',$fraccionamiento)
             ->where('emp_constructora','=',$constructora)
-            ->where('contratista_id','=',$contratista)->get();
+            ->where('contratista_id','=',$contratista);
+            if($request->etapa != '')
+                $iniObras = $iniObras->whereIn('id',$arrayId);
+            $iniObras = $iniObras->get();
 
         // LLamada a la funcion que retorna la informacion de los contratos de obra
-        $contratos = $this->getContratos($contratista, $fraccionamiento, $constructora);
+        $contratos = $this->getContratos($contratista, $fraccionamiento, $constructora, $iniObras);
         // LLamada a la funcion que retorna los Fondos de Garantia para todos los contratos encontrados.
         $fondoGarantia = $this->getFG($iniObras);
         
@@ -564,7 +582,7 @@ class EstimacionController extends Controller
     }
 
     // Función que retorna la informacion de los contratos de obra
-    public function getContratos($contratista, $fraccionamiento, $constructora){
+    public function getContratos($contratista, $fraccionamiento, $constructora ,$ids){
         return $iniObras = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave',
@@ -581,6 +599,7 @@ class EstimacionController extends Controller
             ->where('ini_obras.num_casas','!=', 0)
             ->where('ini_obras.fraccionamiento_id','=',$fraccionamiento)
             ->where('ini_obras.emp_constructora','=',$constructora)
+            ->whereIn('ini_obras.id',$ids)
             ->where('ini_obras.contratista_id','=',$contratista)->get();
     }
 

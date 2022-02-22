@@ -10,7 +10,14 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Proveedores
                         <!--   Boton Nuevo    -->
-                        <button type="button" v-if="vista== 0 && userName == 'jovanni.t' || vista== 0 && userName == 'shady'" @click="abrirModal('registrar')" class="btn btn-secondary">
+                        <button type="button" 
+                        v-if="vista== 0 && userName == 'jovanni.t' || vista== 0 && userName == 'shady'
+                            || vista== 0 && userName == 'j.gaitan'
+                            || vista== 0 && userName == 'ale.teran'
+                            || vista== 0 && userName == 'sandra.rdz'
+                            || vista== 0 && userName == 'eli_hdz'
+                        " 
+                        @click="abrirModal('registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -212,7 +219,7 @@
                             <div class="form-group row">
                                 <div class="col-md-3"></div>
                                 <label class="col-md-3 form-control-label" style="color:#14396B; font-size: 17px;" for="text-input">
-                                    <strong>Valor del inmueble: </strong>
+                                    <strong>Valor de escrituración: </strong>
                                 </label>
                                 <label class="col-md-2 form-control-label" style="font-size: 17px;" v-if="editar == 0">
                                     <strong>${{formatNumber(datos.valor_escrituras)}}</strong>
@@ -279,9 +286,12 @@
                                 <label class="col-md-3 form-control-label" style="color:#14396B;" for="text-input">
                                     <strong>Monto Crédito Neto 1</strong>
                                 </label>
-                                <label class="col-md-2 form-control-label">
+                                <label class="col-md-2 form-control-label" v-if="editar == 0">
                                     ${{formatNumber(datos.monto_credito)}}
                                 </label>
+                                <div class="col-md-2" v-if="editar == 1">
+                                    <input type="number" v-model="datos.monto_credito" class="form-control">
+                                </div>
                             </div>
                         </div> 
                         <div class="col-md-12" v-if="datos.segundo_credito > 0">
@@ -291,9 +301,12 @@
                                 <label class="col-md-3 form-control-label" style="color:#14396B;" for="text-input">
                                     <strong>Monto Crédito Neto 2</strong>
                                 </label>
-                                <label class="col-md-2 form-control-label">
+                                <label class="col-md-2 form-control-label" v-if="editar == 0">
                                     ${{formatNumber(datos.segundo_credito)}}
                                 </label>
+                                <div class="col-md-2" v-if="editar == 1">
+                                    <input type="number" v-model="datos.segundo_credito" class="form-control">
+                                </div>
                             </div>
                         </div> 
 
@@ -325,6 +338,9 @@
                                             <td v-if="tipoAccion == 1 && (userName == 'antonio.nv' || userName=='shady') && datos.status == 0">
                                                 <button type="button" @click="abrirModal('editarCobro',pago)" class="btn btn-warning btn-sm">
                                                     <i class="icon-pencil"></i>
+                                                </button>
+                                                <button type="button" @click="eliminarCobro(pago.id)" class="btn btn-danger btn-sm">
+                                                    <i class="icon-trash"></i>
                                                 </button>
                                             </td>
                                             <td class="td2" v-text="pago.fecha_pago"></td>
@@ -365,13 +381,13 @@
                                     <strong>Nombre:</strong>
                                 </label>
                                 <div class="col-md-6">
-                                    <input disabled type="text" v-model="datos.nombre_fisc" class="form-control" placeholder="Nombre">
+                                    <input :disabled="tipoAccion == 1" type="text" v-model="datos.nombre_fisc" class="form-control" placeholder="Nombre">
                                 </div>
                                 <label class="col-md-1 form-control-label" for="text-input">
                                     <strong>RFC:</strong>
                                 </label>
                                 <div class="col-md-3">
-                                    <input disabled type="text"  style="text-transform:uppercase" v-model="datos.rfc_fisc" class="form-control" placeholder="RFC">
+                                    <input :disabled="tipoAccion == 1" type="text"  style="text-transform:uppercase" v-model="datos.rfc_fisc" class="form-control" placeholder="RFC">
                                 </div>
                             </div>
                         </div>
@@ -382,13 +398,13 @@
                                     <strong>Correo eléctronico:</strong>
                                 </label>
                                 <div class="col-md-4">
-                                    <input disabled type="text" v-model="datos.email_fisc" class="form-control" placeholder="Email">
+                                    <input :disabled="tipoAccion == 1" type="text" v-model="datos.email_fisc" class="form-control" placeholder="Email">
                                 </div>
                                 <label class="col-md-2 form-control-label" for="text-input">
                                     <strong>Teléfono:</strong>
                                 </label>
                                 <div class="col-md-3">
-                                    <input disabled type="text" v-model="datos.tel_fisc" class="form-control">
+                                    <input :disabled="tipoAccion == 1" type="text" v-model="datos.tel_fisc" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -398,14 +414,25 @@
                                 <label class="col-md-2 form-control-label" for="text-input">
                                     <strong>Dirección:</strong>
                                 </label>
-                                <div class="col-md-6">
-                                    <input disabled type="text" v-model="datos.direccion_fisc" class="form-control" placeholder="Dirección">
+                                <div class="col-md-7">
+                                    <input :disabled="tipoAccion == 1" type="text" v-model="datos.direccion_fisc" class="form-control" placeholder="Dirección">
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div class="col-md-12">
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">
+                                    <strong>Colonia:</strong>
+                                </label>
+                                <div class="col-md-4">
+                                    <input :disabled="tipoAccion == 1" type="text" v-model="datos.col_fisc" class="form-control" placeholder="Colonia">
                                 </div>
                                 <label class="col-md-1 form-control-label" for="text-input">
                                     <strong>C.P.:</strong>
                                 </label>
                                 <div class="col-md-2">
-                                    <input disabled type="text" v-model="datos.cp_fisc" class="form-control" placeholder="C.P.">
+                                    <input :disabled="tipoAccion == 1" type="text" v-model="datos.cp_fisc" class="form-control" placeholder="C.P.">
                                 </div>
                             </div>
                         </div> 
@@ -684,6 +711,13 @@
                     'porcentaje_terreno' : this.datos.porcentaje_terreno,
                     'porcentaje_construccion' : this.datos.porcentaje_construccion,
                     'valor_escrituras' : this.datos.valor_escrituras,
+                    'email_fisc' : this.datos.email_fisc,
+                    'tel_fisc' : this.datos.tel_fisc,
+                    'nombre_fisc' : this.datos.nombre_fisc,
+                    'direccion_fisc' : this.datos.direccion_fisc,
+                    'col_fisc' : this.datos.col_fisc,
+                    'cp_fisc' : this.datos.cp_fisc,
+                    'rfc_fisc' : this.datos.rfc_fisc,
                     'pagos' : this.datos.depositos
                 }).then(function (response){
                     me.limpiarDatos();
@@ -726,6 +760,36 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            eliminarCobro(id){
+                let me = this;
+                //console.log(me.fraccionamiento_id);
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                 
+                axios.delete('/integracionCobros/eliminarCobro', 
+                         { params: {'id': id }
+                         }).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Deposito borrado correctamente.',
+                        'success'
+                        )
+                         me.getCobros(me.datos.id);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
             },
             updateCobro(){
                 let me = this;
@@ -776,10 +840,16 @@
                 });
             },
             calcularTerreno(){
-                let porcTerreno = this.datos.porcentaje_terreno/100;
-                this.datos.valor_terreno = porcTerreno * this.datos.valor_escrituras;
-                this.datos.valor_construccion = this.datos.valor_escrituras - this.datos.valor_terreno;
-                this.datos.porcentaje_construccion = 100 - this.datos.porcentaje_terreno;
+                if(this.datos.valor_escrituras != 0){
+                    this.datos.porcentaje_terreno = (this.datos.valor_terreno * 100)/this.datos.valor_escrituras;
+                    this.datos.porcentaje_construccion = 100 - this.datos.porcentaje_terreno;
+                    this.datos.valor_construccion = this.datos.valor_escrituras - this.datos.valor_terreno;
+                }
+                else{
+                    this.datos.porcentaje_terreno = 0;
+                    this.datos.valor_construccion = 0;
+                    this.datos.porcentaje_construccion = 0;
+                }
             },
             cerrarModal(){
                this.modal = 0;

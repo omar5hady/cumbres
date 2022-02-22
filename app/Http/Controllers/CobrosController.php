@@ -36,14 +36,15 @@ class CobrosController extends Controller
                 ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
                 ->select('contratos.id', 'creditos.precio_venta', 'c.nombre', 'c.apellidos',
                         'creditos.porcentaje_terreno', 'l.emp_constructora', 'l.emp_terreno',
-                        'creditos.email_fisc','creditos.tel_fisc','creditos.nombre_fisc',
+                        'creditos.email_fisc','creditos.tel_fisc','creditos.col_fisc',
                         'creditos.direccion_fisc','creditos.cp_fisc','creditos.rfc_fisc',
                         'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
-                        'contratos.fecha',
+                        'contratos.fecha', 'creditos.valor_terreno',
                         'e.num_etapa as etapa',
                         'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
                         'expedientes.valor_escrituras',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_completo"),
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_fisc"),
                         DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")
                     )
                 ->where('contratos.status','=',3) // Contrato firmado
@@ -108,10 +109,19 @@ class CobrosController extends Controller
             // Se accede al registro del Credito y se indica como integrado.
             $credito = Credito::findOrFail($request->contrato_id);
             $credito->integracion_cobro = 1;
+            $credito->email_fisc = $request->email_fisc;
+            $credito->tel_fisc = $request->tel_fisc;
+            $credito->nombre_fisc = $request->nombre_fisc;
+            $credito->direccion_fisc = $request->direccion_fisc;
+            $credito->col_fisc = $request->col_fisc;
+            $credito->cp_fisc = $request->cp_fisc;
+            $credito->rfc_fisc = $request->rfc_fisc;
             $credito->save();
 
+            $cliente = Personal::findOrFail($credito->prospecto_id);
+
             $ruta = 'https://siicumbres.com//integracionCobros/exportFormat?id='.$cobro->id;
-            $msj = 'Se ha creado la integracion de cobros para el folio #: '.$integracion->contrato_id;
+            $msj = 'Se ha creado la integracion de cobros para el folio #: '.$integracion->contrato_id.' del cliente '.$cliente->nombre.' '.$cliente->apellidos;
 
             $personal = Personal::join('users', 'personal.id', '=', 'users.id')
             ->select('personal.email', 'personal.id')->whereIn('users.usuario', [
@@ -163,6 +173,12 @@ class CobrosController extends Controller
         $cobro->save();
     }
 
+    // Funcion para guardar un pago nuevo en la integración.
+    public function eliminarCobro(Request $request){
+        $cobro = Pago_cobro::findOrFail($request->id);
+        $cobro->delete();
+    }
+
     // Función para actualizar un pago.
     public function updateCobro(Request $request){
         $cobro = Pago_cobro::findOrFail($request->id);
@@ -190,7 +206,7 @@ class CobrosController extends Controller
         ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
         ->select('int_cobros.*', 
             'l.emp_constructora', 'l.emp_terreno',
-            'creditos.email_fisc','creditos.tel_fisc','creditos.nombre_fisc',
+            'creditos.email_fisc','creditos.tel_fisc','creditos.col_fisc',
             'creditos.direccion_fisc','creditos.cp_fisc','creditos.rfc_fisc',
             'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
             'contratos.fecha',
@@ -198,6 +214,7 @@ class CobrosController extends Controller
             'e.num_etapa as etapa',
             'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_completo"),
+            DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_fisc"),
             DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")
         )
         ->where('i.elegido','=',1);
@@ -242,8 +259,14 @@ class CobrosController extends Controller
         $integracion->status = 1;
         $integracion->save();
 
+        // Se accede al registro del Credito y se indica como integrado.
+        $credito = Credito::findOrFail($integracion->contrato_id);
+
+        $cliente = Personal::findOrFail($credito->prospecto_id);
+
+
         $ruta = 'https://siicumbres.com/integracionCobros/exportFormat?id='.$request->id;
-        $msj = 'Se ha finalizado la integracion de cobros para el folio#: '.$integracion->contrato_id;
+        $msj = 'Se ha finalizado la integracion de cobros para el folio#: '.$integracion->contrato_id.' del cliente '.$cliente->nombre.' '.$cliente->apellidos;
 
         $personal = Personal::join('users', 'personal.id', '=', 'users.id')
             ->select('personal.email', 'personal.id')->whereIn('users.usuario', [
@@ -375,7 +398,7 @@ class CobrosController extends Controller
                     '',
                     'Tipo de Bien: INMUEBLE',
                     '',
-                    'Valor del inmueble',
+                    'Valor de escrituración',
                     $integracion->valor_escrituras
                 ]);
 
@@ -505,6 +528,8 @@ class CobrosController extends Controller
                     $sheet->row($cont+3, [
                         'Dirección: ', 
                         $integracion->direccion_fisc,
+                        'Colonia',
+                        $integracion->col_fisc,
                     ]);
                     $sheet->row($cont+4, [
                         'CP: ', 

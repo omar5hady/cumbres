@@ -691,12 +691,23 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
                                     <div class="col-md-5">
-                                        <select class="form-control" v-model="fraccionamiento">
+                                        <select class="form-control" v-model="fraccionamiento"  @change="selectEtapas(fraccionamiento)">
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
+
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="etapa" >
+                                            <option value="">Etapa</option>
+                                            <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
@@ -782,7 +793,7 @@
                                 type="button" class="btn btn-primary" @click="storeConceptoExtra()">Guardar importe extra</button>
                             
                             <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/resumen?fraccionamiento='+ fraccionamiento 
-                                    + '&constructora='+ constructora + '&contratista='+ contratista">
+                                    + '&constructora='+ constructora + '&contratista='+ contratista + '&etapa=' + etapa">
                                     <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                             </a>
 
@@ -816,6 +827,7 @@
             return{
                 contratista:'',
                 fraccionamiento:'',
+                etapa : '',
                 constructora:'',
                 listado:1,
                 nueva:0,
@@ -830,6 +842,7 @@
                 proceso:false,
                 arrayEstimaciones:[],
                 arrayFraccionamientos:[],
+                arrayEtapas:[],
                 empresas:[],
                 edit:0,
                 total_impAux:0,
@@ -1121,6 +1134,20 @@
                     console.log(error);
                 });
             },
+            selectEtapas(buscar){
+                let me = this;
+                me.etapa = '';
+                
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             getEmpresa(){
                 let me = this;
                 me.empresas=[];
@@ -1304,6 +1331,8 @@
                         this.selectFraccionamientos();
                         this.getEmpresa();
                         this.selectContratistas();
+                        this.etapa = '';
+                        this.arrayEtapas = [];
                         this.modal1 = 1;
                         this.tipoAccion = 3;
                         this.tituloModal = 'Resumen de estimaciones';

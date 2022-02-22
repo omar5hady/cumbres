@@ -1558,13 +1558,16 @@ class ContratoController extends Controller
 
                     // Actualización de datos fiscales
                     $credit_fisc = Credito::findOrFail($request->id);
+                    $p_cliente = Personal::findOrFail($credit_fisc->prospecto_id);
                     
                         if($datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 0 || $datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 1){
                             $credit_fisc->notif_fisc = 2;
                             //Se manda notificación sobre la venta.
                             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
                             $fecha = Carbon::now();
-                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. " con RFC";
+                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. 
+                            " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
+                            " con RFC";
                             $arregloAceptado = [
                                 'notificacion' => [
                                     'usuario' => $imagenUsuario[0]->usuario,
@@ -1589,7 +1592,9 @@ class ContratoController extends Controller
                             //Se manda notificación sobre la venta.
                             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
                             $fecha = Carbon::now();
-                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. " sin RFC";
+                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. 
+                            " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
+                            " sin RFC";
                             $arregloAceptado = [
                                 'notificacion' => [
                                     'usuario' => $imagenUsuario[0]->usuario,

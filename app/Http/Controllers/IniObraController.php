@@ -77,8 +77,6 @@ class IniObraController extends Controller
 
     public function excelAvisos(Request $request)
     {
-        
- 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
@@ -494,6 +492,12 @@ class IniObraController extends Controller
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+
+        $cabecera[0]->etapa = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->select('etapas.num_etapa')
+                        ->where('ini_obra_lotes.ini_obra_id','=',$id)
+                        ->first();
 
         setlocale(LC_TIME, 'es_MX.utf8');
         $tiempo = new Carbon($cabecera[0]->f_ini);
