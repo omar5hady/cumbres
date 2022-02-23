@@ -86,6 +86,7 @@ class CreateCreditosTable extends Migration
             $table->string('clabe_fisc',50)->nullable();
             $table->string('archivo_fisc',100)->nullable();
             $table->date('fecha_rfc')->nullable();
+            $table->date('fecha_archivo')->nullable();
 
             $table->boolean('notif_fisc')->default(0);
             $table->boolean('integracion_cobro')->default(0);

@@ -15,6 +15,7 @@ use App\Concepto_extra;
 use App\Fg_estimacion;
 use App\Anticipo_estimacion;
 use App\Hist_estimacion;
+use App\Obs_estimacion;
 use App\Http\Controllers\IniObraController;
 use Carbon\Carbon;
 
@@ -134,7 +135,15 @@ class EstimacionController extends Controller
                     
                     });
                 if($contratos[0]->emp_constructora == 'CONCRETANIA');
-                    $sheet->cells('A1:A3', function($cell) {
+                    $sheet->cells('A1:A2', function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(11);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    
+                    });
+                    $sheet->cells('A2:A3', function($cell) {
 
                         // manipulate the cell
                         $cell->setValue(  'CONCRETANIA, SA DE CV');
@@ -144,9 +153,11 @@ class EstimacionController extends Controller
                         $cell->setAlignment('center');
                     
                     });
-
-                    
-                    
+                
+                $sheet->row(1, [
+                    'Periodo: '.$contratos[0]->fecha_ini.' - '.$contratos[0]->fecha_fin
+                ]);
+                 
                 $sheet->row(2, [
                     'Resumen de estimaciones Fraccionamiento '.'"'.$contratos[0]->proyecto.'"'
                 ]);
@@ -583,7 +594,7 @@ class EstimacionController extends Controller
 
     // Función que retorna la informacion de los contratos de obra
     public function getContratos($contratista, $fraccionamiento, $constructora ,$ids){
-        return $iniObras = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        $iniObras = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave',
                 'ini_obras.total_costo_directo',
@@ -601,6 +612,21 @@ class EstimacionController extends Controller
             ->where('ini_obras.emp_constructora','=',$constructora)
             ->whereIn('ini_obras.id',$ids)
             ->where('ini_obras.contratista_id','=',$contratista)->get();
+
+        if(sizeof($iniObras)){
+            foreach ($iniObras as $key => $contrato) {
+                $fecha = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+                ->select('ini','fin')
+                ->whereIn('estimaciones.aviso_id',$ids)
+                ->where('ini','!=',NULL)
+                ->orderBy('fin','desc')->first();
+
+                $contrato->fecha_ini = $fecha->ini;
+                $contrato->fecha_fin = $fecha->fin;
+            }
+        }
+
+        return $iniObras;
     }
 
     // Función que retorna los calculas de las estimaciones por contrato
@@ -950,6 +976,15 @@ class EstimacionController extends Controller
         else
             return redirect('/');
 
+    }
+
+    //Funcion para almacenar un comentario a un aviso de obra
+    public function storeObs(Request $request){
+        $obs = new Obs_estimacion();
+        $obs->aviso_id = $request->aviso_id;
+        $obs->observacion = $request->observacion;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
     }
  
 }

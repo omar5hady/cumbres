@@ -2791,6 +2791,7 @@ class ContratoController extends Controller
             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
             $contrato = Credito::findOrFail($request->id);
             $contrato->archivo_fisc = $fileName;
+            $contrato->fecha_archivo = Carbon::now();
             $contrato->save(); //Insert
         }
         

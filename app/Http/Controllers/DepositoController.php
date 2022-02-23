@@ -905,6 +905,7 @@ class DepositoController extends Controller
                         'creditos.banco_fisc',
                         'creditos.num_cuenta_fisc',
                         'creditos.clabe_fisc',
+                        'creditos.archivo_fisc',
                         'expedientes.valor_escrituras', 
                         'expedientes.descuento', 'expedientes.liquidado',
                         'expedientes.fecha_firma_esc',

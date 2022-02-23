@@ -286,7 +286,20 @@
 
                                 <!-- DATOS FISCALES -->
                                 <template> 
-                                    <h5 style="text-align:center;">DATOS FISCALES</h5>
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                        </div>
+                                        <h5 style="text-align:center;">DATOS FISCALES</h5>
+                                        <div class="col-md-3" v-if="datosFiscales.archivo_fisc != null">
+                                            <button 
+                                            type="button" @click="verImagen(datosFiscales.archivo_fisc)" class="btn btn-dark btn-sm"
+                                                title="Ver Archivo Fiscal"
+                                            >
+                                                <i class="icon-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Correo Electrónico</label>
@@ -362,92 +375,9 @@
                                             v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
                                         </div>
                                     </div>
+
+                                    
                                 </template>
-
-                                
-
-                                <!-- <template> 
-                                    <h5 style="text-align:center;">LUGAR DE TRABAJO</h5>
-                                
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Tipo de economia</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Empresa</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="empresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Giro del negocio</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Domicilio Empresa</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="domicilio_empresa" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">C.P</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Estado</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Ciudad</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Email institucional</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Telefono de la empresa</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">EXT</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="ext_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Estado civil</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="edocivil_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"># Dependientes economicos</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                </template> -->
                                 
                             </div>
                             <!-- Botones del modal -->
@@ -589,7 +519,15 @@
                 });
                 
             },
-
+            verImagen(imagen){
+                let url = '/files/datosFisc/'+imagen;
+                Swal.fire({
+                imageUrl: url,
+                imageWidth: 400,
+                imageHeight: 804,
+                imageAlt: 'Datos Fiscales',
+                })
+            },
             abrirPDF(id){
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
                 win.focus();
@@ -729,6 +667,7 @@
                                 this.datosFiscales.col_fisc = data['col_fisc'];
                                 this.datosFiscales.cp_fisc = data['cp_fisc'];
                                 this.datosFiscales.rfc_fisc = data['rfc_fisc'];
+                                this.datosFiscales.archivo_fisc = data['archivo_fisc'];
 
                                 this.datosFiscales.cfi_fisc = data['cfi_fisc'];
                                 this.datosFiscales.regimen_fisc = data['regimen_fisc'];

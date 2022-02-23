@@ -22,7 +22,7 @@ class Credito extends Model
                             'direccion_fisc', 'col_fisc', 'cp_fisc', 'rfc_fisc',
                             'cfi_fisc', 'regimen_fisc',
                             'banco_fisc', 'num_cuenta_fisc',
-                            'clabe_fisc', 'notif_fisc', 'archivo_fisc',
+                            'clabe_fisc', 'notif_fisc', 'archivo_fisc', 'fecha_archivo',
                             'integracion_cobro',
                             'contrato','fraccionamiento','bono', 'saldo_terreno'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
