@@ -282,7 +282,6 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        
                                         <th># Contrato</th>
                                         <th>Cliente</th>
                                         <th>Vendedor</th>
@@ -306,6 +305,7 @@
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contrato.id}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" @click="abrirModal('archivoFisc',contrato)">Archivo Fiscal</a>
                                                 </div>
                                         </td>
                                         <td class="td2">
@@ -1868,7 +1868,7 @@
         </div>
 
         <!-- Inicio Modal Fecha para firma -->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-primary modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1930,15 +1930,52 @@
                                     </div>
                                     <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
                                     <div class="col-md-4">
-                                        <input type="text" style="text-transform:uppercase"
-                                        v-model="datosFiscales.cfi_fisc" class="form-control" placeholder="C.F.D.I.">
+                                        <select class="form-control" v-model="datosFiscales.cfi_fisc">
+                                            <option value="Adquisición de mercancias">Adquisición de mercancias</option>
+                                            <option value="Devoluciones, Descuentos o bonificaciones">Devoluciones, Descuentos o bonificaciones</option>
+                                            <option value="Gastos en general">Gastos en general</option>
+                                            <option value="Construcciones">Construcciones</option>
+                                            <option value="Mobiliario y equipo de oficina por inversiones">Mobiliario y equipo de oficina por inversiones</option>
+                                            <option value="Equipo de transporte">Equipo de transporte</option>
+                                            <option value="Equipo de computo y accesorios">Equipo de computo y accesorios</option>
+                                            <option value="Dados, troqueles, moldes, matrices y herramental">Dados, troqueles, moldes, matrices y herramental</option>
+                                            <option value="Comunicaciones telefónicas">Comunicaciones telefónicas</option>
+                                            <option value="Comunicaciones satelitales">Comunicaciones satelitales</option>
+                                            <option value="Otra maquinaria y equipo">Otra maquinaria y equipo</option>
+                                            <option value="Honorarios médicos, dentales y gastos hospitalarios">Honorarios médicos, dentales y gastos hospitalarios</option>
+                                            <option value="Gastos médicos por incapacidad o discapacidad">Gastos médicos por incapacidad o discapacidad</option>
+                                            <option value="Gastos funerales">Gastos funerales</option>
+                                            <option value="Donativos">Donativos</option>
+                                            <option value="Intereses reales efectivamente pagados por créditos hipotecarios">Intereses reales efectivamente pagados por créditos hipotecarios</option>
+                                            <option value="Aportaciones voluntarias al SAR">Aportaciones voluntarias al SAR</option>
+                                            <option value="Primas por seguros de gastos médicos">Primas por seguros de gastos médicos</option>
+                                            <option value="Gastos de transportación escolar obligatoria">Gastos de transportación escolar obligatoria</option>
+                                            <option value="Depósitos en cuentas para el ahorro">Depósitos en cuentas para el ahorro</option>
+                                            <option value="Pagos por servicios educativos (colegiaturas)">Pagos por servicios educativos (colegiaturas)</option>
+                                            <option value="Sin efectos fiscales">Sin efectos fiscales</option>
+                                            <option value="Pagos">Pagos</option>
+                                            <option value="Nómina">Nómina</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
                                     <div class="col-md-4">
-                                        <input type="text" 
-                                        v-model="datosFiscales.regimen_fisc" class="form-control" placeholder="Régimen">
+                                        <select class="form-control" v-model="datosFiscales.regimen_fisc">
+                                            <option value="Sueldos y Salarios e Ingresos Asimilados a Salarios">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+                                            <option value="Arrendamiento">Arrendamiento</option>
+                                            <option value="Régimen e Enajenación o Adquisición de Bienes">Régimen e Enajenación o Adquisición de Bienes</option>
+                                            <option value="Demás ingresos">Demás ingresos</option>
+                                            <option value="Residentes en el Extranjero sin Establecimiento Permanente en México">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
+                                            <option value="Ingresos por Dividendos (socios y accionistas)">Ingresos por Dividendos (socios y accionistas)</option>
+                                            <option value="Personas Físicas con Actividades Empresariales y Profesionales">Personas Físicas con Actividades Empresariales y Profesionales</option>
+                                            <option value="Ingresos por intereses">Ingresos por intereses</option>
+                                            <option value="Régimen de los ingresos por obtención de premios">Régimen de los ingresos por obtención de premios</option>
+                                            <option value="Sin obligaciones fiscales">Sin obligaciones fiscales</option>
+                                            <option value="Incorporación Fiscal">Incorporación Fiscal</option>
+                                            <option value="Régimen de las Actividades Empresariales con ingresos a través de Plataforma">Régimen de las Actividades Empresariales con ingresos a través de Plataforma</option>
+                                            <option value="Régimen Simplificado de Confianza">Régimen Simplificado de Confianza</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -2039,15 +2076,60 @@
                         <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                         <button type="button" v-if="tipoAccion==1 && status != 3" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
                         <button type="button" 
-                            v-if="tipoAccion==1 && status == 3
+                            v-if="tipoAccion==1 && status == 3 && datosFiscales.archivo_fisc != null
                                 && datosFiscales.email_fisc != '' && datosFiscales.email_fisc != null
                                 && datosFiscales.tel_fisc != '' && datosFiscales.tel_fisc != null
                                 && datosFiscales.nombre_fisc != '' && datosFiscales.nombre_fisc != null
                                 && datosFiscales.direccion_fisc != '' && datosFiscales.direccion_fisc != null
+                                && datosFiscales.regimen_fisc != '' && datosFiscales.cfi_fisc != null
                                 && datosFiscales.cp_fisc != '' && datosFiscales.cp_fisc != null" 
                             class="btn btn-success" @click="registrarFechaStatus()"
                         >Guardar</button>
                         <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="mostrarDatosLote(sel_lote)">reasignar</button>
+                    </div>
+                </div> 
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!--Fin del modal-->
+
+        <!-- Inicio Modal Archivo Fiscal-->
+        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-primary modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" v-text="tituloModal"></h4>
+                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form  method="post" @submit="formSubmitFisc" enctype="multipart/form-data">
+
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
+                                <div class="col-md-9">
+                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageFisc">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-9"></div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                                </div>
+                            </div>
+                            
+                            <br/>
+                        </form>
+
+                    </div>
+                    <!-- Botones del modal -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        <a v-if="archivoFisc != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFisc/'+archivoFisc">Descargar</a>
                     </div>
                 </div> 
                 <!-- /.modal-content -->
@@ -2075,6 +2157,8 @@
                 proceso:false,
                 change_credito:0,
                 detenido:0,
+                archivo:'',
+                archivoFisc:'',
 
                 arraySimulaciones:[],
                 arrayContratos:[],
@@ -2419,6 +2503,37 @@
         },
        
         methods : {
+            onImageFisc(e){
+                this.archivo = e.target.files[0];
+            },
+            formSubmitFisc(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                let formData = new FormData();
+           
+                formData.append('archivo', this.archivo);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/contratos/formSubmitFisc/', formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal
+                    me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+                });
+
+            },
             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
                 var url = '/creditos_aprobados?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
@@ -3228,6 +3343,7 @@
                 this.datosFiscales.banco_fisc = data['banco_fisc'];
                 this.datosFiscales.num_cuenta_fisc = data['num_cuenta_fisc'];
                 this.datosFiscales.clabe_fisc = data['clabe_fisc'];
+                this.datosFiscales.archivo_fisc = data['archivo_fisc'];
 
                 this.detenido = data['detenido'];
                 this.publicidad_id = data['publicidadId'];
@@ -3961,6 +4077,14 @@
                         this.tipoAccion = 2;
                         this.reubicacion = 0;
                         this.observacion_r = '';
+                        break;
+                    }
+                    case 'archivoFisc':{
+                        this.modal = 2;
+                        this.tituloModal = 'Subir imagen';
+                        this.id = data['id'];
+                        this.archivo = '';
+                        this.archivoFisc = data['archivo_fisc'];
                         break;
                     }
                 }

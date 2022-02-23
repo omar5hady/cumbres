@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Proveedores
+                        <i class="fa fa-align-justify"></i> Integración de cobros
                         <!--   Boton Nuevo    -->
                         <button type="button" 
                         v-if="vista== 0 && userName == 'jovanni.t' || vista== 0 && userName == 'shady'
@@ -34,104 +34,228 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="table-responsive"> 
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Folio</th>
-                                        <th>Cliente</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th>Lote</th>
-                                        <th>Valor</th>
-                                        <th>Crédito</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="integracion in arrayIntegraciones.data" :key="integracion.id">
-                                        <td class="td2">
-                                            <button 
-                                            type="button" @click="verDetalle(integracion, 1)" class="btn btn-primary btn-sm"
-                                                title="Ver Detalle"
-                                            >
-                                                <i class="icon-eye"></i>
-                                            </button>
-                                            <button title="Descargar integración"
-                                                type="button" class="btn btn-success btn-sm">
-                                                <a style="color:white" :href="'/integracionCobros/exportFormat?id=' + integracion.id">
-                                                    <i class="fa fa-file-text"></i>
-                                                </a>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="integracion.contrato_id"></td>
-                                        <td class="td2" v-text="integracion.nombre_completo"></td>
-                                        <td class="td2" v-text="integracion.proyecto"></td>
-                                        <td class="td2" v-text="integracion.etapa"></td>
-                                        <td class="td2" v-text="integracion.manzana"></td>
-                                        <td class="td2" v-text="integracion.num_lote"></td>
-                                        <td class="td2" v-text="'$'+ formatNumber(integracion.valor_escrituras)"></td>
-                                        <td class="td2" v-text="integracion.tipo_credito+'-'+integracion.institucion"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
+
+                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
+                            <li class="nav-item" >
+                                <a @click="tab = 0, listarIntegraciones(1)" class="nav-link" v-bind:class="{ 'text-info active': tab==0 }" v-text="'Pendientes'"></a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="tab = 1, listarIntegraciones(1)" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }" v-text="'Historial'"></a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTab1Content"> 
+                            <!-- Pendientes -->
+                            <div class="tab-pane fade" v-bind:class="{ 'active show': tab==0 }" v-if="tab == 0">
+
+                                <div class="table-responsive"> 
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Valor</th>
+                                                <th>Crédito</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="integracion in arrayIntegraciones.data" :key="integracion.id">
+                                                <td class="td2">
+                                                    <button 
+                                                    type="button" @click="verDetalle(integracion, 1)" class="btn btn-primary btn-sm"
+                                                        title="Ver Detalle"
+                                                    >
+                                                        <i class="icon-eye"></i>
+                                                    </button>
+                                                    <button title="Descargar integración"
+                                                        type="button" class="btn btn-success btn-sm">
+                                                        <a style="color:white" :href="'/integracionCobros/exportFormat?id=' + integracion.id">
+                                                            <i class="fa fa-file-text"></i>
+                                                        </a>
+                                                    </button>
+                                                </td>
+                                                <td class="td2" v-text="integracion.contrato_id"></td>
+                                                <td class="td2" v-text="integracion.nombre_completo"></td>
+                                                <td class="td2" v-text="integracion.proyecto"></td>
+                                                <td class="td2" v-text="integracion.etapa"></td>
+                                                <td class="td2" v-text="integracion.manzana"></td>
+                                                <td class="td2" v-text="integracion.num_lote"></td>
+                                                <td class="td2" v-text="'$'+ formatNumber(integracion.valor_escrituras)"></td>
+                                                <td class="td2" v-text="integracion.tipo_credito+'-'+integracion.institucion"></td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page > 5" @click="listarIntegraciones(1)">
+                                            <a class="page-link" href="#" >Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page > 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-1)">
+                                            <a class="page-link" href="#" >Ant</a>
+                                        </li>
+
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page-3 >= 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-3)">
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-3"></a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page-2 >= 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-2)">
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-2"></a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page-1 >= 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-1)">
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-1"></a>
+                                        </li>
+                                        <li class="page-item active" >
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page"></a>
+                                        </li>
+                                        <li class="page-item" 
+                                            v-if="arrayIntegraciones.current_page+1 <= arrayIntegraciones.last_page">
+                                            <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+1)" 
+                                            v-text="arrayIntegraciones.current_page+1"></a>
+                                        </li>
+                                        <li class="page-item" 
+                                            v-if="arrayIntegraciones.current_page+2 <= arrayIntegraciones.last_page">
+                                            <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+2)"
+                                            v-text="arrayIntegraciones.current_page+2"></a>
+                                        </li>
+                                        <li class="page-item" 
+                                            v-if="arrayIntegraciones.current_page+3 <= arrayIntegraciones.last_page">
+                                            <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+3)"
+                                            v-text="arrayIntegraciones.current_page+3"></a>
+                                        </li>
+
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page < arrayIntegraciones.last_page"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page+1)">
+                                            <a class="page-link" href="#" >Sig</a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page < 5 && arrayIntegraciones.last_page > 5" @click="listarIntegraciones(arrayIntegraciones.last_page)">
+                                            <a class="page-link" href="#" >Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+                            </div>
                         </div>
-                        <hr>
-                        <nav>
-                            <!--Botones de paginacion -->
-                           <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="arrayIntegraciones.current_page > 5" @click="listarIntegraciones(1)">
-                                    <a class="page-link" href="#" >Inicio</a>
-                                </li>
-                                <li class="page-item" v-if="arrayIntegraciones.current_page > 1"
-                                    @click="listarIntegraciones(arrayIntegraciones.current_page-1)">
-                                    <a class="page-link" href="#" >Ant</a>
-                                </li>
 
-                                <li class="page-item" v-if="arrayIntegraciones.current_page-3 >= 1"
-                                    @click="listarIntegraciones(arrayIntegraciones.current_page-3)">
-                                    <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-3"></a>
-                                </li>
-                                <li class="page-item" v-if="arrayIntegraciones.current_page-2 >= 1"
-                                    @click="listarIntegraciones(arrayIntegraciones.current_page-2)">
-                                    <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-2"></a>
-                                </li>
-                                <li class="page-item" v-if="arrayIntegraciones.current_page-1 >= 1"
-                                    @click="listarIntegraciones(arrayIntegraciones.current_page-1)">
-                                    <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-1"></a>
-                                </li>
-                                <li class="page-item active" >
-                                    <a class="page-link" href="#" v-text="arrayIntegraciones.current_page"></a>
-                                </li>
-                                <li class="page-item" 
-                                    v-if="arrayIntegraciones.current_page+1 <= arrayIntegraciones.last_page">
-                                    <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+1)" 
-                                    v-text="arrayIntegraciones.current_page+1"></a>
-                                </li>
-                                <li class="page-item" 
-                                    v-if="arrayIntegraciones.current_page+2 <= arrayIntegraciones.last_page">
-                                    <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+2)"
-                                     v-text="arrayIntegraciones.current_page+2"></a>
-                                </li>
-                                <li class="page-item" 
-                                    v-if="arrayIntegraciones.current_page+3 <= arrayIntegraciones.last_page">
-                                    <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+3)"
-                                    v-text="arrayIntegraciones.current_page+3"></a>
-                                </li>
+                        <div class="tab-content" id="myTab1Content"> 
+                            <!-- Pendientes -->
+                            <div class="tab-pane fade" v-bind:class="{ 'active show': tab==1 }" v-if="tab == 1">
 
-                                <li class="page-item" v-if="arrayIntegraciones.current_page < arrayIntegraciones.last_page"
-                                    @click="listarIntegraciones(arrayIntegraciones.current_page+1)">
-                                    <a class="page-link" href="#" >Sig</a>
-                                </li>
-                                <li class="page-item" v-if="arrayIntegraciones.current_page < 5 && arrayIntegraciones.last_page > 5" @click="listarIntegraciones(arrayIntegraciones.last_page)">
-                                    <a class="page-link" href="#" >Ultimo</a>
-                                </li>
-                            </ul>
-                        </nav>
+                                <div class="table-responsive"> 
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Valor</th>
+                                                <th>Crédito</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="integracion in arrayIntegraciones.data" :key="integracion.id">
+                                                <td class="td2">
+                                                    <button 
+                                                    type="button" @click="verDetalle(integracion, 1)" class="btn btn-primary btn-sm"
+                                                        title="Ver Detalle"
+                                                    >
+                                                        <i class="icon-eye"></i>
+                                                    </button>
+                                                    <button title="Descargar integración"
+                                                        type="button" class="btn btn-success btn-sm">
+                                                        <a style="color:white" :href="'/integracionCobros/exportFormat?id=' + integracion.id">
+                                                            <i class="fa fa-file-text"></i>
+                                                        </a>
+                                                    </button>
+                                                </td>
+                                                <td class="td2" v-text="integracion.contrato_id"></td>
+                                                <td class="td2" v-text="integracion.nombre_completo"></td>
+                                                <td class="td2" v-text="integracion.proyecto"></td>
+                                                <td class="td2" v-text="integracion.etapa"></td>
+                                                <td class="td2" v-text="integracion.manzana"></td>
+                                                <td class="td2" v-text="integracion.num_lote"></td>
+                                                <td class="td2" v-text="'$'+ formatNumber(integracion.valor_escrituras)"></td>
+                                                <td class="td2" v-text="integracion.tipo_credito+'-'+integracion.institucion"></td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page > 5" @click="listarIntegraciones(1)">
+                                            <a class="page-link" href="#" >Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page > 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-1)">
+                                            <a class="page-link" href="#" >Ant</a>
+                                        </li>
+
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page-3 >= 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-3)">
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-3"></a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page-2 >= 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-2)">
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-2"></a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page-1 >= 1"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page-1)">
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page-1"></a>
+                                        </li>
+                                        <li class="page-item active" >
+                                            <a class="page-link" href="#" v-text="arrayIntegraciones.current_page"></a>
+                                        </li>
+                                        <li class="page-item" 
+                                            v-if="arrayIntegraciones.current_page+1 <= arrayIntegraciones.last_page">
+                                            <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+1)" 
+                                            v-text="arrayIntegraciones.current_page+1"></a>
+                                        </li>
+                                        <li class="page-item" 
+                                            v-if="arrayIntegraciones.current_page+2 <= arrayIntegraciones.last_page">
+                                            <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+2)"
+                                            v-text="arrayIntegraciones.current_page+2"></a>
+                                        </li>
+                                        <li class="page-item" 
+                                            v-if="arrayIntegraciones.current_page+3 <= arrayIntegraciones.last_page">
+                                            <a class="page-link" href="#" @click="listarIntegraciones(arrayIntegraciones.current_page+3)"
+                                            v-text="arrayIntegraciones.current_page+3"></a>
+                                        </li>
+
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page < arrayIntegraciones.last_page"
+                                            @click="listarIntegraciones(arrayIntegraciones.current_page+1)">
+                                            <a class="page-link" href="#" >Sig</a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayIntegraciones.current_page < 5 && arrayIntegraciones.last_page > 5" @click="listarIntegraciones(arrayIntegraciones.last_page)">
+                                            <a class="page-link" href="#" >Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+                            </div>
+                        </div>
+                        
+                        
                     </div>
+
+
                     <div class="card-body" v-if="vista == 1"> 
 
                         <div class="col-md-12">
@@ -618,6 +742,7 @@
                 total: 0,
                 diferencia : 0,
                 tipoAccion : 0,
+                tab : 0,
                 cobro:{}
             }
         },
@@ -641,8 +766,8 @@
             /**Metodo para mostrar los registros */
             listarIntegraciones(page){
                 let me = this;
-                var url = '/integracionCobros/getIntegraciones?page=' + page+'&buscar='
-                    +this.buscar;
+                var url = '/integracionCobros/getIntegraciones?page=' + page+'&buscar= +'
+                    +this.buscar + '&status='+this.tab;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayIntegraciones = respuesta;

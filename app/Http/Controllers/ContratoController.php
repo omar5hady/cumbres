@@ -230,6 +230,7 @@ class ContratoController extends Controller
                     'creditos.direccion_fisc', 'creditos.col_fisc',
                     'creditos.cp_fisc',
                     'creditos.rfc_fisc',
+                    'creditos.archivo_fisc',
                     'cfi_fisc',
                     'creditos.regimen_fisc',
                     'creditos.banco_fisc',
@@ -1555,13 +1556,13 @@ class ContratoController extends Controller
                     $vendedorid = $cliente->vendedor_id;
                     $cliente->save();
 
-
                     // Actualización de datos fiscales
                     $credit_fisc = Credito::findOrFail($request->id);
                     $p_cliente = Personal::findOrFail($credit_fisc->prospecto_id);
                     
                         if($datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 0 || $datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 1){
                             $credit_fisc->notif_fisc = 2;
+                            $credit_fisc->fecha_rfc = Carbon::now();
                             //Se manda notificación sobre la venta.
                             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
                             $fecha = Carbon::now();
@@ -1980,7 +1981,6 @@ class ContratoController extends Controller
         }
 
         return $arrayCuentas;
-
     }
 
     // Función privada para calcular el monto cobrado del terreno en lotes alianza.
@@ -2779,5 +2779,27 @@ class ContratoController extends Controller
         }
         
         )->download('xls');
+    }
+
+    public function formSubmitFisc(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        $fileName = $request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/datosFisc'), $fileName);
+
+        if($moved){
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+            $contrato = Credito::findOrFail($request->id);
+            $contrato->archivo_fisc = $fileName;
+            $contrato->save(); //Insert
+        }
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    public function downloadFileFisc($fileName)
+    {
+        $pathtoFile = public_path() . '/files/datosFisc/' . $fileName;
+        return response()->download($pathtoFile);
     }
 }

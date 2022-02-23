@@ -217,7 +217,9 @@ class CobrosController extends Controller
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_fisc"),
             DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")
         )
-        ->where('i.elegido','=',1);
+        ->where('i.elegido','=',1)
+        ->where('int_cobros.status','=',$request->status)
+        ;
 
         if($request->buscar != ''){
             $integraciones = $integraciones->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->buscar . '%');
