@@ -459,7 +459,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/estimaciones/storeImporteExtra','IniObraController@storeImporteExtra');
         Route::post('/estimaciones/storeConceptoExtra','IniObraController@storeConceptoExtra');
-        Route::post('/estimaciones/storeObs','IniObraController@storeObs');
+        Route::post('/estimaciones/storeObs','EstimacionController@storeObs');
 
         Route::get('/estimaciones/resumen','EstimacionController@resumen');
         Route::get('/estimaciones/excelEdoCuenta','IniObraController@excelEdoCuenta');

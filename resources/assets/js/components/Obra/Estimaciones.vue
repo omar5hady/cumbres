@@ -23,8 +23,6 @@
                         <button v-if="listado == 1" type="button" @click="abrirModal('reporte')" class="btn btn-dark">
                             <i class="icon-share-alt"></i>&nbsp;Reporte de finalización de obra
                         </button>
-
-
                     </div>
 
             <!----------------- Listado Contratos ------------------------------>
@@ -326,6 +324,7 @@
                                 <div class="table-responsive" > <br>
                                 </div>
 
+                                <!-- TABLA RESUMEN -->
                                 <div class="table-responsive"  v-if="nueva == 0" >
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
@@ -375,8 +374,9 @@
                                 <div class="table-responsive" >
                                     <br><br>
                                 </div>
-
+                                
                                 <div class="form-group row">
+                                    <!-- TABLA ANTICIPOS -->
                                     <div class="col-md-5">
                                         <div class="table-responsive"  v-if="nueva == 0" >
                                             <table class="table2 table-bordered table-striped table-sm">
@@ -401,6 +401,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- MONTO ESTIMACION ACTUAL -->
                                     <div class="col-md-2">
                                         <div class="table-responsive"  v-if="nueva == 0" > 
                                             <center>
@@ -412,6 +413,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- TABLA FONDO DE GARANTIA -->
                                     <div class="col-md-5">
                                         <div class="table-responsive"  v-if="nueva == 0" >
                                             <table class="table2 table-bordered table-striped table-sm">
@@ -443,15 +445,11 @@
                                         </div>
                                     </div>
 
-
                                 </div>
 
                                 <div class="form-group row">
-                                    <div class="col-md-2">
-                                        
-                                    </div>
 
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <div class="table-responsive"  v-if="nueva == 0" > 
                                             <table class="table2 table-bordered table-striped table-sm">
                                                 <thead>
@@ -508,19 +506,37 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <div class="table-responsive"  v-if="nueva == 0" >
-                                            
+                                    <div class="col-md-6">
+                                        <div class="table-responsive"  v-if="nueva == 0" > 
+                                            <table class="table2 table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Observaciones</th>
+                                                        <th>
+                                                            <button title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
+                                                                <i class="icon-plus"></i>
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Usuario</th>
+                                                        <th>Observación</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody> 
+                                                    <tr v-for="obs in arrayObs" :key="obs.id">
+                                                        <td class="td2" v-text="this.moment(obs.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                                        <td class="td2" v-text="obs.usuario"></td>
+                                                        <td class="td2" v-text="obs.observacion"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 
-
                                 </div>
 
-                                
-
-                                                         
-                                
                             <!-- </div> -->
                         </div>
                     </template>
@@ -620,165 +636,170 @@
 
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <template v-if="tipoAccion == 1">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de anticipo</label>
-                                    <div class="col-md-4">
-                                        <input type="date" v-model="fecha_anticipo" class="form-control" placeholder="Fecha">
+                                <template v-if="tipoAccion == 1">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de anticipo</label>
+                                        <div class="col-md-4">
+                                            <input type="date" v-model="fecha_anticipo" class="form-control" placeholder="Fecha">
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                                    <div class="col-md-2">
-                                        <input type="text" v-on:change="validarAnticipo()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="monto_anticipo" class="form-control" placeholder="Monto" >
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Monto</label>
+                                        <div class="col-md-2">
+                                            <input type="text" v-on:change="validarAnticipo()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="monto_anticipo" class="form-control" placeholder="Monto" >
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h6><strong> ${{ formatNumber(monto_anticipo)}} </strong></h6>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <h6><strong> ${{ formatNumber(monto_anticipo)}} </strong></h6>
+                                </template>
+                                <template v-else-if="tipoAccion == 2">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Cantidad</label>
+                                        <div class="col-md-4">
+                                            <input type="number" min="0" v-on:change="validarFG()" v-model="fg_cantidad" class="form-control" placeholder="Cantidad">
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
-                            <template v-else-if="tipoAccion == 2">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cantidad</label>
-                                    <div class="col-md-4">
-                                        <input type="number" min="0" v-on:change="validarFG()" v-model="fg_cantidad" class="form-control" placeholder="Cantidad">
-                                    </div>
-                                </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                                    <div class="col-md-2">
-                                        <h6><strong> ${{ formatNumber(monto_fg = fg_indiv * fg_cantidad)}} </strong></h6>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Monto</label>
+                                        <div class="col-md-2">
+                                            <h6><strong> ${{ formatNumber(monto_fg = fg_indiv * fg_cantidad)}} </strong></h6>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                    <div class="col-md-4">
-                                        <input type="date" v-model="fecha_fg" class="form-control" placeholder="Fecha">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                        <div class="col-md-4">
+                                            <input type="date" v-model="fecha_fg" class="form-control" placeholder="Fecha">
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
+                                </template>
+                                <template v-else-if="tipoAccion == 4">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Importe</label>
+                                        <div class="col-md-2">
+                                            <input type="text" v-on:change="validarOExtra()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="importe" class="form-control" placeholder="Importe" >
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h6><strong> ${{ formatNumber(importe)}} </strong></h6>
+                                        </div>
+                                    </div>
 
-                            <template v-else-if="tipoAccion == 4">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Importe</label>
-                                    <div class="col-md-2">
-                                        <input type="text" v-on:change="validarOExtra()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="importe" class="form-control" placeholder="Importe" >
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Concepto</label>
+                                        <div class="col-md-5">
+                                            <input type="text" v-model="concepto" class="form-control" placeholder="Concepto" >
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <h6><strong> ${{ formatNumber(importe)}} </strong></h6>
-                                    </div>
-                                </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Concepto</label>
-                                    <div class="col-md-5">
-                                        <input type="text" v-model="concepto" class="form-control" placeholder="Concepto" >
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                        <div class="col-md-4">
+                                            <input type="date" v-model="fecha_extra" class="form-control" placeholder="Fecha">
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
+                                <template v-else-if="tipoAccion == 3">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                                        <div class="col-md-5">
+                                            <select class="form-control" v-model="fraccionamiento"  @change="selectEtapas(fraccionamiento)">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                    <div class="col-md-4">
-                                        <input type="date" v-model="fecha_extra" class="form-control" placeholder="Fecha">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                        <div class="col-md-5">
+                                            <select class="form-control" v-model="etapa" >
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
-
-                            <template v-else-if="tipoAccion == 3">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="fraccionamiento"  @change="selectEtapas(fraccionamiento)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="etapa" >
-                                            <option value="">Etapa</option>
-                                            <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
-                                        </select>
-                                    </div>
-                                </div>
 
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="contratista">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
-                                        </select>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
+                                        <div class="col-md-5">
+                                            <select class="form-control" v-model="contratista">
+                                                <option value=''> Seleccione </option>
+                                                <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Emp. Constructora</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="constructora" >
-                                            <option value="">Empresa constructora</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Emp. Constructora</label>
+                                        <div class="col-md-5">
+                                            <select class="form-control" v-model="constructora" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            </template>
-                            
-                            <template v-else-if="tipoAccion == 5">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="contratista">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
-                                        </select>
+                                </template>
+                                <template v-else-if="tipoAccion == 5">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
+                                        <div class="col-md-5">
+                                            <select class="form-control" v-model="contratista">
+                                                <option value=''> Seleccione </option>
+                                                <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input"></label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" v-model="mes">
-                                            <option value=''> Selec. Mes </option>
-                                            <option value='01'> Enero </option>
-                                            <option value='02'> Febrero </option>
-                                            <option value='03'> Marzo </option>
-                                            <option value='04'> Abril </option>
-                                            <option value='05'> Mayo </option>
-                                            <option value='06'> Junio </option>
-                                            <option value='07'> Julio </option>
-                                            <option value='08'> Agosto </option>
-                                            <option value='09'> Septiembre </option>
-                                            <option value='10'> Octubre </option>
-                                            <option value='11'> Noviembre </option>
-                                            <option value='12'> Diciembre </option>
-                                        </select>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input"></label>
+                                        <div class="col-md-4">
+                                            <select class="form-control" v-model="mes">
+                                                <option value=''> Selec. Mes </option>
+                                                <option value='01'> Enero </option>
+                                                <option value='02'> Febrero </option>
+                                                <option value='03'> Marzo </option>
+                                                <option value='04'> Abril </option>
+                                                <option value='05'> Mayo </option>
+                                                <option value='06'> Junio </option>
+                                                <option value='07'> Julio </option>
+                                                <option value='08'> Agosto </option>
+                                                <option value='09'> Septiembre </option>
+                                                <option value='10'> Octubre </option>
+                                                <option value='11'> Noviembre </option>
+                                                <option value='12'> Diciembre </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-control" v-model="anio">
+                                                <option value=''> Selec. Año </option>
+                                                <option value='2021'> 2021 </option>
+                                                <option value='2022'> 2022 </option>
+                                                <option value='2023'> 2023 </option>
+                                                <option value='2024'> 2024 </option>
+                                                <option value='2025'> 2025 </option>
+                                                <option value='2026'> 2026 </option>
+                                                <option value='2027'> 2027 </option>
+                                                <option value='2028'> 2028 </option>
+                                                <option value='2029'> 2029 </option>
+                                                <option value='2030'> 2030 </option>
+                                                <option value='2031'> 2031 </option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <select class="form-control" v-model="anio">
-                                            <option value=''> Selec. Año </option>
-                                            <option value='2021'> 2021 </option>
-                                            <option value='2022'> 2022 </option>
-                                            <option value='2023'> 2023 </option>
-                                            <option value='2024'> 2024 </option>
-                                            <option value='2025'> 2025 </option>
-                                            <option value='2026'> 2026 </option>
-                                            <option value='2027'> 2027 </option>
-                                            <option value='2028'> 2028 </option>
-                                            <option value='2029'> 2029 </option>
-                                            <option value='2030'> 2030 </option>
-                                            <option value='2031'> 2031 </option>
-                                        </select>
-                                    </div>
-                                </div>
 
-                            </template>
+                                </template>
+                                <template v-else-if="tipoAccion == 6">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Observación</label>
+                                        <div class="col-md-5">
+                                            <input type="text" v-model="observacion" class="form-control" placeholder="Observación" >
+                                        </div>
+                                    </div>
+                                </template>
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -801,6 +822,8 @@
                                 + '&mes='+ mes + '&anio='+ anio">
                                 <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                             </a>
+                             <button v-if="tipoAccion == 6 && observacion != ''" 
+                                type="button" class="btn btn-primary" @click="storeObs()">Guardar</button>
                         </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -834,6 +857,7 @@
                 arrayNumEstim:[],
                 arrayAnticipos:[],
                 arrayFG:[],
+                arrayObs:[],
                 b_estimacion:'',
                 num_estimacion:0,
                 n_excel:0,
@@ -920,7 +944,8 @@
                 concepto:'',
                 importe:0,
                 mes:'01',
-                anio:2021
+                anio:2021,
+                observacion : ''
             }
         },
         components:{
@@ -1009,7 +1034,6 @@
                     return;
                 }
             },
-           
             formSubmit(e) {
                 if(this.proceso==true || this.file==''){
                     return;
@@ -1102,7 +1126,6 @@
                 me.loading = true;
                 me.clave = val1.id;
                 me.total_importe = val1.total_importe;
-               
             },
             selectContratistas(){
                 let me = this;
@@ -1207,6 +1230,7 @@
                     me.arrayFG = respuesta.fondos;
 
                     me.arrayExtra = respuesta.conceptosExtra;
+                    me.arrayObs = respuesta.observaciones;
                     extra = respuesta.importesExtra;
                     me.fechaExtra = extra[0].fechaExtra;
                     me.impExtra = extra[0].impExtra;
@@ -1228,7 +1252,6 @@
                 }
                 
             },
-
             validarOExtra(){
                 let me = this;
                 var monto = 0;
@@ -1241,7 +1264,6 @@
                 if(me.importe>porPagar)
                     me.importe = porPagar;
             },
-
             validarAnticipo(){
                 let me = this;
                 var monto = 0;
@@ -1351,6 +1373,13 @@
                         this.mes = '';
                         this.contratista = '';
                         this.anio = '';
+                        break;
+                    }
+                    case 'observacion':{
+                        this.modal1 = 1;
+                        this.tipoAccion = 6;
+                        this.tituloModal = 'Reporte de finalización de obra';
+                        this.observacion = '';
                         break;
                     }
                     
@@ -1591,8 +1620,40 @@
                         })
                     }
                 })
+            },
+            storeObs(){
+                let me = this;
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+                    if (result.value) {
+                        axios.post('/estimaciones/storeObs',{
+                            'aviso_id' : me.aviso_id,
+                            'observacion' : me.observacion,
+                        }); 
+                        me.nueva = 0;
+                        me.cerrarModal();
+                        me.getPartidas(me.aviso_id);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Comentario guardado correctamente',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
             }
-        
         },
         mounted() {          
             this.indexEstimaciones(1);

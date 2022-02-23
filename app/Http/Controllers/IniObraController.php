@@ -16,6 +16,7 @@ use File;
 use Session;
 use Auth;
 use App\Estimacion;
+use App\Obs_estimacion;
 use App\Fg_estimacion;
 use App\Anticipo_estimacion;
 use App\Hist_estimacion;
@@ -992,6 +993,10 @@ class IniObraController extends Controller
         return Concepto_extra::where('aviso_id','=',$clave)->orderBy('fecha','asc')->get();
     }
 
+    private function getObs($clave){
+        return Obs_estimacion::where('aviso_id','=',$clave)->orderBy('created_at','desc')->get();
+    }
+
     private function getImporteExtra($clave){
         return Importe_extra::where('aviso_id','=',$clave)->orderBy('fechaExtra','desc')->get();
     }
@@ -1002,6 +1007,8 @@ class IniObraController extends Controller
 
         $importesExtra = $this->getImporteExtra($request->clave);
         $conceptosExtra = $this->getConceptosExtra($request->clave);
+
+        $observaciones = $this->getObs($request->clave);
 
         $acumAntTotal = [];
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
@@ -1126,7 +1133,8 @@ class IniObraController extends Controller
             'anticipo' => $anticipo,
             'total_anticipo' => $total_anticipo,
             'conceptosExtra' => $conceptosExtra,
-            'importesExtra' => $importesExtra
+            'importesExtra' => $importesExtra,
+            'observaciones' => $observaciones
         ];
     }
 
@@ -1139,6 +1147,7 @@ class IniObraController extends Controller
 
         $importesExtra = $this->getImporteExtra($request->clave);
         $conceptosExtra = $this->getConceptosExtra($request->clave);
+        $observaciones = $this->getObs($request->clave);
         
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
                         ->where('aviso_id','=',$request->clave)
@@ -1266,10 +1275,10 @@ class IniObraController extends Controller
         //return $contrato;
 
         return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
-                $num_est, $contrato, $num_casas , $totalEstimacionAnt , 
+                $num_est, $contrato, $num_casas , $totalEstimacionAnt , $observaciones,
                 $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
             $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est, 
-                    $contrato, $num_casas , $totalEstimacionAnt, 
+                    $contrato, $num_casas , $totalEstimacionAnt, $observaciones,
                     $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
                 
                 $sheet->mergeCells('A1:L1');
