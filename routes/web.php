@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select/asesores','UserController@selectAsesores');
         Route::get('/select/asesores2','UserController@selectAsesores2');
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
+        Route::get('/clientes/buscar','ClienteController@buscarNombre');
 
         Route::get('/asesores/getAsesoresProyecto','UserController@getAsesoresProyecto');
         Route::post('/asesores/asignarProyecto','UserController@asignarProyecto');
@@ -602,7 +603,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/contrato/reasignar','ContratoController@reasignarCliente');
         Route::put('/contrato/reasignar2','ContratoController@reasignarCliente2');
 
-        Route::post('/contratos/formSubmitFisc/','ContratoController@formSubmitFisc');
+        Route::post('/contratos/formSubmitFisc/{id}','ContratoController@formSubmitFisc');
         Route::get('/contratos/downloadFileFisc/{fileName}' , 'ContratoController@downloadFileFisc');
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');

@@ -28,9 +28,8 @@
                                         <!--Criterios para el listado de busqueda -->
                                         <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                             <option value="personal.nombre">Nombre</option>
+                                            <option value="personal.email">Correo eléctronico</option>
                                             <option value="personal.rfc">RFC</option>
-                                            <option value="clientes.curp">CURP</option>
-                                            <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
                                             <option value="personal.celular">Celular</option>
                                             <option v-if="rolId != 2" value="clientes.created_at">Fecha de alta</option>
@@ -71,8 +70,7 @@
                                         <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="personal.rfc">RFC</option>
-                                            <option value="clientes.curp">CURP</option>
-                                            <option value="clientes.nss">NSS</option>
+                                            <option value="personal.email">Correo eléctronico</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
                                             <option value="personal.celular">Celular</option>
                                             <option value="clientes.created_at">Fecha de alta</option>
@@ -246,7 +244,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">1° apellido <span style="color:red;" v-show="apellidos==''">(*)</span></label>
-                                        <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
+                                        <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos" @keyup="buscarCliente()" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div>
 
@@ -1495,6 +1493,26 @@
                     console.log(error);
                 });
             },
+            buscarCliente(){
+                let me = this;
+                let mostrar = 0;
+                var url = '/clientes/buscar?nombre=' + me.nombre + '&apellidos=' + me.apellidos;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+
+                    if(respuesta.length > 0) {
+                        Swal({
+                            title: 'Cliente localizado',
+                            text: 'Se encontro un cliente con el mismo nombre en la BD de ' + respuesta[0].nombre + ' ' + respuesta[0].apellidos ,
+                            animation: false,
+                            customClass: 'animated tada'
+                        })
+                    } 
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             isSpace: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -2459,25 +2477,24 @@
                 let me = this;
                 me.encuentraRFC=0;
                 axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.encuentraRFC = respuesta.rfc1; 
+                    var respuesta = response.data;
+                    me.encuentraRFC = respuesta.rfc1; 
 
-                if(me.encuentraRFC==1) {
-                    var vendedorrfc = [];
-                    var nombrevendedor = '';
-                    vendedorrfc = respuesta.vendedor;
-                    nombrevendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
-                    Swal({
-                    title: 'Este RFC ya ha sido agregado por: ' + nombrevendedor ,
-                    animation: false,
-                    customClass: 'animated tada'
+                    if(me.encuentraRFC==1) {
+                        var vendedorrfc = [];
+                        var nombrevendedor = '';
+                        vendedorrfc = respuesta.vendedor;
+                        nombrevendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
+                        Swal({
+                        title: 'Este RFC ya ha sido agregado por: ' + nombrevendedor ,
+                        animation: false,
+                        customClass: 'animated tada'
+                        })
+                    } 
                     })
-                } 
-                })
                 .catch(function (error) {
                     console.log(error);
                 });
-
 
             },
             asignarProspecto(){

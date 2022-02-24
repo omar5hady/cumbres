@@ -2111,7 +2111,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
                                 <div class="col-md-9">
-                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageFisc">
+                                    <input type="file" class="form-control" v-on:change="onImageFisc">
                                 </div>
                             </div>
 
@@ -2516,7 +2516,7 @@
                 formData.append('archivo', this.archivo);
                 formData.append('id', this.id);
                 let me = this;
-                axios.post('/contratos/formSubmitFisc/', formData)
+                axios.post('/contratos/formSubmitFisc/'+me.id, formData)
                 .then(function (response) {
                     currentObj.success = response.data.success;
                     swal({
@@ -2531,6 +2531,7 @@
 
                 }).catch(function (error) {
                     currentObj.output = error;
+                    console.log(error);
                 });
 
             },

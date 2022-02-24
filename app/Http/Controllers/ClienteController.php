@@ -1251,7 +1251,11 @@ class ClienteController extends Controller
             ->where('users.condicion','=',1)
             //Que no se encuentren en el calendario de eventos.
             ->whereNotIn('users.id',$cal)
-            ->whereNotIn('users.id',[28020,28230,55,29051,27,35])
+            ->whereNotIn('users.usuario',[
+                'mayra_jaz', 'vero', 'e_preciado',
+                'Guadalupe', 'ALEJANDROT',
+                'yasmin_ventas'
+            ])
             ->where('users.usuario','!=','descartado')
             ->where('users.usuario','!=','oficina')
             ->orderBy('vendedores.cont_leads','asc')
@@ -1278,7 +1282,11 @@ class ClienteController extends Controller
                     ->where('vendedores.tipo','=',0)
                     ->where('users.condicion','=',1)
                     ->whereNotIn('users.id',$cal)
-                    ->whereNotIn('users.id',[35])
+                    ->whereNotIn('users.usuario',[
+                        'mayra_jaz', 'vero', 'e_preciado',
+                        'ALEJANDROT',
+                        'yasmin_ventas'
+                    ])
                     ->whereIn('users.id',$as)
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
@@ -1295,7 +1303,11 @@ class ClienteController extends Controller
                     ->where('vendedores.tipo','=',0)
                     ->where('users.condicion','=',1)
                     ->whereNotIn('users.id',$cal)
-                    ->whereNotIn('users.id',[28020,28230,29051,55,35])
+                    ->whereNotIn('users.usuario',[
+                        'mayra_jaz', 'vero', 'e_preciado',
+                        'Guadalupe', 'ALEJANDROT',
+                        'yasmin_ventas','lisseth_rios'
+                    ])
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
                     ->orderBy('vendedores.cont_leads','asc')
@@ -1504,6 +1516,18 @@ class ClienteController extends Controller
         return ['asesores' => $asesores];
     }
 
+    public function buscarNombre(Request $request){
+        $cliente = Cliente::join('personal as p','clientes.id','=','p.id')
+               ->join('personal as v', 'clientes.vendedor_id','=','v.id')
+               ->select('v.nombre','v.id','v.apellidos')
+               ->where('p.nombre','=',$request->nombre)
+               ->where('p.apellidos','=',$request->apellidos)
+               ->where('vendedor_id','!=',Auth::user()->id)
+               ->get();
+
+       return $cliente;
+   }
+
     //Función para asignar un vendedor auxiliar al cliente.
     public function setVendedorAux(Request $request){
         if( $request->vendedor != ''){
@@ -1558,5 +1582,7 @@ class ClienteController extends Controller
         $cliente->seguimiento = Carbon::now();
         $cliente->save();
     }
+
+    
     
 }

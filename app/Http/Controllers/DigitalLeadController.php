@@ -846,6 +846,7 @@ class DigitalLeadController extends Controller
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
                 ->where('vendedores.tipo','=',0)
                 ->where('users.condicion','=',1)
+                ->whereNotIn('users.usuario',['mayra_jaz','yasmin_ventas','e_preciado'])
                 ->where('users.usuario','!=','descartado')
                 ->where('users.usuario','!=','oficina')
                 ->orderBy('vendedores.supervisor_id','asc')

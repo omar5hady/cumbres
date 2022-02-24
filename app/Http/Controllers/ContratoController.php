@@ -2781,15 +2781,15 @@ class ContratoController extends Controller
         )->download('xls');
     }
 
-    public function formSubmitFisc(Request $request){
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+    public function formSubmitFisc(Request $request, $id){
+        //if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $fileName = $request->archivo->getClientOriginalName();
-        $moved =  $request->archivo->move(public_path('/files/datosFisc'), $fileName);
+        $moved =  $request->archivo->move(public_path('/files/datosFisc/'), $fileName);
 
         if($moved){
-            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-            $contrato = Credito::findOrFail($request->id);
+            //if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+            $contrato = Credito::findOrFail($id);
             $contrato->archivo_fisc = $fileName;
             $contrato->fecha_archivo = Carbon::now();
             $contrato->save(); //Insert

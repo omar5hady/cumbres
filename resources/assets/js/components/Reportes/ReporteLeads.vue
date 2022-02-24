@@ -73,16 +73,18 @@
                                                 <td v-text="asesor_org"></td>
                                                 <td v-text="desc_ase"></td>
                                             </tr>  
-                                            <tr v-if="leads.conteo > 0" v-for="leads in arrayLeads" :key="leads.id">
-                                                <td class="td2" v-text="leads.nombre_campania+' ('+leads.medio_digital+')'"></td>
-                                                <td class="td2" 
-                                                        v-text="this.moment(leads.fecha_ini).locale('es').format('DD/MMM/YYYY')
-                                                        +' al '+this.moment(leads.fecha_fin).locale('es').format('DD/MMM/YYYY')">
-                                                </td>
-                                                <td class="td2" v-text="leads.conteo"></td>
-                                                <td class="td2" v-text="leads.descartado"></td>
-                                                <td class="td2" v-text="leads.asesor"></td>
-                                                <td class="td2" v-text="leads.descAsesor"></td>
+                                            <tr v-for="leads in arrayLeads" :key="leads.id">
+                                                <template  v-if="leads.conteo > 0">
+                                                    <td class="td2" v-text="leads.nombre_campania+' ('+leads.medio_digital+')'"></td>
+                                                    <td class="td2" 
+                                                            v-text="this.moment(leads.fecha_ini).locale('es').format('DD/MMM/YYYY')
+                                                            +' al '+this.moment(leads.fecha_fin).locale('es').format('DD/MMM/YYYY')">
+                                                    </td>
+                                                    <td class="td2" v-text="leads.conteo"></td>
+                                                    <td class="td2" v-text="leads.descartado"></td>
+                                                    <td class="td2" v-text="leads.asesor"></td>
+                                                    <td class="td2" v-text="leads.descAsesor"></td>
+                                                </template>
                                             </tr>     
                                                                   
                                         </tbody>
