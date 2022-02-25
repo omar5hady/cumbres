@@ -344,14 +344,14 @@
                                             v-model="datosFiscales.rfc_fisc" class="form-control" placeholder="RFC">
                                         </div>
                                         <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
-                                        <div class="col-md-4">
+                                        <div class="col-md-5">
                                             <input disabled type="text" style="text-transform:uppercase"
                                             v-model="datosFiscales.cfi_fisc" class="form-control" placeholder="C.F.D.I.">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <input disabled type="text" 
                                             v-model="datosFiscales.regimen_fisc" class="form-control" placeholder="Régimen">
                                         </div>
@@ -523,8 +523,8 @@
                 let url = '/files/datosFisc/'+imagen;
                 Swal.fire({
                 imageUrl: url,
-                imageWidth: 400,
-                imageHeight: 804,
+                imageWidth: 600,
+                imageHeight: 800,
                 imageAlt: 'Datos Fiscales',
                 })
             },

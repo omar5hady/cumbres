@@ -49,6 +49,8 @@ class ClienteController extends Controller
         $publicidad = $request->b_publicidad;
         $b_aux = $request->b_aux;
 
+        $seguimiento = $request->seguimiento;
+
         if( Auth::user()->rol_id == 2){
             $queryVendedor = $this->getQueryVendedor();
         }
@@ -92,9 +94,22 @@ class ClienteController extends Controller
                     }
                     case 'clientes.vendedor_id':
                     {
+                        $fecha = Carbon::now()->subDays(180);
+                        $fecha2 = Carbon::now()->subDays(8);
                         $personas = $personas->where($criterio, '=',$buscar);
-                        if($buscar2!='')
+                        if($buscar2!=''){
                             $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%');
+                        }
+
+                        if($seguimiento != ''){
+                            if($seguimiento == 1){ // Pendientes
+                                $personas = $personas->whereBetween('seguimiento',[$fecha,$fecha2]);
+                            }
+                            if($seguimiento == 0){ // Al dia
+                                $personas = $personas->whereBetween('seguimiento',[$fecha2,Carbon::now()]);
+                            }
+                        }
+                        
                         break;
                     }
                     case 'clientes.created_at':

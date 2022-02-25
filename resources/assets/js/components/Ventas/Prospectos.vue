@@ -97,6 +97,17 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-8" v-if="criterio=='clientes.vendedor_id'">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" disabled value="Seguimiento:" placeholder="Seguimiento">
+                                        <select class="form-control" v-model="b_seguimiento" >
+                                            <option value="">Todos</option>
+                                            <option value="0">Al dia</option>
+                                            <option value="1">Pendientes</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-8">
                                     <div class="input-group">
                                         <input type="text" class="form-control" disabled value="Prospectos reasignados:" placeholder="Prospectos reasignados">
@@ -822,13 +833,6 @@
                                 </div>
 
 
-                                <!-- <div class="col-md-4" v-if="publicidad_id == 1 && rolId == 2">
-                                    <div class="form-group">
-                                        <label for="">Nombre de la persona que te recomendo </label>
-                                        <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
-                                    </div>
-                                </div> -->
-
                                 <div class="col-md-4" v-if="publicidad_id == 1">
                                     <div class="form-group">
                                         <label for="">Nombre de la persona que te recomendo </label>
@@ -1423,6 +1427,7 @@
                 buscar3:'2',
                 b_clasificacion: '2',
                 b_aux:'',
+                b_seguimiento:'',
                 arrayCoacreditados : [],
                 arrayProspectos: [],
                 arrayFraccionamientos : [],
@@ -1480,7 +1485,7 @@
             listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
                 var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + 
-                    '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + 
+                    '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&seguimiento='+me.b_seguimiento +
                     '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio + '&b_aux=' + me.b_aux;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1490,7 +1495,7 @@
                     me.usuario = respuesta.user;
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    //console.log(error);
                 });
             },
             buscarCliente(){
@@ -1792,6 +1797,7 @@
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
+                me.b_seguimiento='';
                 me.b_clasificacion = "";
             },
             selectFraccionamientos(){
