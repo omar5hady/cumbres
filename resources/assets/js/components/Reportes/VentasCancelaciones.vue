@@ -82,13 +82,15 @@
                                     <table v-if="cont1 != 0" class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr v-if="activo == 1">
-                                                <th colspan="9" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="12" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="2" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="11" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
                                             <tr v-else></tr>
-                                                <th colspan="22" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="25" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             <tr @dblclick="cambiar()" >
+                                                <th>Archivo Fisc</th>
+                                                <th>RFC Fisc</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
@@ -123,6 +125,29 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="lote in arrayLotes" :key="lote.id" v-bind:style="{ backgroundColor : !lote.status == 0 ? '#FFFFFF' : '#D23939'}">
+                                                <td>
+                                                    <template v-if="lote.archivo_fisc == null">
+                                                        <span class="badge badge-warning">Sin cargar</span>
+                                                    </template>
+                                                    <template v-else>
+                                                        <button 
+                                                            type="button" @click="verImagen(lote.archivo_fisc)" class="btn btn-dark btn-sm"
+                                                                title="Ver Archivo Fiscal"
+                                                            >
+                                                                <i class="icon-eye"></i>
+                                                                &nbsp; Cargado el dia: {{lote.fecha_archivo}}
+                                                        </button>
+                                                    </template>
+                                                </td>
+                                                <td>
+                                                    <template v-if="lote.fecha_rfc == null">
+                                                        <span class="badge badge-warning">Sin registrar</span>
+                                                    </template>
+                                                    <template v-else>
+                                                        <span class="badge badge-dark">Registrado el dia: {{lote.fecha_rfc}}</span>
+                                                    </template>
+
+                                                </td>
                                                 <td class="td2" v-text="lote.proyecto"></td>
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
@@ -554,7 +579,15 @@
                     console.log(error);
                 });
             },
-
+            verImagen(imagen){
+                let url = '/files/datosFisc/'+imagen;
+                Swal.fire({
+                imageUrl: url,
+                imageWidth: 650,
+                imageHeight: 800,
+                imageAlt: 'Datos Fiscales',
+                })
+            },
             updateCostoCuotaMant(id,monto){
                 let me = this;
                 axios.put('/creditos/updateCostoCuotaMant',{

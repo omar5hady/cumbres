@@ -193,7 +193,7 @@ class IniObraController extends Controller
         //if (!$request->ajax()) return redirect('/');
  
         $id = $request->id;
-        $detalles = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+        $detalles = Ini_obra_lote::leftJoin('lotes','ini_obra_lotes.lote_id','=','lotes.id')
         ->select('ini_obra_lotes.costo_directo', 'lotes.sublote',
             'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
             'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',

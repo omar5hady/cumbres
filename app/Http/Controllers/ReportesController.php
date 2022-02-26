@@ -1317,6 +1317,7 @@ class ReportesController extends Controller
                                 'medios_publicitarios.nombre as publicidad','contratos.publicidad_id',
                                 'contratos.avance_lote', 'contratos.motivo_cancel',
                                 'a.nombre as a_nombre','a.apellidos as a_apellidos',
+                                'creditos.rfc_fisc', 'creditos.archivo_fisc','creditos.fecha_archivo', 'creditos.fecha_rfc',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
