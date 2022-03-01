@@ -268,7 +268,11 @@ body {
                 @if($contratos[0]->tipo_proyecto == 1)
                     <div class="table-row">
                         @if($contratos[0]->infonavit > 0)
-                            <div class="table-cell2">INFONAVIT: </div>
+                            @if($contratos[0]->tipo_credito == 'BANJERCITO')
+                                <div class="table-cell2">BANJERCITO: </div>
+                            @else
+                                <div class="table-cell2">INFONAVIT: </div>
+                            @endif
                             <div class="table-cell2">${{$contratos[0]->infonavit}}</div>
                         @elseif($contratos[0]->fovisste > 0)
                             <div class="table-cell2">FOVISSTE: </div>

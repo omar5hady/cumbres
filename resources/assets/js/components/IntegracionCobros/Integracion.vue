@@ -568,7 +568,7 @@
                                 <div class="col-md-9"></div>
                                 <div class="col-md-3">
                                     <button v-if="tipoAccion == 0" @click="generarIntegracion()" class="btn btn-success" title="Guardar integración"><i class="icon-check"></i>&nbsp;Guardar</button>
-                                    <button v-if="tipoAccion == 1 && datos.status == 0" @click="finalizarIntegracion()" class="btn btn-success" title="Guardar integración"><i class="icon-check"></i>&nbsp;Finalizar</button>
+                                    <button v-if="tipoAccion == 1 && datos.status == 0 && (userName == 'antonio.nv' || userName=='shady')" @click="finalizarIntegracion()" class="btn btn-success" title="Guardar integración"><i class="icon-check"></i>&nbsp;Finalizar</button>
                                 </div>
                             </div>
                         </div>

@@ -14,6 +14,7 @@ use App\Int_cobro;
 use App\Pago_cobro;
 use App\Credito;
 use App\Personal;
+use NumerosEnLetras;
 use Excel;
 use Auth;
 use DB;
@@ -217,9 +218,9 @@ class CobrosController extends Controller
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_fisc"),
             DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")
         )
-        ->where('i.elegido','=',1)
-        ->where('int_cobros.status','=',$request->status)
-        ;
+        ->where('i.elegido','=',1);
+        if($request->status != '')
+            $integraciones = $integraciones->where('int_cobros.status','=',$request->status);
 
         if($request->buscar != ''){
             $integraciones = $integraciones->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->buscar . '%');
@@ -549,5 +550,42 @@ class CobrosController extends Controller
         })->download('xls');
 
 
+    }
+
+    public function printConvenioModificatorio(Request $request){
+
+        $contrato = Int_cobro::join('creditos','int_cobros.contrato_id','=','creditos.id')
+        ->join('contratos','creditos.id','contratos.id')  
+        ->leftJoin('expedientes','contratos.id','=','expedientes.id')      
+        ->join('inst_seleccionadas as i','creditos.id','=','i.credito_id')
+        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        ->join('lotes as l', 'creditos.lote_id', '=', 'l.id')
+        ->join('etapas as e','l.etapa_id','=','e.id')
+        ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
+        ->select('int_cobros.*', 
+            'l.emp_constructora', 'l.emp_terreno',
+            'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
+            'contratos.fecha',
+            'expedientes.fecha_firma_esc',
+            'e.num_etapa as etapa',
+            'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
+            DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_completo"),
+            DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")
+        )
+        ->where('contratos.id','=',$request->id)
+        ->where('i.elegido','=',1)->first();
+
+        $tiempo = new Carbon($contrato->fecha);
+        $contrato->fecha = $tiempo->formatLocalized('%d de %B de %Y');
+
+        $tiempo = new Carbon($contrato->updated_at);
+        $contrato->fechaFin = $tiempo->formatLocalized('los dias %d del mes de %B del año %Y');
+
+        $contrato->valorLetra = NumerosEnLetras::convertir($contrato->valor_escrituras, 'Pesos', true, 'Centavos');
+        $contrato->valor_escrituras = number_format((float)$contrato->valor_escrituras, 2, '.', ',');
+
+        $pdf = \PDF::loadview('pdf.contratos.contratoModificatorio', ['contrato' => $contrato]);
+        return $pdf->stream('convenioModificatorio.pdf');
     }
 }

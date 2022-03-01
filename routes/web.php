@@ -1138,6 +1138,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/integracionCobros/finalizarIntegracion','CobrosController@finalizarIntegracion');
         Route::delete('/integracionCobros/eliminarCobro','CobrosController@eliminarCobro');
         //Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
+        Route::get('/integracionCobros/printConvenioModificatorio','CobrosController@printConvenioModificatorio');
     });
 
 

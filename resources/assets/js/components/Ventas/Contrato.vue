@@ -302,6 +302,12 @@
                                 <tbody>
                                     <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
                                         <td class="td2">
+                                             <button 
+                                            type="button" @click="verImagen(contrato.archivo_fisc)" class="btn btn-dark btn-sm"
+                                                title="Ver Archivo Fiscal"
+                                            >
+                                                <i class="icon-eye"></i>
+                                            </button>
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contrato.id}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
@@ -2111,7 +2117,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
                                 <div class="col-md-9">
-                                    <input type="file" class="form-control" v-on:change="onImageFisc">
+                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageFisc">
                                 </div>
                             </div>
 
@@ -3326,6 +3332,16 @@
                 this.sel_etapa='';
                 this.sel_manzana='';
                 this.sel_lote='';
+            },
+
+            verImagen(imagen){
+                let url = '/files/datosFisc/'+imagen;
+                Swal.fire({
+                imageUrl: url,
+                imageWidth: 600,
+                imageHeight: 800,
+                imageAlt: 'Datos Fiscales',
+                })
             },
 
             verContrato(data = []){

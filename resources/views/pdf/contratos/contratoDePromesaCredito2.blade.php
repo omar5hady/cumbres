@@ -255,7 +255,12 @@ B). La superficie de construcción que es de <strong>{{$contratoPromesa[0]->cons
     <strong>CUARTA.- </strong> El contrato definitivo de compraventa que las partes se han obligado a 
     celebrar, está sujeto a la condición suspensiva consistente en que 
     <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}} 
-    @if($contratoPromesa[0]->infonavit > 0) e INFONAVIT
+    @if($contratoPromesa[0]->infonavit > 0) 
+        @if($contratoPromesa[0]->tipo_credito == 'BANJERCITO')
+            y BANJERCITO 
+        @else
+            e INFONAVIT 
+        @endif
     @elseif($contratoPromesa[0]->fovisste > 0) y FOVISSTE
     @endif,</strong>
      otorgue a <strong>EL PROMITENTE COMPRADOR</strong> 

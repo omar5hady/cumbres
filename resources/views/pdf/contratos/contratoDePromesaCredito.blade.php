@@ -226,7 +226,12 @@ sin que esa circunstancia releva a este último de ser el responsable de realiza
             <strong>${{strtoupper($contratoPromesa[0]->precioVentaLetra)}},</strong>
         @endif
          mediante el crédito que le otorgara {{mb_strtoupper($contratoPromesa[0]->institucion)}}
-         @if($contratoPromesa[0]->infonavit > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->infonavitLetra)}}</strong> que le otorga INFONAVIT 
+         @if($contratoPromesa[0]->infonavit > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->infonavitLetra)}}</strong> que le otorga 
+            @if($contratoPromesa[0]->tipo_credito == 'BANJERCITO')
+                BANJERCITO 
+            @else
+                INFONAVIT 
+            @endif
          @elseif($contratoPromesa[0]->fovisste > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->fovissteLetra)}}</strong> que le otorga FOVISSTE 
          @endif, 
          al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA. 
