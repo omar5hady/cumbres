@@ -302,7 +302,7 @@
                                 <tbody>
                                     <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
                                         <td class="td2">
-                                             <button 
+                                             <button v-if="contrato.archivo_fisc != null"
                                             type="button" @click="verImagen(contrato.archivo_fisc)" class="btn btn-dark btn-sm"
                                                 title="Ver Archivo Fiscal"
                                             >

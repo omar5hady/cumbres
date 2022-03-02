@@ -174,17 +174,17 @@ body{
         </p>
 
         <p>
-        <strong>CUARTA.-</strong> El precio total que convienen las partes motivo de esta operación será de
-                 <strong> ${{strtoupper($contratosDom[0]->engacheTotalLetra)}} </strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
-                 será pagado por <strong>EL COMPRADOR</strong> de la siguiente forma:
+            <strong>CUARTA.-</strong> El precio total que convienen las partes motivo de esta operación será de
+            <strong> ${{strtoupper($contratosDom[0]->engacheTotalLetra)}} </strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
+            será pagado por <strong>EL COMPRADOR</strong> de la siguiente forma:
         </p>
 
         <p>
-        * Mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{strtoupper($pagos[$i]->montoPagoLetra)}},</strong>
-         que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>@endfor, respectivamente. Asimismo, el precio pactado con antelación,
-         se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
-         de los pagos pactados en el presenta contrato. <strong>EL VENDEDOR</strong> está facultado a no recibir el primer pago, sin responsabilidad de su parte, 
-         si se pretende hacer en efectivo.
+            * Mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{strtoupper($pagos[$i]->montoPagoLetra)}},</strong>
+            que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>@endfor, respectivamente. Asimismo, el precio pactado con antelación,
+            se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
+            de los pagos pactados en el presenta contrato. <strong>EL VENDEDOR</strong> está facultado a no recibir el primer pago, sin responsabilidad de su parte, 
+            si se pretende hacer en efectivo.
         </p>
 
         <p>

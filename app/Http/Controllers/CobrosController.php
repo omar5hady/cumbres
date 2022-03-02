@@ -119,6 +119,12 @@ class CobrosController extends Controller
             $credito->rfc_fisc = $request->rfc_fisc;
             $credito->save();
 
+            $inst = inst_seleccionada::select('id')->where('credito_id','=',$request->contrato_id)->where('elegido','=',1)->first();
+            $institucion = inst_seleccionada::findOrFail($inst->id);
+            $institucion->monto_credito = $request->monto_credito;
+            $institucion->segundo_credito = $request->segundo_credito;
+            $institucion->save();
+
             $cliente = Personal::findOrFail($credito->prospecto_id);
 
             $ruta = 'https://siicumbres.com//integracionCobros/exportFormat?id='.$cobro->id;
@@ -563,7 +569,7 @@ class CobrosController extends Controller
         ->join('lotes as l', 'creditos.lote_id', '=', 'l.id')
         ->join('etapas as e','l.etapa_id','=','e.id')
         ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
-        ->select('int_cobros.*', 
+        ->select('int_cobros.*', 'contratos.infonavit','contratos.fovisste',
             'l.emp_constructora', 'l.emp_terreno',
             'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
             'contratos.fecha',
@@ -576,16 +582,93 @@ class CobrosController extends Controller
         ->where('contratos.id','=',$request->id)
         ->where('i.elegido','=',1)->first();
 
+        $contrato->depositos = Pago_cobro::where('integracion_id','=',$contrato->id)->get();
+        $contrato->numPagos = 0;
+
+        foreach ($contrato->depositos as $key => $deposito) {
+            $contrato->numPagos++;
+            $tiempo = new Carbon($deposito->fecha_pago);
+            $deposito->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
+            if($deposito->cant_depo != 0)
+                $deposito->montoPagoLetra = NumerosEnLetras::convertir($deposito->cant_depo, 'Pesos', true, 'Centavos');
+            else
+                $deposito->montoPagoLetra = ' $0.00 (CERO PESOS 00/100 M.N.)';
+            $deposito->cant_depo = number_format((float)$deposito->cant_depo, 2, '.', ',');
+
+            switch ($key) {
+                case (0): {
+                        $deposito->numeros = 'primero';
+                        break;
+                    }
+                case (1): {
+                        $deposito->numeros = 'segundo';
+                        break;
+                    }
+                case (2): {
+                        $deposito->numeros = 'tercero';
+                        break;
+                    }
+                case (3): {
+                        $deposito->numeros = 'cuarto';
+                        break;
+                    }
+                case (4): {
+                        $deposito->numeros = 'quinto';
+                        break;
+                    }
+                case (5): {
+                        $deposito->numeros = 'sexto';
+                        break;
+                    }
+                case (6): {
+                        $deposito->numeros = 'septimo';
+                        break;
+                    }
+                case (7): {
+                        $deposito->numeros = 'octavo';
+                        break;
+                    }
+                case (8): {
+                        $deposito->numeros = 'noveno';
+                        break;
+                    }
+                case (9): {
+                        $deposito->numeros = 'decimo';
+                        break;
+                    }
+                case (10): {
+                        $deposito->numeros = 'onceavo';
+                        break;
+                    }
+            }
+        }
+
+        $contrato->totalPagos = NumerosEnLetras::convertir($contrato->numPagos, false, false, false);
+
+
         $tiempo = new Carbon($contrato->fecha);
         $contrato->fecha = $tiempo->formatLocalized('%d de %B de %Y');
 
         $tiempo = new Carbon($contrato->updated_at);
         $contrato->fechaFin = $tiempo->formatLocalized('los dias %d del mes de %B del año %Y');
 
-        $contrato->valorLetra = NumerosEnLetras::convertir($contrato->valor_escrituras, 'Pesos', true, 'Centavos');
+        //VALOR ESCRITURAS
+        $contrato->escriturasLetra = NumerosEnLetras::convertir($contrato->valor_escrituras, 'Pesos', true, 'Centavos');
         $contrato->valor_escrituras = number_format((float)$contrato->valor_escrituras, 2, '.', ',');
+        //VALOR TERRENO
+        $contrato->terrenoLetra = NumerosEnLetras::convertir($contrato->valor_terreno, 'Pesos', true, 'Centavos');
+        $contrato->valor_terreno = number_format((float)$contrato->valor_terreno, 2, '.', ',');
+        //VALOR CONSTRUCCION
+        $contrato->constLetra = NumerosEnLetras::convertir($contrato->valor_const, 'Pesos', true, 'Centavos');
+        $contrato->valor_const = number_format((float)$contrato->valor_const, 2, '.', ',');
+        //Montos Creditos
+        $contrato->creditoLetra = NumerosEnLetras::convertir($contrato->monto_credito, 'Pesos', true, 'Centavos');
+        $contrato->monto_credito = number_format((float)$contrato->monto_credito, 2, '.', ',');
+        $contrato->segnundocreditoLetra = NumerosEnLetras::convertir($contrato->segundo_credito, 'Pesos', true, 'Centavos');
+        //$contrato->segundo_credito = number_format((float)$contrato->segundo_credito, 2, '.', ',');
 
         $pdf = \PDF::loadview('pdf.contratos.contratoModificatorio', ['contrato' => $contrato]);
         return $pdf->stream('convenioModificatorio.pdf');
+        //return $contrato;
     }
 }

@@ -212,14 +212,122 @@ body{
                 @else
                     CUARTA
                 @endif
-                de <strong>EL CONTRATO</strong>, para quedar como sigue: <br><br>
-                <strong>
-                    “${{$contrato->valor_escrituras}} ( Clausula que se modifica con el nuevo valor de operación ).-.”
-
-
-                    “___________ ( Clausula que se modifica con la nueva forma de pago ).-.”
-                </strong>
+                de <strong>EL CONTRATO</strong>, para quedar como sigue: <br>
             </p>
+
+            @if($contrato->emp_constructora != $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
+                <p >
+                    “El precio total que será motivo de la operación de compraventa definitiva, es la suma que de
+                    <strong>${{$contrato->escriturasLetra}}</strong>, de los que la cantidad de ${{$contrato->terrenoLetra}} 
+                    equivalente al {{$contrato->porcentaje_terreno}}% del precio,
+                    corresponde al valor de EL LOTE, en tanto que la cantidad de ${{$contrato->constLetra}} equivalente al 
+                    {{$contrato->porcentaje_construccion}} del precio
+                    le corresponde al valor de la vivienda.”
+                    <br>
+                </p>
+                <p>
+                    "Ese precio lo deberá pagar <strong>EL PROMITENTE COMPRADOR</strong> a <strong>LOS PROMITENTES</strong>
+                    VENDEDORES de la siguiente manera: a).La cantidad de <strong>${{$contrato->creditoLetra}}</strong>, mediante el
+                    crédito que le otorgara <strong>{{$contrato->institucion}}</strong>
+                    @if($contrato->infonavit > 0) 
+                        y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga 
+                        @if($contrato->tipo_credito == 'BANJERCITO')
+                            BANJERCITO 
+                        @else
+                            INFONAVIT 
+                        @endif
+                    @elseif($contrato->fovisste > 0) 
+                        y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga FOVISSTE 
+                    @endif, 
+                    misma que deberá ser liquidada dentro de los 45 días
+                    naturales siguientes a la conclusión de la construcción de LA VIVIENDA. 
+                    @if($contrato->numPagos > 0) 
+                        b).El resto, mediante 
+                        <strong>{{$contrato->totalPagos}}</strong> pagos, 
+                        @for($i=0; $i < count($contrato->depositos); $i++) el <strong>{{$contrato['depositos'][$i]['numeros']}}</strong> por la cantidad de 
+                            <strong>${{strtoupper($contrato['depositos'][$i]->montoPagoLetra)}},</strong>
+                            que será liquidado a más tardar el día <strong>{{$contrato['depositos'][$i]->fecha_pago}}</strong>
+                        @endfor, respectivamente.
+                    @endif
+                    ”
+                </p>
+
+            @elseif($contrato->emp_constructora != $contrato->emp_terreno && $contrato->tipo_credito == 'Crédito Directo')
+                <p>
+                    El precio total que será motivo de la operación de compraventa definitiva, es la suma 
+                    que de <strong>${{strtoupper($contrato->escriturasLetra)}}</strong>, 
+                    de los que la cantidad de  ${{strtoupper($contrato->terrenoLetra)}} 
+                    equivalente al {{$contrato->porcentaje_terreno}}% 
+                    del precio, corresponde al valor de <strong>EL LOTE</strong>, en tanto que la cantidad 
+                    de ${{strtoupper($contrato->constLetra)}} equivalente al {{$contrato->porcentaje_construccion}}% 
+                    del precio le corresponde al valor de la vivienda. <br>
+                </p>
+
+                <p>
+                   " Ese precio sera cubierto mediante <strong>{{$contrato->totalPagos}}</strong>pagos, 
+                    @for($i=0; $i < count($contrato->depositos); $i++) 
+                        el <strong>{{$contrato['depositos'][$i]['numeros']}}</strong> por la cantidad de 
+                        <strong>${{strtoupper($contrato['depositos'][$i]->montoPagoLetra)}},</strong>
+                        que será liquidado a más tardar el día <strong>{{$contrato['depositos'][$i]->fecha_pago}}</strong>, 
+                    @endfor
+                    respectivamente. Cada uno de estos pagos, debera entregarse a <strong>CONCRETANIA</strong>, quien enterara la parte correspondiente a 
+                    <strong>CUMBRES</strong>. 
+                    Asimismo, el precio pactado con antelación,
+                    se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
+                    de los pagos pactados en el presenta contrato. "
+                </p>
+
+            @elseif($contrato->emp_constructora == $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
+                <p>
+                    "El precio total que convienen las partes, será motivo de la operación de compraventa definitiva, 
+                    es la cantidad que de <strong>${{strtoupper($contrato->escriturasLetra)}}</strong>, 
+                    mismo que EL PROMITENTE COMPRADOR se obliga a pagar a EL PROMITENTE VENDEDOR en los términos establecidos en la 
+                    cláusula de la siguiente manera: a) La cantidad de  
+                        <strong>${{strtoupper($contrato->creditoLetra)}},</strong>
+                    mediante el crédito que le otorgara {{mb_strtoupper($contrato->institucion)}}
+                    @if($contrato->infonavit > 0) y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga 
+                        @if($contrato->tipo_credito == 'BANJERCITO')
+                            BANJERCITO 
+                        @else
+                            INFONAVIT 
+                        @endif
+                    @elseif($contrato->fovisste > 0) y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga FOVISSTE 
+                    @endif, 
+                    al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 
+                    45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA."
+                    <br>
+                </p>
+                <p>
+                    @if($contrato->numPagos > 0) 
+                        " b) El resto, mediante 
+                        <strong>{{$contrato->totalPagos}}</strong>pagos, 
+                        @for($i=0; $i < count($contrato->depositos); $i++) el <strong>{{$contrato['depositos'][$i]['numeros']}}</strong> por la cantidad de 
+                            <strong>${{strtoupper($contrato['depositos'][$i]->montoPagoLetra)}},</strong>
+                            que será liquidado a más tardar el día <strong>{{$contrato['depositos'][$i]->fecha_pago}}</strong>
+                        @endfor, respectivamente. "
+                    @endif
+                </p>
+            @elseif($contrato->emp_constructora == $contrato->emp_terreno && $contrato->tipo_credito == 'Crédito Directo')
+                <p>
+                    "El precio total que convienen las partes motivo de esta operación será de
+                    <strong> ${{strtoupper($contrato->escriturasLetra)}} </strong> el precio Convenido 
+                    por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
+                    será pagado por <strong>EL COMPRADOR</strong> de la siguiente forma:"
+                </p>
+        
+                <p>
+                    "* Mediante <strong>{{$contrato->totalPagos}}</strong>pagos, 
+                    @for($i=0; $i < count($contrato->depositos); $i++) 
+                        el <strong>{{$contrato['depositos'][$i]['numeros']}}</strong> 
+                        por la cantidad de <strong>${{strtoupper($contrato['depositos'][$i]->montoPagoLetra)}},</strong>
+                        que será liquidado a más tardar el día <strong>{{$contrato['depositos'][$i]->fecha_pago}}</strong>
+                    @endfor, 
+                    respectivamente. Asimismo, el precio pactado con antelación,
+                    se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
+                    de los pagos pactados en el presenta contrato. <strong>EL VENDEDOR</strong> está facultado a no recibir el primer pago, sin responsabilidad de su parte, 
+                    si se pretende hacer en efectivo."
+                </p>
+            @endif
             <br>
 
             <p>

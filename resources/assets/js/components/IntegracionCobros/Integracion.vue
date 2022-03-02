@@ -182,6 +182,12 @@
                                                             <i class="fa fa-file-text"></i>
                                                         </a>
                                                     </button>
+                                                    <button title="Descargar contrato"
+                                                        type="button" class="btn btn-danger btn-sm">
+                                                        <a style="color:white" target="_blank" v-bind:href="'/integracionCobros/printConvenioModificatorio?id='+integracion.contrato_id">
+                                                            <i class="fa fa-file-pdf-o"></i>
+                                                        </a>
+                                                    </button>
                                                 </td>
                                                 <td class="td2" v-text="integracion.contrato_id"></td>
                                                 <td class="td2" v-text="integracion.nombre_completo"></td>
@@ -843,7 +849,9 @@
                     'col_fisc' : this.datos.col_fisc,
                     'cp_fisc' : this.datos.cp_fisc,
                     'rfc_fisc' : this.datos.rfc_fisc,
-                    'pagos' : this.datos.depositos
+                    'pagos' : this.datos.depositos,
+                    'monto_credito' : this.datos.monto_credito,
+                    'segundo_credito' : this.datos.segundo_credito
                 }).then(function (response){
                     me.limpiarDatos();
                     me.listarIntegraciones(1); //se enlistan nuevamente los registros
