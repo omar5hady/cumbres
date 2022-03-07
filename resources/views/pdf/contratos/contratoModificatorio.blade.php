@@ -16,8 +16,8 @@ body{
 }
 
 @page{
-    margin: 70px;
-    margin-bottom :90px;
+    margin: 60px;
+    margin-bottom :80px;
     margin-right: 90px;
     margin-left: 90px;
 }
@@ -99,12 +99,14 @@ body{
 
                 <p>
                     <strong>II.- </strong>Declara <strong>“LA PARTE COMPRADORA"</strong>, por su propio derecho:
-                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">A. Ser persona física con capacidad para contratar y obligarse 
+                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">A.  Ser persona física con capacidad para contratar y obligarse 
                         en los términos del presente convenio modificatorio. <br><br>
                     </li>
-                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	Que con fecha {{$contrato->fecha}}, 
+                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	 Que con fecha {{$contrato->fecha}}, 
                         celebró con <strong>LA PARTE VENDEDORA</strong>, un <strong>CONTRATO COMPRAVENTA </strong>
-                        (En lo sucesivo se le denominará <strong>El CONTRATO</strong>) respecto de una vivienda ubicada en Calle {{$contrato->calle}}  
+                        (En lo sucesivo se le denominará <strong>El CONTRATO</strong>) respecto de una vivienda ubicada en 
+                        la manzana {{$contrato->manzana}}, número de lote 
+                        {{$contrato->num_lote}}, con dirección oficial en Calle {{$contrato->calle}}  
                         Número {{$contrato->numero}}@if($contrato->interior != NULL)-{{$contrato->interior}}@endif,  Fraccionamiento {{$contrato->proyecto}}, 
                         Municipio de {{$contrato->ciudad_proy}}.
                         <br><br>
@@ -130,11 +132,11 @@ body{
             @else
                 <p>
                     <strong>I.- </strong>Declara <strong>“CUMBRES”</strong> por conducto de su representante que: 
-                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">A. Es una sociedad mercantil constituida 
+                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">A.  Es una sociedad mercantil constituida 
                         bajo las leyes de la República Mexicana, con domicilio convencional en el Número 190 
                         de la calle de Manuel Gutiérrez Nájera de la Colonia Tequisquiapan, de esta ciudad capital. <br><br>
                     </li>
-                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	Su representante cuenta con las facultades 
+                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	 Su representante cuenta con las facultades 
                         suficientes para contratar y obligarse en los términos del presente convenio y que a la fecha de la firma del 
                         mismo no le han sido revocadas o restringidas dichas facultades.
                     </li>
@@ -143,11 +145,11 @@ body{
 
                 <p>
                     <strong>II.- </strong>Declara <strong>“CONCRETANIA”</strong> por conducto de su representante que: 
-                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">A. Es una sociedad mercantil constituida 
+                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">A.  Es una sociedad mercantil constituida 
                         bajo las leyes de la República Mexicana, con domicilio convencional en el Número 180 
                         de la calle de Manuel Gutiérrez Nájera de la Colonia Tequisquiapan, de esta ciudad capital. <br><br>
                     </li>
-                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	Su representante cuenta con las facultades 
+                    <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	 Su representante cuenta con las facultades 
                         suficientes para contratar y obligarse en los términos del presente convenio y que a la fecha de la firma del 
                         mismo no le han sido revocadas o restringidas dichas facultades.
                     </li>
@@ -161,7 +163,9 @@ body{
                     </li>
                     <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">B.	Que con fecha {{$contrato->fecha}}, 
                         celebró con <strong>LA PARTE VENDEDORA</strong>, un <strong>CONTRATO COMPRAVENTA </strong>
-                        (En lo sucesivo se le denominará <strong>El CONTRATO</strong>) respecto de una vivienda ubicada en Calle {{$contrato->calle}}  
+                        (En lo sucesivo se le denominará <strong>El CONTRATO</strong>) respecto de una vivienda ubicada en 
+                        la manzana {{$contrato->manzana}}, número de lote 
+                        {{$contrato->num_lote}}, con dirección oficial en Calle {{$contrato->calle}}  
                         Número {{$contrato->numero}}@if($contrato->interior != NULL)-{{$contrato->interior}}@endif,  Fraccionamiento {{$contrato->proyecto}}, 
                         Municipio de {{$contrato->ciudad_proy}}.
                         <br><br>
@@ -238,9 +242,7 @@ body{
                         @endif
                     @elseif($contrato->fovisste > 0) 
                         y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga FOVISSTE 
-                    @endif, 
-                    misma que deberá ser liquidada dentro de los 45 días
-                    naturales siguientes a la conclusión de la construcción de LA VIVIENDA. 
+                    @endif. 
                     @if($contrato->numPagos > 0) 
                         b).El resto, mediante 
                         <strong>{{$contrato->totalPagos}}</strong> pagos, 
@@ -271,10 +273,7 @@ body{
                         que será liquidado a más tardar el día <strong>{{$contrato['depositos'][$i]->fecha_pago}}</strong>, 
                     @endfor
                     respectivamente. Cada uno de estos pagos, debera entregarse a <strong>CONCRETANIA</strong>, quien enterara la parte correspondiente a 
-                    <strong>CUMBRES</strong>. 
-                    Asimismo, el precio pactado con antelación,
-                    se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
-                    de los pagos pactados en el presenta contrato. "
+                    <strong>CUMBRES</strong>. "
                 </p>
 
             @elseif($contrato->emp_constructora == $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
@@ -292,9 +291,7 @@ body{
                             INFONAVIT 
                         @endif
                     @elseif($contrato->fovisste > 0) y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga FOVISSTE 
-                    @endif, 
-                    al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 
-                    45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA."
+                    @endif."
                     <br>
                 </p>
                 <p>
@@ -322,10 +319,7 @@ body{
                         por la cantidad de <strong>${{strtoupper($contrato['depositos'][$i]->montoPagoLetra)}},</strong>
                         que será liquidado a más tardar el día <strong>{{$contrato['depositos'][$i]->fecha_pago}}</strong>
                     @endfor, 
-                    respectivamente. Asimismo, el precio pactado con antelación,
-                    se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
-                    de los pagos pactados en el presenta contrato. <strong>EL VENDEDOR</strong> está facultado a no recibir el primer pago, sin responsabilidad de su parte, 
-                    si se pretende hacer en efectivo."
+                    respectivamente. "
                 </p>
             @endif
             <br>

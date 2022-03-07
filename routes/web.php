@@ -455,6 +455,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/estimaciones/updateImporTotal','IniObraController@updateImporTotal');
 
         Route::post('/estimaciones/store','IniObraController@storeEstimacion');
+        Route::post('/estimaciones/update','IniObraController@updateEstimacion');
         Route::post('/estimaciones/storeAnticipo','IniObraController@storeAnticipo');
         Route::post('/estimaciones/storeFG','IniObraController@storeFG');
 

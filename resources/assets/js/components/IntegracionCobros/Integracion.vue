@@ -681,10 +681,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Banco</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="cobro.banco">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
-                                        </select>
+                                        <input type="text" v-model="cobro.banco" class="form-control" placeholder="Clave">
                                     </div>
                                 </div>
 

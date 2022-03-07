@@ -560,6 +560,8 @@ class CobrosController extends Controller
 
     public function printConvenioModificatorio(Request $request){
 
+        setlocale(LC_TIME, 'es_MX.utf8');
+
         $contrato = Int_cobro::join('creditos','int_cobros.contrato_id','=','creditos.id')
         ->join('contratos','creditos.id','contratos.id')  
         ->leftJoin('expedientes','contratos.id','=','expedientes.id')      

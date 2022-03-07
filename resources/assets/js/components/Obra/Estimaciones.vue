@@ -103,441 +103,479 @@
                         </div>
                     </template>
 
+                    <!--  VISTA DETALLE  -->
                     <template v-if="listado == 0">
                        <div class="card-body"> 
-                            <!-- <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;"> -->
-
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <center> <h5 style="color: #153157;">Contrato: {{clave}}</h5> </center>
-                                    </div>
-                                </div> 
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <center> <h6 style="color: #153157;">Contratista: {{contratista}}</h6> </center>
-                                    </div>
-                                </div> 
-
-                                <div class="col-md-12">
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Importe del Contrato</label>
-                                        <div class="col-md-4" v-if="arrayFG.length > 0">
-                                             $ {{formatNumber(total_importe)}}
-                                        </div>
-                                        <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 0">
-                                             <a href="#" @dblclick="edit = 1, total_impAux = total_importe" title="Doble clic para editar">$ {{formatNumber(total_importe)}}</a>
-                                        </div>
-                                        <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 1">
-                                             <input type="text" pattern="\d*" @keyup.esc="cancel()" v-on:keypress="isNumber($event)" v-model="total_impAux" @keyup.enter="updateTotal()">
-                                        </div>
-                                    </div>
-                                </div> 
-
-
-                                <div class="col-md-12">
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Importe del Anticipo</label>
-                                        <div class="col-md-4">
-                                             $ {{formatNumber(total_anticipo)}}
-                                        </div>
-                                        <div class="col-md-1">
-                                        </div>
-                                        <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
-                                        <div class="col-md-2">
-                                                {{(formatNumber(total_acum_actual/total_importe)*100)}}%
-                                        </div>
-                                    </div>
-                                </div> 
-
-                                <div class="col-md-12">
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Fonde de Garantía a Retención</label>
-                                        <div class="col-md-4">
-                                             $ {{formatNumber(importe_garantia)}}
-                                        </div>
-
-                                        <div class="col-md-1">
-                                             
-                                        </div>
-                                        <label class="col-md-2 form-control-label" for="text-input">Número de casas</label>
-                                        <div class="col-md-2">
-                                             {{num_casas}}
-                                        </div>
-                                    </div>
+                            <!--Encabezado-->
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <center> <h5 style="color: #153157;">Contrato: {{clave}}</h5> </center>
                                 </div>
+                            </div> 
 
-                                <template v-if="nueva == 0">
-                                    <div class="col-md-12">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
-                                            <div class="col-md-2">
-                                                <select class="form-control" v-model="b_estimacion" @click="getPartidas(aviso_id), n_excel = b_estimacion">
-                                                    <option value="">Seleccione</option>
-                                                    <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" :value="estimacion.num_estimacion" v-text="estimacion.num_estimacion"></option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
-                                                <button type="button" @click="nueva = 1"  class="btn btn-primary">
-                                                    <i class="icon-plus"></i>&nbsp;Nueva estimación
-                                                </button>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+num_casas"  
-                                                    class="btn btn-success"><i class="fa fa-file-text"></i> Excel
-                                                </a>
-                                            </div>
-
-                                        </div>
-                                    </div> 
-                                </template> 
-
-                                <template v-if="nueva == 1">
-                                    <div class="col-md-12">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
-                                            <div class="col-md-2">
-                                                <input type="number" disabled v-model="num_estimacion" min="0" step="1" class="form-control" placeholder="Núm. Estimación">
-                                            </div>
-
-                                            
-
-                                        </div>
-                                    </div> 
-
-                                    <div class="col-md-12">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Inicio Periodo</label>
-                                            <div class="col-md-3">
-                                                <input type="date" v-model="periodo1" class="form-control" >
-                                            </div>
-                                            <label class="col-md-2 form-control-label" for="text-input">Fin Periodo</label>
-                                            <div class="col-md-3">
-                                                <input type="date" v-model="periodo2" class="form-control" >
-                                            </div>
-                                        </div>
-                                    </div> 
-
-                                    <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <div class="col-md-2">
-                                                        <button type="button" v-if="periodo1 != '' && periodo2 != ''" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
-                                                            <i class="icon-check"></i>&nbsp;Guardar
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="col-md-1"></div>
-                                                    
-                                                    <div class="col-md-2">
-                                                        <button type="button" @click="nueva = 0"  class="btn btn-warning">
-                                                            <i class="icon-close"></i>&nbsp;Cancelar
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                </template>
-
-                                <div class="table-responsive" >
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Paquete</th>
-                                                <th>P.U. Prorrateado</th>
-                                                <th>No. de Viviendas</th>
-                                                <th colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}}</th>
-                                                <th colspan="2" v-else-if="nueva == 1">Estimación No. {{num_estimacion}}</th>
-                                                <th colspan="2">Cantidad Tope</th>
-                                                <th colspan="2">Acumulado</th>
-                                                <th colspan="2">Por Estimar</th>
-                                                <!-- <th>Total por Pagar</th> -->
-                                                
-                                            </tr>
-                                            <tr>
-                                                <th colspan="12"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(partida,index) in arrayPartidas" :key="partida.id">
-                                                <td class="td2" v-text="index+1"></td>
-                                                <td class="td2" v-text="partida.partida"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(partida.pu_prorrateado)"></td>
-                                                <td class="td2" v-text="num_casas"></td>
-                                                <template v-if="nueva == 0">
-                                                    <td class="td2" v-if="numero != 0" v-text="partida.vol"></td>
-                                                    <td class="td2" v-if="numero != 0" v-text="'$' + formatNumber( partida.costoA )"></td>
-                                                </template>
-                                                <template v-else>
-                                                    <td class="td2">
-                                                        <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
-                                                    </td>
-                                                    <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
-                                                </template>
-                                                
-                                                <td class="td2" v-text="num_casas"></td>
-                                                <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * num_casas) )"></td>
-                                                <td class="td2"> 
-                                                    {{ partida.acumVolTotal=parseInt(partida.acumVol) + parseInt(partida.num_estimacion) }} 
-                                                </td>
-                                                <td class="td2">
-                                                    $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
-                                                </td>
-                                                <td class="td2">
-                                                    {{ partida.porEstimarVol=parseInt(num_casas) - parseInt(partida.num_estimacion) - parseInt(partida.acumVol) }}
-                                                </td>
-                                                <td class="td2">
-                                                    $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <th colspan="2" class="text-right">Gran Total: </th>
-                                                <th class="td2">$ {{formatNumber(total1 = totalPU)}}</th>
-                                                <template v-if="nueva == 0">
-                                                    <template v-if="(total2 = totalEst2) > 0">
-                                                        <th colspan="2"></th>
-                                                        <th class="td2">$ {{formatNumber(total2)}}</th>
-                                                    </template>
-                                                    <template v-else>
-                                                        <th></th>
-                                                    </template>
-                                                </template>
-                                                <template v-else>
-                                                    <th colspan="2"></th>
-                                                    <th class="td2">$ {{formatNumber(total2 = totalEst)}}</th>
-                                                </template>
-                                                <th>Importe: </th>
-                                                <th class="td2">$ {{formatNumber(total3 = totalTope)}}</th>
-                                                <th></th>
-                                                <th class="td2">$ {{formatNumber(to5al4 = totalAcum)}}</th>
-                                                <th></th>
-                                                <th class="td2">$ {{formatNumber(total3 = totalPorEst)}}</th>
-
-                                            </tr>                         
-                                        </tbody>
-                                    </table>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <center> <h6 style="color: #153157;">Contratista: {{contratista}}</h6> </center>
                                 </div>
+                            </div> 
 
-                                <div class="table-responsive" > <br>
-                                </div>
-
-                                <!-- TABLA RESUMEN -->
-                                <div class="table-responsive"  v-if="nueva == 0" >
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Acum Ant</th>
-                                                <th>Esta Estimación</th>
-                                                <th>Acum Actual</th>
-                                                <th>Por Estimar</th>
-                                                <!-- <th>Total por Pagar</th> -->
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="td2" v-text="'ESTIMADO'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_acum_ant)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_estimacion)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_acum_actual = total_estimacion + total_acum_ant)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_por_estimar = total_importe - total_acum_actual)"></td>
-                                            </tr>   
-                                            <tr>
-                                                <td class="td2" v-text="'AMOR. ANTICIPO'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_acum_ant = total_acum_ant * porc_anticipo)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_estimacion = total_estimacion * porc_anticipo)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_acum_actual = amor_total_acum_ant + amor_total_estimacion)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_por_estimar = total_anticipo - amor_total_acum_actual)"></td>
-                                            </tr>  
-                                            <tr>
-                                                <td class="td2" v-text="'F. G.'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_acum_ant = total_acum_ant * porc_garantia)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_estimacion = total_estimacion * porc_garantia)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_acum_actual = fg_total_acum_ant + fg_total_estimacion)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_por_estimar = importe_garantia - fg_total_acum_actual)"></td>
-                                            </tr>  
-                                            <tr>
-                                                <td class="td2" v-text="'PAGADO'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_ant = total_acum_ant - ( fg_total_acum_ant + amor_total_acum_ant))"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_estimacion = total_estimacion - ( fg_total_estimacion + amor_total_estimacion ))"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_actual = total_acum_actual - ( fg_total_acum_actual + amor_total_acum_actual))"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_por_estimar = total_por_estimar - ( fg_total_por_estimar + amor_total_por_estimar))"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="table-responsive" >
-                                    <br><br>
-                                </div>
-                                
+                            <div class="col-md-12">
                                 <div class="form-group row">
-                                    <!-- TABLA ANTICIPOS -->
-                                    <div class="col-md-5">
-                                        <div class="table-responsive"  v-if="nueva == 0" >
-                                            <table class="table2 table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Anticipo</th>
-                                                        <th v-text="'$'+formatNumber(total_anticipo)"></th>
-                                                        <th v-if="arrayNumEstim.length == 0">
-                                                            <button title="Añadir" type="button" @click="abrirModal('anticipo')" class="btn btn-success btn-sm">
-                                                                <i class="icon-plus"></i>
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="anticipo in arrayAnticipos" :key="anticipo.id">
-                                                        <td class="td2" v-text="'Pago de Anticipo de Vivienda ('+this.moment(anticipo.fecha_anticipo).locale('es').format('DD/MMM/YYYY')+')'"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(anticipo.monto_anticipo)"></td>
-                                                    </tr>   
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Importe del Contrato</label>
+                                    <div class="col-md-4" v-if="arrayFG.length > 0">
+                                            $ {{formatNumber(total_importe)}}
                                     </div>
+                                    <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 0">
+                                            <a href="#" @dblclick="edit = 1, total_impAux = total_importe" title="Doble clic para editar">$ {{formatNumber(total_importe)}}</a>
+                                    </div>
+                                    <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 1">
+                                            <input type="text" pattern="\d*" @keyup.esc="cancel()" v-on:keypress="isNumber($event)" v-model="total_impAux" @keyup.enter="updateTotal()">
+                                    </div>
+                                </div>
+                            </div> 
 
-                                    <!-- MONTO ESTIMACION ACTUAL -->
+
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Importe del Anticipo</label>
+                                    <div class="col-md-4">
+                                            $ {{formatNumber(total_anticipo)}}
+                                    </div>
+                                    <div class="col-md-1">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
                                     <div class="col-md-2">
-                                        <div class="table-responsive"  v-if="nueva == 0" > 
-                                            <center>
-                                                Esta estimacion: 
-                                                <h5 style="color: #153157;">
-                                                    <strong> ${{formatNumber(pagado_total_estimacion)}} </strong>
-                                                </h5> 
-                                            </center> 
-                                        </div>
+                                            {{(formatNumber(total_acum_actual/total_importe)*100)}}%
                                     </div>
-
-                                    <!-- TABLA FONDO DE GARANTIA -->
-                                    <div class="col-md-5">
-                                        <div class="table-responsive"  v-if="nueva == 0" >
-                                            <table class="table2 table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="4">Fondo de Garantia</th>
-                                                        <th>
-                                                            <button title="Añadir" type="button" @click="abrirModal('fg')" class="btn btn-success btn-sm">
-                                                                <i class="icon-plus"></i>
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="td2" v-text="'Viviendas'"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(importe_garantia)"></td>
-                                                        <td class="td2" v-text="num_casas"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(fg_indiv = importe_garantia/num_casas)"></td>
-                                                    </tr>   
-                                                    <tr v-for="fg in arrayFG" :key="fg.id">
-                                                        <td class="td2" colspan="2" v-text="'Pago de ' + fg.cantidad + ' FG (' + this.moment(fg.fecha_fg).locale('es').format('DD/MMM/YYYY')+')'"></td>
-                                                        <td class="td2" v-text="fg.cantidad"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(fg.monto_fg)"></td>
-
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
                                 </div>
+                            </div> 
 
+                            <div class="col-md-12">
                                 <div class="form-group row">
-
-                                    <div class="col-md-6">
-                                        <div class="table-responsive"  v-if="nueva == 0" > 
-                                            <table class="table2 table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="2">Obra extra</th>
-
-                                                        <th v-if="edit2 == 1">
-                                                            <input type="text" pattern="\d*" @keyup.esc="cancel()" 
-                                                                v-on:keypress="isNumber($event)" v-model="total_impAux">
-                                                        </th>
-
-                                                        <th v-else>
-                                                            <a href="#" @dblclick="edit2 = 1, total_impAux = impExtra" 
-                                                                title="Doble clic para editar">$ {{formatNumber(impExtra)}}</a>
-                                                        </th>
-
-                                                        <th v-if="edit2 == 1">
-                                                            <input type="date" @keyup.esc="cancel()" 
-                                                                v-on:keypress="isNumber($event)" v-model="dateAux">
-                                                        </th>
-
-                                                        <th v-else v-text="fechaExtra"></th>
-                                                        
-                                                        <th>
-                                                            <button v-if="edit2 == 1" title="Guardar" type="button" @click="storeImporteExtra()" class="btn btn-success btn-sm">
-                                                                <i class="icon-check"></i>
-                                                            </button>
-                                                            <button v-if="edit2 == 1" title="Cancelar" type="button" @click="cancel()" class="btn btn-danger btn-sm">
-                                                                <i class="icon-close"></i>
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                
-                                                    
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="td2"><strong>No.</strong> </td>
-                                                        <td class="td2"><strong>Fecha</strong> </td>
-                                                        <td colspan="2" class="td2"><strong>Concepto</strong> </td>
-                                                        <td class="td2"><strong>Importe</strong> </td>
-                                                            <button v-if="impExtra>0" title="Añadir" type="button" @click="abrirModal('extra')" class="btn btn-success btn-sm">
-                                                                <i class="icon-plus"></i>
-                                                            </button>
-                                                    </tr>   
-                                                    <tr v-for="(extra,index) in arrayExtra" :key="extra.id">
-                                                        <td class="td2" v-text="index+1"></td>
-                                                        <td class="td2" v-text="this.moment(extra.fecha).locale('es').format('DD/MMM/YYYY')"></td>
-                                                        <td colspan="2" class="td2" v-text="extra.concepto"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(extra.importe)"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Fonde de Garantía a Retención</label>
+                                    <div class="col-md-4">
+                                            $ {{formatNumber(importe_garantia)}}
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <div class="table-responsive"  v-if="nueva == 0" > 
-                                            <table class="table2 table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="2">Observaciones</th>
-                                                        <th>
-                                                            <button title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
-                                                                <i class="icon-plus"></i>
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Fecha</th>
-                                                        <th>Usuario</th>
-                                                        <th>Observación</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody> 
-                                                    <tr v-for="obs in arrayObs" :key="obs.id">
-                                                        <td class="td2" v-text="this.moment(obs.fecha).locale('es').format('DD/MMM/YYYY')"></td>
-                                                        <td class="td2" v-text="obs.usuario"></td>
-                                                        <td class="td2" v-text="obs.observacion"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                    <div class="col-md-1">
+                                            
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Número de casas</label>
+                                    <div class="col-md-2">
+                                            {{num_casas}}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <template v-if="nueva == 0">
+                                <div class="col-md-12">
+                                    <!-- Selector de estimaciones -->
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
+                                        <div class="col-md-2">
+                                            <select class="form-control" :disabled="editarEstimacion == 1" v-model="b_estimacion" @click="getPartidas(aviso_id), n_excel = b_estimacion">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" :value="estimacion.num_estimacion" v-text="estimacion.num_estimacion"></option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
+                                            <button type="button" @click="nueva = 1"  class="btn btn-primary">
+                                                <i class="icon-plus"></i>&nbsp;Nueva estimación
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-2" v-if="actual == numero">
+                                            <button type="button" @click="editarEstimacion = 1, partidasAct()"  class="btn btn-warning">
+                                                <i class="icon-pencil"></i>&nbsp;Editar estimacioón
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+num_casas"  
+                                                class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div> 
+                            </template> 
+
+                            <template v-if="nueva == 1 && editarEstimacion == 0">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
+                                        <div class="col-md-2">
+                                            <input type="number" disabled v-model="num_estimacion" min="0" step="1" class="form-control" placeholder="Núm. Estimación">
                                         </div>
                                     </div>
+                                </div> 
 
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Inicio Periodo</label>
+                                        <div class="col-md-3">
+                                            <input type="date" v-model="periodo1" class="form-control" >
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Fin Periodo</label>
+                                        <div class="col-md-3">
+                                            <input type="date" v-model="periodo2" class="form-control" >
+                                        </div>
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-2">
+                                            <button type="button" v-if="periodo1 != '' && periodo2 != ''" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
+                                                <i class="icon-check"></i>&nbsp;Guardar
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-1"></div>
+                                        
+                                        <div class="col-md-2">
+                                            <button type="button" @click="nueva = 0"  class="btn btn-warning">
+                                                <i class="icon-close"></i>&nbsp;Cancelar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template v-if="editarEstimacion == 1">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
+                                        <div class="col-md-2">
+                                            <input type="number" disabled v-model="numero" min="0" step="1" class="form-control" placeholder="Núm. Estimación">
+                                        </div>
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <div class="col-md-2">
+                                            <button type="button" @click="updateEstimacion(arrayPartidas)"  class="btn btn-success">
+                                                <i class="icon-check"></i>&nbsp;Actualizar
+                                            </button>
+                                        </div>
+
+                                        <div class="col-md-1"></div>
+                                        
+                                        <div class="col-md-2">
+                                            <button type="button" @click="editarEstimacion = 0, getPartidas(
+                                                aviso_id);"  class="btn btn-warning">
+                                                <i class="icon-close"></i>&nbsp;Cancelar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- TABLA DE PARTIDAS Y AVANCE -->
+                            <div class="table-responsive" >
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Paquete</th>
+                                            <th>P.U. Prorrateado</th>
+                                            <th>No. de Viviendas</th>
+                                            <th colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}}</th>
+                                            <th colspan="2" v-else-if="nueva == 1">Estimación No. {{num_estimacion}}</th>
+                                            <th colspan="2">Cantidad Tope</th>
+                                            <th colspan="2">Acumulado</th>
+                                            <th colspan="2">Por Estimar</th>
+                                            <!-- <th>Total por Pagar</th> -->
+                                            
+                                        </tr>
+                                        <tr>
+                                            <th colspan="12"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(partida,index) in arrayPartidas" :key="partida.id">
+                                            <td class="td2" v-text="index+1"></td>
+                                            <td class="td2" v-text="partida.partida"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(partida.pu_prorrateado)"></td>
+                                            <td class="td2" v-text="num_casas"></td>
+                                            <template v-if="nueva == 0 && editarEstimacion == 0">
+                                                <td class="td2" v-if="numero != 0" v-text="partida.vol"></td>
+                                                <td class="td2" v-if="numero != 0" v-text="'$' + formatNumber( partida.costoA )"></td>
+                                            </template>
+                                            <template v-else-if="nueva == 1">
+                                                <td class="td2">
+                                                    <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
+                                                </td>
+                                                <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
+                                            </template>
+                                            <template v-else-if="editarEstimacion == 1 && nueva == 0">
+                                                <td class="td2">
+                                                    <input type="number"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
+                                                </td>
+                                                <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
+                                            </template>
+                                            
+                                            <td class="td2" v-text="num_casas"></td>
+                                            <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * num_casas) )"></td>
+                                            <td class="td2"> 
+                                                {{ partida.acumVolTotal=parseFloat(partida.acumVol) + parseFloat(partida.num_estimacion) }} 
+                                            </td>
+                                            <td class="td2">
+                                                $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
+                                            </td>
+                                            <td class="td2">
+                                                {{ partida.porEstimarVol=parseFloat(num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol) }}
+                                            </td>
+                                            <td class="td2">
+                                                $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th colspan="2" class="text-right">Gran Total: </th>
+                                            <th class="td2">$ {{formatNumber(total1 = totalPU)}}</th>
+                                            <template v-if="nueva == 0 && editarEstimacion == 0">
+                                                <template v-if="(total2 = totalEst2) > 0">
+                                                    <th colspan="2"></th>
+                                                    <th class="td2">$ {{formatNumber(total2)}}</th>
+                                                </template>
+                                                <template v-else>
+                                                    <th></th>
+                                                </template>
+                                            </template>
+                                            <template v-else>
+                                                <th colspan="2"></th>
+                                                <th class="td2">$ {{formatNumber(total2 = totalEst)}}</th>
+                                            </template>
+                                            <th>Importe: </th>
+                                            <th class="td2">$ {{formatNumber(total3 = totalTope)}}</th>
+                                            <th></th>
+                                            <th class="td2">$ {{formatNumber(to5al4 = totalAcum)}}</th>
+                                            <th></th>
+                                            <th class="td2">$ {{formatNumber(total3 = totalPorEst)}}</th>
+
+                                        </tr>                         
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="table-responsive" > <br>
+                            </div>
+
+                            <!-- TABLA RESUMEN -->
+                            <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" >
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Acum Ant</th>
+                                            <th>Esta Estimación</th>
+                                            <th>Acum Actual</th>
+                                            <th>Por Estimar</th>
+                                            <!-- <th>Total por Pagar</th> -->
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="td2" v-text="'ESTIMADO'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(total_acum_ant)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(total_estimacion)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(total_acum_actual = total_estimacion + total_acum_ant)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(total_por_estimar = total_importe - total_acum_actual)"></td>
+                                        </tr>   
+                                        <tr>
+                                            <td class="td2" v-text="'AMOR. ANTICIPO'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(amor_total_acum_ant = total_acum_ant * porc_anticipo)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(amor_total_estimacion = total_estimacion * porc_anticipo)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(amor_total_acum_actual = amor_total_acum_ant + amor_total_estimacion)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(amor_total_por_estimar = total_anticipo - amor_total_acum_actual)"></td>
+                                        </tr>  
+                                        <tr>
+                                            <td class="td2" v-text="'F. G.'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(fg_total_acum_ant = total_acum_ant * porc_garantia)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(fg_total_estimacion = total_estimacion * porc_garantia)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(fg_total_acum_actual = fg_total_acum_ant + fg_total_estimacion)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(fg_total_por_estimar = importe_garantia - fg_total_acum_actual)"></td>
+                                        </tr>  
+                                        <tr>
+                                            <td class="td2" v-text="'PAGADO'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_ant = total_acum_ant - ( fg_total_acum_ant + amor_total_acum_ant))"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_estimacion = total_estimacion - ( fg_total_estimacion + amor_total_estimacion ))"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_actual = total_acum_actual - ( fg_total_acum_actual + amor_total_acum_actual))"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_por_estimar = total_por_estimar - ( fg_total_por_estimar + amor_total_por_estimar))"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="table-responsive" >
+                                <br><br>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <!-- TABLA ANTICIPOS -->
+                                <div class="col-md-5">
+                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" >
+                                        <table class="table2 table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Anticipo</th>
+                                                    <th v-text="'$'+formatNumber(total_anticipo)"></th>
+                                                    <th v-if="arrayNumEstim.length == 0">
+                                                        <button title="Añadir" type="button" @click="abrirModal('anticipo')" class="btn btn-success btn-sm">
+                                                            <i class="icon-plus"></i>
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="anticipo in arrayAnticipos" :key="anticipo.id">
+                                                    <td class="td2" v-text="'Pago de Anticipo de Vivienda ('+this.moment(anticipo.fecha_anticipo).locale('es').format('DD/MMM/YYYY')+')'"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(anticipo.monto_anticipo)"></td>
+                                                </tr>   
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
-                            <!-- </div> -->
+                                <!-- MONTO ESTIMACION ACTUAL -->
+                                <div class="col-md-2">
+                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
+                                        <center>
+                                            Esta estimacion: 
+                                            <h5 style="color: #153157;">
+                                                <strong> ${{formatNumber(pagado_total_estimacion)}} </strong>
+                                            </h5> 
+                                        </center> 
+                                    </div>
+                                </div>
+
+                                <!-- TABLA FONDO DE GARANTIA -->
+                                <div class="col-md-5">
+                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" >
+                                        <table class="table2 table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4">Fondo de Garantia</th>
+                                                    <th>
+                                                        <button title="Añadir" type="button" @click="abrirModal('fg')" class="btn btn-success btn-sm">
+                                                            <i class="icon-plus"></i>
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="td2" v-text="'Viviendas'"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(importe_garantia)"></td>
+                                                    <td class="td2" v-text="num_casas"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(fg_indiv = importe_garantia/num_casas)"></td>
+                                                </tr>   
+                                                <tr v-for="fg in arrayFG" :key="fg.id">
+                                                    <td class="td2" colspan="2" v-text="'Pago de ' + fg.cantidad + ' FG (' + this.moment(fg.fecha_fg).locale('es').format('DD/MMM/YYYY')+')'"></td>
+                                                    <td class="td2" v-text="fg.cantidad"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(fg.monto_fg)"></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group row">
+
+                                <div class="col-md-6">
+                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
+                                        <table class="table2 table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2">Obra extra</th>
+
+                                                    <th v-if="edit2 == 1">
+                                                        <input type="text" pattern="\d*" @keyup.esc="cancel()" 
+                                                            v-on:keypress="isNumber($event)" v-model="total_impAux">
+                                                    </th>
+
+                                                    <th v-else>
+                                                        <a href="#" @dblclick="edit2 = 1, total_impAux = impExtra" 
+                                                            title="Doble clic para editar">$ {{formatNumber(impExtra)}}</a>
+                                                    </th>
+
+                                                    <th v-if="edit2 == 1">
+                                                        <input type="date" @keyup.esc="cancel()" 
+                                                            v-on:keypress="isNumber($event)" v-model="dateAux">
+                                                    </th>
+
+                                                    <th v-else v-text="fechaExtra"></th>
+                                                    
+                                                    <th>
+                                                        <button v-if="edit2 == 1" title="Guardar" type="button" @click="storeImporteExtra()" class="btn btn-success btn-sm">
+                                                            <i class="icon-check"></i>
+                                                        </button>
+                                                        <button v-if="edit2 == 1" title="Cancelar" type="button" @click="cancel()" class="btn btn-danger btn-sm">
+                                                            <i class="icon-close"></i>
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            
+                                                
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="td2"><strong>No.</strong> </td>
+                                                    <td class="td2"><strong>Fecha</strong> </td>
+                                                    <td colspan="2" class="td2"><strong>Concepto</strong> </td>
+                                                    <td class="td2"><strong>Importe</strong> </td>
+                                                        <button v-if="impExtra>0" title="Añadir" type="button" @click="abrirModal('extra')" class="btn btn-success btn-sm">
+                                                            <i class="icon-plus"></i>
+                                                        </button>
+                                                </tr>   
+                                                <tr v-for="(extra,index) in arrayExtra" :key="extra.id">
+                                                    <td class="td2" v-text="index+1"></td>
+                                                    <td class="td2" v-text="this.moment(extra.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                                    <td colspan="2" class="td2" v-text="extra.concepto"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(extra.importe)"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
+                                        <table class="table2 table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2">Observaciones</th>
+                                                    <th>
+                                                        <button title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
+                                                            <i class="icon-plus"></i>
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Usuario</th>
+                                                    <th>Observación</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody> 
+                                                <tr v-for="obs in arrayObs" :key="obs.id">
+                                                    <td class="td2" v-text="this.moment(obs.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                                    <td class="td2" v-text="obs.usuario"></td>
+                                                    <td class="td2" v-text="obs.observacion"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                     </template>
                         
@@ -945,7 +983,8 @@
                 importe:0,
                 mes:'01',
                 anio:2021,
-                observacion : ''
+                observacion : '',
+                editarEstimacion : 0
             }
         },
         components:{
@@ -1097,6 +1136,7 @@
                 this.total3 = 0;
                 this.total4 = 0;
                 this.total5 = 0;
+                this.b_estimacion = '';
                 var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1208,6 +1248,19 @@
                     return true;
                 }
             },
+            partidasAct(){
+                let me = this;
+                me.b_estimacion = me.actual;
+                //me.getPartidas(me.aviso_id);
+                let costo = 0;
+
+                me.arrayPartidas.forEach(element => {
+                    costo = element.vol * element.pu_prorrateado;
+                    element.num_estimacion = element.vol;
+                    element.acumVol = element.acumVol - element.vol; 
+                    element.acumCosto = element.acumCosto - costo;
+                });
+            },
             getPartidas(id){
                 let me = this;
                 me.periodo1 = '';
@@ -1222,7 +1275,7 @@
                     me.num_estimacion = respuesta.num_est;
                     me.arrayNumEstim = respuesta.numeros;
                     if(me.arrayNumEstim.length > 0)
-                        me.b_estimacion = me.arrayNumEstim[0].num_estimacion;
+                        me.b_estimacion = me.numero;
                     me.actual = respuesta.actual;
                     me.total_estimacion = respuesta.total_estimacion;
                     me.total_acum_ant = respuesta.totalEstimacionAnt;
@@ -1244,10 +1297,10 @@
             },
             validar(index){
                 let me = this;
-                var acumulado = parseInt (me.arrayPartidas[index].porEstimarVol);
+                var acumulado = parseFloat (me.arrayPartidas[index].porEstimarVol);
                 var volumen = 0;
                 if(acumulado<0){
-                    volumen = parseInt( me.arrayPartidas[index].num_estimacion );
+                    volumen = parseFloat( me.arrayPartidas[index].num_estimacion );
                     me.arrayPartidas[index].num_estimacion = volumen + acumulado;
                 }
                 
@@ -1435,8 +1488,55 @@
                     }
                 })
             },
-            updateTotal(){
+            updateEstimacion(data){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+
+                let amorEstimacion = me.total2*me.porc_anticipo;
+                let totalGarantia = me.total2*me.porc_garantia;
+
+                let totalPagar = me.total2 - (amorEstimacion + totalGarantia);
                 
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+                    if (result.value) {
+                        me.arrayPartidas.forEach(element => {
+                            if(element.num_estimacion != 0){
+                                axios.post('/estimaciones/update',{
+                                    'estimacion_id' : element.id,
+                                    'costo' : element.costo,
+                                    'vol' : element.num_estimacion,
+                                    'num_estimacion' : this.actual,
+                                    'total_estimacion' : this.total2,
+                                    'total_pagado' : totalPagar,
+                                }); 
+                                me.editarEstimacion = 0;
+                                me.b_estimacion = '';
+                                me.getPartidas(me.aviso_id);
+                                Swal({
+                                    title: 'Hecho!',
+                                    text: 'Estimacion actualizada correctamente',
+                                    type: 'success',
+                                    animation: false,
+                                    customClass: 'animated bounceInRight'
+                                })
+                            }
+                        });
+                    }
+                })
+            },
+            updateTotal(){         
                 let me = this;
                 Swal({
                     title: '¿Desea continuar?',

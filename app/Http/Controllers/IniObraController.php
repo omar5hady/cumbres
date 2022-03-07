@@ -1623,6 +1623,37 @@ class IniObraController extends Controller
         $estimacion->save();
     }
 
+    public function updateEstimacion(Request $request){
+        $est = Hist_estimacion::select('id','ini','fin')
+                    ->where('estimacion_id','=',$request->estimacion_id)
+                    ->where('num_estimacion','=',$request->num_estimacion)
+                    ->get();
+
+        if(sizeof($est)){
+            $estimacion = Hist_estimacion::findOrFail($est[0]->id);
+            if($request->vol == 0){
+                $estimacion->delete();
+            }
+            else{
+                $estimacion->vol = $request->vol;
+                $estimacion->costo = $request->costo;
+                $estimacion->total_estimacion = $request->total_estimacion;
+                $estimacion->total_pagado = $request->total_pagado;
+                $estimacion->save();
+            }
+        }
+        else{
+            $estimacion = new Hist_estimacion();
+            $estimacion->estimacion_id = $request->estimacion_id;
+            $estimacion->num_estimacion = $request->num_estimacion;
+            $estimacion->vol = $request->vol;
+            $estimacion->costo = $request->costo;
+            $estimacion->total_estimacion = $request->total_estimacion;
+            $estimacion->total_pagado = $request->total_pagado;
+            $estimacion->save();
+        }
+    }
+
     public function storeAnticipo(Request $request){
         $anticipo = new Anticipo_estimacion();
         $anticipo->aviso_id = $request->aviso_id;
