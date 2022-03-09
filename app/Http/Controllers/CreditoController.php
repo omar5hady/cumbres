@@ -1152,9 +1152,6 @@ class CreditoController extends Controller
         $cerrados = collect($cancelados)->merge(collect($liquidados));
 
         return $cerrados;
-        // return ['cancelados' => $cancelados,
-        //         'liquidados' => $liquidados
-        //     ];
     }
 
 }

@@ -2781,14 +2781,12 @@ class ContratoController extends Controller
         )->download('xls');
     }
 
+    // Función para subir archivo fiscal para ventas.
     public function formSubmitFisc(Request $request, $id){
-        //if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         $fileName = $request->archivo->getClientOriginalName();
         $moved =  $request->archivo->move(public_path('/files/datosFisc/'), $fileName);
 
         if($moved){
-            //if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
             $contrato = Credito::findOrFail($id);
             $contrato->archivo_fisc = $fileName;
             $contrato->fecha_archivo = Carbon::now();
@@ -2798,6 +2796,7 @@ class ContratoController extends Controller
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
 
+    // Función que descarga el archivo fiscal de una venta.
     public function downloadFileFisc($fileName)
     {
         $pathtoFile = public_path() . '/files/datosFisc/' . $fileName;

@@ -67,7 +67,6 @@
                                         <th></th>
                                         <th>Jefe inmediato</th>
                                         <th>RH</th>
-                                        <th>Control</th>
                                         <th>Dirección</th>
                                         <th></th>
                                     </tr>
@@ -111,13 +110,6 @@
                                             </td>
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
 
-                                            <td class="td2" v-if="vehiculo.recep_control == null">
-                                                <button type="button" @click="firmaControl(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Control">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_control"></td>
-
                                             <td class="td2" v-if="vehiculo.recep_direccion == null">
                                                 <button v-if="userName=='karen.viramontes' || userName=='uriel.al'" type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
                                                     <i class="icon-check"></i>
@@ -136,10 +128,6 @@
                                                 Sin Firma de RH
                                             </td>
                                             <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
-                                            <td class="td2" v-if="vehiculo.recep_control == null">
-                                                Sin Firma de Control
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_control"></td>
                                             <td class="td2" v-if="vehiculo.recep_direccion == null">
                                                 Sin Firma de Dirección
                                             </td>
@@ -987,9 +975,8 @@
                         this.fecha_ini = this.arrayRetenciones[0]['fecha_retencion'];
                         this.status_rev = data['status'];
 
-                        if(data['recep_jefe'] != null &&
+                        if(
                             data['recep_rh'] != null &&
-                            data['recep_control'] != null &&
                             data['recep_direccion'] != null
                         )   this.revisado = 1;
                         

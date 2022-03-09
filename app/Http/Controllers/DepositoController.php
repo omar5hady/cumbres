@@ -1757,11 +1757,8 @@ class DepositoController extends Controller
                     ->select('creditos.id','creditos.prospecto_id')
                     ->where('pagos_contratos.pagado','<',2)
                     ->where('fecha_pago','<=',$hoy)
-                    //->where('prospecto_id','=',113)
-                    //->groupBy('creditos.prospecto_id')
                     ->distinct('creditos.prospecto_id')
                     ->get();
-
 
         if(sizeof($pagos)){
             foreach ($pagos as $index => $pago) {

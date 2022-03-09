@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\NotifyAdmin;
 use App\Fraccionamiento; //Importar el modelo
-use App\Etapa;
-use App\Modelo;
-use Auth;
-use App\Lote;
-use Excel;
-use File;
-use DB;
-use App\User;
 use App\Historial_escritura;
 use App\Historial_plano;
-use App\Notifications\NotifyAdmin;
+use App\Etapa;
+use App\Modelo;
+use App\Lote;
+use App\User;
 use Carbon\Carbon;
+use Excel;
+use File;
+use Auth;
+use DB;
 
 class FraccionamientoController extends Controller
 {

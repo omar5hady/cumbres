@@ -360,7 +360,7 @@ class VehiculosController extends Controller
         $solicitud->save();
 
         if($request->status == 2)
-            $obs = 'Se ha realizado el pago de la solicitud';
+            $obs = 'Se ha aprobado la solicitud';
         if($request->status == 0)
             $obs = 'La solicitud ha sido rechazada.';
 

@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 
 class FacturasController extends Controller
 {
-    //Depositos pagares
+    //Función que retorna los Depositos de pagares
     public function listarFacturaDepositos(Request $request){
         
         $facturas = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -71,27 +71,16 @@ class FacturasController extends Controller
                 'pagos_contratos.restante',
                 'pagos_contratos.monto_pago'
         );
-
-        // if($request->historial == 1){
-        //     $facturas = $facturas->where('depositos.factura','!=',NULL)
-        //                         ->where('depositos.factura','!=','');
-        // }
-
-        if($request->b_empresa != ''){
+        //Busqueda por empresa constructora
+        if($request->b_empresa != '')
             $facturas= $facturas->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
 
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
-
                 $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar);
-
                 if($request->b_etapa != "") $facturas = $facturas->where('creditos.etapa', '=', $request->b_etapa);
-
-                if($request->b_gen != ""){
+                if($request->b_gen != "")
                     $facturas = $facturas->where('creditos.num_lote', '=', $request->b_gen);
-                }
-                
             }else{
                 if($request->criterio == 'nombre'){
                     $facturas = $facturas->where(DB::raw('CONCAT(c.nombre," ",c.apellidos)'), 'like', "%$request->b_gen%");
@@ -115,8 +104,9 @@ class FacturasController extends Controller
                             ->distinct('depositos.id')
         ->paginate(15);
 
+        //Se recorren los registros de facturas
         foreach($facturas as $index => $f){
-
+            //Se calcula el monto total depositado y el monto correspondiente al terreno.
             $totalDep = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                 ->join('dep_creditos', 'inst_seleccionadas.id', '=', 'dep_creditos.inst_sel_id')
@@ -152,9 +142,8 @@ class FacturasController extends Controller
         return $facturas;
     }
 
+    //Función para cargar el archivo correspondiente a la factura
     public function cargarFacturaDepositos(Request $request){
-
-        //return $request;
 
         setLocale(LC_TIME, 'es_MX.utf8');
 
@@ -213,16 +202,17 @@ class FacturasController extends Controller
         }
     }
 
+    //Función para descargar la factura al deposito
     public function descargaFacturaD($name){
         $pathtoFile = public_path().'/files/facturas/depositos/'.$name;
         return response()->download($pathtoFile);
     }
-
+    //Función para descargar la factura correspondiente al monto del terreno
     public function descargaFacturaTer($name){
         $pathtoFile = public_path().'/files/facturas/terreno/'.$name;
         return response()->download($pathtoFile);
     }
-
+    //Función para descargar la factura correspondiente al pago de intereses
     public function descargaFacturaInt($name){
         $pathtoFile = public_path().'/files/facturas/depositos/interes/'.$name;
         return response()->download($pathtoFile);
@@ -298,7 +288,7 @@ class FacturasController extends Controller
 
         return $facturas;
     }
-
+    //Función para subir la factura correspondiente a la venta
     public function cargarFacturaContratos(Request $request){
 
         setLocale(LC_TIME, 'es_MX.utf8');
@@ -306,14 +296,9 @@ class FacturasController extends Controller
         $contrato = Contrato::findOrFail($request->id);
 
         if($contrato->e_factura != ""){
-            //try{
-                File::delete(public_path().'/files/facturas/contratos/'.$contrato->e_factura);
-            //}catch (Exception $e){
-            //    return $e->getMessage();
-            //}
+            File::delete(public_path().'/files/facturas/contratos/'.$contrato->e_factura);
+            
         }
-
-        //try{
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/contratos/'), $name);
@@ -325,27 +310,17 @@ class FacturasController extends Controller
                 $contrato->e_f_carga_factura = Carbon::now()->format('Y-m-d');
                 $contrato->save();
             }
-
-        //}catch (Exception $e){
-        //    DB::rollBack();
-        //}
     }
 
+    //Función para subir la factura correspondiente a la venta por parte de concretania
     public function cargarFacturaContratosConcretania(Request $request){
 
         setLocale(LC_TIME, 'es_MX.utf8');
-
         $contrato = Contrato::findOrFail($request->id);
 
         if($contrato->e_factura_concretania != ""){
-            //try{
-                File::delete(public_path().'/files/facturas/contratos/concretania/'.$contrato->e_factura_concretania);
-            //}catch (Exception $e){
-            //    return $e->getMessage();
-            //}
+            File::delete(public_path().'/files/facturas/contratos/concretania/'.$contrato->e_factura_concretania);
         }
-
-        //try{
 
             $name = uniqId().'.'.$request->upfilCon->getClientOriginalExtension();
             $moved = $request->upfilCon->move(public_path('/files/facturas/contratos/concretania/'), $name);
@@ -357,17 +332,14 @@ class FacturasController extends Controller
                 $contrato->e_f_carga_factura_concretania = Carbon::now()->format('Y-m-d');
                 $contrato->save();
             }
-
-        //}catch (Exception $e){
-        //    DB::rollBack();
-        //}
     }
 
+    //Función para descargar la factura del Contrato
     public function descargaFacturaC($name){
         $pathtoFile = public_path().'/files/facturas/contratos/'.$name;
         return response()->download($pathtoFile);
     }
-
+    //Funcion para descargar la factura para contrato Concretania
     public function descargaFacturaCon($name){
         $pathtoFile = public_path().'/files/facturas/contratos/concretania/'.$name;
         return response()->download($pathtoFile);
@@ -439,21 +411,15 @@ class FacturasController extends Controller
         return $facturas;
     }
 
+    //Funcion para cargar la facutra por la liquidacion del crédito bancario
     public function cargarFacturaLiqCredito(Request $request){
 
         setLocale(LC_TIME, 'es_MX.utf8');
-
         $deposito = Credito::findOrFail($request->id);
 
         if($deposito->factura != ""){
-            //try{
                 File::delete(public_path().'/files/facturas/lcredito/'.$deposito->factura);
-            //}catch (Exception $e){
-            //    return $e->getMessage();
-            //}
         }
-
-        //try{
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/lcredito/'), $name);
@@ -465,12 +431,8 @@ class FacturasController extends Controller
                 $deposito->f_carga_factura = Carbon::now()->format('Y-m-d');
                 $deposito->save();
             }
-
-        //}catch (Exception $e){
-        //    DB::rollBack();
-        //}
     }
-
+    //Función para descargar la factura de la liquidación del crédito bancario
     public function descargaFacturaLC($name){
         $pathtoFile = public_path().'/files/facturas/lcredito/'.$name;
         return response()->download($pathtoFile);
@@ -580,7 +542,7 @@ class FacturasController extends Controller
         }
         return $facturas;
     }
-
+    //Función para cargar la factura para cada deposito bancario
     public function cargarFacturaDepCredito(Request $request){
         
         setLocale(LC_TIME, 'es_MX.utf8');
@@ -623,12 +585,12 @@ class FacturasController extends Controller
             }
         }
     }
-
+    //Funcion para dewscargar las facturas de deposito bancario
     public function descargaFacturaDC($name){
         $pathtoFile = public_path().'/files/facturas/depocredito/'.$name;
         return response()->download($pathtoFile);
     }
-
+    //funcion para descargar la factura del deposito bancario correspondiente al terreno.
     public function descargaFacturaDCT($name){
         $pathtoFile = public_path().'/files/facturas/depocreditoterreno/'.$name;
         return response()->download($pathtoFile);
