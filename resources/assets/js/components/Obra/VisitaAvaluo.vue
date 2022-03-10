@@ -119,7 +119,7 @@
                                         </template>
                                         <td class="td2" v-text="lotes.avance+'%'"></td>
                                         <td class="td2" v-text="lotes.credito_puente"></td>
-                                        <td class="td2" v-text="this.moment(lotes.fecha_fin).locale('es').format('MMMM YYYY')"></td>
+                                        <td class="td2" v-text="this.moment(lotes.fin_obra).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" v-text="lotes.paquete"></td>
                                         <td class="td2" v-text="lotes.tipo_credito"></td>
                                         <td class="td2" v-text="lotes.institucion"></td>

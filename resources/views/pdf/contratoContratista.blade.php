@@ -5,7 +5,7 @@
 	<TITLE>Contrato</TITLE>
 	<STYLE TYPE="text/css">
 
-		@page { size: 8.5in 11in; margin-left: 0.78in; margin-right: 0.78in; margin-top: 180px; margin-bottom: 50px }
+		@page { size: 8.5in 11in; margin-left: 0.78in; margin-right: 0.78in; margin-top: 200px; margin-bottom: 100px }
 		P { margin-bottom: 0in; direction: ltr; text-align: justify; widows: 2; orphans: 2; padding: 0em; }
 		P.western { so-language: es-ES }
 		P.cjk { so-language: es-ES }
@@ -170,8 +170,10 @@ cumplir y llevar a cabo la obra del presente contrato.</SPAN></FONT></FONT></P>
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 contrato es referente a los trabajos de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->descripcion_corta}}
 </B> {{$cabecera[0]->descripcion_larga}},
-de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, {{$cabecera[0]->etapa->num_etapa}}, 
-	
+de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, 
+	@if(!is_numeric($cabecera[0]->etapa->num_etapa))
+		{{$cabecera[0]->etapa->num_etapa}}, 
+	@endif
 	EN CALLE 
 	@if($cabecera[0]->direccion_proy != '' && $cabecera[0]->direccion_proy != '')
 		</B>{{$cabecera[0]->direccion_proy}}, 

@@ -208,6 +208,7 @@
                                         <th>Lote</th>
                                         <th>Etapa de servicio</th>
                                         <th>Planos obra</th>
+                                        <th>Termino obra</th>
                                         <th>Inicio</th>
                                         <th>Termino</th>
                                         <th>Porcentaje de avance</th>
@@ -252,6 +253,7 @@
                                             <td class="td2" v-if="avancepro.f_planos_obra" v-text="this.moment(avancepro.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-else v-text="'Sin planos'"></td>
                                         </template>
+                                        <td class="td2" v-text="avancepro.fin_obra"></td>
                                         <td class="td2" v-text="avancepro.fecha_ini"></td>
                                         <td class="td2" v-text="avancepro.fecha_fin"></td>
                                         <td class="td2" v-if="avancepro.porcentajeTotal > 100" v-text="formatNumber(100) + '%'"></td>

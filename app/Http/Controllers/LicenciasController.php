@@ -321,6 +321,7 @@ class LicenciasController extends Controller
                 'lotes.contrato',
                 'lotes.firmado',
                 'lotes.fecha_fin',
+                'lotes.fin_obra',
                 'lotes.credito_puente'
             )
             ->where('lotes.aviso','!=','0');
@@ -459,7 +460,8 @@ class LicenciasController extends Controller
                 'lotes.contrato',
                 'lotes.firmado',
                 'lotes.fecha_fin',
-                'lotes.credito_puente'
+                'lotes.credito_puente',
+                'lotes.fin_obra'
         )
         ->where('lotes.aviso','!=','0');
         
@@ -591,13 +593,13 @@ class LicenciasController extends Controller
                             $lote->f_planos_obra = 'Sin Planos';
                         }
 
-                        if ($lote->fecha_fin) {
+                        if ($lote->fin_obra) {
                             setlocale(LC_TIME, 'es_MX.utf8');
-                            $tiempo2 = new Carbon($lote->fecha_fin);
-                            $lote->fecha_fin = $tiempo2->formatLocalized('%d de %B de %Y');
+                            $tiempo2 = new Carbon($lote->fin_obra);
+                            $lote->fin_obra = $tiempo2->formatLocalized('%d de %B de %Y');
                         }
                         else{
-                            $lote->fecha_fin = 'Sin fecha';
+                            $lote->fin_obra = 'Sin fecha';
                         }
 
                         if ($lote->visita_avaluo) {
@@ -630,7 +632,7 @@ class LicenciasController extends Controller
                             $lote->f_planos_obra,
                             $lote->avance.' %',
                             $lote->credito_puente,
-                            $lote->fecha_fin,
+                            $lote->fin_obra,
                             $lote->paquete,
                             $lote->visita_avaluo,
                             $estado

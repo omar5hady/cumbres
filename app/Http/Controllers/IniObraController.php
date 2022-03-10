@@ -194,7 +194,7 @@ class IniObraController extends Controller
  
         $id = $request->id;
         $detalles = Ini_obra_lote::leftJoin('lotes','ini_obra_lotes.lote_id','=','lotes.id')
-        ->select('ini_obra_lotes.costo_directo', 'lotes.sublote',
+        ->select('ini_obra_lotes.costo_directo', 'lotes.sublote', 'lotes.fin_obra',
             'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
             'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
             'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
@@ -261,9 +261,10 @@ class IniObraController extends Controller
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
                     $lote->obra_extra=$det['obra_extra'];
+                    $lote->fin_obra = $det['fin_obra'];
+                    $lote->fin_obra= $det['fin_obra'];
                     if($lote->contrato==0){
                         
-
                         $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
                         ->where('contrato','=',0)->get();
 
@@ -412,6 +413,7 @@ class IniObraController extends Controller
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
                     $lote->obra_extra=$det['obra_extra'];
+                    $lote->fin_obra= $det['fin_obra'];
                     if($lote->contrato==0){
                         
 

@@ -791,7 +791,7 @@ class ComisionesVentaController extends Controller
                         ->where('contratos.comision','=',3)
                         // Se verifica que el apartado se ha pagado
                         ->where('pagos_contratos.num_pago','=',0)
-                        ->where('pagos_contratos.pagado','>',1)
+                        ->where('pagos_contratos.pagado','>=',1)
                         ->where('pagos_contratos.tipo_pagare','=',0)
                         ->where('det_com_ventas.pendiente','!=',2)
                         ->where('inst_seleccionadas.elegido', '=', '1')

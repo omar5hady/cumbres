@@ -286,6 +286,7 @@
                                                 <th>Costo Indirecto</th>
                                                 <th>Obra extra</th>
                                                 <th>Importe</th>
+                                                <th>Termino</th>
                                             </tr>
                                         </thead>
                                         <tbody v-if="arrayAvisoObraLotes.length">
@@ -318,6 +319,9 @@
                                                 <td>
                                                     {{'$' +formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
+                                                </td>
+                                                <td>
+                                                    <input type="date" v-model="detalle.fin_obra" class="form-control">
                                                 </td>
                                             </tr>
                                   
@@ -542,6 +546,7 @@
                                                 <th>Costo Indirecto</th>
                                                 <th>Obra extra</th>
                                                 <th>Importe</th>
+                                                <th>Termino</th>
                                             </tr>
                                         </thead>
                                         <tbody v-if="arrayAvisoObraLotes.length">
@@ -574,6 +579,9 @@
                                                 <td style="text-align: right;">
                                                     {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
+                                                </td>
+                                                <td>
+                                                    <input v-model="detalle.fin_obra" type="date" class="form-control">
                                                 </td>
                                             </tr>
                                   
