@@ -185,7 +185,9 @@
                                             </button>
                                         </div>
 
-                                        <div class="col-md-2" v-if="actual == numero">
+                                        <div class="col-md-2" v-if="actual == numero && 
+                                            (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')"
+                                        >
                                             <button type="button" @click="editarEstimacion = 1, partidasAct()"  class="btn btn-warning">
                                                 <i class="icon-pencil"></i>&nbsp;Editar estimacioón
                                             </button>
@@ -882,7 +884,7 @@
     import vSelect from 'vue-select';
     export default {
         props:{
-            rolId:{type: String}
+            userName:{type: String}
         },
         data(){
             return{

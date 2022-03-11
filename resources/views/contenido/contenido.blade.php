@@ -468,7 +468,7 @@
         </template>
 
         <template v-if="menu==248">
-            <estimaciones></estimaciones>
+            <estimaciones user-name="{{Auth::user()->usuario}}"></estimaciones>
         </template>
 
         <template v-if="menu==249">
