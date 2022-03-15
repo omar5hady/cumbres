@@ -294,22 +294,61 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" >
+                                <div class="form-group row" v-if="total_retener<monto_comp && tipoAccion == 2 && status_rev > 1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Retener pago</label>
+                                    <div class="col-md-6" >
+                                        <button type="button" v-if="vistaRetener == 0" @click="vistaRetener = 1" class="btn btn-success btn-sm" title="Retener pago">
+                                            <i class="icon-plus"></i>
+                                        </button>
+                                        
+                                        <button type="button" v-if="vistaRetener == 1" @click="getRetenciones()" class="btn btn-warning btn-sm" title="Retener pago">
+                                            <i class="icon-close">&nbsp;Cancelar</i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <template v-if="vistaRetener == 1">
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Monto a retener</label>
+                                        <div class="col-md-4">
+                                            <input type="number" v-on:change="validarMonto()" v-model="monto_retener" maxlength="12" class="form-control" placeholder="Monto a retener">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label v-text="'$'+formatNumber(monto_retener)"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de retención:</label>
+                                        <div class="col-md-3">
+                                            <input type="date" v-model="fecha_retencion"  class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" v-if="vistaRetener == 1 && monto_retener>0 && fecha_retencion != ''" @click="guardarPago()" class="btn btn-primary btn-sm" title="Retener pago">
+                                                <i class="icon-check">&nbsp;Retener pago</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </template>
+
+                                <!-- <div class="form-group row" >
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de renteciones</label>
                                     
                                     <div class="col-md-4">
                                         <input type="date" :disabled="tipoAccion==2" v-model="fecha_ini" @change="getFechas()" class="form-control">
                                     </div>
-                                </div>
+                                </div> -->
 
-                                <div class="form-group row" v-if="fecha_ini != '' && importe_total != 0 && reparacion != ''">
+                                <div class="form-group row" v-if="arrayRetenciones.length>0">
                                     <div class="col-md-12">
                                         <table class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
                                                     <th>Fecha</th>
                                                     <th>Importe</th>
-                                                    <th v-if="status_rev > 0">Status</th>
+                                                    <th>Status</th>
                                                     <template v-if="adminMant == 1">
                                                         <th v-if="status_rev > 1">
                                                             Autorización
@@ -320,10 +359,7 @@
                                             <tbody>
                                                 <tr v-for="retencion in arrayRetenciones" :key="retencion.id">
                                                     <td class="td2" v-text="retencion.fecha_retencion"></td>
-                                                    <td class="td2" v-if="tipoAccion == 1">
-                                                        <input @change="validarMonto(retencion)"  type="number" v-model="retencion.importe">
-                                                    </td>
-                                                    <td class="td2" v-if="tipoAccion == 2"
+                                                    <td class="td2"
                                                         v-text="'$' + formatNumber(retencion.importe)"
                                                     ></td>
                                                     <td class="td2" v-if="status_rev > 0">
@@ -366,10 +402,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1 && total_retener == monto_comp && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==1 && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
 
-                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1 && userName=='jorge.diaz'" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
-                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1 && userName=='jorge.diaz'" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
+                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
+                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
 
 
                             
@@ -483,6 +519,10 @@
                 revisado : 0,
                 status_rev : 0,
                 observacion:'',
+                vistaRetener:0,
+
+                fecha_retencion:'',
+                monto_retener:0,
             }
         },
         computed:{
@@ -529,16 +569,25 @@
                     console.log(error);
                 });
             },
-            validarMonto(retencion){
+            getRetenciones(){
                 let me = this;
-                me.saldo = parseFloat(me.monto_comp) - parseFloat(me.total_retener) + parseFloat(retencion.importe);
-
-                if(parseFloat(retencion.importe) > parseFloat(me.saldo))
-                    me.arrayRetenciones[retencion.id].importe = parseFloat(me.saldo);
-
-                if(me.arrayRetenciones[retencion.id].importe < 0)
-                    me.arrayRetenciones[retencion.id].importe = 0;
-                    
+                me.fecha_retencion = '';
+                me.monto_retener = 0;
+                me.vistaRetener = 0;
+                var url = '/vehiculos/getRetenciones?id=' + me.id;;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayRetenciones = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            validarMonto(monto){
+                let me = this;
+                let porRetener = me.monto_comp - me.total_retener;
+                if(me.monto_retener > porRetener)
+                    me.monto_retener = porRetener;
             },
             getVehiculos(){
                 let me = this;
@@ -552,50 +601,50 @@
                     console.log(error);
                 });
             },
-            getFechas(){
-                let me = this;
-                me.arrayRetenciones = [];
-                me.mes = me.fecha_ini.substring(5,7);
-                me.dia = me.fecha_ini.substring(8,10);
-                me.anio = me.fecha_ini.substring(0, 4);
+            // getFechas(){
+            //     let me = this;
+            //     me.arrayRetenciones = [];
+            //     me.mes = me.fecha_ini.substring(5,7);
+            //     me.dia = me.fecha_ini.substring(8,10);
+            //     me.anio = me.fecha_ini.substring(0, 4);
 
-                let lastDay = moment(me.fecha_ini).endOf('month').format('YYYY-MM-DD');
-                    if(parseInt(me.dia) <= 15){
-                        me.fecha_ini = me.anio+'-'+me.mes+'-'+'15';
-                    }    
-                    if(parseInt(me.dia) > 15){
-                        me.fecha_ini = lastDay;
-                    }
-                var fecha = me.fecha_ini;
+            //     let lastDay = moment(me.fecha_ini).endOf('month').format('YYYY-MM-DD');
+            //         if(parseInt(me.dia) <= 15){
+            //             me.fecha_ini = me.anio+'-'+me.mes+'-'+'15';
+            //         }    
+            //         if(parseInt(me.dia) > 15){
+            //             me.fecha_ini = lastDay;
+            //         }
+            //     var fecha = me.fecha_ini;
 
-                for(let i = 0; i<4; i ++){
+            //     for(let i = 0; i<4; i ++){
                     
-                    me.arrayRetenciones.push({
-                        id:i,
-                        fecha_retencion: fecha,
-                        importe: 0
-                    });
+            //         me.arrayRetenciones.push({
+            //             id:i,
+            //             fecha_retencion: fecha,
+            //             importe: 0
+            //         });
 
-                    let aux_mes = fecha.substring(5,7);
-                    let aux_dia = fecha.substring(8,10);
-                    let aux_anio = fecha.substring(0, 4);
+            //         let aux_mes = fecha.substring(5,7);
+            //         let aux_dia = fecha.substring(8,10);
+            //         let aux_anio = fecha.substring(0, 4);
 
-                    let lastDay = moment(fecha).endOf('month').format('YYYY-MM-DD');
-                    if(parseInt(aux_dia) <= 15){
-                        fecha = lastDay;
-                    }    
-                    if(parseInt(aux_dia) > 15){
-                        if(parseInt(aux_mes) == 12){
-                            aux_anio = parseInt(aux_anio) + 1;
-                            fecha = aux_anio +'-'+ '01-15';
-                        }
-                        else{
-                            aux_mes = parseInt(aux_mes) + 1;
-                            fecha = aux_anio +'-'+ aux_mes + '-15';
-                        }
-                    }
-                }
-            },
+            //         let lastDay = moment(fecha).endOf('month').format('YYYY-MM-DD');
+            //         if(parseInt(aux_dia) <= 15){
+            //             fecha = lastDay;
+            //         }    
+            //         if(parseInt(aux_dia) > 15){
+            //             if(parseInt(aux_mes) == 12){
+            //                 aux_anio = parseInt(aux_anio) + 1;
+            //                 fecha = aux_anio +'-'+ '01-15';
+            //             }
+            //             else{
+            //                 aux_mes = parseInt(aux_mes) + 1;
+            //                 fecha = aux_anio +'-'+ aux_mes + '-15';
+            //             }
+            //         }
+            //     }
+            // },
             /**Metodo para registrar  */
             registrar(){
                 if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
@@ -813,6 +862,42 @@
                 });
                
             },
+            guardarPago(){
+                let me = this;
+                Swal.fire({
+                    title: '¿Estas seguro de retener este pago?',
+                    text: "La retención quedara registrada para este mantenimiento.",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si continuar!',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.value) {
+                         axios.post('/vehiculos/storeRetencion',{
+                            'fecha_retencion' : this.fecha_retencion,
+                            'mantenimiento_id' : this.id,
+                            'importe' : this.monto_retener
+                        }).then(function (response){
+                            me.vistaRetener = 0;
+                            me.getRetenciones(); //se enlistan nuevamente los registros
+                            me.listarSolicitudes(1);
+                            //Se muestra mensaje Success
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'El pago ha sido retenido',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                });
+               
+            },
             changeStatus(status){
                 let me = this;
                 let estado = '';
@@ -972,12 +1057,10 @@
                         this.forma_pago = data['forma_pago'];
 
                         this.arrayRetenciones = data['retenciones'];
-                        this.fecha_ini = this.arrayRetenciones[0]['fecha_retencion'];
                         this.status_rev = data['status'];
 
                         if(
-                            data['recep_rh'] != null &&
-                            data['recep_direccion'] != null
+                            data['recep_rh'] != null && data['recep_direccion'] != null
                         )   this.revisado = 1;
                         
                         

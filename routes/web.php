@@ -1099,6 +1099,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/vehiculos/getComoDato','VehiculosController@getComoDato');
         Route::get('/vehiculos/getSolicitudes','VehiculosController@getSolicitudes');
+        Route::get('/vehiculos/getRetenciones','VehiculosController@getRetenciones');
         Route::get('/vehiculos/getSolicitudesExcel','VehiculosController@getSolicitudesExcel');
         Route::post('/vehiculos/storeSolicitud','VehiculosController@storeSolicitud');
 
@@ -1108,6 +1109,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/vehiculos/setRecepDireccion','VehiculosController@setRecepDireccion');
         Route::put('/vehiculos/recep/changeStatus','VehiculosController@changeStatus');
         Route::put('/vehiculos/retenerPago','VehiculosController@retenerPago');
+        Route::post('/vehiculos/storeRetencion','VehiculosController@storeRetencion');
 
         Route::get('/vehiculos/getObservaciones','VehiculosController@getObservaciones');
         Route::post('/vehiculos/storeObs','VehiculosController@storeObs');

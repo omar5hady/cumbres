@@ -294,6 +294,36 @@ class VehiculosController extends Controller
                 )->download('xls');
     }
 
+    public function getRetenciones(Request $request){
+        $retenciones = Mant_retencion::where('mantenimiento_id','=',$request->id)->get();
+        return $retenciones;
+    }
+
+    public function storeRetencion(Request $request){
+        $usuario = Personal::select('nombre','apellidos')->where('id','=',Auth::user()->id)->first();
+        $pago = new Mant_retencion();
+        $pago->status = 1;
+        $pago->fecha_retencion = $request->fecha_retencion;
+        $pago->mantenimiento_id = $request->mantenimiento_id;
+        $pago->importe = $request->importe;
+        $pago->fecha_real = Carbon::now();
+        $pago->autorizacion = $usuario->nombre.' '.$usuario->apellidos;
+        $pago->save();
+
+        $monto = number_format((float)$pago->importe, 2, '.', ',');
+        $this->guardarObs($pago->mantenimiento_id, 'Ha sido retenido el importe de $'.$monto);
+
+        $pagos = Mant_retencion::select(DB::raw("SUM(mant_retenciones.importe) as total"))
+            ->where('status','=',1)->first();
+
+        $solicitud = Mant_vehiculo::findOrFail($pago->mantenimiento_id);
+        if($pagos->total == $solicitud->monto_comp){
+            $solicitud->status = 3;
+            $this->guardarObs($pago->mantenimiento_id, 'La solicitud ha sido liquidada');
+            $solicitud->save();
+        }   
+    }
+
     private function getQuerySolic(Request $request){
         $fecha1 = $request->b_fecha1;
         $fecha2 = $request->b_fecha2;
@@ -366,7 +396,7 @@ class VehiculosController extends Controller
 
         $this->guardarObs($request->id, $obs);
 
-        if($request == 2){
+        if($request->status == 2){
             $msj = $obs.' para el vehiculo '.$solicitud->vehiculo.' del colaborador '.$solicitud->solicitante;
             $aviso = new NotificacionesAvisosController();
             $usuarios = User::select('id')
@@ -375,7 +405,6 @@ class VehiculosController extends Controller
             foreach ($usuarios as $index => $user) {
                 $aviso->store($user->id,$msj);
             }
-
         }
     }
 
@@ -417,4 +446,5 @@ class VehiculosController extends Controller
             $solicitud->save();
         }   
     }
+    
 }

@@ -775,6 +775,7 @@
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
                                             <option value="6">Cancelado</option>                               
+                                            <option value="7">Coacreditado</option> 
                                     </select>
                                 </div>
                                 </div>
