@@ -8,6 +8,7 @@ use Auth;
 
 class RolController extends Controller
 {
+    // funcion para optener informacion de el rol de personal  
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
 
@@ -18,7 +19,7 @@ class RolController extends Controller
             $roles = Rol::orderBy('nombre','asc')->paginate(5);
         }
         else{
-            $roles = Rol::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','asc')->paginate(5);
+            $roles = Rol::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','asc')->paginate(5); // filtro por criterio 
         }
 
         return [
@@ -35,7 +36,7 @@ class RolController extends Controller
 
     }
 
-
+    // crea un nuevo registro de rol de personal
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = new Rol();
@@ -46,6 +47,7 @@ class RolController extends Controller
 
     }
 
+    // Actualiza la informacion de un registro
     public function update(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = Rol::findOrFail($request->id);
@@ -55,6 +57,7 @@ class RolController extends Controller
         $rol->save();
     }
 
+    // elimina un registro 
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -62,7 +65,7 @@ class RolController extends Controller
         $rol->delete();
     }
 
- 
+    // hace la peticion de todos los rol activos 
     public function selectRol(Request $request)
     {
         if(!$request->ajax())return redirect('/');

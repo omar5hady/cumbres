@@ -6,67 +6,21 @@ use Illuminate\Http\Request;
 use App\Gasto_admin;
 use App\Avaluo;
 use App\Contrato;
+use Carbon\Carbon;
 use DB;
 use Auth;
 use Excel;
-use Carbon\Carbon;
 
+//Controlador para modelo Gasto Administrativo.
 class GastosAdministrativosController extends Controller
 {
+    //Funcion que retorna los gastos administrativos por contrato
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $buscar3 = $request->buscar3;
-        $criterio = $request->criterio;
-
-        $query = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-            ->join('creditos','contratos.id','=','creditos.id')
-            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-        'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        $gastos = $query;
-
-            switch($criterio){
-                case 'gastos_admin.fecha':{
-                    if($buscar != '')
-                        $gastos = $gastos->whereBetween($criterio, [$buscar,$buscar2]);
-                    break;
-                }
-                case 'personal.nombre':{
-                    if($buscar != '')
-                        $gastos = $gastos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                    break;
-                }
-                case 'creditos.fraccionamiento':{
-                    
-                    if($buscar != '')
-                        $gastos = $gastos->where($criterio, '=', $buscar);
-                    if($buscar2 != '')
-                        $gastos = $gastos->where('creditos.etapa', '=', $buscar2);
-                    if($buscar3 != '')
-                        $gastos = $gastos->where('creditos.manzana', '=', $buscar3);
-                    break;
-                    
-                }
-                default:{
-                    if($buscar != '')
-                        $gastos = $gastos->where($criterio, '=', $buscar);
-                    break;
-                }
-            }
         
-
+        // Llamada a la función privada que retorna la query principal
+        $gastos = $this->getQueryGastos($request);
         $gastos = $gastos->orderBy('contratos.id','asc')->paginate(8);
-        
         
         return [
                 'pagination' => [
@@ -80,59 +34,12 @@ class GastosAdministrativosController extends Controller
                 'gastos' => $gastos];
     }
 
+    //Funcion que retorna los gastos administrativos por contrato en excel
     public function excel(Request $request){
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $buscar3 = $request->buscar3;
-        $criterio = $request->criterio;
-
-        $query = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-            ->join('creditos','contratos.id','=','creditos.id')
-            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-        'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        $gastos = $query;
-
-            switch($criterio){
-                case 'gastos_admin.fecha':{
-                    if($buscar != '')
-                        $gastos = $gastos->whereBetween($criterio, [$buscar,$buscar2]);
-                    break;
-                }
-                case 'personal.nombre':{
-                    if($buscar != '')
-                        $gastos = $gastos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                    break;
-                }
-                case 'creditos.fraccionamiento':{
-                    
-                    if($buscar != '')
-                        $gastos = $gastos->where($criterio, '=', $buscar);
-                    if($buscar2 != '')
-                        $gastos = $gastos->where('creditos.etapa', '=', $buscar2);
-                    if($buscar3 != '')
-                        $gastos = $gastos->where('creditos.manzana', '=', $buscar3);
-                    break;
-                    
-                }
-                default:{
-                    if($buscar != '')
-                        $gastos = $gastos->where($criterio, '=', $buscar);
-                    break;
-                }
-            }
-        
-
+        // Llamada a la función privada que retorna la query principal
+        $gastos = $this->getQueryGastos($request);
         $gastos = $gastos->orderBy('contratos.id','asc')->get();
-        
+        //Creación y retorno de los resultados en Excel.
         return Excel::create('Gastos Administrativos', function($excel) use ($gastos){
                 $excel->sheet('gastos', function($sheet) use ($gastos){
                     
@@ -191,6 +98,54 @@ class GastosAdministrativosController extends Controller
         )->download('xls');
     }
 
+    //Funcion privada que retorna la Query principal para los gastos administrativos
+    private function getQueryGastos(Request $request){
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $buscar3 = $request->buscar3;
+        $criterio = $request->criterio;
+        //Queyr 
+        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+        'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
+        //Filtro por empresa constructora
+        if($request->b_empresa != '')
+            $gastos= $gastos->where('lotes.emp_constructora','=',$request->b_empresa);
+        //Filtros de Busqueda
+        if($buscar != ''){
+            switch($criterio){
+                case 'gastos_admin.fecha':{
+                    $gastos = $gastos->whereBetween($criterio, [$buscar,$buscar2]);
+                    break;
+                }
+                case 'personal.nombre':{
+                    $gastos = $gastos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
+                case 'creditos.fraccionamiento':{
+                    $gastos = $gastos->where($criterio, '=', $buscar);
+                    if($buscar2 != '')//Busqueda por etapa
+                        $gastos = $gastos->where('creditos.etapa', '=', $buscar2);
+                    if($buscar3 != '')//Busqueda por manzana
+                        $gastos = $gastos->where('creditos.manzana', '=', $buscar3);
+                    break; 
+                }
+                default:{
+                    $gastos = $gastos->where($criterio, '=', $buscar);
+                    break;
+                }
+            }
+        } 
+
+        return $gastos;
+    }
+
+    //Función para registrar un nuevo Avaluo
     public function storeAvaluo(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
@@ -216,6 +171,7 @@ class GastosAdministrativosController extends Controller
         }  
     }
 
+    // Función que devuelve el gasto administrativo ligado a un avaluo.
     public function getDatosAvaluo(Request $request){
         if(!$request->ajax())return redirect('/');
         $gasto = Gasto_admin::select('id','fecha')
@@ -227,6 +183,7 @@ class GastosAdministrativosController extends Controller
         return ['gasto' => $gasto];
     }
 
+    //Función que retona todos los gastos de avaluo de un contrato
     public function getAvaluos(Request $request){
         if(!$request->ajax())return redirect('/');
         $gasto = Gasto_admin::select('id','fecha','costo')
@@ -237,21 +194,23 @@ class GastosAdministrativosController extends Controller
         return ['gasto' => $gasto];
     }
 
+    //Función para actualizar un gasto de avaluo.
     public function updateAvaluo(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+            //Acceso al registro del gasto administrativo
             $gasto = Gasto_admin::findOrFail($request->gasto_id);
             $costo_ant = $gasto->costo;
             $contrato_id = $gasto->contrato_id;
             $gasto->costo = $request->costo;
             $gasto->fecha = $request->fecha;
             $gasto->save();
-
+            //Acceso al registro del Avaluo
             $avaluo = Avaluo::findOrFail($request->avaluoId);
             $avaluo->costo = $request->costo;
             $avaluo->save();
-
+            //Acceso al registro del Contrato para actualizar el saldo del contrato
             $contrato = Contrato::findOrFail($contrato_id);
             $contrato->saldo = round($contrato->saldo - $costo_ant + $request->costo,2);
             $contrato->save(); 
@@ -261,54 +220,48 @@ class GastosAdministrativosController extends Controller
         }  
     }
 
+    //Función que retorna los datos de los contratos que no han sido cancelados
     public function indexContratos (Request $request){
         if(!$request->ajax())return redirect('/');
         $b = $request->b;
         $b2 = $request->b2;
         $b3 = $request->b3;
         $criterio2 = $request->criterio2;
-
-        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
+        //Query principal
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        $contratos = $query
-           ->where('contratos.status','!=',0);
-   
+        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+        ->where('contratos.status','!=',0);
+        //Busqueda por empresa
+        if($request->b_empresa != '')
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        //Filtros de busqueda
+        if($b != ''){
             switch($criterio2){
-                
+                //Busqueda por nombre de cliente
                 case 'personal.nombre': {
-                    if($b != '')
-                        $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $b . '%');
+                    $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $b . '%');
                     break;
                 }
-
+                //Busqueda por proyecto
                 case 'creditos.fraccionamiento': {
-                    
-                        if($b != '')
-                            $contratos = $contratos->where($criterio2,'=',$b);
-                        if($b2 != '')
-                            $contratos = $contratos->where('creditos.etapa','=',$b2);
-                        if($b3 != '')
-                            $contratos = $contratos->where('creditos.manzana','=',$b3);
-                        break;
-                    
+                    $contratos = $contratos->where($criterio2,'=',$b);
+                    if($b2 != '')//Etapa
+                        $contratos = $contratos->where('creditos.etapa','=',$b2);
+                    if($b3 != '')//Manzana
+                        $contratos = $contratos->where('creditos.manzana','=',$b3);
+                    break;
                 }
                 default: {
-                    if($b != '')
-                        $contratos = $contratos->where($criterio2,'=',$b);
+                    $contratos = $contratos->where($criterio2,'=',$b);
                     break;
                 }
             }
+        }   
         
-
         $contratos = $contratos->orderBy('contratos.id','asc')
         ->paginate(8);
 
@@ -324,10 +277,12 @@ class GastosAdministrativosController extends Controller
             'contratos' => $contratos];
     }
 
+    //Función para registrar un nuevo gasto administrativo
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+            //Nuevo registro para tabla Gatos administrativos
             $gastos = new Gasto_admin();
             $gastos->contrato_id = $request->contrato_id;
             $gastos->concepto = $request->concepto;
@@ -335,7 +290,7 @@ class GastosAdministrativosController extends Controller
             $gastos->observacion = $request->observacion;
             $gastos->fecha = $request->fecha;
             $gastos->save();
-
+            //Se accede al registro del contrato para actualizar saldo.
             $contrato = Contrato::findOrFail($request->contrato_id);
             $contrato->saldo = round($contrato->saldo + $request->costo,2);
             $contrato->save(); 
@@ -345,10 +300,12 @@ class GastosAdministrativosController extends Controller
         }  
     }
 
+    //Función para actualizar un gasto administrativo
     public function update(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+            //Se accede al registro del Gatos administrativo
             $gastos = Gasto_admin::findOrFail($request->id);
             $costo_ant = $gastos->costo;
             $contrato_id = $gastos->contrato_id;
@@ -357,7 +314,7 @@ class GastosAdministrativosController extends Controller
             $gastos->fecha = $request->fecha;
             $gastos->costo = $request->costo;
             $gastos->save();
-
+            //Se accede al registro del contrato para actualizar saldo.
             $contrato = Contrato::findOrFail($contrato_id);
             $contrato->saldo = round($contrato->saldo - $costo_ant + $request->costo,2);
             $contrato->save(); 
@@ -367,15 +324,19 @@ class GastosAdministrativosController extends Controller
         }  
     }
 
+    //Función para eliminar el registro de un gasto administrativo
     public function delete(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+            //Se accede al registro del gasto administrativo
             $gastos = Gasto_admin::findOrFail($request->id);
+            //En una variable temporal se almacena el costo del gasto
             $costo_ant = $gastos->costo;
             $contrato_id = $gastos->contrato_id;
-            $gastos->delete();
-
+            $gastos->delete();//Se elimina el registro
+            //Se accede al registro del contrato y se actualiza el saldo
+            //Restando el costo almacenado en la variable temporal.
             $contrato = Contrato::findOrFail($contrato_id);
             $contrato->saldo = round($contrato->saldo - $costo_ant,2);
             $contrato->save(); 
@@ -385,17 +346,19 @@ class GastosAdministrativosController extends Controller
         }  
     }
 
+    //Función que retorna todos los gastos administrativos de un contrato
     public function getGastos(Request $request){
         if(!$request->ajax())return redirect('/');
+        //Gastos
         $gastos=Gasto_admin::select('concepto','costo','id')
                     ->where('contrato_id','=',$request->folio)
                     ->get();
-
+        //Suma total de los gastos
         $totalGastos = Gasto_admin::select(DB::raw("SUM(costo) as sumGasto"))
                     ->groupBy('contrato_id')
                     ->where('contrato_id','=',$request->folio)
                     ->get();
-
+        //Suma total de intereses.
         $totalIntereses = Gasto_admin::select(DB::raw("SUM(costo) as sumIntereses"))
                         ->groupBy('contrato_id')
                         ->where('contrato_id','=',$request->folio)

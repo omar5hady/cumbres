@@ -15,6 +15,7 @@ use App\Ini_obra;
 
 class RevisionPreviaController extends Controller
 {
+    // optiene la informacion de los expedientes que aun no tienen revision previa  
     public function indexSinRevision(Request $request){
         $criterio = $request->criterio;
         $buscar = $request->buscar;
@@ -64,8 +65,8 @@ class RevisionPreviaController extends Controller
             $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 0)
-                    ->where('entregas.fecha_program','!=',NULL);
+                    ->where('contratos.entregado', '=', 0) 
+                    ->where('entregas.fecha_program','!=',NULL); // aun sin fecha programada
         
             switch($criterio){
                 case 'c.nombre':{
@@ -115,6 +116,7 @@ class RevisionPreviaController extends Controller
         ];
     }
 
+    // optiene la informacion de los contratos sin revision por parte de los contratistas 
     public function indexSinRevisionContratista(Request $request){
         $criterio = $request->criterio;
         $buscar = $request->buscar;
@@ -160,10 +162,10 @@ class RevisionPreviaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('entregas.fecha_program','!=',NULL)
-                    ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                    ->where('revisiones_previas.id_contratista','=',Auth::user()->id) // filtra solo por el id
                     ->where('entregas.revision_previa','!=',0);
         
-            switch($criterio){
+            switch($criterio){ // filtros por criterio seleccionado
                 case 'c.nombre':{
                     if($buscar != '')
                         $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
@@ -204,13 +206,15 @@ class RevisionPreviaController extends Controller
                 'last_page'     => $contratos->lastPage(),
                 'from'          => $contratos->firstItem(),
                 'to'            => $contratos->lastItem(),
-            ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy,
+            ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy, 
         ];
     }
 
+    // funcion principal para hacer la revision a lote
     public function storeRevision(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
+        // datos principales de lote a revision 
         $datosLote = Entrega::join('contratos','entregas.id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('lotes','creditos.lote_id','lotes.id')
@@ -224,18 +228,19 @@ class RevisionPreviaController extends Controller
                         'lotes.manzana', 'lotes.aviso','lotes.id as lote_id',
                         DB::raw('DATEDIFF(current_date,entregas.fecha_entrega_real) as diferencia'
                         )
-                    )
-                    ->where('contratos.id','=',$request->folio)->get();
+                    ) 
+                    ->where('contratos.id','=',$request->folio)->get(); // solo el folio requerido
 
         $datosContratista = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                     ->select('contratistas.id','contratistas.nombre')
-                    ->where('ini_obras.clave','=',$datosLote[0]->aviso)->get();
+                    ->where('ini_obras.clave','=',$datosLote[0]->aviso)->get();  // se filtra por la lave de aviso 
 
-        $observacion = $request->observacion;
+        $observacion = $request->observacion; // observaciones que envia el gestor
         $folio = $request->folio;
-        $diferencia = $request->diferencia;
+        $diferencia = $request->diferencia; 
         $id_contratista = $datosContratista[0]->id;
 
+        // listado de todods los aspectos a revisar 
         ///////// COCHERA ////////////
             $mona_cochera = $request->mona_cochera;
             $centro_carga_cochera = $request->centro_carga_cochera;
@@ -1385,6 +1390,8 @@ class RevisionPreviaController extends Controller
 
     }
 
+    // funcion para crear nuevo registro de Detalle 
+    //Se usa en la funcion de revision para registrar detalle en cada aspecto que se requiera
     public function storeDetalle($folio,$concepto,$id,$obs){
         $detalle = new Detalle_previo();
         $detalle->rev_previas_id = $folio;
@@ -1394,6 +1401,7 @@ class RevisionPreviaController extends Controller
         $detalle->save();
     }
 
+    //crea un archivo PDF con los detalles revisados en forma de Checklist  
     public function DetallesPDF($folio){
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')
                     ->join('expedientes','contratos.id','expedientes.id')

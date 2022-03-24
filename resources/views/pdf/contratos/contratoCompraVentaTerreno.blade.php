@@ -196,31 +196,68 @@
                     <div class="table-cell">N.S.S. <u>{{$contratos[0]->nss_coa}}</u></div>     
                 </div>
                 <div class="table-row">
+                    @if ($contratos[0]->edo_civil_coa == 1)
+                        <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SEPARACION DE BIENES</u></div>
+                    @endif
+                        
+                    @if ($contratos[0]->edo_civil_coa == 2)
+                        <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SOCIEDAD CONYUGAL</u></div>
+                        @endif
+
+                    @if ($contratos[0]->edo_civil_coa == 3)
+                        <div class="table-cell">ESTADO CIVIL: <u>DIVORICIADO</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2"></div>
+                        @endif
+                    @if ($contratos[0]->edo_civil_coa == 4)
+                        <div class="table-cell">ESTADO CIVIL: <u>SOLTERO</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2"></div>
+                        @endif
+                    @if ($contratos[0]->edo_civil_coa == 5)
+                        <div class="table-cell">ESTADO CIVIL: <u>UNION LIBRE</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2"></div>
+                        @endif
+                    @if ($contratos[0]->edo_civil_coa == 6)
+                        <div class="table-cell">ESTADO CIVIL: <u>VIUDO</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2"></div>
+                        @endif
+                    @if ($contratos[0]->edo_civil_coa == 7)
+                        <div class="table-cell">ESTADO CIVIL: <u>OTRO</u></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell" colspan="2"></div>
+                    @endif 
+                </div>
+                <div class="table-row">
                     <div colspan="2" class="table-cell">DOMICILIO ACTUAL: <u>{{mb_strtoupper($contratos[0]->direccion_coa)}}</u></div>
-                    <div colspan="2" class="table-cell">COLONIA: <u>{{mb_strtoupper($contratos[0]->colonia_coa)}}</u></div>
-                    
+                    <div class="table-cell">COLONIA: <u>{{mb_strtoupper($contratos[0]->colonia_coa)}}</u></div>
+                    <div class="table-cell">C.P. <u>{{$contratos[0]->cp_coa}}</u></div> 
                 </div>
                 <div class="table-row">
                 
-                    <div class="table-cell">MUNICIPIO: <u>{{strtoupper($contratos[0]->ciudad_coa)}}</u></div>
-                    <div class="table-cell">ESTADO: <u>{{strtoupper($contratos[0]->estado_coa)}}</u></div>  
-                    <div class="table-cell">C.P. <u>{{$contratos[0]->cp_coa}}</u></div> 
+                    <div colspan="2" class="table-cell">MUNICIPIO: <u>{{strtoupper($contratos[0]->ciudad_coa)}}</u></div>
+                    <div colspan="2" class="table-cell">ESTADO: <u>{{strtoupper($contratos[0]->estado_coa)}}</u></div>  
+                    
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">EMPRESA DONDE TRABAJA: <u>{{mb_strtoupper($contratos[0]->empresa_coa)}}</u></div>
+                    <div colspan="2" class="table-cell">OCUPACION: <u>{{mb_strtoupper($contratos[0]->puesto_coa)}}</u></div>
+                    <div colspan="2" class="table-cell">EMPRESA DONDE TRABAJA: <u>{{mb_strtoupper($contratos[0]->empresa_coa)}}</u></div>
                 </div>
                 <div class="table-row">
                     <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{mb_strtoupper($contratos[0]->direccion_empresa_coa)}} {{strtoupper($contratos[0]->colonia_empresa_coa)}}  C.P. {{$contratos[0]->cp_empresa_coa}} {{strtoupper($contratos[0]->ciudad_empresa_coa)}}, {{strtoupper($contratos[0]->estado_empresa_coa)}}</u></div>
                 </div>
                 <div class="table-row">
+                    <div  class="table-cell">EMAIL: <u>{{mb_strtoupper($contratos[0]->email_coa)}}</u></div>
                     <div class="table-cell">TEL.: <u>{{$contratos[0]->telefono_coa}}</u></div>
                     <div class="table-cell">CEL.: <u>{{$contratos[0]->celular_coa}}</u></div> 
                     <div class="table-cell">TEL.TRABAJO: <u>{{$contratos[0]->telefono_empresa_coa}}</u></div> 
-                    <div class="table-cell"></div> 
-                </div>
-                <div class="table-row">
-                <div colspan="4" class="table-cell">EMAIL: <u>{{mb_strtoupper($contratos[0]->email_coa)}}</u></div>
                 </div>
                 
              </div>

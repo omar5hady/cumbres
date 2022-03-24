@@ -8,6 +8,10 @@ use Auth;
 
 class ObsservacionEquipamientoController extends Controller
 {
+
+    // Funcion para crear una nueva observacion  en la que los modulos ( Equipamietos , 
+    // ObraEquipameintos, SegInstalacion, Equipamientos) utilizan la funcion onde guardan 
+    // el id de la solicitud , el comentario, el id del usuario
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -20,6 +24,10 @@ class ObsservacionEquipamientoController extends Controller
 
     }
 
+
+    // Funcion para hacer la consulta de datos de la tabla Obs_solic_equipamiento en la que los modulos ( Equipamietos , 
+    // ObraEquipameintos, SegInstalacion, Equipamientos) utilizan la funcion donde se hacen la consulta de los datos
+    // ( comentario, usuario, y la fecha de creacion)
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;

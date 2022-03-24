@@ -14,6 +14,7 @@ use Auth;
 
 class SobreprecioEtapaController extends Controller
 {
+    // Funcion para optener los datos del sobreprecio por etapa
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -95,6 +96,7 @@ class SobreprecioEtapaController extends Controller
         
     }
 
+    // elimina registro
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -117,6 +119,7 @@ class SobreprecioEtapaController extends Controller
     }
 
 
+    //obtiene 
     public function ListarSobreprecio (Request $request){
         if(!$request->ajax())return redirect('/');
 
@@ -139,7 +142,7 @@ class SobreprecioEtapaController extends Controller
                             'sobreprecios' => $sobreprecios
                         ];
     }
-
+    //  registra un nuevo sobreprecio y para cada etapa 
     public function registrarSobreprecio(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio = new Sobreprecio();
@@ -156,7 +159,7 @@ class SobreprecioEtapaController extends Controller
         }
 
     }
-
+    // actualiza solo el sobreprecio 
     public function actualizarSobreprecio(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio = Sobreprecio::findOrFail($request->id);

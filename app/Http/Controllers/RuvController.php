@@ -13,6 +13,7 @@ use Carbon\Carbon;
 
 class RuvController extends Controller
 {
+    // selecciona la informacion de los lotes que no tengan paquetes ruv 
     public function indexLotes (Request $request){
 
         $proyecto = $request->buscar;
@@ -27,8 +28,9 @@ class RuvController extends Controller
                             'lotes.terreno','lotes.construccion','lotes.paq_ruv')
                             ->where('modelos.nombre','!=','Terreno');
         
-            $lotes = $query->where('lotes.paq_ruv','=',NULL);
+            $lotes = $query->where('lotes.paq_ruv','=',NULL); //filtro principal 
           
+            // filtro por criterio seleccionado 
             if($proyecto != '')
                 $lotes = $lotes->where('lotes.fraccionamiento_id','=',$proyecto);
             if($etapa != '')
@@ -58,6 +60,7 @@ class RuvController extends Controller
 
     }
 
+    // funcion para optener los paq_ruv de acuerdo a las fechas 
     public function historialSolicitudes (Request $request){
 
         $proyecto = $request->buscar;
@@ -74,12 +77,12 @@ class RuvController extends Controller
                     ->select('lotes.id','etapas.num_etapa','fraccionamientos.nombre as proyecto','lotes.num_lote',
                             'modelos.nombre as modelo', 'lotes.manzana','lotes.calle','lotes.numero','lotes.paq_ruv',
                             'lotes.terreno','lotes.construccion','ruvs.fecha_siembra');
-        $lotes = $query->where('lotes.paq_ruv','!=',NULL);
+        $lotes = $query->where('lotes.paq_ruv','!=',NULL); // filtro principal para identificar que tengan paquetes
  
         if($proyecto != '')
             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$proyecto);
         if($fecha != '')
-            $lotes = $lotes->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2]);
+            $lotes = $lotes->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2]); // filtro para verificar historial 
         if($etapa != '')
             $lotes = $lotes->where('lotes.etapa_id','=',$etapa);
         if($manzana != '')
@@ -104,6 +107,7 @@ class RuvController extends Controller
 
     }
 
+    
     public function solicitarRuv(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -116,7 +120,7 @@ class RuvController extends Controller
             $lote->paq_ruv = $request ->paquete;
             $lote->save();
             
-            //Aqui se deberia hacer toda la asignacion para la tabla ruvs
+            //Aqui se deberia hacer toda la asignacion para la tabla ruvs 
                 $ruv = new Ruv();
                 $ruv->id = $lote->id;
                 $ruv->fecha_siembra = Carbon::today()->format('ymd');
@@ -128,6 +132,8 @@ class RuvController extends Controller
         }
     }
 
+
+    // funcion para optener toda la informacion referente la tabla ruVS 
     public function indexRuv(Request $request){
         $buscar = $request->buscar;
         $etapa = $request->b_etapa;
@@ -147,6 +153,7 @@ class RuvController extends Controller
                         'ruvs.fecha_dtu', 'lotes.emp_constructora', 'lotes.emp_terreno',
                         'personal.nombre','personal.apellidos','lotes.manzana');
 
+        // criterio de busqueda
         if($buscar != '')
             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$buscar);
         if($etapa != '')
@@ -184,18 +191,20 @@ class RuvController extends Controller
         ];
     }
 
+    // guarda la fecha 
     public function cargaInfo(Request $request){
         $ruv = Ruv::findOrFail($request->id);
         $ruv->fecha_carga = $request->fecha;
         $ruv->save();
     }
-
+    // numero de Cuv
     public function obtenerCuv(Request $request){
         $ruv = Ruv::findOrFail($request->id);
         $ruv->num_cuv = $request->numeroCuv;
         $ruv->save();
     }
 
+    //asigna la fecha de asignacion 
     public function asignarVerificador(Request $request){
         $ruv = Ruv::findOrFail($request->id);
         $fecha = Carbon::now();
@@ -204,6 +213,7 @@ class RuvController extends Controller
         $ruv->save();
     }
 
+    //
     public function revDocumental(Request $request){
         $ruv = Ruv::findOrFail($request->id);
         $fecha = Carbon::now();
@@ -228,6 +238,7 @@ class RuvController extends Controller
         ];
     }
 
+    // crea una nueva observacion guarda el id de la tabla ruv y el id del usuario 
     public function storeComentarios(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -238,6 +249,8 @@ class RuvController extends Controller
         $observacion->save();
     }
 
+
+    // crea el excel de la informacion general relacionada al RUV  
     public function excelRuv(Request $request){
         $buscar = $request->buscar;
         $etapa = $request->b_etapa;
@@ -368,6 +381,7 @@ class RuvController extends Controller
             )->download('xls');
     }
 
+    // optiene los lotes con pquete ruv  
     public function selectRuv(Request $request){
         $ruvs = Lote::select('paq_ruv')
                     ->where('paq_ruv','!=',NULL);

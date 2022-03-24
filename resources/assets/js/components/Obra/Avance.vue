@@ -176,7 +176,7 @@
                                 </div>
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientosConLote()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="select_fraccionamiento()">
                                       <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
                                       <option value="modelos.nombre">Modelo</option>
                                       <option value="lotes.aviso">Clave</option>
@@ -670,13 +670,13 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
-            selectFraccionamientosConLote(){
+            select_fraccionamiento(){
                 let me = this;
                 me.buscar1="";
                 me.buscar2="";
                 me.buscar="";
                 me.arrayFraccionamientosLote=[];
-                var url = '/select_fraccionamientoLote';
+                var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientosLote = respuesta.fraccionamientos;
@@ -908,7 +908,7 @@
                         }
                     }
                 }
-                this.selectFraccionamientosConLote();
+                this.select_fraccionamiento();
                 
                
             },
@@ -928,7 +928,7 @@
         mounted() {
             this.listarAvance(1,this.buscar,this.criterio);      
             this.listarAvancePromedio(1,this.buscar,this.buscar1,this.buscar2,this.criterio);
-            this.selectFraccionamientosConLote();
+            this.select_fraccionamiento();
             this.getEmpresa();
         }
     }

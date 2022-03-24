@@ -781,6 +781,19 @@ class ContratoController extends Controller
     {
         $contratos = $this->getDatosContrato($id);
 
+        //Si la venta es con Coacreditado se obtienen los datos necesarios
+        if($contratos[0]->rfc_coa != NULL){
+            $coa = Cliente::join('personal','clientes.id','=','personal.id')
+                ->select('personal.rfc', 'personal.homoclave', 'clientes.puesto','clientes.edo_civil')
+                ->where('personal.rfc','like','%'.$contratos[0]->rfc_coa.'%')
+                //->where('personal.homoclave','like','%'.$contratos[0]->homoclave_coa.'%')
+                ->first();
+
+            $contratos[0]->puesto_coa = $coa['puesto'];
+            $contratos[0]->edo_civil_coa = $coa['edo_civil'];
+
+        }
+
             // if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratos[0]->institucion == 'Crea Más' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
             //     $contratos[0]->institucion = 'INFONAVIT';
             // }
@@ -843,7 +856,8 @@ class ContratoController extends Controller
             $pagos[$i]->fecha_pago = $fecha_pago->formatLocalized('%d-%m-%Y');
         }
 
-        // Llamada al pdf para venta de casa
+        //return $contratos;
+        //Llamada al pdf para venta de casa
         if($contratos[0]->modelo != 'Terreno')
             $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta', ['contratos' => $contratos, 'pagos' => $pagos]);
         // PDF para venta de Terreno

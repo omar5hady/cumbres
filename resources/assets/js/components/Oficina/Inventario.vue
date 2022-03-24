@@ -690,7 +690,7 @@
             registrar(){
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/inventarios/storeCompra',{
+                axios.post('/inventarios/storeInventario',{
                     'producto' : this.producto,
                     'unidad' : this.unidad
                 }).then(function (response){

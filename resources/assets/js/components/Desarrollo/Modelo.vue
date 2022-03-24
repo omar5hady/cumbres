@@ -579,7 +579,7 @@
             selectFraccionamientos(buscar){
                 let me = this;
                 me.arrayFraccionamientos=[];
-                var url = '/select_Frac_Tipo?buscar='+buscar;
+                var url = '/select_fraccionamiento?tipo_proyecto='+buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;

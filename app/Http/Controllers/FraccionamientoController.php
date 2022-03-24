@@ -17,36 +17,41 @@ use File;
 use Auth;
 use DB;
 
+//Controlador para modelo Fraccionamiento.
 class FraccionamientoController extends Controller
 {
+    //Función privada que retorna la query necesaria para retorno de Proyectos
+    private function getQuery(Request $request){
+
+        $buscar = $request->buscar; //Varible que almacena el dato a buscar
+        $criterio = $request->criterio; //Variable que almacena la condición de buqueda
+        //Query principal
+        $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
+                            ->leftJoin('personal as p','fraccionamientos.arquitecto_id','=','p.id')
+                            ->select('fraccionamientos.*',
+                                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"),
+                                        DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto")
+                                    )
+                            //Diferente de proyectos Anteriores '
+                            ->where('fraccionamientos.id','!=','1');
+        //Busqueda
+        if($buscar!='')
+            $fraccionamientos = $fraccionamientos->where($criterio, 'like', '%'. $buscar . '%');
+
+        $fraccionamientos = $fraccionamientos->orderBy('fraccionamientos.id','desc');
+
+        return $fraccionamientos;
+        
+    }
+
+    //Función que retorna los Proyectos registrados
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-
-        $buscar = $request->buscar;
-        $criterio = $request->criterio;
-        
-        if($buscar==''){
-            $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
-                                            ->leftJoin('personal as p','fraccionamientos.arquitecto_id','=','p.id')
-                    ->select('fraccionamientos.*',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"),
-                                DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto")
-                            )
-                    ->where('fraccionamientos.id','!=','1')->orderBy('fraccionamientos.id','desc')->paginate(8);
-        }
-        else{
-            $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
-                                            ->leftJoin('personal as p','fraccionamientos.arquitecto_id','=','p.id')
-                    ->select('fraccionamientos.*',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"),
-                                DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto")
-                            )
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('fraccionamientos.id','!=','1')
-                    ->orderBy('fraccionamientos.id','desc')->paginate(8);
-        }
+        //Llamada a la función privada que retorna la query principal
+        $fraccionamientos = $this->getQuery($request);
+        $fraccionamientos = $fraccionamientos->paginate(8);
 
         return [
             'pagination' => [
@@ -60,22 +65,15 @@ class FraccionamientoController extends Controller
             'fraccionamientos' => $fraccionamientos
         ];
     }
-
+    
+    //Función que retorna los Proyectos registrados en excel
     public function excelIndex(Request $request)
     {
-
-        $buscar = $request->buscar;
-        $criterio = $request->criterio;
+        //Llamada a la funcion privada que retorna la query principal
+        $fraccionamientos = $this->getQuery($request);
+        $fraccionamientos = $fraccionamientos->get();
         
-        if($buscar==''){
-            $fraccionamientos = Fraccionamiento::where('id','!=','1')->orderBy('id','desc')->get();
-        }
-        else{
-            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('id','!=','1')
-                                                ->orderBy('id','desc')->get();
-        }
-
+        //Creación y retorno del resultado en Excel
         return Excel::create('Fraccionamientos', function($excel) use ($fraccionamientos){
             $excel->sheet('Fraccionamientos', function($sheet) use ($fraccionamientos){
                 
@@ -123,15 +121,15 @@ class FraccionamientoController extends Controller
         )->download('xls');
     }
    
-    //funcion para insertar en la tabla
+    //funcion para insertar un nuevo registro en la tabla
     public function store(Request $request)
     {
-
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $proyecto = $request->nombre;
             $usuario_id = Auth::user()->id;
+            //Se crea el registro en la tabla Fraccionamiento.
             $fraccionamiento = new Fraccionamiento();
             $fraccionamiento->nombre = $proyecto;
             $fraccionamiento->numero = $request->numero;
@@ -144,14 +142,14 @@ class FraccionamientoController extends Controller
             $fraccionamiento->cp = $request->cp;
             $fraccionamiento->save();
 
-            
+            //Se genera una etapa default y se liga con el nuevo registro de Fraccionamientos
             $etapa = new Etapa();
             $etapa->fraccionamiento_id = $fraccionamiento->id;
             $etapa->num_etapa = "Sin Asignar";
-            
             $etapa->personal_id = 1;
             $etapa->save();
 
+            //Se genera una modelo default y se liga con el nuevo registro de Fraccionamientos
             $modelo = new Modelo();
             $modelo->nombre = "Por Asignar";
             $modelo->fraccionamiento_id = $fraccionamiento->id;
@@ -159,7 +157,7 @@ class FraccionamientoController extends Controller
             $modelo->terreno = 0;
             $modelo->construccion = 0;
             $modelo->save();
-
+            //Se genera una modelo default para terrenos y se liga con el nuevo registro de Fraccionamientos
             $modelo = new Modelo();
             $modelo->nombre = "Terreno";
             $modelo->fraccionamiento_id = $fraccionamiento->id;
@@ -193,14 +191,14 @@ class FraccionamientoController extends Controller
 
     }
 
-    //funcion para actualizar los datos
+    //Función para actualizar los datos de un registro
     public function update(Request $request)
     {
 
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $proyecto = $request->nombre;
         $usuario_id = Auth::user()->id;
-        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        //FindOrFail se utiliza para buscar el registro en la tabla de fraccionamientos
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
         $fraccionamiento->nombre = $proyecto;
         $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
@@ -219,7 +217,7 @@ class FraccionamientoController extends Controller
             $fraccionamiento->arquitecto_id = $request->arquitecto_id;
         }
         $fraccionamiento->save();
-
+        // Creación de notificación indicando el cambio.
         $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=', $usuario_id)->get();
         $fecha = Carbon::now();
         $arregloSimPendientes = [
@@ -233,20 +231,21 @@ class FraccionamientoController extends Controller
         ];
 
         $users = User::select('id')->where('rol_id','=','3')->get();
-
         foreach($users as $notificar){
             User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
         }
     }
 
+    //Función para eliminar un fraccionamiento de la base de datos.
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        //Accede al registro a eliminar
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
-
+        //Se contabilizan los modelos y etapas ligados al Fraccionamiento
         $contadorModelo=Modelo::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
         $contadorEtapa=Etapa::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
-
+        
         if($contadorEtapa == 1 && $contadorModelo == 1){
             $modelo=Modelo::select('id')
                 ->where('nombre','=','Por Asignar')
@@ -266,32 +265,32 @@ class FraccionamientoController extends Controller
   
     }
 
+    //Función que retorna los Fraccionamientos
     public function selectFraccionamiento(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-        
+        //Se obtiene nombre y id
         $fraccionamientos = Fraccionamiento::select('nombre','id')->where('id','!=','1');
-
-        if($request->tipo_proyecto != ''){
+        //Se filtra por tipo de proyecto
+        if($request->tipo_proyecto != '')
             $fraccionamientos = $fraccionamientos->where('tipo_proyecto','=',$request->tipo_proyecto);
-        }
-        
         $fraccionamientos = $fraccionamientos->orderBy('nombre','asc')->get();
         return['fraccionamientos' => $fraccionamientos];
     }
 
+    //Funcion que retorna Fraccionamientos que aun tengan inventario de lotes para venta o renta
     public function selectFraccionamientoConInventario(Request $request){
         //if(!$request->ajax())return redirect('/');
-
+        //Query principal
         $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->select('fraccionamientos.nombre','fraccionamientos.id')
                     ->where('lotes.habilitado','=',1)
-                    ->where('lotes.contrato','=',0);
+                    ->where('lotes.contrato','=',0); //Sin contrato
                     //->where('lotes.rentado','=',0)
 
-                    if($request->tipo_proyecto != ''){
+                    //Filtro por tipo de proyecto
+                    if($request->tipo_proyecto != '')
                         $fraccionamientos = $fraccionamientos->where('fraccionamientos.tipo_proyecto','=',$request->tipo_proyecto);
-                    }
                     
                     $fraccionamientos = $fraccionamientos->orderBy('nombre','asc')
                     ->distinct()
@@ -299,53 +298,27 @@ class FraccionamientoController extends Controller
                     return['fraccionamientos' => $fraccionamientos];
     }
 
+    //Función que retorna toda la información de un fraccionamiento elegido.
     public function getDatos(Request $request){
         if(!$request->ajax())return redirect('/');
         $datos = Fraccionamiento::where('id','=',$request->id)->first();
         return $datos;
     }
 
+    //Función que retorna los Fraccionamientos aplicando un filtro de busqueda por nombre
     public function selectFraccionamientoVue(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         $filtro = $request->filtro;
-
-        if($filtro==''){
-            $fraccionamientos = Fraccionamiento::select('nombre','id')
-            ->where('id','!=','1')->get();
-        }
-        else{
-            $fraccionamientos = Fraccionamiento::select('nombre','id')
-            ->where('nombre','like','%'.$filtro.'%')->where('id','!=','1')->get();
-        }
-        
+        //Query principal
+        $fraccionamientos = Fraccionamiento::select('nombre','id')->where('id','!=','1');
+        if($filtro!='')//Filtro de busqueda
+            $fraccionamientos = $fraccionamientos->where('nombre','like','%'.$filtro.'%');
+        $fraccionamientos = $fraccionamientos->get();
         return['fraccionamientos' => $fraccionamientos];
     }
 
-    public function selectFraccionamientoConLotes(Request $request){
-        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
-        $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')->
-        select('fraccionamientos.nombre','fraccionamientos.id')
-        ->where('fraccionamientos.id','!=','1')
-        ->groupBy('fraccionamientos.id')
-        ->orderBy('nombre','asc')->get();
-        return['fraccionamientos' => $fraccionamientos];
-    }
-
-    public function selectFrac_Tipo(Request $request){
-        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
-
-        $buscar = $request->buscar;
-        $fraccionamiento = Fraccionamiento::select('nombre','id')
-        ->where('tipo_proyecto', '=', $buscar)
-        ->where('id','!=','1')
-        ->orderBy('nombre','asc')->get();
-        return['fraccionamientos' => $fraccionamiento];
-    }
-
-    //funciones para carga y descarga de planos
+    //funciones para carga de planos
     public function formSubmitPlanos(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -383,6 +356,7 @@ class FraccionamientoController extends Controller
         return response()->json(['success'=>'You have successfully upload file.']);
     }
  
+    //funciones para descarga de planos
     public function downloadFilePlanos($fileName){       
         $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
         return response()->download($pathtoFile);

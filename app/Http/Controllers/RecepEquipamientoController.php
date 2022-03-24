@@ -24,16 +24,21 @@ use App\Closet_otro;
 
 class RecepEquipamientoController extends Controller
 {
+    // Crea un nuevo proceso de recepcion 
     public function storeRecepcion (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tipoRecepcion = $request->tipoRecepcion;
         setlocale(LC_TIME, 'es_MX.utf8');
-        $hoy = Carbon::today()->toDateString();
-        $usuario = DB::table('personal')->select('nombre','apellidos')->where('id','=',Auth::user()->id)->get();
+        $hoy = Carbon::today()->toDateString(); // crea un nueva variable de la fecha en curso 
+        // crea la variable con nombre y apellidos del usuario autor 
+        $usuario = DB::table('personal')->select('nombre','apellidos')->where('id','=',Auth::user()->id)->get(); 
 
-        try{
+
+        try{ // se empieza el proceso con un (try and chatch) 
             DB::beginTransaction();
-            $recepcion = new Recep_equipamiento();
+
+                    // se crean nuevos registros 
+                    $recepcion = new Recep_equipamiento();
                     $recepcion->id = $request->id;
                     $recepcion->fecha_revision = $hoy;
                     $recepcion->supervisor = $usuario[0]->nombre.' '.$usuario[0]->apellidos;
@@ -46,12 +51,14 @@ class RecepEquipamientoController extends Controller
                     $observacion->usuario = Auth::user()->usuario;
                     $observacion->save();
 
+                    // se busca la solicitud
                     $solicitud = Solic_equipamiento::findOrFail($request->id);
 
+                    // 
                     $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
-                    $proveedor = $equipamiento->proveedor_id;
+                    $proveedor = $equipamiento->proveedor_id;  // se crea variable para la notificacion al proveedor
                     $credito = Credito::findOrFail( $solicitud->contrato_id);
-                    if($recepcion->resultado == 2){
+                    if($recepcion->resultado == 2){ // verifica si es aceptado o rechazado 
                         $solicitud->status = 4;
                         $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                     }
@@ -59,7 +66,7 @@ class RecepEquipamientoController extends Controller
                         $solicitud->status = 0;
                         $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                     }
-                    $solicitud->recepcion = 1;
+                    $solicitud->recepcion = 1; // en la solicitud se cambia de status
                     $solicitud->save();
                     $recepcion->save();
                     
@@ -80,7 +87,7 @@ class RecepEquipamientoController extends Controller
 
                     User::findOrFail($proveedor)->notify(new NotifyAdmin($arregloAceptado));
                 
-            switch($tipoRecepcion){
+            switch($tipoRecepcion){ // segun el tipo de recepcion es el caso para crear los nuevos regitros 
                 case 1:{
                         $cocina_acabado = new Cocina_acabado();
                             $cocina_acabado->id = $request->id;
@@ -300,6 +307,7 @@ class RecepEquipamientoController extends Controller
         }  
     }
 
+    // Actualiza informacion  de acuerdo al id  de recepcion 
     public function updateRecepcion (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tipoRecepcion = $request->tipoRecepcion;
@@ -309,6 +317,8 @@ class RecepEquipamientoController extends Controller
 
         try{
             DB::beginTransaction();
+
+            // actualiza el registro con los nuevos valores
             $recepcion = Recep_equipamiento::findOrFail($request->id);
                         $recepcion->fecha_revision = $hoy;
                         $recepcion->supervisor = $usuario[0]->nombre.' '.$usuario[0]->apellidos;
@@ -327,16 +337,17 @@ class RecepEquipamientoController extends Controller
                     $proveedor = $equipamiento->proveedor_id;
                     $credito = Credito::findOrFail( $solicitud->contrato_id);
 
-                        if($recepcion->resultado == 2){
-                            $solicitud->status = 4;
+                        if($recepcion->resultado == 2){ // verifica si es aprobado o rechazado
+                            $solicitud->status = 4; // se cambia status
                             $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. " para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
+                            // mensaje para la notificacion 
                         }
                         else{
                             $solicitud->status = 0;
                             $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. " para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                         }
                         $solicitud->recepcion = 1;
-                        $solicitud->save();
+                        $solicitud->save(); // se gurada todo el proceso 
                         $recepcion->save();
                         
                         //////////////NOTIFICACION PARA EL PROVEEDOR
@@ -355,7 +366,7 @@ class RecepEquipamientoController extends Controller
                         //////////////NOTIFICACION PARA EL PROVEEDOR
 
                         User::findOrFail($proveedor)->notify(new NotifyAdmin($arregloAceptado));
-            switch($tipoRecepcion){
+            switch($tipoRecepcion){  // funcion para seleccionar el tipo de recepcion 
                 case 1:{
                     $cocina_acabado = Cocina_acabado::findOrFail($request->id);
                         $cocina_acabado->cubierta_acab_uniones  = $request->cubierta_acab_uniones;
@@ -569,6 +580,7 @@ class RecepEquipamientoController extends Controller
         }  
     }
 
+    // optiene toda la infrmacion del registro de recepcion 
     public function getRecepcion (Request $request){
 
         $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
@@ -631,7 +643,7 @@ class RecepEquipamientoController extends Controller
                 'closet_otros.clo_soporte_princ','closet_otros.clo_soporte_baja'
                 
             )
-            ->where('recep_equipamientos.id','=',$request->id)
+            ->where('recep_equipamientos.id','=',$request->id)  // filtra solo el id de la recepcion 
             ->get();
 
         return [
@@ -639,6 +651,7 @@ class RecepEquipamientoController extends Controller
         ];
     }
 
+    // Crea un archivo PDF con la informacion sobre la recepcion de los closets
     public function recepcionClosetsPDF($id){
         $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
         ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
@@ -726,11 +739,13 @@ class RecepEquipamientoController extends Controller
         ->where('recep_equipamientos.id','=',$id)
         ->get();
 
+        // llama a la funcion para crear el archivo PDF 
         $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionClosets', ['resultados' => $resultados]);
         //$pdf->setPaper('A4','landscape');
         return $pdf->stream('recepcion_de_closets.pdf');
     }
 
+    // Crea un archivo PDF con la informacion sobre la recepcion de la cocina
     public function recepcionCocinaPDF(Request $request){
         $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
         ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
@@ -817,12 +832,13 @@ class RecepEquipamientoController extends Controller
         )
         ->where('recep_equipamientos.id','=',$request->id)
         ->get();
-
+        // llama a la funcion para crear el archivo PDF 
         $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionCocina', ['resultados' => $resultados]);
         //$pdf->setPaper('A4','landscape');
         return $pdf->stream('recepcion_de_closets.pdf');
     }
 
+    // // Crea un archivo PDF con la informacion general sobre la recepcion
     public function recepcionGeneralPDF(Request $request){
         $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
         ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
@@ -859,7 +875,7 @@ class RecepEquipamientoController extends Controller
         )
         ->where('recep_equipamientos.id','=',$request->id)
         ->get();
-
+        // llama a la funcion para crear el archivo PDF 
         $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionGeneral', ['resultados' => $resultados]);
         //$pdf->setPaper('A4','landscape');
         return $pdf->stream('recepcion_de_trabajos.pdf');

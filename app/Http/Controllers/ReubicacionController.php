@@ -18,6 +18,7 @@ use DB;
 
 class ReubicacionController extends Controller
 {
+    // muestra la informacion de los pagos 
     public function depositosPorReubicar(Request $request){
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
@@ -73,10 +74,12 @@ class ReubicacionController extends Controller
                             $depositos =  $depositos->orderBy('depositos.fecha_pago','asc')
                             ->get();
 
-            if(sizeof($depositos)){
+            if(sizeof($depositos)){ // verifica si almenoz hay un registro deposito
                 foreach ($depositos as $key => $deposito) {
                     if($deposito->emp_constructora == $deposito->emp_terreno)
-                    $deposito->valor_terreno = 0;
+                    $deposito->valor_terreno = 0; // se restablce el valor a su estado inicial
+
+                    // se obtiene datos del deposito
                     $saldo = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                         ->select(
                             DB::raw('SUM(depositos.monto_terreno) as transferido'),
@@ -88,9 +91,10 @@ class ReubicacionController extends Controller
                         ->where('depositos.reubicado','=',0)
                         ->get();
 
-                        $deposito->saldo_terreno_act = 0;
-                        $deposito->cant_depo_act = 0;
+                        $deposito->saldo_terreno_act = 0;  // se restablce el valor a su estado inicial
+                        $deposito->cant_depo_act = 0;// se restablce el valor a su estado inicial
 
+                        // se obtiene el saldo anterior
                         $saldoAnt = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                         ->select(
                             DB::raw('SUM(depositos.monto_terreno) as transferido'),
@@ -101,12 +105,14 @@ class ReubicacionController extends Controller
                         ->where('depositos.lote_id','=',$deposito->lote)
                         ->where('depositos.reubicado','=',0)
                         ->get();
+                        
 
                     if($saldo[0]->transferido != NULL)
-                        $deposito->saldo_terreno_act = $saldo[0]->transferido;
+                        $deposito->saldo_terreno_act = $saldo[0]->transferido; 
                     if($saldo[0]->monto_gcc != NULL)
                         $deposito->cant_depo_act = $saldo[0]->monto_gcc;
-
+                    
+                    
                     $reubicacion = Reubicacion::join('lotes','reubicaciones.lote_id','=','lotes.id')
                             ->join('etapas', 'lotes.etapa_id','=','etapas.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -126,7 +132,7 @@ class ReubicacionController extends Controller
                             $reubicacion =  $reubicacion->orderBy('reubicaciones.fecha_reubicacion','desc')
                             ->first();
 
-                    if($reubicacion){
+                    if($reubicacion){ // valida si hay registro de reubicacion 
                         $deposito->reubicacion = $reubicacion;
 
                         $reubicacion->cant_depo = $deposito->cant_depo;
@@ -155,6 +161,7 @@ class ReubicacionController extends Controller
         return $comentarios;
     }
 
+    // depositos por reubicar de GCC
     public function depositosPorReubicarGCC(Request $request){
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
@@ -209,6 +216,8 @@ class ReubicacionController extends Controller
 
             if(sizeof($depositos)){
                 foreach ($depositos as $key => $deposito) {
+
+                    // se optiene el saldo 
                     $saldo = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                         ->select(
                             DB::raw('SUM(depositos.cant_depo) as monto_gcc')
@@ -219,7 +228,7 @@ class ReubicacionController extends Controller
                         ->get();
 
                         $deposito->cant_depo_act = 0;
-
+                    
                         $saldoAnt = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                         ->select(
                             DB::raw('SUM(depositos.cant_depo) as monto_gcc')
@@ -229,9 +238,10 @@ class ReubicacionController extends Controller
                         ->where('depositos.reubicado','=',0)
                         ->get();
 
-                    if($saldo[0]->monto_gcc != NULL)
+                    if($saldo[0]->monto_gcc != NULL) // verifica si en deposito el monto esta vacio
                         $deposito->cant_depo_act = $saldo[0]->monto_gcc;
-
+                    
+                    // se obtiene el registro de reubicacion  y solo se toma el primero
                     $reubicacion = Reubicacion::join('lotes','reubicaciones.lote_id','=','lotes.id')
                             ->join('etapas', 'lotes.etapa_id','=','etapas.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -253,8 +263,8 @@ class ReubicacionController extends Controller
                             $reubicacion =  $reubicacion->orderBy('reubicaciones.fecha_reubicacion','desc')
                             ->first();
 
-                    if($reubicacion){
-                        $deposito->reubicacion = $reubicacion;
+                    if($reubicacion){ // si existe registro 
+                        $deposito->reubicacion = $reubicacion; // en deposito se guarda el registro de reubicacion 
 
                         $reubicacion->cant_depo = $deposito->cant_depo;
                         $reubicacion->gcc = $deposito->gcc;
@@ -268,6 +278,7 @@ class ReubicacionController extends Controller
         return $depositos;
     }
 
+    //  funcion de consulta de informacion de los depositos de GCC
     public function indexGCC(Request $request){
         $gcc = Deposito_gcc::join('lotes','depositos_gcc.lote_id','=','lotes.id')
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -277,7 +288,8 @@ class ReubicacionController extends Controller
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa as etapa'
                     );
-
+                
+                    // criterios de busqueda
                 if($request->buscar != '')
                     $gcc = $gcc->where($request->criterio,'=',$request->buscar);
                 if($request->etapa != '')
@@ -301,6 +313,7 @@ class ReubicacionController extends Controller
 
     }
 
+    // funcion para optener datos de los depositos de concretania
     public function indexConc(Request $request){
         $conc = Deposito_conc::join('lotes','depositos_conc.lote_id','=','lotes.id')
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -334,20 +347,22 @@ class ReubicacionController extends Controller
 
     }
 
+
+    
     public function storeDepositoReubicacion(Request $request){
         try {
             DB::beginTransaction();
 
             $deposito = Deposito::findOrFail($request->id);
-            $deposito->reubicado = 1;
+            $deposito->reubicado = 1; //En el id de deposito se cambia el status de reubicado 
             $deposito->save();
 
             if($request->monto_gcc != 0){
-                $this->storeGCC($request);
+                $this->storeGCC($request);  // se llama a la funcion para crear nuevo deposito
             }
 
             if($request->monto_conc != 0){
-                $this->storeConc($request);
+                $this->storeConc($request); // se llama a la funcion para crear nuevo deposito
             }
 
             
@@ -357,6 +372,7 @@ class ReubicacionController extends Controller
             }
     }
 
+    // Funcion para crear nuevo registro de deposito en la tabla.
     public function storeGCC(Request $request){
         $gcc = new Deposito_gcc();
         $gcc->contrato_id = $request->contrato_id;
@@ -371,14 +387,15 @@ class ReubicacionController extends Controller
 
         if(sizeof($comentarios))
             foreach ($comentarios as $key => $comentario) {
-                $com = Comentario_transferencia::findOrFail($comentario->id);
+                $com = Comentario_transferencia::findOrFail($comentario->id); // se guarda el id del deposito
                 $com->dep_gcc = $gcc->id;
                 $com->save();
             }
 
-        $this->calculateSaldoTerreno($request->contrato_id);
+        $this->calculateSaldoTerreno($request->contrato_id); // se hace referencia a la funcionde calcular saldo al terreno
     }
 
+    //crea nuevo registro 
     public function agregarComentario(Request $request){
         $comentario = new Comentario_transferencia();
         $comentario->deposito_id = $request->deposito_id;
@@ -389,6 +406,7 @@ class ReubicacionController extends Controller
         $comentario->save();
     }
 
+    // crea nuevo registro a la tabla de deositos concretania
     public function storeConc(Request $request){
         $conc = new Deposito_conc();
         $conc->contrato_id = $request->contrato_id;
@@ -405,13 +423,14 @@ class ReubicacionController extends Controller
         if(sizeof($comentarios))
             foreach ($comentarios as $key => $comentario) {
                 $com = Comentario_transferencia::findOrFail($comentario->id);
-                $com->dep_conc = $conc->id;
+                $com->dep_conc = $conc->id; // guarda el id del deposito
                 $com->save();
             }
 
-        $this->calculateSaldoTerreno($request->contrato_id);
+        $this->calculateSaldoTerreno($request->contrato_id); // hace llamada a la funcion de calcular saldo de terreno
     }
 
+    // crea un arreglo con la informacion de la tabla "cuentas" con la informacion de las cuentas y los bancos
     private function getCuentas($cuenta){
         $cuentas = Cuenta::select('num_cuenta','banco')->where('empresa','=',$cuenta)->get();
         $arrayCuentas = [];
@@ -420,26 +439,27 @@ class ReubicacionController extends Controller
             array_push($arrayCuentas,$cuenta->num_cuenta.'-'.$cuenta->banco);
         }
 
-        return $arrayCuentas;
+        return $arrayCuentas; // retorna un arreglo 
 
     }
 
+    // calcula el saldo
     private function calculateSaldoTerreno($id){
 
-        $credito = Credito::findOrFail($id);
-        $cuentas = $this->getCuentas('Grupo Constructor Cumbres');
-
+        $credito = Credito::findOrFail($id); 
+        $cuentas = $this->getCuentas('Grupo Constructor Cumbres'); // llama a la funcion 
+            // sumatoria de monto terreno de la tabla de depositos credito
             $sumaDepositoCreditTerreno = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
-                ->select(DB::raw("SUM(dep_creditos.monto_terreno) as suma"))->where('contratos.id','=',$id)
+                ->select(DB::raw("SUM(dep_creditos.monto_terreno) as suma"))->where('contratos.id','=',$id) // se hace la sumatoria 
                 ->where('inst_seleccionadas.elegido','=',1)
                 ->where('dep_creditos.fecha_ingreso_concretania','!=',NULL)
                 ->get();
                 if($sumaDepositoCreditTerreno[0]->suma == NULL){
                     $sumaDepositoCreditTerreno[0]->suma = 0;
                 }
-
+            // sumatoria de monto de terreno de la tabla depositos
             $sumaDepositoTerreno = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.monto_terreno) as suma"))->where('contratos.id','=',$id)
@@ -449,7 +469,7 @@ class ReubicacionController extends Controller
                 if($sumaDepositoTerreno[0]->suma == NULL){
                     $sumaDepositoTerreno[0]->suma = 0;
                 }
-
+            // sumatoria de la cantidad depositada de cuenta cumbres
             $sumaCuentaCumbres = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                 ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                 ->select(DB::raw("SUM(depositos.cant_depo) as suma"))
@@ -460,7 +480,7 @@ class ReubicacionController extends Controller
                 if($sumaCuentaCumbres[0]->suma == NULL){
                     $sumaCuentaCumbres[0]->suma = 0;
                 }
-
+            // sumatoia de depositos de GCC
             $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
                 ->where('depositos_gcc.contrato_id','=',$id)
                 ->where('depositos_gcc.lote_id','=',$credito->lote_id)
@@ -468,7 +488,7 @@ class ReubicacionController extends Controller
                 if($depositoGCC[0]->suma == NULL){
                     $depositoGCC[0]->suma = 0;
                 }
-
+            // sumatoria de depositos Concretania
             $depositoConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as suma"))
                 ->where('depositos_conc.contrato_id','=',$id)
                 ->where('depositos_conc.lote_id','=',$credito->lote_id)
@@ -478,12 +498,14 @@ class ReubicacionController extends Controller
                     $depositoConc[0]->suma = 0;
                 }
         
+        // sumatoria total se guarda en el id de credito en el campo de saldo_terreno
         $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma + 
         $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
         $credito->save();
 
     }
 
+        // crea nuevo registro de la nueva reubicacion 
     public function createReubicacion($contrato_id, $lote_id, $cliente_id,
             $asesor_id, $promocion, $tipo_credito, $institucion,
             $valor_terreno, $observacion, $fecha_reubicacion
@@ -505,12 +527,14 @@ class ReubicacionController extends Controller
         $reubicacion->save();
     }
 
+    // elimina el registro de la tabla de reubicacion 
     public function delete(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $reubicacion = Reubicacion::findOrFail($request->id);
         $reubicacion->delete();
     }
 
+    // funcion para optener la informacion 
     public function getReubicaciones(Request $request){
         $reubicaciones = Reubicacion::join('lotes','reubicaciones.lote_id','=','lotes.id')
                                     ->join('etapas', 'lotes.etapa_id','=','etapas.id')
@@ -530,6 +554,7 @@ class ReubicacionController extends Controller
         return $reubicaciones;
     }
 
+    // funcion para crear los nuevos registros 
     public function store(Request $request){
         $this->createReubicacion(
             $request->contrato_id, 

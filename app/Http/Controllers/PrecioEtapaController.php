@@ -11,6 +11,7 @@ use Auth;
 
 class PrecioEtapaController extends Controller
 {
+    // Funcion de consulta de la tabla de los precios por etapa 
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -25,7 +26,8 @@ class PrecioEtapaController extends Controller
                 'precios_etapas.precio_excedente','precios_etapas.id',
                 'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' );
         
-            if($buscar != '')
+           // busqueda por criterio seleccionado 
+                if($buscar != '')
                 $precios_etapas = $precios_etapas->where($criterio, 'like', '%'. $buscar . '%');
 
         $precios_etapas = $precios_etapas->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
@@ -43,7 +45,7 @@ class PrecioEtapaController extends Controller
         ];
     }
 
-    //funcion para insertar en la tabla
+    //funcion para insertar nuevo registro de precio en la tabla 
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -54,7 +56,7 @@ class PrecioEtapaController extends Controller
         $precio_etapa->save();
     }
 
-    //funcion para actualizar los datos
+    //funcion para actualizar el registro en base al id , 
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -73,6 +75,7 @@ class PrecioEtapaController extends Controller
             ->get();
         
         //if($lotes)
+        // se actualiza el campo de excedente_terreno solo en caso de que cuente con terreno excedente y no sea tipo de lotificacion "terreno"
             foreach($lotes as $lote){
                 $modelo = Modelo::select('terreno','nombre')->where('id','=',$lote->modelo_id)->get();
                 $loteExc = Lote::findOrFail($lote->id);
@@ -89,6 +92,7 @@ class PrecioEtapaController extends Controller
     
     }
 
+    //  funcion para eliminar un registro de la tabla de "precio_etapa" buscando por el id 
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -96,6 +100,7 @@ class PrecioEtapaController extends Controller
         $precio_etapa->delete();
     }
 
+    // funcion de busqueda de datos , donde se selecciona el precio excendete 
     public function selectPrecioEtapa(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -103,7 +108,7 @@ class PrecioEtapaController extends Controller
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $precio_etapa = Precio_etapa::select('precio_excedente','id')
-        ->where('fraccionamiento_id', '=', $buscar )
+        ->where('fraccionamiento_id', '=', $buscar ) // se filtra por fraccionamiento y etapa
         ->where('etapa_id', '=', $buscar2 )->get();
 
         return ['precio_etapa' => $precio_etapa];

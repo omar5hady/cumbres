@@ -168,6 +168,35 @@ class VehiculosController extends Controller
         }         
     }
 
+    public function updateSolicitud(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $solicitante = Vehiculo::join('personal','vehiculos.responsable_id','=','personal.id')
+                        ->select('personal.nombre','personal.apellidos')
+                        ->where('vehiculos.id','=',$request->vehiculo)
+                        ->first();
+
+        try{
+            DB::beginTransaction();
+
+            $solicitud = Mant_vehiculo::findOrFail($request->id);
+            $solicitud->solicitante = $solicitante->nombre.' '.$solicitante->apellidos;
+            $solicitud->vehiculo = $request->vehiculo;
+            $solicitud->reparacion = $request->reparacion;
+            $solicitud->descripcion = $request->descripcion;
+            $solicitud->taller = $request->taller;
+            $solicitud->forma_pago = $request->forma_pago;
+            $solicitud->importe_total = $request->importe_total;
+            $solicitud->monto_comp = $request->monto_comp;
+            $solicitud->monto_gcc = $request->monto_gcc;
+
+            $solicitud->save();
+        DB::commit();
+ 
+        } catch (Exception $e){
+            DB::rollBack();
+        }         
+    }
+
     public function getSolicitudes(Request $request){
         if(!$request->ajax())return redirect('/');
         $solicitudes = $this->getQuerySolic($request);
@@ -314,6 +343,7 @@ class VehiculosController extends Controller
         $this->guardarObs($pago->mantenimiento_id, 'Ha sido retenido el importe de $'.$monto);
 
         $pagos = Mant_retencion::select(DB::raw("SUM(mant_retenciones.importe) as total"))
+            ->where('mantenimiento_id','=',$pago->mantenimiento_id)
             ->where('status','=',1)->first();
 
         $solicitud = Mant_vehiculo::findOrFail($pago->mantenimiento_id);
@@ -329,6 +359,7 @@ class VehiculosController extends Controller
         $fecha2 = $request->b_fecha2;
         $status = $request->b_status;
         $buscar = $request->buscar;
+        $b_solicitante = $request->b_solicitante;
 
         $solicitudes = Mant_vehiculo::join('vehiculos','mant_vehiculos.vehiculo','=','vehiculos.id')
                                 ->select('mant_vehiculos.*','vehiculos.vehiculo as auto',
@@ -340,6 +371,9 @@ class VehiculosController extends Controller
                     $solicitudes = $solicitudes->where('mant_vehiculos.status','=',$status);
                 if($buscar != '')
                     $solicitudes = $solicitudes->where(DB::raw("CONCAT(vehiculos.marca,' ',vehiculos.vehiculo,' ',vehiculos.modelo)"), 'like', '%'. $buscar . '%');
+
+                if($b_solicitante != '')
+                    $solicitudes = $solicitudes->where('mant_vehiculos.solicitante', 'like', '%'. $b_solicitante . '%');
 
                 if(Auth::user()->admin_mant_vehiculos != 1){
                     $solicitudes = $solicitudes->where('vehiculos.responsable_id','=',Auth::user()->id);
@@ -437,6 +471,7 @@ class VehiculosController extends Controller
         $this->guardarObs($pago->mantenimiento_id, 'Ha sido retenido el importe de $'.$monto);
 
         $pagos = Mant_retencion::select(DB::raw("SUM(mant_retenciones.importe) as total"))
+            ->where('mantenimiento_id','=',$pago->mantenimiento_id)
             ->where('status','=',1)->first();
 
         $solicitud = Mant_vehiculo::findOrFail($pago->mantenimiento_id);
@@ -445,6 +480,11 @@ class VehiculosController extends Controller
             $this->guardarObs($pago->mantenimiento_id, 'La solicitud ha sido liquidada');
             $solicitud->save();
         }   
+    }
+
+    public function eliminarRetencion(Request $request){
+        $pago = Mant_retencion::findOrFail($request->id);
+        $pago->delete();
     }
     
 }

@@ -1102,6 +1102,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/vehiculos/getRetenciones','VehiculosController@getRetenciones');
         Route::get('/vehiculos/getSolicitudesExcel','VehiculosController@getSolicitudesExcel');
         Route::post('/vehiculos/storeSolicitud','VehiculosController@storeSolicitud');
+        Route::put('/vehiculos/updateSolicitud','VehiculosController@updateSolicitud');
 
         Route::put('/vehiculos/setRecepJefe','VehiculosController@setRecepJefe');
         Route::put('/vehiculos/setRecepRH','VehiculosController@setRecepRH');
@@ -1113,6 +1114,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/vehiculos/getObservaciones','VehiculosController@getObservaciones');
         Route::post('/vehiculos/storeObs','VehiculosController@storeObs');
+        Route::delete('/vehiculos/eliminarRetencion','VehiculosController@eliminarRetencion');
 
         //////////////////////// RUTAS INVENTARIOS DE PRODUCTOS ///////////////////
         Route::get('/inventarios/getInventario','InventariosController@getInventario');
@@ -1157,7 +1159,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/selectFraccionamientoConInventario','FraccionamientoController@selectFraccionamientoConInventario'); 
         Route::get('/select_fraccionamiento2','FraccionamientoController@selectFraccionamientoVue'); 
         Route::get('/select_coacreditadoVue','ClienteController@selectCoacreditadoVue'); 
-        Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
         Route::get('/contador_etapa','EtapaController@contEtapa'); 
         Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
         Route::get('/selectEtapaDisp','EtapaController@selectEtapaDisp');
@@ -1175,7 +1176,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
         Route::get('/select_contratistas','ContratistaController@selectContratista'); 
         Route::get('/select_contratistas2','ContratistaController@selectContratistaVue'); 
-        Route::get('/select_fraccionamientoLote','FraccionamientoController@selectFraccionamientoConLotes'); 
         Route::get('/select_manzana_lotes','IniObraController@select_manzana_lotes');
         Route::get('/select_lotes_obra','IniObraController@select_lotes'); 
         Route::get('/select_datos_lotes','IniObraController@select_datos_lotes'); 

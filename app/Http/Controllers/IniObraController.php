@@ -24,45 +24,44 @@ use App\Concepto_extra;
 use App\Importe_extra;
 
 class IniObraController extends Controller
-{ 
-    public function index(Request $request)
-    {
-        if (!$request->ajax()) return redirect('/');
- 
+{
+    //Función privada que retorna la query para obtener los avisos de obra
+    private function getQueryAvisos(Request $request){
         $buscar = $request->buscar;
         $criterio = $request->criterio;
-
-        $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        //Query principal
+        $avisos = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
             'ini_obras.total_superficie','ini_obras.emp_constructora', 'ini_obras.calle1', 'ini_obras.calle2', 'ini_obras.registro_obra',
             'ini_obras.direccion_proy',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
-        
-        if($request->empresa != ''){
-            $query = $query->where('ini_obras.emp_constructora','=',$request->empresa);
-        }
-         
-        if ($buscar==''){
-            $ini_obra = $query
-            ->orderBy('ini_obras.id', 'desc')->paginate(8);
-        }
-        else{
+        //Filtro por empresa constructora
+        if($request->empresa != '')
+            $avisos = $avisos->where('ini_obras.emp_constructora','=',$request->empresa);
+        //Filtro de busqueda
+        if ($buscar!=''){
             if($criterio!='ini_obras.f_ini' && $criterio!='ini_obras.f_fin'){
-                $ini_obra = $query
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('ini_obras.id', 'desc')->paginate(8);
+                $avisos = $avisos
+                ->where($criterio, 'like', '%'. $buscar . '%');
             }
-            else{
-                $ini_obra = $query
-                ->where($criterio, '=',  $buscar )
-                ->orderBy('ini_obras.id', 'desc')->paginate(8);
+            else{//Fecha de inicio
+                $avisos = $avisos
+                ->where($criterio, '=',  $buscar );
             }
-
-          
         }
-         
+        return $avisos;
+    }
+
+    // Función que retorna los avisos de obra
+    public function index(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        //Llamada a la función privada que devuelve la query principal
+        $ini_obra = $this->getQueryAvisos($request);
+        $ini_obra = $ini_obra->orderBy('ini_obras.id', 'desc')->paginate(8);
+        //Retorno de información 
         return [
             'pagination' => [
                 'total'        => $ini_obra->total(),
@@ -75,38 +74,13 @@ class IniObraController extends Controller
             'ini_obra' => $ini_obra
         ];
     }
-
+    //Función que retorna los avisos de obra en excel
     public function excelAvisos(Request $request)
     {
-        $buscar = $request->buscar;
-        $criterio = $request->criterio;
-
-        $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
-            ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
-            'ini_obras.total_superficie',
-            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
-         
-        if ($buscar==''){
-            $ini_obra = $query
-            ->orderBy('ini_obras.id', 'desc')->get();
-        }
-        else{
-            if($criterio!='ini_obras.f_ini' && $criterio!='ini_obras.f_fin'){
-                $ini_obra = $query
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('ini_obras.id', 'desc')->get();
-            }
-            else{
-                $ini_obra = $query
-                ->where($criterio, '=',  $buscar )
-                ->orderBy('ini_obras.id', 'desc')->get();
-            }
-
-          
-        }
-         
+        //Llamada a la función privada que devuelve la query principal
+        $ini_obra = $this->getQueryAvisos($request);
+        $ini_obra = $ini_obra->orderBy('ini_obras.id', 'desc')->get();
+        //Creación y retorno de excel.
         return Excel::create(
             'Avisos de obra',
             function ($excel) use ($ini_obra) {
@@ -171,10 +145,12 @@ class IniObraController extends Controller
         )->download('xls');
     }
 
+    //Función que retorna los datos principales de un Aviso de obra
     public function obtenerCabecera(Request $request){
         if (!$request->ajax()) return redirect('/');
  
         $id = $request->id;
+        //Query principal
         $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin', 'ini_obras.calle1', 'ini_obras.calle2',
@@ -189,10 +165,11 @@ class IniObraController extends Controller
         return ['ini_obra' => $ini_obra];
     }
 
+    //Función que retorna el detalle de los lotes que conforman un aviso de obra
     public function obtenerDetalles(Request $request){
         //if (!$request->ajax()) return redirect('/');
- 
         $id = $request->id;
+        //Query
         $detalles = Ini_obra_lote::leftJoin('lotes','ini_obra_lotes.lote_id','=','lotes.id')
         ->select('ini_obra_lotes.costo_directo', 'lotes.sublote', 'lotes.fin_obra',
             'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
@@ -205,6 +182,7 @@ class IniObraController extends Controller
         return ['detalles' => $detalles];
     }
  
+    //Función para registrar un nuevo aviso de obra.
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -213,6 +191,7 @@ class IniObraController extends Controller
  
         try{
             DB::beginTransaction(); 
+            //Se crea el registro para la Tabla ini_obras
             $ini_obra = new Ini_obra();
             $ini_obra->fraccionamiento_id = $request->fraccionamiento_id;
             $ini_obra->contratista_id = $request->contratista_id;
@@ -235,12 +214,12 @@ class IniObraController extends Controller
             $ini_obra->emp_constructora = $request->emp_constructora;
             $ini_obra->direccion_proy = $request->direccion_proy;
             $ini_obra->save();
- 
+            
             $lotes = $request->data;//Array de detalles
-            //Recorro todos los elementos
- 
+            //Recorro todos los elementos del array
             foreach($lotes as $ep=>$det)
             {
+                //Se genera un nuevo registro para cada lote que conforma el aviso.
                 $lotes = new Ini_obra_lote();
                 $lotes->ini_obra_id = $ini_obra->id;
                 $lotes->lote = $det['lote'];
@@ -254,8 +233,10 @@ class IniObraController extends Controller
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
                 $lotes->save();
-
+                //Se verifica que la partida corresponda a un lote
                 if($det['lote_id']>0){
+                    //Se accede al registro en la tabla de lotes
+                    //Para actualizar la información correspondiente al contrato de obra
                     $lote = Lote::findOrFail($det['lote_id']);
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
@@ -264,7 +245,6 @@ class IniObraController extends Controller
                     $lote->fin_obra = $det['fin_obra'];
                     $lote->fin_obra= $det['fin_obra'];
                     if($lote->contrato==0){
-                        
                         $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
                         ->where('contrato','=',0)->get();
 
@@ -286,6 +266,7 @@ class IniObraController extends Controller
         }
     }
 
+    //Función que retorna las manzanas correspondientes a lotes con inicio de obra pendiente.
     public function select_manzana_lotes (Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -299,6 +280,7 @@ class IniObraController extends Controller
                         return ['lotesManzana' => $lotesManzana];
     }
 
+    //Función que retorna las claves correspondientes a los contratos de obra por fraccionamiento.
     public function select_numContrato (Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -310,6 +292,7 @@ class IniObraController extends Controller
                         return ['numContratos' => $contratos];
     }
 
+    //Función que retorna los lotes con inicio de obra pendiente.
     public function select_lotes (Request $request)
     {
         if(!$request->ajax())return redirect('/');
@@ -325,39 +308,44 @@ class IniObraController extends Controller
                         return ['lotes' => $lotes];
     }
 
+    //Función que retorna los datos de un lote para el aviso de obra.
     public function select_datos_lotes (Request $request)
     {
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $lotesDatos = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->select('lotes.num_lote as num_lote','lotes.construccion as construccion',
-                            'lotes.manzana as manzana','modelos.nombre as modelo',
-                            'lotes.sublote',
-                        'lotes.id as lote_id','lotes.emp_constructora')
-                        ->where('lotes.id','=',$buscar)
-                        ->where('lotes.ini_obra', '=', '1')
-                        ->where('lotes.aviso','=','0')
-                        ->get();
+            ->select('lotes.num_lote as num_lote','lotes.construccion as construccion',
+                    'lotes.manzana as manzana','modelos.nombre as modelo',
+                    'lotes.sublote',
+                'lotes.id as lote_id','lotes.emp_constructora')
+                ->where('lotes.id','=',$buscar)
+                ->where('lotes.ini_obra', '=', '1')
+                ->where('lotes.aviso','=','0')
+                ->get();
 
-                        return ['lotesDatos' => $lotesDatos];
+                return ['lotesDatos' => $lotesDatos];
     }
 
-     public function eliminarContrato(Request $request){
+    //Función para eliminar un aviso de obra.
+    public function eliminarContrato(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
+        //Se obtienen los lotes que corresponden al aviso de obra
         $lotes = Ini_obra_lote::select('lote_id')
                                 ->where('ini_obra_id','=',$request->id)->get();
+        //Se recorre el arreglo de lotes 
         foreach($lotes as $ep=>$det){
             if($det->lote_id > 0){
                 $lote = Lote::findOrFail($det->lote_id);
-                $lote->aviso = '0';
+                $lote->aviso = '0';//Se indica que el lote no tiene un aviso de obra
                 $lote->save();
             }
         }
-
+        //Se elimina el registro del aviso de obra.
         $ini_obra = Ini_obra::findOrFail($request->id);
         $ini_obra->delete();
-     }
+    }
 
+    // Función para actualizar un aviso de obra.
     public function ActualizarIniObra(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -366,6 +354,7 @@ class IniObraController extends Controller
 
         try{
             DB::beginTransaction(); 
+            //Se accede al registro del aviso de obra.
             $ini_obra = Ini_obra::findOrFail($request->id);
             $ini_obra->fraccionamiento_id = $request->fraccionamiento_id;
             $ini_obra->contratista_id = $request->contratista_id;
@@ -389,10 +378,10 @@ class IniObraController extends Controller
             $ini_obra->save();
 
             $lotes = $request->data;//Array de detalles
-            //Recorro todos los elementos
-
+            //Recorro todos los elementos del array
             foreach($lotes as $ep=>$det)
             {
+                //Se accede al registro de la partida para el aviso de obra
                 $lotes = Ini_obra_lote::findOrFail($det['id']);
                 $lotes->ini_obra_id = $ini_obra->id;
                 $lotes->lote = $det['lote'];
@@ -406,8 +395,9 @@ class IniObraController extends Controller
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
                 $lotes->save();
-
+                //Se verifica que la partida corresponda a un lote
                 if($det['lote_id']>0){
+                    //Se accede al registro del lote y se actualiza información
                     $lote = Lote::findOrFail($det['lote_id']);
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
@@ -439,25 +429,23 @@ class IniObraController extends Controller
 
     }
 
+    // Función para eliminar una partida del aviso de obra.
     public function eliminarIniObraLotes(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
-
         $loteIni = Ini_obra_lote::findOrFail($request->id);
-            
-            if($loteIni->lote_id==0){
-                
-                $loteIni->delete();
-            }else{
-
-            $lote = Lote::findOrFail($loteIni->lote_id);
-            $lote->aviso = '0';
-            $lote->save();
-            $loteIni->delete();
+            //En caso de ser una partida relacionada a un lote
+            if($loteIni->lote_id!=0){
+                //Se actualiza el lote indicando que no tiene una aviso de obra.
+                $lote = Lote::findOrFail($loteIni->lote_id);
+                $lote->aviso = '0';
+                $lote->save();
             }
-
+            //Se elimina el registro de la partida.
+            $loteIni->delete();
     }
 
+    //Función para registrar una nueva partida al aviso de obra.
     public function agregarIniObraLotes(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -473,13 +461,13 @@ class IniObraController extends Controller
         $lotes->descripcion = $request->descripcion;
         $lotes->lote_id= $request->lote_id;
         $lotes->save();
-
     }
 
+    //Función para imprimir el contrato de obra en PDF.
     public function contratoObraPDF(Request $request)
     {
         $id = $request->id;
-        
+        //Query para obtener los datos del contrato
         $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
@@ -495,41 +483,41 @@ class IniObraController extends Controller
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
-
+        //Se obtienen los datos relacionados a los lotes del contrato.
         $cabecera[0]->etapa = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
                         ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->select('etapas.num_etapa')
                         ->where('ini_obra_lotes.ini_obra_id','=',$id)
                         ->first();
-
+        //Formato de fecha
         setlocale(LC_TIME, 'es_MX.utf8');
         $tiempo = new Carbon($cabecera[0]->f_ini);
         $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
-
+        //Apoderado legal que es seleccionado
         $cabecera[0]->apoderado = $request->apoderado;
-
+        //Formato para fechas
         $tiempo2 = new Carbon($cabecera[0]->f_fin);
         $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
-
         $cabecera[0]->f_ini2 = $tiempo->formatLocalized('%d dias del mes de %B del año %Y');
-
+        //Formato de moneda
         $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
         $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
         $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
         $cabecera[0]->total_importe2 = number_format((float)$cabecera[0]->total_importe,2,'.',',');
-
+        //Alamacenamiento de cantidad en letra
         $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
         $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
-
+            //Creación de PDF
             $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
+            //retorno de archivo.
             return $pdf->stream('contrato.pdf');
-            // return ['cabecera' => $cabecera];
     }
 
+    //Codigo para exportar vista PRE a excel
     public function exportExcel(Request $request, $id)
     {
-        //Codigo para exportar vista PRE a excell
         $id = $request->id;
+        //Query para obtener los lotes o partidas que contiene el aviso de obra
         $detalles = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
         ->select('ini_obra_lotes.costo_directo', 'lotes.sublote',
             'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
@@ -538,7 +526,7 @@ class IniObraController extends Controller
             'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.lote', 'desc')->get();
-
+        //Query para obtener los datos principales del aviso de obra
         $relacion =  Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
@@ -555,7 +543,7 @@ class IniObraController extends Controller
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
 
-
+        //Creación y retorno de Excel
         return Excel::create('Pre_'.$relacion[0]->proyecto , function($excel) use ($relacion, $detalles){
         $excel->sheet($relacion[0]->clave, function($sheet) use ($relacion, $detalles){
             
@@ -772,92 +760,72 @@ class IniObraController extends Controller
         )->download('xls');
     
     }
-
     ////////////////////////////////////////////////////////////////////////////////
-
+    //Función para registrar y almacenar en el servidor el archivo del contrato.
     public function formSubmitContratoObra(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
+        //Se accede a la información del aviso de obra
         $pdfAnterior = Ini_obra::select('documento', 'id')
             ->where('id', '=', $id)
             ->get();
-        if ($pdfAnterior->isEmpty() == 1) {
-            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
-            $moved =  $request->pdf->move(public_path('/files/contratos/obra/'), $fileName);
-
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $documento = Ini_obra::findOrFail($request->id);
-                $documento->documento = $fileName;
-                $documento->save(); //Insert
-
-            }
-
-            return back();
-        } else {
+        //En caso de tener un archivo ya almacenado
+        if ($pdfAnterior->isEmpty() != 1) {
+            //Se elimina el archivo anterior
             $pathAnterior = public_path() . '/files/contratos/obra/' . $pdfAnterior[0]->documento;
             File::delete($pathAnterior);
-
-            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
-            $moved =  $request->pdf->move(public_path('/files/contratos/obra/'), $fileName);
-
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $documento = Ini_obra::findOrFail($request->id);
-                $documento->documento = $fileName;
-                $documento->save(); //Insert
-
-            }
-
-            return back();
         }
-    }
+        //Variable que almacena el nombre con el que se guardara el nuevo archivo
+        $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+        //Se almacena el archivo en el servidor
+        $moved =  $request->pdf->move(public_path('/files/contratos/obra/'), $fileName);
+        //Si se almacena correctamente
+        if ($moved) {
+            //Se registra el nombre del archivo en el registro del aviso de obra.
+            $documento = Ini_obra::findOrFail($request->id);
+            $documento->documento = $fileName;
+            $documento->save(); //Insert
 
+        }
+
+        return back();
+    }
+    //Función para registrar y almacenar en el servidor el archivo del registro de obra.
     public function formSubmitRegistroObra(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 )return redirect('/');
+        //Se accede a la información del aviso de obra
         $pdfAnterior = Ini_obra::select('registro_obra', 'id')
             ->where('id', '=', $id)
             ->get();
-        if ($pdfAnterior->isEmpty() == 1) {
-            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
-            $moved =  $request->pdf->move(public_path('/files/contratos/registro_obra/'), $fileName);
-
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $documento = Ini_obra::findOrFail($request->id);
-                $documento->registro_obra = $fileName;
-                $documento->save(); //Insert
-
-            }
-
-            return back();
-        } else {
+        //En caso de tener un archivo ya almacenado
+        if ($pdfAnterior->isEmpty() != 1) {
+            //Se elimina el archivo anterior
             $pathAnterior = public_path() . '/files/contratos/registro_obra/' . $pdfAnterior[0]->documento;
             File::delete($pathAnterior);
-
-            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
-            $moved =  $request->pdf->move(public_path('/files/contratos/registro_obra/'), $fileName);
-
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $documento = Ini_obra::findOrFail($request->id);
-                $documento->registro_obra = $fileName;
-                $documento->save(); //Insert
-
-            }
-
-            return back();
         }
-    }
+        //Variable que almacena el nombre con el que se guardara el nuevo archivo
+        $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+        //Se almacena el archivo en el servidor
+        $moved =  $request->pdf->move(public_path('/files/contratos/registro_obra/'), $fileName);
+        //Si se almacena correctamente
+        if ($moved) {
+            //Se registra el nombre del archivo en el registro del aviso de obra.
+            $documento = Ini_obra::findOrFail($request->id);
+            $documento->registro_obra = $fileName;
+            $documento->save(); //Insert
 
+        }
+        return back();
+}
+
+    //Función para descargar el archivo correspondiente al contrato de obra
     public function downloadFile($fileName)
     {
-
         $pathtoFile = public_path() . '/files/contratos/obra/' . $fileName;
         return response()->download($pathtoFile);
     }
-
+    //Función para descargar el archivo correspondiente registro de obra
     public function downloadRegistroObra($fileName)
     {
 
@@ -865,6 +833,7 @@ class IniObraController extends Controller
         return response()->download($pathtoFile);
     }
 
+    //Función que retorna los avisos de obra que no tienen registradas estimaciones.
     public function getSinEstimaciones(Request $request){
         if(!$request->ajax())return redirect('/');
         $query = Ini_obra::select('id','clave','num_casas','total_importe')
@@ -876,21 +845,24 @@ class IniObraController extends Controller
         return['contratos'=>$query];
     }
 
+    //Funcion para registras las partidas para estimaciones desde excel.
     public function import(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        //validate the xls file
+        //validación de archivo
         $this->validate($request, array(
             'file'      => 'required'
         ));
  
         if($request->hasFile('file')){
+            //Se obtiene la extensión del archivo
             $extension = File::extension($request->file->getClientOriginalName());
+            //Se verifica que el archivo sea compatible.
             if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
- 
+                //Se obtienen la cantidad de lotes correspondientes al aviso de obra
                 $lotes = Ini_obra_lote::select('ini_obra_id')
                 ->where('ini_obra_id','=',$request->contrato)
                 ->where('lote','!=',NULL)->count();   
-                
+                //Se actualiza el registro del aviso de obra con los datos capturados
                 $contrato = Ini_obra::findOrFail($request->contrato);
                 $contrato->num_casas = $lotes;
                 $contrato->porc_garantia_ret = $request->porcentaje_garantia;
@@ -899,20 +871,23 @@ class IniObraController extends Controller
                 $contrato->save();
 
                 $path = $request->file->getRealPath();
+                //Se cargan los datos del archivo excel
                 $data = Excel::load($path, function($reader) {
                 })->get();
 
                 if(!empty($data) && $data->count()){
- 
+                    //Se recorren los datos obtenidos 
                     foreach ($data as $key => $value) {
+                        //En un arreglo se van almacenando los datos 
                         $insert[] = [
                             'aviso_id' => $request->contrato,
                             'partida' => $value->partida,
                             'pu_prorrateado' => $value->pu_prorrateado
                         ];
                     }
- 
+                    
                     if(!empty($insert)){
+                        //Se cargan las partidas para la estimacion
                         $insertData = DB::table('estimaciones')->insert($insert);
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
@@ -930,13 +905,13 @@ class IniObraController extends Controller
         }
     }
 
+    //Función que retorna los contratos de obra que han sido habilitados para estimaciones
     public function indexEstimaciones(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
- 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
-
+        //Query que retorna los avisos de obra habilitados
         $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe2 as total_importe', 'ini_obras.garantia_ret',
@@ -945,18 +920,18 @@ class IniObraController extends Controller
             'ini_obras.porc_garantia_ret',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.num_casas','!=',0);
-        
+        //Busqueda por proyecto
         if($request->proyecto != '')
-            $ini_obra = $ini_obra
-            ->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
+            $ini_obra = $ini_obra->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
         
         if($buscar != ''){
             $ini_obra = $ini_obra
+            //Busqueda por clave de contrato
             ->where('ini_obras.clave','like','%'.$request->buscar.'%')
+            //Busqueda por nombre de contratista
             ->orWhere('contratistas.nombre','like','%'.$request->buscar.'%');
-            if($request->proyecto != '')
-                $ini_obra = $ini_obra
-                ->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
+            if($request->proyecto != '')//Busqueda por proyecto para el OrWhere
+                $ini_obra = $ini_obra->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
         }
 
         $ini_obra = $ini_obra
@@ -964,8 +939,10 @@ class IniObraController extends Controller
             ->orderBy('ini_obras.clave', 'desc')->paginate(12);
 
         if(sizeof($ini_obra))
+        //Se recorren los contratos
             foreach($ini_obra as $index => $obra){
                 $obra->anticipo = 0;
+                //Se obtiene el monto de anticipo del contrato.
                 $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
                                     ->where('aviso_id','=',$obra->id)->first();
                 $obra->total_anticipo = 0;
@@ -974,7 +951,6 @@ class IniObraController extends Controller
 
                 if($obra->total_importe != 0)
                     $obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
-                
             }
         
          
@@ -991,59 +967,66 @@ class IniObraController extends Controller
         ];
     }
 
+    //Función privada que retorna los conceptos extra del Aviso de Obra
     private function getConceptosExtra($clave){
         return Concepto_extra::where('aviso_id','=',$clave)->orderBy('fecha','asc')->get();
     }
-
+    //Función privada que retorna las observaciones del Aviso de Obra
     private function getObs($clave){
         return Obs_estimacion::where('aviso_id','=',$clave)->orderBy('created_at','desc')->get();
     }
 
+    //Función privada que retorna los importes extra del Aviso de Obra
     private function getImporteExtra($clave){
         return Importe_extra::where('aviso_id','=',$clave)->orderBy('fechaExtra','desc')->get();
     }
 
+    //Funcion que retorna las partidas de las estimaciones para el aviso de obra
     public function getPartidas(Request $request){
+        //Llamada a la función privada que retorna los anticipos
         $anticipos = $this->getAnticipos($request->clave);
+        //Llamada a la función privada que retorna los fondos de garantia
         $fondos = $this->getFG($request->clave);
-
+        //Llamada a la función privada que retorna los importes extra
         $importesExtra = $this->getImporteExtra($request->clave);
+        //Llamada a la función privada que retorna los conceptos extra
         $conceptosExtra = $this->getConceptosExtra($request->clave);
-
+        //Llamada a la función privada que retorna las observaciones
         $observaciones = $this->getObs($request->clave);
 
         $acumAntTotal = [];
+        //Query para obtener las partidas de las estimaciones
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
-
+        //Query que obtiene del historial de estimaciones el numero de estimaciones que se han creado.
         $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                         ->select('num_estimacion')
                         ->where('estimaciones.aviso_id','=',$request->clave)
                         ->orderBy('num_estimacion','desc')->distinct()->get();
-
+        //Query que obtiene todo el historial de estimaciones del aviso de obra
         $est = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                                 ->select('num_estimacion','total_estimacion')
                                 ->where('estimaciones.aviso_id','=',$request->clave);
+        //Filtro para numero de estimacion a buscar
+        if($request->numero != ''){
+            $est = $est->where('num_estimacion','<=',$request->numero);
+        }
 
-        if($request->numero == ''){
-            $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
-        }
-        else{
-            $est = $est->where('num_estimacion','<=',$request->numero)->orderBy('num_estimacion','desc')->distinct()->get();
-        }
+        $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
         
 
         if(sizeof($est) == 0){
-
             $total_estimacion = 0;
             $num_est = 0;
         }
         else{
+            //Se almacena el numero de estimación a mostrar y el monto total
             $num_est = $est[0]->num_estimacion;
             $total_estimacion = $est[0]->total_estimacion;
         }
 
+        //Se obtienen los montos total de las estimaciones anteriores.
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
             ->select(
                 'total_estimacion'
@@ -1056,6 +1039,7 @@ class IniObraController extends Controller
         $totalEstimacionAnt = 0;
 
         if(sizeof($acumAntTotal)){
+            //Se recorren los resultados obtenidos y se calcula el total
             foreach($acumAntTotal as $index => $acum){
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
@@ -1068,6 +1052,7 @@ class IniObraController extends Controller
         else
             $actual = $act[0]->num_estimacion;
 
+        //Se recorren las partidas de las estimaciones
         foreach($estimaciones as $index => $estimacion){
             $estimacion->num_estimacion = 0;
             $estimacion->costo = 0;
@@ -1077,9 +1062,9 @@ class IniObraController extends Controller
             $estimacion->porEstimarCosto = 0;
             $estimacion->porEstimarVol = 0;
             $estimacion->costoA = 0;
-            
-
+            // Si hay una estimacion a mostrar
             if($num_est != 0){
+                //Se obtienen el total de volumen y costo acumulados
                 $acum = Hist_estimacion::select(
                         DB::raw("SUM(vol) as volumen"),
                         DB::raw("SUM(costo) as totalCosto")
@@ -1088,19 +1073,19 @@ class IniObraController extends Controller
                     ->where('num_estimacion','<=',$num_est)
                     ->get();
                 
-                
+                //Se asignan los totales a la partida
                 if( $acum[0]->volumen > 0 ){
                     $estimacion->acumVol = $acum[0]->volumen;
                     $estimacion->acumCosto = $acum[0]->totalCosto;
                 }
-
+                //Se obtiene el vol, costo y el numero actual
                 $historial = Hist_estimacion::select(
                     'vol', 'costo', 'num_estimacion'
                 )
                 ->where('estimacion_id','=',$estimacion->id)
                 ->where('num_estimacion','=',$num_est)
                 ->get();
-
+                //Se asigna el valor actual en la estimación
                 if( sizeOf($historial) > 0 ){
                     $estimacion->vol = $historial[0]->vol;
                     $estimacion->costoA = $historial[0]->costo;
@@ -1109,8 +1094,7 @@ class IniObraController extends Controller
                 }
             }
         }
-        
-
+        //Se obtienen monto total del anticipo capturado
         $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
             ->where('aviso_id','=',$request->clave)->first();
             $total_anticipo = 0;
@@ -1118,9 +1102,8 @@ class IniObraController extends Controller
                 $total_anticipo = $anticipoT->total;
 
             $total_anticipo = $total_anticipo;
+            //Se calcula el % de anticipo.
             $anticipo = round(($total_anticipo/$request->total_importe)*100,3);
-
-        
 
         return [
             'estimaciones' => $estimaciones, 
@@ -1140,37 +1123,42 @@ class IniObraController extends Controller
         ];
     }
 
+    //Funcion que retorna las partidas de las estimaciones para el aviso de obra en excel
     public function excelEstimaciones(Request $request){
+        //Llamada a la función privada que retorna los anticipos
         $anticipos = $this->getAnticipos($request->clave);
+        //Llamada a la función privada que retorna los fondos de garantia
         $fondos = $this->getFG($request->clave);
         $clave = $request->clave;
         $num_casas = $request->num_casas;
         $acumAntTotal = [];
-
+        //Llamada a la función privada que retorna los importes extra
         $importesExtra = $this->getImporteExtra($request->clave);
+        //Llamada a la función privada que retorna los conceptos extra
         $conceptosExtra = $this->getConceptosExtra($request->clave);
+        //Llamada a la función privada que retorna las observaciones
         $observaciones = $this->getObs($request->clave);
-        
+        //Query para obtener las partidas de las estimaciones
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
-
+        //Query que obtiene del historial de estimaciones el numero de estimaciones que se han creado.
         $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                         ->select('num_estimacion')
                         ->where('estimaciones.aviso_id','=',$request->clave)
                         ->orderBy('num_estimacion','desc')->distinct()->get();
-
+        //Query que obtiene todo el historial de estimaciones del aviso de obra
         $est = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                                 ->select('num_estimacion', 'total_estimacion')
                                 ->where('estimaciones.aviso_id','=',$request->clave);
-
+        //Query para obtener los datos del contrato de obra
         $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                         ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave',
                                 'total_importe2 as total_importe', 'ini_obras.total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'ini_obras.anticipo',
                                 'contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$request->clave)->get();
-
+        //Se obtienen monto total del anticipo capturado
         $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
             ->where('aviso_id','=',$request->clave)->first();
         $contrato[0]->total_anticipo = 0;
@@ -1179,21 +1167,19 @@ class IniObraController extends Controller
 
         $contrato[0]->anticipo = round($contrato[0]->total_anticipo/$contrato[0]->total_importe,3);
         
+        //Filtro para numero de estimacion a buscar
+        if($request->numero != ''){
+            $est = $est->where('num_estimacion','<=',$request->numero);
+        }
 
-        if($request->numero == ''){
-            
-            $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
-        }
-        else{
-            $est = $est->where('num_estimacion','<=',$request->numero)->orderBy('num_estimacion','desc')->distinct()->get();
-        }
+        $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
 
         if(sizeof($est) == 0){
-
             $total_estimacion = 0;
             $num_est = 0;
         }
         else{
+            //Se almacena el numero de estimación a mostrar y el monto total
             $num_est = $est[0]->num_estimacion;
             $total_estimacion = $est[0]->total_estimacion;
         }
@@ -1211,6 +1197,7 @@ class IniObraController extends Controller
         else
             $actual = $act[0]->num_estimacion;
 
+        //Se obtienen los montos total de las estimaciones anteriores.
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
         ->select(
             'total_estimacion'
@@ -1223,13 +1210,14 @@ class IniObraController extends Controller
         $totalEstimacionAnt = 0;
 
         if(sizeof($acumAntTotal)){
+            //Se recorren los resultados obtenidos y se calcula el total
             foreach($acumAntTotal as $index => $acum){
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
 
         
-        
+        //Se recorren las partidas de las estimaciones
         foreach($estimaciones as $index => $estimacion){
             $estimacion->num_estimacion = 0;
             $estimacion->costo = 0;
@@ -1241,9 +1229,9 @@ class IniObraController extends Controller
             $estimacion->costoA = 0;
             $estimacion->ini = '';
             $estimacion->fin = '';
-            
-
+            // Si hay una estimacion a mostrar
             if($num_est != 0){
+                //Se obtienen el total de volumen y costo acumulados
                 $acum = Hist_estimacion::select(
                         DB::raw("SUM(vol) as volumen"),
                         DB::raw("SUM(costo) as totalCosto")
@@ -1251,18 +1239,19 @@ class IniObraController extends Controller
                     ->where('estimacion_id','=',$estimacion->id)
                     ->where('num_estimacion','<=',$num_est)
                     ->get();
+                //Se asignan los totales a la partida
                 if( $acum[0]->volumen > 0 ){
                     $estimacion->acumVol = $acum[0]->volumen;
                     $estimacion->acumCosto = $acum[0]->totalCosto;
                 }
-
+                //Se obtiene el vol, costo y el numero actual
                 $historial = Hist_estimacion::select(
                     'vol', 'costo', 'num_estimacion','ini','fin'
                 )
                 ->where('estimacion_id','=',$estimacion->id)
                 ->where('num_estimacion','=',$num_est)
                 ->get();
-
+                //Se asigna el valor actual en la estimación
                 if( sizeOf($historial) > 0 ){
                     $estimacion->vol = $historial[0]->vol;
                     $estimacion->ini = $historial[0]->ini;
@@ -1275,7 +1264,7 @@ class IniObraController extends Controller
         }
 
         //return $contrato;
-
+        //Creación y retorno de Excel
         return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
                 $num_est, $contrato, $num_casas , $totalEstimacionAnt , $observaciones,
                 $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
@@ -1612,6 +1601,7 @@ class IniObraController extends Controller
         })->download('xls');
     }
 
+    //Función para registrar una nueva estimacion en el historial
     public function storeEstimacion(Request $request){
         $estimacion = new Hist_estimacion();
         $estimacion->estimacion_id = $request->estimacion_id;
@@ -1625,18 +1615,23 @@ class IniObraController extends Controller
         $estimacion->save();
     }
 
+    //Función para actualizar una nueva estimacion en el historial
     public function updateEstimacion(Request $request){
+        //Se busca registro que corresponda a la partida a actualizar
         $est = Hist_estimacion::select('id','ini','fin')
                     ->where('estimacion_id','=',$request->estimacion_id)
                     ->where('num_estimacion','=',$request->num_estimacion)
                     ->get();
-
+        //En caso de econtrar una partida
         if(sizeof($est)){
+            //Se accede al registro
             $estimacion = Hist_estimacion::findOrFail($est[0]->id);
+            //En caso de cambiar a 0, se elimina el registro
             if($request->vol == 0){
                 $estimacion->delete();
             }
             else{
+                //En caso contrario se actualiza la información
                 $estimacion->vol = $request->vol;
                 $estimacion->costo = $request->costo;
                 $estimacion->total_estimacion = $request->total_estimacion;
@@ -1644,7 +1639,9 @@ class IniObraController extends Controller
                 $estimacion->save();
             }
         }
+        //En caso de no encontrar un registro
         else{
+            //Se crea un registro nuevo
             $estimacion = new Hist_estimacion();
             $estimacion->estimacion_id = $request->estimacion_id;
             $estimacion->num_estimacion = $request->num_estimacion;
@@ -1656,6 +1653,7 @@ class IniObraController extends Controller
         }
     }
 
+    //Función para registrar un anticipo
     public function storeAnticipo(Request $request){
         $anticipo = new Anticipo_estimacion();
         $anticipo->aviso_id = $request->aviso_id;
@@ -1663,7 +1661,7 @@ class IniObraController extends Controller
         $anticipo->monto_anticipo = $request->monto_anticipo;
         $anticipo->save();
     }
-
+    //Funciíon para registrar un Fondo de Garantia
     public function storeFG(Request $request){
         $anticipo = new Fg_estimacion();
         $anticipo->aviso_id = $request->aviso_id;
@@ -1672,22 +1670,21 @@ class IniObraController extends Controller
         $anticipo->fecha_fg = $request->fecha_fg;
         $anticipo->save();
     }
-
+    //Función para obtener los anticipos de un aviso de obra.
     public function getAnticipos($aviso){
         $anticipos = Anticipo_estimacion::select('id','fecha_anticipo','monto_anticipo')
                     ->where('aviso_id','=',$aviso)->orderBy('fecha_anticipo','asc')->get();
-        
         return $anticipos;
     }
-
+    //Función para obtener los fondos de garantia de un aviso de obra.
     public function getFG($aviso){
         $fondos = Fg_estimacion::select('id','cantidad','monto_fg','fecha_fg')
                     ->where('aviso_id','=',$aviso)->orderBy('id','asc')->get();
-        
         return $fondos;
     }
-
+    //Función para exportar a excel el formato para SIROC
     public function imprimirSiroc(Request $request){
+        //Query para obtener los datos del aviso de obra
         $aviso = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
@@ -1707,7 +1704,7 @@ class IniObraController extends Controller
                 'ini_obras.tipo'
             )
             ->where('ini_obras.id','=',$request->id)->get();
-        
+        //Creación y retorno del archivo excel.
         return Excel::create('SIROC '.$aviso[0]->clave , function($excel) use ($aviso){
             $excel->sheet($aviso[0]->clave, function($sheet) use ($aviso){
                 
@@ -1874,8 +1871,6 @@ class IniObraController extends Controller
                 $sheet->setCellValue('E36', 'FECHA DE TERMINO: ' ); 
                 $sheet->setCellValue('G36', $aviso[0]->f_fin ); 
                 
-
-    
                 $sheet->setColumnFormat(array(
                     'E31' => '#,##0.00',
                 ));
@@ -1898,14 +1893,14 @@ class IniObraController extends Controller
             )->download('xls');
             
     }
-
+    //Función para actualizar el importe total del aviso de obra
     public function updateImporTotal(Request $request){
         $iniObra = Ini_obra::findOrFail($request->id);
         $iniObra->total_importe2 = $request->total_importe;
         $iniObra->garantia_ret = $request->importe_garantia;
         $iniObra->save();
     }
-
+    //Función para registar un nuevo importe extra
     public function storeImporteExtra(Request $request){
         $importe = new Importe_extra();
         $importe->impExtra = $request->impExtra;
@@ -1913,7 +1908,7 @@ class IniObraController extends Controller
         $importe->aviso_id = $request->clave;
         $importe->save();
     }
-
+    //Función para registar un nuevo concepto extra
     public function storeConceptoExtra(Request $request){
         $concepto = new Concepto_extra();
         $concepto->fecha = $request->fecha;
@@ -1923,46 +1918,53 @@ class IniObraController extends Controller
         $concepto->save();
     }
 
+    //Función que retorna los datos necesarios para el estado de cuenta de un contrato de obra.
     public function getEdoCuenta($clave){
+        //Se inicializan variables para los totales
         $totalAnt = $totalFG = $totalEst = $totalExtra = 0;
-
+        //Query que obtiene los datos generales del contrato
         $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                         ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave',
                                 'total_importe2 as total_importe','contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$clave)->get();
-
+        //Llamada a la función privada que retorna los anticipos del contrato
         $anticipos = $this->getAnticipos($clave);
+        //Llamada a la función privada que retorna los fondos de garantia del contrato
         $fg = $this->getFG($clave);
+        //Llamada a la función privada que retorna los conceptos del contrato.
         $conceptosExtra = $this->getConceptosExtra($clave);
 
         if(sizeof($anticipos))
+        //Se recorren los anticipos para calcular el monto total
             foreach($anticipos as $index => $ant)
                 $totalAnt += $ant->monto_anticipo;
 
         if(sizeof($fg))
+        //Se recorren los fondos de garantia para calcular el monto total
             foreach($fg as $index => $f)
                 $totalFG += $f->monto_fg;
 
         if(sizeof($conceptosExtra))
+        //Se recorren los conceptos extras para calcular el monto total
             foreach($conceptosExtra as $index => $c)
                 $totalExtra += $c->importe;
-
-
+        //Query que obtiene las partidas para las estimaciones del contrato
         $estimaciones = Estimacion::select('id')->where('aviso_id','=',$clave)->get();
-        $arrayEst = [];
-
+        $arrayEst = [];//Arreglo para almacenar los id de las partidas
+        //Se recorren las partidas y se almacenan en el arreglo
         foreach($estimaciones as $index => $est){
             array_push($arrayEst,$est->id);
         }
-
+        //Query para obtener el numero de estimaciones que se han generado
         $number_est = Hist_estimacion::select('num_estimacion','ini','total_estimacion','total_pagado')
                     ->whereIn('estimacion_id',$arrayEst)->where('ini','!=',NULL)->orderBy('num_estimacion','asc')->distinct()->get();
 
         if(sizeof($number_est))
             foreach($number_est as $index => $n)
+                //Se calcula el total estimado
                 $totalEst += $n->total_pagado;
-
+        //Regreso de la información
         return [
             'contrato' => $contrato,
             'anticipos' => $anticipos,
@@ -1978,9 +1980,10 @@ class IniObraController extends Controller
 
     }
 
+    //Función para retornar el estado de cuenta del aviso de obra.
     public function excelEdoCuenta(Request $request){
-
         $clave = $request->clave;
+        //Llamada a la función privada que retorna los datos necesarios para el estado de cuenta
         $respuesta = $this->getEdoCuenta($clave);
 
         $contrato = $respuesta['contrato'];
@@ -1993,7 +1996,7 @@ class IniObraController extends Controller
         $totalEst = $respuesta['totalEst'];
         $totalExtra = $respuesta['totalExtra'];
         $conceptosExtra = $respuesta['conceptosExtra'];
-
+        //Creación y retorno del estado de cuenta.
         return Excel::create('Resumen Estimaciones' , function($excel) use (
             $contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG , $totalEst, $conceptosExtra, $totalExtra
             ){

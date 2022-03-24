@@ -22,9 +22,16 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
+                                    <input type="text"  class="form-control col-md-3" disabled placeholder="Vehiculo: ">
                                     <input type="text"  v-model="buscar" @keyup.enter="listarSolicitudes(1)" class="form-control" placeholder="Vehiculo">
+                                </div>
+                            </div>
+                            <div class="col-md-8" v-if="adminMant == '1'">
+                                <div class="input-group">
+                                    <input type="text"  class="form-control col-md-3" disabled placeholder="Titular: ">
+                                    <input type="text"  v-model="b_solicitante" @keyup.enter="listarSolicitudes(1)" class="form-control" placeholder="Nombre a buscar">
                                 </div>
                             </div>
                         </div>
@@ -62,6 +69,7 @@
                                         <th>Importe total</th>
                                         <th>Aportación compañero</th>
                                         <th>Monto retenido</th>
+                                        <th>Saldo</th>
                                         <th>Fecha de solic.</th>
                                         <th>Status</th>
                                         <th></th>
@@ -74,8 +82,11 @@
                                 <tbody>
                                     <tr v-for="vehiculo in arraySolicitudes.data" :key="vehiculo.id">
                                         <td class="td2">
-                                            <button type="button" @click="abrirModal('ver',vehiculo)" class="btn btn-warning btn-sm">
+                                            <button type="button" @click="abrirModal('ver',vehiculo)" class="btn btn-dark btn-sm">
                                                 <i class="icon-eye"></i>
+                                            </button>
+                                            <button v-if="adminMant == '1' && vehiculo.status == 1" type="button" @click="abrirModal('editar',vehiculo)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
                                             </button>
                                         </td>
                                         <td class="td2" v-text="vehiculo.marca + ' ' + vehiculo.auto + ' ' + vehiculo.modelo"></td>
@@ -84,6 +95,13 @@
                                         <td class="td2" v-text="'$' + formatNumber(vehiculo.importe_total)"></td>
                                         <td class="td2" v-text="'$' + formatNumber(vehiculo.monto_comp)"></td>
                                         <td class="td2" v-text="'$' + formatNumber(vehiculo.totalRetenido)"></td>
+                                        <td class="td2">
+                                            <strong style="color:red"
+                                            v-if="(vehiculo.monto_comp - vehiculo.totalRetenido) > 0" 
+                                            v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
+                                            <strong style="color:green" v-else 
+                                            v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
+                                        </td>
                                         <td class="td2" v-text="this.moment(vehiculo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
                                             <!-- 0 Cancelado, 1 Pendiente, 2 Aprobado, 3 Liquidado -->
@@ -280,6 +298,10 @@
 
                                 <div class="form-group row" v-if="importe_total != 0 && importe_total != ''">
                                     <label class="col-md-3 form-control-label" for="text-input">Aportación Compañero</label>
+
+                                    <div class="col-md-4" v-if="tipoAccion == 3">
+                                        <input type="number" v-on:change="monto_gcc = importe_total - monto_comp" v-model="monto_comp" maxlength="12" class="form-control" placeholder="Importe total">
+                                    </div>
                                     
                                     <div class="col-md-3">
                                         <strong v-text="'$'+formatNumber(monto_comp)"></strong>
@@ -346,6 +368,7 @@
                                         <table class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
+                                                    <th v-if="adminMant == 1  && userName=='marce.gaytan'"></th>
                                                     <th>Fecha</th>
                                                     <th>Importe</th>
                                                     <th>Status</th>
@@ -358,6 +381,11 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="retencion in arrayRetenciones" :key="retencion.id">
+                                                    <td v-if="adminMant == 1  && userName=='marce.gaytan' || userName == 'shady'">
+                                                        <button type="button" @click="eliminarRetencion(retencion.id)" class="btn btn-danger btn-sm" title="eliminar retención">
+                                                            <i class="icon-trash"></i>
+                                                        </button>
+                                                    </td>
                                                     <td class="td2" v-text="retencion.fecha_retencion"></td>
                                                     <td class="td2"
                                                         v-text="'$' + formatNumber(retencion.importe)"
@@ -403,9 +431,10 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1 && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-success" @click="actualizar()">Actualizar</button>
 
-                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
-                            <button type="button" v-if="status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
+                            <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
+                            <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
 
 
                             
@@ -548,6 +577,7 @@
                     + '&b_fecha1=' + me.b_fecha1
                     + '&b_fecha2=' + me.b_fecha2
                     + '&b_status=' + me.b_status
+                    + '&b_solicitante=' + me.b_solicitante
                     + '&buscar=' + me.buscar;
 
                 axios.get(url).then(function (response) {
@@ -674,6 +704,69 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Solicitud registrada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            eliminarRetencion(id){
+                swal({
+                title: '¿Desea eliminar este pago?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/vehiculos/eliminarRetencion', 
+                        {params: {'id': id}}).then(function (response){
+                        swal(
+                        'Eliminado!',
+                        'Pago eliminado correctamente.',
+                        'success'
+                        )
+                        me.getRetenciones(); //se enlistan nuevamente los registros
+                        me.listarSolicitudes(1);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
+            actualizar(){
+                if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/vehiculos/updateSolicitud',{
+                    'id': this.id,
+                    'vehiculo' : this.vehiculo,
+                    'reparacion' : this.reparacion,
+                    'descripcion' : this.descripcion,
+                    'taller' : this.taller,
+                    'forma_pago' : this.forma_pago,
+                    'importe_total' : this.importe_total,
+                    'monto_comp' : this.monto_comp,
+                    'monto_gcc' : this.monto_gcc
+                   
+                }).then(function (response){
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarSolicitudes(1); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud actualizada correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -1063,6 +1156,31 @@
                             data['recep_rh'] != null && data['recep_direccion'] != null
                         )   this.revisado = 1;
                         
+                        
+                        break;
+                    }
+                    case 'editar':
+                    {
+                        this.revisado = 0;
+                        this.modal = 1;
+                        this.tituloModal = 'Solicitud de Mantenimiento Vehicular #'+ data['id'];
+                        
+                        this.tipoAccion = 3;
+                        this.id = data['id'];
+                        this.vehiculo = data['vehiculo'];
+                        this.importe_total = data['importe_total'];
+                        this.monto_comp = data['monto_comp'];
+                        this.monto_gcc = data['monto_gcc'];
+                        this.reparacion = data['reparacion'];
+                        this.descripcion = data['descripcion'];
+                        this.taller = data['taller'];
+                        this.fecha = data['created_at'];
+                        this.forma_pago = data['forma_pago'];
+
+                        this.arrayRetenciones = data['retenciones'];
+                        this.status_rev = data['status'];
+
+                        this.revisado = 0;
                         
                         break;
                     }

@@ -11,6 +11,7 @@ use Auth;
 
 class PrecioModeloController extends Controller
 {
+    // funcion para optener los precios por modelo 
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -41,7 +42,7 @@ class PrecioModeloController extends Controller
         ];
     }
 
-    //funcion para insertar en la tabla
+    //funcion para insertar nuevo registro en la tabla 
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -52,6 +53,7 @@ class PrecioModeloController extends Controller
         $precio_modelo->save();
     }
 
+//   actualizacion de un registro en las tablas ( percio_modelo y precio_etapa )
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -70,22 +72,23 @@ class PrecioModeloController extends Controller
         
         foreach($lote_id as $loteid){
             $credito_id = Credito::select('id','precio_base','precio_venta')->where('lote_id','=',$loteid->id)
-            ->where('contrato','=',0)->get();
+            ->where('contrato','=',0)->get(); // selecciona los creditos que no tengan contrato
             foreach($credito_id as $creditoid){
-                $newPrecioVenta = $creditoid->precio_venta - $creditoid->precio_base + $request->precio_modelo;
+                $newPrecioVenta = $creditoid->precio_venta - $creditoid->precio_base + $request->precio_modelo;  // se actualiza el precio venta 
                 $credito = Credito::findOrFail($creditoid->id);
-                $credito->precio_venta=$newPrecioVenta;
-                $credito->precio_base = $request->precio_modelo;
+                $credito->precio_venta=$newPrecioVenta;  // se guarda nuevo precio venta
+                $credito->precio_base = $request->precio_modelo; // se guarda precio base 
                 $credito->save();
             }
 
             $precio = Lote::findOrFail($loteid->id);
             $precio->precio_base=$request->precio_modelo;
-            $precio->save();
+            $precio->save(); // se guarda el precio base para el lote seleccionado 
         }
         
     }
 
+    // Elimina un registro de la tabla precio_modelo
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');

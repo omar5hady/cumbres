@@ -3,28 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
+use App\Notifications\NotifyAdmin;
 use App\inst_seleccionada;
-use DB;
 use App\Gasto_admin;
-use Carbon\Carbon;
-use App\Dep_credito;
-use Excel;
-use App\Contrato;
-use App\Credito;
 use App\Dev_credito;
-use Auth;
 use App\Pago_contrato;
 use App\Lote_puente;
 use App\Pago_puente;
 use App\Expediente;
-use App\User;
-use App\Notifications\NotifyAdmin;
+use Carbon\Carbon;
+use App\Dep_credito;
 use App\Personal;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NotificationReceived;
+use App\Contrato;
+use App\Credito;
+use App\User;
+use Excel;
+use Auth;
+use DB;
 
+//Controlador para el modelo Instituciones Seleccionadas.
 class InstSeleccionadasController extends Controller
 {
+    //Función que retorna los financiamientos bancarios creados para los contratos de venta
     public function indexCreditoSel(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -34,7 +36,7 @@ class InstSeleccionadasController extends Controller
         $b_cobrados = $request->b_cobrados;
         $criterio = $request->criterio;
         $empresa = $request->empresa;
-
+        //Query principal
         $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
@@ -50,10 +52,12 @@ class InstSeleccionadasController extends Controller
                     'lotes_puente.saldo as saldoPuente','lotes_puente.abonado as abonadoPuente',
                     'lotes_puente.cobrado as cobradoPuente', 'lotes_puente.liberado', 'lotes_puente.precio_c',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+            //Ventas firmadas 
             ->where('lotes.firmado','=',$request->firmado);
-        
+
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query;
+                
                 if($b_cobrados == 0)
                     $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                 else

@@ -12,6 +12,7 @@ use Auth;
 
 class ProveedorController extends Controller
 {
+    // optiene informacion de la tabla  de proveedores  
     public function index(Request $request){
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -41,12 +42,13 @@ class ProveedorController extends Controller
 
     }
 
+    // crea un nuevo registro en las tablas de personal y en la tabla de proveedor 
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        try{
-            DB::beginTransaction();
+        try{       
+            DB::beginTransaction();  
         
-            $persona = new Personal();
+            $persona = new Personal();  
             $persona->departamento_id = 9;
             $persona->nombre = $request->proveedor;
             $persona->apellidos = '.';
@@ -84,12 +86,13 @@ class ProveedorController extends Controller
             $user->save();
             DB::commit();
  
-        } catch (Exception $e){
+        } catch (Exception $e){  // en caso de que haya algun conflicto en crear los registros , no se crea y se regresa a un estado inicial
             DB::rollBack();
         }         
     }
 
-    public function update(Request $request){
+    // atualiza solo los datos de la tabla del proveedor 
+    public function update(Request $request){ 
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $proveedor = Proveedor::findOrFail($request->id);
         $proveedor->proveedor =$request->proveedor;

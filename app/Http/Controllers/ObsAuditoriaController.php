@@ -10,6 +10,8 @@ use Carbon\Carbon;
 
 class ObsAuditoriaController extends Controller
 {
+    // funcion para crear una nueva observacion "auditoria"  en la tabla de Obs_auditoria  anexando en el folio del contrato 
+    //   y en la tabla de contrato se guarda la fecha actual de "auditoria" 
     public function auditar(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
@@ -28,6 +30,7 @@ class ObsAuditoriaController extends Controller
 
     public function store(Request $request)
     {
+         // funcion para crear una nueva observacion "auditoria"  en la tabla de Obs_auditoria 
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $observacion = new Obs_auditoria();
         $observacion->contrato_id = $request->id;
@@ -37,7 +40,8 @@ class ObsAuditoriaController extends Controller
     }
 
 
-    public function index(Request $request){
+    public function index(Request $request){ // funcion de consulta para optener observaciones de la tabla Obs_auditoria 
+                                            // filtrando por el folio de contrato 
         if(!$request->ajax())return redirect('/');
         $id = $request->id;
         $observacion = Obs_auditoria::select('comentario','usuario','created_at','id')

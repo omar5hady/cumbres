@@ -655,20 +655,6 @@
                 });
             },
 
-
-            // selectFraccionamientosConLote(){
-            //     let me = this;
-            //     me.arrayFraccionamientosLote=[];
-            //     var url = '/select_fraccionamientoLote';
-            //     axios.get(url).then(function (response) {
-            //         var respuesta = response.data;
-            //         me.arrayFraccionamientosLote = respuesta.fraccionamientos;
-            //     })
-            //     .catch(function (error) {
-            //         console.log(error);
-            //     });
-            // },
-
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2="";

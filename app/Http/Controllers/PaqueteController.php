@@ -12,6 +12,8 @@ use Auth;
 class PaqueteController extends Controller
 {
 
+    // Funcion para consulta de datos  de la tabla Paquete donde hace busqueda por la relacion con las tablas 
+    // Fraccionamientos y Etapas,  
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -27,7 +29,9 @@ class PaqueteController extends Controller
                 ->select('etapas.num_etapa as etapa','fraccionamientos.nombre as fraccionamiento','paquetes.id',
                     'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini','paquetes.v_fin',
                     'paquetes.costo','paquetes.descripcion',
-                    DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
+                    DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active')); 
+                    // condicion para seleccionar solo los paquetes que esten activos con fecha mayor o gual a la actual 
+                                                                                                        
         
         if($buscar==''){
             $paquetes = $query;
@@ -101,6 +105,7 @@ class PaqueteController extends Controller
         $paquetes->save();
     }
 
+    // Funcion para eliminar una relacion " Paquete " buscando por el id del paquete
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -108,18 +113,20 @@ class PaqueteController extends Controller
         $paquetes->delete();
     }
 
-
+    // Funcion para seleccionar el paquete por los criterios seleccionados 
     public function select_paquetes(Request $request){
         if(!$request->ajax())return redirect('/');
         $current = Carbon::now()->toDateString();
         $buscar = $request->buscar;
         $proyecto = $request->proyecto;
 
+        // primero se optiene el numero de etapa por el fraccionamiento seleccionado
         $fraccionamiento = Etapa::join('fraccionamientos','fraccionamientos.id','=','etapas.fraccionamiento_id')
                             ->select('etapas.id')
                             ->where('fraccionamientos.nombre','=',$proyecto)
                             ->where('etapas.num_etapa','=',$buscar)->get();
 
+        // se filtran los "paquetes" por las fechas de vencimiento 
         $paquetes = Paquete::join('etapas','paquetes.etapa_id','=','etapas.id')
                             ->select('paquetes.id','paquetes.nombre','paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin')
                             ->where('etapas.id','=',$fraccionamiento[0]->id)
@@ -130,6 +137,8 @@ class PaqueteController extends Controller
         return['paquetes' => $paquetes];
     }
 
+    // Funcion para la consulta de datos del "paquete" seleccionado 
+    // filtrado por el paquete id 
     public function select_datos_paquetes(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;

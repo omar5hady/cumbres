@@ -189,7 +189,10 @@
                                                 <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
                                             <td  v-text="lote.avance + '%'"></td>
                                             <td >
-                                                <span class="badge badge-success" v-text="lote.modelo"></span>
+                                                <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
+                                                    {{lote.modelo}}
+                                                </button>
+                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
                                                 <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                             </td>
                                             <td class="td2" v-text="lote.calle"></td>
@@ -344,7 +347,10 @@
                                             <td  v-text="lote.num_lote"></td>
                                             <td  v-text="lote.avance + '%'"></td>
                                             <td >
-                                                <span class="badge badge-success" v-text="lote.modelo"></span>
+                                                <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
+                                                    {{lote.modelo}}
+                                                </button>
+                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
                                                 <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                             </td>
                                             <td class="td2" v-text="lote.sublote"></td>
@@ -494,8 +500,8 @@
                                             <th># Oficial</th>
                                             <th style="width:8%">Terreno m&sup2;</th>
                                             <th>Construc. m&sup2;</th>
-                                            <th>Precio renta</th>
-                                            <th>Canal de venta</th>
+                                            <th>Precio renta mensual</th>
+                                            <th>Observaciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -519,7 +525,10 @@
                                                 <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
                                             <td  v-text="lote.avance + '%'"></td>
                                             <td >
-                                                <span class="badge badge-success" v-text="lote.modelo"></span>
+                                                <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
+                                                    {{lote.modelo}}
+                                                </button>
+                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
                                                 <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                             </td>
                                             <td class="td2" v-text="lote.calle"></td>
@@ -854,6 +863,10 @@
                     console.log(error);
                 });
             },     
+            fichaTecnica(archivo){
+                let me = this;
+                window.open('/files/modelos/'+archivo, '_blank')
+            },
             selectDatosApartado(lote_id){
                 let me = this;
                 me.arrayDatosApartado=[];

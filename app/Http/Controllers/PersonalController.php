@@ -13,7 +13,7 @@ use Excel;
 
 class PersonalController extends Controller
 {
-    
+    // funcion para la consulta general de los datos del personal 
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -33,16 +33,16 @@ class PersonalController extends Controller
                     'departamento.id_departamento');
 
             $Personales = $query
-                ->where('personal.nombre','!=','Sin Asignar');
+                ->where('personal.nombre','!=','Sin Asignar'); 
         
-            if($criterio == 'id_departamento'){
+            if($criterio == 'id_departamento'){ 
                 $Personales = $Personales
                     ->where($criterio, '=', $buscar );
             }
             elseif($criterio == 'personal.nombre'){
                 $Personales = $Personales
                     ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-            }
+            }       
             else{
                 $Personales = $Personales
                     ->where($criterio, 'like', '%'. $buscar . '%');
@@ -63,7 +63,7 @@ class PersonalController extends Controller
         ];
     }
  
-    //funcion para insertar en la tabla
+    //funcion para insertar un nuevo registro en la tabla Personal 
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -110,7 +110,8 @@ class PersonalController extends Controller
         $Personal->empresa_id = $request->empresa_id;
         $Personal->save();
     }
-
+    
+    // Busca el id del registro a desactivar y setea la celda "activo" a cero  
     public function desactivar(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -119,7 +120,7 @@ class PersonalController extends Controller
         $Personal->activo = '0';
         $Personal->save();
     }
-
+    // Busca el id del registro a desactivar y setea la celda "activo" a uno 
     public function activar(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -129,7 +130,7 @@ class PersonalController extends Controller
         $Personal->save();
     }
 
-    
+    // elimina el registro con el id seleccionado 
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -137,6 +138,7 @@ class PersonalController extends Controller
         $Personal->delete();
     }
 
+    // selecciona  el nombre del personal requerido
     public function selectNombre(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -144,51 +146,54 @@ class PersonalController extends Controller
 
         $Personal = Personal::select(DB::raw("CONCAT(nombre,' ',apellidos) AS name"),'id')
                      ->where('departamento_id', '=', $departamento )
-                     ->where('activo','=','1')
+                     ->where('activo','=','1') // filtra por los usuarios activos
                      ->orderBy('name')
                      ->get();
                      return['personal' => $Personal];
     }
 
-
+    // consulta de personal sin registro en la tabla "users" 
     public function select_Pers_sinUser(Request $request){
         if(!$request->ajax())return redirect('/');
         $personas = Personal::leftJoin('users as users','personal.id','=','users.id')
                              ->select('nombre','users.id as UserId','personal.id as personalId')
-                             ->where('users.id','=',NULL)
-                             ->where('personal.departamento_id','!=','8')
-                             ->where('nombre','!=','Sin Asignar')->get();
+                             ->where('users.id','=',NULL) // filtra por personal sin registro en la tabla users
+                             ->where('personal.departamento_id','!=','8') // filtro de personal que sea diferente de clientes
+                             ->where('nombre','!=','Sin Asignar')->get(); 
 
                              return ['personas' => $personas];
     }
 
+    
     public function selectRFC(Request $request){
         $rfc = $request->rfc;
          $rfc1 = Personal::select('rfc')
-                          ->where('rfc','=',$rfc)->count();
-            if($rfc1==1){
+                          ->where('rfc','=',$rfc)->count(); // verifica si hay mas de una concidencia de RFC y los cuenta 
+            if($rfc1==1){ // en caso de que exista solo una coincidencia  se selecciona el cliente y el vendedor relacionado a ese cliente  
                 $personaid = Personal::select('rfc','id')
-                            ->where('rfc','=',$rfc)->get();
+                            ->where('rfc','=',$rfc)->get(); 
                 $vendedor = Cliente::join('vendedores','clientes.vendedor_id','=','vendedores.id')
                 ->join('personal','vendedores.id','=','personal.id')
                 ->select('personal.nombre','personal.apellidos','personal.id')
                 ->where('clientes.id','=',$personaid[0]->id)->get();
                 return ['rfc1'=>$rfc1,'personaid' => $personaid, 'vendedor'=> $vendedor];
                           }else{
-                            return ['rfc1'=>$rfc1];
+                            return ['rfc1'=>$rfc1]; 
                           }
     }
 
+    // funcion para la consulta de los gestores activos 
     public function select_gestores (){
         $gestores = Personal::join('users','personal.id','=','users.id')
                             ->select('personal.id',
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_gestor"))
-                            ->where('users.rol_id','=',8)
-                            ->where('users.condicion','=',1)
+                            ->where('users.rol_id','=',8) // se filtra por el rol de " Gestor de ventas"
+                            ->where('users.condicion','=',1) // que esten activos
                             ->get();
         return ['gestores' => $gestores];
     }
 
+    // funcion para seleccionar clientes 
     public function indexClientes(Request $request){
         $desde = $request->desde;
         $clasificacion = $request->clasificacion;
@@ -196,10 +201,10 @@ class PersonalController extends Controller
         $proyecto = $request->proyecto;
         $publicidad = $request->publicidad;
 
-        $query = Cliente::join('personal','clientes.id','=','personal.id')
+        $query = Cliente::join('personal','clientes.id','=','personal.id') 
             ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
             ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-            ->select(
+            ->select(  // datos requeridos 
                 'personal.id',
                 'personal.f_nacimiento',
                 'personal.direccion',
@@ -220,7 +225,7 @@ class PersonalController extends Controller
             );
 
         
-            
+             // filtrar busqueda depende de criterio 
             $cliente = $query->where('clientes.clasificacion', '=', $clasificacion);
            
                 if($desde != '' && $hasta != '')
@@ -247,6 +252,7 @@ class PersonalController extends Controller
             'clientes' => $cliente];
     }
 
+    // Funcion para crear el archivo excel de la consulta de clientes 
     public function excelClientes(Request $request){
         $desde = $request->desde;
         $clasificacion = $request->clasificacion;
@@ -276,7 +282,7 @@ class PersonalController extends Controller
                 'fraccionamientos.nombre as proyecto'
             );
 
-        if($clasificacion != 5){
+        if($clasificacion != 5){  // filtra clientes que no  sean de ventas 
             
             $cliente= $query->where('clientes.clasificacion', '=', $clasificacion);
 
@@ -293,7 +299,7 @@ class PersonalController extends Controller
         }
         else{
             
-            $cliente = $query->where('expedientes.fecha_firma_esc','!=',NULL);
+            $cliente = $query->where('expedientes.fecha_firma_esc','!=',NULL);  // selecciona solo clientes que tengan firma de escrituras
 
                 if($desde != '' && $hasta != '')
                     $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
@@ -304,7 +310,8 @@ class PersonalController extends Controller
             
             $cliente = $cliente->distinct()->get();
         }
-           
+        
+        // se crea la hoja de excel con los datos de la consulta 
         return Excel::create('Prospectos', function($excel) use ($cliente){
                 $excel->sheet('Prospectos', function($sheet) use ($cliente){
                     
@@ -391,6 +398,7 @@ class PersonalController extends Controller
         )->download('xls');
     }
 
+    // Funcion para 
     public function selectClientesVenta(Request $request){
         $datos = Personal::join('clientes as c','personal.id','=','c.id')
                         ->join('creditos as cre','personal.id','=','cre.prospecto_id')
@@ -406,7 +414,8 @@ class PersonalController extends Controller
 
         return['clientes'=>$datos];
     }
-
+    
+    //Funcion para optener datos de cliente en base a criterio del nombre 
     public function getDatosCliente(Request $request){
         $datos = Personal::join('clientes as c','personal.id','=','c.id')
                         ->join('creditos as cre','personal.id','=','cre.prospecto_id')
@@ -423,6 +432,7 @@ class PersonalController extends Controller
         return['clientes'=>$datos];
     }
 
+    // lsita de claves lada mas comunes , se crea una relacion en un arreglo para ser utilizado en el modulo de registro de cliente 
     public function getClavesLadas(Request $request){
         //if(!$request->ajax())return redirect('/');
         $claves = array(
