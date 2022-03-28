@@ -8,6 +8,7 @@ use Auth;
 
 class TipoCreditoController extends Controller
 {
+    //regresa el nombre de el tipo de credito 
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -46,7 +47,7 @@ class TipoCreditoController extends Controller
         $Tipo_credito->save();
     }
 
-    //funcion para actualizar los datos
+    //funcion para actualizar los datos 
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -57,13 +58,15 @@ class TipoCreditoController extends Controller
         $Tipo_credito->save();
     }
 
-    public function destroy(Request $request)
+    // elimina un registro de la tabla de tipo de credito
+    public function destroy(Request $request) 
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $Tipo_credito = Tipo_credito::findOrFail($request->id);
         $Tipo_credito->delete();
     }
 
+    // selecciona el tipo de credito de acuerdo a la institucion financiera
     public function select_credito(Request $request){
              //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
              if(!$request->ajax())return redirect('/');
@@ -73,6 +76,7 @@ class TipoCreditoController extends Controller
              return['Tipos_creditos' => $Tipos_creditos];
     }
 
+    //se hace la consulta de los tipos de credito disponibles
     public function select_tipoCredito(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -82,6 +86,8 @@ class TipoCreditoController extends Controller
         return['Tipos_creditos' => $Tipos_creditos];
 }
 
+
+    //se hace la consulta de instituciones financieras disponibles
     public function select_institucion(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');

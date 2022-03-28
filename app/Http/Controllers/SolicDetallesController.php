@@ -15,14 +15,15 @@ use Carbon\Carbon;
 
 class SolicDetallesController extends Controller
 {
+    //Esta funcion crea una solicitud de detalles  para el contratista  
     public function storeSolicitud(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
  
-        try{
+        try{ // se empieza 
             DB::beginTransaction(); 
-            $solicitud = new Solic_detalle();
+            $solicitud = new Solic_detalle(); // se crea un nuevo registro en la tabla de solicitudes
             $solicitud->contrato_id = $request->folio;
             $solicitud->contratista_id = $request->contratista_id;
             $solicitud->cliente = $request->cliente;
@@ -44,7 +45,7 @@ class SolicDetallesController extends Controller
  
             foreach($detalles as $ep=>$det)
             {
-                $descripcion = new Descripcion_detalle();
+                $descripcion = new Descripcion_detalle(); // se crea nuevo regitro de la descripcion del detalle
                 $descripcion->solicitud_id = $solicitud->id;
                 $descripcion->detalle_id = $det['id_detalle'];
                 $descripcion->garantia = $det['garantia'];
@@ -55,6 +56,7 @@ class SolicDetallesController extends Controller
                 $descripcion->save();
             }      
             
+            // se crea la notificacion para el contratista 
             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
                 $msj = 'Se ha creado una nueva solicitud de detalles';
@@ -72,10 +74,11 @@ class SolicDetallesController extends Controller
  
             DB::commit();
         } catch (Exception $e){
-            DB::rollBack();
+            DB::rollBack(); // en caso de error se regresa al estado inicial
         }
     }
 
+    // En esta funcion se hace una peticion de la informacion general de las solicitudes 
     public function indexSolicitudes(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -99,7 +102,8 @@ class SolicDetallesController extends Controller
                     'solic_detalles.obs_gen',
                     'solic_detalles.fecha_program','solic_detalles.hora_program');
 
-        if($status == ''){
+        // busqueda por criterios seleccionados
+        if($status == ''){ 
             if($buscar == ''){
                 $solicitudes = $query;
             }
@@ -155,7 +159,7 @@ class SolicDetallesController extends Controller
             }
            
         }
-        else{
+        else{ // busqueda por status 
             if($buscar == ''){
                 $solicitudes = $query
                     ->where('solic_detalles.status','=',$status);
@@ -236,6 +240,7 @@ class SolicDetallesController extends Controller
         ];
     }
 
+    //Crea el archivo Excel de la consulta realizada    
     public function excelSolicitudes(Request $request){
         $buscar = $request->buscar;
         $etapa = $request->b_etapa;
@@ -383,6 +388,7 @@ class SolicDetallesController extends Controller
                             ->orderBy('solic_detalles.created_at','asc')
                             ->get();
 
+        // retorna el archivo excel
         return Excel::create(
             'Solic. de Detalles',
             function ($excel) use ($solicitudes) {
@@ -460,6 +466,9 @@ class SolicDetallesController extends Controller
         )->download('xls');
     }
 
+
+
+    // Esta funcion realiza la consulta de la informacion de las descripciones
     public function indexDescripciones(Request $request){
         if(!$request->ajax())return redirect('/');
         $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','id','costo',
@@ -469,6 +478,7 @@ class SolicDetallesController extends Controller
         return ['detalles' => $detalles];
     }
 
+    // Esta funcion crea un documento PDF con la informacion de la solicitud  relacionada al contrato del cliente
     public function reportePDF($id){
 
         $solicitud = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
@@ -493,7 +503,7 @@ class SolicDetallesController extends Controller
 
             setlocale(LC_TIME, 'es_MX.utf8');
 
-
+            // se les da formato a las fechas para el documento
             $fecha_entrega_real = new Carbon($solicitud[0]->fecha_entrega_real);
             $solicitud[0]->fecha_entrega_real = $fecha_entrega_real->formatLocalized('%d de %B de %Y');
 
@@ -509,6 +519,7 @@ class SolicDetallesController extends Controller
                     return $pdf->stream('SolicitudDetalle.pdf');
     }
 
+    //Esta funcion hace la consulta de las solicitudes que se encuentran en el modulo de contratista 
     public function indexContratista(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -530,7 +541,7 @@ class SolicDetallesController extends Controller
                  'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id',
                  'solic_detalles.fecha_program','solic_detalles.hora_program');
 
-        if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 12){
+        if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 12){ // Filtros de busqueda para Administrador y Postventa
             if($buscar == ''){
                 $contratos = $query
                          ->where('contratos.entregado','=',1)
@@ -589,7 +600,7 @@ class SolicDetallesController extends Controller
                 }
             }
         }
-        else{
+        else{  // filtros de busqueda para el Contratista
             if($status == ''){
                 if($buscar == ''){
                     $contratos = $query
@@ -767,6 +778,7 @@ class SolicDetallesController extends Controller
         ];
     }
 
+    // En esta funcion se obtiene la descripcion de detalles  para el contratista
     public function indexDetallesContratista(Request $request){
         if(!$request->ajax())return redirect('/');
         $solicitudID = $request->solicitud_id;
@@ -779,7 +791,7 @@ class SolicDetallesController extends Controller
                                                  'creditos.fraccionamiento as proyecto','creditos.etapa','creditos.manzana','creditos.num_lote',
                                                  'creditos.modelo',DB::raw('DATE(descripcion_detalles.created_at) AS fechaCreacion'),
                                                  'descripcion_detalles.id','descripcion_detalles.resultado','descripcion_detalles.revisado')
-                                        ->where('descripcion_detalles.solicitud_id','=',$solicitudID)
+                                        ->where('descripcion_detalles.solicitud_id','=',$solicitudID) // filtro principal de la solicitud
                                         ->orderBy('descripcion_detalles.fecha_concluido','ASC')
                                         ->get();
 
@@ -787,6 +799,8 @@ class SolicDetallesController extends Controller
 
     }
 
+    // En esta funcion se actualiza el costo total de la solicitud
+    // se actualiza en la descripcion y en la solicitud
     public function updateCosto(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costo = Descripcion_detalle::findOrFail($request->id);
@@ -800,26 +814,28 @@ class SolicDetallesController extends Controller
 
     }
 
+    // funcion para finalizar la solicitud
     public function finalizarReporte(Request $request){
         $solicitud = Solic_detalle::findOrFail($request->solicitud_id);
-        $solicitud->status = 3;
+        $solicitud->status = 3; // 
         $solicitud->save();
     }
 
+    // Funcion para cambiar la fecha de finalizado de la solicitud
     public function updateFechaConcluido(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costo = Descripcion_detalle::findOrFail($request->id);
         $costo->fecha_concluido = $request->fecha_concluido;
-        $costo->revisado = 0;
+        $costo->revisado = 0; // se regresa su status para que sea revisado
         $costo->save();
 
         $total = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)->count();
         $totalTerminados = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)
             ->where('fecha_concluido','!=',NULL)->where('revisado','=',2)->count();
 
-        if($total == $totalTerminados){
+        if($total == $totalTerminados){ // revisa si todas la solicitudes estan terminadas 
             $totalSolicitud = Solic_detalle::findOrFail($request->solicitud_id);
-            $totalSolicitud->status = 2;
+            $totalSolicitud->status = 2; // se finaliza la solicitud
             $totalSolicitud->save();
         }
         
@@ -841,6 +857,7 @@ class SolicDetallesController extends Controller
 
     }
 
+    //En esta funcion se actualiza el status de la descripcion de detalle 
     public function updateResultado(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costo = Descripcion_detalle::findOrFail($request->id);
@@ -857,14 +874,16 @@ class SolicDetallesController extends Controller
 
         $costo->save();
 
-        $total = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)->count();
+        // slecciona la 
+        $total = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)->count(); //cuenta el total de las solicitudes
         $totalTerminados = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)
-            ->where('fecha_concluido','!=',NULL)->where('revisado','=',2)->count();
+            ->where('fecha_concluido','!=',NULL)->where('revisado','=',2)->count(); //cuenta el total de solicitudes finalizadas
 
-        if($total == $totalTerminados){
+        if($total == $totalTerminados){ // verifica si todas las solicitudes estan finalizadas 
             $totalSolicitud = Solic_detalle::findOrFail($request->solicitud_id);
-            $totalSolicitud->status = 2;
+            $totalSolicitud->status = 2; // en la solicitud general la cambia a de status a finalizado
 
+            // crea la notificacion
             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
                 $msj = 'La solicitud No.'.$request->solicitud_id.' ha sido finalizada';
@@ -885,7 +904,8 @@ class SolicDetallesController extends Controller
 
     }
 
-
+    // En esta funcion actualiza la hora de disponibilidad del cliente 
+    // y se guarda en la solicitud
     public function updateHora(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_detalle::findOrFail($request->id);
@@ -894,11 +914,13 @@ class SolicDetallesController extends Controller
 
     }
 
+    //En esta funcion actualiza la fecha de cliente para la solicitud
+    // se guarda la solicitud
     public function updateFecha(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_detalle::findOrFail($request->id);
         $solicitud->fecha_program = $request->fecha_program;
-        $solicitud->status = 1;
+        $solicitud->status = 1; // status pendiente
 
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
@@ -919,6 +941,7 @@ class SolicDetallesController extends Controller
 
     }
 
+    // En esta funcion se crea el documento con la inormacion de la solicitud de status terminado 
     public function reporteConclusionPDF($id){
 
         $solicitud = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
@@ -943,18 +966,19 @@ class SolicDetallesController extends Controller
 
             setlocale(LC_TIME, 'es_MX.utf8');
             
-            foreach($detalles as $detalle){
+            foreach($detalles as $detalle){ // se le da formato a las fechas para cada solicitud individual
                  $fecha = new Carbon($detalle->fecha_concluido);
                  $detalle->fecha_concluido = $fecha->formatLocalized('%d de %B de %Y');
             }
             
-
+            // Se les  da formato a las fechas
             $fecha_entrega_real = new Carbon($solicitud[0]->fecha_entrega_real);
             $solicitud[0]->fecha_entrega_real = $fecha_entrega_real->formatLocalized('%d de %B de %Y');
 
             $fecha = new Carbon($solicitud[0]->fecha);
             $solicitud[0]->fecha = $fecha->formatLocalized('%d de %B de %Y');
 
+            //Formato con parentesis al numero de celular
             $solicitud[0]->celular = '('.substr($solicitud[0]->celular, 0, 3).') '.substr($solicitud[0]->celular, 3, 3).'-'.substr($solicitud[0]->celular,6);
             
 
@@ -964,6 +988,7 @@ class SolicDetallesController extends Controller
                     return $pdf->stream('ReporteConclusion.pdf');
     }
 
+    //En esta funcion crea un archivo excel con toda la informacion de las solicitudes y los proyectos relacionados a cada solicitud
     public function agendaContratista(Request $request){
 
         $fecha1 = $request->fecha1;
@@ -981,7 +1006,7 @@ class SolicDetallesController extends Controller
                             'solic_detalles.hora_program', 'lotes.calle','lotes.numero','lotes.interior','lotes.emp_constructora',
                             'lotes.manzana'
                         )
-
+                        // filtros por contratista, proyecto y margen de fechas 
                         ->where('fraccionamientos.id','=',$request->proyecto)
                         ->where('contratistas.id','=',$request->contratista)
                         ->whereBetween('solic_detalles.fecha_program', [$fecha1, $fecha2])
@@ -993,6 +1018,7 @@ class SolicDetallesController extends Controller
 
         // return ['agenda'=>$agenda];
 
+        // funcion para crear el documento
         return Excel::create(
             'Agenda contratistas',
             function ($excel) use ($agenda, $fecha1, $fecha2) {

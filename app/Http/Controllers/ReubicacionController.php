@@ -217,7 +217,7 @@ class ReubicacionController extends Controller
             if(sizeof($depositos)){
                 foreach ($depositos as $key => $deposito) {
 
-                    // se optiene el saldo 
+                    // se obtiene el saldo 
                     $saldo = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                         ->select(
                             DB::raw('SUM(depositos.cant_depo) as monto_gcc')

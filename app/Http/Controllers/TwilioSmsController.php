@@ -8,6 +8,7 @@ use Twilio\Rest\Client;
 
 class TwilioSmsController extends Controller
 {
+    // Herramienta para administracion de mensajes
     public function sendMessage(Request $request){
         $this->createSMS("SMS Prueba desde SII Cumbres", "+524444605232");
     }

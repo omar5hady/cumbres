@@ -16,10 +16,8 @@ use Auth;
 
 class LicenciasController extends Controller
 {
-    public function index(Request $request) //Index para modulo de licencias
-    {
-       if (!$request->ajax()) return redirect('/');
-
+    //Función privada que retorna la query con las licencias registradas
+    private function getLicencias(Request $request){
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_arquitecto = $request->b_arquitecto;
@@ -30,8 +28,9 @@ class LicenciasController extends Controller
         $b_puente = $request->b_puente;
         $b_num_inicio = $request->b_num_inicio;
         $b_ruv = $request->b_ruv;
-
-        $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
+        $b_etapa = $request->b_etapa;
+        //Query
+        $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
                 ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
                 ->join('personal as p', 'licencias.perito_dro', '=', 'p.id')
@@ -39,111 +38,76 @@ class LicenciasController extends Controller
                 ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
                 ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
                 ->select(
+                    'lotes.*',
+                    'licencias.*',
                     'fraccionamientos.nombre as proyecto',
                     'etapas.num_etapa',
-                    'lotes.manzana',
-                    'lotes.num_lote',
-                    'lotes.sublote',
                     'modelos.nombre as modelo',
                     'empresas.nombre as empresa',
                     'modelos.archivo',
-                    'lotes.calle',
-                    'lotes.numero',
-                    'lotes.interior',
-                    'lotes.terreno',
-                    'lotes.construccion',
-                    'lotes.casa_muestra',
-                    'lotes.lote_comercial',
-                    'lotes.id',
-                    'lotes.emp_constructora',
-                    'lotes.emp_terreno',
-                    'lotes.fraccionamiento_id',
-                    'lotes.etapa_id',
-                    'lotes.modelo_id',
-                    'lotes.comentarios',
-                    'lotes.clv_catastral',
-                    'lotes.etapa_servicios',
-                    'lotes.credito_puente',
-                    'lotes.siembra',
-                    'lotes.num_inicio',
-                    'lotes.paq_ruv',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
-                    DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),
-                    'licencias.f_planos',
-                    'licencias.f_planos_obra',
-                    'licencias.f_ingreso',
-                    'licencias.num_licencia',
-                    'licencias.f_salida',
-                    'lotes.arquitecto_id',
-                    'licencias.perito_dro',
-                    'licencias.avance',
-                    'fraccionamientos.nombre as fraccionamiento',
-                    'licencias.cambios',
-                    'licencias.foto_lic',
-                    'licencias.foto_predial',
-                    'licencias.modelo_ant',
-                    'licencias.id as licenciasid'
-                );
-
-        if ($buscar == '') {
-            $licencias = $query
-            ->where('modelos.nombre','!=','Terreno');
-        } 
-
-        else {
-            $licencias = $query;
+                    DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito")
+                )
+                ->where('modelos.nombre','!=','Terreno');
+        //Criterios de busqueda
+        if ($buscar != '') {
             switch($criterio){
-                case 'licencias.f_planos':{
-                    $licencias = $licencias->whereBetween($criterio, [$buscar, $buscar2]);
-                    break;
-                }
+                //Busqueda por proyecto
                 case 'lotes.fraccionamiento_id':{
                     $licencias = $licencias
-                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                            ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
-                            ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
-                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');
-                            if($b_manzana != '')
-                                $licencias = $licencias->where('lotes.manzana', '=', $b_manzana);
-                            if($b_puente != '')
-                                $licencias = $licencias->where('lotes.credito_puente', '=', $b_puente); 
-                            if($b_num_inicio != '')
-                                $licencias = $licencias->where('lotes.num_inicio', '=', $b_num_inicio);
-
+                        ->where('lotes.fraccionamiento_id', '=',  $buscar)//Proyecto
+                        ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')//Modelo
+                        ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');//Arquitecto
+                        if($b_lote != '')//Busqueda por numero de lote
+                            $licencias = $licencias->where('lotes.num_lote', '=', $b_lote);
+                        if($b_manzana != '')//Manzana
+                            $licencias = $licencias->where('lotes.manzana', '=', $b_manzana);
+                        if($b_puente != '')//Crédito puente
+                            $licencias = $licencias->where('lotes.credito_puente', '=', $b_puente); 
+                        if($b_num_inicio != '')//Numero de inicio
+                            $licencias = $licencias->where('lotes.num_inicio', '=', $b_num_inicio);
+                        if($b_etapa != '')//Busqueda por etapa
+                            $licencias= $licencias->where('lotes.etapa_id','=',$b_etapa);
+                        if($b_ruv != '')//Busqueda por paquete RUV
+                            $licencias = $licencias->where('lotes.paq_ruv', '=', $b_ruv);
                     break;
                 }
-
-                case 'personal.nombre':{
-                    $licencias = $licencias->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                case 'licencias.f_planos': //Busqueda por fecha de planos
+                case 'licencias.term_ingreso'://Busqueda por fecha de ingreso o salida de acta de termino
+                case 'licencias.term_salida': {
+                    $licencias = $licencias
+                        ->whereBetween($criterio, [$buscar, $buscar2]);
+                        break;
                 }
                 default:{
                     $licencias = $licencias->where($criterio, 'like', '%' . $buscar . '%');
                     break;
                 }
             }
-            
         }
 
-        if($request->b_empresa != ''){
+        if($request->b_empresa != '')//Busqueda por empresa constructora
             $licencias= $licencias->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
 
-        if($request->b_empresa2 != ''){
+        if($request->b_empresa2 != '')//Busqueda por empresa del terreno
             $licencias= $licencias->where('lotes.emp_terreno','=',$request->b_empresa2);
-        }
-
-        if($request->b_etapa != ''){
-            $licencias= $licencias->where('lotes.etapa_id','=',$request->b_etapa);
-        }
-
-        if($b_ruv != '')
-            $licencias = $licencias->where('lotes.paq_ruv', '=', $b_ruv);
 
         $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
                                 ->orderBy('etapas.num_etapa', 'DESC')
                                 ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                ->orderBy('lotes.num_lote', 'ASC');
+
+        return $licencias;
+    }
+
+    //Función para obtener los registros de licencias para los lotes dados de alta.
+    public function index(Request $request) //Index para modulo de licencias
+    {
+       if (!$request->ajax()) return redirect('/');
+       //Llamada a la funcion privada que retorla la query principal
+       $licencias = $this->getLicencias($request);
+       $licencias = $licencias->paginate(16);
 
         return [
             'pagination' => [
@@ -158,120 +122,13 @@ class LicenciasController extends Controller
 
         ];
     }
-
+    //Función para obtener los registros de licencias para los lotes dados de alta para las actas de termino.
     public function indexActa(Request $request) //Index para modulo de licencias
     {
         if (!$request->ajax()) return redirect('/');
-
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $b_lote = $request->b_lote;
-        $b_manzana = $request->b_manzana;
-        $b_puente = $request->b_puente;
-        $criterio = $request->criterio;
-        $b_num_inicio = $request->b_num_inicio;
-        $b_etapa = $request->b_etapa;
-
-        $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
-            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-            ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
-            ->join('personal as p', 'licencias.perito_dro', '=', 'p.id')
-            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-            ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-            ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
-            ->select(
-                'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa',
-                'lotes.manzana',
-                'lotes.num_lote',
-                'lotes.sublote',
-                'modelos.nombre as modelo',
-                'empresas.nombre as empresa',
-                'lotes.calle',
-                'lotes.numero',
-                'lotes.credito_puente',
-                'lotes.interior',
-                'lotes.terreno',
-                'lotes.construccion',
-                'lotes.casa_muestra',
-                'lotes.lote_comercial',
-                'lotes.id',
-                'lotes.fraccionamiento_id',
-                'lotes.etapa_id',
-                'lotes.modelo_id',
-                'lotes.comentarios',
-                'lotes.clv_catastral',
-                'lotes.etapa_servicios',
-                'lotes.credito_puente',
-                'lotes.siembra',
-                'lotes.num_inicio',
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
-                DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),
-                'licencias.f_planos',
-                'licencias.f_ingreso',
-                'licencias.num_licencia',
-                'licencias.f_salida',
-                'lotes.arquitecto_id',
-                'licencias.perito_dro',
-                'fraccionamientos.nombre as fraccionamiento',
-                'licencias.cambios',
-                'licencias.avance',
-                'licencias.term_ingreso',
-                'licencias.term_salida',
-                'licencias.num_acta',
-                'licencias.foto_acta'
-            );
-
-        if ($buscar == '') {
-            $actas = $query
-            ->where('modelos.nombre','!=','Terreno');
-        } else {
-            switch($criterio){
-                case 'lotes.fraccionamiento_id':{
-                    $actas = $query->where('lotes.fraccionamiento_id', '=',  $buscar);
-                        if($b_manzana != '')
-                            $actas = $actas->where('lotes.manzana', 'like', '%' . $b_manzana . '%');
-                        if($b_lote != '')
-                            $actas = $actas->where('lotes.num_lote', '=', $b_lote);
-                        if($b_num_inicio != '')
-                            $actas = $actas->where('lotes.num_inicio', '=',  $b_num_inicio);
-                        if($b_puente != '')
-                            $actas = $actas->where('lotes.credito_puente','=',$b_puente);
-                        if($b_etapa != '')
-                            $actas = $actas->where('lotes.etapa_id','=',$b_etapa);
-                    break;
-                }
-
-                case 'licencias.term_ingreso':
-                case 'licencias.term_salida': {
-                    $actas = $query
-                        ->whereBetween($criterio, [$buscar, $buscar2]);
-                        break;
-                }
-
-                default:{
-                    $actas = $query
-                    ->where($criterio, 'like', '%' . $buscar . '%');
-                    break;
-                }
-
-            }
-            
-        }
-
-        if($request->b_empresa != ''){
-            $actas= $actas->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        if($request->b_empresa2 != ''){
-            $actas= $actas->where('lotes.emp_terreno','=',$request->b_empresa2);
-        }
-
-        $actas = $actas->orderBy('licencias.cambios', 'DESC')
-                        ->orderBy('fraccionamientos.nombre', 'DESC')
-                        ->orderBy('etapas.num_etapa', 'DESC')
-                        ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+        //Función privada que retorna la query principal
+        $actas = $this->getLicencias($request);
+        $actas = $actas->paginate(15);
 
         return [
             'pagination' => [
@@ -286,20 +143,16 @@ class LicenciasController extends Controller
 
         ];
     }
-
-    public function indexVisita(Request $request) //Index para modulo de licencias
-    {
-        if (!$request->ajax()) return redirect('/');
-
+    //Función privada que retorna la query principal para visitas de avaulo
+    private function getQueryVisitas(Request $request){
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_lote = $request->b_lote;
         $b_manzana = $request->b_manzana;
         $criterio = $request->criterio;
-
         $status = $request->status;
-
-        $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
+        //Query
+        $lotes = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
             ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
             ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
@@ -325,94 +178,113 @@ class LicenciasController extends Controller
                 'lotes.credito_puente'
             )
             ->where('lotes.aviso','!=','0');
-        
-        $lotes = $query;
                         
             switch($criterio){
-                case 'lotes.fraccionamiento_id':{
+                case 'lotes.fraccionamiento_id':{//Busqueda por proyecto
                         if($buscar != '')
                             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$buscar);
-                        if($b_etapa != '')
+                        if($b_etapa != '')//Busqueda por etapa
                             $lotes = $lotes->where('etapas.id','=',$b_etapa);
-                        if($b_manzana != '')
+                        if($b_manzana != '')//Busqueda por manzana
                             $lotes = $lotes->where('lotes.manzana','=',$b_manzana);
-                        if($b_lote != '')
+                        if($b_lote != '')//Busqueda por numero de lote
                             $lotes = $lotes->where('lotes.num_lote','=',$b_lote);
                     break;
                 }
                 default:{
-                        if($buscar != '')
-                            $lotes = $lotes->where($criterio,'=',$buscar);
+                    $lotes = $lotes->where($criterio,'=',$buscar);
                     break;
                 }
             }
 
-        
-
-        if($status != '' && $status == 0){
+        if($status != '' && $status == 0){ //Lotes sin venta
             $lotes = $lotes->where('lotes.contrato','=',0);
         }
-        elseif($status != '' &&  $status == 1){
+        elseif($status != '' &&  $status == 1){//Lotes vendidos pero pendientes por firmar solicitud
             $lotes = $lotes->where('lotes.contrato','=',1)->where('lotes.firmado','=',0);
         }
-        elseif($status != '' &&  $status == 2){
+        elseif($status != '' &&  $status == 2){//Lotes con solicitud de venta firmada
             $lotes = $lotes->where('lotes.contrato','=',1)->where('lotes.firmado','=',1);
         }
 
-        if($request->b_empresa != ''){
+        if($request->b_empresa != ''){//Busqueda por empresa constructora
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre', 'ASC')
                         ->orderBy('etapas.num_etapa', 'ASC')
                         ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(12);
+                        ->orderBy('lotes.num_lote', 'ASC');
 
-        foreach ($lotes as $index => $lote) {
-            $lote->avaluo_solic = '';
-            $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
+        return $lotes;
+    }
+    //Función privada que retorna el identificador de contrato firmado para ventas directas, ligado a un lote 
+    private function getContrato($id){
+        $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
                                         ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                         ->join('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id')
-                                        ->where('creditos.lote_id','=',$lote->id)
+                                        ->where('creditos.lote_id','=',$id)
                                         ->where('inst_seleccionadas.elegido','=',1)
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('contratos.status','=',3)
                                         ->where('expedientes.liquidado','=',1)
                                         ->get();
+        return $contrato;
+    }
+    //Función privada que retorna la fecha de solicitud de avaluo para un contrato firmado ligado a un lote
+    private function getAvaluo($id){
+        $avaluo = Contrato  ::  join('creditos','contratos.id','=','creditos.id')
+                    ->join('avaluos','contratos.id','=','avaluos.contrato_id')
+                    ->select('contratos.id','avaluos.fecha_solicitud')
+                    ->where('creditos.lote_id','=',$id)
+                    ->where('contratos.status','=',3)
+                    ->where('avaluos.fecha_solicitud','!=', NULL)
+                    ->get();
 
-            $avaluo = Contrato  ::  join('creditos','contratos.id','=','creditos.id')
-                                        ->join('avaluos','contratos.id','=','avaluos.contrato_id')
-                                        ->select('contratos.id','avaluos.fecha_solicitud')
-                                        ->where('creditos.lote_id','=',$lote->id)
-                                        ->where('contratos.status','=',3)
-                                        ->where('avaluos.fecha_solicitud','!=', NULL)
-                                        ->get();
-
-            $creditos = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
+        return $avaluo;
+    }
+    //Función privada que retorna los datos del credito para un contrato firmado, ligado a un lote.
+    private function getCreditos($id){
+        $creditos = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
                                         ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                         ->select('contratos.id','inst_seleccionadas.tipo_credito',
                                                 'inst_seleccionadas.institucion'
                                             )
-                                        ->where('creditos.lote_id','=',$lote->id)
+                                        ->where('creditos.lote_id','=',$id)
                                         ->where('inst_seleccionadas.elegido','=',1)
                                         ->where('contratos.status','=',3)
                                         ->get();
+        return $creditos;
+    }
 
-            
-            if(sizeof($contrato))
-                $lote->firmado = 1;
+    //Función que retorna los lotes para visita de avaluo
+    public function indexVisita(Request $request) //Index para modulo de licencias
+    {
+        if (!$request->ajax()) return redirect('/');
+        //Llamada a la funcion privada que retorna la query principal
+        $lotes = $this->getQueryVisitas($request);
+        $lotes = $lotes->paginate(12);
 
-            if(sizeof($creditos)){
+        foreach ($lotes as $index => $lote) {
+            $lote->avaluo_solic = '';
+            //Llamada a la función privada para obtener el id del contrato
+            $contrato = $this->getContrato($lote->id);
+            //Llamada a la función privada para obtener los datos del avaluo
+            $avaluo = $this->getAvaluo($lote->id);
+            //Llamada a la función privada para obtener los datos del crédito bancario
+            $creditos = $this->getCreditos($lote->id);
+            if(sizeof($contrato))//Si se obtiene resultado
+                $lote->firmado = 1;//El lote se le asigna el valor de firmado
+            if(sizeof($creditos)){//Si se obtiene resultado de los datos del crédito
+                //Se asignan los datos del credito al lote
                 $lote->tipo_credito = $creditos[0]->tipo_credito;
                 $lote->institucion = $creditos[0]->institucion;
             }
-
-            if(sizeof($avaluo))
-                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;
+            if(sizeof($avaluo))//Si se obtiene resultado
+                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;//Se asigna el valor de la fecha de solicitud 
         }
     
-
         return [
             'pagination' => [
                 'total'         => $lotes->total(),
@@ -426,131 +298,32 @@ class LicenciasController extends Controller
 
         ];
     }
-
+    //Función que retorna los lotes para visita de avaluo en excel.
     public function excelVisita(Request $request) //Index para modulo de licencias
     {
+        //Llamada a la funcion privada que retorna la query principal
+        $lotes->getQueryVisitas($request);
+        $lotes = $lotes->get();
 
-        $buscar = $request->buscar;
-        $b_etapa = $request->b_etapa;
-        $b_lote = $request->b_lote;
-        $b_manzana = $request->b_manzana;
-        $criterio = $request->criterio;
-
-        $status = $request->status;
-
-        $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
-            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-            ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-            ->select(
-                'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa',
-                'lotes.manzana',
-                'lotes.num_lote',
-                'lotes.sublote',
-                'modelos.nombre as modelo',
-                'lotes.calle',
-                'lotes.numero',
-                'lotes.interior',
-                'lotes.id',
-                'lotes.paquete',
-                'licencias.avance',
-                'licencias.visita_avaluo',
-                'licencias.f_planos_obra',
-                'lotes.contrato',
-                'lotes.firmado',
-                'lotes.fecha_fin',
-                'lotes.credito_puente',
-                'lotes.fin_obra'
-        )
-        ->where('lotes.aviso','!=','0');
-        
-        $lotes = $query;
-
-        switch($criterio){
-            case 'lotes.fraccionamiento_id':{
-                    if($buscar != '')
-                        $lotes = $lotes->where('lotes.fraccionamiento_id','=',$buscar);
-                    if($b_etapa != '')
-                        $lotes = $lotes->where('etapas.id','=',$b_etapa);
-                    if($b_manzana != '')
-                        $lotes = $lotes->where('lotes.manzana','=',$b_manzana);
-                    if($b_lote != '')
-                        $lotes = $lotes->where('lotes.num_lote','=',$b_lote);
-                break;
+        foreach ($lotes as $index => $lote) {
+            $lote->avaluo_solic = '';
+            //Llamada a la función privada para obtener el id del contrato
+            $contrato = $this->getContrato($lote->id);
+            //Llamada a la función privada para obtener los datos del avaluo
+            $avaluo = $this->getAvaluo($lote->id);
+            //Llamada a la función privada para obtener los datos del crédito bancario
+            $creditos = $this->getCreditos($lote->id);
+            if(sizeof($contrato))//Si se obtiene resultado
+                $lote->firmado = 1;//El lote se le asigna el valor de firmado
+            if(sizeof($creditos)){//Si se obtiene resultado de los datos del crédito
+                //Se asignan los datos del credito al lote
+                $lote->tipo_credito = $creditos[0]->tipo_credito;
+                $lote->institucion = $creditos[0]->institucion;
             }
-            default:{
-                    if($buscar != '')
-                        $lotes = $lotes->where($criterio,'=',$buscar);
-                break;
-            }
+            if(sizeof($avaluo))//Si se obtiene resultado
+                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;//Se asigna el valor de la fecha de solicitud 
         }
-
-        if($status != '' && $status == 0){
-            $lotes = $lotes->where('lotes.contrato','=',0);
-        }
-        elseif($status != '' &&  $status == 1){
-            $lotes = $lotes->where('lotes.contrato','=',1)->where('lotes.firmado','=',0);
-        }
-        elseif($status != '' &&  $status == 2){
-            $lotes = $lotes->where('lotes.contrato','=',1)->where('lotes.firmado','=',1);
-        }
-
-        if($request->b_empresa != ''){
-            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        $lotes = $lotes->orderBy('fraccionamientos.nombre', 'ASC')
-                        ->orderBy('etapas.num_etapa', 'ASC')
-                        ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->get();
-
-
-                        foreach ($lotes as $index => $lote) {
-                            $lote->avaluo_solic = '';
-                            $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                                                        ->join('expedientes','contratos.id','=','expedientes.id')
-                                                        ->select('contratos.id')
-                                                        ->where('creditos.lote_id','=',$lote->id)
-                                                        ->where('inst_seleccionadas.elegido','=',1)
-                                                        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                                        ->where('contratos.status','=',3)
-                                                        ->where('expedientes.liquidado','=',1)
-                                                        ->get();
-                
-                            $avaluo = Contrato  ::  join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('avaluos','contratos.id','=','avaluos.contrato_id')
-                                                        ->select('contratos.id','avaluos.fecha_solicitud')
-                                                        ->where('creditos.lote_id','=',$lote->id)
-                                                        ->where('contratos.status','=',3)
-                                                        ->where('avaluos.fecha_solicitud','!=', NULL)
-                                                        ->get();
-                
-                            $creditos = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                                                        ->select('contratos.id','inst_seleccionadas.tipo_credito',
-                                                                'inst_seleccionadas.institucion'
-                                                            )
-                                                        ->where('creditos.lote_id','=',$lote->id)
-                                                        ->where('inst_seleccionadas.elegido','=',1)
-                                                        ->where('contratos.status','=',3)
-                                                        ->get();
-                
-                            
-                            if(sizeof($contrato))
-                                $lote->firmado = 1;
-                
-                            if(sizeof($creditos)){
-                                $lote->tipo_credito = $creditos[0]->tipo_credito;
-                                $lote->institucion = $creditos[0]->institucion;
-                            }
-                
-                            if(sizeof($avaluo))
-                                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;
-                        }
-    
-
+        //Creación y retorno de los resultados obtenidos en Excel.
         return Excel::create(
             'Visita para avaluo',
             function ($excel) use ($lotes) {
@@ -561,7 +334,6 @@ class LicenciasController extends Controller
                         '# Oficial', 'Planos obra','% Avance', 'Crédito Puente', 'Fecha termino', 'Paquete',
                         'Fecha de visita', 'Status'
                     ]);
-
 
                     $sheet->cells('A1:M1', function ($cells) {
                         $cells->setBackground('#052154');
@@ -642,13 +414,13 @@ class LicenciasController extends Controller
                     $sheet->setBorder($num, 'thin');
                 });
             }
-
         )->download('xls');
     }
 
+    //Función para actualizar la fecha de planos para obra y el perito seleccionado.
+    //Esta función se manda llamar al seleccionar un paquete de lotes.
     public function updateMasa(Request $request)
     {
-
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $licencia = Licencia::findOrFail($request->id);
         $licencia->f_planos_obra = $request->f_planos_obra;
@@ -656,9 +428,10 @@ class LicenciasController extends Controller
         $licencia->save();
     }
 
+    //Función para actualizar la fecha de ingreso, salida y numero de licencias de construcción
+    //Esta función se manda llamar al seleccionar un paquete de lotes.
     public function updateMasaLicencias(Request $request)
     {
-
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $licencia = Licencia::findOrFail($request->id);
         $licencia->f_ingreso = $request->f_ingreso;
@@ -667,6 +440,7 @@ class LicenciasController extends Controller
         $licencia->save();
     }
 
+    //Función para actualizar una licencia de construcción
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -679,17 +453,14 @@ class LicenciasController extends Controller
         $licencia->f_ingreso = $request->f_ingreso;
         $licencia->f_salida = $request->f_salida;
         $licencia->num_licencia = $request->num_licencia;
-        if($request->perito_dro == 0)
+        if($request->perito_dro == 0)//Se asigna el perito seleccionado
             $licencia->perito_dro = 1;
         else
             $licencia->perito_dro = $request->perito_dro;
         if ($request->num_licencia != '') {
             $modeloAnt = $licencia->modelo_ant;
-
             if ($request->num_licencia && $modeloAnt == 'N/A' && $salida != $request->f_salida)
                 $licencia->cambios = 0;
-
-
             if ($modeloAnt != 'N/A' &&  $salida != $request->f_salida && $request->num_licencia != '') {
                 $licencia->f_planos = NULL;
                 $licencia->f_ingreso = NULL;
@@ -706,11 +477,10 @@ class LicenciasController extends Controller
         else
             $lote->arquitecto_id = $request->arquitecto_id;
 
-
-
         $lote->save();
     }
 
+    //Función para asignar la fecha de visita para avaluo.
     public function AsigFechaVisita(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
@@ -719,27 +489,24 @@ class LicenciasController extends Controller
         $licencia->visita_avaluo = $request->visita_avaluo;
         
         $licencia->save();
-
     }
 
-
+    //Función para actualizar el registro de una Acta de termino
     public function updateActas(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $acta = Licencia::findOrFail($request->id);
-
         $acta->term_ingreso = $request->term_ingreso;
         $acta->term_salida = $request->term_salida;
         $acta->num_acta = $request->num_acta;
-
-
         $acta->save();
     }
 
+    //Función para actualizar las fechas de ingreso y salida de las actas de termino
+    //Esta función se manda llamar al seleccionar un paquete de lotes.
     public function updateMasaActas(Request $request)
     {
-
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $acta = Licencia::findOrFail($request->id);
         $acta->term_ingreso = $request->term_ingreso;
@@ -751,6 +518,7 @@ class LicenciasController extends Controller
     //funcion para exportar el resumen de licencias en excel
     public function exportExcel(Request $request)
     {
+        //Query
         $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
             ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
@@ -786,12 +554,8 @@ class LicenciasController extends Controller
             ->groupBy('month')
             ->groupBy('acta')
             ->distinct()->get();
-        // return [
-
-        //     'licencias' => $licencias
-
-        // ];    
-
+         
+        //Creación y retorno de los resultados obtenidos en Excel
         return Excel::create(
             'resumen_licencias',
             function ($excel) use ($licencias) {
@@ -1008,7 +772,6 @@ class LicenciasController extends Controller
             return back();
         }
     }
-
     public function downloadFile($fileName)
     {
 
@@ -1017,7 +780,6 @@ class LicenciasController extends Controller
     }
 
     //funciones para carga y descarga de la acta
-
     public function formSubmitActa(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1060,7 +822,6 @@ class LicenciasController extends Controller
             return back();
         }
     }
-
     public function downloadFileActa($fileName)
     {
 
@@ -1112,7 +873,6 @@ class LicenciasController extends Controller
             return back();
         }
     }
-
     public function downloadFilePredial($fileName)
     {
 
@@ -1120,130 +880,13 @@ class LicenciasController extends Controller
         return response()->download($pathtoFile);
     }
 
-
+    //Función para obtener los registros en excel de licencias para los lotes dados de alta 
     public function exportExcelLicencias(Request $request)
     {
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $b_arquitecto = $request->b_arquitecto;
-        $b_lote = $request->b_lote;
-        $b_manzana = $request->b_manzana;
-        $b_modelo = $request->b_modelo;
-        $criterio = $request->criterio;
-        $b_num_inicio = $request->b_num_inicio;
-        $b_puente = $request->b_puente;
-
-        $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
-            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-            ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
-            ->join('personal as p', 'licencias.perito_dro', '=', 'p.id')
-            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-            ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-            ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
-            ->select(
-                'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa',
-                'lotes.manzana',
-                'lotes.num_lote',
-                'lotes.emp_constructora',
-                'lotes.emp_terreno',
-                'licencias.avance',
-                'lotes.sublote',
-                'modelos.nombre as modelo',
-                'empresas.nombre as empresa',
-                'lotes.calle',
-                'lotes.numero',
-                'lotes.interior',
-                'lotes.terreno',
-                'lotes.construccion',
-                'lotes.casa_muestra',
-                'lotes.lote_comercial',
-                'lotes.id',
-                'lotes.fraccionamiento_id',
-                'lotes.etapa_id',
-                'lotes.modelo_id',
-                'lotes.comentarios',
-                'lotes.clv_catastral',
-                'lotes.etapa_servicios',
-                'lotes.credito_puente',
-                'lotes.siembra',
-                'lotes.num_inicio',
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
-                DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),
-                'licencias.f_planos',
-                'licencias.f_planos_obra',
-                'licencias.f_ingreso',
-                'licencias.num_licencia',
-                'licencias.f_salida',
-                'lotes.arquitecto_id',
-                'licencias.perito_dro',
-                'fraccionamientos.nombre as fraccionamiento',
-                'licencias.cambios',
-                'licencias.foto_lic',
-                'licencias.foto_predial',
-                'licencias.modelo_ant'
-            );
-
-            if ($buscar == '') {
-                $licencias = $query
-                ->where('modelos.nombre','!=','Terreno');
-            } 
-    
-            else {
-                $licencias = $query;
-                switch($criterio){
-                    case 'licencias.f_planos':{
-                        $licencias = $licencias->whereBetween($criterio, [$buscar, $buscar2]);
-                        break;
-                    }
-                    case 'lotes.fraccionamiento_id':{
-                        $licencias = $licencias
-                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
-                                ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
-                                ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');
-                                if($b_manzana != '')
-                                    $licencias = $licencias->where('lotes.manzana', '=', $b_manzana);
-                                if($b_puente != '')
-                                    $licencias = $licencias->where('lotes.credito_puente', '=', $b_puente); 
-                                if($b_num_inicio != '')
-                                    $licencias = $licencias->where('lotes.num_inicio', '=', $b_num_inicio);
-    
-                        break;
-                    }
-    
-                    case 'personal.nombre':{
-                        $licencias = $licencias->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                    }
-                    default:{
-                        $licencias = $licencias->where($criterio, 'like', '%' . $buscar . '%');
-                        break;
-                    }
-                }
-                
-            }
-
-        if($request->b_empresa != ''){
-            $licencias= $licencias->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        if($request->b_empresa2 != ''){
-            $licencias= $licencias->where('lotes.emp_terreno','=',$request->b_empresa2);
-        }
-
-        if($request->b_etapa != ''){
-            $licencias= $licencias->where('lotes.etapa_id','=',$request->b_etapa);
-        }
-
-        if($request->b_ruv != '')
-            $licencias = $licencias->where('lotes.paq_ruv', '=', $request->b_ruv);
-
-        $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
-                                ->orderBy('fraccionamientos.nombre', 'DESC')
-                                ->orderBy('etapas.num_etapa', 'DESC')
-                                ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->get();
-
+        //Llamada a la funcion privada que retorla la query principal
+       $licencias = $this->getLicencias($request);
+       $licencias = $licencias->get();
+        //Creación y retorno de los resultados en excel
         return Excel::create(
             'Licencias',
             function ($excel) use ($licencias) {
@@ -1341,116 +984,13 @@ class LicenciasController extends Controller
         )->download('xls');
     }
 
+    //Función para obtener los registros en excel de las actas de termino para los lotes dados de alta 
     public function exportExcelActaTerminacion(Request $request)
     {
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $b_lote = $request->b_lote;
-        $b_manzana = $request->b_manzana;
-        $criterio = $request->criterio;
-        $b_num_inicio = $request->b_num_inicio;
-        $b_puente = $request->b_puente;
-
-        $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
-            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-            ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
-            ->join('personal as p', 'licencias.perito_dro', '=', 'p.id')
-            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-            ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-            ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
-            ->select(
-                'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa',
-                'lotes.manzana',
-                'lotes.num_lote',
-                'lotes.sublote',
-                'modelos.nombre as modelo',
-                'empresas.nombre as empresa',
-                'lotes.calle',
-                'lotes.numero',
-                'lotes.interior',
-                'lotes.terreno',
-                'lotes.construccion',
-                'lotes.casa_muestra',
-                'lotes.lote_comercial',
-                'lotes.id',
-                'lotes.fraccionamiento_id',
-                'lotes.etapa_id',
-                'lotes.modelo_id',
-                'lotes.comentarios',
-                'lotes.clv_catastral',
-                'lotes.etapa_servicios',
-                'lotes.credito_puente',
-                'lotes.siembra',
-                'lotes.num_inicio',
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
-                DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),
-                'licencias.f_planos',
-                'licencias.f_ingreso',
-                'licencias.num_licencia',
-                'licencias.f_salida',
-                'lotes.arquitecto_id',
-                'licencias.perito_dro',
-                'fraccionamientos.nombre as fraccionamiento',
-                'licencias.cambios',
-                'licencias.avance',
-                'licencias.term_ingreso',
-                'licencias.term_salida',
-                'licencias.num_acta',
-                'licencias.foto_acta'
-            );
-
-            if ($buscar == '') {
-                $actas = $query
-                ->where('modelos.nombre','!=','Terreno');
-            } else {
-                switch($criterio){
-                    case 'lotes.fraccionamiento_id':{
-                        $actas = $query->where('lotes.fraccionamiento_id', '=',  $buscar);
-                            if($b_manzana != '')
-                                $actas = $actas->where('lotes.manzana', 'like', '%' . $b_manzana . '%');
-                            if($b_lote != '')
-                                $actas = $actas->where('lotes.num_lote', '=', $b_lote);
-                            if($b_num_inicio != '')
-                                $actas = $actas->where('lotes.num_inicio', '=',  $b_num_inicio);
-                            if($b_puente != '')
-                                $actas = $actas->where('lotes.credito_puente','=',$b_puente);
-                            if($b_etapa != '')
-                                $actas = $actas->where('lotes.etapa_id','=',$b_etapa);
-                        break;
-                    }
-    
-                    case 'licencias.term_ingreso':
-                    case 'licencias.term_salida': {
-                        $actas = $query
-                            ->whereBetween($criterio, [$buscar, $buscar2]);
-                            break;
-                    }
-    
-                    default:{
-                        $actas = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%');
-                        break;
-                    }
-    
-                }
-                
-            }
-
-        if($request->b_empresa != ''){
-            $actas= $actas->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        if($request->b_empresa2 != ''){
-            $actas= $actas->where('lotes.emp_terreno','=',$request->b_empresa2);
-        }
-
-        $actas = $actas->orderBy('licencias.cambios', 'DESC')
-                        ->orderBy('fraccionamientos.nombre', 'DESC')
-                        ->orderBy('etapas.num_etapa', 'DESC')
-                        ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->get();
-
+         //Llamada a la funcion privada que retorla la query principal
+       $actas = $this->getLicencias($request);
+       $actas = $actas->get();
+        //Creación y retorno de los resultados en excel
         return Excel::create(
             'actas',
             function ($excel) use ($actas) {
@@ -1522,8 +1062,8 @@ class LicenciasController extends Controller
         )->download('xls');
     }
 
-    public function indexDescargas(Request $request){
-
+    //Función privada que retorna la query para obtener las Descargas de informacion a los lotes (Licencias, actas)
+    private function getDescargas(Request $request){
         $proyecto = $request->proyecto;
         $etapa = $request->etapa;
         $manzana = $request->manzana;
@@ -1531,8 +1071,8 @@ class LicenciasController extends Controller
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
         $busqueda = $request->busqueda;
-
-        $query = Licencia::join('lotes','licencias.id','=','lotes.id')
+        //Query principal
+        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -1542,75 +1082,47 @@ class LicenciasController extends Controller
                 'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
                 'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');
 
-            
-
         switch($busqueda){
-            case 'licencias.fecha_licencia':{
-
-                $lotes = $query->where('licencias.foto_lic', '!=', NULL);
-
-                    if($proyecto != '')
-                        $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
-                    if($etapa != '')
-                        $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
-                    if($manzana != '')
-                        $lotes = $lotes->where('lotes.manzana', '=', $manzana);
-                    if($lote != '')
-                        $lotes = $lotes->where('lotes.num_lote', '=', $lote);
-
-                    if($fecha1 != '' && $fecha2 != '')
-                        $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
-
-                break;
-                 
-            }
-            case 'licencias.fecha_acta':{
-
-                    $lotes = $query->where('licencias.foto_acta', '!=', NULL);
-
-                    if($proyecto != '')
-                        $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
-                    if($etapa != '')
-                        $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
-                    if($manzana != '')
-                        $lotes = $lotes->where('lotes.manzana', '=', $manzana);
-                    if($lote != '')
-                        $lotes = $lotes->where('lotes.num_lote', '=', $lote);
-
-                    if($fecha1 != '' && $fecha2 != '')
-                        $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
-
+            case 'licencias.fecha_licencia':{ //Busqueda licencias de construccion
+                $lotes = $lotes->where('licencias.foto_lic', '!=', NULL);//Fecha cargada
                 break;
             }
-            case 'licencias.fecha_predial':{
-                        
-                $lotes = $query->where('licencias.foto_predial', '!=', NULL);
-
-                if($proyecto != '')
-                    $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
-                if($etapa != '')
-                    $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
-                if($manzana != '')
-                    $lotes = $lotes->where('lotes.manzana', '=', $manzana);
-                if($lote != '')
-                    $lotes = $lotes->where('lotes.num_lote', '=', $lote);
-
-                if($fecha1 != '' && $fecha2 != '')
-                    $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
-
+            case 'licencias.fecha_acta':{//Busqueda actas de termino
+                $lotes = $query->where('licencias.foto_acta', '!=', NULL);//Fecha cargada
+                break;
+            }
+            case 'licencias.fecha_predial':{//Busqueda prediales
+                $lotes = $query->where('licencias.foto_predial', '!=', NULL);//Fecha cargada
                 break;
             }
         }
 
-        if($request->empresa != ''){
+        if($fecha1 != '' && $fecha2 != '')//Busqueda por rango de fecha de carga, segun criterio de busqueda
+            $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
+        if($proyecto != '')//Busqueda por proyecto
+            $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
+        if($etapa != '')//Busqueda por etapa
+            $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
+        if($manzana != '')//Busqueda por manzana
+            $lotes = $lotes->where('lotes.manzana', '=', $manzana);
+        if($lote != '')//Busqueda por numero de lote
+            $lotes = $lotes->where('lotes.num_lote', '=', $lote);
+        if($request->empresa != '')//Busqueda por empresa constructora
             $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
-        }
         
         $lotes = $lotes->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('lotes.manzana','asc')
-                        ->orderBy('lotes.num_lote','asc')
-                        ->paginate(12);
+                        ->orderBy('lotes.num_lote','asc');
+
+        return  $lotes;
+    }
+
+    //Funcion que retorna los lotes con carga de informacion (licencias, actas, prediales)
+    public function indexDescargas(Request $request){
+        //Llamada a la función privada que retorna la query principal
+        $lotes = $this->getDescargas($request);
+        $lotes = $lotes->paginate(12);
         
         return [
             'pagination' => [
@@ -1626,98 +1138,12 @@ class LicenciasController extends Controller
         ];
     }
 
-
+    //Funcion que retorna los lotes con carga de informacion (licencias, actas, prediales) en Excel.
     public function excelDescargas(Request $request){
-        $proyecto = $request->proyecto;
-        $etapa = $request->etapa;
-        $manzana = $request->manzana;
-        $lote = $request->lote;
-        $fecha1 = $request->fecha1;
-        $fecha2 = $request->fecha2;
-        $busqueda = $request->busqueda;
-
-        
-
-        $query = Licencia::join('lotes','licencias.id','=','lotes.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
-                'licencias.num_licencia','licencias.num_acta', 'lotes.interior', 'lotes.emp_constructora', 'lotes.emp_terreno',
-                'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
-                'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
-                'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');
-
-        switch($busqueda){
-            case 'licencias.fecha_licencia':{
-
-                $lotes = $query->where('licencias.foto_lic', '!=', NULL);
-
-                    if($proyecto != '')
-                        $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
-                    if($etapa != '')
-                        $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
-                    if($manzana != '')
-                        $lotes = $lotes->where('lotes.manzana', '=', $manzana);
-                    if($lote != '')
-                        $lotes = $lotes->where('lotes.num_lote', '=', $lote);
-
-                    if($fecha1 != '' && $fecha2 != '')
-                        $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
-
-                break;
-                    
-            }
-            case 'licencias.fecha_acta':{
-
-                    $lotes = $query->where('licencias.foto_acta', '!=', NULL);
-
-                    if($proyecto != '')
-                        $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
-                    if($etapa != '')
-                        $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
-                    if($manzana != '')
-                        $lotes = $lotes->where('lotes.manzana', '=', $manzana);
-                    if($lote != '')
-                        $lotes = $lotes->where('lotes.num_lote', '=', $lote);
-
-                    if($fecha1 != '' && $fecha2 != '')
-                        $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
-
-                break;
-            }
-            case 'licencias.fecha_predial':{
-                        
-                $lotes = $query->where('licencias.foto_predial', '!=', NULL);
-
-                if($proyecto != '')
-                    $lotes = $lotes->where('lotes.fraccionamiento_id', '=', $proyecto);
-                if($etapa != '')
-                    $lotes = $lotes->where('lotes.etapa_id', '=', $etapa);
-                if($manzana != '')
-                    $lotes = $lotes->where('lotes.manzana', '=', $manzana);
-                if($lote != '')
-                    $lotes = $lotes->where('lotes.num_lote', '=', $lote);
-
-                if($fecha1 != '' && $fecha2 != '')
-                    $lotes = $lotes->whereBetween($busqueda, [$fecha1, $fecha2]);
-
-                break;
-            }
-        }
-
-        if($request->empresa != ''){
-            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
-        }
-        
-        $lotes = $lotes->orderBy('fraccionamientos.nombre','asc')
-                        ->orderBy('etapas.num_etapa','asc')
-                        ->orderBy('lotes.manzana','asc')
-                        ->orderBy('lotes.num_lote','asc')
-                        ->get();
-
-        
-
+        //Llamada a la función privada que retorna la query principal
+        $lotes = $this->getDescargas($request);
+        $lotes = $lotes->get();
+        //Creación y retorno de los resultados en excel.
         return Excel::create(
             'Descargas',
             function ($excel) use ($lotes, $busqueda) {

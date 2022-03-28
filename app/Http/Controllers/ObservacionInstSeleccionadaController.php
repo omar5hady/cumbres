@@ -41,7 +41,7 @@ class ObservacionInstSeleccionadaController extends Controller
 
     }
 
-    // Funcion de consulta de informacion de la tabla Obs_inst_selec donde se optiene los comentarios , usuario , y la fecha de creacion
+    // Funcion de consulta de informacion de la tabla Obs_inst_selec donde se obtiene los comentarios , usuario , y la fecha de creacion
     // donde se filtra por el id de la institucion   
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
@@ -77,7 +77,7 @@ class ObservacionInstSeleccionadaController extends Controller
     }
 
 
-    // Funcion de consulta de datos de la tabla Obs_cobroCredito donde se optiene los comentarios , usuario , y la fecha de creacion
+    // Funcion de consulta de datos de la tabla Obs_cobroCredito donde se obtiene los comentarios , usuario , y la fecha de creacion
     // donde se filtra por el id del credito 
     public function indexCobro(Request $request){
         if(!$request->ajax())return redirect('/');

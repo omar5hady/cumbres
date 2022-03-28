@@ -19,6 +19,7 @@ use File;
 
 class VendedoresController extends Controller
 {
+    //hace la peticion de la informacion de los vendedores 
     public function ventasVendedorReporte(Request $request){
         $vendedores = User::join('personal','users.id','=','personal.id')
                 ->join('vendedores','personal.id','vendedores.id')
@@ -28,7 +29,7 @@ class VendedoresController extends Controller
                 ->orderBy('vendedor','asc')->get();
 
 
-        if(sizeOf($vendedores)){
+        if(sizeOf($vendedores)){ // cuenta los clientes asignados a ese vendedor
             foreach ($vendedores as $ve => $vendedor) {
                 $vendedor->atendio = Cliente::where('vendedor_id','=',$vendedor->id)
                         ->where('clasificacion','!=',7)->count();
@@ -39,6 +40,7 @@ class VendedoresController extends Controller
         return['vendedores'=>$vendedores];
     }
 
+    //funcion para subir el comprovante de domicilio del vendedor
     public function formSubmitComprobante(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -46,7 +48,7 @@ class VendedoresController extends Controller
         $comprobanteAnt = Vendedor::select('doc_comprobante', 'id')
             ->where('id', '=', $id)
             ->get();
-        if ($comprobanteAnt->isEmpty() == 1) {
+        if ($comprobanteAnt->isEmpty() == 1) { // verifica si el campo esta vacio 
             $fileName = uniqid() . time() . '.' . $request->doc_comprobante->getClientOriginalExtension();
             $moved =  $request->doc_comprobante->move(public_path('/files/vendedores'), $fileName);
 
@@ -61,7 +63,7 @@ class VendedoresController extends Controller
             return response()->json(['success'=>$fileName]);
         } else {
             $pathAnterior = public_path() . '/files/vendedores/' . $comprobanteAnt[0]->doc_comprobante;
-            File::delete($pathAnterior);
+            File::delete($pathAnterior); // elimina el archivo anterior
 
             $fileName = uniqid() . time() . '.' . $request->doc_comprobante->getClientOriginalExtension();
             $moved =  $request->doc_comprobante->move(public_path('/files/vendedores'), $fileName);
@@ -78,6 +80,7 @@ class VendedoresController extends Controller
         }
     }
 
+    //Funcion para subir el archivo INE del vendedor
     public function formSubmitINE(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -117,6 +120,7 @@ class VendedoresController extends Controller
         }
     }
 
+    // Funcion para subir el documento CV del vendedor
     public function formSubmitCV(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -156,6 +160,7 @@ class VendedoresController extends Controller
         }
     }
 
+    // elimina elarchivo seleccionado
     public function downloadFile($fileName)
     {
 
@@ -163,6 +168,7 @@ class VendedoresController extends Controller
         return response()->download($pathtoFile);
     }
 
+    //funcion para crear un rango de fechas ( periodo vacacional del vendedor)
     public function actPeriodoVacacional(Request $request){
         $vendedor = Vendedor::findOrFail($request->id);
         $vendedor->ini_vacaciones = $request->ini_vacaciones;

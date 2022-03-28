@@ -424,7 +424,7 @@
                                 </div>
                             </div>
                         </div> 
-                        <div class="col-md-12" v-if="datos.segundo_credito > 0">
+                        <div class="col-md-12" v-if="datos.segundo_credito > 0 || editar == 1">
                             <div class="form-group row">
                                 <div class="col-md-7"></div>
 

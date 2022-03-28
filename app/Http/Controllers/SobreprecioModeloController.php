@@ -11,6 +11,7 @@ use Auth;
 
 class SobreprecioModeloController extends Controller
 {
+    //consulta general de datos  sobreprecios modelo  
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -32,6 +33,7 @@ class SobreprecioModeloController extends Controller
                 'lotes.id as lote_id', 'lotes.manzana as manzana',
                 'etapas.num_etapa as etapa','fraccionamientos.nombre as proyecto');
 
+        // filtro de busqueda
         if($buscar != '')
             $sobreprecio_modelo = $sobreprecio_modelo->where('sobreprecios_etapas.etapa_id','=', $buscar);
         if($buscar3 != '')
@@ -57,7 +59,9 @@ class SobreprecioModeloController extends Controller
         ];
     }
 
-    //funcion para insertar en la tabla
+    //funcio donde primero crea un nuevo registro para la tabla de sobrePrecio
+    //  y en seguida actualiza el sobreprecio de el lote seleccionado 
+    // En la tabla de Credito se recalcula el precio de venta ajustandose al sobreprecio
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -93,7 +97,9 @@ class SobreprecioModeloController extends Controller
         }
     }
 
-    //funcion para actualizar los datos
+    // actualiza informacion  de la tabla sobrePrecio
+    // 
+
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -106,7 +112,7 @@ class SobreprecioModeloController extends Controller
         $lote_id = Lote::select('id')->where('id','=',$request->lote_id)
         ->get();
 
-        foreach($lote_id as $loteid){
+        foreach($lote_id as $loteid){ /// se actualiza el sobreprecio por cada lote 
             $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
             ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
             ->where('sobreprecios_modelos.lote_id','=',$loteid->id)->get();
@@ -118,6 +124,10 @@ class SobreprecioModeloController extends Controller
         }
     }
 
+
+    // elimina un registro de la tabla sobre precio 
+    // ademas de uq para cada lote se actualiza el sobreprecio
+    // en los lotes que tengan credito se recalcula el precio de venta  
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

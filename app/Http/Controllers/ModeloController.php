@@ -10,32 +10,27 @@ use App\Contrato;
 use Auth;
 use App\Version_modelo;
 
-
+//Controlador para el modelo Modelo.
 class ModeloController extends Controller
 {
-     
+    //Función que retorna los modelos registrados
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-
         $buscar = $request->buscar;
         $criterio = $request->criterio;
-
+        //Query
         $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
             'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion',
             'modelos.archivo','modelos.id','espec_obra')
-            ->where('modelos.nombre', '!=','Por Asignar');
-        
-        
-        if($buscar != '')
+            ->where('modelos.nombre', '!=','Por Asignar');//Diferente a modelo por asignar
+        if($buscar != '')//Busqueda general
                 $modelos = $modelos->where($criterio, 'like', '%'. $buscar . '%');
-
         $modelos = $modelos->orderBy('fraccionamientos.nombre','asc')
                 ->orderBy('modelos.nombre','asc')->paginate(8);
         
-
         return [
             'pagination' => [
                 'total'         => $modelos->total(),
@@ -49,7 +44,7 @@ class ModeloController extends Controller
         ];
     }
 
-    //funcion para insertar en la tabla
+    //Función para registrar un nuevo modelo.
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -61,7 +56,7 @@ class ModeloController extends Controller
         $modelo->construccion = $request->construccion;
         $modelo->archivo = $request->archivo;
         $modelo->save();
-
+        //Se crean las partidas correspondientes para el nuevo modelo.
         for($i =1;$i<=49;$i++){
             $partida = new PartidaController();
             switch($i){
@@ -265,7 +260,7 @@ class ModeloController extends Controller
         }
     }
 
-    //funcion para actualizar los datos
+    //Función para actualizar un modelo.
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -276,21 +271,19 @@ class ModeloController extends Controller
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;
-    
         $modelo->save();
     }
-
+    //Función para eliminar el registro de un modelo.
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $modelo = Modelo::findOrFail($request->id);
         $modelo->delete();
     }
-
+    //Función para subir el archivo de especificaciones de un modelo.
     public function formSubmit(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         $fileName = time().'.'.$request->archivo->getClientOriginalExtension();
         $moved =  $request->archivo->move(public_path('/files/modelos'), $fileName);
 
@@ -302,34 +295,29 @@ class ModeloController extends Controller
             $modelo->save(); //Insert
     
             }
-        
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
-
+    //Función para descargar el archivo especificaciones de modelo.
     public function downloadFile($fileName){
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
         return response()->download($pathtoFile);
     }
-
+    //Función que retorna los modelos ligados a un proyecto
     public function selectModelo_proyecto(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $modelos = Modelo::select('nombre','id')
-        ->where('fraccionamiento_id', '=', $buscar );
-        if($request->mostrar == 1)
-            $modelos= $modelos->where('nombre','!=','Por Asignar');
-
-        if($request->mostrar == 2){
-            $modelos= $modelos->where('nombre','!=','Por Asignar')
-            ->where('nombre','!=','Terreno');
-        }
+            ->where('fraccionamiento_id', '=', $buscar )
+            ->where('nombre','!=','Por Asignar');
+        if($request->mostrar == 2)//No mostrar terreno
+            $modelos= $modelos->where('nombre','!=','Terreno');
         $modelos= $modelos->orderBy('nombre','asc')
         ->get();
         return['modelos' => $modelos];
     }
-
+    //Función para retornar los modelos de lotes disponibles para venta
     public function selectModeloDisp(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -339,45 +327,24 @@ class ModeloController extends Controller
         ->select('modelos.nombre','modelos.id')
         ->where('modelos.fraccionamiento_id', '=', $buscar )
         ->where('lotes.habilitado','=',1)
-        ->where('lotes.contrato','=',0);
-        if($request->mostrar == 1)
-            $modelos= $modelos->where('modelos.nombre','!=','Por Asignar');
-
-        if($request->mostrar == 2){
-            $modelos= $modelos->where('modelos.nombre','!=','Por Asignar')
-            ->where('modelos.nombre','!=','Terreno');
-        }
+        ->where('lotes.contrato','=',0)
+        ->where('modelos.nombre','!=','Por Asignar');
+        if($request->mostrar == 2)//Diferente a terreno
+            $modelos= $modelos->where('modelos.nombre','!=','Terreno');
         $modelos= $modelos->orderBy('modelos.nombre','asc')
         ->distinct()
         ->get();
         return['modelos' => $modelos];
     }
-
-    public function selectModelo_proyecto2(Request $request){
-        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
-
-        $buscar = $request->buscar;
-        $modelos = Modelo::select('nombre','id')
-        ->where('fraccionamiento_id', '=', $buscar )
-        ->where('nombre','!=','Por Asignar')
-        //->where('nombre','!=','Por Asignar')
-        ->orderBy('nombre','asc')
-        ->get();
-        return['modelos' => $modelos];
-    }
-
+    //Función que retorna el tamaño de construcción y terreno de un modelo
     public function selectConsYTerreno(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-
         $buscar = $request->buscar;
-        $modelosTc = Modelo::select('id','terreno','construccion')
-        ->where('id', '=', $buscar )->get();
-
+        $modelosTc = Modelo::select('id','terreno','construccion')->where('id', '=', $buscar )->get();
         return ['modelosTc' => $modelosTc];
     }
-
+    //Función que retorna el nombre del archivo de especificacion de un lote para contrato.
     public function modeloArchivoContrato (Request $request, $id)
     {
          $modelo = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -385,16 +352,15 @@ class ModeloController extends Controller
         ->join('modelos','lotes.modelo_id','=','modelos.id')
         ->select('modelos.archivo','lotes.nombre_archivo')
         ->where('contratos.id','=',$id)->get();
-
         if($modelo[0]->nombre_archivo != NULL){
             $version = Version_modelo::select('archivo')->where('version','=',$modelo[0]->nombre_archivo)->get();
-
             $modelo[0]->archivo = $version[0]->archivo;
         }
-
         return ['modelo' => $modelo];
     }
 
+    //Función que retorna los modelos registrados con sus archivos correspondientes,
+    //Archivos ligados a ventas (Reglamentos, cartas de telecomunicaciones, especificaciones, etc.)
     public function indexDocs (Request $request){
         if(!$request->ajax())return redirect('/');
 
@@ -402,8 +368,8 @@ class ModeloController extends Controller
         $b_fraccionamiento = $request->b_fraccionamiento;
         $b_etapa = $request->b_etapa;
         $b_modelo = $request->b_modelo;
-
-        $query = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+        //Query principal
+        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
             ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
             'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom',
@@ -411,15 +377,13 @@ class ModeloController extends Controller
             'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
         ->where('modelos.nombre','!=','Por Asignar')
         ->where('etapas.num_etapa','!=','Sin Asignar');
-        
-        if($b_fraccionamiento != '')
-            $query = $query->where($criterio,'=',$b_fraccionamiento);
-        if($b_etapa != '')
-            $query = $query->where('etapas.id','=',$b_etapa);
-        if($b_modelo != '')
-            $query = $query->where('modelos.id','=',$b_modelo);
-
-        $archivos = $query->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+        if($b_fraccionamiento != '')//Busqueda por proyecto
+            $archivos = $archivos->where($criterio,'=',$b_fraccionamiento);
+        if($b_etapa != '')//Busqueda por etapa
+            $archivos = $archivos->where('etapas.id','=',$b_etapa);
+        if($b_modelo != '')//Busqueda por modelo
+            $archivos = $archivos->where('modelos.id','=',$b_modelo);
+        $archivos = $archivos->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
 
         return [
         'pagination' => [
@@ -433,7 +397,7 @@ class ModeloController extends Controller
         'archivos' => $archivos
         ];
     }
-
+    //Función para descargargar el catalogo de especificaciones de un modelo
     public function descargaCatalogoDocs($modelo_id){
         $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
         ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
@@ -446,11 +410,10 @@ class ModeloController extends Controller
         $pathtoFile = public_path().'/files/modelos/'.$archivos[0]->archivo;
         return response()->download($pathtoFile);
     }
-    
+    //Función para subir el archivo de especificaciones de obra
     public function formSubmitEspecObra(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-
         $fileName = time().'.'.$request->archivoObra->getClientOriginalExtension();
         $moved =  $request->archivoObra->move(public_path('/files/modelos'), $fileName);
 
@@ -460,12 +423,10 @@ class ModeloController extends Controller
             $modelo->espec_obra = $fileName;
             $modelo->id = $id;
             $modelo->save(); //Insert
-    
-            }
-        
+        }
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
-
+    //Función para descargar el archivo de especificaciones de obra.
     public function downloadFileEspecObra($fileName){
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
         return response()->download($pathtoFile);

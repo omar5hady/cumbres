@@ -413,6 +413,11 @@ class ClienteController extends Controller
                 $cliente->ciudad_coa = "";
                 $cliente->estado_coa = "";
                 $cliente->nacionalidad_coa = 0;
+
+                $coa_s = Personal::select('id')->where('rfc','=',$cliente->rfc_coa)->first();
+                $coa = Cliente::findOrFail($coa_s->id);
+                $coa->clasificacion = 7;
+                $coa->save();
             }
             $cliente->save();
 

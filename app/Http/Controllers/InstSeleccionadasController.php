@@ -26,9 +26,8 @@ use DB;
 //Controlador para el modelo Instituciones Seleccionadas.
 class InstSeleccionadasController extends Controller
 {
-    //Función que retorna los financiamientos bancarios creados para los contratos de venta
-    public function indexCreditoSel(Request $request){
-        if(!$request->ajax())return redirect('/');
+    //Función que retorna la query necesaria para obtener los registros de financiamientos
+    private function getFinanciamientos(Request $request){
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
@@ -37,7 +36,7 @@ class InstSeleccionadasController extends Controller
         $criterio = $request->criterio;
         $empresa = $request->empresa;
         //Query principal
-        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
             ->join('personal','personal.id','=','creditos.prospecto_id')
@@ -53,165 +52,77 @@ class InstSeleccionadasController extends Controller
                     'lotes_puente.cobrado as cobradoPuente', 'lotes_puente.liberado', 'lotes_puente.precio_c',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
             //Ventas firmadas 
-            ->where('lotes.firmado','=',$request->firmado);
+            ->where('lotes.firmado','=',$request->firmado)
+            //Busqueda por empresa constructora
+            ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+            ->where('inst_seleccionadas.elegido', '=', 1)//Financiamiento elegido
+            ->where('contratos.status', '=', 3)//Contrato firmado
+            //Financiamientos diferentes a Créditos Directos (Solo bancarios)
+            ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+            //Financiamiento con saldo pendiente
+            if($b_cobrados == 0)
+                $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+            //Financiamiento cobrado
+            else
+                $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
 
-            if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = $query;
-                
-                if($b_cobrados == 0)
-                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                else
-                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                    
-                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1);
-
-                    if($b_cobrados == 0)
-                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                    else
-                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                    
-                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-            }
-            else{
+            if($buscar != '' ){
                 switch($criterio){
+                    //Busqueda por nombre de cliente
                     case 'personal.nombre':{
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-
-                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
-                                
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                        
-                        
+                        //Financiamiento elegido para el contrato
+                        if($buscar != '')//Busqueda por nombre
+                            $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
+                        if($buscar2 != '')//Busqueda por apellidos
+                            $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
                         break;
-    
                     }
                     case 'creditos.fraccionamiento': {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
-                                if($buscar3 != '')
-                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
-                                if($buscar4 != '')
-                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                                $creditos = $creditos->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
-                                if($buscar3 != '')
-                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
-                                if($buscar4 != '')
-                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                        
-                        
+                        if($buscar != '')//Busqueda por proyecto
+                            $creditos = $creditos->where($criterio, '=', $buscar);
+                        if($buscar2 != '')//Busqueda por etapa
+                            $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
+                        if($buscar3 != '')//Busqueda por manzana
+                            $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
+                        if($buscar4 != '')//Busqueda por numero de lote
+                            $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
                         break;
                     }
-    
-                    case 'contratos.id': {
-                        $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-
-                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                                
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-
-                                 if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
+                    case 'contratos.id': {//Numero de folio
+                        $creditos = $creditos->where($criterio, '=', $buscar);
+                        break;
                     }
-    
                 }
             }
 
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
-                            ->orderBy('inst_seleccionadas.monto_credito','desc')
-                            ->paginate(10);  
+                            ->orderBy('inst_seleccionadas.monto_credito','desc');
 
+        return $creditos;
+    }
+    
+    //Función que retorna los financiamientos bancarios creados para los contratos de venta
+    public function indexCreditoSel(Request $request){
+        if(!$request->ajax())return redirect('/');
+        //Llamada a la función privada que retorna la query principal
+        $creditos = $this->getFinanciamientos($request);
+        $creditos = $creditos->paginate(10);  
+        
         if(sizeof($creditos)){
+            //Se recorren los resultados obtenidos
             foreach($creditos as $et=>$contrato){
+                //Se buscan los pagares que corresponden al contrato
                 $pagos = Pago_contrato::select('num_pago','fecha_pago')
                     ->where('tipo_pagare','=',0)
                     ->where('contrato_id','=',$contrato->folio)
                     ->orderBy('fecha_pago','desc')
                     ->get();
-
+                //Se almacena la fecha del ultimo pagare
                 $contrato->pagare=$pagos[0]->fecha_pago;
-
+                //Si se buscan los contratos con firma de escrituras
                 if($request->firmado == 1){
                     $expediente = Expediente::findOrFail($contrato->folio);
-
+                    //Se almacena la fecha de firma.
                     $contrato->fecha_firma_esc = $expediente->fecha_firma_esc;
                 }
             }
@@ -229,26 +140,27 @@ class InstSeleccionadasController extends Controller
         ];
     }
 
+    //Función que retorna los depositos de entidades de financiamiento.
     public function indexDepCredito(Request $request){
         if(!$request->ajax())return redirect('/');
-
+        //Query principal
         $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                            ->select('dep_creditos.id','dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
-                                    'dep_creditos.inst_sel_id', 'inst_seleccionadas.institucion','inst_seleccionadas.monto_credito', 
-                                    'inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.id', '=', $request->id)
-                            ->get();
+            ->select('dep_creditos.id','dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
+                    'dep_creditos.inst_sel_id', 'inst_seleccionadas.institucion','inst_seleccionadas.monto_credito', 
+                    'inst_seleccionadas.cobrado')
+            ->where('inst_seleccionadas.id', '=', $request->id)//Busqueda por financiamiento elegido.
+            ->get();
                             
         return ['depositos' => $depositos];
     }
 
-    public function historialDepositos(Request $request){
-        if(!$request->ajax())return redirect('/');
+    //Función privada que retornara la query necesaria para el historial de depositos
+    private function getHistorialDep(Request $request){
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
         $banco = $request->banco;
 
-        $query = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
+        $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
@@ -262,30 +174,19 @@ class InstSeleccionadasController extends Controller
                 'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
                 'lotes.credito_puente'
             );
-  
-        if($fecha1 != '' && $fecha2 != ''){
-            if($banco == ''){
-                $depositos = $query
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
-            }
-            else{
-                $depositos = $query
-                        ->where('dep_creditos.banco','like',$banco.'%')
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
-                        
-            }
-        }
-        else{
-            if($banco == ''){
-                $depositos = $query;
-            }
-            else{
-                $depositos = $query
-                        ->where('dep_creditos.banco','like',$banco.'%');
-            }
-        }
-
+        if($banco != '')//Busqueda por institución bancaria
+            $depositos = $depositos->where('dep_creditos.banco','like',$banco.'%');
+        if($fecha1 != '' && $fecha2 != '') //Busqueda por rango de fecha depositado
+            $depositos = $depositos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
+        //Busqueda por monto depositado
         if($request->bMonto != "") $depositos = $depositos->where('dep_creditos.cant_depo','=',$request->bMonto);
+    }
+
+    //Función que retorna el historial de depositos por entidades de financiamiento.
+    public function historialDepositos(Request $request){
+        if(!$request->ajax())return redirect('/');
+        //Llamada a la función privada que retorna la query necesaria.
+        $depositos = $depositos->getHistorialDep($request);
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
         
         return [
@@ -299,56 +200,16 @@ class InstSeleccionadasController extends Controller
             ],
             'depositos' => $depositos,'fecha1'=>$fecha1
         ];
-
     }
 
+    ////Función que retorna el historial de depositos por entidades de financiamiento en excel
     public function excelHistorialDep(Request $request){
-
-        $fecha1 = $request->fecha1;
-        $fecha2 = $request->fecha2;
-        $banco = $request->banco;
-
-        $query = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-            ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-            ->join('contratos','contratos.id','=','creditos.id')
-            ->join('lotes','lotes.id','=','creditos.lote_id')
-            ->join('personal','personal.id','=','creditos.prospecto_id')
-            ->select('contratos.id as folio',
-                'creditos.fraccionamiento as proyecto',
-                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                'personal.nombre','personal.apellidos', 
-                'inst_seleccionadas.id as inst_sel_id',
-                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
-                'lotes.credito_puente'
-            );
-  
-        if($fecha1 != '' && $fecha2 != ''){
-            if($banco == ''){
-                $depositos = $query
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
-            }
-            else{
-                $depositos = $query
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
-                        ->where('dep_creditos.banco','like',$banco.'%');
-            }
-        }
-        else{
-            if($banco == ''){
-                $depositos = $query;
-            }
-            else{
-                $depositos = $query
-                        ->where('dep_creditos.banco','like',$banco.'%');
-            }
-        }
-        
+        //Llamada a la función privada que retorna la query necesaria.
+        $depositos = $depositos->getHistorialDep($request);
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->get();
-
+        //Creación y retorno de los resultados en Excel.
         return Excel::create('Depositos', function($excel) use ($depositos){
                 $excel->sheet('Depositos', function($sheet) use ($depositos){
-                    
                     $sheet->row(1, [
                         '# Contrato', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
                         '# Lote', 'Institución', 'Crédito',
@@ -403,28 +264,30 @@ class InstSeleccionadasController extends Controller
         )->download('xls');
     }
 
+    //Función para registrar un nuevo deposito institucional.
     public function storeDepositoCredito(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try {
             DB::beginTransaction();
+            //Se crea el registro nuevo en la tabla dep_creditos
             $deposito = new Dep_credito();
             $deposito->inst_sel_id = $request->inst_sel_id;
             $deposito->cant_depo = $request->cant_depo;
             $deposito->banco = $request->banco;
             $deposito->fecha_deposito = $request->fecha_deposito;
-            
+            //Se actualiza el saldo del crédito en la tabla inst_seleccionadas
             $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
             $credito->cobrado = $credito->cobrado + $request->cant_depo;
-
+            //Se actualiza el saldo de la venta en el Contrato.
             $contrato = Contrato::findOrFail($credito->credito_id);
             $contrato->saldo = round($contrato->saldo - $deposito->cant_depo,2);
             $contrato->save();
-            
+            //Se accede al registro del Crédito
             $credit = Credito::findOrFail($credito->credito_id);
-
+            //En caso de ser una venta por alianza
             if($credit->porcentaje_terreno > 0){
+                //Se calcula el monto correspondiente por el terreno
                 $saldo = $credit->valor_terreno - $credit->saldo_terreno;
-
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $deposito->cant_depo*$porcentaje;
                 
@@ -432,11 +295,9 @@ class InstSeleccionadasController extends Controller
                     $deposito->monto_terreno = $saldo;
                 else
                     $deposito->monto_terreno =  $monto_terreno;
-
             }
 
             $credito->save();
-
             $deposito->save();
 
             /// Aqui se verifica si el deposito va a dirigido a un credito Puente
@@ -451,7 +312,7 @@ class InstSeleccionadasController extends Controller
                 $pagoPuente->pendiente = 1;
                 $pagoPuente->save();
             }
-
+            //Se envia notificación del deposito.
             $toAlert = [24706];
             $msj = 'Se ha realizado un nuevo abono a crédito';
 
@@ -481,33 +342,34 @@ class InstSeleccionadasController extends Controller
         }
     }
 
+    //Función para actualizar un deposito institucional
     public function updateDepositoCredito(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try {
             DB::beginTransaction();
+            //Se accede al registro del Deposito
             $deposito = Dep_credito::findOrFail($request->dep_id);
+            //Se accede al registro del financiamiento
             $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
+            //Se actualiza el saldo del financiamiento
             $credito->cobrado = $credito->cobrado - $deposito->cant_depo + $request->cant_depo;
-
+            //Se actualiza el saldo en el contrato
             $contrato = Contrato::findOrFail($credito->credito_id);
             $contrato->saldo = round($contrato->saldo + $deposito->cant_depo - $request->cant_depo,2);
             $contrato->save();
 
             $credit = Credito::findOrFail($credito->credito_id);
-
+            // Se actualiza el monto correspondiente al terreno en caso de ser venta en alianza
             if($credit->porcentaje_terreno > 0){
                 $saldo = $credit->valor_terreno - $credit->saldo_terreno;
-
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $deposito->cant_depo*$porcentaje;
-                
                 if($deposito->monto_terreno > $saldo)
                     $deposito->monto_terreno = $saldo;
                 else
                     $deposito->monto_terreno =  $monto_terreno;
             }
-
             $credito->save();
             $deposito->inst_sel_id = $request->inst_sel_id;
             $deposito->cant_depo = $request->cant_depo;
@@ -521,183 +383,26 @@ class InstSeleccionadasController extends Controller
         }
     }
 
+    //Función que retorna los financiamientos bancarios creados para los contratos de venta en Excel.
     public function excelCobroCredito (Request $request){
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $buscar3 = $request->buscar3;
-        $buscar4 = $request->buscar4;
-        $b_cobrados = $request->b_cobrados;
-        $criterio = $request->criterio;
-        $empresa = $request->empresa;
-
-        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id as folio', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'lotes.fecha_termino_ventas', 'lotes.emp_constructora', 'lotes.emp_terreno',
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('lotes.firmado','=',$request->firmado);
-
-            if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = $query;
-                if($b_cobrados == 0)
-                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                else
-                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                    
-                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1);
-
-                    if($b_cobrados == 0)
-                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                    else
-                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                    
-                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-
-                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
-                                
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                        
-                        
-                        break;
-
-                    }
-                    case 'creditos.fraccionamiento': {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
-                                if($buscar3 != '')
-                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
-                                if($buscar4 != '')
-                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                                $creditos = $creditos->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-                                if($buscar2 != '')
-                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
-                                if($buscar3 != '')
-                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
-                                if($buscar4 != '')
-                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                        
-                        
-                        break;
-                    }
-
-                    case 'contratos.id': {
-                        $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-
-                                if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-
-                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                                
-                                if($buscar != '')
-                                    $creditos = $creditos->where($criterio, '=', $buscar);
-
-                                    if($b_cobrados == 0)
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
-                                else
-                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
-                                
-                    }
-
-                }
-            }
-
-        $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
-                            ->orderBy('inst_seleccionadas.monto_credito','desc')
-                            ->get();
+        //Llamada a la función privada que retorna la query principal
+        $creditos = $this->getFinanciamientos($request);
+        $creditos = $creditos->get();
 
         if(sizeof($creditos)){
+            //Se recorren los resultados obtenidos
             foreach($creditos as $et=>$contrato){
+                //Se buscan los pagares que corresponden al contrato
                 $pagos = Pago_contrato::select('num_pago','fecha_pago')
                     ->where('tipo_pagare','=',0)
                     ->where('contrato_id','=',$contrato->folio)
                     ->orderBy('fecha_pago','desc')
                     ->get();
-
+                //Se almacena la fecha del ultimo pagare
                 $contrato->pagare=$pagos[0]->fecha_pago;
             }
         }
-
+        //Creación y retorno de los resultados en Excel
         return Excel::create('creditos', function($excel) use ($creditos){
             $excel->sheet('creditos', function($sheet) use ($creditos){
                 
@@ -759,14 +464,15 @@ class InstSeleccionadasController extends Controller
         )->download('xls');
     }
 
-    public function indexDevolucion (Request $request){
+    //Función para retornar la query de contratos con saldo a favor.
+    private function getDevoluciones(Request $request){
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
-
-        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+        //Query principal.
+        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
             ->leftJoin('expedientes','expedientes.id','=','contratos.id')
@@ -781,48 +487,51 @@ class InstSeleccionadasController extends Controller
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
             )
-            ->where('contratos.saldo','<',0)
-            ->where('inst_seleccionadas.elegido', '=', 1);
+            ->where('contratos.saldo','<',0)//Saldo a favor
+            ->where('inst_seleccionadas.elegido', '=', 1);//Financiamiento elegido
         
-            switch($criterio){
-                case 'creditos.id':{
-                    $creditos = $query;
-                    if($buscar != '')
-                        $creditos = $creditos->where($criterio,'=',$buscar);
-                    break;
-                }
-                case 'personal.nombre':{
-                    $creditos = $query;
-                    if($buscar != '')
-                        $creditos = $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                    break;
-                }
-                case 'lotes.fraccionamiento_id':{
-                        $creditos = $query;
-                        if($buscar != '')
+            if($buscar != ''){
+                switch($criterio){
+                    case 'creditos.id':{//Busqueda por folio
                             $creditos = $creditos->where($criterio,'=',$buscar);
-                        if($b_etapa != '')
+                        break;
+                    }
+                    case 'personal.nombre':{//Busqueda por nombre de cliente
+                            $creditos = $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                            //Busqueda por proyecto
+                            $creditos = $creditos->where($criterio,'=',$buscar);
+                        if($b_etapa != '')//Busqueda por etapa
                             $creditos = $creditos->where('lotes.etapa_id','=',$b_etapa);
-                        if($b_manzana != '')
+                        if($b_manzana != '')//Busqueda por manzana
                             $creditos = $creditos->where('lotes.manzana','=',$b_manzana);
-                        if($b_lote != '')
+                        if($b_lote != '')//Busqueda por número de lote
                             $creditos = $creditos->where('lotes.num_lote','=',$b_lote);
-                    break;
+                        break;
+                    }
                 }
             }
-        
 
-        if($request->b_empresa != ''){
+        if($request->b_empresa != ''){//Busqueda por empresa constructora
             $creditos= $creditos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        $creditos = $creditos->where('contratos.status','!=',0)
+        $creditos = $creditos->where('contratos.status','!=',0)//Diferente a cancelado
                             ->orderBy('expedientes.fecha_firma_esc','asc')
                             ->orderBy('inst_seleccionadas.cobrado','asc')
-                            ->orderBy('inst_seleccionadas.monto_credito','desc')
-                            ->paginate(10);
-        
+                            ->orderBy('inst_seleccionadas.monto_credito','desc');
 
+        return $creditos;
+    }
+
+    //Función que retorna los registros de contratos con saldo a favor
+    public function indexDevolucion (Request $request){
+        //Llamada a la función privada que retorna la query principal 
+        $creditos = $this->getDevoluciones($request);
+        $creditos = $creditos->paginate(10);
+        
         return[
                 'pagination' => [
                 'total'         => $creditos->total(),
@@ -837,66 +546,13 @@ class InstSeleccionadasController extends Controller
         
     }
 
+    //Función que retorna los registros de contratos con saldo a favor en excel.
     public function excelDevolucion (Request $request){
-        $buscar = $request->buscar;
-        $b_etapa = $request->b_etapa;
-        $b_manzana = $request->b_manzana;
-        $b_lote = $request->b_lote;
-        $criterio = $request->criterio;
-
-        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-            ->join('contratos','contratos.id','=','creditos.id')
-            ->join('lotes','lotes.id','=','creditos.lote_id')
-            ->join('personal','personal.id','=','creditos.prospecto_id')
-            ->select('contratos.id', 'lotes.credito_puente',
-                'creditos.fraccionamiento as proyecto',
-                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                'personal.nombre','personal.apellidos', 
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-        )
-        ->where('contratos.saldo','<',0)
-        ->where('inst_seleccionadas.elegido', '=', 1);
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        switch($criterio){
-            case 'creditos.id':{
-                $creditos = $query;
-                if($buscar != '')
-                    $creditos = $creditos->where($criterio,'=',$buscar);
-                break;
-            }
-            case 'personal.nombre':{
-                $creditos = $query;
-                if($buscar != '')
-                    $creditos = $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                break;
-            }
-            case 'lotes.fraccionamiento_id':{
-                    $creditos = $query;
-                    if($buscar != '')
-                        $creditos = $creditos->where($criterio,'=',$buscar);
-                    if($b_etapa != '')
-                        $creditos = $creditos->where('lotes.etapa_id','=',$b_etapa);
-                    if($b_manzana != '')
-                        $creditos = $creditos->where('lotes.manzana','=',$b_manzana);
-                    if($b_lote != '')
-                        $creditos = $creditos->where('lotes.num_lote','=',$b_lote);
-                break;
-            }
-        }
-
-        $creditos = $creditos->where('contratos.status','!=',0)
-                            ->orderBy('inst_seleccionadas.cobrado','asc')
-                            ->orderBy('inst_seleccionadas.monto_credito','desc')
-                            ->get();
+        //Llamada a la función privada que retorna la query principal 
+        $creditos = $this->getDevoluciones($request);
+        $creditos = $creditos->get();
         
-
+        //Creación y retorno de los registros obtenidos en excel.
         return Excel::create('Pendientes por excedente', function($excel) use ($creditos){
             $excel->sheet('pendientes', function($sheet) use ($creditos){
                 
@@ -950,14 +606,14 @@ class InstSeleccionadasController extends Controller
         }
         
         )->download('xls');
-        
     }
 
+    //Función para registrar una devolución para contratos con saldo a favor.
     public function storeDevolucion(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
-
+            //Se genera el registro para la devolución
             $devolucion = new Dev_credito();
             $devolucion->contrato_id = $request->id;
             $devolucion->devolver = $request->cant_dev;
@@ -966,14 +622,14 @@ class InstSeleccionadasController extends Controller
             $devolucion->cuenta = $request->cuenta;
             $devolucion->observaciones = $request->observaciones;
             $devolucion->save();
-
+            //Se accede al registro del contrato y se actualiza el saldo.
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo += $request->cant_dev;
             $contrato->saldo = round($contrato->saldo,2);
             if($contrato->saldo < 0 && $contrato->saldo > -0.001)
                 $contrato->saldo = 0;
             $contrato->save();
-
+            //Se genera un registro en la tabla gastos administrativos 
             $gastos = new Gasto_admin();
             $gastos->contrato_id = $request->id;
             $gastos->concepto = "Devolución por excedente";
@@ -981,37 +637,35 @@ class InstSeleccionadasController extends Controller
             $gastos->observacion = $request->observaciones;
             $gastos->fecha = $request->fecha;
             $gastos->save();
-
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
         }       
     }
 
+    //Función para finalizar el cobro de un financiamiento.
     public function finalizar(Request $request){
         if(!$request->ajax())return redirect('/');
-
         $credito = inst_seleccionada::findOrFail($request->id);
         $credito->monto_credito = $credito->cobrado;
         $credito->save();
     }
 
+    //Función para eliminar el registro de un financiamiento.
     public function eliminar(Request $request){
         if(!$request->ajax())return redirect('/');
-
         $credito = inst_seleccionada::findOrFail($request->id);
         $credito->delete();
     }
 
-    public function indexHistorialDev(Request $request){
-        if(!$request->ajax())return redirect('/');
+    private function getHistDev(Request $request){
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
-
-        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+        //Query principal
+        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -1028,7 +682,6 @@ class InstSeleccionadasController extends Controller
                 'creditos.precio_venta',
                 'creditos.fraccionamiento as proyecto',
                 'creditos.lote_id',
-
                 'personal.nombre',
                 'personal.apellidos',
                 'personal.telefono',
@@ -1041,12 +694,9 @@ class InstSeleccionadasController extends Controller
                 'personal.rfc',
                 'personal.homoclave',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                
                 'v.nombre as vendedor_nombre',
                 'v.apellidos as vendedor_apellidos',
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                
-
                 'contratos.status',
                 'contratos.fecha_status',
                 'contratos.total_pagar',
@@ -1054,13 +704,11 @@ class InstSeleccionadasController extends Controller
                 'contratos.enganche_total',
                 'contratos.avance_lote',
                 'contratos.observacion',
-
                 'dev_creditos.fecha',
                 'dev_creditos.cheque',
                 'dev_creditos.cuenta',
                 'dev_creditos.observaciones',
                 'dev_creditos.devolver',
-
 
                 DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
@@ -1070,41 +718,40 @@ class InstSeleccionadasController extends Controller
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
         );
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-       
-        
-        switch ($criterio){
-            case 'lotes.fraccionamiento_id':{
-                $devoluciones = $query;
-                if($buscar != '')
-                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
-                if($b_etapa != '')
-                    $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
-                if($b_manzana != '')
-                    $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
-                if($b_lote != '')
-                    $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
-
-                break;
-            }
-            case 'creditos.id':{
-                $devoluciones = $query;
-                if($buscar != '')
-                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
-                break;
-            }
-            case 'personal.nombre':{
-                $devoluciones = $query;
-                if($buscar != '')
-                    $devoluciones = $devoluciones->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                break;
+        //Busqueda por empresa constructora
+        if($request->b_empresa != '')
+            $devoluciones= $devoluciones->where('lotes.emp_constructora','=',$request->b_empresa);
+        //Criterios de busqueda
+        if($buscar != ''){
+            switch ($criterio){
+                case 'lotes.fraccionamiento_id':{//Busqueda por proyecto
+                        $devoluciones = $devoluciones->where($criterio, '=', $buscar);
+                    if($b_etapa != '')//Busqueda por etapa
+                        $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
+                    if($b_manzana != '')//Busqueda por manzana
+                        $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
+                    if($b_lote != '')//Busqueda por numero de lote
+                        $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
+                    break;
+                }
+                case 'creditos.id':{//Busqueda por numero de folio
+                        $devoluciones = $devoluciones->where($criterio, '=', $buscar);
+                    break;
+                }
+                case 'personal.nombre':{//Busqueda por nombre del cliente
+                        $devoluciones = $devoluciones->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
             }
         }
-        
+        return $devoluciones;
+    }
 
+    //Funcion para retornar el historial de devoluciones generadas.
+    public function indexHistorialDev(Request $request){
+        if(!$request->ajax())return redirect('/');
+        //Llamada a la función privada que retorna la query necesaria
+        $devoluciones = $this->getHistDev($request);
         $devoluciones = $devoluciones->orderBy('id', 'desc')->paginate(8);
         
         return [
@@ -1119,111 +766,12 @@ class InstSeleccionadasController extends Controller
         ];
     }
 
+    //Funcion para retornar el historial de devoluciones generadas en excel
     public function excelHistDev(Request $request){
-        //if(!$request->ajax())return redirect('/');
-        $buscar = $request->buscar;
-        $b_etapa = $request->b_etapa;
-        $b_manzana = $request->b_manzana;
-        $b_lote = $request->b_lote;
-        $criterio = $request->criterio;
-
-        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-            ->select(
-                'creditos.id',
-                'creditos.prospecto_id',
-                'creditos.etapa',
-                'creditos.manzana',
-                'creditos.num_lote',
-                'creditos.modelo',
-                'creditos.precio_base',
-                'creditos.precio_venta',
-                'creditos.fraccionamiento as proyecto',
-                'creditos.lote_id',
-
-                'personal.nombre',
-                'personal.apellidos',
-                'personal.telefono',
-                'personal.celular',
-                'personal.email',
-                'personal.direccion',
-                'personal.cp',
-                'personal.colonia',
-                'personal.f_nacimiento',
-                'personal.rfc',
-                'personal.homoclave',
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                
-                'v.nombre as vendedor_nombre',
-                'v.apellidos as vendedor_apellidos',
-                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                
-
-                'contratos.status',
-                'contratos.fecha_status',
-                'contratos.total_pagar',
-                'contratos.monto_total_credito',
-                'contratos.enganche_total',
-                'contratos.avance_lote',
-                'contratos.observacion',
-
-                'dev_creditos.fecha',
-                'dev_creditos.cheque',
-                'dev_creditos.cuenta',
-                'dev_creditos.observaciones',
-                'dev_creditos.devolver',
-
-
-                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                            WHERE pagos_contratos.contrato_id = contratos.id
-                            GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                
-                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                            WHERE pagos_contratos.contrato_id = contratos.id
-                            GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-        );
-
-        if($request->b_empresa != ''){
-            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        switch ($criterio){
-            case 'lotes.fraccionamiento_id':{
-                $devoluciones = $query;
-                if($buscar != '')
-                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
-                if($b_etapa != '')
-                    $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
-                if($b_manzana != '')
-                    $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
-                if($b_lote != '')
-                    $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
-
-                break;
-            }
-            case 'creditos.id':{
-                $devoluciones = $query;
-                if($buscar != '')
-                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
-                break;
-            }
-            case 'personal.nombre':{
-                $devoluciones = $query;
-                if($buscar != '')
-                    $devoluciones = $devoluciones->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-                break;
-            }
-        }
-        
-
+        //Llamada a la función privada que retorna la query necesaria
+        $devoluciones = $this->getHistDev($request);
         $devoluciones = $devoluciones->orderBy('id', 'desc')->paginate(8);
-       
-        
-        
+        //Creación y retorno de los resultados en excel
         return Excel::create('devoluciones', function($excel) use ($devoluciones){
             $excel->sheet('devoluciones', function($sheet) use ($devoluciones){
                 

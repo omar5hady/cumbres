@@ -127,7 +127,7 @@ class CobrosController extends Controller
 
             $cliente = Personal::findOrFail($credito->prospecto_id);
 
-            $ruta = 'https://siicumbres.com//integracionCobros/exportFormat?id='.$cobro->id;
+            $ruta = 'https://siicumbres.com//integracionCobros/exportFormat?id='.$integracion->id;
             $msj = 'Se ha creado la integracion de cobros para el folio #: '.$integracion->contrato_id.' del cliente '.$cliente->nombre.' '.$cliente->apellidos;
 
             $personal = Personal::join('users', 'personal.id', '=', 'users.id')
@@ -576,7 +576,7 @@ class CobrosController extends Controller
             'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
             'contratos.fecha',
             'expedientes.fecha_firma_esc',
-            'e.num_etapa as etapa',
+            'e.num_etapa as etapa', 'clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa',
             'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_completo"),
             DB::raw("CONCAT(f.ciudad,', ',f.estado) as ciudad_proy")

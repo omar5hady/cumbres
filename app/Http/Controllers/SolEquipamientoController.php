@@ -16,7 +16,9 @@ use App\Credito;
 use File;
 
 class SolEquipamientoController extends Controller
-{
+{   
+
+    //Funcion para optener informacion general sobre las solicitudes de equipamiento
     public function indexHistorial(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
@@ -28,6 +30,7 @@ class SolEquipamientoController extends Controller
         $rolID = Auth::user()->rol_id;
         $status = $request->status;
 
+        // consulta principal 
         $query = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                 ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
                 ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
@@ -76,6 +79,7 @@ class SolEquipamientoController extends Controller
                     'solic_equipamientos.comp_pago_2'
         );
 
+        /// funcion para consulta de proveedor
         $queryProveedor = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                 ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
                 ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
@@ -123,6 +127,7 @@ class SolEquipamientoController extends Controller
         );
 
 
+        // verifica que el usuario sea diferente de proveedor
         if($rolID != 10){
             if($status==''){
                 if($buscar == ''){
@@ -391,6 +396,7 @@ class SolEquipamientoController extends Controller
         ];
     }
 
+    // actualiza el costo de la solicitud 
     public function actCosto(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
@@ -398,6 +404,7 @@ class SolEquipamientoController extends Controller
         $solicitud->save();
     }
 
+    // Actualiza en campo de anticipo y la fecha de la solicitud
     public function actAnticipo(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
@@ -406,6 +413,7 @@ class SolEquipamientoController extends Controller
         $solicitud->save();
     }
 
+    // Atualiza el campo de liquidacion y la fecha de la solicitud
     public function actLiquidacion(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
@@ -414,6 +422,9 @@ class SolEquipamientoController extends Controller
         $solicitud->save();
     }
 
+    //Actualiza la fecha de colocacion de equipamiento y regresa a su estado inicial la fecha de terminacion , 
+    // regresa su status a 2
+    // crea un nuevo registro en las observaciones de equipamiento
     public function actColocacion(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
@@ -424,11 +435,12 @@ class SolEquipamientoController extends Controller
 
         $observacion = new Obs_solic_equipamiento();
         $observacion->solic_id = $request->id;
-        $observacion->comentario ='Fecha programada de instalación: '.$request->comentario;
+        $observacion->comentario ='Fecha programada de instalación: '.$request->comentario; // observacion a guardar
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }
 
+    // en el campo de "aticipo_cand" se setea en 1 que es una condicion para que sea bloqueado
     public function bloquearAnticipo(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -437,6 +449,7 @@ class SolEquipamientoController extends Controller
         $user->save();
     }
 
+    //En el campo de "liquidacion_cand" se setea en 1 que es una condicion para quese bloqueado
     public function bloquearLiquidacion(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -445,12 +458,13 @@ class SolEquipamientoController extends Controller
         $user->save();
     }
 
+    //Funcion para finalizar las solicitudes 
     public function setInstalacion(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tiempo = new Carbon();
         $solicitud = Solic_equipamiento::findOrFail($request->id);
-        $solicitud->fin_instalacion = $tiempo;
-        $solicitud->status = 3;
+        $solicitud->fin_instalacion = $tiempo; // se setea con la fecha en curso 
+        $solicitud->status = 3; // status de finalizado
         $solicitud->save();
 
         $observacion = new Obs_solic_equipamiento();
@@ -458,6 +472,7 @@ class SolEquipamientoController extends Controller
         $observacion->comentario ='Fecha de instalación: '.$request->comentario;
         $observacion->usuario = Auth::user()->usuario;
 
+        // variables utilizadas para las notificaciones del personal
         $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
         $credito = Credito::findOrFail( $solicitud->contrato_id);
 
@@ -486,6 +501,7 @@ class SolEquipamientoController extends Controller
         
     }
 
+    // otiene la informacion de los contratos firmados con status entregado en cero
     public function indexRea(Request $request){
         $proyecto = $request->proyecto;
         $etapa = $request->etapa;
@@ -548,12 +564,13 @@ class SolEquipamientoController extends Controller
 
     }
 
+    // funcion para modificar los campos de una solicitud
     public function reubicar(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
-        $solicitud = Solic_equipamiento::findOrFail($request->id);
+        $solicitud = Solic_equipamiento::findOrFail($request->id); // busca la solicitud requerida
 
-        $datosAnt = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+        $datosAnt = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id') // guarda los datos anteriores para la observacion
                     ->select('creditos.id','creditos.etapa',
                                 'creditos.manzana',
                                 'creditos.num_lote',
@@ -561,11 +578,13 @@ class SolEquipamientoController extends Controller
                                 'creditos.fraccionamiento as proyecto')
                     ->where('creditos.id','=',$solicitud->contrato_id)->get();
 
+        // guarda nuevos datos
         $solicitud->lote_id = $request->lote_id;
         $solicitud->contrato_id = $request->contrato_id;
         $solicitud->control = 0;
         $solicitud->save();
 
+        // se crea una nueva observacion
         $observacion = new Obs_solic_equipamiento();
         $observacion->solic_id = $request->id;
         $observacion->comentario ='Equipamiento reubicado del lote: '.$datosAnt[0]->num_lote.' manzana: '.$datosAnt[0]->manzana.' proyecto: '.$datosAnt[0]->proyecto;
@@ -573,6 +592,8 @@ class SolEquipamientoController extends Controller
         $observacion->save();
     }
 
+
+    //funcion para subir comprobantes de pago al sistema 
     public function upComprPago1(Request $request){
 
         if(!$request->ajax())return redirect('/');
@@ -591,10 +612,12 @@ class SolEquipamientoController extends Controller
         }
     }
 
+    // funcion para descargar el archivo 
     public function downloadPago1($fileName){
         return response()->download(public_path().'/files/sol_esquip/sol_1/'.$fileName);
     }
 
+    // funcion para subir el archivo de comprobante de pago
     public function upComprPago2(Request $request){
         if(!$request->ajax())return redirect('/');
         
@@ -612,19 +635,23 @@ class SolEquipamientoController extends Controller
         }
     }
 
+    // descarga el archivo 
     public function downloadPago2($fileName){
         return response()->download(public_path().'/files/sol_esquip/sol_2/'.$fileName);
     }
 
+    // Esta funcion es reutilizada para guardar los diferentes archivos subidos por el ususario
     private function saveFiles($file, $path){
         
-        $name = uniqId().'.'.$file->getClientOriginalExtension();
+        $name = uniqId().'.'.$file->getClientOriginalExtension(); // genera un nombre unico para el archivo
         $moved = $file->move(public_path($path), $name);
 
-        if($moved) return $name;
+        if($moved) return $name; 
         else return "ERROR";
     }
 
+    //Esta funcion es reutilizada para eliminar el archivo del sistema 
+    // se le pasan los parametros de el registro en la tabla y la ubicacion del archivo
     private function deleteFile($file, $path){
         if(File::delete(public_path().$path.$file)) return true;
         else return false;

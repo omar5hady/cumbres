@@ -33,7 +33,6 @@
                                     <select class="form-control col-md-3" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
-                                        <option value="arquitecto">Arquitecto</option>
                                         <option value="licencias.num_licencia">Num.Licencia</option>
                                         <option value="licencias.f_planos">Planos</option>
                                         <option value="lotes.siembra">Siembra</option>

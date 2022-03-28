@@ -120,7 +120,7 @@ class PaqueteController extends Controller
         $buscar = $request->buscar;
         $proyecto = $request->proyecto;
 
-        // primero se optiene el numero de etapa por el fraccionamiento seleccionado
+        // primero se obtiene el numero de etapa por el fraccionamiento seleccionado
         $fraccionamiento = Etapa::join('fraccionamientos','fraccionamientos.id','=','etapas.fraccionamiento_id')
                             ->select('etapas.id')
                             ->where('fraccionamientos.nombre','=',$proyecto)

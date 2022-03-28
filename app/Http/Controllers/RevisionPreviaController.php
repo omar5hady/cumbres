@@ -15,7 +15,7 @@ use App\Ini_obra;
 
 class RevisionPreviaController extends Controller
 {
-    // optiene la informacion de los expedientes que aun no tienen revision previa  
+    // obtiene la informacion de los expedientes que aun no tienen revision previa  
     public function indexSinRevision(Request $request){
         $criterio = $request->criterio;
         $buscar = $request->buscar;
@@ -116,7 +116,7 @@ class RevisionPreviaController extends Controller
         ];
     }
 
-    // optiene la informacion de los contratos sin revision por parte de los contratistas 
+    // obtiene la informacion de los contratos sin revision por parte de los contratistas 
     public function indexSinRevisionContratista(Request $request){
         $criterio = $request->criterio;
         $buscar = $request->buscar;

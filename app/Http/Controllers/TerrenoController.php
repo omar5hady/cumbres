@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 
 class TerrenoController extends Controller
 {
+    //Se hace la consulta de informacion relacionada a los lotes terreno 
+    // con un saldo positivo
     public function getTerrenosAdeudo(Request $request){
         $contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('personal as cliente','creditos.prospecto_id','=','cliente.id')
@@ -39,9 +41,10 @@ class TerrenoController extends Controller
                     'expedientes.liquidado'
                 )
                 ->where('modelos.nombre','=','Terreno')
-                ->where('contratos.saldo','>',0)
+                ->where('contratos.saldo','>',0) // caracteristica de la funcion principal (terreno con un saldo mayor a cero)
                 ->where('contratos.status','=',3);
 
+                // filtros para la busqueda por el criterio seleccionado
                 if($request->proyecto != '')
                     $contrato = $contrato->where('lotes.fraccionamiento_id','=',$request->proyecto);
                 if($request->etapa != '')
@@ -66,6 +69,7 @@ class TerrenoController extends Controller
             return $contrato;
     }
 
+    //funcion para optener los contratos con saldos por pagar
     public function getPagosPendientes(Request $request){
         $current = Carbon::today()->format('ymd');
         $pagos = Pago_contrato::join('pagos_lotes','pagos_contratos.id','=','pagos_lotes.pagare_id')
@@ -77,12 +81,13 @@ class TerrenoController extends Controller
                     DB::raw('(CASE WHEN pagos_contratos.fecha_pago < ' . $current . ' THEN 1 ELSE 0 END) AS atrasado')
                 )
                 ->where('pagos_contratos.contrato_id','=',$request->id)
-                ->where('pagado','<',2)
+                ->where('pagado','<',2) //filtro principal para los contratos 
                 ->orderBy('pagos_contratos.fecha_pago','asc')
                 ->get();
         
         $now = Carbon::today();
 
+        // funciones para optener los intereses
         foreach ($pagos as $key => $pago) {
             $pago->diferencia = 0;
             $pago->interes_mor = 0;
@@ -102,12 +107,13 @@ class TerrenoController extends Controller
         return $pagos;
     }
 
+    //Funcion para guardar regitros a tablas de depositos y pago_contrato
     public function storeAdelanto(Request $request){
 
         $pagos = $request->pagos;
         $current = Carbon::today();
 
-        try{
+        try{ // empieza la peticion para modificar los registros
             DB::beginTransaction();
             $deposito = new Deposito();
             $deposito->pago_id = $pagos[0]['id'];
@@ -119,7 +125,7 @@ class TerrenoController extends Controller
             $deposito->fecha_pago = $current;
             $deposito->desc_interes = $request->desc_interes;
             
-            foreach ($pagos as $key => $pago) {
+            foreach ($pagos as $key => $pago) { // se crea el pagare
                 if($pago['pagado'] != 0){
                     $pagare = Pago_contrato::findOrFail($pago['id']);
                     $pagare->pagado = $pago['pagado'];
@@ -132,7 +138,7 @@ class TerrenoController extends Controller
                 }
             }
 
-            if($request->monto_intMor != 0){
+            if($request->monto_intMor != 0){ // verifica si existe interes moratorio
                 $gasto = new Gasto_admin();
                 $gasto->contrato_id = $request->folio;
                 $gasto->concepto = 'Interes Moratorio';
@@ -143,12 +149,12 @@ class TerrenoController extends Controller
             }
 
             $contrato = Contrato::findOrFail($request->folio);
-            $contrato->saldo = round($contrato->saldo - $request->monto_dep - $request->desc_interes,2);
+            $contrato->saldo = round($contrato->saldo - $request->monto_dep - $request->desc_interes,2); // se calcula el saldo y lo redondea a dos cifras
 
             $credit = Credito::findOrFail($request->folio);
             $deposito->lote_id = $request->lote_id;
 
-            if($credit->porcentaje_terreno > 0){
+            if($credit->porcentaje_terreno > 0){ // se renueva el monto de terreno
                 $saldo = $credit->monto_terreno - $credit->saldo_terreno;
 
                 $porcentaje = $credit->porcentaje_terreno/100;
@@ -160,12 +166,12 @@ class TerrenoController extends Controller
                     $deposito->monto_terreno = $monto_terreno;
             }
             
-            $contrato->save(); 
+            $contrato->save();  
             $deposito->save();
 
             DB::commit();
         } catch (Exception $e){
-            DB::rollBack();
+            DB::rollBack(); // se regresa en caso de algun error 
         }  
 
     }

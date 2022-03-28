@@ -1,18 +1,17 @@
 <?php
-
 namespace App\Http\Controllers;
-
+use App\Notifications\NotifyAdmin;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Lote_promocion;
 use App\Lote;
-use Auth;
 use App\User;
-use App\Notifications\NotifyAdmin;
+use Auth;
 use DB;
-use Carbon\Carbon;
-
+//Controlador para el modelo Lote_promocion.
 class LotePromocionController extends Controller
 {
+    //Función que retorna los lotes asignados a una promoción
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -27,7 +26,6 @@ class LotePromocionController extends Controller
             ->where('lotes_promocion.promocion_id', '=', $promocion_id)
             ->orderBy('lotes.manzana', 'asc')
             ->orderBy('lotes.num_lote', 'asc')->paginate(8);
-        
             
         return [
             'pagination' => [
@@ -41,7 +39,7 @@ class LotePromocionController extends Controller
             'lotes_promocion' => $lotes_promocion
         ];
     }
-
+    //Función para registrar un lote a una promoción.
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -49,11 +47,10 @@ class LotePromocionController extends Controller
         $lote_promocion = new Lote_promocion();
         $lote_promocion->lote_id = $request->lote_id;
         $lote_promocion->promocion_id = $request->promocion_id;
-
         $lote_promocion->save();
     }
 
-    //funcion para actualizar los datos
+    //funcion para actualizar un lote a una promoción
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -64,7 +61,7 @@ class LotePromocionController extends Controller
 
         $lote_promocion->save();
     }
-
+    //Función para eliminar el registro
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

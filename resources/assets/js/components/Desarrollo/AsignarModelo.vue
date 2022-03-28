@@ -1058,7 +1058,7 @@
             /**Metodo para mostrar los registros */
             listarLote(page){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + me.buscar + '&buscar2=' + me.buscar2 + '&buscar3=' + me.buscar3  + 
+                var url = '/lote?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.buscar2 + '&buscar3=' + me.buscar3  + 
                     '&bmodelo=' + me.b_modelo + '&blote=' + me.b_lote + '&b_habilitado='+ me.b_habilitado 
                             +'&criterio=' + me.criterio + '&b_puente=' + me.b_puente + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
                 axios.get(url).then(function (response) {

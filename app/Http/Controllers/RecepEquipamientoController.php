@@ -580,7 +580,7 @@ class RecepEquipamientoController extends Controller
         }  
     }
 
-    // optiene toda la infrmacion del registro de recepcion 
+    // obtiene toda la infrmacion del registro de recepcion 
     public function getRecepcion (Request $request){
 
         $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')

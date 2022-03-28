@@ -8,7 +8,7 @@ use Auth;
 
 class ServEtapaController extends Controller
 {
-    // En esta funcion se optienen los servicios que provee cada etapa  
+    // En esta funcion se obtienen los servicios que provee cada etapa  
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
         $etapa_id = $request->etapa_id;

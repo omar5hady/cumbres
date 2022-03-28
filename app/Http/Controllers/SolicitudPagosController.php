@@ -15,12 +15,13 @@ use App\Obs_orden_pago;
 
 class SolicitudPagosController extends Controller
 {
+    // funcion para optener la informacion general de todas las solicitudes de pago 
     public function indexSolicitudes(Request $request){
 
         $buscar = $request->buscar;
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
-        $fecha2 = $fecha2.' 23:59:59';
+        $fecha2 = $fecha2.' 23:59:59';  // crea una variable el filtro de fecha de creado donde abarca todo el dia
 
         $query = Solicitudes_pago::join('users','solicitudes_pagos.user_id','=','users.id')
                         ->join('personal','users.id','=','personal.id')
@@ -38,6 +39,7 @@ class SolicitudPagosController extends Controller
                                 'solicitudes_pagos.solic_cheque','solicitudes_pagos.user_id');
 
 
+        //filtros de busqueda 
         if($request->tipo == 0){
             $solicitudes = $query->where('solicitudes_pagos.user_id','=',Auth::user()->id);
         }
@@ -50,7 +52,7 @@ class SolicitudPagosController extends Controller
         }
 
         if($fecha1 != ''){
-            $solicitudes = $solicitudes->whereBetween('solicitudes_pagos.created_at', [$fecha1, $fecha2]);
+            $solicitudes = $solicitudes->whereBetween('solicitudes_pagos.created_at', [$fecha1, $fecha2]); 
         }
 
         $solicitudes = $solicitudes->orderBy('solicitudes_pagos.created_at','desc')->paginate(10);
@@ -68,6 +70,8 @@ class SolicitudPagosController extends Controller
         ];
     }
 
+    //En esta funcion se sube el archivo de la solicitud de Cheque
+    // y se crea un nuevo registro en solicitud de pago 
     public function storeSinOrden(Request $request,$concepto){
         if(!$request->ajax())return redirect('/');
 
@@ -84,10 +88,11 @@ class SolicitudPagosController extends Controller
     
         }
         
-        return response()->json(['success'=>'Solicitud de cheque cargada correctamente.']);
-       
+        return response()->json(['success'=>'Solicitud de cheque cargada correctamente.']); 
+       // respuesta de confirmacion para guardar el archivo
     }
 
+    // obtiene los nombres de los archivos 
     public function getDocumentos(Request $request){
         if(!$request->ajax())return redirect('/');
 
@@ -96,20 +101,22 @@ class SolicitudPagosController extends Controller
         return['versiones'=>$versiones];
     }
 
+    // En esta funcion elimina el archivo
     public function deleteArchivo(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $archivo = Documentos_pago::findOrFail($request->id);
         $image_path =  public_path().'/files/solicPago/documentos/'.$archivo->archivo;
         unlink($image_path);
-        $archivo->delete();
+        $archivo->delete(); // elimina el nombre del archivo de la tabla 
 
     }
 
+    //En esta funcion se cargan los documentos de pago 
     public function storeDocumento(Request $request,$id,$nombre){
         if(!$request->ajax())return redirect('/');
 
-        $fileName = uniqid().'.'.$request->archivo->getClientOriginalExtension();
+        $fileName = uniqid().'.'.$request->archivo->getClientOriginalExtension(); // crea un nombre unico para el documento
         $moved =  $request->archivo->move(public_path('/files/solicPago/documentos'), $fileName);
 
         if($moved){
@@ -126,6 +133,8 @@ class SolicitudPagosController extends Controller
        
     }
 
+    //En esta funcion crea el registro de solicitud de pago 
+    //con el campo de orden de compra
     public function storeConOrden(Request $request,$concepto){
         if(!$request->ajax())return redirect('/');
 
@@ -146,6 +155,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    //En esta funcion se carga el archivo de solicitud de cheque 
     public function putSolicCheque(Request $request,$id){
         if(!$request->ajax())return redirect('/');
 
@@ -167,6 +177,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    //En esta funcion se carga la cotizacion 
     public function putCotizacion(Request $request,$id){
         if(!$request->ajax())return redirect('/');
 
@@ -187,6 +198,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    //En esta funcion se carga el archivo de pago partes
     public function putPagoPartes(Request $request,$id){
         if(!$request->ajax())return redirect('/');
 
@@ -207,6 +219,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    // se carga la fatura 
     public function putFactura(Request $request,$id){
         if(!$request->ajax())return redirect('/');
 
@@ -227,6 +240,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    // Se carga el archivo de orden de compra
     public function putOrden(Request $request,$id){
         if(!$request->ajax())return redirect('/');
 
@@ -247,6 +261,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    // secarga el archivo de solicitud de cheque
     public function putCheque(Request $request,$id){
         if(!$request->ajax())return redirect('/');
 
@@ -267,6 +282,7 @@ class SolicitudPagosController extends Controller
        
     }
 
+    // Se obtienen las observaciones de las ordenes de pago
     public function indexComentarios(Request $request){
         if(!$request->ajax())return redirect('/');
         $id = $request->id;
@@ -278,6 +294,7 @@ class SolicitudPagosController extends Controller
         ];
     }
 
+    // Se crea un nuevo registro en la tabla de observaciones de orden de pago
     public function storeComentarios(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -288,6 +305,8 @@ class SolicitudPagosController extends Controller
         $observacion->save();
     }
 
+    //En esta funcion se modifican los campos para cambiar los status de las solicitudes de pago
+    // y en las observaciones de pago  se crea el comentario
     public function autorizarOrden(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha = Carbon::now();
@@ -303,6 +322,7 @@ class SolicitudPagosController extends Controller
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
 
+        // se crea la notificacion
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
                 $msj = "La orden de compra #" . $request->id . ' ha sido autorizada';
@@ -320,18 +340,20 @@ class SolicitudPagosController extends Controller
                 User::findOrFail($solicitud->user_id)->notify(new NotifyAdmin($arreglo));
     }
 
+
+    // funcion para modificar los campos que son para la autorizacion de la solicitud
     public function autorizarSolicitud(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha = Carbon::now();
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
         $solicitud->check2 = $fecha;
-        $solicitud->status = 3;
+        $solicitud->status = 3; // modificacion principal
         $solicitud->save(); //Insert
 
         $observacion = new Obs_orden_pago();
         $observacion->solicitud_id = $request->id;
-        $observacion->observacion = 'Solicitud de cheque autorizado.';
+        $observacion->observacion = 'Solicitud de cheque autorizado.'; 
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
 
@@ -352,6 +374,7 @@ class SolicitudPagosController extends Controller
                 User::findOrFail($solicitud->user_id)->notify(new NotifyAdmin($arreglo));
     }
 
+    //Se  cambian el valor del campo status y se crea la observacion 
     public function vistoBuenoSolicitud(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha = Carbon::now();
@@ -368,13 +391,14 @@ class SolicitudPagosController extends Controller
         $observacion->save();
     }
 
+    // Se cambia de valor el status
     public function vistoBuenoOrden(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha = Carbon::now();
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
         $solicitud->orden_vistoBueno = $fecha;
-        $solicitud->status = 0;
+        $solicitud->status = 0; // funcion principal
         $solicitud->save(); //Insert
 
         $observacion = new Obs_orden_pago();
@@ -384,15 +408,17 @@ class SolicitudPagosController extends Controller
         $observacion->save();
     }
 
+    //canbia de status a la solicitud 
     public function pagarSolicitud(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha = Carbon::now();
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
-        $solicitud->check3 = $fecha;
-        $solicitud->status = 4;
+        $solicitud->check3 = $fecha; // cambio de valor principal
+        $solicitud->status = 4; // status que indica que ha sido pagada
         $solicitud->save(); //Insert
 
+        // se crea la observacion
         $observacion = new Obs_orden_pago();
         $observacion->solicitud_id = $request->id;
         $observacion->observacion = 'La solicitud ha sido pagada';
@@ -400,21 +426,24 @@ class SolicitudPagosController extends Controller
         $observacion->save();
     }
 
+    ////canbia de status a la solicitud  a cancelada
     public function cancelarSolicitud(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha = Carbon::now();
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
-        $solicitud->status = 5;
-        $solicitud->fecha_status = $fecha;
+        $solicitud->status = 5; //s status de cancelado
+        $solicitud->fecha_status = $fecha; // se setea la fecha en curso
         $solicitud->save(); //Insert
 
+        // se crea a observacion
         $observacion = new Obs_orden_pago();
         $observacion->solicitud_id = $request->id;
         $observacion->observacion = 'La solicitud ha sido cancelada. Motivo: '.$request->motivo;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
 
+        // se crea la notificacion 
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
                 $msj = "La solicitud #" . $request->id . ' ha sido cancelado';

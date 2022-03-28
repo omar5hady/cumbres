@@ -381,7 +381,7 @@ class RuvController extends Controller
             )->download('xls');
     }
 
-    // optiene los lotes con pquete ruv  
+    // obtiene los lotes con pquete ruv  
     public function selectRuv(Request $request){
         $ruvs = Lote::select('paq_ruv')
                     ->where('paq_ruv','!=',NULL);

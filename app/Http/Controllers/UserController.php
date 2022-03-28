@@ -17,6 +17,7 @@ Use App\Asign_proyecto;
 
 class UserController extends Controller
 {
+    //Se consulta la informacion relacionanda a los usuarios que tienen acceso al sistema
     public function index(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -47,14 +48,16 @@ class UserController extends Controller
             }
         }
 
+        
         $personas = $personas->orderBy('users.condicion', 'desc')
                             ->orderBy('personal.id', 'desc')
                             ->paginate(8);
-
+        
         if(sizeOf($personas)){
-            foreach($personas as $index => $persona){
+            foreach($personas as $index => $persona){ // recorre el objeto de personas
+                // verifica si la persona es de tipo vendedor y extrae su informacion 
                 $vendedores = Vendedor::select('tipo','inmobiliaria','esquema','isr','retencion')->where('id','=',$persona->id)->get();
-                if(sizeof($vendedores)){
+                if(sizeof($vendedores)){  // crea nuevos campos con informacion del vendedor  para el objeto personas 
                     $persona->tipo = $vendedores[0]->tipo;
                     $persona->inmobiliaria = $vendedores[0]->inmobiliaria;
                     $persona->esquema = $vendedores[0]->esquema;
@@ -84,6 +87,7 @@ class UserController extends Controller
         ];
     }
 
+    //Consulta la informacion relacionada a los vendedores
     public function indexAsesores(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -109,7 +113,7 @@ class UserController extends Controller
             }
             else{
                 $personas = $query  
-                ->where($criterio, '=',  $buscar );
+                ->where($criterio, '=',  $buscar ); // filtro de busqueda por el criterio seleccionado
 
             }
 
@@ -132,6 +136,7 @@ class UserController extends Controller
         ];
     }
  
+    //En esta funcion se crea un nuevo registro para dar de alta nuevo usuario
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -140,6 +145,7 @@ class UserController extends Controller
         $inicioSueldo = Carbon::now()->addMonth(3);
          
         try{
+            // se inicia creando un nuevo registro en Personal con la informacion del usuario
             DB::beginTransaction();
             $persona = new Personal();
             $persona->departamento_id = $request->departamento_id;
@@ -157,7 +163,8 @@ class UserController extends Controller
             $persona->activo = $request->activo;
             $persona->empresa_id = $request->empresa_id;
             $persona->save();
- 
+            
+            // se crea el usuario 
             $user = new User();
             $user->usuario = $request->usuario;
             $user->password = bcrypt( $request->password);
@@ -166,7 +173,7 @@ class UserController extends Controller
  
             $user->id = $persona->id;
 
-            switch($rol){
+            switch($rol){ // dependiendo del tipo de rol se le abilitan los modulos correspondientes 
                 case 1: // Administrador
                 {
                     $user->administracion=1;
@@ -411,7 +418,7 @@ class UserController extends Controller
  
             $user->save();
             
-            if($user->rol_id == 2){
+            if($user->rol_id == 2){ // verifica si el usuario registrado es vendedor se le asignan registros adicionales
                 $vendedor = new Vendedor();
                 $vendedor->id = $persona->id;
                 $vendedor->tipo = $request->tipo_vendedor;
@@ -440,6 +447,7 @@ class UserController extends Controller
          
     }
  
+    // En esta funcion se actualizan los registros relacionados al usuario
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -470,7 +478,7 @@ class UserController extends Controller
             $Persona->empresa_id = $request->empresa_id;
             $Persona->save();
             
-            if($user->rol_id == 2){
+            if($user->rol_id == 2){ // verifica si el usuario es vendedor 
                 $vendedor = Vendedor::findOrFail($request->id);
                 if($request->rol_id != 2){
                     $vendedor->delete();
@@ -506,7 +514,7 @@ class UserController extends Controller
             $user->condicion = '1';
             $user->rol_id = $request->rol_id;
 
-            switch($rol){
+            switch($rol){ // verifica el tipo de usuario 
                 case 1: // Administrador
                 {
                     $user->administracion=1;
@@ -760,6 +768,7 @@ class UserController extends Controller
  
     }
 
+    // Aun se crea un nuevo registro de usuario para una persona ya registrada 
     public function asignar(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = $request->rol_id;
@@ -776,7 +785,7 @@ class UserController extends Controller
             $vendedor->save();
         }     
 
-        switch($rol){
+        switch($rol){// se le abilitan los modulos deacuerdo a su tipo de rol
             case 1: // Administrador
             {
                 $user->administracion=1;
@@ -982,22 +991,25 @@ class UserController extends Controller
         $user->save();
     }
  
-    public function desactivar(Request $request)
+    // deshabilita usuario
+     public function desactivar(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $user = User::findOrFail($request->id);
-        $user->condicion = '0';
+        $user->condicion = '0'; // variable principal
         $user->save();
     }
  
+    // activa usuario
     public function activar(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $user = User::findOrFail($request->id);
-        $user->condicion = '1';
+        $user->condicion = '1'; // variable principal
         $user->save();
     }
 
+    //selecciona informacion relacionada a los vendedores
     public function selectVendedores(Request $request){
         if (!$request->ajax()) return redirect('/');
         $personas = User::join('personal','users.id','=','personal.id')
@@ -1011,6 +1023,7 @@ class UserController extends Controller
         return['vendedores' => $personas];
     }
 
+    // obtiene la informacion de un ususario 
     public function obtenerDatos(Request $request){
         if (!$request->ajax()) return redirect('/');
         $usuario = User::join('personal','users.id','=','personal.id')
@@ -1018,11 +1031,12 @@ class UserController extends Controller
             'personal.celular','personal.email','personal.colonia','personal.direccion',
             'personal.cp','personal.nombre','personal.apellidos','personal.f_nacimiento','users.password as pass',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
-            ->where('users.id','=',$request->id)->get();
+            ->where('users.id','=',$request->id)->get(); // usuario 
 
         return['usuario' => $usuario];
     }
 
+    // Se hace la consulta de los vendedores registrados 
     public function selectAsesores(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -1032,6 +1046,8 @@ class UserController extends Controller
             //->where('vendedores.supervisor_id','=',Auth::user()->id)
             //->where('users.condicion','=',1)
             //->orWhere('vendedores.tipo','=',1)
+
+            // filtros de busqueda 
             if($request->tipo != ''){
                 $personas = $personas->where('vendedores.tipo','=',$request->tipo);
             }
@@ -1045,6 +1061,8 @@ class UserController extends Controller
         return ['personas' => $personas];
     }
 
+    // Se hace la consulta de los vendedores registrados 
+    // sin ningun filtro de busqueda
     public function selectAsesores2(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -1062,6 +1080,7 @@ class UserController extends Controller
         return ['personas' => $personas];
     }
 
+    // Se hace la peticion de informacion sobre los modulos a los que tiene acceso el usuario
     public function getPrivilegios(Request $request){
         //if (!$request->ajax()) return redirect('/');
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
@@ -1124,6 +1143,7 @@ class UserController extends Controller
                     
     }
 
+    //En esta funcion se cambian los valores de los modulos a los que el usuario tiene acceso 
     public function updatePrivilegios(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $user = User::findOrFail($request->id);
@@ -1260,6 +1280,7 @@ class UserController extends Controller
 
     }
 
+    //actualiza la imagen de perfil del usuario
     public function updateProfile(Request $request, $id){
         if(!$request->ajax())return redirect('/');
 
@@ -1267,7 +1288,7 @@ class UserController extends Controller
                             ->where('foto_user','!=','default-image.gif')
                             ->where('id','=',$id)->get();
 
-        if($imgAnterior->isEmpty()==1){
+        if($imgAnterior->isEmpty()==1){ // verifica si en el capo de la imagen se encuentra vacio
             $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
             $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
                                                 
@@ -1283,14 +1304,14 @@ class UserController extends Controller
             }else{
                 if ($request->foto_user != $imgAnterior[0]->foto_user){
             
-                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
+                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user; // elimina la imagen anterior
                 File::delete($pathAnterior);  }   
 
-                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension(); // crea un nombre unico
+                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);// guarada la imagen
 
                 if($moved){
-                    if(!$request->ajax())return redirect('/');
+                    if(!$request->ajax())return redirect('/'); // guarda el registro del nombre de la imagen 
                     $user = User::findOrFail($request->id);
                     $user->foto_user = $fileName;
                     $user->id = $id;
@@ -1302,16 +1323,17 @@ class UserController extends Controller
                        
     }
 
+    // actualiza informacion del perfil usuario
     public function updatePassword(Request $request){
 
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
-        if($request->password != ''){
+        if($request->password != ''){ // cambia los valores de la contrasela
             $user = User::findOrFail($request->id);
-            $user->password = bcrypt($request->password);
+            $user->password = bcrypt($request->password); // encripta la contraseña
             $user->save();
         }
-        $persona = Personal::findOrFail($request->id);
+        $persona = Personal::findOrFail($request->id); // informacion adicional 
         $persona->email = $request->email;
         $persona->celular = $request->celular;
         $persona->colonia = $request->colonia;
@@ -1324,6 +1346,7 @@ class UserController extends Controller
         $persona->save();
     }
            
+    //obtienen el nombre y el usuario de los gerentes registrados
     public function select_users_gerentes (){
         $gerentes = User::join('personal','users.id','=','personal.id')
                         ->select('users.usuario','personal.id','personal.nombre','personal.apellidos')
@@ -1333,10 +1356,12 @@ class UserController extends Controller
                 return['gerentes' => $gerentes];
     }
 
+    //peticion de nombre y apellidos 
     public function getNombre(Request $request){
         return Personal::select('nombre', 'apellidos')->where('id','=',$request->id)->first();
     }
 
+    //Funcion para cambiar el supervisor al vendedor seleccionado
     public function asignarGerentes (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asignar = Vendedor::findOrFail($request->id);
@@ -1344,6 +1369,7 @@ class UserController extends Controller
         $asignar->save();
     }
 
+    //Se crea una relacion en un archivo de excel con la informacion de los asesores registrados
     public function excelAsesores (Request $request){
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -1429,6 +1455,7 @@ class UserController extends Controller
 
     }
 
+    //Recordatorios de los vendedores 
     public function reminderCommentario(){
 
         $reminders = Cliente::join('clientes_observaciones', 'clientes.id','=','clientes_observaciones.cliente_id')
@@ -1441,6 +1468,7 @@ class UserController extends Controller
         return $reminders;
     }
 
+    //Funcion para buscar usuario por el nombre
     public function selectUser(Request $request){
         $users = User::join('personal','users.id','=','personal.id')
                         ->select('personal.id','personal.nombre','personal.apellidos')
@@ -1452,6 +1480,7 @@ class UserController extends Controller
         return $users;
     }
 
+    //Funcion de busqueda de asesores por el proyecto
     public function getAsesoresProyecto(Request $request){
         $asesores = Personal::join('asign_proyectos','personal.id','=','asign_proyectos.asesor_id')
                 ->select('personal.nombre','personal.apellidos','asign_proyectos.id')
@@ -1460,6 +1489,7 @@ class UserController extends Controller
         return ['asesores'=>$asesores];
     }
 
+    //Crea un nuevo registro
     public function asignarProyecto(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asign = new Asign_proyecto();
@@ -1468,12 +1498,14 @@ class UserController extends Controller
         $asign->save();
     }
 
+    //Elimina el registro
     public function deleteAsignarProy(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asign = Asign_proyecto::findOrFail($request->id);
         $asign->delete();
     }
 
+    // Selecciona los gerentes de ventas registrados y en status activo
     public function selectGerentesVentas(Request $request)
     {
         if (!$request->ajax()) return redirect('/');

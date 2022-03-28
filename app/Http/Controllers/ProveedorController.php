@@ -12,7 +12,7 @@ use Auth;
 
 class ProveedorController extends Controller
 {
-    // optiene informacion de la tabla  de proveedores  
+    // obtiene informacion de la tabla  de proveedores  
     public function index(Request $request){
         $buscar = $request->buscar;
         $criterio = $request->criterio;

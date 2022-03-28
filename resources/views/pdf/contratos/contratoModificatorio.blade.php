@@ -429,17 +429,31 @@ body{
             <p align="center"><b>LA PARTE COMPRADORA</p>
 
             <br><br><br>
-
-            <center>
-                <table>
+            @if($contrato->coacreditado == 0)
+                <center>
+                    <table>
+                        <tr>
+                            <td width=460 colspan="5"><center>_____________________________________</center></td>
+                        </tr>
+                        <tr>
+                            <td width=460 colspan="5"><center>Sr(a). {{$contrato->nombre_completo}}</center></td>
+                        </tr>
+                    </table>
+                </center>
+            @else
+                <table style="margin-left: -0.15in;">
                     <tr>
-                        <td width=460 colspan="5"><center>_____________________________________</center></td>
+                        <td width=220 colspan="5"><center>__________________________________</center></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td width=220 colspan="5"><center>__________________________________</center></td>
                     </tr>
                     <tr>
-                        <td width=460 colspan="5"><center>Sr(a). {{$contrato->nombre_completo}}</center></td>
+                        <td width=220 colspan="5"><center>Sr(a). {{$contrato->nombre_completo}}</center></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td width=220 colspan="5"><center>Sr(a). {{$contrato->nombre_coa}} {{$contrato->apellidos_coa}}</center></td>
                     </tr>
                 </table>
-            </center>
+            @endif
             
 
         </div>

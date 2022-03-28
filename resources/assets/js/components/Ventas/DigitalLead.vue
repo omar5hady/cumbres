@@ -1721,6 +1721,7 @@ export default {
             //Con axios se llama el metodo store del controller
             axios.post('/leads/sendProspectos',{
                 'id' : this.id,
+                'clv_lada' : this.clv_lada,
                 'nombre' : this.nombre,
                 'apellidos' : this.apellidos,
                 'telefono' : this.telefono,
@@ -2064,7 +2065,7 @@ export default {
             let me = this;
             
             me.arrayModelos=[];
-            var url = '/select_modelo_proyecto2?buscar=' + buscar;
+            var url = '/select_modelo_proyecto?buscar=' + buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayModelos = respuesta.modelos;
