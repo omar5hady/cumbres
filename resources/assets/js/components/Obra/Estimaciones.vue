@@ -145,7 +145,7 @@
                                     </div>
                                     <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
                                     <div class="col-md-2">
-                                            {{(formatNumber(total_acum_actual/total_importe)*100)}}%
+                                            {{formatNumber((total_acum_actual/total_importe)*100)}}%
                                     </div>
                                 </div>
                             </div> 
@@ -179,6 +179,16 @@
                                             </select>
                                         </div>
 
+                                        <template v-if="editarEstimacion == 0 && fecha_pago_act != null">
+                                            <label class="col-md-2 form-control-label" for="text-input">Fecha de pago</label>
+                                            <div class="col-md-3">
+                                                <input type="date" disabled v-model="fecha_pago_act" class="form-control" >
+                                            </div>
+                                        </template>
+
+                                    </div>
+
+                                    <div class="form-group row">
                                         <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
                                             <button type="button" @click="nueva = 1"  class="btn btn-primary">
                                                 <i class="icon-plus"></i>&nbsp;Nueva estimación
@@ -192,7 +202,7 @@
                                                 <i class="icon-pencil"></i>&nbsp;Editar estimacioón
                                             </button>
                                         </div>
-
+                            
                                         <div class="col-md-2">
                                             <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+num_casas"  
                                                 class="btn btn-success"><i class="fa fa-file-text"></i> Excel
@@ -223,6 +233,16 @@
                                         <div class="col-md-3">
                                             <input type="date" v-model="periodo2" class="form-control" >
                                         </div>
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de pago</label>
+                                        <div class="col-md-4">
+                                            <input type="date" v-model="fecha_pago" class="form-control" >
+                                        </div>
+                                        
                                     </div>
                                 </div> 
 
@@ -912,6 +932,7 @@
                 total_impAux:0,
                 periodo1:'',
                 periodo2:'',
+                fecha_pago:'',
                 
                 arrayContratos:[],
                 arrayContratistas:[],
@@ -986,7 +1007,8 @@
                 mes:'01',
                 anio:2021,
                 observacion : '',
-                editarEstimacion : 0
+                editarEstimacion : 0,
+                fecha_pago_act : ''
             }
         },
         components:{
@@ -1267,6 +1289,8 @@
                 let me = this;
                 me.periodo1 = '';
                 me.periodo2 = '';
+                me.fecha_pago = '';
+                me.fecha_pago_act = '';
                 me.arrayCreditos=[];
                 var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion+'&total_importe='+this.total_importe;
                 axios.get(url).then(function (response) {
@@ -1274,6 +1298,7 @@
                     var extra= [];
                     me.arrayPartidas = respuesta.estimaciones;
                     me.numero = respuesta.numero;
+                    me.fecha_pago_act = respuesta.fecha_pago;
                     me.num_estimacion = respuesta.num_est;
                     me.arrayNumEstim = respuesta.numeros;
                     if(me.arrayNumEstim.length > 0)
@@ -1448,6 +1473,7 @@
                 let totalGarantia = me.total2*me.porc_garantia;
 
                 let totalPagar = me.total2 - (amorEstimacion + totalGarantia);
+                let fecha_pago = this.fecha_pago;
                 
                 Swal({
                     title: '¿Desea continuar?',
@@ -1474,6 +1500,7 @@
                                     'total_pagado' : totalPagar,
                                     'periodo1' : this.periodo1,
                                     'periodo2' : this.periodo2,
+                                    'fecha_pago' : fecha_pago
                                 }); 
                                 me.nueva = 0;
                                 me.b_estimacion = '';

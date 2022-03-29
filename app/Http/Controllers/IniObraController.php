@@ -993,6 +993,8 @@ class IniObraController extends Controller
         $conceptosExtra = $this->getConceptosExtra($request->clave);
         //Llamada a la función privada que retorna las observaciones
         $observaciones = $this->getObs($request->clave);
+        //Variable para almacenar la fecha de pago de la estimación.
+        $fecha_pago = '';
 
         $acumAntTotal = [];
         //Query para obtener las partidas de las estimaciones
@@ -1080,7 +1082,7 @@ class IniObraController extends Controller
                 }
                 //Se obtiene el vol, costo y el numero actual
                 $historial = Hist_estimacion::select(
-                    'vol', 'costo', 'num_estimacion'
+                    'vol', 'costo', 'num_estimacion', 'fecha_pago'
                 )
                 ->where('estimacion_id','=',$estimacion->id)
                 ->where('num_estimacion','=',$num_est)
@@ -1089,6 +1091,7 @@ class IniObraController extends Controller
                 if( sizeOf($historial) > 0 ){
                     $estimacion->vol = $historial[0]->vol;
                     $estimacion->costoA = $historial[0]->costo;
+                    $fecha_pago = $historial[0]->fecha_pago;
                     //$estimacion->costo = $historial[0]->costo;
                     //$estimacion->num_estimacion = $historial[0]->vol;
                 }
@@ -1119,7 +1122,8 @@ class IniObraController extends Controller
             'total_anticipo' => $total_anticipo,
             'conceptosExtra' => $conceptosExtra,
             'importesExtra' => $importesExtra,
-            'observaciones' => $observaciones
+            'observaciones' => $observaciones,
+            'fecha_pago' => $fecha_pago
         ];
     }
 
@@ -1612,6 +1616,7 @@ class IniObraController extends Controller
         $estimacion->total_pagado = $request->total_pagado;
         $estimacion->ini = $request->periodo1;
         $estimacion->fin = $request->periodo2;
+        $estimacion->fecha_pago = $request->fecha_pago;
         $estimacion->save();
     }
 

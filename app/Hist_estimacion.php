@@ -14,7 +14,8 @@ class Hist_estimacion extends Model
         'vol',
         'costo',
         'total_estimacion',
-        'total_pagado'
+        'total_pagado',
+        'fecha_pago'
     ];
 
 

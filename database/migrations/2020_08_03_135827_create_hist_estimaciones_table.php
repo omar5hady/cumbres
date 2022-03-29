@@ -24,6 +24,7 @@ class CreateHistEstimacionesTable extends Migration
             $table->double('total_pagado',10,2)->default(0);
             $table->date('ini')->nullable();
             $table->date('fin')->nullable();
+            $table->date('fecha_pago')->nullable();
             $table->timestamps();
         });
     }
