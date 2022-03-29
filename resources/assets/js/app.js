@@ -100,6 +100,9 @@ Vue.component('obra-entrega', require('./components/Obra/EntregaPendiente.vue'))
 Vue.component('prospectos-reasignados', require('./components/Ventas/ProspectosReasignar.vue'));
 Vue.component('reubicacion-component', require('./components/Ventas/Reubicaciones.vue'));
 
+//Componentes Rentas
+Vue.component('admin-rentas', require('./components/Rentas/AdminRentas.vue'));
+
 //Componentes Acceso
 Vue.component('rol', require('./components/Rol.vue'));
 Vue.component('usuario', require('./components/Usuarios.vue'));

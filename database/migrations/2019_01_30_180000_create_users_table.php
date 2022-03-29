@@ -100,6 +100,9 @@ class CreateUsersTable extends Migration
             $table->boolean('digital_lead')->default(0);
             $table->boolean('reubicaciones')->default(0);
 
+            //Rentas
+            $table->boolean('admin_rentas')->default(0);
+
             //Saldos
             $table->boolean('edo_cuenta')->default(0);
             $table->boolean('depositos')->default(0);

@@ -269,6 +269,10 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/lote/subirColindancias','LoteController@formSubmitColindancias');
         Route::get('/lote/colindancias/{fileName}' , 'LoteController@downloadFile');
+
+    ///////////////////         RUTAS RENTAS        ////////////////////////////////
+        Route::get('/lotes/indexLotesRentas','LoteController@indexLotesRentas');
+        Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');

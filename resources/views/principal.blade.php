@@ -129,6 +129,11 @@
                             @include('sidebars.ventas')
                         @endif
 
+                <!-- Modulo para Rentas-->
+                            @if(Auth::user()->rol_id == 1)
+                            @include('sidebars.rentas')
+                        @endif
+
                 <!----------      SALDOS      --->
                         @if(Auth::user()->saldo == 1)
                             @include('sidebars.saldos')

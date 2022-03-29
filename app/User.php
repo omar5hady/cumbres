@@ -88,6 +88,9 @@ class User extends Authenticatable
         'digital_lead',
         'reubicaciones',
 
+        //Rentas
+        'admin_rentas',
+        
         //Saldos
         'edo_cuenta',
         'depositos',

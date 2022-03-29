@@ -80,6 +80,22 @@ class LoteController extends Controller
 
     }
 
+    public function indexLotesRentas(Request $request){
+        $rentas = $this->getLotes($request);
+        if($request->b_status != ''){
+            $rentas = $rentas->where('lotes.contrato','=',$request->b_status);
+        }
+        //Filtros necesarios para obtener lotes habilitados para rentas
+        $rentas = $rentas->where('lotes.habilitado','=', 1)
+                        ->where('lotes.casa_renta','=', 1)
+                        ->orderBy('fraccionamientos.nombre','ASC')
+                        ->orderBy('etapas.num_etapa','ASC')
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(12);
+
+        return $rentas;
+    }
+
     public function index(Request $request) //Index para modulo asignar modelo
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu

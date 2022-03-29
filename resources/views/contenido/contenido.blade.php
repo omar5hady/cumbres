@@ -575,6 +575,13 @@
             </integracion-cobros>
         </template>
 
+        <template v-if="menu==276">
+            <admin-rentas 
+                user-name="{{Auth::user()->usuario}}"
+            >
+            </admin-rentas>
+        </template>
+
 
     @endif
        

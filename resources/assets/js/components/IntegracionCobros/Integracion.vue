@@ -447,7 +447,7 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th v-if="tipoAccion == 1 && (userName == 'antonio.nv' || userName=='shady') && datos.status == 0">
+                                            <th v-if="tipoAccion == 1 && (userName == 'antonio.nv' || userName == 'enrique.mag' || userName=='shady') && datos.status == 0">
                                                 <button type="button" @click="abrirModal('nuevoCobro')" class="btn btn-success btn-sm" title="Nuevo cobro">
                                                     <i class="icon-plus"></i>
                                                 </button>
@@ -465,7 +465,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="pago in datos.depositos" :key="pago.id">
-                                            <td v-if="tipoAccion == 1 && (userName == 'antonio.nv' || userName=='shady') && datos.status == 0">
+                                            <td v-if="tipoAccion == 1 && (userName == 'antonio.nv' || userName == 'enrique.mag' || userName=='shady') && datos.status == 0">
                                                 <button type="button" @click="abrirModal('editarCobro',pago)" class="btn btn-warning btn-sm">
                                                     <i class="icon-pencil"></i>
                                                 </button>
@@ -574,7 +574,7 @@
                                 <div class="col-md-9"></div>
                                 <div class="col-md-3">
                                     <button v-if="tipoAccion == 0" @click="generarIntegracion()" class="btn btn-success" title="Guardar integración"><i class="icon-check"></i>&nbsp;Guardar</button>
-                                    <button v-if="tipoAccion == 1 && datos.status == 0 && (userName == 'antonio.nv' || userName=='shady')" @click="finalizarIntegracion()" class="btn btn-success" title="Guardar integración"><i class="icon-check"></i>&nbsp;Finalizar</button>
+                                    <button v-if="tipoAccion == 1 && datos.status == 0 && (userName == 'antonio.nv' || userName == 'enrique.mag' || userName=='shady')" @click="finalizarIntegracion()" class="btn btn-success" title="Guardar integración"><i class="icon-check"></i>&nbsp;Finalizar</button>
                                 </div>
                             </div>
                         </div>
