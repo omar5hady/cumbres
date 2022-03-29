@@ -291,6 +291,18 @@
                                     </div>
                                 </div>
 
+                                <!-- listado para privilegios del menu Rentas -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-building-o"></i> <input @click="limpiarRentas()" v-model="rentas" type="checkbox" value="1"/> Modulo Rentas</a>
+                                                <ul class="nav-dropdown-items" v-if="rentas==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-book"></i> <input v-model="admin_rentas" type="checkbox" value="1"/> Admin Rentas</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div>
+
                                 <!-- listado para privilegios del menu Saldos -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">
@@ -879,6 +891,7 @@
                 precios:0,
                 obra:0,
                 ventas:0,
+                rentas:0,
                 acceso:0,
                 reportes:0,
                 saldo:0,
@@ -957,6 +970,9 @@
                     equipamientos : 0,
                     digital_lead : 0,
                     reubicaciones : 0,
+
+                    //Rentas
+                    admin_rentas : 0,
 
                     //Saldos
                     edo_cuenta:0,
@@ -1194,6 +1210,9 @@
                 this.digital_lead = 0;
                 this.reubicaciones = 0;
             },
+            limpiarRentas(){
+                this.admin_rentas=0;
+            },
             limpiarComisiones(){
                 this.bono_com=0;
                 this.exp_comision=0;
@@ -1363,6 +1382,9 @@
                     me.equipamientos = usuarios[0].equipamientos;
                     me.digital_lead = usuarios[0].digital_lead;
                     me.reubicaciones = usuarios[0].reubicaciones;
+
+                    //Rentas 
+                    me.admin_rentas = usuarios[0].admin_rentas;
 
                     //Saldos
                     me.edo_cuenta = usuarios[0].edo_cuenta;
@@ -1695,6 +1717,8 @@
                     'equipamientos':this.equipamientos,
                     'digital_lead':this.digital_lead,
                     'reubicaciones':this.reubicaciones,
+                        //Rentas
+                    'admin_rentas':this.admin_rentas,
                         //Cotizador de lotes
                     'calc_lotes':this.calc_lotes,
                     'edit_cotizacion':this.edit_cotizacion,

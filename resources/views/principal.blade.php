@@ -130,7 +130,7 @@
                         @endif
 
                 <!-- Modulo para Rentas-->
-                            @if(Auth::user()->rol_id == 1)
+                        @if(Auth::user()->admin_rentas == 1)
                             @include('sidebars.rentas')
                         @endif
 

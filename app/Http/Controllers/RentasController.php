@@ -7,6 +7,7 @@ use App\Lote;
 
 class RentasController extends Controller
 {
+    //Función para actualizar la informacion de renta para un lote.
     public function updateDatosRenta(Request $request){
         $lote = Lote::findOrFail($request->id);
         $lote->precio_renta = $request->precio_renta;

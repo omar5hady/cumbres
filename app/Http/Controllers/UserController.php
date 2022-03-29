@@ -1105,6 +1105,8 @@ class UserController extends Controller
                                 'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
                                 'users.hist_creditos','users.contratos','users.docs','users.equipamientos', 'users.digital_lead',
                                 'users.reubicaciones',
+                                //Rentas
+                                'users.admin_rentas',
                                 //Saldo
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
                                 'users.dev_exc','users.dev_cancel','users.facturas','users.ingresos_concretania', 'users.dev_virtual',
@@ -1225,6 +1227,8 @@ class UserController extends Controller
         $user->equipamientos = $request->equipamientos;
         $user->digital_lead = $request->digital_lead;
         $user->reubicaciones = $request->reubicaciones;
+        //Rentas
+        $user->admin_rentas = $request->admin_rentas;
         //Saldos
         $user->edo_cuenta = $request->edo_cuenta;
         $user->depositos = $request->depositos;
