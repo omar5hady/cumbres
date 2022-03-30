@@ -996,6 +996,8 @@ class IniObraController extends Controller
         //Variable para almacenar la fecha de pago de la estimación.
         $fecha_pago = '';
 
+        $aviso = Ini_obra::select('num_casas')->where('id','=',$request->clave)->first();
+
         $acumAntTotal = [];
         //Query para obtener las partidas de las estimaciones
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
@@ -1064,6 +1066,10 @@ class IniObraController extends Controller
             $estimacion->porEstimarCosto = 0;
             $estimacion->porEstimarVol = 0;
             $estimacion->costoA = 0;
+            $estimacion->num_casas = $aviso->num_casas;
+
+            if($estimacion->cant_tope != 0)
+                $estimacion->num_casas = $estimacion->cant_tope;
             // Si hay una estimacion a mostrar
             if($num_est != 0){
                 //Se obtienen el total de volumen y costo acumulados
@@ -1092,8 +1098,6 @@ class IniObraController extends Controller
                     $estimacion->vol = $historial[0]->vol;
                     $estimacion->costoA = $historial[0]->costo;
                     $fecha_pago = $historial[0]->fecha_pago;
-                    //$estimacion->costo = $historial[0]->costo;
-                    //$estimacion->num_estimacion = $historial[0]->vol;
                 }
             }
         }
@@ -1146,6 +1150,7 @@ class IniObraController extends Controller
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
+        $aviso = Ini_obra::select('num_casas')->where('id','=',$request->clave)->first();
         //Query que obtiene del historial de estimaciones el numero de estimaciones que se han creado.
         $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                         ->select('num_estimacion')
@@ -1219,7 +1224,6 @@ class IniObraController extends Controller
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
-
         
         //Se recorren las partidas de las estimaciones
         foreach($estimaciones as $index => $estimacion){
@@ -1233,6 +1237,9 @@ class IniObraController extends Controller
             $estimacion->costoA = 0;
             $estimacion->ini = '';
             $estimacion->fin = '';
+            $estimacion->num_casas = $num_casas;
+            if($estimacion->cant_tope != 0)
+                $estimacion->num_casas = $estimacion->cant_tope;
             // Si hay una estimacion a mostrar
             if($num_est != 0){
                 //Se obtienen el total de volumen y costo acumulados
@@ -1414,11 +1421,11 @@ class IniObraController extends Controller
                     $montoTope = $volAcum = $montoAcum = $volPorEstimar = $montoPorEstimar = 0;
                     
 
-                    $montoTope = $detalle->pu_prorrateado * $num_casas;
+                    $montoTope = $detalle->pu_prorrateado * $detalle->num_casas;
                     $volAcum = $detalle->acumVol + $detalle->num_estimacion;
                     $montoAcum = $detalle->acumCosto + $detalle->costo;
-                    $volPorEstimar = $num_casas - $detalle->num_estimacion - $detalle->acumVol;
-                    $montoPorEstimar = ($detalle->pu_prorrateado * $num_casas) - ($detalle->acumCosto + $detalle->costo);
+                    $volPorEstimar = $detalle->num_casas - $detalle->num_estimacion - $detalle->acumVol;
+                    $montoPorEstimar = ($detalle->pu_prorrateado * $detalle->num_casas) - ($detalle->acumCosto + $detalle->costo);
 
                     $suma0+=$detalle->pu_prorrateado;
                     $suma1+=$montoTope;
@@ -1429,10 +1436,10 @@ class IniObraController extends Controller
                         $index+1, 
                         $detalle->partida, 
                         $detalle->pu_prorrateado, 
-                        $num_casas, 
+                        $detalle->num_casas, 
                         $detalle->vol,
                         $detalle->costoA,
-                        $num_casas,
+                        $detalle->num_casas,
                         $montoTope,
                         $volAcum,
                         $montoAcum,
@@ -1962,7 +1969,7 @@ class IniObraController extends Controller
             array_push($arrayEst,$est->id);
         }
         //Query para obtener el numero de estimaciones que se han generado
-        $number_est = Hist_estimacion::select('num_estimacion','ini','total_estimacion','total_pagado')
+        $number_est = Hist_estimacion::select('num_estimacion','ini','fin','fecha_pago','total_estimacion','total_pagado')
                     ->whereIn('estimacion_id',$arrayEst)->where('ini','!=',NULL)->orderBy('num_estimacion','asc')->distinct()->get();
 
         if(sizeof($number_est))
@@ -1983,6 +1990,13 @@ class IniObraController extends Controller
             'conceptosExtra' => $conceptosExtra,
         ];
 
+    }
+
+    //Funcion para indicar el numero topo de partida
+    public function editCantTope(Request $request){
+        $estimacion = Estimacion::findOrFail($request->id);
+        $estimacion->cant_tope = $request->cant_tope;
+        $estimacion->save();
     }
 
     //Función para retornar el estado de cuenta del aviso de obra.
@@ -2190,10 +2204,13 @@ class IniObraController extends Controller
                     $renglon++;
     
                     foreach($number_est as $index => $est) {     
+                        $fecha = $est->fin;
+                        if($est->fecha_pago != NULL)
+                            $fecha = $est->fecha_pago;
     
                         $sheet->row($renglon, [
                             $est->num_estimacion,
-                            $est->ini,
+                            $fecha,
                             $est->total_pagado
                         ]);	  
                         $renglon++;

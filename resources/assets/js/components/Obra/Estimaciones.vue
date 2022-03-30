@@ -320,7 +320,13 @@
                                             <td class="td2" v-text="index+1"></td>
                                             <td class="td2" v-text="partida.partida"></td>
                                             <td class="td2" v-text="'$'+formatNumber(partida.pu_prorrateado)"></td>
-                                            <td class="td2" v-text="num_casas"></td>
+                                            <template><!--Numero de casas -->
+                                                <td class="td2" v-if="editarPartida == 0" v-text="partida.num_casas" @dblclick="modoEditar()"></td>
+                                                <td class="td2" v-else>
+                                                    <input type="number" pattern="\d*" @keyup.enter="editCantTope(partida.id,$event.target.value)" :id="partida.id" :value="partida.num_casas" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
+                                                </td>
+                                            </template>
+                                            
                                             <template v-if="nueva == 0 && editarEstimacion == 0">
                                                 <td class="td2" v-if="numero != 0" v-text="partida.vol"></td>
                                                 <td class="td2" v-if="numero != 0" v-text="'$' + formatNumber( partida.costoA )"></td>
@@ -338,8 +344,8 @@
                                                 <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
                                             </template>
                                             
-                                            <td class="td2" v-text="num_casas"></td>
-                                            <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * num_casas) )"></td>
+                                            <td class="td2" v-text="partida.num_casas"></td>
+                                            <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * partida.num_casas) )"></td>
                                             <td class="td2"> 
                                                 {{ partida.acumVolTotal=parseFloat(partida.acumVol) + parseFloat(partida.num_estimacion) }} 
                                             </td>
@@ -347,7 +353,7 @@
                                                 $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
                                             </td>
                                             <td class="td2">
-                                                {{ partida.porEstimarVol=parseFloat(num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol) }}
+                                                {{ partida.porEstimarVol=parseFloat(partida.num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol) }}
                                             </td>
                                             <td class="td2">
                                                 $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
@@ -933,6 +939,7 @@
                 periodo1:'',
                 periodo2:'',
                 fecha_pago:'',
+                editarPartida : 0,
                 
                 arrayContratos:[],
                 arrayContratistas:[],
@@ -1127,6 +1134,31 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                });
+            },
+            modoEditar(){
+                if(this.userName == 'shady' || userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')
+                    this.editarPartida = 1;
+            },
+            editCantTope(id, cant_tope){
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/estimaciones/editCantTope',{
+                    'id': id,
+                    'cant_tope' : cant_tope
+                }).then(function (response){
+                    me.editarPartida = 0;
+                    me.getPartidas(me.aviso_id);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
                 });
             },
             indexEstimaciones(page){
