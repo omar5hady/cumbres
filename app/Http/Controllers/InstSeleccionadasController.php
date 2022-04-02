@@ -55,7 +55,7 @@ class InstSeleccionadasController extends Controller
             ->where('lotes.firmado','=',$request->firmado)
             //Busqueda por empresa constructora
             ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-            ->where('inst_seleccionadas.elegido', '=', 1)//Financiamiento elegido
+            ->where('inst_seleccionadas.status', '=', 2)//Financiamiento autorizado
             ->where('contratos.status', '=', 3)//Contrato firmado
             //Financiamientos diferentes a Créditos Directos (Solo bancarios)
             ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');

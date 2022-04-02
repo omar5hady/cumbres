@@ -271,7 +271,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/lote/colindancias/{fileName}' , 'LoteController@downloadFile');
 
     ///////////////////         RUTAS RENTAS        ////////////////////////////////
+        Route::post('/arrendador/storeArrendador','RentasController@storeArrendador');
+        Route::put('/arrendador/updateArrendador','RentasController@updateArrendador');
+
         Route::get('/lotes/indexLotesRentas','LoteController@indexLotesRentas');
+        Route::get('/rentas/getArrendador','RentasController@getArrendador');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////

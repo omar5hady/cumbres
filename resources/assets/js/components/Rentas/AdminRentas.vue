@@ -9,6 +9,9 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Administración de rentas
+                        <button type="button" @click="abrirModal('arrendador')" class="btn btn-primary">
+                            <i class="icon-plus"></i>&nbsp;Arrendadores
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -34,12 +37,11 @@
 
                                 <div class="input-group">                                    
 
-                                    <input type="text" v-model="buscar3" @keyup.enter="indexLotesRentas(1)" class="form-control" placeholder="Manzana a buscar">
-                                    <input type="text" v-model="b_lote" @keyup.enter="indexLotesRentas(1)" class="form-control" placeholder="Lote a buscar">
+                                    <input type="text" v-model="b_direccion" @keyup.enter="indexLotesRentas(1)" class="form-control" placeholder="Dirección oficial">
                                     
                                 </div>
                                 <div class="input-group">
-                                    <select class="form-control  col-md-4" v-if="rolId!='2'" v-model="b_status" @keyup.enter="indexLotesRentas(1)">
+                                    <select class="form-control  col-md-4" v-model="b_status" @keyup.enter="indexLotesRentas(1)">
                                         <option value="">Todos</option>
                                         <option value=0>Disponibles</option>
                                         <option value=1>Rentadas</option>
@@ -53,14 +55,13 @@
                         </div>
                         
                         <div class="table-responsive"> 
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th></th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
-                                        <th># Lote</th>
                                         <th>Modelo</th>
                                         <th>Dirección oficial</th>
                                         <th>Precio renta mensual</th>
@@ -79,7 +80,6 @@
                                         <td class="td2" v-text="lote.proyecto"></td>
                                         <td class="td2" v-text="lote.num_etapa"></td>
                                         <td class="td2" v-text="lote.manzana"></td>
-                                        <td class="td2" v-text="lote.num_lote"></td>
                                         <td class="td2" v-text="lote.modelo"></td>
                                         <td v-if="lote.interior == null" class="td2" v-text="lote.calle + ' No.' + lote.numero"></td>
                                         <td v-else class="td2" v-text="lote.calle + ' No.' + lote.numero + ' ' + lote.interior"></td>
@@ -159,7 +159,7 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body" v-if="modal == 1">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <center>
                                     <h5> Datos del Lote </h5><br>
@@ -180,16 +180,22 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">
-                                        Manzana
+                                        Dirección:
                                     </label>
-                                    <div class="col-md-4">
-                                        <input type="text" disabled v-model="datosRenta.manzana" class="form-control">
+                                    <div class="col-md-8">
+                                        <input type="text" disabled v-model="direccion" class="form-control">
                                     </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">
-                                        Num. Lote
+                                        Dueño:
                                     </label>
-                                    <div class="col-md-4">
-                                        <input type="text" disabled v-model="datosRenta.num_lote" class="form-control">
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="datosRenta.duenio_id">
+                                            <option value="">Seleccione Dueño</option>
+                                            <option v-for="arrendador in arrayArrendador" :key="arrendador.id" :value="arrendador.id" v-text="arrendador.nombre"></option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -221,11 +227,137 @@
                                 
                             </form>
                         </div>
+                        <div class="modal-body" v-if="modal == 2">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <template v-if="ver==1">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Tipo
+                                        </label>
+                                        <div class="col-md-8">
+                                            <select class="form-control" v-model="datosArrendador.tipo">
+                                                <option value="0">Persona Fisica</option>
+                                                <option value="1">Persona Moral</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Dueño:
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="datosArrendador.nombre" class="form-control">
+                                        </div>
+
+                                        <label class="col-md-1 form-control-label" for="text-input">
+                                            RFC:
+                                        </label>
+
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="datosArrendador.rfc" maxlength="13" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Direccion:
+                                        </label>
+                                        <div class="col-md-5">
+                                            <input type="text" v-model="datosArrendador.direccion" class="form-control">
+                                        </div>
+                                        <label class="col-md-1 form-control-label" for="text-input">
+                                            CP:
+                                        </label>
+                                        <div class="col-md-2">
+                                            <input type="text" v-model="datosArrendador.cp" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Colonia:
+                                        </label>
+                                        <div class="col-md-5">
+                                            <input type="text" v-model="datosArrendador.colonia" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Municipio:
+                                        </label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="datosArrendador.municipio" class="form-control">
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Estado:
+                                        </label>
+
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="datosArrendador.estado" maxlength="13" class="form-control">
+                                        </div>
+
+                                    </div>
+
+                                    <hr>
+                                </template>
+
+                                <div class="form-group row" v-if="ver == 0">
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-dark" @click="nuevoArrendedor()">
+                                            <i class="icon-plus"></i>&nbsp;Nuevo
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="ver == 1">
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-danger" @click="ver=0, tipoAccion = 2">
+                                            <i class="icon-clse"></i>&nbsp;Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Tipo</th>
+                                                    <th>Nombre</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="arrendador in arrayArrendador" :key="arrendador.id">
+                                                    <td>
+                                                        <button type="button" class="btn btn-warning" @click="vistaAct(arrendador)">
+                                                            <i class="icon-pencil"></i>&nbsp;
+                                                        </button>
+                                                    </td>
+                                                    <td class="td2">
+                                                        <span v-if="arrendador.tipo == 0" class="badge badge-primary">Persona Fisica</span>
+                                                        <span v-if="arrendador.tipo == 1" class="badge badge-primary">Persona Moral</span>
+                                                    </td>
+                                                    <td v-text="arrendador.nombre"></td>
+                                                </tr>                      
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="updateArrendador()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="storeArrendador()">Guardar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -251,6 +383,7 @@
                 arrayFraccionamientos : [],
                 arrayModelos : [],
                 arrayEtapas : [],
+                arrayArrendador : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -258,10 +391,12 @@
                 buscar : '',
                 buscar2 : '',
                 b_modelo : '',
-                buscar3 : '',
-                b_lote : '',
+                b_direccion : '',
                 b_status: '',
-                datosRenta: {}
+                datosRenta: {},
+                datosArrendador : {},
+                direccion: '',
+                ver:0,
             }
         },
         computed:{
@@ -287,8 +422,7 @@
                 var url = '/lotes/indexLotesRentas?page=' + page+'&criterio='+this.criterio
                    + '&buscar=' + this.buscar
                    + '&buscar2=' + this.buscar2
-                   + '&buscar3=' + this.buscar3
-                   + '&b_lote=' + this.b_lote
+                   + '&b_direccion=' + this.b_direccion
                    + '&b_status=' + this.b_status
                    + '&b_modelo=' + this.b_modelo;
                 axios.get(url).then(function (response) {
@@ -307,6 +441,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.modelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getArrendador(){
+                let me = this;
+              
+                me.arrayArrendador=[];
+                var url = '/rentas/getArrendador';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayArrendador = respuesta;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -350,17 +497,86 @@
                     console.log(error);
                 });
             },
-            /**Metodo para registrar  */
+            vistaAct(arrendador){
+                this.datosArrendador = arrendador;
+                this.ver = 1;
+                this.tipoAccion = 1;
+            },
+            nuevoArrendedor(){
+                this.datosArrendedor = {};
+                this.ver = 1;
+                this.tipoAccion= 3
+            },
             actualizar(){
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.put('/lotes/updateDatosRenta',{
                     'id' : this.datosRenta.id,
                     'precio_renta' : this.datosRenta.precio_renta,
-                    'comentarios' : this.datosRenta.comentarios
+                    'comentarios' : this.datosRenta.comentarios,
+                    'duenio_id' : this.datosRenta.duenio_id,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.indexLotesRentas(1); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Lote actualizado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            updateArrendador(){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/arrendador/updateArrendador',{
+                    'id' : this.datosArrendador.id,
+                    'nombre' : this.datosArrendador.nombre,
+                    'tipo' : this.datosArrendador.tipo,
+                    'rfc' : this.datosArrendador.rfc,
+                    'direccion' : this.datosArrendador.direccion,
+                    'cp' : this.datosArrendador.cp,
+                    'colonia' : this.datosArrendador.colonia,
+                    'municipio' : this.datosArrendador.municipio,
+                    'estado' : this.datosArrendador.estado,
+                }).then(function (response){
+                    me.ver = 0;
+                    me.tipoAccion = 2;
+                    me.datosArrendador = {};
+                    me.getArrendador();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Lote actualizado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            storeArrendador(){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/arrendador/storeArrendador',{
+                    'nombre' : this.datosArrendador.nombre,
+                    'tipo' : this.datosArrendador.tipo,
+                    'rfc' : this.datosArrendador.rfc,
+                    'direccion' : this.datosArrendador.direccion,
+                    'cp' : this.datosArrendador.cp,
+                    'colonia' : this.datosArrendador.colonia,
+                    'municipio' : this.datosArrendador.municipio,
+                    'estado' : this.datosArrendador.estado,
+                }).then(function (response){
+                    me.ver = 0;
+                    me.tipoAccion = 2;
+                    me.datosArrendador = {};
+                    me.getArrendador();
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -386,7 +602,17 @@
                         this.modal =1;
                         this.tituloModal='Actualizar Lote';
                         this.datosRenta = data;
+                        this.direccion = this.datosRenta.calle+ ' No.'+this.datosRenta.numero
+                        if(this.datosRenta.interior != null)
+                            this.direccion = this.direccion + ' ' + this.datosRenta.interior
                         this.tipoAccion = 2;
+                        break;
+                    }
+                    case 'arrendador':{
+                        this.modal = 2;
+                        this.tituloModal = 'Arrendadores';
+                        this.datosArrendador = {};
+                        this.ver=0;
                         break;
                     }
                 }
@@ -395,6 +621,7 @@
         mounted() {
             this.indexLotesRentas(1);
             this.selectFraccionamientos();
+            this.getArrendador();
         }
     }
 </script>

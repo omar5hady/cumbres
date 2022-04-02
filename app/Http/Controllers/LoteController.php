@@ -84,9 +84,10 @@ class LoteController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         $rentas = $this->getLotes($request);
-        if($request->b_status != ''){
+        if($request->b_status != '')
             $rentas = $rentas->where('lotes.contrato','=',$request->b_status);
-        }
+        if($request->b_direccion != '')
+            $rentas = $rentas->where(DB::raw("CONCAT(lotes.calle,' No.',lotes.numero)"), 'like', '%'. $request->b_direccion . '%');
         //Filtros necesarios para obtener lotes habilitados para rentas
         $rentas = $rentas->where('lotes.habilitado','=', 1)
                         ->where('lotes.casa_renta','=', 1)
