@@ -20,6 +20,8 @@ class CreateRentasTable extends Migration
             //Arrendatario
             $table->boolean('tipo_arrendatario')->default(0);
             $table->string('nombre_arrendatario',80);
+            $table->string('tel_arrendatario',10);
+            $table->integer('clv_lada_arr',4)->default(52);
                 //Moral arrendatario
             $table->string('representante_arrendatario',60)->nullable();
             $table->string('dir_arrendatario',80)->nullable();
@@ -27,10 +29,13 @@ class CreateRentasTable extends Migration
             $table->string('col_arrendatario',40)->nullable();
             $table->string('estado_arrendatario',40)->nullable();
             $table->string('municipio_arrendatario',40)->nullable();
+            $table->string('rfc_arrendatario',13)->nullable();
 
             //Aval (Fiador)
             $table->boolean('tipo_aval')->default(0);
             $table->string('nombre_aval')->nullable();
+            $table->string('tel_aval',10);
+            $table->integer('clv_lada_aval',4)->default(52);
                 //Moral aval
             $table->string('representante_aval')->nullable();
             $table->string('dir_aval')->nullable();

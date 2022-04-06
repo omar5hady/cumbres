@@ -50,25 +50,25 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th colspan="12" class="text-center"> Reporte al {{fecha}} </th>
+                            <table class="table2 tableScroll table-bordered table-striped table-sm">
+                                <thead class="thead2">
+                                    <tr class="tr2">
+                                        <th colspan="12" class="text-center th2"> Reporte al {{fecha}} </th>
                                     </tr>
-                                    <tr>
-                                        <th></th>
-                                        <th>Modelo</th>
-                                        <th>Total de casas</th>
-                                        <th>Individualizadas</th>
-                                        <th>Vendidas Proceso</th>
-                                        <th>Vendidas Terminadas</th>
-                                        <th>Vendidas</th>
-                                        <th>Total vendidas</th>
-                                        <th>Disponible Proceso</th>
-                                        <th>Disponible Terminadas</th>
-                                        <th>Disponibles</th>
-                                        <th>Inventario</th>
-                                        <th v-if="meses != 0">Promedio mensual de venta</th>
+                                    <tr class="tr2">
+                                        <th class="th2"></th>
+                                        <th class="th2">Modelo</th>
+                                        <th class="th2">Total de casas</th>
+                                        <th class="th2">Individualizadas</th>
+                                        <th class="th2">Vendidas Proceso</th>
+                                        <th class="th2">Vendidas Terminadas</th>
+                                        <th class="th2">Vendidas</th>
+                                        <th class="th2">Total vendidas</th>
+                                        <th class="th2">Disponible Proceso</th>
+                                        <th class="th2">Disponible Terminadas</th>
+                                        <th class="th2">Disponibles</th>
+                                        <th class="th2">Inventario</th>
+                                        <th class="th2" v-if="meses != 0">Promedio mensual de venta</th>
                                         
                                     </tr>
                                 </thead>
@@ -224,6 +224,18 @@
     width: fit-content;
     max-width: 100%;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .tableScroll{
+        overflow-y: auto;
+        height: 400px;
+    }
+
+    .thead2 .tr2 .th2 { 
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #ffffff;
     }
 
     .td2, .th2 {

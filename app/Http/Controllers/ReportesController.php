@@ -3728,17 +3728,22 @@ class ReportesController extends Controller
         
         $modelos = $modelos->orderBy('nombre','asc')->distinct()->get();
 
-        if($fraccionamiento != ''){
-            $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
+        $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
                             ->join('lotes','creditos.lote_id','=','lotes.id')
                             ->select('contratos.fecha')
-                            ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                             ->where('contratos.status','=',3)
                             ->where('lotes.habilitado','=',1);
+                        if($fraccionamiento != '')
+                            $vendidasFin = $vendidasFin->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                        if($etapa != '')
+                            $vendidasFin = $vendidasFin->where('lotes.etapa_id','=',$etapa);
+                            
                     if($fechaIni != '' && $fechaFin != ''){
                         $vendidasFin = $vendidasFin->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
                     }
             $vendidasFin = $vendidasFin->orderBy('contratos.fecha','desc')->get();
+
+        if($fraccionamiento != ''){
 
                 $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$fraccionamiento)->get();
                 $fecha = $fracc[0]->fecha_ini_venta;
@@ -3751,17 +3756,6 @@ class ReportesController extends Controller
         }
 
         if($etapa != ''){
-            $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select('contratos.fecha')
-                                ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
-                                ->where('lotes.habilitado','=',1);
-                    if($fechaIni != '' && $fechaFin != ''){
-                        $vendidasFin = $vendidasFin->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
-                    }
-            $vendidasFin = $vendidasFin->orderBy('contratos.fecha','desc')->get();
 
                 $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$fraccionamiento)->get();
                 $fecha = $fracc[0]->fecha_ini_venta;
@@ -3990,7 +3984,7 @@ class ReportesController extends Controller
                             ->count('contratos.id');
 
             $contratos = $contratosTerm + $contratosProc;
-
+            //Contratos indivualizados tanto para directos como financiados
             $indiv = $indivContado + $indivCredito;
 
             $indivTerm = $indivCreditoTerm + $indivContadoTerm;

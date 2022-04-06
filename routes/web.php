@@ -275,8 +275,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/arrendador/updateArrendador','RentasController@updateArrendador');
 
         Route::get('/lotes/indexLotesRentas','LoteController@indexLotesRentas');
+        Route::get('/lotes/getRentasDisponibles','RentasController@getRentasDisponibles');
+        Route::get('/lotes/getDatosLoteRenta','RentasController@getDatosLoteRenta');
         Route::get('/rentas/getArrendador','RentasController@getArrendador');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
+        Route::post('/rentas/storeRenta','RentasController@storeRenta');
+        Route::get('/rentas/indexRentas','RentasController@indexRentas');
+        Route::get('/rentas/getDatosRenta','RentasController@getDatosRenta');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');

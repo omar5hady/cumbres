@@ -286,8 +286,9 @@ class FraccionamientoController extends Controller
                     ->select('fraccionamientos.nombre','fraccionamientos.id')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.contrato','=',0); //Sin contrato
-                    //->where('lotes.rentado','=',0)
 
+                    if($request->renta == 1)
+                        $fraccionamientos = $fraccionamientos->where('lotes.casa_renta','=',1);
                     //Filtro por tipo de proyecto
                     if($request->tipo_proyecto != '')
                         $fraccionamientos = $fraccionamientos->where('fraccionamientos.tipo_proyecto','=',$request->tipo_proyecto);

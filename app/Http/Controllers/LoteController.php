@@ -53,8 +53,7 @@ class LoteController extends Controller
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','etapas.num_etapa',
                     'modelos.tipo',
-                    'lotes.*','licencias.*','modelos.nombre as modelo','empresas.nombre as empresa', 
-                    'lotes.calle','lotes.numero','lotes.interior','lotes.terreno'
+                    'lotes.*','licencias.*','modelos.nombre as modelo','empresas.nombre as empresa'
                   );
     
                 if($buscar != '')//Busqueda principal por criterio

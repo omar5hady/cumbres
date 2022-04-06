@@ -582,6 +582,13 @@
             </admin-rentas>
         </template>
 
+        <template v-if="menu==277">
+            <contrato-rentas 
+                rol-id="{{Auth::user()->usuario}}"
+            >
+            </contrato-rentas>
+        </template>
+
 
     @endif
        

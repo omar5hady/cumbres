@@ -27,7 +27,7 @@ class CiudadController extends Controller
         $buscar = $request->buscar;
         //$colonias = Ciudad::where('estado', 'like', 'San Luis Potosí')
         $colonias = Ciudad::where('cp', '=', $buscar)
-        ->select('colonia')->orderBy('colonia','asc')->get();
+        ->select('colonia','ciudad','estado')->orderBy('colonia','asc')->get();
         return['colonias' => $colonias];
     }
 
