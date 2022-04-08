@@ -8,6 +8,8 @@ use App\Licencia;
 use App\Arrendador;
 use App\Renta;
 use App\Pago_renta;
+use Carbon\Carbon;
+use NumerosEnLetras;
 use DB;
 
 class RentasController extends Controller
@@ -41,6 +43,9 @@ class RentasController extends Controller
         $arrendador->colonia = $request->colonia;
         $arrendador->municipio = $request->municipio;
         $arrendador->estado = $request->estado;
+        $arrendador->clabe = $request->clabe;
+        $arrendador->cuenta = $request->cuenta;
+        $arrendador->banco = $request->banco;
         $arrendador->save();
     }
     //Función para actualizar los datos de un arrendador.
@@ -55,6 +60,9 @@ class RentasController extends Controller
         $arrendador->colonia = $request->colonia;
         $arrendador->municipio = $request->municipio;
         $arrendador->estado = $request->estado;
+        $arrendador->clabe = $request->clabe;
+        $arrendador->cuenta = $request->cuenta;
+        $arrendador->banco = $request->banco;
         $arrendador->save();
     }
     //Funcion para retornar los lotes con disponibilidad para renta
@@ -117,6 +125,7 @@ class RentasController extends Controller
             $renta->fecha_ini = $datosRenta['fecha_ini'];
             $renta->fecha_fin = $datosRenta['fecha_fin'];
             $renta->num_meses = $datosRenta['num_meses'];
+            $renta->fecha_firma = $datosRenta['fecha_firma'];
             $renta->save();
             //Se accede al registro del lote para indicar que ha sido rentado
             $lote = Lote::findOrFail($datosRenta['lote_id']);
@@ -174,13 +183,28 @@ class RentasController extends Controller
         $renta = Renta::join('lotes','rentas.lote_id','=','lotes.id')
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('licencias','lotes.id','=','licencias.id')
+                    ->join('arrendadores','licencias.duenio_id','arrendadores.id')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
                 ->select('rentas.*',
                 'lotes.fraccionamiento_id',
                 'lotes.etapa_id',
                 'lotes.calle', 'lotes.numero', 'lotes.interior',
                 'fraccionamientos.nombre as proyecto',
+                'fraccionamientos.cp as cp_proyecto',
+                'fraccionamientos.ciudad as ciudad_proyecto',
+                'fraccionamientos.estado as estado_proyecto',
                 'etapas.num_etapa as etapa',
+                'arrendadores.tipo as tipo_arrendador',
+                'arrendadores.nombre as nombre_arrendador',
+                'arrendadores.direccion as direccion_arrendador',
+                'arrendadores.cp as cp_arrendador',
+                'arrendadores.colonia as colonia_arrendador',
+                'arrendadores.municipio as municipio_arrendador',
+                'arrendadores.estado as estado_arrendador',
+                'arrendadores.banco as banco_arrendador',
+                'arrendadores.cuenta as cuenta_arrendador',
+                'arrendadores.clabe as clabe_arrendador',
                 'modelos.nombre as modelo')
                 ->where('rentas.id','=',$request->id)
                 ->first();
@@ -188,5 +212,48 @@ class RentasController extends Controller
             $renta->pagares = Pago_renta::where('renta_id','=',$renta->id)->get();
 
         return $renta;
+    }
+
+    public function printContrato(Request $request){
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $contrato = $this->getDatosRenta($request);
+        $contrato->cantMeses = NumerosEnLetras::convertir($contrato->num_meses, '', false, '');
+        $contrato->monto_renta = NumerosEnLetras::convertir($contrato->monto_renta, 'Pesos', true, 'Centavos');
+
+        $fechaIni = new Carbon($contrato->fecha_ini);
+        $contrato->fecha_ini = $fechaIni->formatLocalized('%d días de %B de %Y');
+
+        $fechaFin = new Carbon($contrato->fecha_fin);
+        $contrato->fecha_fin = $fechaFin->formatLocalized('%d días de %B de %Y');
+
+        $fechaContrato = new Carbon($contrato->fecha_firma);
+        $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
+
+        $pdf = \PDF::loadview('pdf.rentas.contratoRenta', [
+            'contrato' => $contrato,
+            'representante' => $request->representante,
+        ]);
+        return $pdf->stream('Contrato.pdf');
+    }
+
+    public function printPagares(Request $request){
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $contrato = $this->getDatosRenta($request);
+        $contrato->cantMeses = NumerosEnLetras::convertir($contrato->num_meses, '', false, '');
+        
+        foreach($contrato->pagares as $pago){
+            $pago->monto = NumerosEnLetras::convertir($pago->importe, 'Pesos', true, 'Centavos');
+            $pago->importe = number_format((float)$pago->importe, 2, '.', ',');
+            $pago->fecha_pago = new Carbon($pago->fecha);
+            $pago->fecha_pago = $pago->fecha_pago->formatLocalized('%d de %B de %Y');
+        }
+
+        $fechaContrato = new Carbon($contrato->fecha_firma);
+        $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
+
+        $pdf = \PDF::loadview('pdf.rentas.pagosRentas', [
+            'contrato' => $contrato
+        ]);
+        return $pdf->stream('Pagares.pdf');
     }
 }

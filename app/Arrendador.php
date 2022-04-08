@@ -16,7 +16,10 @@ class Arrendador extends Model
         'cp',
         'colonia',
         'municipio',
-        'estado'
+        'estado',
+        'cuenta',
+        'clabe',
+        'banco'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
 }

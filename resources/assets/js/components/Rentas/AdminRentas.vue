@@ -298,7 +298,35 @@
                                         <div class="col-md-4">
                                             <input type="text" v-model="datosArrendador.estado" maxlength="13" class="form-control">
                                         </div>
+                                    </div>
 
+                                    <hr>
+
+                                    <center><h6>Datos Bancarios</h6></center>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Cuenta:
+                                        </label>
+                                        <div class="col-md-4">
+                                            <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" maxlength="10" v-model="datosArrendador.cuenta" class="form-control">
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Clabe:
+                                        </label>
+                                        <div class="col-md-4">
+                                            <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="datosArrendador.clabe" maxlength="21" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Banco:
+                                        </label>
+                                        <div class="col-md-4">
+                                            <input type="text" maxlength="30" v-model="datosArrendador.banco" class="form-control">
+                                        </div>
                                     </div>
 
                                     <hr>
@@ -542,7 +570,9 @@
                     'cp' : this.datosArrendador.cp,
                     'colonia' : this.datosArrendador.colonia,
                     'municipio' : this.datosArrendador.municipio,
-                    'estado' : this.datosArrendador.estado,
+                    'cuenta' : this.datosArrendador.cuenta,
+                    'clabe' : this.datosArrendador.clabe,
+                    'banco' : this.datosArrendador.banco,
                 }).then(function (response){
                     me.ver = 0;
                     me.tipoAccion = 2;
@@ -572,6 +602,9 @@
                     'colonia' : this.datosArrendador.colonia,
                     'municipio' : this.datosArrendador.municipio,
                     'estado' : this.datosArrendador.estado,
+                    'cuenta' : this.datosArrendador.cuenta,
+                    'clabe' : this.datosArrendador.clabe,
+                    'banco' : this.datosArrendador.banco,
                 }).then(function (response){
                     me.ver = 0;
                     me.tipoAccion = 2;

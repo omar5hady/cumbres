@@ -6,7 +6,7 @@
                 <a class="nav-link" href="#"><i class="fa fa-book"></i> Admin Rentas</a>
             </li>
         @endif
-        @if(Auth::user()->rol_id == 1)
+        @if(Auth::user()->admin_rentas == 1)
             <li @click="menu=277" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-book"></i> Contrato Rentas</a>
             </li>

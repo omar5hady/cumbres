@@ -282,6 +282,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
         Route::get('/rentas/indexRentas','RentasController@indexRentas');
         Route::get('/rentas/getDatosRenta','RentasController@getDatosRenta');
+        Route::get('/rentas/printContrato','RentasController@printContrato');
+        Route::get('/rentas/printPagares','RentasController@printPagares');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');

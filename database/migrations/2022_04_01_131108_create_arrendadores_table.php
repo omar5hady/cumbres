@@ -23,6 +23,9 @@ class CreateArrendadoresTable extends Migration
             $table->string('colonia')->nullable();
             $table->string('municipio')->nullable();
             $table->string('estado')->nullable();
+            $table->string('cuenta',10)->nullable();
+            $table->string('clabe',20)->nullable();
+            $table->string('banco',30)->nullable();
             $table->timestamps();
         });
 

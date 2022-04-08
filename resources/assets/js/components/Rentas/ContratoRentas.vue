@@ -206,36 +206,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-2"></div>
-                                        <!-- Datos de arrendatario moral -->
-                                        <template v-if="datosRenta.tipo_arrendatario == 1">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        RFC<span style="color:red;" v-show="datosRenta.rfc_arrendatario == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" :disabled="
-                                                            listado == 2"
-                                                        maxlength="13"
-                                                        class="form-control" v-model="datosRenta.rfc_arrendatario"
-                                                        placeholder="RFC"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-7">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        Representante<span style="color:red;" v-show="datosRenta.representante_arrendatario == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" :disabled="
-                                                            listado == 2"
-                                                        class="form-control" v-model="datosRenta.representante_arrendatario"
-                                                        placeholder="Representante legal"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1"></div>
-
-                                            <div class="col-md-6">
+                                        <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="">
                                                         Dirección<span style="color:red;" v-show="datosRenta.dir_arrendatario == ''">(*)</span>
@@ -304,8 +275,34 @@
                                                     />
                                                 </div>
                                             </div>
-
-
+                                        <!-- Datos de arrendatario moral -->
+                                        <template v-if="datosRenta.tipo_arrendatario == 1">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="">
+                                                        RFC<span style="color:red;" v-show="datosRenta.rfc_arrendatario == ''">(*)</span>
+                                                    </label>
+                                                    <input type="text" :disabled="
+                                                            listado == 2"
+                                                        maxlength="13"
+                                                        class="form-control" v-model="datosRenta.rfc_arrendatario"
+                                                        placeholder="RFC"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <label for="">
+                                                        Representante<span style="color:red;" v-show="datosRenta.representante_arrendatario == ''">(*)</span>
+                                                    </label>
+                                                    <input type="text" :disabled="
+                                                            listado == 2"
+                                                        class="form-control" v-model="datosRenta.representante_arrendatario"
+                                                        placeholder="Representante legal"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
                                         </template>
 
                                         <div class="col-md-5">
@@ -404,79 +401,77 @@
                                                     />
                                                 </div>
                                             </div>
-
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        Dirección<span style="color:red;" v-show="datosRenta.dir_aval == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" :disabled="
-                                                            listado == 2"
-                                                        class="form-control" v-model="datosRenta.dir_aval"
-                                                        placeholder="Dirección"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        CP<span style="color:red;" v-show="datosRenta.cp_aval == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" :disabled="
-                                                            listado == 2"
-                                                        @keyup="selectColonias(datosRenta.cp_aval,1), datosRenta.col_aval =''"
-                                                        class="form-control" v-model="datosRenta.cp_aval"
-                                                        placeholder="Códigp Postal"
-                                                        maxlength="5"
-                                                        pattern="\d*"
-                                                        v-on:keypress="isNumber($event)"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        Colonia<span style="color:red;" v-show="datosRenta.col_aval == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" name="city3" 
-                                                        :disabled="listado == 2"
-                                                        list="cityname3" 
-                                                        class="form-control" v-model="datosRenta.col_aval">
-                                                    <datalist id="cityname3">
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
-                                                    </datalist>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3"></div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        Municipio<span style="color:red;" v-show="datosRenta.municipio_aval == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" :disabled="
-                                                            listado == 2"
-                                                        class="form-control" v-model="datosRenta.municipio_aval"
-                                                        placeholder="Colonia"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">
-                                                        Estado<span style="color:red;" v-show="datosRenta.estado_aval == ''">(*)</span>
-                                                    </label>
-                                                    <input type="text" :disabled="
-                                                            listado == 2"
-                                                        class="form-control" v-model="datosRenta.estado_aval"
-                                                        placeholder="Colonia"
-                                                    />
-                                                </div>
-                                            </div>
-
-
                                         </template>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">
+                                                    Dirección<span style="color:red;" v-show="datosRenta.dir_aval == ''">(*)</span>
+                                                </label>
+                                                <input type="text" :disabled="
+                                                        listado == 2"
+                                                    class="form-control" v-model="datosRenta.dir_aval"
+                                                    placeholder="Dirección"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">
+                                                    CP<span style="color:red;" v-show="datosRenta.cp_aval == ''">(*)</span>
+                                                </label>
+                                                <input type="text" :disabled="
+                                                        listado == 2"
+                                                    @keyup="selectColonias(datosRenta.cp_aval,1), datosRenta.col_aval =''"
+                                                    class="form-control" v-model="datosRenta.cp_aval"
+                                                    placeholder="Códigp Postal"
+                                                    maxlength="5"
+                                                    pattern="\d*"
+                                                    v-on:keypress="isNumber($event)"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">
+                                                    Colonia<span style="color:red;" v-show="datosRenta.col_aval == ''">(*)</span>
+                                                </label>
+                                                <input type="text" name="city3" 
+                                                    :disabled="listado == 2"
+                                                    list="cityname3" 
+                                                    class="form-control" v-model="datosRenta.col_aval">
+                                                <datalist id="cityname3">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3"></div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">
+                                                    Municipio<span style="color:red;" v-show="datosRenta.municipio_aval == ''">(*)</span>
+                                                </label>
+                                                <input type="text" :disabled="
+                                                        listado == 2"
+                                                    class="form-control" v-model="datosRenta.municipio_aval"
+                                                    placeholder="Colonia"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">
+                                                    Estado<span style="color:red;" v-show="datosRenta.estado_aval == ''">(*)</span>
+                                                </label>
+                                                <input type="text" :disabled="
+                                                        listado == 2"
+                                                    class="form-control" v-model="datosRenta.estado_aval"
+                                                    placeholder="Colonia"
+                                                />
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-5">
                                             <div class="form-group">
@@ -711,6 +706,17 @@
                                                     </div>
                                                 </div>
                                             </div> 
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="">Fecha de firma</label>
+                                                    <input type="date" 
+                                                    :disabled="listado == 2"
+                                                    class="form-control" v-model="datosRenta.fecha_firma"
+                                                    placeholder="Fecha de firma"
+                                                />
+                                                </div>
+                                            </div>
                                         </template>
                                     </div>
                                     <!-- Fin datos prospecto-->
@@ -751,6 +757,20 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group" v-if="listado == 2">
+                                <div class="col-md-12">
+                                    <div style="text-align: right;" >
+                                        <button type="button"
+                                            class="btn btn-primary"
+                                            @click="modal=1"
+                                        >
+                                            Imprimir contrato
+                                        </button>
+                                        <a class="btn btn-scarlet btn-sm" target="_blank" v-bind:href="'/rentas/printPagares?id='+datosRenta.id">Imprimir pagares</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -759,51 +779,34 @@
         </div>
 
         <!-- Inicio Modal Fecha para firma -->
-        <div
-            class="modal animated fadeIn"
-            tabindex="-1"
-            :class="{ mostrar: modal == 1 }"
-            role="dialog"
-            aria-labelledby="myModalLabel"
-            style="display: none;"
-            aria-hidden="true"
-        >
+        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-primary modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal"></h4>
-                        <button
-                            type="button"
-                            class="close"
-                            @click="cerrarModal()"
-                            aria-label="Close"
-                        >
+                        <h4 class="modal-title">Seleccionar apoderado legal</h4>
+                        <button type="button" class="close" @click="modal=0" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">
-                                    Fecha
-                                </label>
-                                <div class="col-md-9">
-                                    <input
-                                        type="date"
-                                        v-model="fecha_status"
-                                        class="form-control"
-                                        placeholder="Fecha status"
-                                    />
-                                </div>
-                            </div>
 
+                    <div class="modal-body">
+                        <div>
+                            <select class="form-control" v-model="apoderado">
+                                <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
+                                <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
+                                <option value="C.P. MARTIN HERRERA SANCHEZ">C.P. MARTIN HERRERA SANCHEZ</option>
+                            </select>
+                        </div>
                     </div>
+
                     <!-- Botones del modal -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">
-                            Cerrar
-                        </button>
+                        <button type="button" class="btn btn-secondary" @click="modal=0">Cerrar</button>
+                            <a class="btn btn-primary" v-bind:href="'/rentas/printContrato?id=' + datosRenta.id + '&representante=' + apoderado"  target="_blank">
+                            <i></i>Imprimir
+                        </a>
                     </div>
-                </div>
+                </div> 
                 <!-- /.modal-content -->
             </div>
             <!-- /.modal-dialog -->
@@ -846,7 +849,8 @@ export default {
             status:0,
             tituloModal: '',
             modal:0,
-            fecha_status:''
+            fecha_status:'',
+            apoderado : 'C.P. MARTIN HERRERA SANCHEZ',
         };
     },
     computed: {
@@ -1049,6 +1053,8 @@ export default {
             });
         },
         limpiarDatosRenta(){
+            this.errorContrato = 0;
+            this.errorMostrarMsjContrato = [];
             this.datosRenta = {
                 'fraccionamiento_id':'',
                 'etapa_id': '',
@@ -1118,8 +1124,35 @@ export default {
             me.getClavesLadas();
             me.limpiarDatosRenta();
         },
+        validarRegistro(){
+            this.errorContrato=0;
+            this.errorMostrarMsjContrato=[];
+
+            if(this.datosRenta.lote_id == '') 
+                this.errorMostrarMsjContrato.push("Seleccionar propiedad a rentar");
+
+            if(this.datosRenta.num_meses == 0 || this.datosRenta.fecha_ini == '')
+                this.errorMostrarMsjContrato.push("Completar formulario de renta");
+
+            if(this.datosRenta.nombre_arrendatario == '' || this.datosRenta.dir_arrendatario == '' ||
+                this.datosRenta.col_arrendatario == '' || this.datosRenta.tel_arrendatario == ''
+            )this.errorMostrarMsjContrato.push("Completar formulario de arrendatario");
+
+            if(this.datosRenta.nombre_aval == '' || this.datosRenta.dir_aval == '' ||
+                this.datosRenta.col_aval == '' || this.datosRenta.tel_aval == ''
+            )this.errorMostrarMsjContrato.push("Completar formulario de fiador");
+            
+            if(this.errorMostrarMsjContrato.length)//Si el mensaje tiene almacenado algo en el array
+                this.errorContrato = 1;
+
+            return this.errorContrato;
+        },
         storeRenta(){
             let me = this;
+            if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
+            {
+                return;
+            }
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/rentas/storeRenta',{
                 'datosRenta' : this.datosRenta,

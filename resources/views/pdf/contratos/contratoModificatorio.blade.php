@@ -173,7 +173,7 @@ body{
                     </li>
                     <li style="list-style-type: none; margin-left: 0.25in; text-indent: -0.25in">D.	Que es su interés de firmar el 
                         presente convenio a fin de modificar la clausula 
-                        @if($contrato->tipo_credito == 'Crédito Directo')
+                        @if($contrato->tipo_credito == 'Crédito Directo' || $contrato->tipo_credito == 'Apartado')
                             CUARTA 
                         @else
                             TERCERA                         
@@ -211,7 +211,7 @@ body{
 
             <p>
                 <strong>PRIMERA.-</strong> Ambas partes acuerdan <strong>MODIFICAR</strong> la cláusula 
-                @if($contrato->emp_constructora != $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
+                @if($contrato->emp_constructora != $contrato->emp_terreno && ($contrato->tipo_credito != 'Crédito Directo'  && $contrato->tipo_credito != 'Apartado'))
                     TERCERA 
                 @else
                     CUARTA
@@ -219,7 +219,7 @@ body{
                 de <strong>EL CONTRATO</strong>, para quedar como sigue: <br>
             </p>
 
-            @if($contrato->emp_constructora != $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
+            @if($contrato->emp_constructora != $contrato->emp_terreno &&  ($contrato->tipo_credito != 'Crédito Directo' && $contrato->tipo_credito != 'Apartado'))
                 <p >
                     “El precio total que será motivo de la operación de compraventa definitiva, es la suma que de
                     <strong>${{$contrato->escriturasLetra}}</strong>, de los que la cantidad de ${{$contrato->terrenoLetra}} 
@@ -254,7 +254,7 @@ body{
                     ”
                 </p>
 
-            @elseif($contrato->emp_constructora != $contrato->emp_terreno && $contrato->tipo_credito == 'Crédito Directo')
+            @elseif($contrato->emp_constructora != $contrato->emp_terreno && ($contrato->tipo_credito == 'Crédito Directo' || $contrato->tipo_credito == 'Apartado'))
                 <p>
                     El precio total que será motivo de la operación de compraventa definitiva, es la suma 
                     que de <strong>${{strtoupper($contrato->escriturasLetra)}}</strong>, 
@@ -276,7 +276,7 @@ body{
                     <strong>CUMBRES</strong>. "
                 </p>
 
-            @elseif($contrato->emp_constructora == $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
+            @elseif($contrato->emp_constructora == $contrato->emp_terreno && ($contrato->tipo_credito != 'Crédito Directo' && $contrato->tipo_credito != 'Apartado'))
                 <p>
                     "El precio total que convienen las partes, será motivo de la operación de compraventa definitiva, 
                     es la cantidad que de <strong>${{strtoupper($contrato->escriturasLetra)}}</strong>, 
@@ -304,7 +304,7 @@ body{
                         @endfor, respectivamente. "
                     @endif
                 </p>
-            @elseif($contrato->emp_constructora == $contrato->emp_terreno && $contrato->tipo_credito == 'Crédito Directo')
+            @elseif($contrato->emp_constructora == $contrato->emp_terreno && ($contrato->tipo_credito == 'Crédito Directo' || $contrato->tipo_credito == 'Apartado'))
                 <p>
                     "El precio total que convienen las partes motivo de esta operación será de
                     <strong> ${{strtoupper($contrato->escriturasLetra)}} </strong> el precio Convenido 
@@ -338,7 +338,7 @@ body{
             <p>
                 <strong>TERCERA.- </strong>Ambas partes están de acuerdo en que la firma del presente convenio no implica 
                 novación de contrato, manteniéndose, salvo las modificaciones mencionadas en la cláusulas
-                @if($contrato->emp_constructora != $contrato->emp_terreno && $contrato->tipo_credito != 'Crédito Directo')
+                @if($contrato->emp_constructora != $contrato->emp_terreno && ($contrato->tipo_credito != 'Crédito Directo' && $contrato->tipo_credito != 'Apartado'))
                     TERCERA, 
                 @else
                     CUARTA, 
