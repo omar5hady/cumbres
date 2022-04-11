@@ -508,7 +508,7 @@
                                         <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
                                             
                                             <td class="td2" v-if="rolId != '2'" style="width:5%">
-                                                <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
+                                                <!-- <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
                                                 <i class="icon-lock"></i>
                                                 </button>
                                                 <template v-else>
@@ -516,7 +516,7 @@
                                                     <i class="icon-magnifier"></i>
                                                     </button>
                                                     <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
-                                                </template>
+                                                </template> -->
                                             </td>
                                             <td  style="width:20%" v-text="lote.proyecto"></td>
                                             <td  style="width:20%" v-text="lote.etapa"></td>

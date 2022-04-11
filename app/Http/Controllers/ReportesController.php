@@ -3823,17 +3823,32 @@ class ReportesController extends Controller
             $modelo->lotesTerm = $lotesTerm;
             $modelo->lotesProc = $lotesProc;
 
+            $contratosPeriodo = Contrato::join('creditos','contratos.id','=','creditos.id')
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->select('contratos.id')
+                            ->where('contratos.status','=',3)
+                            ->where('modelos.nombre','=',$modelo->nombre);
+                            if($fraccionamiento != '')
+                                $contratosPeriodo=$contratosPeriodo->where('lotes.fraccionamiento_id','=',$fraccionamiento); 
+                            if($etapa != '')
+                                $contratosPeriodo=$contratosPeriodo->where('lotes.etapa_id','=',$etapa);
+                            if($fechaIni != '' && $fechaFin != '')
+                                $contratosPeriodo=$contratosPeriodo->whereBetween('contratos.fecha',[$fechaIni, $fechaFin]);
+
+            $contratosPeriodo = $contratosPeriodo->get();
+
+
             $indivContadoProc =  Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                 ->join('creditos','contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('licencias','lotes.id','=','licencias.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->where('contratos.status','=',3)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                ->where('modelos.nombre','=',$modelo->nombre);
+                                ->whereIn('contratos.id',$contratosPeriodo);
 
             $indivContadoTerm =  Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                 ->join('creditos','contratos.id', '=', 'creditos.id')
@@ -3841,30 +3856,14 @@ class ReportesController extends Controller
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('licencias','lotes.id','=','licencias.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->where('contratos.status','=',3)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                ->where('modelos.nombre','=',$modelo->nombre);
+                                ->whereIn('contratos.id',$contratosPeriodo);
 
                 $indivContadoTerm = $indivContadoTerm->where('licencias.avance','>=',90);
                 $indivContadoProc = $indivContadoProc->where('licencias.avance','<',90);
 
-                                if($fraccionamiento != ''){
-                                    $indivContadoTerm=$indivContadoTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                                    $indivContadoProc=$indivContadoProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                                }
-                                    
-                                if($etapa != ''){
-                                    $indivContadoTerm=$indivContadoTerm->where('lotes.etapa_id','=',$etapa);
-                                    $indivContadoProc=$indivContadoProc->where('lotes.etapa_id','=',$etapa);
-                                }
-
-                                if($fechaIni != '' && $fechaFin != ''){
-                                    $indivContadoTerm=$indivContadoTerm->whereBetween('expedientes.fecha_liquidacion',[$fechaIni, $fechaFin]);
-                                    $indivContadoProc=$indivContadoProc->whereBetween('expedientes.fecha_liquidacion',[$fechaIni, $fechaFin]);
-                                }
-                                
                                 $indivContadoTerm = $indivContadoTerm->distinct('contratos.id')
                                                             ->count('contratos.id');
                                 $indivContadoProc = $indivContadoProc->distinct('contratos.id')
@@ -3878,11 +3877,10 @@ class ReportesController extends Controller
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('licencias','lotes.id','=','licencias.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->where('contratos.status','=',3)
                                 ->where('expedientes.fecha_firma_esc','!=',NULL)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('modelos.nombre','=',$modelo->nombre);
+                                ->whereIn('contratos.id',$contratosPeriodo);
 
             $indivCreditoProc = Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                 ->join('creditos','contratos.id', '=', 'creditos.id')
@@ -3890,29 +3888,13 @@ class ReportesController extends Controller
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('licencias','lotes.id','=','licencias.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->where('contratos.status','=',3)
                                 ->where('expedientes.fecha_firma_esc','!=',NULL)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('modelos.nombre','=',$modelo->nombre);
+                                ->whereIn('contratos.id',$contratosPeriodo);
 
                 $indivCreditoTerm = $indivCreditoTerm->where('licencias.avance','>=',90);
                 $indivCreditoProc = $indivCreditoProc->where('licencias.avance','<',90);
-
-                                if($fraccionamiento != ''){
-                                    $indivCreditoTerm=$indivCreditoTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                                    $indivCreditoProc=$indivCreditoProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                                } 
-
-                                if($etapa != ''){
-                                    $indivCreditoTerm=$indivCreditoTerm->where('lotes.etapa_id','=',$etapa);
-                                    $indivCreditoProc=$indivCreditoProc->where('lotes.etapa_id','=',$etapa);
-                                }
-
-                                if($fechaIni != '' && $fechaFin != ''){
-                                    $indivCreditoTerm=$indivCreditoTerm->whereBetween('expedientes.fecha_firma_esc',[$fechaIni, $fechaFin]);
-                                    $indivCreditoProc=$indivCreditoProc->whereBetween('expedientes.fecha_firma_esc',[$fechaIni, $fechaFin]);
-                                }
 
                                 $indivCreditoTerm=$indivCreditoTerm->distinct('contratos.id')
                                                             ->count('contratos.id');
@@ -3925,29 +3907,8 @@ class ReportesController extends Controller
                             ->join('lotes','creditos.lote_id','=','lotes.id')
                             ->join('licencias','lotes.id','=','licencias.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->where('contratos.status','=',3)
                             ->where('licencias.avance','<',90)
-                            ->where('modelos.nombre','=',$modelo->nombre);
-
-                            if($fraccionamiento != '')
-                                $contratosProc=$contratosProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                            if($etapa != '')
-                                $contratosProc=$contratosProc->where('lotes.etapa_id','=',$etapa);
-                            if($fechaIni != '' && $fechaFin != ''){
-                                $contratosProc = $contratosProc->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
-                            }
-
-                            $contratosProc=$contratosProc->orWhere('contratos.status','=',1)
-                                ->where('licencias.avance','<',90)
-                                ->where('modelos.nombre','=',$modelo->nombre);
-
-                            if($fraccionamiento != '')
-                                $contratosProc=$contratosProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                            if($etapa != '')
-                                $contratosProc=$contratosProc->where('lotes.etapa_id','=',$etapa);
-                            if($fechaIni != '' && $fechaFin != ''){
-                                $contratosProc = $contratosProc->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
-                            }
+                            ->whereIn('contratos.id',$contratosPeriodo);
                            
                             $contratosProc=$contratosProc->distinct('contratos.id')
                                 ->count('contratos.id');
@@ -3956,29 +3917,8 @@ class ReportesController extends Controller
                             ->join('lotes','creditos.lote_id','=','lotes.id')
                             ->join('licencias','lotes.id','=','licencias.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->where('contratos.status','=',3)
                             ->where('licencias.avance','>=',90)
-                            ->where('modelos.nombre','=',$modelo->nombre);
-
-                            if($fraccionamiento != '')
-                                $contratosTerm=$contratosTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                            if($etapa != '')
-                                $contratosTerm=$contratosTerm->where('lotes.etapa_id','=',$etapa);
-                            if($fechaIni != '' && $fechaFin != ''){
-                                $contratosTerm = $contratosTerm->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
-                            }
-
-                            $contratosTerm=$contratosTerm->orWhere('contratos.status','=',1)
-                                ->where('licencias.avance','>=',90)
-                                ->where('modelos.nombre','=',$modelo->nombre);
-
-                            if($fraccionamiento != '')
-                                $contratosTerm=$contratosTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                            if($etapa != '')
-                                $contratosTerm=$contratosTerm->where('lotes.etapa_id','=',$etapa);
-                            if($fechaIni != '' && $fechaFin != ''){
-                                $contratosTerm = $contratosTerm->whereBetween('contratos.fecha', [$fechaIni, $fechaFin]);
-                            }
+                            ->whereIn('contratos.id',$contratosPeriodo);
                            
                             $contratosTerm=$contratosTerm->distinct('contratos.id')
                             ->count('contratos.id');

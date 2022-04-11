@@ -1335,7 +1335,8 @@
     import vSelect from 'vue-select';
     export default {
         props:{
-            rolId:{type: String}
+            rolId:{type: String},
+            userId:{type: String}
         },
         data(){
             return{

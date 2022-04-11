@@ -1166,7 +1166,7 @@ class ClienteController extends Controller
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
                     DB::raw("CONCAT(vAux.nombre,' ',vAux.apellidos) AS vAux_completo"),
-                    'clientes.seguimiento',
+                    'clientes.seguimiento', 'vendedores.supervisor_id',
                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 'clientes.estado','clientes.ciudad',
                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion', 'clientes.reasignar',

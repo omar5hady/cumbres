@@ -223,7 +223,7 @@
 
         @if(Auth::user()->mis_prospectos == 1)
             <template v-if="menu==60">
-                <prospectos rol-id="{{Auth::user()->rol_id}}"></prospectos>
+                <prospectos rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></prospectos>
             </template>
         @endif
             

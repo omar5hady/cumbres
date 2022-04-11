@@ -148,7 +148,7 @@
                                             <button type="button" v-if="lead.vendedor_asign == null" @click="asignarVendedor(lead.id)" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-exchange"></i>
                                             </button>    
-                                            <button v-if="userId == 25511 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                           
                                         </td>
@@ -217,7 +217,7 @@
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
                                             </button>   
-                                            <button v-if="userId == 25511 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                            
                                         </td>
@@ -273,7 +273,7 @@
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
                                             </button>      
-                                            <button v-if="userId == 25511 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                           
                                         </td>
@@ -327,7 +327,7 @@
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
                                             </button>      
-                                            <button v-if="userId == 25511 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                           
                                         </td>
@@ -432,7 +432,7 @@
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
                                             </button>      
-                                            <button v-if="userId == 25511 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                           
                                         </td>
@@ -483,7 +483,7 @@
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
                                             </button>      
-                                            <button v-if="userId == 25511 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                           
                                         </td>
@@ -709,7 +709,7 @@
                                     <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
                                         <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
 
-                                        <select class="form-control" v-if="userId == 25511 ||userId == 28270 || userId == 11 || userId == 28271 || rolId == 1"  v-model="vendedor_asign" >
+                                        <select class="form-control" v-if="userId == 25511 || userId == 28669 ||userId == 28270 || userId == 11 || userId == 28271 || rolId == 1"  v-model="vendedor_asign" >
                                             <option value="">Vendedor asignado</option>
                                             <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                         </select>
