@@ -536,7 +536,7 @@ body{
                     <div colspan="2" class="table-cell3">
                         <center>
                             TESTIGO
-                            <br>SR. JUAN URIEL ALFARO GALVAN</div>
+                            <br>SR. {{mb_strtoupper($testigo)}}</div>
                         </center>
                 </div>
             </div>

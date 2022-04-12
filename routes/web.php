@@ -273,17 +273,22 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////         RUTAS RENTAS        ////////////////////////////////
         Route::post('/arrendador/storeArrendador','RentasController@storeArrendador');
         Route::put('/arrendador/updateArrendador','RentasController@updateArrendador');
+        Route::post('/testigo/storeTestigo','RentasController@storeTestigo');
+        Route::put('/testigo/updateTestigo','RentasController@updateTestigo');
 
         Route::get('/lotes/indexLotesRentas','LoteController@indexLotesRentas');
         Route::get('/lotes/getRentasDisponibles','RentasController@getRentasDisponibles');
         Route::get('/lotes/getDatosLoteRenta','RentasController@getDatosLoteRenta');
         Route::get('/rentas/getArrendador','RentasController@getArrendador');
+        Route::get('/rentas/getTestigos','RentasController@getTestigos');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
         Route::get('/rentas/indexRentas','RentasController@indexRentas');
         Route::get('/rentas/getDatosRenta','RentasController@getDatosRenta');
         Route::get('/rentas/printContrato','RentasController@printContrato');
         Route::get('/rentas/printPagares','RentasController@printPagares');
+
+        Route::post('/rentas/formSubmitArchivo/{id}','RentasController@formSubmitArchivo'); //carga de archivo
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');

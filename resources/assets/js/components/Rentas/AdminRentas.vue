@@ -12,6 +12,9 @@
                         <button type="button" @click="abrirModal('arrendador')" class="btn btn-primary">
                             <i class="icon-plus"></i>&nbsp;Arrendadores
                         </button>
+                        <button type="button" @click="abrirModal('testigos')" class="btn btn-primary">
+                            <i class="icon-plus"></i>&nbsp;Testigos
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -75,6 +78,10 @@
                                             <button 
                                             type="button" @click="abrirModal('actualizar',lote)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
+                                            </button>
+                                            <button 
+                                            type="button" @click="abrirModal('archivo',lote)" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-files-o"></i>
                                             </button>
                                         </td>
                                         <td class="td2" v-text="lote.proyecto"></td>
@@ -334,7 +341,7 @@
 
                                 <div class="form-group row" v-if="ver == 0">
                                     <div class="col-md-4">
-                                        <button type="button" class="btn btn-dark" @click="nuevoArrendedor()">
+                                        <button type="button" class="btn btn-dark" @click="nuevoRegistro()">
                                             <i class="icon-plus"></i>&nbsp;Nuevo
                                         </button>
                                     </div>
@@ -362,7 +369,7 @@
                                             <tbody>
                                                 <tr v-for="arrendador in arrayArrendador" :key="arrendador.id">
                                                     <td>
-                                                        <button type="button" class="btn btn-warning" @click="vistaAct(arrendador)">
+                                                        <button type="button" class="btn btn-warning" @click="vistaAct(arrendador,0)">
                                                             <i class="icon-pencil"></i>&nbsp;
                                                         </button>
                                                     </td>
@@ -379,13 +386,99 @@
                                 
                             </form>
                         </div>
+                        <div class="modal-body" v-if="modal == 3">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <template v-if="ver==1">
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">
+                                            Nombre:
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="datosTestigo.nombre" class="form-control">
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <div class="form-group row" v-if="ver == 0">
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-dark" @click="nuevoRegistro()">
+                                            <i class="icon-plus"></i>&nbsp;Nuevo
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="ver == 1">
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-danger" @click="ver=0, tipoAccion = 2">
+                                            <i class="icon-clse"></i>&nbsp;Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Nombre</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="testigo in arrayTestigos" :key="testigo.id">
+                                                    <td>
+                                                        <button type="button" class="btn btn-warning" @click="vistaAct(testigo,1)">
+                                                            <i class="icon-pencil"></i>&nbsp;
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="testigo.nombre"></td>
+                                                </tr>                      
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+
+                        <div class="modal-body" v-if="modal == 4">
+                            <form  method="post" @submit="formSubmitArchivo" enctype="multipart/form-data">
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
+                                    <div class="col-md-9">
+                                        <input type="file" accept="application/pdf" class="form-control" v-on:change="onArchivo">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-9"></div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-success">Guardar Archivo.</button>
+                                    </div>
+                                </div>
+                                
+                                <br/>
+                            </form>
+
+                        </div>
+
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="updateArrendador()">Actualizar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="storeArrendador()">Guardar</button>
+                            <template v-if="modal != 4">
+                                <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+                                <button type="button" v-if="modal == 2 && tipoAccion==1" class="btn btn-primary" @click="updateArrendador()">Actualizar</button>
+                                <button type="button" v-if="modal == 2 && tipoAccion==3" class="btn btn-primary" @click="storeArrendador()">Guardar</button>
+
+                                <button type="button" v-if="modal == 3 && tipoAccion==1" class="btn btn-primary" @click="updateTestigo()">Actualizar</button>
+                                <button type="button" v-if="modal == 3 && tipoAccion==3" class="btn btn-primary" @click="storeTestigo()">Guardar</button>
+                            </template>
+                            <template v-if="modal == 4 && datosRenta.archivo_esp != null">
+                                <button type="button" class="btn btn-success" @click="verArchivo(datosRenta.archivo_esp)">Ver archivo</button>
+                            </template>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -412,6 +505,7 @@
                 arrayModelos : [],
                 arrayEtapas : [],
                 arrayArrendador : [],
+                arrayTestigos : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -423,13 +517,48 @@
                 b_status: '',
                 datosRenta: {},
                 datosArrendador : {},
+                datosTestigo : {},
                 direccion: '',
                 ver:0,
+                archivo : ''
             }
         },
         computed:{
         },
         methods : {
+            onArchivo(e){
+                this.archivo = e.target.files[0];
+            },
+            formSubmitArchivo(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                let formData = new FormData();
+           
+                formData.append('archivo', this.archivo);
+                let me = this;
+                axios.post('/rentas/formSubmitArchivo/'+me.datosRenta.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.indexLotesRentas(1); //se enlistan nuevamente los registros
+                }).catch(function (error) {
+                    currentObj.output = error;
+                    console.log(error);
+                });
+
+            },
+            verArchivo(archivo){
+                window.open('/files/lotes/archivoRentas/'+archivo, '_blank')
+            },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -487,6 +616,19 @@
                     console.log(error);
                 });
             },
+            getTestigos(){
+                let me = this;
+              
+                me.arrayTestigos=[];
+                var url = '/rentas/getTestigos';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayTestigos = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectFraccionamientos(){
                 let me = this;
                 if(me.modal == 0){
@@ -525,13 +667,17 @@
                     console.log(error);
                 });
             },
-            vistaAct(arrendador){
-                this.datosArrendador = arrendador;
+            vistaAct(data,tipo){
+                if(tipo == 0)
+                    this.datosArrendador = data;
+                else
+                    this.datosTestigo = data;
                 this.ver = 1;
                 this.tipoAccion = 1;
             },
-            nuevoArrendedor(){
+            nuevoRegistro(){
                 this.datosArrendedor = {};
+                this.datosTestigo = {}
                 this.ver = 1;
                 this.tipoAccion= 3
             },
@@ -622,6 +768,51 @@
                     console.log(error);
                 });
             },
+            updateTestigo(){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/testigo/updateTestigo',{
+                    'id' : this.datosTestigo.id,
+                    'nombre' : this.datosTestigo.nombre,
+                }).then(function (response){
+                    me.ver = 0;
+                    me.tipoAccion = 2;
+                    me.datosTestigo = {};
+                    me.getTestigos();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Datos actualizados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            storeTestigo(){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/testigo/storeTestigo',{
+                    'nombre' : this.datosTestigo.nombre,
+                }).then(function (response){
+                    me.ver = 0;
+                    me.tipoAccion = 2;
+                    me.datosTestigo = {};
+                    me.getTestigos();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Datos actualizados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
             cerrarModal(){
                this.modal = 0;
             },
@@ -648,6 +839,18 @@
                         this.ver=0;
                         break;
                     }
+                    case 'testigos':{
+                        this.modal = 3;
+                        this.tituloModal = 'Testigos';
+                        this.datosTestigo = {};
+                        this.ver = 0;
+                    }
+                    case 'archivo':{
+                        this.modal = 4;
+                        this.tituloModal = 'Subir archivo';
+                        this.archivo = '';
+                        this.datosRenta = data;
+                    }
                 }
             }
         },
@@ -655,6 +858,7 @@
             this.indexLotesRentas(1);
             this.selectFraccionamientos();
             this.getArrendador();
+            this.getTestigos();
         }
     }
 </script>

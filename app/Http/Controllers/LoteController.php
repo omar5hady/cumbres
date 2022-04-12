@@ -16,6 +16,7 @@ use App\Licencia;
 use App\Partida;
 use App\Avance;
 use App\Promocion;
+use App\Renta;
 use App\Contrato;
 use App\Apartado;
 use App\User;
@@ -35,6 +36,27 @@ use Auth;
 
 class LoteController extends Controller
 {
+
+    private function searchContrato($lote_id, $tipo){
+        $resp = 0;
+        if($tipo == 0)
+            $resp = sizeof(
+                Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->select('contratos.id')->where('creditos.lote_id','=',$lote_id)
+                ->whereIn('contratos.status',[1,3])
+                ->get()
+            );
+        else{
+            $resp = sizeof(
+                Renta::select('id')
+                ->where('lote_id','=',$lote_id)
+                ->where('status','=',1)
+                ->get()
+            );
+        }
+
+        return $resp;
+    }
 
     //Función privada que retorna la query necesaria para obtener los lotes registrados
     private function getLotes(Request $request){
@@ -330,6 +352,7 @@ class LoteController extends Controller
             if($request->casa_renta == 1){//En caso de ser lote para renta
                 $lote->casa_renta = $request->casa_renta;
                 $lote->precio_renta = $request->precio_renta;
+                $lote->contrato = $this->searchContrato($lote->id,1);
             }
             else{
                 if($terrenoModelo[0]->nombre != "Terreno"){//Para lotes con construcción (Casas o departamento)
@@ -364,6 +387,8 @@ class LoteController extends Controller
                     //Se asigna el precio calculado el precio por m2 multuplicado por el tamaño del terreno.
                     $lote->precio_base = $preciom2[0]->costom2 * $lote->terreno;
                 }
+                $lote->contrato = $this->searchContrato($lote->id,0);
+                $lote->casa_renta = $request->casa_renta;
             }
         }
         else{
@@ -1023,7 +1048,7 @@ class LoteController extends Controller
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                         'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
+                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno', 'licencias.archivo_esp',
                         'v.nombre as v_nombre', 'apartados.fecha_apartado');
         //Query para inventario de lotes para asesores
         $queryVendedores = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -1036,7 +1061,7 @@ class LoteController extends Controller
                     'lotes.casa_renta', 'lotes.precio_renta',
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste', 'lotes.emp_constructora', 'lotes.emp_terreno',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste', 'lotes.emp_constructora', 'lotes.emp_terreno','licencias.archivo_esp',
                     'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
 
         if($request->tipo <= 2){//Filtro para casas o departamentos

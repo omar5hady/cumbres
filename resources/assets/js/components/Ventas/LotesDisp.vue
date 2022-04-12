@@ -525,7 +525,7 @@
                                                 <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
                                             <td  v-text="lote.avance + '%'"></td>
                                             <td >
-                                                <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
+                                                <button v-if="lote.archivo_esp != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnicaRenta(lote.archivo_esp)" class="btn btn-success btn-sm">
                                                     {{lote.modelo}}
                                                 </button>
                                                 <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
@@ -864,8 +864,10 @@
                 });
             },     
             fichaTecnica(archivo){
-                let me = this;
                 window.open('/files/modelos/'+archivo, '_blank')
+            },
+            fichaTecnicaRenta(archivo){
+                window.open('/files/lotes/archivoRentas/'+archivo, '_blank')
             },
             selectDatosApartado(lote_id){
                 let me = this;

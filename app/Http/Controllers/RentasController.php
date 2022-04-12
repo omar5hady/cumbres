@@ -7,10 +7,12 @@ use App\Lote;
 use App\Licencia;
 use App\Arrendador;
 use App\Renta;
+use App\Testigo_renta;
 use App\Pago_renta;
 use Carbon\Carbon;
 use NumerosEnLetras;
 use DB;
+use File;
 
 class RentasController extends Controller
 {
@@ -18,6 +20,11 @@ class RentasController extends Controller
     public function getArrendador(Request $request){
         if(!$request->ajax())return redirect('/');
         return Arrendador::orderBy('tipo','asc')->get();
+    }
+    //Función para obtener los testigos dados de alta
+    public function getTestigos(Request $request){
+        if(!$request->ajax())return redirect('/');
+        return Testigo_renta::orderBy('nombre','asc')->get();
     }
     //Función para actualizar la informacion de renta para un lote.
     public function updateDatosRenta(Request $request){
@@ -64,6 +71,20 @@ class RentasController extends Controller
         $arrendador->cuenta = $request->cuenta;
         $arrendador->banco = $request->banco;
         $arrendador->save();
+    }
+    //Función para registrar un nuevo arrendador
+    public function storeTestigo(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $testigo = new Testigo_renta();
+        $testigo->nombre = $request->nombre;
+        $testigo->save();
+    }
+    //Función para actualizar los datos de un arrendador.
+    public function updateTestigo(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $testigo = Testigo_renta::findOrFail($request->id);
+        $testigo->nombre = $request->nombre;
+        $testigo->save();
     }
     //Funcion para retornar los lotes con disponibilidad para renta
     public function getRentasDisponibles(Request $request){
@@ -126,6 +147,7 @@ class RentasController extends Controller
             $renta->fecha_fin = $datosRenta['fecha_fin'];
             $renta->num_meses = $datosRenta['num_meses'];
             $renta->fecha_firma = $datosRenta['fecha_firma'];
+            $renta->dep_garantia = $datosRenta['dep_garantia'];
             $renta->save();
             //Se accede al registro del lote para indicar que ha sido rentado
             $lote = Lote::findOrFail($datosRenta['lote_id']);
@@ -232,6 +254,7 @@ class RentasController extends Controller
         $pdf = \PDF::loadview('pdf.rentas.contratoRenta', [
             'contrato' => $contrato,
             'representante' => $request->representante,
+            'testigo' => $request->testigo,
         ]);
         return $pdf->stream('Contrato.pdf');
     }
@@ -255,5 +278,26 @@ class RentasController extends Controller
             'contrato' => $contrato
         ]);
         return $pdf->stream('Pagares.pdf');
+    }
+
+    // Función para subir archivo fiscal para ventas.
+    public function formSubmitArchivo(Request $request, $id){
+        $lote = Licencia::findOrFail($id);
+
+        if($lote->archivo_esp != NULL){
+            $pathAnterior = public_path() . '/files/lotes/archivoRentas/' . $lote->archivo_esp;
+            File::delete($pathAnterior);
+        }
+
+        $fileName = $request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/lotes/archivoRentas/'), $fileName);
+
+        if($moved){
+            $lote = Licencia::findOrFail($id);
+            $lote->archivo_esp = $fileName;
+            $lote->save(); //Insert
+        }
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
     }
 }

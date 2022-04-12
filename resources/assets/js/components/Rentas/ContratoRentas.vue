@@ -504,7 +504,7 @@
                                     <!-- Fin datos prospecto-->
                                 </div>
                             </div>
-
+                            <!--Datos Testigo-->
                             <div class="card mb-0">
                                 <div class="card-header" id="headingThree" role="tab">
                                     <h5 class="mb-0">
@@ -514,7 +514,6 @@
                                         </a>
                                     </h5>
                                 </div>
-                                <!--Datos Renta-->
                                 <div class="collapse" id="collapseThree" role="tabpanel"
                                     aria-labelledby="headingThree" data-parent="#accordion">
                                     <div
@@ -544,7 +543,7 @@
                                     <!-- Fin datos prospecto-->
                                 </div>
                             </div>
-
+                            <!--Datos Renta-->
                             <div class="card mb-0">
                                 <div class="card-header" id="headingFour" role="tab">
                                     <h5 class="mb-0">
@@ -625,10 +624,10 @@
                                                 <div class="form-group">
                                                     <label for="">Modelo</label>
                                                     <input type="text" 
-                                                    disabled
-                                                    class="form-control" v-model="datosRenta.modelo"
-                                                    placeholder="Modelo"
-                                                />
+                                                        disabled
+                                                        class="form-control" v-model="datosRenta.modelo"
+                                                        placeholder="Modelo"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -658,15 +657,30 @@
                                                 </div>
                                             </div>
 
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="">Déposito de Garantia</label>
+                                                    <input type="text" v-if="listado == 3" 
+                                                        :disabled="listado == 2"
+                                                        class="form-control" v-model="datosRenta.dep_garantia"
+                                                        placeholder="Deposito de garantia"
+                                                        v-on:keypress="isNumber($event)"
+                                                    />
+                                                    <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.dep_garantia)"></h6>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-7"></div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="">Fecha de inicio</label>
                                                     <input type="date" 
-                                                    :disabled="listado == 2"
-                                                    class="form-control" v-model="datosRenta.fecha_ini"
-                                                    placeholder="Fecha de inicio"
-                                                    @change="calcularFechaFin()"
-                                                />
+                                                        :disabled="listado == 2"
+                                                        class="form-control" v-model="datosRenta.fecha_ini"
+                                                        placeholder="Fecha de inicio"
+                                                        @change="calcularFechaFin()"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -790,19 +804,35 @@
                     </div>
 
                     <div class="modal-body">
-                        <div>
-                            <select class="form-control" v-model="apoderado">
-                                <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
-                                <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
-                                <option value="C.P. MARTIN HERRERA SANCHEZ">C.P. MARTIN HERRERA SANCHEZ</option>
-                            </select>
+                        <div class="form-group row" v-if="datosRenta.tipo_arrendador == 1">
+                            <label class="col-md-2 form-control-label" for="text-input">
+                                Apoderado legal:
+                            </label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="apoderado">
+                                    <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
+                                    <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
+                                    <option value="C.P. MARTIN HERRERA SANCHEZ">C.P. MARTIN HERRERA SANCHEZ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">
+                                Testigo:
+                            </label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="testigo">
+                                    <option v-for="testigo in arrayTestigos" :key="testigo.id"  :value="testigo.nombre" v-text="testigo.nombre"></option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Botones del modal -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="modal=0">Cerrar</button>
-                            <a class="btn btn-primary" v-bind:href="'/rentas/printContrato?id=' + datosRenta.id + '&representante=' + apoderado"  target="_blank">
+                            <a class="btn btn-primary" v-bind:href="'/rentas/printContrato?id=' + datosRenta.id + '&representante=' + apoderado + '&testigo=' + testigo"  target="_blank">
                             <i></i>Imprimir
                         </a>
                     </div>
@@ -837,6 +867,7 @@ export default {
             arrayDisponibles: [],
             arrayClaves: [],
             arrayColonias: [],
+            arrayTestigos : [],
             errorMostrarMsjContrato: [],
             errorContrato: 0,
             listado: 1,
@@ -851,6 +882,7 @@ export default {
             modal:0,
             fecha_status:'',
             apoderado : 'C.P. MARTIN HERRERA SANCHEZ',
+            testigo: 'JUAN URIEL ALFARO GALVAN',
         };
     },
     computed: {
@@ -885,7 +917,7 @@ export default {
                 anio = fecha_fin.getFullYear();
                 
                 for(let i = 1; i<=me.datosRenta.num_meses; i++){
-                    var auxMes = mes + i; 
+                    var auxMes = mes + i - 1; 
                     var auxAnio = anio;
                     if( auxMes > 12)
                     {
@@ -898,7 +930,7 @@ export default {
                     me.datosRenta.pagares.push({
                         id:i,
                         num_pago:i,
-                        fecha: auxAnio+'-'+auxMes+'-05',
+                        fecha: auxAnio+'-'+auxMes+'-01',
                         importe: me.datosRenta.monto_renta
                     });
                 }
@@ -931,6 +963,19 @@ export default {
                 console.log(error);
             });
         
+        },
+        getTestigos(){
+            let me = this;
+            
+            me.arrayTestigos=[];
+            var url = '/rentas/getTestigos';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayTestigos = respuesta;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         /**Metodo para mostrar los registros */
         listarContratos(page){
@@ -1094,6 +1139,7 @@ export default {
                 'num_meses' : 0,
                 'modelo' : '',
                 'pagares': [],
+                'dep_garantia' : 0,
             };
         },
         getDatos(id){
@@ -1174,12 +1220,13 @@ export default {
             let me = this;
             me.limpiarDatosRenta();
             me.listado = 1;
-            me.listarContrato();
+            me.listarContratos();
         }
     },
     mounted() {
         this.selectFraccionamientos();
         this.listarContratos(1);
+        this.getTestigos();
     }
 };
 </script>

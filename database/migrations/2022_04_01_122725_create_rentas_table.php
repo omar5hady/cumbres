@@ -55,6 +55,8 @@ class CreateRentasTable extends Migration
             $table->date('fecha_fin')->nullable();
             $table->integer('num_meses')->default(0);
 
+            $table->float('dep_garantia',10,2)->default(0);
+
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
