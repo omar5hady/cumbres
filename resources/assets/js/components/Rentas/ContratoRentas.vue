@@ -669,8 +669,123 @@
                                                     <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.dep_garantia)"></h6>
                                                 </div>
                                             </div>
-
                                             <div class="col-md-7"></div>
+
+                                            <!-- MUEBLES -->
+                                            <div class="col-md-3">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <button type="button" v-if="datosRenta.muebles == 1"
+                                                                class="btn btn-success"
+                                                                :disabled="listado == 2"
+                                                                @click="datosRenta.muebles=0"
+                                                            >
+                                                                Si
+                                                            </button>
+                                                            <button type="button" v-if="datosRenta.muebles == 0"
+                                                                class="btn btn-primary"
+                                                                :disabled="listado == 2"
+                                                                @click="datosRenta.muebles=1"
+                                                            >
+                                                                No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" class="form-control" disabled placeholder="¿Muebles?"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9"></div>
+
+                                            <!-- SERVICIOS -->
+                                            <div class="col-md-3">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <button type="button" v-if="datosRenta.servicios == 1"
+                                                                class="btn btn-success"
+                                                                :disabled="listado == 2"
+                                                                @click="datosRenta.servicios=0"
+                                                            >
+                                                                Si
+                                                            </button>
+                                                            <button type="button" v-if="datosRenta.servicios == 0"
+                                                                class="btn btn-primary"
+                                                                :disabled="listado == 2"
+                                                                @click="datosRenta.servicios=1, limpiarServicios()"
+                                                            >
+                                                                No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" class="form-control" disabled placeholder="¿Servicios?"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9"></div>
+
+                                            <template v-if="datosRenta.servicios == 1">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="">Luz</label>
+                                                        <input type="text" v-if="listado == 3" 
+                                                            :disabled="listado == 2"
+                                                            class="form-control" v-model="datosRenta.luz"
+                                                            placeholder="Deposito de garantia"
+                                                            v-on:keypress="isNumber($event)"
+                                                        />
+                                                        <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.luz)"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="">Agua</label>
+                                                        <input type="text" v-if="listado == 3" 
+                                                            :disabled="listado == 2"
+                                                            class="form-control" v-model="datosRenta.agua"
+                                                            placeholder="Deposito de garantia"
+                                                            v-on:keypress="isNumber($event)"
+                                                        />
+                                                        <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.agua)"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="">Gas</label>
+                                                        <input type="text" v-if="listado == 3" 
+                                                            :disabled="listado == 2"
+                                                            class="form-control" v-model="datosRenta.gas"
+                                                            placeholder="Deposito de garantia"
+                                                            v-on:keypress="isNumber($event)"
+                                                        />
+                                                        <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.gas)"></h6>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="">Televisión</label>
+                                                        <input type="text" v-if="listado == 3" 
+                                                            :disabled="listado == 2"
+                                                            class="form-control" v-model="datosRenta.television"
+                                                            placeholder="Deposito de garantia"
+                                                            v-on:keypress="isNumber($event)"
+                                                        />
+                                                        <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.television)"></h6>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="">Telefonía</label>
+                                                        <input type="text" v-if="listado == 3" 
+                                                            :disabled="listado == 2"
+                                                            class="form-control" v-model="datosRenta.telefonia"
+                                                            placeholder="Deposito de garantia"
+                                                            v-on:keypress="isNumber($event)"
+                                                        />
+                                                        <h6 style="color:blue;" v-text="'$'+formatNumber(datosRenta.telefonia)"></h6>
+                                                    </div>
+                                                </div>
+                                            </template>
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
@@ -781,6 +896,13 @@
                                         >
                                             Imprimir contrato
                                         </button>
+                                        
+                                        <button type="button"
+                                            class="btn btn-warning"
+                                            @click="modal=2"
+                                        >
+                                            Depósito de Garantia
+                                        </button>
                                         <a class="btn btn-scarlet btn-sm" target="_blank" v-bind:href="'/rentas/printPagares?id='+datosRenta.id">Imprimir pagares</a>
                                     </div>
                                 </div>
@@ -793,7 +915,7 @@
         </div>
 
         <!-- Inicio Modal Fecha para firma -->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal >=1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-primary modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -817,7 +939,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" v-if="modal == 1">
                             <label class="col-md-2 form-control-label" for="text-input">
                                 Testigo:
                             </label>
@@ -832,7 +954,14 @@
                     <!-- Botones del modal -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="modal=0">Cerrar</button>
-                            <a class="btn btn-primary" v-bind:href="'/rentas/printContrato?id=' + datosRenta.id + '&representante=' + apoderado + '&testigo=' + testigo"  target="_blank">
+                        <a v-if="modal == 1" class="btn btn-primary" v-bind:href="'/rentas/printContrato?id=' + datosRenta.id + '&representante=' + apoderado + '&testigo=' + testigo"  target="_blank">
+                            <i></i>Imprimir
+                        </a>
+                        <a class="btn btn-danger btn-sm" target="_blank" 
+                            v-if="modal == 1 && datosRenta.muebles == 1"
+                            v-bind:href="'/rentas/printAdendum?id='+datosRenta.id + '&representante=' + apoderado">ADENDUM
+                        </a>
+                        <a v-if="modal == 2" class="btn btn-primary" v-bind:href="'/rentas/printDepositoGarantia?id=' + datosRenta.id + '&representante=' + apoderado"  target="_blank">
                             <i></i>Imprimir
                         </a>
                     </div>
@@ -1140,7 +1269,22 @@ export default {
                 'modelo' : '',
                 'pagares': [],
                 'dep_garantia' : 0,
+                'muebles' : 0,
+                'servicios' : 0,
+                'luz' : 0,
+                'agua' : 0,
+                'gas' : 0,
+                'television' : 0,
+                'telefonia' : 0,
             };
+        },
+        limpiarServicios(){
+            let me = this;
+            me.datosRenta.luz = 0;
+            me.datosRenta.agua = 0;
+            me.datosRenta.gas = 0;
+            me.datosRenta.television = 0;
+            me.datosRenta.telefonia = 0;
         },
         getDatos(id){
             let me = this;
@@ -1236,7 +1380,7 @@ export default {
         position: absolute !important;
     }
     .modal-body {
-        height: 450px;
+        height: 200px;
         width: 100%;
         overflow-y: auto;
     }

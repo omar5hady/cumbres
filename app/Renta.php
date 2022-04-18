@@ -43,7 +43,13 @@ class Renta extends Model
             'fecha_firma',
             'fecha_ini',
             'fecha_fin',
-            'num_meses'
+            'num_meses',
+            'dep_garantia',
+            'servicios',
+            'muebles',
+            'luz',
+            'agua',
+            'gas'
     ];
 
     public function lote(){

@@ -57,6 +57,16 @@ class CreateRentasTable extends Migration
 
             $table->float('dep_garantia',10,2)->default(0);
 
+            //Servicios y muebles
+            $table->boolean('servicios')->default(0);
+            $table->boolean('muebles')->default(0);
+
+            $table->float('luz',8,2)->default(0);
+            $table->float('agua',8,2)->default(0);
+            $table->float('gas',8,2)->default(0);
+            $table->float('television',8,2)->default(0);
+            $table->float('telefonia',8,2)->default(0);
+
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');

@@ -287,6 +287,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/rentas/getDatosRenta','RentasController@getDatosRenta');
         Route::get('/rentas/printContrato','RentasController@printContrato');
         Route::get('/rentas/printPagares','RentasController@printPagares');
+        Route::get('/rentas/printDepositoGarantia','RentasController@printDepositoGarantia');
+        Route::get('/rentas/printAdendum','RentasController@printAdendum');
 
         Route::post('/rentas/formSubmitArchivo/{id}','RentasController@formSubmitArchivo'); //carga de archivo
         

@@ -148,6 +148,15 @@ class RentasController extends Controller
             $renta->num_meses = $datosRenta['num_meses'];
             $renta->fecha_firma = $datosRenta['fecha_firma'];
             $renta->dep_garantia = $datosRenta['dep_garantia'];
+
+            $renta->muebles = $datosRenta['muebles'];
+            $renta->servicios = $datosRenta['servicios'];
+
+            $renta->luz = $datosRenta['luz'];
+            $renta->agua = $datosRenta['agua'];
+            $renta->gas = $datosRenta['gas'];
+            $renta->television = $datosRenta['television'];
+            $renta->telefonia = $datosRenta['telefonia'];
             $renta->save();
             //Se accede al registro del lote para indicar que ha sido rentado
             $lote = Lote::findOrFail($datosRenta['lote_id']);
@@ -201,6 +210,7 @@ class RentasController extends Controller
         return $rentas;       
     }
 
+    //Funcion que retorna los datos de un contrato
     public function getDatosRenta(Request $request){
         $renta = Renta::join('lotes','rentas.lote_id','=','lotes.id')
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -214,6 +224,7 @@ class RentasController extends Controller
                 'lotes.calle', 'lotes.numero', 'lotes.interior',
                 'fraccionamientos.nombre as proyecto',
                 'fraccionamientos.cp as cp_proyecto',
+                'fraccionamientos.delegacion',
                 'fraccionamientos.ciudad as ciudad_proyecto',
                 'fraccionamientos.estado as estado_proyecto',
                 'etapas.num_etapa as etapa',
@@ -230,54 +241,149 @@ class RentasController extends Controller
                 'modelos.nombre as modelo')
                 ->where('rentas.id','=',$request->id)
                 ->first();
-
+            //Obtención de los pagares ligados al contrato.
             $renta->pagares = Pago_renta::where('renta_id','=',$renta->id)->get();
 
         return $renta;
     }
 
+    //Función para mostrar el contrato en PDF
     public function printContrato(Request $request){
         setlocale(LC_TIME, 'es_MX.utf8');
+        //Llamada a la función que retorna los datos del contrato
         $contrato = $this->getDatosRenta($request);
+        //Se obtiene el formato de numero en letra
         $contrato->cantMeses = NumerosEnLetras::convertir($contrato->num_meses, '', false, '');
         $contrato->monto_renta = NumerosEnLetras::convertir($contrato->monto_renta, 'Pesos', true, 'Centavos');
-
+        //Formato de fecha segun necesidades en el contrato
         $fechaIni = new Carbon($contrato->fecha_ini);
         $contrato->fecha_ini = $fechaIni->formatLocalized('%d días de %B de %Y');
-
         $fechaFin = new Carbon($contrato->fecha_fin);
         $contrato->fecha_fin = $fechaFin->formatLocalized('%d días de %B de %Y');
-
         $fechaContrato = new Carbon($contrato->fecha_firma);
         $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
 
+        $servicios = [];
+        $sinServicios = [];
+
+        if($contrato->servicios == 1){
+            if($contrato->luz > 0){
+                $contrato->luz = number_format((float)$contrato->luz, 2, '.', ',');
+                array_push($servicios,'luz $'.$contrato->luz);
+            }
+            if($contrato->agua > 0){
+                $contrato->agua = number_format((float)$contrato->agua, 2, '.', ',');
+                array_push($servicios,'agua $'.$contrato->agua);
+            }
+            if($contrato->gas > 0){
+                $contrato->gas = number_format((float)$contrato->gas, 2, '.', ',');
+                array_push($servicios,'gas $'.$contrato->gas);
+            }
+            if($contrato->television > 0){
+                $contrato->television = number_format((float)$contrato->television, 2, '.', ',');
+                array_push($servicios,'televisión $'.$contrato->television);
+            }
+            if($contrato->telefonia > 0){
+                $contrato->telefonia = number_format((float)$contrato->telefonia, 2, '.', ',');
+                array_push($servicios,'telefonía $'.$contrato->telefonia);
+            }
+
+            if($contrato->luz == 0){
+                array_push($sinServicios,'luz');
+            }
+            if($contrato->agua == 0){
+                array_push($sinServicios,'agua');
+            }
+            if($contrato->gas == 0){
+                array_push($sinServicios,'gas');
+            }
+            if($contrato->television == 0){
+                array_push($sinServicios,'televisión');
+            }
+            if($contrato->telefonia == 0){
+                array_push($sinServicios,'telefonía');
+            }
+        }
+        //Creación del PDF
         $pdf = \PDF::loadview('pdf.rentas.contratoRenta', [
             'contrato' => $contrato,
             'representante' => $request->representante,
             'testigo' => $request->testigo,
+            'servicios' => $servicios,
+            'sinServicios' => $sinServicios
         ]);
+        //Retorno de la vista
         return $pdf->stream('Contrato.pdf');
     }
-
+    //Función para mostrar los pagareas del contrato en PDF
     public function printPagares(Request $request){
         setlocale(LC_TIME, 'es_MX.utf8');
+        //Llamda a la función que retorna los datos del contrato
         $contrato = $this->getDatosRenta($request);
+        //Se obtiene el formato de numero en letra
         $contrato->cantMeses = NumerosEnLetras::convertir($contrato->num_meses, '', false, '');
-        
+        //Se recorre el arreglo que contiene los pagares
         foreach($contrato->pagares as $pago){
+            //Formato en letra
             $pago->monto = NumerosEnLetras::convertir($pago->importe, 'Pesos', true, 'Centavos');
+            //Formato de moneda
             $pago->importe = number_format((float)$pago->importe, 2, '.', ',');
+            //Formato para fecha de pago
             $pago->fecha_pago = new Carbon($pago->fecha);
             $pago->fecha_pago = $pago->fecha_pago->formatLocalized('%d de %B de %Y');
         }
-
+        //Formato para la fecha de contrato
         $fechaContrato = new Carbon($contrato->fecha_firma);
         $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
-
+        //Creación de PDF
         $pdf = \PDF::loadview('pdf.rentas.pagosRentas', [
             'contrato' => $contrato
         ]);
+        //Retorno de la vista
         return $pdf->stream('Pagares.pdf');
+    }
+
+    public function printDepositoGarantia(Request $request){
+        setlocale(LC_TIME, 'es_MX.utf8');
+        //Llamda a la función que retorna los datos del contrato
+        $contrato = $this->getDatosRenta($request);
+        //Formato de fecha segun necesidades
+        $fechaContrato = new Carbon($contrato->fecha_firma);
+        $contrato->fecha_firma = $fechaContrato->formatLocalized('%d de %B del %Y');
+
+        $contrato->meses_garantia = $contrato->dep_garantia/$contrato->monto_renta;
+        $contrato->meses_garantia = NumerosEnLetras::convertir($contrato->meses_garantia, '', false, '');
+
+        //Se obtiene el formato de numero en letra
+        $contrato->dep_garantia = NumerosEnLetras::convertir($contrato->dep_garantia, 'Pesos', true, 'Centavos');
+        
+
+        $pdf = \PDF::loadview('pdf.rentas.depGarantia', [
+            'contrato' => $contrato,
+            'representante' => $request->representante
+        ]);
+        //Retorno de la vista
+        return $pdf->stream('ReciboDeposito.pdf');
+    }
+
+    public function printAdendum(Request $request){
+        setlocale(LC_TIME, 'es_MX.utf8');
+        //Llamda a la función que retorna los datos del contrato
+        $contrato = $this->getDatosRenta($request);
+        //Formato de fecha segun necesidades
+        $fechaContrato = new Carbon($contrato->fecha_firma);
+        $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
+
+        //Se obtiene el formato de numero en letra
+        $contrato->dep_garantia = NumerosEnLetras::convertir($contrato->dep_garantia, 'Pesos', true, 'Centavos');
+        
+
+        $pdf = \PDF::loadview('pdf.rentas.adendum', [
+            'contrato' => $contrato,
+            'representante' => $request->representante
+        ]);
+        //Retorno de la vista
+        return $pdf->stream('Adendum.pdf');
     }
 
     // Función para subir archivo fiscal para ventas.

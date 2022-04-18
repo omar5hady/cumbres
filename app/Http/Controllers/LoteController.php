@@ -1094,11 +1094,11 @@ class LoteController extends Controller
         }
 
         if($buscar != '')//Busqueda general
-            $lotes = $lotes->where($criterio, 'like', '%'.$buscar.'%');
+            $lotes = $lotes->where($criterio, '=', $buscar);
         if($b_modelo != '')//Busqueda por modelo
             $lotes = $lotes->where('modelos.id', '=', $b_modelo );
         if($buscar2 != '')//Busqueda por etapa
-            $lotes = $lotes->where('lotes.etapa_id', 'like', '%'.$buscar2.'%');
+            $lotes = $lotes->where('lotes.etapa_id', '=', $buscar2);
         if($buscar3 != '')//Busqueda por manzana
             $lotes = $lotes->where('lotes.manzana', 'like', '%'.$buscar3.'%');
         if($b_lote != '')//Busqueda por numero de lote

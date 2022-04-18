@@ -158,10 +158,21 @@ body{
         <br>
 
         <p>
-            <strong>PRIMERA Objeto.</strong> EL ARRENDADOR otorga en arrendamiento a EL ARRENDATARIO EL INMUEBLE, mismo que está 
-            descrito en la declaración I.3 de este Contrato. Por virtud de este contrato, EL ARRENDADOR se 
-            compromete en respetar y, por ende, en no estorbar  la posesión derivada a EL ARRENDATARIO, 
-            sin perjuicio de las acciones legales que pueda ejercer ante el incumplimiento de este acto jurídico. 
+            <strong>PRIMERA Objeto.</strong> 
+            @if($contrato->muebles == 0)
+                EL ARRENDADOR otorga en arrendamiento a EL ARRENDATARIO EL INMUEBLE, mismo que está 
+                descrito en la declaración I.3 de este Contrato. Por virtud de este contrato, EL ARRENDADOR se 
+                compromete en respetar y, por ende, en no estorbar  la posesión derivada a EL ARRENDATARIO, 
+                sin perjuicio de las acciones legales que pueda ejercer ante el incumplimiento de este acto jurídico. 
+            @else
+                EL ARRENDADOR otorga en arrendamiento a EL ARRENDATARIO EL INMUEBLE, mismo que está  descrito en la declaración I.3 
+                de este Contrato, inmueble que  se RENTA AMUEBLADO, por lo que por este instrumento hace las veces de resguardo de las 
+                cosas detalladas en el <strong>ANEXO UNO,</strong> el cual forma parte integrante de este contrato y <strong>EL ARRENDATARIO</strong> se hace responsable 
+                del buen uso y cuidado de las mismas, respondiéndole AL ARRENDADOR por cualquier daño, desperfecto o sustracción de las 
+                mismas del inmueble, a valor nuevo de reposición.  Por virtud de este contrato, <strong>EL ARRENDADOR</strong> se compromete en respetar 
+                y, por ende, en no estorbar  la posesión derivada a EL ARRENDATARIO, sin perjuicio de las acciones legales que pueda 
+                ejercer ante el incumplimiento de este acto jurídico
+            @endif
         </p>
 
         <p>
@@ -377,10 +388,45 @@ body{
         </p>
 
         <p>
-            <strong>DÉCIMA CUARTA.- SERVICIOS.-</strong> Cuando el ARRENDATARIO notifique que va a desocupar EL INMUEBLE o en el  caso de 
-            vencimiento del contrato o su rescisión, deberá comprobar que está al corriente en el pago por servicio de luz, 
-            agua, teléfono, televisión restringida, etc. Obligándose a proporcionar el número de cuenta de cada servicio y 
-            copias de los últimos recibos pagados, así como la cancelación de los contratos celebrados para proveerse de esos servicios.
+            <strong>DÉCIMA CUARTA.- SERVICIOS.-</strong> 
+            @if($contrato->servicios == 0)
+                Cuando el ARRENDATARIO notifique que va a desocupar EL INMUEBLE o en el caso de vencimiento del contrato o su rescisión, 
+                deberá comprobar que está al corriente en el pago por servicio de luz, agua, teléfono, televisión restringida, etc. 
+                Obligándose a proporcionar el número de cuenta de cada servicio y copias de los últimos recibos pagados, así como la 
+                cancelación de los contratos celebrados para proveerse de esos servicios.
+            @else
+                Están incluidos en el monto contratado los servicios de Luz, Agua, Gas, Internet, instalación y monitoreo de alarma, 
+                topados mensualmente a los siguientes importes: 
+                @for($i=0; $i < count($servicios); $i++)
+                    @if(count($servicios) > 1)
+                        @if($i == count($servicios)-1)
+                            y {{$servicios[$i]}}.,
+                        @else
+                            {{$servicios[$i]}}, 
+                        @endif
+                    @else
+                        {{$servicios[$i]}}.,
+                    @endif
+                @endfor
+                sin incluir los gastos de 
+                
+                @for($i=0; $i < count($sinServicios); $i++)
+                    @if(count($sinServicios) > 1)
+                        @if($i == count($sinServicios)-1)
+                            y {{$sinServicios[$i]}}.
+                        @else
+                            {{$sinServicios[$i]}}, 
+                        @endif
+                    @else
+                        {{$sinServicios[$i]}}.
+                    @endif
+                @endfor
+                
+                Cuando el ARRENDATARIO notifique que va a desocupar EL INMUEBLE o en el caso de vencimiento del contrato o su rescisión, 
+                deberá comprobar que está al corriente en el pago de servicios adicionales a los antes descritos. Obligándose a proporcionar 
+                el número de cuenta de cada servicio y copias de los últimos recibos pagados, así como la cancelación de los contratos 
+                celebrados para proveerse de esos servicios.
+            @endif
         </p>
 
         <p>
