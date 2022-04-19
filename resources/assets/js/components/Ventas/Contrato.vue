@@ -55,10 +55,11 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-group row" v-if="criterio2 == 'creditos.id' || criterio2 == 'personal.nombre'
                                             || criterio2 == 'v.nombre'">
                             <div class="col-md-8">
-                                    <div class="input-group">
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
@@ -71,21 +72,8 @@
                                     </select>
                                                                             
                                     <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <select class="form-control col-md-4" v-model="b_status">
-                                        <option value="">Seleccionar Status</option>
-                                        <option value="0">Cancelado</option>
-                                        <option value="1">Pendiente</option>
-                                        <option value="2">No firmado</option>
-                                        <option value="3">Firmado</option>
-                                    </select>
+                                   
                                 </div>
-                                <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                <a :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + 
-                                        b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio2 + 
-                                        '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2+'&b_empresa='+b_empresa + '&publicidad=' + b_publicidad"
-                                    class="btn btn-success"><i class="fa fa-file-text"></i> Excel
-                                </a>
-                                <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 
                             </div>
                         </div>
@@ -109,13 +97,6 @@
                                         <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                     </select>
                                     
-                                    <select class="form-control col-md-4" v-model="b_status">
-                                        <option value="">Seleccionar Status</option>
-                                        <option value="0">Cancelado</option>
-                                        <option value="1">Pendiente</option>
-                                        <option value="2">No firmado</option>
-                                        <option value="3">Firmado</option>
-                                    </select>
                                 </div>
                                 
                             </div>
@@ -151,18 +132,12 @@
                                     <input type="date" v-model="b_fecha" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                 </div>
-
-                                <div class="input-group">
-                                    <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2 + '&publicidad=' + b_publicidad"  class="btn btn-success" v-if="rolId != 2"><i class="fa fa-file-text"></i> Excel</a>
-                                    <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
-                                </div>
                                     
                             </div>
                         </div>
                         <div class="form-group row" v-else-if="criterio2=='creditos.fraccionamiento'">
                             <div class="col-md-8">
-                                    <div class="input-group">
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
@@ -183,7 +158,6 @@
                                         <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
                                 </div>
-                                
                             </div>
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -202,14 +176,6 @@
                                         <option value="">Modelo</option>
                                         <option v-for="modelo in arrayModelos" :key="modelo.id" :value="modelo.id" v-text="modelo.nombre"></option>
                                     </select>
-
-                                    <select class="form-control col-md-4" v-model="b_status">
-                                        <option value="">Seleccionar Status</option>
-                                        <option value="0">Cancelado</option>
-                                        <option value="1">Pendiente</option>
-                                        <option value="2">No firmado</option>
-                                        <option value="3">Firmado</option>
-                                    </select>
                                 </div>
                             </div>
 
@@ -224,8 +190,6 @@
                                         <option value="">Publicidad</option>
                                         <option v-for="publicidad in arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
                                     </select>
-                                    
-                                    
                                 </div>
                             </div>
 
@@ -239,11 +203,6 @@
                                     <input type="date" v-model="b_fecha" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                     
-                                </div>
-                                <div class="input-group">
-                                    <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a  :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2 + '&publicidad=' + b_publicidad"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
-                                    <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>
                         </div>
@@ -266,6 +225,18 @@
                                     <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                     <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="rolId!=2">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input  type="text" placeholder="Institución bancaria" v-model="b_institucion" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input  type="text" placeholder="Empresa trabajo" v-model="b_empresa_cliente" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">     
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
                                 <select class="form-control col-md-4" v-model="b_status">
                                     <option value="">Seleccionar Status</option>
                                     <option value="0">Cancelado</option>
@@ -274,10 +245,17 @@
                                     <option value="3">Firmado</option>
                                 </select>
                                 <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                <a  :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2 + '&publicidad=' + b_publicidad"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                <a  :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ 
+                                            '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + 
+                                            '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2 
+                                            + '&b_institucion=' + b_institucion
+                                            + '&b_empresa_cliente=' + b_empresa_cliente
+                                            + '&publicidad=' + b_publicidad"  
+                                class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>      
                             </div>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
@@ -1868,7 +1846,6 @@
                     </div>
                 </template>
 
-                
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -2368,6 +2345,8 @@
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
+                b_institucion : '',
+                b_empresa_cliente :'',
                 criterio2 : 'personal.nombre', 
                 buscar2 : '',
                 b_etapa2: '',
@@ -2505,7 +2484,6 @@
                 return total_engache;
             },
 
-
         },
        
         methods : {
@@ -2555,10 +2533,15 @@
             },
             listarContratos(page, buscar,buscar3, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
-                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&buscar3=' + buscar3 + '&b_modelo=' + me.b_modelo + 
-                    '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_status='+ me.b_status 
-                    + '&criterio=' + criterio + '&f_ini=' + me.b_fecha + '&f_fin=' + me.b_fecha2 + '&publicidad=' + me.b_publicidad
-                    +'&b_empresa='+this.b_empresa;
+                var url = '/contratos?page=' + page + '&buscar=' + buscar 
+                    + '&buscar3=' + buscar3 + '&b_modelo=' + me.b_modelo 
+                    + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana 
+                    + '&b_lote='+ b_lote + '&b_status='+ me.b_status 
+                    + '&criterio=' + criterio + '&f_ini=' + me.b_fecha 
+                    + '&f_fin=' + me.b_fecha2 + '&publicidad=' + me.b_publicidad
+                    + '&b_institucion=' + this.b_institucion
+                    + '&b_empresa_cliente=' + this.b_empresa_cliente
+                    + '&b_empresa=' + this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -2569,7 +2552,6 @@
                     console.log(error);
                 })
             },
-
             getDatosProyecto(fraccionamiento){
                 let me = this;
                 me.tipo_proyecto='';
@@ -2582,7 +2564,6 @@
                     console.log(error);
                 });
             },
-
             getClavesLadas(){
                 let me = this;
                 me.arrayClaves=[];

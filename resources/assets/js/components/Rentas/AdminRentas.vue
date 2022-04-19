@@ -844,12 +844,14 @@
                         this.tituloModal = 'Testigos';
                         this.datosTestigo = {};
                         this.ver = 0;
+                        break;
                     }
                     case 'archivo':{
                         this.modal = 4;
                         this.tituloModal = 'Subir archivo';
                         this.archivo = '';
                         this.datosRenta = data;
+                        break;
                     }
                 }
             }

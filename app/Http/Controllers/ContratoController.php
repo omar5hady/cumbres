@@ -73,6 +73,11 @@ class ContratoController extends Controller
         if(Auth::user()->rol_id == 2)
             $contratos= $contratos->where('creditos.vendedor_id', '=', Auth::user()->id);
 
+        if($request->b_empresa_cliente != '')
+            $contratos= $contratos->where('clientes.empresa', 'like', '%'.$request->b_empresa_cliente.'%');
+
+        if($request->b_institucion != '')
+            $contratos= $contratos->where('inst_seleccionadas.institucion', 'like', '%'.$request->b_institucion.'%');
         
         if($buscar != '') {
             switch ($criterio) {
@@ -2326,6 +2331,12 @@ class ContratoController extends Controller
         // Llama a la función privada que retorna la query
         $contratos = $this->getContratos();
         $contratos = $contratos->where('inst_seleccionadas.elegido', '=', '1');
+        //Filtro empresa donde trabaja el cliente
+        if($request->b_empresa_cliente != '')
+            $contratos= $contratos->where('clientes.empresa', 'like', '%'.$request->b_empresa_cliente.'%');
+        //Filtro nombre de institucion de financiamiento
+        if($request->b_institucion != '')
+            $contratos= $contratos->where('inst_seleccionadas.institucion', 'like', '%'.$request->b_institucion.'%');
 
         // Filtro para empresa constructora
         if($request->b_empresa != ''){
@@ -2407,11 +2418,11 @@ class ContratoController extends Controller
             $excel->sheet('contratos', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    '# Contrato', 'Cliente', 'Telefono', 'Celular','Email', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
+                    '# Contrato', 'Cliente', 'Telefono', 'Celular','Email', 'Empresa', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Modelo', 'Tipo de crédito', 'Institución','Fecha del contrato', 'Precio de Venta', 'Status', 'Publicidad'
                 ]);
 
-                $sheet->cells('A1:Q1', function ($cells) {
+                $sheet->cells('A1:R1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -2428,7 +2439,7 @@ class ContratoController extends Controller
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
-                    'O' => '$#,##0.00',
+                    'P' => '$#,##0.00',
                 ));
 
                 foreach($contratos as $index => $contrato) {
@@ -2464,6 +2475,7 @@ class ContratoController extends Controller
                         $contrato->telefono,
                         $contrato->celular,
                         $contrato->email,
+                        $contrato->empresa,
                         $contrato->vendedor_nombre. ' ' .$contrato->vendedor_apellidos,
                         $contrato->proyecto,
                         $contrato->etapa,
@@ -2479,7 +2491,7 @@ class ContratoController extends Controller
 
                     ]);	
                 }
-                $num='A1:Q' . $cont;
+                $num='A1:R' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

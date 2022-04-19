@@ -209,7 +209,6 @@ class RentasController extends Controller
             $rentas = $rentas->orderBy('rentas.id','desc')->paginate(6);
         return $rentas;       
     }
-
     //Funcion que retorna los datos de un contrato
     public function getDatosRenta(Request $request){
         $renta = Renta::join('lotes','rentas.lote_id','=','lotes.id')
@@ -246,7 +245,6 @@ class RentasController extends Controller
 
         return $renta;
     }
-
     //Función para mostrar el contrato en PDF
     public function printContrato(Request $request){
         setlocale(LC_TIME, 'es_MX.utf8');
@@ -342,7 +340,7 @@ class RentasController extends Controller
         //Retorno de la vista
         return $pdf->stream('Pagares.pdf');
     }
-
+    //Función para imprimir el recibo de garantia en PDF
     public function printDepositoGarantia(Request $request){
         setlocale(LC_TIME, 'es_MX.utf8');
         //Llamda a la función que retorna los datos del contrato
@@ -365,7 +363,7 @@ class RentasController extends Controller
         //Retorno de la vista
         return $pdf->stream('ReciboDeposito.pdf');
     }
-
+    //Función para imprimir el ADENDUM del contrato para rentas con mobiliario
     public function printAdendum(Request $request){
         setlocale(LC_TIME, 'es_MX.utf8');
         //Llamda a la función que retorna los datos del contrato
@@ -385,7 +383,6 @@ class RentasController extends Controller
         //Retorno de la vista
         return $pdf->stream('Adendum.pdf');
     }
-
     // Función para subir archivo fiscal para ventas.
     public function formSubmitArchivo(Request $request, $id){
         $lote = Licencia::findOrFail($id);

@@ -31,7 +31,7 @@ use App\Reubicacion;
 
 class ReportesController extends Controller
 {
-    // funcion para optener los lotes disponibles para 
+    // Función para generar el reporte de inventarios
     public function reporteInventario(Request $request){
         if(!$request->ajax())return redirect('/');
         $fecha1 = $request->fecha1;
@@ -41,12 +41,9 @@ class ReportesController extends Controller
         $empresa_const = $request->empresa;
         $empresa_terreno = $request->empresa2;
 
-        
+        //Query para obtener las etapas y fraccionamientos
         $proyectos = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto','etapas.id','etapas.fraccionamiento_id');
-        
-
-        
+            ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto','etapas.id','etapas.fraccionamiento_id');        
         if($proyecto != '') // filtra por proyecto
             $proyectos = $proyectos->where('etapas.fraccionamiento_id','=',$proyecto);
         if($etapa != '')  // filtra por etapa
@@ -56,16 +53,16 @@ class ReportesController extends Controller
                                 ->orderBy('etapas.num_etapa','asc')->get();
 
         foreach($proyectos as $index => $proyecto){ // para cada proyecto 
-            
+            //Se obtiene el total de lotes dentro del proyecto y la etapa.
             $proyecto->totalLotes = Lote::where('fraccionamiento_id','=',$proyecto->fraccionamiento_id)
                     ->where('etapa_id','=',$proyecto->id);
-                if($empresa_terreno != '')
+                if($empresa_terreno != '')//
                     $proyecto->totalLotes = $proyecto->totalLotes->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
                 if($empresa_const != '')
                     $proyecto->totalLotes = $proyecto->totalLotes->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
-            
                 $proyecto->totalLotes = $proyecto->totalLotes->count(); // cuenta el total de lotes del proyecto
 
+            //Query para obtener las ventas con escrituras firmadas en el periodo elegido.
             $firmadasAct = Expediente::join('contratos','expedientes.id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -76,12 +73,13 @@ class ReportesController extends Controller
                     ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
                     ->where('lotes.etapa_id','=',$proyecto->id)
                     ->whereBetween('contratos.fecha', [$fecha1, $fecha2]);
-                if($empresa_terreno != '')
+                if($empresa_terreno != '')//Filtro por empresa de terreno
                     $firmadasAct = $firmadasAct->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
-                if($empresa_const != '')
+                if($empresa_const != '')//Filtro para empresa constructora
                     $firmadasAct = $firmadasAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
-                $firmadasAct = $firmadasAct->distinct()->count(); // cuenta los lotes vendidos entre la fecha1 y fecha2
+                $firmadasAct = $firmadasAct->distinct()->count(); //
 
+            //Query para obtener las ventas con escrituras firmadas antes de las fechas seleccionadas. 
             $firmadasAnt = Expediente::join('contratos','expedientes.id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -92,12 +90,12 @@ class ReportesController extends Controller
                     ->where('contratos.fecha','<',$fecha1)
                     ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
                     ->where('lotes.etapa_id','=',$proyecto->id);// cuenta los lotes vendidos antes de la fecha1 
-                if($empresa_terreno != '')
+                if($empresa_terreno != '')//Filtro por empresa de terreno
                     $firmadasAnt = $firmadasAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
-                if($empresa_const != '')
+                if($empresa_const != '')//Filtro para empresa constructora
                     $firmadasAnt = $firmadasAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                 $firmadasAnt = $firmadasAnt->distinct()->count();
-
+            //Query para obtener las ventas con credito directo liquidadas en el periodo seleccionado
             $contadoAct = Contrato::join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                     ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
@@ -107,12 +105,12 @@ class ReportesController extends Controller
                     ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
                     ->whereBetween('contratos.fecha', [$fecha1, $fecha2])
                     ->where('lotes.etapa_id','=',$proyecto->id);
-                if($empresa_terreno != '')
+                if($empresa_terreno != '')//Filtro por empresa de terreno
                     $contadoAct = $contadoAct->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
-                if($empresa_const != '')
+                if($empresa_const != '')//Filtro para empresa constructora
                     $contadoAct = $contadoAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                 $contadoAct = $contadoAct->distinct()->count(); // cuenta los lotes con contrato en status firmado entre la fecha1 y fecha2
-
+            //Query para obtener las ventas con credito directo liquidadas antes de las fechas seleccionadas. 
             $contadoAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                     ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
@@ -122,35 +120,30 @@ class ReportesController extends Controller
                     ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
                     ->where('contratos.fecha','<',$fecha1)
                     ->where('lotes.etapa_id','=',$proyecto->id);
-                if($empresa_terreno != '')
+                if($empresa_terreno != '')//Filtro por empresa de terreno
                     $contadoAnt = $contadoAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
-                if($empresa_terreno != '')
+                if($empresa_terreno != '')//Filtro para empresa constructora
                     $contadoAnt = $contadoAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                     $contadoAnt = $contadoAnt->distinct()->count(); //cuenta los lotes con contrato en status firmado antes de la fecha1 
             
-            
-
-            $proyecto->descAnt = $firmadasAnt + $contadoAnt; // sumatoria 
-            $proyecto->descAct = $firmadasAct + $contadoAct;
-
-            $proyecto->totalDescarga = $proyecto->descAnt + $proyecto->descAct;
-
-            $proyecto->inventario = $proyecto->totalLotes - $proyecto->totalDescarga;
+            $proyecto->descAnt = $firmadasAnt + $contadoAnt; // Sumatoria individualizadas anteriormente.
+            $proyecto->descAct = $firmadasAct + $contadoAct; // Sumatoria individualizadas actualmente.
+            $proyecto->totalDescarga = $proyecto->descAnt + $proyecto->descAct; //Sumatoria total individualizadas
+            $proyecto->inventario = $proyecto->totalLotes - $proyecto->totalDescarga; //Diferencia
         }
-
 
         return ['resumen'=>$proyectos];
     }
 
+    // Función para generar el reporte de ventas por vendedor
     public function reporteVendedores(Request $request){
-
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
-
+        //rango de fechas 30, 60 y 90 dias despues
         $fecha30 = Carbon::parse($fecha2)->addDays(30)->format('Y-m-d');
         $fecha60 = Carbon::parse($fecha2)->addDays(60)->format('Y-m-d');
         $fecha90 = Carbon::parse($fecha2)->addDays(90)->format('Y-m-d');
-
+        //Query para obtener los vendedores activos.
         $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
                     ->join('users','personal.id','=','users.id')
                     ->select('vendedores.id','personal.nombre','personal.apellidos')
@@ -158,314 +151,100 @@ class ReportesController extends Controller
                     ->orderBy('personal.nombre','asc')
                     ->get();
 
-        $mostrar = 0;
-
-        if($request->proyecto == ''){
+        //Se verifica que si se envia busqueda por fecha para determinar la información a mostrar.
+        if($fecha1 != '') $mostrar = 1; 
+        else $mostrar = 0;
+            //Se recorre el arreglo de vendedores
             foreach($vendedores as $index => $vendedor){
+                //Inicialización de variables.
+                $vendedor->ventas30 = $vendedor->ventas60 = $vendedor->ventas90 = 0;
+                $vendedor->por_venta = 0;
+                $vendedor->por_cancel = 0;
+                $vendedor->por_bat = 0;
+                //Query para obtener todos los clientes registrados por el vendedor.
+                $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7);
+                if($fecha1 != '')//Filtro por fecha de registro.
+                    $vendedor->clientes = $vendedor->clientes->whereBetween('created_at', [$fecha1, $fecha2]);
+                $vendedor->clientes = $vendedor->clientes->count();
+                //Query para obtener todos los clientes tipo A registrados por el vendedor.
+                $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2);
+                if($fecha1 != '')//Filtro por fecha de registro.
+                    $vendedor->tipoA = $vendedor->tipoA->whereBetween('created_at', [$fecha1, $fecha2]);
+                $vendedor->tipoA = $vendedor->tipoA->count();
+                //Query para obtener todos los clientes tipo B registrados por el vendedor.
+                $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3);
+                if($fecha1 != '')//Filtro por fecha de registro.
+                    $vendedor->tipoB = $vendedor->tipoB->whereBetween('created_at', [$fecha1, $fecha2]);
+                $vendedor->tipoB = $vendedor->tipoB->count();
+                //Query para obtener todos los clientes tipo C registrados por el vendedor.
+                $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4);
+                if($fecha1 != '')//Filtro por fecha de registro.
+                    $vendedor->tipoC = $vendedor->tipoC->whereBetween('created_at', [$fecha1, $fecha2]);
+                $vendedor->tipoC = $vendedor->tipoC->count();
+                //Query para obtener todos los clientes no viables registrados por el vendedor.
+                $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1);
+                if($fecha1 != '')//Filtro por fecha de registro.
+                    $vendedor->noViable = $vendedor->noViable->whereBetween('created_at', [$fecha1, $fecha2]);
+                $vendedor->noViable = $vendedor->noViable->count();
+                //Query para obtener las ventas generadas por el vendedor
+                $vendedor->ventas = $this->getNumContratos($vendedor->id, $fecha1, $fecha2, $fecha1, $fecha2, $request->proyecto);
 
-                if($fecha1==''){
-                    $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7)->count();
-                    $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2)->count();
-                    $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3)->count();
-                    $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4)->count();
-                    $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1)->count();
-    
-                    $vendedor->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->where('clientes.clasificacion','!=',7)
-                        ->orWhere('contratos.status','=',1)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->where('clientes.clasificacion','!=',7)
-                        ->count();
-                    
-                    $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',0)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->where('clientes.clasificacion','!=',7)
-                        ->count();
-    
-                    $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id)
-                                    ->count();
-                
+                if($fecha1 != ''){ //Busquedas solo al seleccionar fechas de busqueda
+                    //Query para obtener las ventas realizadas 30 dias posteriores a la fecha de busqueda
+                    $vendedor->ventas30 = $this->getNumContratos($vendedor->id, $fecha1, $fecha2, $fecha2, $fecha30, $request->proyecto);
+                    //Query para obtener las ventas realizadas 60 dias posteriores a la fecha de busqueda
+                    $vendedor->ventas60 = $this->getNumContratos($vendedor->id, $fecha1, $fecha2, $fecha30, $fecha60, $request->proyecto);
+                    //Query para obtener las ventas realizadas 90 dias posteriores a la fecha de busqueda
+                    $vendedor->ventas90 = $this->getNumContratos($vendedor->id, $fecha1, $fecha2, $fecha60, $fecha90, $request->proyecto);
                 }
-                else{
-                    $mostrar = 1;
-                    $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-    
-                    $vendedor->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',3)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->whereBetween('contratos.fecha', [$fecha1,$fecha2])
-                        ->count();
-    
-                    $vendedor->ventas30 = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',3)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->whereBetween('contratos.fecha', [$fecha2,$fecha30])
-                        ->count();
-                    
-                    $vendedor->ventas60 = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',3)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->whereBetween('contratos.fecha', [$fecha30,$fecha60])
-                        ->count();
-    
-                    $vendedor->ventas90 = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',3)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->whereBetween('contratos.fecha', [$fecha60,$fecha90])
-                        ->count();
-    
-    
-                    $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',0)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->whereBetween('contratos.fecha', [$fecha1,$fecha90])
-                        ->count();
-    
-                    $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id)
-                                            ->whereBetween('created_at', [$fecha1,$fecha2])
-                                            ->count();
-    
-                }
-    
-                if($vendedor->clientes != 0){
-                    $vendedor->por_venta=(($vendedor->ventas)/$vendedor->clientes)*100;
-                }
-                else{
-                    $vendedor->por_venta=0;
-                }
-                ////////////////////////////////////////////////////////////////////////////////////
-                if($vendedor->ventas != 0){
-                    $vendedor->por_cancel=(($vendedor->canceladas)/$vendedor->ventas)*100;
-                }
-                else{
-                    $vendedor->por_cancel=0;
-                }
-                ////////////////////////////////////////////////////////////////////////////////////
-                if($vendedor->clientes != 0){
-                    $vendedor->por_bat=($vendedor->nv/$vendedor->clientes)*100;
-                }
-                else{;
-                    $vendedor->por_bat=0;
-                }
-                
-    
-            }
-        }
-        else{
-            foreach($vendedores as $index => $vendedor){
 
-                if($fecha1==''){
-                    $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7)->where('proyecto_interes_id','=',$request->proyecto)->count();
-                    $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2)->where('proyecto_interes_id','=',$request->proyecto)->count();
-                    $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3)->where('proyecto_interes_id','=',$request->proyecto)->count();
-                    $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4)->where('proyecto_interes_id','=',$request->proyecto)->count();
-                    $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1)->where('proyecto_interes_id','=',$request->proyecto)->count();
-    
-                    $vendedor->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->orWhere('contratos.status','=',1)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->count();
-                    
-                    $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',0)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->count();
-    
-                    $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id)
-                                    ->count();
+                //Query para obtener los contratos cancelados
+                $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',0)
+                    ->where('clientes.clasificacion','!=',7)
+                    ->where('clientes.user_alta','=',$vendedor->id);
+                    if($request->proyecto != '')//Filtro por proyecto
+                        $vendedor->canceladas = $vendedor->canceladas->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                    if($fecha1 != '')//Filtro para contratos creados en la fecha seleccionada
+                        $vendedor->canceladas = $vendedor->canceladas->whereBetween('contratos.fecha', [$fecha1,$fecha90])
+                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2]);//Filtro para clientes creados en la fecha seleccionada
+                    $vendedor->canceladas = $vendedor->canceladas->count();
+                //Query para obtener los prospectos descartados
+                $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id);
+                                if($fecha1 != '')//Filtro para fecha en que se descarto.
+                                    $vendedor->nv = $vendedor->nv->whereBetween('created_at', [$fecha1,$fecha2]);
+                            $vendedor->nv = $vendedor->nv->count();
                 
-                }
-                else{
-                    $mostrar = 1;
-                    $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-                    $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1)->
-                        whereBetween('created_at', [$fecha1, $fecha2])->count();
-    
-                    $vendedor->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha1,$fecha2])
-                        ->orWhere('contratos.status','=',1)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha1,$fecha2])
-                        ->count();
-    
-                    $vendedor->ventas30 = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha2,$fecha30])
-                        ->orWhere('contratos.status','=',1)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha2,$fecha30])
-                        ->count();
-                    
-                    $vendedor->ventas60 = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha30,$fecha60])
-                        ->orWhere('contratos.status','=',1)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha30,$fecha60])
-                        ->count();
-    
-                    $vendedor->ventas90 = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha60,$fecha90])
-                        ->orWhere('contratos.status','=',1)
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha60,$fecha90])
-                        ->count();
-    
-    
-                    $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->where('creditos.vendedor_id','=',$vendedor->id)
-                        ->where('contratos.status','=',0)
-                        ->where('clientes.user_alta','=',$vendedor->id)
-                        ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
-                        ->where('clientes.clasificacion','!=',7)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->whereBetween('contratos.fecha', [$fecha1,$fecha90])
-                        ->count();
-    
-                    $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id)
-                                            ->whereBetween('created_at', [$fecha1,$fecha2])
-                                            ->count();
-    
-                }
-    
-                if($vendedor->clientes != 0){
+                if($vendedor->clientes != 0)
                     $vendedor->por_venta=(($vendedor->ventas + $vendedor->ventas30 + $vendedor->ventas60 + $vendedor->ventas90)/$vendedor->clientes)*100;
-                }
-                else{
-                    $vendedor->por_venta=0;
-                }
-                ////////////////////////////////////////////////////////////////////////////////////
-                if($vendedor->ventas != 0){
+                if($vendedor->ventas != 0)
                     $vendedor->por_cancel=(($vendedor->canceladas)/($vendedor->ventas + $vendedor->ventas30 + $vendedor->ventas60 + $vendedor->ventas90))*100;
-                }
-                else{
-                    $vendedor->por_cancel=0;
-                }
-                ////////////////////////////////////////////////////////////////////////////////////
-                if($vendedor->clientes != 0){
+                if($vendedor->clientes != 0)
                     $vendedor->por_bat=($vendedor->nv/$vendedor->clientes)*100;
-                }
-                else{;
-                    $vendedor->por_bat=0;
-                }
-                
-    
             }
-        }
-        
 
-        
+        return ['vendedores' => $vendedores,'mostrar' => $mostrar];
+    }
 
-        return ['vendedores' => $vendedores,
-            'mostrar' => $mostrar
-        ];
+    //Función privada que retorna el numero de contratos generados, 
+    //Recibe como parametro el id del vendedor a buscar, proyecto en el que compro y el rango de fechas
+    private function getNumContratos($vendedorId, $fecha1, $fecha2, $fecha3, $fecha4, $proyecto){
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->whereIn('contratos.status',[3,1])//Contratos firmados y pendientes
+                    ->where('clientes.clasificacion','!=',7)
+                    ->where('creditos.vendedor_id','=',$vendedorId)
+                    ->where('clientes.user_alta','=',$vendedorId)
+                    ->whereBetween('clientes.created_at', [$fecha1,$fecha2])//Clientes dados de alta en la fecha seleccionada
+                    ->whereBetween('contratos.fecha', [$fecha3,$fecha4]);//Contratos creados en las fechas seleccionadas
+                    if($proyecto != '')//Filtro por proyecto
+                        $contratos = $contratos->where('lotes.fraccionamiento_id','=',$proyecto);
+                    $contratos = $contratos->count();
+        return $contratos;
     }
 
     public function reporteLotesVentas(Request $request){
