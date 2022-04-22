@@ -136,42 +136,6 @@
                             </ul>
                         </nav>
                     </div>
-
-
-                    <!-- <div class="author">
-                        <div class="carousel slide" id="carouselExampleControls" data-ride="carousel" style=" width: 15rem; height: 15rem;">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img class="d-block w-100" data-src="holder.js/800x400?auto=yes&amp;bg=777&amp;fg=555&amp;text=First slide" alt="First slide [800x400]" 
-                                    src="/img/avatars/chuchito.png" 
-                                    data-holder-rendered="true">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" data-src="holder.js/800x400?auto=yes&amp;bg=666&amp;fg=444&amp;text=Second slide" 
-                                    alt="Second slide [800x400]" 
-                                    src="/img/avatars/chuchito.png" 
-                                    data-holder-rendered="true">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" 
-                                    data-src="holder.js/800x400?auto=yes&amp;bg=555&amp;fg=333&amp;text=Third slide" 
-                                    alt="Third slide [800x400]" 
-                                    src="/img/avatars/chuchito.png" 
-                                    data-holder-rendered="true">
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div> 
-                    </div> -->
-
-                    
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
