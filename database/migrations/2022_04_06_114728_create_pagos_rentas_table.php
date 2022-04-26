@@ -18,6 +18,8 @@ class CreatePagosRentasTable extends Migration
             $table->integer('num_pago');
             $table->float('importe');
             $table->date('fecha');
+
+            $table->boolean('status')->default(1);
             $table->unsignedInteger('renta_id')->nullable();
             $table->timestamps();
 

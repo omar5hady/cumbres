@@ -243,7 +243,6 @@ class IniObraController extends Controller
                     $lote->fecha_fin = $fecha_fin;
                     $lote->obra_extra=$det['obra_extra'];
                     $lote->fin_obra = $det['fin_obra'];
-                    $lote->fin_obra= $det['fin_obra'];
                     if($lote->contrato==0){
                         $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
                         ->where('contrato','=',0)->get();

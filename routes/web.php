@@ -291,6 +291,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/rentas/printAdendum','RentasController@printAdendum');
 
         Route::post('/rentas/formSubmitArchivo/{id}','RentasController@formSubmitArchivo'); //carga de archivo
+
+        Route::get('/rentas/pagosPorVencer','RentasController@getPagosPorVencer');
+        Route::get('/rentas/cambiarPagoAVencido','RentasController@cambiarPagoAVencido');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');

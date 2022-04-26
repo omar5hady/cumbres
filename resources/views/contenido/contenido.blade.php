@@ -1,286 +1,200 @@
+{{-- LA vista extiende del blade Principal --}}
 @extends('principal')
+{{-- Se especifica el nombre de la seccion como contenido --}}
 @section('contenido')
-
-
-    @if(Auth::check())
-
+    {{-- Se verifica que el usuario este autenticado (Iniciado sesion) --}}
+    @if (Auth::check())
+        {{-- Se verifica el la opcion del menu elegido de acuerdo a ello se muestra el componenete adecuado --}}
         <template v-if="menu==0">
-            <calendar-component rol-id="{{Auth::user()->rol_id}}"></calendar-component>
+            <calendar-component rol-id="{{ Auth::user()->rol_id }}"></calendar-component>
         </template>
         <template v-if="menu==20">
-            <perfil-user user-id="{{Auth::user()->id}}"
-                rol-id="{{Auth::user()->rol_id}}"
-            ></perfil-user>
+            <perfil-user user-id="{{ Auth::user()->id }}" rol-id="{{ Auth::user()->rol_id }}"></perfil-user>
         </template>
         <template v-if="menu==100">
-            <perfil-user user-id="{{Auth::user()->id}}"
-                rol-id="{{Auth::user()->rol_id}}"
-             ></perfil-user>
+            <perfil-user user-id="{{ Auth::user()->id }}" rol-id="{{ Auth::user()->rol_id }}"></perfil-user>
         </template>
         <template v-if="menu==101">
-            <listar-notifications user-id="{{Auth::user()->id}}"></listar-notifications>
+            <listar-notifications user-id="{{ Auth::user()->id }}"></listar-notifications>
         </template>
         <template v-if="menu==90">
             <datos-extra></datos-extra>
         </template>
         <template v-if="menu==91">
-            <res-proyecto rol-id="{{Auth::user()->rol_id}}"></res-proyecto>
+            <res-proyecto rol-id="{{ Auth::user()->rol_id }}"></res-proyecto>
         </template>
 
-        @if(Auth::user()->fraccionamiento == 1)
-            <template v-if="menu==1">
-                <fraccionamiento rol-id="{{Auth::user()->rol_id}}"></fraccionamiento>
-            </template>
-        @endif
+        <template v-if="menu==1">
+            <fraccionamiento rol-id="{{ Auth::user()->rol_id }}"></fraccionamiento>
+        </template>
 
-        @if(Auth::user()->mis_asesores == 1)
-            <template v-if="menu==73">
-                <asesores></asesores>
-            </template>
-        @endif
+        <template v-if="menu==73">
+            <asesores></asesores>
+        </template>
 
-        @if(Auth::user()->etapas == 1)
-            <template v-if="menu==2">
-                <etapa rol-id="{{Auth::user()->rol_id}}"></etapa>
-            </template>
-        @endif
+        <template v-if="menu==2">
+            <etapa rol-id="{{ Auth::user()->rol_id }}"></etapa>
+        </template>
 
-        @if(Auth::user()->modelos == 1)
-            <template v-if="menu==3">
-                <modelo rol-id="{{Auth::user()->rol_id}}"></modelo>
-            </template>
-        @endif
+        <template v-if="menu==3">
+            <modelo rol-id="{{ Auth::user()->rol_id }}"></modelo>
+        </template>
 
-        @if(Auth::user()->lotes == 1)
-            <template v-if="menu==4">
-                <lote></lote>
-            </template>
-        @endif
+        <template v-if="menu==4">
+            <lote></lote>
+        </template>
 
-        @if(Auth::user()->asign_modelos == 1)
-            <template v-if="menu==5">
-                <asignar-modelo></asignar-modelo>
-            </template>
-        @endif
+        <template v-if="menu==5">
+            <asignar-modelo></asignar-modelo>
+        </template>
 
-        @if(Auth::user()->licencias == 1)
-            <template v-if="menu==6">
-                <licencias rol-id="{{Auth::user()->rol_id}}"></licencias>
-            </template>
-        @endif
+        <template v-if="menu==6">
+            <licencias rol-id="{{ Auth::user()->rol_id }}"></licencias>
+        </template>
 
-        @if(Auth::user()->acta_terminacion == 1)
-            <template v-if="menu==7">
-                <actadeterminacion></actadeterminacion>
-            </template>
-        @endif
+        <template v-if="menu==7">
+            <actadeterminacion></actadeterminacion>
+        </template>
 
-        @if(Auth::user()->cuenta == 1)
-            <template v-if="menu==8">
-                <cuenta></cuenta>
-            </template>
-        @endif
+        <template v-if="menu==8">
+            <cuenta></cuenta>
+        </template>
 
-        @if(Auth::user()->notaria == 1)
         <template v-if="menu==9">
             <notarias></notarias>
         </template>
-        @endif
-
-        
-
-        @if(Auth::user()->departamentos == 1)
-            <template v-if="menu==11">
-                <departamento></departamento>
-            </template>
-        @endif
-
-        @if(Auth::user()->personas == 1)
-            <template v-if="menu==12">
-                <personal></personal>
-            </template>
-        @endif
-
-        @if(Auth::user()->empresas == 1)
-            <template v-if="menu==13">
-                <empresa></empresa>
-            </template>
-        @endif
-
-        @if(Auth::user()->medios_public == 1)
-            <template v-if="menu==14">
-                <medio-publicitario></medio-publicitario>
-            </template>
-        @endif
-
-        @if(Auth::user()->lugares_contacto == 1)
-            <template v-if="menu==15">
-                <lugar-contacto></lugar-contacto>
-            </template>
-        @endif
-
-        @if(Auth::user()->inst_financiamiento == 1)
-            <template v-if="menu==16">
-                <institucion-financiamiento></institucion-financiamiento>
-            </template>
-        @endif
-
-        @if(Auth::user()->tipos_credito == 1)
-            <template v-if="menu==17">
-                <tipo-credito></tipo-credito>
-            </template>
-        @endif
-
-        @if(Auth::user()->servicios == 1)
-            <template v-if="menu==18">
-                <servicio></servicio>
-            </template>
-        @endif
-
-        @if(Auth::user()->asig_servicios == 1)
-            <template v-if="menu==19">
-                <asignar-servicio></asignar-servicio>
-            </template>
-        @endif
-
-        @if(Auth::user()->precios_etapas == 1)
-            <template v-if="menu==21">
-                <precio-etapa rol-id="{{Auth::user()->rol_id}}"></precio-etapa>
-            </template>
-        @endif
-
-        @if(Auth::user()->sobreprecios == 1)
-            <template v-if="menu==22">
-                <sobreprecios></sobreprecios>
-            </template>
-        @endif
-
-        @if(Auth::user()->paquetes == 1)
-            <template v-if="menu==23">
-                <paquetes></paquetes>
-            </template>
-        @endif
-
-        @if(Auth::user()->promociones == 1)
-            <template v-if="menu==24">
-                <promociones></promociones>
-            </template>
-        @endif
-
-        @if(Auth::user()->contratistas == 1)
-            <template v-if="menu==50">
-                <contratistas></contratistas>
-            </template>
-        @endif
-
-        @if(Auth::user()->ini_obra == 1)
-            <template v-if="menu==51">
-                <iniobra></iniobra>
-            </template>
-        @endif
-
-        @if(Auth::user()->partidas == 1)
-            <template v-if="menu==52">
-                <partidas></partidas>
-            </template>
-        @endif
-
-        @if(Auth::user()->avance == 1)
-            <template v-if="menu==53">
-                <avance></avance>
-            </template>
-        @endif
-
-        @if(Auth::user()->aviso_obra == 1)
-            <template v-if="menu==54">
-                <aviso-obra rol-id="{{Auth::user()->rol_id}}"></aviso-obra>
-            </template>
-        @endif
-
-        @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9)
-            <template v-if="menu==55">
-                <visita-avaluo></visita-avaluo>
-            </template>
-        @endif
-
-        @if(Auth::user()->roles == 1)
-            <template v-if="menu==71">
-                <rol></rol>
-            </template>
-        @endif
-
-        @if(Auth::user()->usuarios == 1)
-            <template v-if="menu==72">
-                <usuario></usuario>
-            </template>
-        @endif
-
-        @if(Auth::user()->lotes_disp == 1)
-            <template v-if="menu==59">
-                <lote-disponible rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></lote-disponible>
-            </template>
-        @endif
-
-        @if(Auth::user()->mis_prospectos == 1)
-            <template v-if="menu==60">
-                <prospectos rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></prospectos>
-            </template>
-        @endif
-            
-        @if(Auth::user()->simulacion_credito == 1)
-            <template v-if="menu==61">
-                <simulacion rol-id="{{Auth::user()->rol_id}}"></simulacion>
-            </template>
-        @endif
-            
-        @if(Auth::user()->hist_simulaciones == 1)
-            <template v-if="menu==62">
-                <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
-            </template>
-        @endif
-
-        @if(Auth::user()->hist_creditos == 1)
-            <template v-if="menu==63">
-                <historialcreditos rol-id="{{Auth::user()->rol_id}}"></historialcreditos>
-            </template>
-        @endif
-
-        @if(Auth::user()->contratos == 1)
-            <template v-if="menu==80">
-                <crear-contrato rol-id="{{Auth::user()->rol_id}}"><crear-contrato/>
-            </template>
-        @endif
-
-        @if(Auth::user()->docs == 1)
-            <template v-if="menu==208">
-                <docs></docs>
-            </template>
-        @endif
 
 
-        @if(Auth::user()->p_etapa == 1)
-            <template v-if="menu==111">
-                <publicidad-etapa></publicidad-etapa>
-            </template>
-        @endif
 
-        @if(Auth::user()->p_fraccionamiento == 1)
-            <template v-if="menu==112">
-                <publicidad-fraccionamiento></publicidad-fraccionamiento>
-            </template>
-        @endif
+        <template v-if="menu==11">
+            <departamento></departamento>
+        </template>
 
-        @if(Auth::user()->precios_viviendas == 1)
-            <template v-if="menu==25">
-                <precios-vivienda></precios-vivienda>
-            </template>
-        @endif
+        <template v-if="menu==12">
+            <personal></personal>
+        </template>
 
-        @if(Auth::user()->agregar_sobreprecios == 1)
-            <template v-if="menu==26">
-                <agregar-sobreprecios></agregar-sobreprecios>
-            </template>
-        @endif
+        <template v-if="menu==13">
+            <empresa></empresa>
+        </template>
+
+        <template v-if="menu==14">
+            <medio-publicitario></medio-publicitario>
+        </template>
+
+        <template v-if="menu==15">
+            <lugar-contacto></lugar-contacto>
+        </template>
+
+        <template v-if="menu==16">
+            <institucion-financiamiento></institucion-financiamiento>
+        </template>
+
+        <template v-if="menu==17">
+            <tipo-credito></tipo-credito>
+        </template>
+
+        <template v-if="menu==18">
+            <servicio></servicio>
+        </template>
+
+        <template v-if="menu==19">
+            <asignar-servicio></asignar-servicio>
+        </template>
+
+        <template v-if="menu==21">
+            <precio-etapa rol-id="{{ Auth::user()->rol_id }}"></precio-etapa>
+        </template>
+
+        <template v-if="menu==22">
+            <sobreprecios></sobreprecios>
+        </template>
+
+        <template v-if="menu==23">
+            <paquetes></paquetes>
+        </template>
+
+        <template v-if="menu==24">
+            <promociones></promociones>
+        </template>
+
+        <template v-if="menu==50">
+            <contratistas></contratistas>
+        </template>
+
+        <template v-if="menu==51">
+            <iniobra></iniobra>
+        </template>
+
+        <template v-if="menu==52">
+            <partidas></partidas>
+        </template>
+
+        <template v-if="menu==53">
+            <avance></avance>
+        </template>
+
+        <template v-if="menu==54">
+            <aviso-obra rol-id="{{ Auth::user()->rol_id }}"></aviso-obra>
+        </template>
+
+        <template v-if="menu==55">
+            <visita-avaluo></visita-avaluo>
+        </template>
+
+        <template v-if="menu==71">
+            <rol></rol>
+        </template>
+
+        <template v-if="menu==72">
+            <usuario></usuario>
+        </template>
+
+        <template v-if="menu==59">
+            <lote-disponible rol-id="{{ Auth::user()->rol_id }}" user-id="{{ Auth::user()->id }}"></lote-disponible>
+        </template>
+
+        <template v-if="menu==60">
+            <prospectos rol-id="{{ Auth::user()->rol_id }}" user-id="{{ Auth::user()->id }}"></prospectos>
+        </template>
+
+        <template v-if="menu==61">
+            <simulacion rol-id="{{ Auth::user()->rol_id }}"></simulacion>
+        </template>
+
+        <template v-if="menu==62">
+            <historialsim rol-id="{{ Auth::user()->rol_id }}"></historialsim>
+        </template>
+
+        <template v-if="menu==63">
+            <historialcreditos rol-id="{{ Auth::user()->rol_id }}"></historialcreditos>
+        </template>
+
+        <template v-if="menu==80">
+            <crear-contrato rol-id="{{ Auth::user()->rol_id }}">
+                <crear-contrato />
+        </template>
+
+        <template v-if="menu==208">
+            <docs></docs>
+        </template>
+
+
+        <template v-if="menu==111">
+            <publicidad-etapa></publicidad-etapa>
+        </template>
+
+        <template v-if="menu==112">
+            <publicidad-fraccionamiento></publicidad-fraccionamiento>
+        </template>
+
+        <template v-if="menu==25">
+            <precios-vivienda></precios-vivienda>
+        </template>
+
+        <template v-if="menu==26">
+            <agregar-sobreprecios></agregar-sobreprecios>
+        </template>
 
         <template v-if="menu==200">
             <depositos></depositos>
@@ -293,7 +207,7 @@
             <asignargestor></asignargestor>
         </template>
         <template v-if="menu==203">
-            <seguimiento-tramite rol-id="{{Auth::user()->rol_id}}"></seguimiento-tramite>
+            <seguimiento-tramite rol-id="{{ Auth::user()->rol_id }}"></seguimiento-tramite>
         </template>
         <template v-if="menu==204">
             <avaluos></avaluos>
@@ -307,11 +221,11 @@
         <template v-if="menu==207">
             <cobro-credito></cobro-credito>
         </template>
-        
+
         <template v-if="menu==1001">
             <facturacion></facturacion>
         </template>
-        
+
         <template v-if="menu==1002">
             <precios-terrenos></precios-terrenos>
         </template>
@@ -339,7 +253,7 @@
         <template v-if="menu==214">
             <proveedor-seguimiento></proveedor-seguimiento>
         </template>
-       
+
         <template v-if="menu==215">
             <postventa-entrega></postventa-entrega>
         </template>
@@ -347,7 +261,7 @@
         <template v-if="menu==216">
             <obra-entrega></obra-entrega>
         </template>
-     
+
         <template v-if="menu==217">
             <contratista-solicitud></contratista-solicitud>
         </template>
@@ -414,13 +328,13 @@
             <lotes-ruv></lotes-ruv>
         </template>
         <template v-if="menu==235">
-            <seguimiento-ruv rol-id="{{Auth::user()->rol_id}}"></seguimiento-ruv>
+            <seguimiento-ruv rol-id="{{ Auth::user()->rol_id }}"></seguimiento-ruv>
         </template>
         <template v-if="menu==236">
             <generar-solipago></generar-solipago>
         </template>
         <template v-if="menu==237">
-            <solicitud-pagos rol-id="{{Auth::user()->rol_id}}"></solicitud-pagos>
+            <solicitud-pagos rol-id="{{ Auth::user()->rol_id }}"></solicitud-pagos>
         </template>
         <template v-if="menu==238">
             <rep-lotes></rep-lotes>
@@ -429,14 +343,14 @@
             <rep-ventascanc></rep-ventascanc>
         </template>
         <template v-if="menu==240">
-            <rep-acumulado rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></rep-acumulado>
+            <rep-acumulado rol-id="{{ Auth::user()->rol_id }}" user-id="{{ Auth::user()->id }}"></rep-acumulado>
         </template>
 
         <template v-if="menu==241">
             <cat-bonos></cat-bonos>
         </template>
         <template v-if="menu==242">
-            <bono-recomendado rol-id="{{Auth::user()->rol_id}}"></bono-recomendado>
+            <bono-recomendado rol-id="{{ Auth::user()->rol_id }}"></bono-recomendado>
         </template>
         <template v-if="menu==243">
             <recursos-propios></recursos-propios>
@@ -468,7 +382,7 @@
         </template>
 
         <template v-if="menu==248">
-            <estimaciones user-name="{{Auth::user()->usuario}}"></estimaciones>
+            <estimaciones user-name="{{ Auth::user()->usuario }}"></estimaciones>
         </template>
 
         <template v-if="menu==249">
@@ -476,7 +390,7 @@
         </template>
 
         <template v-if="menu==250">
-            <digital-leads rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></digital-leads>
+            <digital-leads rol-id="{{ Auth::user()->rol_id }}" user-id="{{ Auth::user()->id }}"></digital-leads>
         </template>
 
         <template v-if="menu==251">
@@ -496,10 +410,10 @@
         </template>
 
         <template v-if="menu==255">
-            <solic-puente user-name="{{Auth::user()->usuario}}"></solic-puente>
+            <solic-puente user-name="{{ Auth::user()->usuario }}"></solic-puente>
         </template>
         <template v-if="menu==256">
-            <creditos-puente user-name="{{Auth::user()->usuario}}"></creditos-puente>
+            <creditos-puente user-name="{{ Auth::user()->usuario }}"></creditos-puente>
         </template>
         <template v-if="menu==257">
             <base-presupuestal></base-presupuestal>
@@ -509,7 +423,7 @@
             <reporte-leads></reporte-leads>
         </template>
         <template v-if="menu==259">
-            <puente-cuenta user-name="{{Auth::user()->usuario}}"></puente-cuenta>
+            <puente-cuenta user-name="{{ Auth::user()->usuario }}"></puente-cuenta>
         </template>
         <template v-if="menu==260">
             <prospectos-reasignados></prospectos-reasignados>
@@ -518,10 +432,10 @@
             <puente-avances></puente-avances>
         </template>
         <template v-if="menu==262">
-            <puente-resumen user-name="{{Auth::user()->usuario}}"></puente-resumen>
+            <puente-resumen user-name="{{ Auth::user()->usuario }}"></puente-resumen>
         </template>
         <template v-if="menu==263">
-            <puente-bbva user-name="{{Auth::user()->usuario}}"></puente-bbva>
+            <puente-bbva user-name="{{ Auth::user()->usuario }}"></puente-bbva>
         </template>
 
         <template v-if="menu==264">
@@ -549,47 +463,31 @@
             <datos-admin></datos-admin>
         </template>
         <template v-if="menu==272">
-            <vehiculo-comodato 
-                admin-mant="{{Auth::user()->admin_mant_vehiculos}}"
-                user-name="{{Auth::user()->usuario}}"
-                user-id="{{Auth::user()->id}}"
-            >
+            <vehiculo-comodato admin-mant="{{ Auth::user()->admin_mant_vehiculos }}"
+                user-name="{{ Auth::user()->usuario }}" user-id="{{ Auth::user()->id }}">
             </vehiculo-comodato>
         </template>
         <template v-if="menu==273">
-            <inventarios 
-                user-name="{{Auth::user()->usuario}}"
-            >
+            <inventarios user-name="{{ Auth::user()->usuario }}">
             </inventarios>
         </template>
         <template v-if="menu==274">
-            <inv-proveedor 
-                user-name="{{Auth::user()->usuario}}"
-            >
+            <inv-proveedor user-name="{{ Auth::user()->usuario }}">
             </inv-proveedor>
         </template>
         <template v-if="menu==275">
-            <integracion-cobros 
-                user-name="{{Auth::user()->usuario}}"
-            >
+            <integracion-cobros user-name="{{ Auth::user()->usuario }}">
             </integracion-cobros>
         </template>
 
         <template v-if="menu==276">
-            <admin-rentas 
-                user-name="{{Auth::user()->usuario}}"
-            >
+            <admin-rentas user-name="{{ Auth::user()->usuario }}">
             </admin-rentas>
         </template>
 
         <template v-if="menu==277">
-            <contrato-rentas 
-                rol-id="{{Auth::user()->usuario}}"
-            >
+            <contrato-rentas rol-id="{{ Auth::user()->usuario }}">
             </contrato-rentas>
         </template>
-
-
     @endif
-       
 @endsection
