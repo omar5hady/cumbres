@@ -76,8 +76,9 @@
                                         <td class="td2" v-text="this.moment(contrato.fecha_fin).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
                                             <span v-if="contrato.status == 0" class="badge badge-danger">Cancelado</span>
-                                            <span v-if="contrato.status == 1" class="badge badge-success">Vigente</span>
-                                            <span v-if="contrato.status == 2" class="badge badge-primary">Finalizado</span>
+                                            <span v-if="contrato.status == 1" class="badge badge-warning">Pendiente</span>
+                                            <span v-if="contrato.status == 2" class="badge badge-success">Vigente</span>
+                                            <span v-if="contrato.status == 3" class="badge badge-primary">Finalizado</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -679,14 +680,14 @@
                                                             <button type="button" v-if="datosRenta.muebles == 1"
                                                                 class="btn btn-success"
                                                                 :disabled="listado == 2"
-                                                                @click="datosRenta.muebles=0"
+                                                                @click="datosRenta.muebles=0, adendum = 0"
                                                             >
                                                                 Si
                                                             </button>
                                                             <button type="button" v-if="datosRenta.muebles == 0"
                                                                 class="btn btn-primary"
                                                                 :disabled="listado == 2"
-                                                                @click="datosRenta.muebles=1"
+                                                                @click="datosRenta.muebles=1, adendum = 0"
                                                             >
                                                                 No
                                                             </button>
@@ -695,7 +696,30 @@
                                                     <input type="text" class="form-control" disabled placeholder="¿Muebles?"/>
                                                 </div>
                                             </div>
-                                            <div class="col-md-9"></div>
+                                            <div class="col-md-3">
+                                                <div class="input-group mb-3" v-if="datosRenta.muebles == 0">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <button type="button" v-if="datosRenta.adendum == 1"
+                                                                class="btn btn-success"
+                                                                :disabled="listado == 2"
+                                                                @click="datosRenta.adendum=0"
+                                                            >
+                                                                Si
+                                                            </button>
+                                                            <button type="button" v-if="datosRenta.adendum == 0"
+                                                                class="btn btn-primary"
+                                                                :disabled="listado == 2"
+                                                                @click="datosRenta.adendum=1"
+                                                            >
+                                                                No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" class="form-control" disabled placeholder="Adendum?"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6"></div>
 
                                             <!-- SERVICIOS -->
                                             <div class="col-md-3">
@@ -836,7 +860,7 @@
                                                 </div>
                                             </div> 
 
-                                            <div class="col-md-4">
+                                            <!-- <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="">Fecha de firma</label>
                                                     <input type="date" 
@@ -845,7 +869,7 @@
                                                     placeholder="Fecha de firma"
                                                 />
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </template>
                                     </div>
                                     <!-- Fin datos prospecto-->
@@ -958,7 +982,7 @@
                             <i></i>Imprimir
                         </a>
                         <a class="btn btn-danger btn-sm" target="_blank" 
-                            v-if="modal == 1 && datosRenta.muebles == 1"
+                            v-if="modal == 1 && datosRenta.adendum == 1"
                             v-bind:href="'/rentas/printAdendum?id='+datosRenta.id + '&representante=' + apoderado">ADENDUM
                         </a>
                         <a v-if="modal == 2" class="btn btn-primary" v-bind:href="'/rentas/printDepositoGarantia?id=' + datosRenta.id + '&representante=' + apoderado"  target="_blank">
@@ -1063,7 +1087,16 @@ export default {
                         importe: me.datosRenta.monto_renta
                     });
                 }
-                mes = (mes + parseInt(me.datosRenta.num_meses));
+                if(dia == 1){
+                    dia = 30
+                    mes = (mes + parseInt(me.datosRenta.num_meses)-1);
+                } 
+                else {
+                    mes = (mes + parseInt(me.datosRenta.num_meses));
+                    dia = dia -1;
+                }
+                
+                
                 
                 if( mes > 12)
                 {
@@ -1276,6 +1309,7 @@ export default {
                 'gas' : 0,
                 'television' : 0,
                 'telefonia' : 0,
+                'adendum'  : 0
             };
         },
         limpiarServicios(){

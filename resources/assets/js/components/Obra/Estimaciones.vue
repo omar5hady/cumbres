@@ -347,13 +347,13 @@
                                             <td class="td2" v-text="partida.num_casas"></td>
                                             <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * partida.num_casas) )"></td>
                                             <td class="td2"> 
-                                                {{ partida.acumVolTotal=parseFloat(partida.acumVol) + parseFloat(partida.num_estimacion) }} 
+                                                {{ partida.acumVolTotal=(parseFloat(partida.acumVol) + parseFloat(partida.num_estimacion)).toFixed(2) }} 
                                             </td>
                                             <td class="td2">
                                                 $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
                                             </td>
                                             <td class="td2">
-                                                {{ partida.porEstimarVol=parseFloat(partida.num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol) }}
+                                                {{ partida.porEstimarVol=(parseFloat(partida.num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol)).toFixed(2) }}
                                             </td>
                                             <td class="td2">
                                                 $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}

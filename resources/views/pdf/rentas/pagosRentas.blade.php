@@ -71,7 +71,7 @@
                     <tr>
                         <td colspan="3"></td>
                         <td>EN SAN LUIS POTOSI A: </td>
-                        <td>{{mb_strtoupper($pago->fecha_pago)}}</td>
+                        <td>{{mb_strtoupper($contrato->fecha_firma)}}</td>
                     </tr>
                 </table>
             </div>
@@ -104,7 +104,7 @@
 
                     <p>
                         Valor recibido  a  mi  (nuestra)  entera   satisfacción.   Este  pagaré forma parte de   una   
-                        serie numerado del    UNO    al   {{$contrato->cant_meses}}  y  todos están sujetos a la condición de que, al no 
+                        serie numerado del    UNO    al   {{$contrato->cantMeses}}  y  todos están sujetos a la condición de que, al no 
                         pagarse cualesquiera de  ellos  a  su  vencimiento,  serán exigibles todos los que le sigan en, número además de los ya  
                         vencidos,  desde la fecha de vencimiento de este documento hasta el día de su liquidación causará intereses moratorios al 
                         tipo de 5.00 %  mensual,  pagadero en esta Ciudad juntamente con el principal.

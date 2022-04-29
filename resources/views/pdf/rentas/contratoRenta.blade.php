@@ -54,9 +54,9 @@ body{
             LAS PARTES SE SUSCRIBEN DE CONFORMIDAD Y CON SUJECIÓN A LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
         </p>
         
-        <br>
+        
         <p align="center">D E C L A R A C I O N E S:</p>
-        <br>
+        
 
         <p>
             I. Declara <strong>EL ARRENDADOR</strong>:
@@ -104,7 +104,7 @@ body{
             @endif
         </p>
 
-        <br>
+        
 
         <p>
             II. Declara <strong>EL ARRENDATARIO</strong>:
@@ -144,7 +144,7 @@ body{
             </p>
         @endif
  
-        <br>
+        
         <p>III. Declaran Las Partes:</p>
 
         <p>
@@ -153,9 +153,9 @@ body{
         </p>
 
 
-        <br>
+        
         <p align="center">C L Á U S U L A S:</p>
-        <br>
+        
 
         <p>
             <strong>PRIMERA Objeto.</strong> 
@@ -194,7 +194,7 @@ body{
             por lo que ambas partes renuncian a lo dispuesto en el artículo  2317 del Código Civil del Estado. 
             En caso de vencimiento del contrato, si EL ARRENDATARIO quiere continuar ocupando EL INMUEBLE, deberá avisarlo a 
             EL ARRENDADOR, por lo menos treinta días antes de tal evento a efecto de negociar un nuevo contrato, por lo que 
-            sin la firma de éste, no será posible continuar en la posesión de EL INMUEBLE. <br>
+            sin la firma de éste, no será posible continuar en la posesión de EL INMUEBLE. 
         </p>
 
         <p>
@@ -467,7 +467,7 @@ body{
         </p>
 
         
-        <br><br>
+        <br>
 
         <div class="table3">
             <div class="table-row">
@@ -511,7 +511,6 @@ body{
             </div>
         </div>
 
-        <br>
         <br>
         <br>
         <br>

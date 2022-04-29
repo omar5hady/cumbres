@@ -494,7 +494,6 @@
                                             <th>Etapa</th>
                                             <th>Manzana</th>
                                             <th># Lote</th>
-                                            <th>% Avance</th>
                                             <th style="text-align:center;">Modelo</th>
                                             <th>Calle</th>
                                             <th># Oficial</th>
@@ -506,38 +505,40 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
-                                            
-                                            <td class="td2" v-if="rolId != '2'" style="width:5%">
-                                                <!-- <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
-                                                <i class="icon-lock"></i>
-                                                </button>
-                                                <template v-else>
-                                                    <button title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
-                                                    <i class="icon-magnifier"></i>
+                                            <template 
+                                                v-if="rolId != 2 || (rolId == 2 && lote.apartado == 0)"
+                                            >
+                                                <td class="td2" v-if="rolId != '2'" style="width:5%">
+                                                    <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="cambiarStatusLote(lote.id,1)" class="btn btn-warning btn-sm">
+                                                    <i class="icon-lock"></i>
                                                     </button>
-                                                    <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
-                                                </template> -->
-                                            </td>
-                                            <td  style="width:20%" v-text="lote.proyecto"></td>
-                                            <td  style="width:20%" v-text="lote.etapa"></td>
-                                            <td  v-text="lote.manzana"></td>
-                                                <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                                <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                            <td  v-text="lote.avance + '%'"></td>
-                                            <td >
-                                                <button v-if="lote.archivo_esp != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnicaRenta(lote.archivo_esp)" class="btn btn-success btn-sm">
-                                                    {{lote.modelo}}
-                                                </button>
-                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
-                                                <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
-                                            </td>
-                                            <td class="td2" v-text="lote.calle"></td>
-                                                <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
-                                                <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                            <td class="td2" v-text="lote.terreno"></td>
-                                            <td class="td2" v-text="lote.construccion"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.precio_renta)"></td>
-                                            <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
+                                                    <template v-else>
+                                                        <button title="Mostrar Apartado" type="button" @click="cambiarStatusLote(lote.id,0)" class="btn btn-danger btn-sm">
+                                                            <i class="icon-check">&nbsp;Desapartar</i>
+                                                        </button>
+                                                    </template>
+                                                </td>
+                                                <td  style="width:20%" v-text="lote.proyecto"></td>
+                                                <td  style="width:20%" v-text="lote.etapa"></td>
+                                                <td  v-text="lote.manzana"></td>
+                                                    <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                                    <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                                <td >
+                                                    <button v-if="lote.archivo_esp != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnicaRenta(lote.archivo_esp)" class="btn btn-success btn-sm">
+                                                        {{lote.modelo}}
+                                                    </button>
+                                                    <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
+                                                    <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
+                                                </td>
+                                                <td class="td2" v-text="lote.calle"></td>
+                                                    <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
+                                                    <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                                <td class="td2" v-text="lote.terreno"></td>
+                                                <td class="td2" v-text="lote.construccion"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(lote.precio_renta)"></td>
+                                                <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
+                                                
+                                            </template>
                                         </tr>                               
                                     </tbody>
                                 </table>  
@@ -932,6 +933,25 @@
                     this.errorLote = 1;
 
                 return this.errorLote;
+            },
+            cambiarStatusLote(lote, status){
+                let me = this;
+                axios.put('lotes/cambiarStatusLote',{
+                    'id' : lote,
+                    'status' : status
+                }).then(function (response){
+                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El lote ha cambiado su estatus correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
             apartarLote(){
                  if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)

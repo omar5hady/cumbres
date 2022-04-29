@@ -60,8 +60,8 @@
                                         <label class="form-control col-md-4" disabled>
                                             Asesor:
                                         </label>
-                                        <select class="form-control"  v-model="tipo_asesor" @click="selectAsesores()" >
-                                            <option value=""></option>
+                                        <select class="form-control"  v-model="tipo_asesor" @change="selectAsesores()" >
+                                            <option value="">Tipo</option>
                                             <option value=0>Interno</option>
                                             <option value=1>Externo</option>
                                         </select>

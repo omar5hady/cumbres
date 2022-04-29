@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 
 <head>
     <meta charset="utf-8">
@@ -227,3 +227,9 @@
 </body>
 
 </html>
+
+<style>
+    html.dark {
+        color-scheme: dark;
+    }
+</style>

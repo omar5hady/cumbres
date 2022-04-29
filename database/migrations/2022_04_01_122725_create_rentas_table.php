@@ -60,6 +60,8 @@ class CreateRentasTable extends Migration
             //Servicios y muebles
             $table->boolean('servicios')->default(0);
             $table->boolean('muebles')->default(0);
+            $table->boolean('adendum')->default(0);
+            $table->string('archivo_contrato')->nullable();
 
             $table->float('luz',8,2)->default(0);
             $table->float('agua',8,2)->default(0);

@@ -352,6 +352,7 @@ class LoteController extends Controller
             if($request->casa_renta == 1){//En caso de ser lote para renta
                 $lote->casa_renta = $request->casa_renta;
                 $lote->precio_renta = $request->precio_renta;
+                $lote->apartado = 1;
                 $lote->contrato = $this->searchContrato($lote->id,1);
             }
             else{

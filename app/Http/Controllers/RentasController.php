@@ -23,6 +23,11 @@ class RentasController extends Controller
         if(!$request->ajax())return redirect('/');
         return Arrendador::orderBy('tipo','asc')->get();
     }
+    public function cambiarStatusLote(Request $request){
+        $lote = Lote::findOrFail($request->id);
+        $lote->apartado = $request->status;
+        $lote->save();
+    }
     //Función para obtener los testigos dados de alta
     public function getTestigos(Request $request){
         if(!$request->ajax())return redirect('/');
@@ -148,10 +153,11 @@ class RentasController extends Controller
             $renta->fecha_ini = $datosRenta['fecha_ini'];
             $renta->fecha_fin = $datosRenta['fecha_fin'];
             $renta->num_meses = $datosRenta['num_meses'];
-            $renta->fecha_firma = $datosRenta['fecha_firma'];
+            //$renta->fecha_firma = $datosRenta['fecha_firma'];
             $renta->dep_garantia = $datosRenta['dep_garantia'];
 
             $renta->muebles = $datosRenta['muebles'];
+            $renta->adendum = $datosRenta['adendum'];
             $renta->servicios = $datosRenta['servicios'];
 
             $renta->luz = $datosRenta['luz'];
@@ -257,9 +263,9 @@ class RentasController extends Controller
         $contrato->monto_renta = NumerosEnLetras::convertir($contrato->monto_renta, 'Pesos', true, 'Centavos');
         //Formato de fecha segun necesidades en el contrato
         $fechaIni = new Carbon($contrato->fecha_ini);
-        $contrato->fecha_ini = $fechaIni->formatLocalized('%d días de %B de %Y');
+        $contrato->fecha_ini = $fechaIni->formatLocalized('%d de %B de %Y');
         $fechaFin = new Carbon($contrato->fecha_fin);
-        $contrato->fecha_fin = $fechaFin->formatLocalized('%d días de %B de %Y');
+        $contrato->fecha_fin = $fechaFin->formatLocalized('%d de %B de %Y');
         $fechaContrato = new Carbon($contrato->fecha_firma);
         $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
 
@@ -334,7 +340,7 @@ class RentasController extends Controller
         }
         //Formato para la fecha de contrato
         $fechaContrato = new Carbon($contrato->fecha_firma);
-        $contrato->fecha_firma = $fechaContrato->formatLocalized('%d días de %B de %Y');
+        $contrato->fecha_firma = $fechaContrato->formatLocalized('%d de %B de %Y');
         //Creación de PDF
         $pdf = \PDF::loadview('pdf.rentas.pagosRentas', [
             'contrato' => $contrato

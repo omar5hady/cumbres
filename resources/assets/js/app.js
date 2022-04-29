@@ -216,7 +216,8 @@ const app = new Vue({
     el: '#app',
     data: {
         menu: 100,
-        notifications: []
+        notifications: [],
+        proyectos : []
     },
     
     methods:{
@@ -228,7 +229,7 @@ const app = new Vue({
         },
         created() {
             let me = this;
-            axios.post('notification/get').then(function(response) {
+            Axios.post('notification/get').then(function(response) {
                 // console.log(response.data);
                 me.notifications = response.data;
             }).catch(function(error) {
@@ -240,8 +241,19 @@ const app = new Vue({
             window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
                 me.notifications.unshift(notification);
             });
-    
-        }
+        },
+        selectFraccionamientos(){
+            let me = this;
+            me.proyectos=[];
+            var url = '/select_fraccionamiento';
+            Axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.proyectos = respuesta.fraccionamientos;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
     },
     mounted () {
         this.created();

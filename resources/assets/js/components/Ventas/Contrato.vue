@@ -110,7 +110,7 @@
 
                                     <select class="form-control" v-if="criterio2=='creditos.vendedor_id'"  @change="selectEtapas(buscar3)" v-model="buscar3" >
                                         <option value="">Fraccionamiento</option>
-                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio2=='creditos.vendedor_id'" v-model="b_etapa2" >
@@ -150,7 +150,7 @@
                                     </select>
                                     <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @change="selectEtapas(buscar2), selectModelo(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
                                         <option value="">Proyecto</option>
-                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectManzanas(buscar2,b_etapa2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_etapa2" >
@@ -228,8 +228,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group row" v-if="rolId!=2">
-                            <div class="col-md-8">
+                        <div class="form-group row">
+                            <div class="col-md-8"  v-if="rolId!=2">
                                 <div class="input-group">
                                     <input  type="text" placeholder="Institución bancaria" v-model="b_institucion" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                     <input  type="text" placeholder="Empresa trabajo" v-model="b_empresa_cliente" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">     
@@ -366,7 +366,7 @@
                                     
                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'"  @change="selectEtapas(buscar)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="buscar" >
                                         <option value="">Seleccione</option>
-                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectManzanas(buscar,b_etapa)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_etapa" >
@@ -2003,7 +2003,7 @@
                                 <div class="col-md-9">
                                     <select class="form-control" v-model="sel_proyecto" @change="selectEtapa(sel_proyecto)">
                                             <option value=0> Seleccione </option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
                                 </div>
                             </div>
@@ -2146,7 +2146,6 @@
                 arraySimulaciones:[],
                 arrayContratos:[],
                 arrayDatosSimulacion:[],
-                arrayFraccionamientos: [],
                 arrayAllEtapas:[],
                 arrayAllManzanas:[],
                 arrayModelos:[],
@@ -2706,18 +2705,7 @@
                     console.log(error);
                 });
             },
-            selectFraccionamientos(){
-                let me = this;
-                me.arrayFraccionamientos=[];
-                var url = '/select_fraccionamiento';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayFraccionamientos = respuesta.fraccionamientos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
+            
             //Select todas las etapas
             selectEtapas(buscar){
                 let me = this;
@@ -4086,7 +4074,7 @@
                         break;
                     }
                 }
-                this.selectFraccionamientos();
+                this.$root.$methods.selectFraccionamientos();
             },
         /////
 
@@ -4181,7 +4169,7 @@
         },
         mounted() {          
             this.listarContratos(1,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
-            this.selectFraccionamientos();
+            this.$root.selectFraccionamientos();
             this.selectAsesores();
             this.selectCreditos();
             this.selectMedioPublicidad();

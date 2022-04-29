@@ -196,6 +196,7 @@ class ComisionesVentaController extends Controller
         $mes = $request->b_mes;
         $anio = $request->b_anio;
         $asesor = $request->b_asesor_id;
+        $tipo = $request->tipo;
 
         setlocale(LC_TIME, 'es_MX.utf8');
         $month = Carbon::now()->month;
@@ -234,6 +235,8 @@ class ComisionesVentaController extends Controller
                     $comisiones = $comisiones->where('comisiones_ventas.mes','=',$mes);
                 if($anio != '')
                     $comisiones = $comisiones->where('comisiones_ventas.anio','=',$anio);
+                if($tipo != '')
+                    $comisiones = $comisiones->where('vendedores.tipo','=',$tipo);
 
 
         $comisiones = $comisiones->orderBy('comisiones_ventas.anio','desc')

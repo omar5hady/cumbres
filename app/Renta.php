@@ -49,7 +49,9 @@ class Renta extends Model
             'muebles',
             'luz',
             'agua',
-            'gas'
+            'gas',
+            'archivo_contrato',
+            'adendum'
     ];
 
     public function lote(){
