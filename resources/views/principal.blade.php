@@ -228,8 +228,3 @@
 
 </html>
 
-<style>
-    html.dark {
-        color-scheme: dark;
-    }
-</style>

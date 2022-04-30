@@ -19,7 +19,16 @@
                         <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                     </button>
 
+                    <div style="text-align: right;" v-if="listado == 2">
+                            <label for="text-input"> <strong>Status</strong> </label>
+                            <select v-model="datosRenta.status" @change="selectStatus(datosRenta.status)">
+                                <option value="0">Cancelar</option>
+                                <option value="1">Pendiente</option>
+                                <option value="2">Firmar</option>
+                            </select>
+                    </div>       
                 </div>
+                
 
                 <!----------------- Listado Contratos ------------------------------>
                 <!-- Div Card Body para listar -->
@@ -146,11 +155,14 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <center>
-                                    <h5 v-if="datosRenta.status == 1" style="color:green;" align="right" 
-                                        v-text="' Vigente '"
+                                    <h5 v-if="datosRenta.status == 0" style="color:red;" align="right" 
+                                        v-text="' Cancelado '"
                                     ></h5>
-                                    <h5 v-else-if="datosRenta.status == 2" style="color:blue;" align="right" 
-                                        v-text="' Finalizado '"
+                                    <h5 v-if="datosRenta.status == 1" style="color:orange;" align="right" 
+                                        v-text="' Pendiente '"
+                                    ></h5>
+                                    <h5 v-else-if="datosRenta.status == 2" style="color:green;" align="right" 
+                                        v-text="' Vigente '"
                                     ></h5>
                                 </center>
                             </div>
@@ -938,9 +950,9 @@
             <!-- Fin ejemplo de tabla Listado -->
         </div>
 
-        <!-- Inicio Modal Fecha para firma -->
+        <!-- Inicio Modal -->
         <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal >=1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
+            <div v-if="modal < 3" class="modal-dialog modal-primary modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Seleccionar apoderado legal</h4>
@@ -988,6 +1000,184 @@
                         <a v-if="modal == 2" class="btn btn-primary" v-bind:href="'/rentas/printDepositoGarantia?id=' + datosRenta.id + '&representante=' + apoderado"  target="_blank">
                             <i></i>Imprimir
                         </a>
+                    </div>
+                </div> 
+                <!-- /.modal-content -->
+            </div>
+            <div v-if="modal == 3" class="modal-dialog modal-primary modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cambiar Estatus</h4>
+                        <button type="button" class="close" @click="modal=0" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body modal-body2">
+                         <div class="form-group row" v-if="datosRenta.status == 2">
+                            <label class="col-md-3 form-control-label" for="text-input">¿Se requiere factura?</label>
+                            <div class="col-md-3">
+                                <select class="form-control" v-model="datosRenta.facturar">
+                                    <option value="0">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <template v-if="datosRenta.facturar == 1">
+                                <hr>
+                                <div class="form-group row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">
+                                        <center><h6>Datos Fiscales</h6></center>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
+                                    <div class="col-md-4">
+                                        <input type="email" v-model="datosRenta.email_fisc" class="form-control" placeholder="Email">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Teléfono</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosRenta.tel_fisc" class="form-control" maxlength="10" placeholder="Telefono">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="datosRenta.nombre_fisc" class="form-control" placeholder="Nombre completo">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="datosRenta.direccion_fisc" class="form-control" placeholder="Dirección">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="datosRenta.col_fisc" class="form-control" placeholder="Colonia">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">C.P.</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosRenta.cp_fisc" class="form-control" placeholder="Código Postal">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">RFC</label>
+                                    <div class="col-md-3">
+                                        <input type="text" maxlength="13"  style="text-transform:uppercase"
+                                        v-model="datosRenta.rfc_fisc" class="form-control" placeholder="RFC">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="datosRenta.cfi_fisc">
+                                            <option value="Adquisición de mercancias">Adquisición de mercancias</option>
+                                            <option value="Devoluciones, Descuentos o bonificaciones">Devoluciones, Descuentos o bonificaciones</option>
+                                            <option value="Gastos en general">Gastos en general</option>
+                                            <option value="Construcciones">Construcciones</option>
+                                            <option value="Mobiliario y equipo de oficina por inversiones">Mobiliario y equipo de oficina por inversiones</option>
+                                            <option value="Equipo de transporte">Equipo de transporte</option>
+                                            <option value="Equipo de computo y accesorios">Equipo de computo y accesorios</option>
+                                            <option value="Dados, troqueles, moldes, matrices y herramental">Dados, troqueles, moldes, matrices y herramental</option>
+                                            <option value="Comunicaciones telefónicas">Comunicaciones telefónicas</option>
+                                            <option value="Comunicaciones satelitales">Comunicaciones satelitales</option>
+                                            <option value="Otra maquinaria y equipo">Otra maquinaria y equipo</option>
+                                            <option value="Honorarios médicos, dentales y gastos hospitalarios">Honorarios médicos, dentales y gastos hospitalarios</option>
+                                            <option value="Gastos médicos por incapacidad o discapacidad">Gastos médicos por incapacidad o discapacidad</option>
+                                            <option value="Gastos funerales">Gastos funerales</option>
+                                            <option value="Donativos">Donativos</option>
+                                            <option value="Intereses reales efectivamente pagados por créditos hipotecarios">Intereses reales efectivamente pagados por créditos hipotecarios</option>
+                                            <option value="Aportaciones voluntarias al SAR">Aportaciones voluntarias al SAR</option>
+                                            <option value="Primas por seguros de gastos médicos">Primas por seguros de gastos médicos</option>
+                                            <option value="Gastos de transportación escolar obligatoria">Gastos de transportación escolar obligatoria</option>
+                                            <option value="Depósitos en cuentas para el ahorro">Depósitos en cuentas para el ahorro</option>
+                                            <option value="Pagos por servicios educativos (colegiaturas)">Pagos por servicios educativos (colegiaturas)</option>
+                                            <option value="Sin efectos fiscales">Sin efectos fiscales</option>
+                                            <option value="Pagos">Pagos</option>
+                                            <option value="Nómina">Nómina</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="datosRenta.regimen_fisc">
+                                            <option value="Sueldos y Salarios e Ingresos Asimilados a Salarios">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+                                            <option value="Arrendamiento">Arrendamiento</option>
+                                            <option value="Régimen e Enajenación o Adquisición de Bienes">Régimen e Enajenación o Adquisición de Bienes</option>
+                                            <option value="Demás ingresos">Demás ingresos</option>
+                                            <option value="Residentes en el Extranjero sin Establecimiento Permanente en México">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
+                                            <option value="Ingresos por Dividendos (socios y accionistas)">Ingresos por Dividendos (socios y accionistas)</option>
+                                            <option value="Personas Físicas con Actividades Empresariales y Profesionales">Personas Físicas con Actividades Empresariales y Profesionales</option>
+                                            <option value="Ingresos por intereses">Ingresos por intereses</option>
+                                            <option value="Régimen de los ingresos por obtención de premios">Régimen de los ingresos por obtención de premios</option>
+                                            <option value="Sin obligaciones fiscales">Sin obligaciones fiscales</option>
+                                            <option value="Incorporación Fiscal">Incorporación Fiscal</option>
+                                            <option value="Régimen de las Actividades Empresariales con ingresos a través de Plataforma">Régimen de las Actividades Empresariales con ingresos a través de Plataforma</option>
+                                            <option value="Régimen Simplificado de Confianza">Régimen Simplificado de Confianza</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Banco</label>
+                                    <div class="col-md-4">
+                                        <input type="text" 
+                                        v-model="datosRenta.banco_fisc" class="form-control" placeholder="Banco">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-on:keypress="isNumber($event)" pattern="\d*"
+                                        v-model="datosRenta.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
+                                    <div class="col-md-4">
+                                        <input type="text" 
+                                        v-model="datosRenta.clabe_fisc" class="form-control" placeholder="Clabe">
+                                    </div>
+                                </div>
+                            </template>
+
+                            <hr>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                <div class="col-md-9">
+                                    <input type="date" v-model="datosRenta.fecha_firma" class="form-control" placeholder="Fecha status">
+                                </div>
+                            </div>
+
+                            <div class="form-group row" v-if="datosRenta.status == 0">
+                                <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
+                                <div class="col-md-9">
+                                    <textarea rows="3" cols="30" v-model="motivo_cancel" class="form-control" placeholder="Observaciones"></textarea>
+                                </div>
+                            </div>
+
+                    </div>
+
+                    <!-- Botones del modal -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="modal=0">Cerrar</button>
+                        <template v-if="datosRenta.fecha_firma != null">
+                            <button type="button" v-if="datosRenta.status == 0 || (datosRenta.status == 2 && datosRenta.facturar == 0)" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                            <button type="button" 
+                                v-if="datosRenta.status == 3 && datosRenta.facturar == 2 && datosRenta.archivo_fisc != null
+                                    && datosRenta.email_fisc != '' && datosRenta.email_fisc != null
+                                    && datosRenta.tel_fisc != '' && datosRenta.tel_fisc != null
+                                    && datosRenta.nombre_fisc != '' && datosRenta.nombre_fisc != null
+                                    && datosRenta.direccion_fisc != '' && datosRenta.direccion_fisc != null
+                                    && datosRenta.regimen_fisc != '' && datosRenta.cfi_fisc != null
+                                    && datosRenta.cp_fisc != '' && datosRenta.cp_fisc != null" 
+                                class="btn btn-success" @click="registrarFechaStatus()"
+                            >Guardar</button>
+                            
+                        </template>
+                        
                     </div>
                 </div> 
                 <!-- /.modal-content -->
@@ -1168,6 +1358,52 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+        },
+        selectStatus(status){
+            let me = this;
+            if(status==2 || status==0 ){
+                me.modal = 3;
+            }else{ 
+                me.changeStatus(status);
+            }  
+        },
+        changeStatus(status){
+            let me = this;
+            swal({
+                title: 'Esta seguro de cambiar el status de este contrato?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    Swal.showLoading()
+                    axios.put('/rentas/changeStatus',{
+                        'id': this.datosRenta.id,
+                        'status': status,
+                        'datosRenta' : this.datosRenta,
+                        }).then(function (response){
+                        me.salir();
+                        Swal.enableLoading()
+                        swal(
+                            'Cambio de status!',
+                            'Cambios realizados con éxito.',
+                            'success'
+                        )
+                    }).catch(function (error){
+                        console.log(error);
+                        Swal.enableLoading()
+                    });
+
+                } else if (result.dismiss === swal.DismissReason.cancel
+                    )me.getDatos(me.datosRenta.id);
+            })   
         },
         selectFraccionamientosInventario(){
             let me = this;
@@ -1381,7 +1617,7 @@ export default {
             axios.post('/rentas/storeRenta',{
                 'datosRenta' : this.datosRenta,
             }).then(function (response){
-                me.salir()
+                me.salir();
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -1417,6 +1653,9 @@ export default {
         height: 200px;
         width: 100%;
         overflow-y: auto;
+    }
+    .modal-body2{
+        height: 400px;
     }
     .mostrar {
         display: list-item !important;

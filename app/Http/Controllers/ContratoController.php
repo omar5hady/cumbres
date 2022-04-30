@@ -863,7 +863,7 @@ class ContratoController extends Controller
 
         //return $contratos;
         //Llamada al pdf para venta de casa
-        if($contratos[0]->modelo != 'Terreno')
+        if($contratos[0]->modelo != 'Terreno' || ($contratos[0]->modelo == 'Terreno' && $contratos[0]->tipo_credito == 'Crediterreno'))
             $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta', ['contratos' => $contratos, 'pagos' => $pagos]);
         // PDF para venta de Terreno
         else{

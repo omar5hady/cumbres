@@ -69,6 +69,21 @@ class CreateRentasTable extends Migration
             $table->float('television',8,2)->default(0);
             $table->float('telefonia',8,2)->default(0);
 
+            //Datos fiscales
+            $table->boolean('facturar')->default(0);
+            $table->string('email_fisc',60)->nullable();
+            $table->string('tel_fisc',10)->nullable();
+            $table->string('nombre_fisc',120)->nullable();
+            $table->string('direccion_fisc',100)->nullable();
+            $table->string('col_fisc',40)->nullable();
+            $table->string('cp_fisc',5)->nullable();
+            $table->string('rfc_fisc',13)->nullable();
+            $table->string('cfi_fisc',50)->nullable();
+            $table->string('regimen_fisc',50)->nullable();
+            $table->string('banco_fisc',50)->nullable();
+            $table->string('num_cuenta_fisc',50)->nullable();
+            $table->string('clabe_fisc',50)->nullable();
+
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');

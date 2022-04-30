@@ -1388,7 +1388,7 @@
                                                     </div>
                                                 </div>
 
-                                                <template v-if="modelo != 'Terreno'">
+                                                <template>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
@@ -1400,16 +1400,6 @@
                                                         </div>
                                                     </div>
                                                 </template>
-
-                                                <template v-else>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
-                                                            <p v-text="'Concretania'"></p>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
                                                 
 
                                                 <div class="col-md-3">
@@ -1435,7 +1425,7 @@
                                                     </div>
                                                 </div>
 
-                                                <template v-if="modelo != 'Terreno'">
+                                                <template v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
                                                         <div class="form-group">
                                                             <label for="">Comisión por apertura</label>
@@ -1744,27 +1734,39 @@
                                                                 </thead>
                                                                 <tbody >
                                                                     <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
-                                                                        <td v-if="listado==3  && modelo != 'Terreno' || listado==4 && btn_actualizar==1  && modelo != 'Terreno'">
-                                                                            <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
-                                                                                <i class="icon-close"></i>
-                                                                            </button>
-                                                                            <button v-if="listado==4  && modelo != 'Terreno' && btn_actualizar==1 && pago.restante == pago.monto_pago  && modelo != 'Terreno'" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
-                                                                                <i class="icon-close"></i>
-                                                                            </button>
-                                                                        </td>
-                                                                        <td v-else-if="listado==4 && btn_actualizar==1  && modelo == 'Terreno'"></td>
+                                                                        <template v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                                            <td v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                                                                <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
+                                                                                    <i class="icon-close"></i>
+                                                                                </button>
+                                                                                <button v-if="listado==4 && btn_actualizar==1 && pago.restante == pago.monto_pago" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
+                                                                                    <i class="icon-close"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                            <td v-else></td>
+                                                                        </template>
+                                                                        
                                                                         <td v-text="'Pago no. ' + parseInt(index+1)"></td>
                                                                         <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                                                         <td v-else>
-                                                                            <input v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0" type="date" v-model="pago.fecha_pago">
+                                                                            <input 
+                                                                                v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0
+                                                                                    || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
+                                                                                " 
+                                                                                type="date" v-model="pago.fecha_pago">
                                                                         </td>
-                                                                        <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno'">
+                                                                        <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno' && tipo_credito != 'Crediterreno'">
                                                                             {{ pago.monto_pago | currency}}
                                                                         </td>
                                                                         <td v-else>
-                                                                            <input v-if="modelo != 'Terreno'" type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
+                                                                            <input 
+                                                                                v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')" 
+                                                                                type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
                                                                         </td>
-                                                                        <td v-if="btn_actualizar == 1 && modelo != 'Terreno' ||btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
+                                                                        <td v-if="
+                                                                            btn_actualizar == 1 && modelo != 'Terreno' 
+                                                                            || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
+                                                                            || btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
                                                                             <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
                                                                                 <i class="icon-check"></i>
                                                                             </button>
@@ -1800,7 +1802,7 @@
                                 <div class="form-group">
                                     <div class="col-md-12" v-if="listado==4 && btn_actualizar==0">
                                         <div style="text-align: right;" v-if="rolId!=2">
-                                            <template v-if="modelo != 'Terreno'">
+                                            <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
                                                 <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
                                                 <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                             </template>
@@ -1813,7 +1815,7 @@
                                             <a class="btn btn-info btn-sm" v-if="tipo_proyecto == 2" v-bind:href="'/contrato/anexoA/'+id">Anexo A</a>
                                         </div>
                                         <div style="text-align: right;" v-if="rolId==2 && status == 1">
-                                            <template v-if="modelo != 'Terreno'">
+                                            <template v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
                                                 <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
                                                 <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                             </template>
