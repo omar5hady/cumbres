@@ -232,7 +232,11 @@ body {
 
 <div style="position: static; margin-top: -20px;">
     @if($contratos[0]->tipo_proyecto == 1)
+        @if($contratos[0]->modelo == 'Terreno')
+            <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL TERRENO</p>
+        @else
         <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>
+        @endif
     @elseif($contratos[0]->tipo_proyecto == 2)
         <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL DEPARTAMENTO</p>        
     @endif
@@ -273,16 +277,20 @@ body {
                         </u>
                     </div>
                     @endif
-                    <div class="table-cell" colspan="2">SUPERFICIE DE CONSTRUCCION: 
-                        <u>{{$contratos[0]->construccion}} M2
-                            @if($contratos[0]->emp_constructora == "CONCRETANIA" && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" && $contratos[0]->tipo_proyecto == 1 )
-                                ( {{100-$contratos[0]->porcentaje_terreno}}% )
-                            @endif
-                        </u>
-                    </div>
+                    @if($contratos[0]->modelo != 'Terreno')
+                        <div class="table-cell" colspan="2">SUPERFICIE DE CONSTRUCCION: 
+                            <u>{{$contratos[0]->construccion}} M2
+                                @if($contratos[0]->emp_constructora == "CONCRETANIA" && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" && $contratos[0]->tipo_proyecto == 1 )
+                                    ( {{100-$contratos[0]->porcentaje_terreno}}% )
+                                @endif
+                            </u>
+                        </div>
+                    @else
+                        <div class="table-cell" colspan="2"></div>
+                    @endif
                     @if($contratos[0]->tipo_proyecto == 2)
-                    <div class="table-cell">
-                    </div>
+                        <div class="table-cell">
+                        </div>
                     @endif
                     
                 </div> 
@@ -315,7 +323,11 @@ body {
                             <div class="table-cell2"></div>
                             <div class="table-cell2"></div>
                         @endif  
-                        <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
+                        @if($contratos[0]->modelo != 'Terreno')
+                            <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
+                        @else
+                            <div class="table-cell2">PRECIO DEL LOTE: </div>
+                        @endif
                         <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
                     </div>
                     <div class="table-row">
@@ -325,14 +337,27 @@ body {
                         <div class="table-cell2">${{$contratos[0]->precio_terreno_excedente}}</div>
                     </div>
                     <div class="table-row">
-                        <div class="table-cell2">COMISION X APERTURA: </div>
-                        <div class="table-cell2">${{$contratos[0]->comision_apertura}}</div>
-                        <div class="table-cell2">OBRA EXTRA: </div>
-                        <div class="table-cell2">${{$contratos[0]->precio_obra_extra}}</div>
+                        @if($contratos[0]->modelo != 'Terreno')
+                            <div class="table-cell2">COMISION X APERTURA: </div>
+                            <div class="table-cell2">${{$contratos[0]->comision_apertura}}</div>
+                            <div class="table-cell2">OBRA EXTRA: </div>
+                            <div class="table-cell2">${{$contratos[0]->precio_obra_extra}}</div>
+                        @else
+                            <div class="table-cell2"></div>
+                            <div class="table-cell2"></div>
+                            <div class="table-cell2"></div>
+                            <div class="table-cell2"></div>
+                        @endif
+                        
                     </div>
                     <div class="table-row">
-                        <div class="table-cell2">INVESTIGACION: </div>
-                        <div class="table-cell2">${{$contratos[0]->investigacion}}</div>
+                        @if($contratos[0]->modelo != 'Terreno')
+                            <div class="table-cell2">INVESTIGACION: </div>
+                            <div class="table-cell2">${{$contratos[0]->investigacion}}</div>
+                        @else
+                            <div class="table-cell2"></div>
+                            <div class="table-cell2"></div>
+                        @endif
                         <div class="table-cell2">SOBREPRECIO: </div>
                         <div class="table-cell2">${{$contratos[0]->sobreprecio}}</div>
                     </div>
@@ -345,7 +370,11 @@ body {
                     <div class="table-row">
                         <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
                         <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
-                        <div class="table-cell2">VALOR TOTAL CASA: </div>
+                        @if($contratos[0]->modelo != 'Terreno')
+                            <div class="table-cell2">VALOR TOTAL CASA: </div>
+                        @else
+                            <div class="table-cell2">VALOR TOTAL LOTE: </div>
+                        @endif
                         <div class="table-cell2">${{$contratos[0]->precio_venta}}</div>            
                     </div>
                     <div class="table-row">

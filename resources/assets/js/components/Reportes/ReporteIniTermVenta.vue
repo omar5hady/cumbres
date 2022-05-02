@@ -33,25 +33,25 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
+                            <table class="table2 tableScroll table-bordered table-striped table-sm">
+                                <thead class="thead2">
                                     <tr>
                                         <th colspan="11" class="text-center"> Reporte al {{fecha}} </th>
                                     </tr>
-                                    <tr>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Total Casas o Lotes</th>
-                                        <th>Cobradas</th>
-                                        <th>Terminadas No Cobradas</th>
-                                        <th>Terminadas Vendidas No Cobradas</th>
-                                        <th>Terminadas Disponibles</th>
-                                        <th>En Proceso de Construccion No Cobradas</th>
-                                        <th>En Proceso Vendidas No Cobradas</th>
-                                        <th>En Proceso Disponible</th>
-                                        <th>Disponibles Sin Avance</th>
-                                        <th>Casa muestra terminada</th>
-                                        <th>Casa muestra en proceso</th>
+                                    <tr class="tr2">
+                                        <th class="th2">Fraccionamiento</th>
+                                        <th class="th2">Etapa</th>
+                                        <th class="th2">Total Casas o Lotes</th>
+                                        <th class="th2">Cobradas</th>
+                                        <th class="th2">Terminadas No Cobradas</th>
+                                        <th class="th2">Terminadas Vendidas No Cobradas</th>
+                                        <th class="th2">Terminadas Disponibles</th>
+                                        <th class="th2">En Proceso de Construccion No Cobradas</th>
+                                        <th class="th2">En Proceso Vendidas No Cobradas</th>
+                                        <th class="th2">En Proceso Disponible</th>
+                                        <th class="th2">Disponibles Sin Avance</th>
+                                        <th class="th2">Casa muestra terminada</th>
+                                        <th class="th2">Casa muestra en proceso</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -209,6 +209,18 @@
     white-space: nowrap;
     border-bottom: none;
     color: rgb(20, 20, 20);
+    }
+
+    .tableScroll{
+        overflow-y: auto;
+        height: 400px;
+    }
+
+    .thead2 .tr2 .th2 { 
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #ffffff;
     }
 
     .td2:first-of-type, th:first-of-type {

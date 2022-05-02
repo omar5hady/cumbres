@@ -1425,7 +1425,7 @@
                                                     </div>
                                                 </div>
 
-                                                <template v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                                <template v-if="modelo != 'Terreno'">
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
                                                         <div class="form-group">
                                                             <label for="">Comisión por apertura</label>
@@ -1443,7 +1443,7 @@
 
                                                 <div class="col-md-3" v-if="inst_financiera!=''"><hr>
                                                     <div class="form-group">
-                                                        <h5 v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                        <h5 v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')" style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
                                                         <h5 v-else style="color:#2271b3;" for=""><strong> Credito Neto Concretania: </strong></h5>
                                                     </div>
                                                 </div> 
@@ -1512,7 +1512,7 @@
                                                 </template>
 
                                                 
-                                                <template v-if="modelo != 'Terreno'">
+                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
                                                     <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                             <label for="">Avaluo por parte del banco</label>
@@ -1547,7 +1547,7 @@
                                                 </div>
 
                                                     
-                                                <template v-if="modelo != 'Terreno'">
+                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
                                                     <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                             <label for="">Gastos de escrituración</label>
@@ -1583,7 +1583,7 @@
                                                     </div>
                                                 </div>
 
-                                                <template v-if="modelo != 'Terreno'">
+                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                         <!--<label for="">Prima unica</label>
@@ -1765,7 +1765,7 @@
                                                                         </td>
                                                                         <td v-if="
                                                                             btn_actualizar == 1 && modelo != 'Terreno' 
-                                                                            || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
+                                                                            || btn_actualizar == 1 && (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
                                                                             || btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
                                                                             <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
                                                                                 <i class="icon-check"></i>
