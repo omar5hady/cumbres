@@ -16,11 +16,14 @@ class ObsAuditoriaController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
 
-        $observacion = new Obs_auditoria();
-        $observacion->contrato_id = $request->id;
-        $observacion->comentario = $request->comentario;
-        $observacion->usuario = Auth::user()->usuario;
-        $observacion->save();
+        if($request->comentario != ''){
+            $observacion = new Obs_auditoria();
+            $observacion->contrato_id = $request->id;
+            $observacion->comentario = $request->comentario;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+        }
+        
 
         $contrato = Contrato::findOrFail($request->id);
         $contrato->fecha_audit = $fecha;

@@ -9,6 +9,7 @@ use App\Partida;
 use App\Partida_urbanizacion;
 use App\Licencia;
 use App\Lote;
+use App\Ini_obra;
 use DB;
 use Carbon\Carbon;
 use App\User;
@@ -236,6 +237,11 @@ class AvanceController extends Controller
             
        }
 
+       $contrato = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+            ->join('lotes','ini_obras.clave','=','lotes.aviso')
+            ->select('contratistas.nombre')
+            ->where('lotes.id','=',$buscar)->first();
+
         return [
             'pagination' => [
                 'total'         => $avance->total(),
@@ -245,7 +251,8 @@ class AvanceController extends Controller
                 'from'          => $avance->firstItem(),
                 'to'            => $avance->lastItem(),
             ],
-            'avance' => $avance
+            'avance' => $avance,
+            'contrato' => $contrato
         ];
     }
 

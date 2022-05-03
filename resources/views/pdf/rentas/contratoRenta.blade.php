@@ -151,21 +151,18 @@ body{
             Única. Que expuesto lo anterior, reconocen mutuamente la personalidad que ostentan y 
             acreditan estar de acuerdo con obligarse, conviniendo en celebrar el presente instrumento al tenor de las siguientes:
         </p>
-
-
         
         <p align="center">C L Á U S U L A S:</p>
         
-
         <p>
             <strong>PRIMERA Objeto.</strong> 
             @if($contrato->muebles == 0)
                 EL ARRENDADOR otorga en arrendamiento a EL ARRENDATARIO EL INMUEBLE, mismo que está 
-                descrito en la declaración I.3 de este Contrato. Por virtud de este contrato, EL ARRENDADOR se 
+                descrito en la declaración I.2 de este Contrato,  inmueble que se RENTA SIN AMUEBLAR. Por virtud de este contrato, EL ARRENDADOR se 
                 compromete en respetar y, por ende, en no estorbar  la posesión derivada a EL ARRENDATARIO, 
                 sin perjuicio de las acciones legales que pueda ejercer ante el incumplimiento de este acto jurídico. 
             @else
-                EL ARRENDADOR otorga en arrendamiento a EL ARRENDATARIO EL INMUEBLE, mismo que está  descrito en la declaración I.3 
+                EL ARRENDADOR otorga en arrendamiento a EL ARRENDATARIO EL INMUEBLE, mismo que está  descrito en la declaración I.2 
                 de este Contrato, inmueble que  se RENTA AMUEBLADO, por lo que por este instrumento hace las veces de resguardo de las 
                 cosas detalladas en el <strong>ANEXO UNO,</strong> el cual forma parte integrante de este contrato y <strong>EL ARRENDATARIO</strong> se hace responsable 
                 del buen uso y cuidado de las mismas, respondiéndole AL ARRENDADOR por cualquier daño, desperfecto o sustracción de las 
@@ -188,7 +185,6 @@ body{
             {{$contrato->fecha_ini}} para terminar el {{$contrato->fecha_fin}}. 
         </p>
 
-        
         <p>
             <strong>CUARTA.- Prórrogas y preferencia.</strong> La vigencia del presente contrato no se prorrogará tácitamente, 
             por lo que ambas partes renuncian a lo dispuesto en el artículo  2317 del Código Civil del Estado. 
@@ -493,6 +489,7 @@ body{
                         @else
                             {{mb_strtoupper($contrato->nombre_arrendador)}}
                         @endif
+                        <br><strong>ARRENDADOR</strong>
                     </center>
                     
                 </div>
@@ -506,6 +503,7 @@ body{
                         @else
                             {{mb_strtoupper($contrato->nombre_arrendatario)}}
                         @endif
+                        <br><strong>ARRENDATARIO</strong>
                     </center>
                 </div>
             </div>
@@ -542,6 +540,7 @@ body{
                             @else
                                 {{mb_strtoupper($contrato->nombre_aval)}}
                             @endif
+                            <br><strong>AVAL</strong>
                         </center>
                     </div>
                     <div class="table-cell3"></div>
@@ -573,16 +572,17 @@ body{
                 <div class="table-row">
                     <div colspan="2" class="table-cell3">
                         <center>
-                            TESTIGO
-                            <br>{{mb_strtoupper($contrato->nombre)}}
+                            {{mb_strtoupper($contrato->nombre)}}
+                            <br><strong>TESTIGO</strong>
                         </center>
                     </div>
                     <div style="width: 8%;" class="table-cell3"></div>
                     <div colspan="2" class="table-cell3">
                         <center>
-                            TESTIGO
-                            <br>SR. {{mb_strtoupper($testigo)}}</div>
+                            {{mb_strtoupper($testigo)}}
+                            <br><strong>TESTIGO</strong>
                         </center>
+                    </div>
                 </div>
             </div>
         </div>

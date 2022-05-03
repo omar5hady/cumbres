@@ -11,10 +11,12 @@
     @page{
         margin-right: 30px;
         margin-left: 30px;
-        margin-top: 40px;
+        margin-top: 20px;
+        margin-bottom: 2px;
+        
     }
     body {
-        font-size: 9.5pt;
+        font-size: 9pt;
         font-family: sans-serif;
     }
 
@@ -25,7 +27,7 @@
     .table-cell1 {
         display: table-cell;
         padding: 0em;
-        font-size:9.5pt;
+        font-size:9pt;
     }
 
     .table {
@@ -46,8 +48,8 @@
                 <table>
                     <tr style="height: .5px">
                         <td width=100 bgcolor="black"
-                            style="padding-top: -0.2in; padding-bottom: -0.2in; ">
-                            <center><h3 style="color: white">P A G A R É</h4></center>
+                            style="padding-top: 0.05in; padding-bottom: 0.05in; ">
+                            <center><h3 style="color: white">P A G A R É</h3></center>
                         </td>
                     </tr>
                 </table>
@@ -78,8 +80,6 @@
 
             <br>
 
-            
-
             <div style="text-align: justify; margin:50px">
 
                 <div>
@@ -104,7 +104,7 @@
 
                     <p>
                         Valor recibido  a  mi  (nuestra)  entera   satisfacción.   Este  pagaré forma parte de   una   
-                        serie numerado del    UNO    al   {{$contrato->cantMeses}}  y  todos están sujetos a la condición de que, al no 
+                        serie numerado del    UNO    al   {{mb_strtoupper($contrato->cantMeses)}}  y  todos están sujetos a la condición de que, al no 
                         pagarse cualesquiera de  ellos  a  su  vencimiento,  serán exigibles todos los que le sigan en, número además de los ya  
                         vencidos,  desde la fecha de vencimiento de este documento hasta el día de su liquidación causará intereses moratorios al 
                         tipo de 5.00 %  mensual,  pagadero en esta Ciudad juntamente con el principal.
@@ -125,15 +125,30 @@
                         <div colspan="" class="table-cell1"> <b></div>
                         <div colspan="2" class="table-cell1"><strong>Nombre:</strong>: {{$contrato->nombre_aval}}</div>
                     </div>
+
                     <div class="table-row">
-                        <div colspan="2" class="table-cell1"><strong>Dirección:</strong>: {{$contrato->dir_arrendatario}}</div>
+                        @if($contrato->tipo_arrendatario == 1)
+                            <div colspan="2" class="table-cell1"><strong>Apoderado:</strong>: {{$contrato->representante_arrendatario}}</div>
+                        @else
+                            <div colspan="2" class="table-cell1"></div>
+                        @endif
                         <div colspan="" class="table-cell1"> <b></div>
-                        <div colspan="2" class="table-cell1"><strong>Dirección:</strong>: {{$contrato->dir_aval}}</div>
+                        @if($contrato->tipo_aval == 1)
+                            <div colspan="2" class="table-cell1"><strong>Apoderado:</strong>: {{$contrato->representante_aval}}</div>
+                        @else
+                            <div colspan="2" class="table-cell1"></div>
+                        @endif
+                    </div>
+
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell1"><strong>Dirección:</strong>: {{$contrato->dir_arrendatario}} Col. {{$contrato->col_arrendatario}}</div>
+                        <div colspan="" class="table-cell1"> <b></div>
+                        <div colspan="2" class="table-cell1"><strong>Dirección:</strong>: {{$contrato->dir_aval}} Col. {{$contrato->col_aval}}</div>
                     </div>
                     <div class="table-row">
-                        <div colspan="2" class="table-cell1"><strong>Fracc. y Mpio:</strong>: {{$contrato->municipio_arrendatario}} CP {{$contrato->cp_arrendatario}}}</div>
+                        <div colspan="2" class="table-cell1"><strong>Fracc. y Mpio:</strong>: {{$contrato->municipio_arrendatario}}, {{$contrato->estado_arrendatario}} CP {{$contrato->cp_arrendatario}}</div>
                         <div colspan="" class="table-cell1"> <b></div>
-                        <div colspan="2" class="table-cell1"><strong>Fracc. y Mpio:</strong>: {{$contrato->municipio_aval}} CP {{$contrato->cp_aval}}</div>
+                        <div colspan="2" class="table-cell1"><strong>Fracc. y Mpio:</strong>: {{$contrato->municipio_aval}}, {{$contrato->estado_aval}} CP {{$contrato->cp_aval}}</div>
                     </div>
                     <div class="table-row">
                         <div colspan="2" class="table-cell1"><br><br></div>
@@ -148,7 +163,10 @@
                 </div>
             </div>
         </div>
-        <br><br>
+        <br>
+        @if($pago->num_pago%2 == 0 && $pago->num_pago != $contrato->num_meses)
+            <div style="page-break-after:always;"></div>
+        @endif
     @endforeach
 </body>
 

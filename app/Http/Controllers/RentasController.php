@@ -4,16 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\NotificacionesAvisosController;
 use Illuminate\Http\Request;
+use App\Notifications\NotifyAdmin;
 use App\User;
 use App\Lote;
 use App\Licencia;
 use App\Arrendador;
 use App\Renta;
+use App\Personal;
 use App\Testigo_renta;
 use App\Pago_renta;
 use Carbon\Carbon;
 use NumerosEnLetras;
 use DB;
+use Auth;
 use File;
 
 class RentasController extends Controller
@@ -431,6 +434,79 @@ class RentasController extends Controller
                 }
             }
         }
+
+    }
+    //Función para actualizar el estatus de un contrato de renta (0 cancelado, 1 pendiente, 2 firmado)
+    public function changeStatus(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $datosRenta = $request->datosRenta;
+            //Se accede al registro del contrato de la renta.
+            $contrato = Renta::findOrFail($request->id);
+            $contrato->status = $request->status;
+
+            if($contrato->status == 0){//Estatus cancelado
+                $contrato->motivo_cancel = $request->motivo_cancel;//Se captura el motivo de cancelación
+                $contrato->fecha_firma = $datosRenta['fecha_firma'];//Fecha en la que se cancela
+
+                $lote::findOrFail($contrato->lote_id);//Se accede al registro del lote
+                $lote->contrato = 0;//Se libera el lote para que aparezca nuevamente en el inventario
+                $lote->apartado = 0;
+                $lote->save();
+            }
+            if($contrato->status == 2){//Estatus firmado
+                $contrato->fecha_firma = $datosRenta['fecha_firma'];//Fecha de firma del contrato
+                $contrato->facturar = $datosRenta['facturar'];
+                if($contrato->facturar == 1){//Si se necesita facturar
+                    // Se capturan los datos fiscales del cliente.
+                    $contrato->email_fisc = $datosRenta['email_fisc'];
+                    $contrato->tel_fisc = $datosRenta['tel_fisc'];
+                    $contrato->nombre_fisc = $datosRenta['nombre_fisc'];
+                    $contrato->direccion_fisc = $datosRenta['direccion_fisc'];
+                    $contrato->col_fisc = $datosRenta['col_fisc'];
+                    $contrato->cp_fisc = $datosRenta['cp_fisc'];
+                    $contrato->rfc_fisc = $datosRenta['rfc_fisc'];
+
+                    $contrato->cfi_fisc = $datosRenta['cfi_fisc'];
+                    $contrato->regimen_fisc = $datosRenta['regimen_fisc'];
+                    $contrato->banco_fisc = $datosRenta['banco_fisc'];
+                    $contrato->num_cuenta_fisc = $datosRenta['num_cuenta_fisc'];
+                    $contrato->clabe_fisc = $datosRenta['clabe_fisc'];
+                }
+                //Se obtiene la informacion del lote (Direccion oficial)
+                $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->select(
+                        'lotes.calle', 'lotes.numero', 'lotes.interior',
+                        'fraccionamientos.nombre as proyecto',
+                        'etapas.num_etapa as etapa'
+                    )->where('lotes.id','=',$contrato->lote_id)->first();
+
+                //Se manda notificación sobre la renta.
+                $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "Se ha cerrado la renta de la ubicación" . $lote->calle . " #" . $lote->numero . " en el fraccionamiento " . $lote->proyecto. 
+                " a nombre de ".$contrato->nombre_arrendatario;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Renta firmada'
+                    ]
+                ];
+
+                $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['antonio.nv','shady'])->get();
+
+                if(sizeof($personal))
+                foreach ($personal as $personas) {
+                    $correo = $personas->email;
+                    //Mail::to($correo)->send(new NotificationReceived($msj));
+                    User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                }
+            }
+            //Se actualiza la renta.
+            $contrato->save();
 
     }
 

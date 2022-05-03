@@ -56,7 +56,13 @@
                                 <h6 style="color:blue;" v-text="'Modelo: '"></h6>
                                 <h6 v-text="arrayAvance[0].modelos"></h6>
                             </div>
-                            
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <h6 style="color:blue;" v-text="'Contratista: '"></h6>
+                                <h6 v-text="contratista.nombre"></h6>
+                            </div>
                         </div>
 
                         <div class="form-group row">
@@ -520,6 +526,7 @@
                 empresas:[],
                 arrayUrbanizacion:[],
                 urbanizacion:0,
+                contratista: ''
             }
         },
         computed:{
@@ -595,6 +602,7 @@
                     else{
                         me.status = 'Individualizada';
                     }
+                    me.contratista = respuesta.contrato;
                 })
                 .catch(function (error) {
                     console.log(error);

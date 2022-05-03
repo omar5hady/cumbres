@@ -40,6 +40,7 @@ class Renta extends Model
             //Datos contrato
             'monto_renta',
             'status',
+            'motivo_cancel',
             'fecha_firma',
             'fecha_ini',
             'fecha_fin',
@@ -51,7 +52,12 @@ class Renta extends Model
             'agua',
             'gas',
             'archivo_contrato',
-            'adendum'
+            'adendum',
+            'email_fisc', 'tel_fisc', 'nombre_fisc',
+            'direccion_fisc', 'col_fisc', 'cp_fisc', 'rfc_fisc',
+            'cfi_fisc', 'regimen_fisc',
+            'banco_fisc', 'num_cuenta_fisc',
+            'clabe_fisc'
     ];
 
     public function lote(){

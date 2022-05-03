@@ -16,7 +16,7 @@ body{
 }
 
 @page{
-    margin: 85px;
+    margin: 40px;
     margin-right: 105px;
     margin-left: 105px;
 }
@@ -96,13 +96,15 @@ body{
             <div class="table-row">
                 <div colspan="2" class="table-cell3">
                     <p align="center">
-                        EL ARRENDADOR<br><br><br><br><br><br>
+                        <strong>EL ARRENDADOR</strong>
+                        <br><br><br><br><br><br>
                     </p>
                 </div>
                 <div style="width: 10%;" class="table-cell3"></div>
                 <div colspan="2" class="table-cell3">
                     <p align="center">
-                        EL ARRENDATARIO<br><br><br><br><br><br>
+                        <strong>EL ARRENDATARIO</strong>
+                        <br><br><br><br><br><br>
                     </p>
                 </div>
             </div>
@@ -166,7 +168,7 @@ body{
                             @else
                                 {{mb_strtoupper($contrato->nombre_aval)}}
                             @endif
-                            <br>FIADOR
+                            <br><strong>EL FIADOR</strong>
                         </center>
                     </div>
                     <div class="table-cell3"></div>
@@ -174,8 +176,6 @@ body{
             </div>
         </div>
 
-        <br>
-        <br>
         <br>
         <br>
 

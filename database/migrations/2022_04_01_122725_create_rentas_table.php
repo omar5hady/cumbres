@@ -50,6 +50,7 @@ class CreateRentasTable extends Migration
             //Datos contrato
             $table->float('monto_renta')->defaut(0);
             $table->boolean('status',1)->default(1);
+            $table->string('motivo_cancel')->nullable();
             $table->date('fecha_firma')->nullable();
             $table->date('fecha_ini')->nullable();
             $table->date('fecha_fin')->nullable();
@@ -78,8 +79,8 @@ class CreateRentasTable extends Migration
             $table->string('col_fisc',40)->nullable();
             $table->string('cp_fisc',5)->nullable();
             $table->string('rfc_fisc',13)->nullable();
-            $table->string('cfi_fisc',50)->nullable();
-            $table->string('regimen_fisc',50)->nullable();
+            $table->string('cfi_fisc',100)->nullable();
+            $table->string('regimen_fisc',100)->nullable();
             $table->string('banco_fisc',50)->nullable();
             $table->string('num_cuenta_fisc',50)->nullable();
             $table->string('clabe_fisc',50)->nullable();

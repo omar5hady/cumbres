@@ -240,7 +240,7 @@
                                                             listado == 2"
                                                         @keyup="selectColonias(datosRenta.cp_arrendatario,0), datosRenta.col_arrendatario =''"
                                                         class="form-control" v-model="datosRenta.cp_arrendatario"
-                                                        placeholder="Códigp Postal"
+                                                        placeholder="Código Postal"
                                                         maxlength="5"
                                                         pattern="\d*"
                                                         v-on:keypress="isNumber($event)"
@@ -272,7 +272,7 @@
                                                     <input type="text" :disabled="
                                                             listado == 2"
                                                         class="form-control" v-model="datosRenta.municipio_arrendatario"
-                                                        placeholder="Colonia"
+                                                        placeholder="Municipio"
                                                     />
                                                 </div>
                                             </div>
@@ -437,7 +437,7 @@
                                                         listado == 2"
                                                     @keyup="selectColonias(datosRenta.cp_aval,1), datosRenta.col_aval =''"
                                                     class="form-control" v-model="datosRenta.cp_aval"
-                                                    placeholder="Códigp Postal"
+                                                    placeholder="Código Postal"
                                                     maxlength="5"
                                                     pattern="\d*"
                                                     v-on:keypress="isNumber($event)"
@@ -469,7 +469,7 @@
                                                 <input type="text" :disabled="
                                                         listado == 2"
                                                     class="form-control" v-model="datosRenta.municipio_aval"
-                                                    placeholder="Colonia"
+                                                    placeholder="Municipio"
                                                 />
                                             </div>
                                         </div>
@@ -872,7 +872,7 @@
                                                 </div>
                                             </div> 
 
-                                            <!-- <div class="col-md-4">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="">Fecha de firma</label>
                                                     <input type="date" 
@@ -881,7 +881,7 @@
                                                     placeholder="Fecha de firma"
                                                 />
                                                 </div>
-                                            </div> -->
+                                            </div>
                                         </template>
                                     </div>
                                     <!-- Fin datos prospecto-->
@@ -1162,18 +1162,18 @@
 
                     <!-- Botones del modal -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="modal=0">Cerrar</button>
+                        <button type="button" class="btn btn-secondary" @click="modal=0, getDatos(datosRenta.id)">Cerrar</button>
                         <template v-if="datosRenta.fecha_firma != null">
-                            <button type="button" v-if="datosRenta.status == 0 || (datosRenta.status == 2 && datosRenta.facturar == 0)" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                            <button type="button" v-if="datosRenta.status == 0 || (datosRenta.status == 2 && datosRenta.facturar == 0)" class="btn btn-primary" @click="changeStatus(datosRenta.status)">Guardar</button>
                             <button type="button" 
-                                v-if="datosRenta.status == 3 && datosRenta.facturar == 2 && datosRenta.archivo_fisc != null
+                                v-if="datosRenta.status == 2 && datosRenta.facturar == 1 
                                     && datosRenta.email_fisc != '' && datosRenta.email_fisc != null
                                     && datosRenta.tel_fisc != '' && datosRenta.tel_fisc != null
                                     && datosRenta.nombre_fisc != '' && datosRenta.nombre_fisc != null
                                     && datosRenta.direccion_fisc != '' && datosRenta.direccion_fisc != null
                                     && datosRenta.regimen_fisc != '' && datosRenta.cfi_fisc != null
                                     && datosRenta.cp_fisc != '' && datosRenta.cp_fisc != null" 
-                                class="btn btn-success" @click="registrarFechaStatus()"
+                                class="btn btn-success" @click="changeStatus(datosRenta.status)"
                             >Guardar</button>
                             
                         </template>
@@ -1226,6 +1226,7 @@ export default {
             fecha_status:'',
             apoderado : 'C.P. MARTIN HERRERA SANCHEZ',
             testigo: 'JUAN URIEL ALFARO GALVAN',
+            motivo_cancel : '',
         };
     },
     computed: {
@@ -1387,9 +1388,11 @@ export default {
                     axios.put('/rentas/changeStatus',{
                         'id': this.datosRenta.id,
                         'status': status,
+                        'motivo_cancel' : this.motivo_cancel,
                         'datosRenta' : this.datosRenta,
                         }).then(function (response){
                         me.salir();
+                        me.modal = 0;
                         Swal.enableLoading()
                         swal(
                             'Cambio de status!',
