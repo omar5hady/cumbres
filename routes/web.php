@@ -284,6 +284,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/rentas/getTestigos','RentasController@getTestigos');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
+        Route::put('/rentas/updateRenta','RentasController@updateRenta');
         Route::get('/rentas/indexRentas','RentasController@indexRentas');
         Route::get('/rentas/getDatosRenta','RentasController@getDatosRenta');
         Route::get('/rentas/printContrato','RentasController@printContrato');

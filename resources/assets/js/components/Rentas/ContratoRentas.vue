@@ -18,14 +18,22 @@
                     <button type="button" @click="salir()" class="btn btn-success" v-if="listado > 1">
                         <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                     </button>
+                    <button type="button" @click="actualizar = 1" class="btn btn-warning" v-if="listado > 1 && actualizar == 0 && datosRenta.status == 1">
+                        <i class="icon-pencil"></i>&nbsp;Vista actualizar
+                    </button>
+                    <button type="button" @click="actualizar = 0, getDatos(datosRenta.id)" class="btn btn-warning" v-if="listado > 1 && actualizar == 1 && datosRenta.status == 1">
+                        <i class="icon-pencil"></i>&nbsp;Ocultar vista actualizar
+                    </button>
 
                     <div style="text-align: right;" v-if="listado == 2">
-                            <label for="text-input"> <strong>Status</strong> </label>
-                            <select v-model="datosRenta.status" @change="selectStatus(datosRenta.status)">
-                                <option value="0">Cancelar</option>
-                                <option value="1">Pendiente</option>
-                                <option value="2">Firmar</option>
-                            </select>
+                        <label for="text-input"> <strong>Status</strong> </label>
+                        <select v-model="datosRenta.status" 
+                        v-if="datosRenta.status != 0"
+                        @change="selectStatus(datosRenta.status)">
+                            <option value="0">Cancelar</option>
+                            <option value="1">Pendiente</option>
+                            <option value="2">Firmar</option>
+                        </select>
                     </div>       
                 </div>
                 
@@ -196,7 +204,7 @@
                                                 <label for="">
                                                     Tipo<span style="color:red;" v-show="datosRenta.tipo_arrendatario == ''">(*)</span>
                                                 </label>
-                                                <select :disabled="listado == 2"
+                                                <select :disabled="listado == 2 && actualizar == 0"
                                                     v-model="datosRenta.tipo_arrendatario"
                                                     class="form-control"
                                                 >
@@ -212,7 +220,7 @@
                                                     Nombre<span style="color:red;" v-show="datosRenta.nombre_arrendatario == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.nombre_arrendatario"
                                                     placeholder="Nombre"
                                                 />
@@ -225,7 +233,7 @@
                                                         Dirección<span style="color:red;" v-show="datosRenta.dir_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         class="form-control" v-model="datosRenta.dir_arrendatario"
                                                         placeholder="Dirección"
                                                     />
@@ -237,7 +245,7 @@
                                                         CP<span style="color:red;" v-show="datosRenta.cp_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         @keyup="selectColonias(datosRenta.cp_arrendatario,0), datosRenta.col_arrendatario =''"
                                                         class="form-control" v-model="datosRenta.cp_arrendatario"
                                                         placeholder="Código Postal"
@@ -255,7 +263,7 @@
                                                         Colonia<span style="color:red;" v-show="datosRenta.col_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" name="city3" 
-                                                        :disabled="listado == 2"
+                                                        :disabled="listado == 2 && actualizar == 0"
                                                         list="cityname3" 
                                                         class="form-control" v-model="datosRenta.col_arrendatario">
                                                     <datalist id="cityname3">
@@ -270,7 +278,7 @@
                                                         Municipio<span style="color:red;" v-show="datosRenta.municipio_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         class="form-control" v-model="datosRenta.municipio_arrendatario"
                                                         placeholder="Municipio"
                                                     />
@@ -282,7 +290,7 @@
                                                         Estado<span style="color:red;" v-show="datosRenta.estado_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         class="form-control" v-model="datosRenta.estado_arrendatario"
                                                         placeholder="Colonia"
                                                     />
@@ -296,7 +304,7 @@
                                                         RFC<span style="color:red;" v-show="datosRenta.rfc_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         maxlength="13"
                                                         class="form-control" v-model="datosRenta.rfc_arrendatario"
                                                         placeholder="RFC"
@@ -309,7 +317,7 @@
                                                         Representante<span style="color:red;" v-show="datosRenta.representante_arrendatario == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         class="form-control" v-model="datosRenta.representante_arrendatario"
                                                         placeholder="Representante legal"
                                                     />
@@ -324,7 +332,7 @@
                                                     <span style="color:red;" v-show="datosRenta.tel_arrendatario == ''">(*)</span>
                                                 </label>
                                                 <div class="input-group">
-                                                    <select :disabled="listado == 2"
+                                                    <select :disabled="listado == 2 && actualizar == 0"
                                                         v-model="datosRenta.clv_lada_arr"
                                                         class="form-control col-md-5"
                                                     >
@@ -334,7 +342,7 @@
                                                             v-text="clave.pais +' +' +clave.clave"
                                                         ></option>
                                                     </select>
-                                                    <input type="text" :disabled="listado == 2"
+                                                    <input type="text" :disabled="listado == 2 && actualizar == 0"
                                                         pattern="\d*"
                                                         maxlength="10"
                                                         class="form-control col-md-7"
@@ -377,7 +385,7 @@
                                                 <label for="">
                                                     Tipo<span style="color:red;" v-show="datosRenta.tipo_aval == ''">(*)</span>
                                                 </label>
-                                                <select :disabled="listado == 2"
+                                                <select :disabled="listado == 2 && actualizar == 0"
                                                     v-model="datosRenta.tipo_aval"
                                                     class="form-control"
                                                 >
@@ -393,7 +401,7 @@
                                                     Nombre<span style="color:red;" v-show="datosRenta.nombre_aval == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.nombre_aval"
                                                     placeholder="Nombre"
                                                 />
@@ -408,7 +416,7 @@
                                                         Representante<span style="color:red;" v-show="datosRenta.representante_aval == ''">(*)</span>
                                                     </label>
                                                     <input type="text" :disabled="
-                                                            listado == 2"
+                                                            listado == 2 && actualizar == 0"
                                                         class="form-control" v-model="datosRenta.representante_aval"
                                                         placeholder="Representante legal"
                                                     />
@@ -422,7 +430,7 @@
                                                     Dirección<span style="color:red;" v-show="datosRenta.dir_aval == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.dir_aval"
                                                     placeholder="Dirección"
                                                 />
@@ -434,7 +442,7 @@
                                                     CP<span style="color:red;" v-show="datosRenta.cp_aval == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     @keyup="selectColonias(datosRenta.cp_aval,1), datosRenta.col_aval =''"
                                                     class="form-control" v-model="datosRenta.cp_aval"
                                                     placeholder="Código Postal"
@@ -450,7 +458,7 @@
                                                     Colonia<span style="color:red;" v-show="datosRenta.col_aval == ''">(*)</span>
                                                 </label>
                                                 <input type="text" name="city3" 
-                                                    :disabled="listado == 2"
+                                                    :disabled="listado == 2 && actualizar == 0"
                                                     list="cityname3" 
                                                     class="form-control" v-model="datosRenta.col_aval">
                                                 <datalist id="cityname3">
@@ -467,7 +475,7 @@
                                                     Municipio<span style="color:red;" v-show="datosRenta.municipio_aval == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.municipio_aval"
                                                     placeholder="Municipio"
                                                 />
@@ -479,7 +487,7 @@
                                                     Estado<span style="color:red;" v-show="datosRenta.estado_aval == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.estado_aval"
                                                     placeholder="Colonia"
                                                 />
@@ -492,7 +500,7 @@
                                                     <span style="color:red;" v-show="datosRenta.tel_aval == ''">(*)</span>
                                                 </label>
                                                 <div class="input-group">
-                                                    <select :disabled="listado == 2"
+                                                    <select :disabled="listado == 2 && actualizar == 0"
                                                         v-model="datosRenta.clv_lada_aval"
                                                         class="form-control col-md-5"
                                                     >
@@ -502,7 +510,7 @@
                                                             v-text="clave.pais +' +' +clave.clave"
                                                         ></option>
                                                     </select>
-                                                    <input type="text" :disabled="listado == 2"
+                                                    <input type="text" :disabled="listado == 2 && actualizar == 0"
                                                         pattern="\d*"
                                                         maxlength="10"
                                                         class="form-control col-md-7"
@@ -545,7 +553,7 @@
                                                     Nombre<span style="color:red;" v-show="datosRenta.nombre == ''">(*)</span>
                                                 </label>
                                                 <input type="text" :disabled="
-                                                        listado == 2"
+                                                        listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.nombre"
                                                     placeholder="Nombre"
                                                 />
@@ -674,7 +682,7 @@
                                                 <div class="form-group">
                                                     <label for="">Déposito de Garantia</label>
                                                     <input type="text" v-if="listado == 3" 
-                                                        :disabled="listado == 2"
+                                                        :disabled="listado == 2 && actualizar == 0"
                                                         class="form-control" v-model="datosRenta.dep_garantia"
                                                         placeholder="Deposito de garantia"
                                                         v-on:keypress="isNumber($event)"
@@ -691,14 +699,14 @@
                                                         <div class="input-group-text">
                                                             <button type="button" v-if="datosRenta.muebles == 1"
                                                                 class="btn btn-success"
-                                                                :disabled="listado == 2"
+                                                                :disabled="listado == 2 && actualizar == 0"
                                                                 @click="datosRenta.muebles=0, adendum = 0"
                                                             >
                                                                 Si
                                                             </button>
                                                             <button type="button" v-if="datosRenta.muebles == 0"
                                                                 class="btn btn-primary"
-                                                                :disabled="listado == 2"
+                                                                :disabled="listado == 2 && actualizar == 0"
                                                                 @click="datosRenta.muebles=1, adendum = 0"
                                                             >
                                                                 No
@@ -714,14 +722,14 @@
                                                         <div class="input-group-text">
                                                             <button type="button" v-if="datosRenta.adendum == 1"
                                                                 class="btn btn-success"
-                                                                :disabled="listado == 2"
+                                                                :disabled="listado == 2 && actualizar == 0"
                                                                 @click="datosRenta.adendum=0"
                                                             >
                                                                 Si
                                                             </button>
                                                             <button type="button" v-if="datosRenta.adendum == 0"
                                                                 class="btn btn-primary"
-                                                                :disabled="listado == 2"
+                                                                :disabled="listado == 2 && actualizar == 0"
                                                                 @click="datosRenta.adendum=1"
                                                             >
                                                                 No
@@ -740,14 +748,14 @@
                                                         <div class="input-group-text">
                                                             <button type="button" v-if="datosRenta.servicios == 1"
                                                                 class="btn btn-success"
-                                                                :disabled="listado == 2"
+                                                                :disabled="listado == 2 && actualizar == 0"
                                                                 @click="datosRenta.servicios=0"
                                                             >
                                                                 Si
                                                             </button>
                                                             <button type="button" v-if="datosRenta.servicios == 0"
                                                                 class="btn btn-primary"
-                                                                :disabled="listado == 2"
+                                                                :disabled="listado == 2 && actualizar == 0"
                                                                 @click="datosRenta.servicios=1, limpiarServicios()"
                                                             >
                                                                 No
@@ -764,7 +772,7 @@
                                                     <div class="form-group">
                                                         <label for="">Luz</label>
                                                         <input type="text" v-if="listado == 3" 
-                                                            :disabled="listado == 2"
+                                                            :disabled="listado == 2 && actualizar == 0"
                                                             class="form-control" v-model="datosRenta.luz"
                                                             placeholder="Deposito de garantia"
                                                             v-on:keypress="isNumber($event)"
@@ -776,7 +784,7 @@
                                                     <div class="form-group">
                                                         <label for="">Agua</label>
                                                         <input type="text" v-if="listado == 3" 
-                                                            :disabled="listado == 2"
+                                                            :disabled="listado == 2 && actualizar == 0"
                                                             class="form-control" v-model="datosRenta.agua"
                                                             placeholder="Deposito de garantia"
                                                             v-on:keypress="isNumber($event)"
@@ -788,7 +796,7 @@
                                                     <div class="form-group">
                                                         <label for="">Gas</label>
                                                         <input type="text" v-if="listado == 3" 
-                                                            :disabled="listado == 2"
+                                                            :disabled="listado == 2 && actualizar == 0"
                                                             class="form-control" v-model="datosRenta.gas"
                                                             placeholder="Deposito de garantia"
                                                             v-on:keypress="isNumber($event)"
@@ -801,7 +809,7 @@
                                                     <div class="form-group">
                                                         <label for="">Televisión</label>
                                                         <input type="text" v-if="listado == 3" 
-                                                            :disabled="listado == 2"
+                                                            :disabled="listado == 2 && actualizar == 0"
                                                             class="form-control" v-model="datosRenta.television"
                                                             placeholder="Deposito de garantia"
                                                             v-on:keypress="isNumber($event)"
@@ -813,7 +821,7 @@
                                                     <div class="form-group">
                                                         <label for="">Telefonía</label>
                                                         <input type="text" v-if="listado == 3" 
-                                                            :disabled="listado == 2"
+                                                            :disabled="listado == 2 && actualizar == 0"
                                                             class="form-control" v-model="datosRenta.telefonia"
                                                             placeholder="Deposito de garantia"
                                                             v-on:keypress="isNumber($event)"
@@ -876,7 +884,7 @@
                                                 <div class="form-group">
                                                     <label for="">Fecha de firma</label>
                                                     <input type="date" 
-                                                    :disabled="listado == 2"
+                                                    :disabled="listado == 2 && actualizar == 0"
                                                     class="form-control" v-model="datosRenta.fecha_firma"
                                                     placeholder="Fecha de firma"
                                                 />
@@ -919,11 +927,19 @@
                                         >
                                             Enviar
                                         </button>
+                                        <button
+                                            type="button"
+                                            v-if="listado == 2 && actualizar == 1"
+                                            class="btn btn-primary"
+                                            @click="updateRenta()"
+                                        >
+                                            Actualizar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group" v-if="listado == 2">
+                            <div class="form-group" v-if="listado == 2 && actualizar == 0">
                                 <div class="col-md-12">
                                     <div style="text-align: right;" >
                                         <button type="button"
@@ -1227,6 +1243,7 @@ export default {
             apoderado : 'C.P. MARTIN HERRERA SANCHEZ',
             testigo: 'JUAN URIEL ALFARO GALVAN',
             motivo_cancel : '',
+            actualizar : 0,
         };
     },
     computed: {
@@ -1578,6 +1595,7 @@ export default {
             me.listado = 2;
             me.selectFraccionamientosInventario();
             me.getClavesLadas();
+            me.actualizar = 0;
             
         },
         nuevoContrato(){
@@ -1626,6 +1644,29 @@ export default {
                     position: 'top-end',
                     type: 'success',
                     title: 'Renta creada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+                console.log(error);
+            });
+        },
+        updateRenta(){
+            let me = this;
+            if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
+            {
+                return;
+            }
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.put('/rentas/updateRenta',{
+                'datosRenta' : this.datosRenta,
+            }).then(function (response){
+                me.salir();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Renta actualizada correctamente',
                     showConfirmButton: false,
                     timer: 1500
                     })

@@ -1153,7 +1153,7 @@
                         this.status_rev = data['status'];
 
                         if(
-                            data['recep_rh'] != null && data['recep_direccion'] != null
+                            data['recep_rh'] != null && data['recep_direccion'] != null || this.monto_comp == 0 && data['recep_rh'] != null
                         )   this.revisado = 1;
                         
                         

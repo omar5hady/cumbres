@@ -156,7 +156,7 @@ class RentasController extends Controller
             $renta->fecha_ini = $datosRenta['fecha_ini'];
             $renta->fecha_fin = $datosRenta['fecha_fin'];
             $renta->num_meses = $datosRenta['num_meses'];
-            //$renta->fecha_firma = $datosRenta['fecha_firma'];
+            $renta->fecha_firma = $datosRenta['fecha_firma'];
             $renta->dep_garantia = $datosRenta['dep_garantia'];
 
             $renta->muebles = $datosRenta['muebles'];
@@ -182,6 +182,64 @@ class RentasController extends Controller
                     $pago['importe']
                 );
             }
+        DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
+    //Funcion para actualizar una renta
+    public function updateRenta(Request $request){
+        $datosRenta = $request->datosRenta;
+
+        try {
+            DB::beginTransaction();
+            //Registro para renta
+            $renta = Renta::findOrFail($datosRenta['id']);
+            //Arrendatario
+            $renta->tipo_arrendatario = $datosRenta['tipo_arrendatario'];
+            $renta->nombre_arrendatario = $datosRenta['nombre_arrendatario'];
+            $renta->tel_arrendatario = $datosRenta['tel_arrendatario'];
+            $renta->clv_lada_arr = $datosRenta['clv_lada_arr'];
+            //Moral arrendatario
+            $renta->representante_arrendatario = $datosRenta['representante_arrendatario'];
+            $renta->dir_arrendatario = $datosRenta['dir_arrendatario'];
+            $renta->cp_arrendatario = $datosRenta['cp_arrendatario'];
+            $renta->col_arrendatario = $datosRenta['col_arrendatario'];
+            $renta->estado_arrendatario = $datosRenta['estado_arrendatario'];
+            $renta->municipio_arrendatario = $datosRenta['municipio_arrendatario'];
+            $renta->rfc_arrendatario = $datosRenta['rfc_arrendatario'];
+            //Aval (Fiador)
+            $renta->tipo_aval = $datosRenta['tipo_aval'];
+            $renta->nombre_aval = $datosRenta['nombre_aval'];
+            $renta->tel_aval = $datosRenta['tel_aval'];
+            $renta->clv_lada_aval = $datosRenta['clv_lada_aval'];
+                //Moral aval
+            $renta->representante_aval = $datosRenta['representante_aval'];
+            $renta->dir_aval = $datosRenta['dir_aval'];
+            $renta->cp_aval = $datosRenta['cp_aval'];
+            $renta->col_aval = $datosRenta['col_aval'];
+            $renta->estado_aval = $datosRenta['estado_aval'];
+            $renta->municipio_aval = $datosRenta['municipio_aval'];
+            //Testigo
+            $renta->nombre = $datosRenta['nombre'];
+            //Datos contrato
+            $renta->fecha_firma = $datosRenta['fecha_firma'];
+            $renta->dep_garantia = $datosRenta['dep_garantia'];
+
+            $renta->muebles = $datosRenta['muebles'];
+            $renta->adendum = $datosRenta['adendum'];
+            $renta->servicios = $datosRenta['servicios'];
+
+            $renta->luz = $datosRenta['luz'];
+            $renta->agua = $datosRenta['agua'];
+            $renta->gas = $datosRenta['gas'];
+            $renta->television = $datosRenta['television'];
+            $renta->telefonia = $datosRenta['telefonia'];
+            $renta->save();
+            //Se accede al registro del lote para indicar que ha sido rentado
+            $lote = Lote::findOrFail($datosRenta['lote_id']);
+            $lote->contrato = 1;
+            $lote->save();
         DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
