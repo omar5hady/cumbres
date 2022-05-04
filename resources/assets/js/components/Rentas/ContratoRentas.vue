@@ -69,6 +69,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th># Contrato</th>
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
@@ -80,10 +81,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contrato in arrayContratos.data" :key="contrato.id" v-on:dblclick="verContrato(contrato.id)" title="Ver contrato">
+                                    <tr v-for="contrato in arrayContratos.data" :key="contrato.id">
+                                        <td>
+                                            <button 
+                                                type="button" title="Subir contrato" @click="vistaArchivo(contrato.id)" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-files-o"></i>
+                                            </button>
+                                        </td>
                                         <td class="td2" v-text="contrato.id"></td>
                                         <td class="td2">
-                                            <a href="#" v-text="contrato.nombre_arrendatario.toUpperCase()"></a>
+                                            <a v-on:dblclick="verContrato(contrato.id)" 
+                                            title="Ver contrato"
+                                            href="#" v-text="contrato.nombre_arrendatario.toUpperCase()"></a>
                                         </td>
                                         <td class="td2" v-text="contrato.proyecto"></td>
                                         <td class="td2" v-text="contrato.etapa"></td>
@@ -1198,6 +1207,55 @@
                 </div> 
                 <!-- /.modal-content -->
             </div>
+            <div v-if="modal == 4" class="modal-dialog modal-primary modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Subir contrato</h4>
+                        <button type="button" class="close" @click="modal=0" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body" v-if="modal == 4">
+                        <form  method="post" @submit="formSubmitContrato" enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
+                                <div class="col-md-9">
+                                    <input type="file" accept="application/pdf" class="form-control" v-on:change="onArchivo">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-9"></div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success">Guardar Archivo.</button>
+                                </div>
+                            </div>
+                            
+                            <br/>
+                        </form>
+                    </div>
+
+                    <!-- Botones del modal -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="modal=0">Cerrar</button>
+                        <a v-if="modal == 1" class="btn btn-primary" v-bind:href="'/rentas/printContrato?id=' + datosRenta.id + '&representante=' + apoderado + '&testigo=' + testigo"  target="_blank">
+                            <i></i>Imprimir
+                        </a>
+                        <a class="btn btn-danger btn-sm" target="_blank" 
+                            v-if="modal == 1 && datosRenta.adendum == 1"
+                            v-bind:href="'/rentas/printAdendum?id='+datosRenta.id + '&representante=' + apoderado">ADENDUM
+                        </a>
+                        <a v-if="modal == 2" class="btn btn-primary" v-bind:href="'/rentas/printDepositoGarantia?id=' + datosRenta.id + '&representante=' + apoderado"  target="_blank">
+                            <i></i>Imprimir
+                        </a>
+                        <template v-if="modal == 4 && datosRenta.archivo_contrato != null">
+                            <button type="button" class="btn btn-success" @click="verArchivo(datosRenta.archivo_contrato)">Ver archivo</button>
+                        </template>
+                    </div>
+                </div> 
+                <!-- /.modal-content -->
+            </div>
             <!-- /.modal-dialog -->
         </div>
         <!--Fin del modal-->
@@ -1244,12 +1302,43 @@ export default {
             testigo: 'JUAN URIEL ALFARO GALVAN',
             motivo_cancel : '',
             actualizar : 0,
+            archivo: ''
         };
     },
     computed: {
         
     },
     methods: {
+        onArchivo(e){
+            this.archivo = e.target.files[0];
+        },
+        formSubmitContrato(e) {
+
+            e.preventDefault();
+
+            let currentObj = this;
+            let formData = new FormData();
+        
+            formData.append('archivo', this.archivo);
+            let me = this;
+            axios.post('/rentas/formSubmitContrato/'+me.datosRenta.id, formData)
+            .then(function (response) {
+                currentObj.success = response.data.success;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                    })
+                me.salir();
+                me.modal = 0;
+            }).catch(function (error) {
+                currentObj.output = error;
+                console.log(error);
+            });
+
+        },
         isNumber: function(evt) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1262,6 +1351,14 @@ export default {
         formatNumber(value) {
             let val = (value/1).toFixed(2)
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+        verArchivo(archivo){
+            window.open('/files/rentas/contratos/'+archivo, '_blank')
+        },
+        vistaArchivo(id){
+            this.modal = 4;
+            this.getDatos(id);
+            this.archivo = '';
         },
         calcularFechaFin(){
             let me = this;

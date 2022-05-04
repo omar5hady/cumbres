@@ -452,7 +452,7 @@ class RentasController extends Controller
         //Retorno de la vista
         return $pdf->stream('Adendum.pdf');
     }
-    // Función para subir archivo fiscal para ventas.
+    // Función para subir archivo de especificaciones para renta.
     public function formSubmitArchivo(Request $request, $id){
         $lote = Licencia::findOrFail($id);
 
@@ -472,7 +472,26 @@ class RentasController extends Controller
         
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
+    // Función para subir archivo contrato de la renta.
+    public function formSubmitContrato(Request $request, $id){
+        $renta = Renta::findOrFail($id);
 
+        if($renta->archivo_contrato != NULL){
+            $pathAnterior = public_path() . '/files/rentas/contratos/' . $lote->archivo_contrato;
+            File::delete($pathAnterior);
+        }
+
+        $fileName = $request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/rentas/contratos/'), $fileName);
+
+        if($moved){
+            $renta = Renta::findOrFail($id);
+            $renta->archivo_contrato = $fileName;
+            $renta->save(); //Insert
+        }
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
     public function getPagosPorVencer(Request $request){
         //Se establece la fecha 5 dias posteriores a la actual.
         $fecha = Carbon::today()->addDays(41)->format('Y-m-d');
@@ -554,12 +573,12 @@ class RentasController extends Controller
                     ]
                 ];
 
-                $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['antonio.nv','shady'])->get();
+                $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','shady'])->get();
 
                 if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
-                    //Mail::to($correo)->send(new NotificationReceived($msj));
+                    Mail::to($correo)->send(new NotificationReceived($msj));
                     User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                 }
             }
