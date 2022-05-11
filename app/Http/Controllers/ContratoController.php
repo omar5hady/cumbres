@@ -1141,6 +1141,7 @@ class ContratoController extends Controller
                 'lotes.emp_terreno',
                 'lotes.indivisos',
                 'modelos.tipo',
+                'modelos.nombre as modelo',
 
                 'fraccionamientos.ciudad as ciudad_proy',
                 'fraccionamientos.estado as estado_proy',

@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
+use App\Http\Controllers\NotificacionesAvisosController;
 use App\Notificacion_aviso;
 use Carbon\Carbon;
+use App\Pago_renta;
+use App\User;
 
 class NotificacionPeriodica extends Command
 {
@@ -43,6 +45,12 @@ class NotificacionPeriodica extends Command
     {
         //Se establece la fecha actual.
         $today = Carbon::today()->format('Y-m-d');
+        $this->getNotificacionesAviso($today);
+        $this->getPagosPorVencer();
+        $this->cambiarPagoAVencido();
+    }
+
+    private function getNotificacionesAviso($today){
         //Arreglo con las notificaciones que sean de aviso periodico
         $notificaciones = Notificacion_aviso::select('id','periodo','created_at','updated_at','finPeriodo')->where('periodo','!=',0)->get();
 
@@ -63,6 +71,55 @@ class NotificacionPeriodica extends Command
                         $notificacion->save();
                     }
                 }
+            }
+    }
+
+    private function getPagosPorVencer(){
+        //Se establece la fecha 5 dias posteriores a la actual.
+        $fecha = Carbon::today()->addDays(5)->format('Y-m-d');
+        $pagos = $this->getPagaresPendientes($fecha,1);
+
+        if(sizeof($pagos))
+        {
+            $users = User::select('id')->whereIn('usuario',
+                        ['uriel.al','enrique.mag','shady'])->get();
+
+            foreach($pagos as $ind => $pago){
+                $monto = number_format((float)$pago->importe, 2, '.', ',');
+                $msj = 'El Pago #'.$pago->num_pago.' por la cantidad de $'.$monto.' a nombre de '.$pago->nombre_arrendatario.' esta próximo a vencer';
+                foreach ($users as $index => $user) {
+                    $aviso = new NotificacionesAvisosController();
+                    $aviso->store($user->id,$msj);
+                }
+            }
+        }
+
+    }
+
+    private function getPagaresPendientes($fecha,$status){
+        return $pagos = Pago_renta::join('rentas','pagos_rentas.renta_id','=','rentas.id')
+                    ->join('lotes','rentas.lote_id','=','lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->select('pagos_rentas.*','rentas.nombre_arrendatario',
+                        'lotes.calle','lotes.numero','lotes.interior', 'lotes.manzana',
+                        'etapas.num_etapa as etapa', 'fraccionamientos.nombre as proyecto'
+                    )
+                    ->where('pagos_rentas.fecha','=',$fecha)
+                    ->where('pagos_rentas.status','=',$status)
+                    ->orderBy('id','desc')
+                    ->get();
+    }
+
+    private function cambiarPagoAVencido(){
+        $fecha = Carbon::today()->format('Y-m-d');
+        $pagos = $this->getPagaresPendientes($fecha,1);
+
+        if(sizeof($pagos))
+            foreach($pagos as $index => $pago){
+                $p = Pago_renta::findOrFail($pago->id);
+                $p->status = 0;
+                $p->save();
             }
     }
 }

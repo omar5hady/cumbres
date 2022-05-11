@@ -16,8 +16,10 @@ class CreatePagosRentasTable extends Migration
         Schema::create('pagos_rentas', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('num_pago');
-            $table->float('importe');
+            $table->float('importe',10,2);
+            $table->float('iva',10,2)->default(0);
             $table->date('fecha');
+            $table->float('saldo',10,2)->default(0);
 
             $table->boolean('status')->default(1);
             $table->unsignedInteger('renta_id')->nullable();

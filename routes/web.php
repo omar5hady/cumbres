@@ -285,7 +285,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
         Route::put('/rentas/updateRenta','RentasController@updateRenta');
+        Route::post('/rentas/storeDeposito','RentasController@storeDeposito');
+        Route::put('/rentas/updateDeposito','RentasController@updateDeposito');
+        Route::delete('/rentas/deleteDeposito','RentasController@deleteDeposito');
         Route::get('/rentas/indexRentas','RentasController@indexRentas');
+        Route::get('/rentas/indexEdoCta','RentasController@indexEdoCta');
+        Route::get('/rentas/indexEdoCtaExcel','RentasController@indexEdoCtaExcel');
         Route::get('/rentas/getDatosRenta','RentasController@getDatosRenta');
         Route::get('/rentas/printContrato','RentasController@printContrato');
         Route::get('/rentas/printPagares','RentasController@printPagares');

@@ -103,6 +103,7 @@ Vue.component('reubicacion-component', require('./components/Ventas/Reubicacione
 //Componentes Rentas
 Vue.component('admin-rentas', require('./components/Rentas/AdminRentas.vue'));
 Vue.component('contrato-rentas', require('./components/Rentas/ContratoRentas.vue'));
+Vue.component('pagos-rentas', require('./components/Rentas/PagosRentas.vue'));
 
 //Componentes Acceso
 Vue.component('rol', require('./components/Rol.vue'));

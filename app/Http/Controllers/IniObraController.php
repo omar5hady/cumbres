@@ -1172,8 +1172,8 @@ class IniObraController extends Controller
         $contrato[0]->total_anticipo = 0;
         if($anticipoT->total != null)
             $contrato[0]->total_anticipo = $anticipoT->total;
-
-        $contrato[0]->anticipo = round($contrato[0]->total_anticipo/$contrato[0]->total_importe,3);
+            //$obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
+        $contrato[0]->anticipo = round(($contrato[0]->total_anticipo/$contrato[0]->total_importe)*100,3);
         
         //Filtro para numero de estimacion a buscar
         if($request->numero != ''){
@@ -1467,7 +1467,7 @@ class IniObraController extends Controller
 
                 $total_acum_actual = $totalEstimacionAnt + $total_estimacion;
                 $total_por_estimar = $contrato[0]->total_importe - $total_acum_actual;
-                $porcAnticipo = $contrato[0]->anticipo;
+                $porcAnticipo = $contrato[0]->anticipo/ 100;
 
                 //'AMOR. ANTICIPO'
                 $amor_total_acum_ant = $totalEstimacionAnt * ($porcAnticipo);

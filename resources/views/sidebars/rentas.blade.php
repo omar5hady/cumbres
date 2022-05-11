@@ -11,5 +11,10 @@
                 <a class="nav-link" href="#"><i class="fa fa-book"></i> Contrato Rentas</a>
             </li>
         @endif
+        @if(Auth::user()->rol_id == 1)
+            <li @click="menu=278" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-book"></i> Edo Cuenta</a>
+            </li>
+        @endif
     </ul>
 </li>

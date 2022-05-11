@@ -1402,7 +1402,6 @@ export default {
                 }
                 
                 
-                
                 if( mes > 12)
                 {
                     anio = anio + 1;
@@ -1414,6 +1413,10 @@ export default {
                     mes = '0'+(mes);
                 if(dia < 10)
                     dia = '0'+dia;
+
+                if(mes == '01' || mes == '03' || mes == '05' || mes == '07' || mes == '08' || mes == '10' || mes == '12')
+                    if(dia == 30)
+                        dia = 31;
 
                 me.datosRenta.fecha_fin = anio +'-'+ mes +'-'+ dia;
             }
