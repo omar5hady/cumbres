@@ -60,165 +60,342 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr> 
-                                        <th></th>
-                                        <th># Ref</th>
-                                        <th>Cliente</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th>Lote</th>
-                                        <th>Fecha de solicitud</th>
-                                        <th>Equipamiento</th>
-                                        <th>Anticipo</th>
-                                        <th>Comp. de pago 1</th>
-                                        <th>Fecha programada de instalación</th>
-                                        <th>Fecha fin de instalación</th>
-                                        <th>Dias transcurridos</th>
-                                        <th>Status</th>
-                                        <th>Liquidación</th>
-                                        <th>Comp. de pago 2</th>
-                                        <th>Total pagado</th>
-                                        <th>Pendiente</th>
-                                        <th>Imprimir Recepción</th>
-                                        <th>Observaciones</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
-                                        <template>
-                                            <td v-if="equipamientos.control == 0">
-                                                <i class="btn btn-success btn-sm fa fa-check"></i>
-                                            </td>
-                                            <td class="td2" v-else-if="equipamientos.control == 1">
-                                                <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
-                                            </td>
-                                            <td  class="td2" v-else>
-                                                <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
-                                            </td>
-                                            <td class="td2" v-text="equipamientos.folio"></td>
-                                            <td class="td2" v-text="equipamientos.nombre_cliente"></td>
-                                            <td class="td2" v-text="equipamientos.proyecto"></td>
-                                            <td class="td2" v-text="equipamientos.etapa"></td>
-                                            <td class="td2" v-text="equipamientos.manzana"></td>
-                                            <td class="td2" v-text="equipamientos.num_lote"></td>
-                                            <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-text="equipamientos.equipamiento"></td>
-                                            <template>
-                                                <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
-                                                <td v-else class="td2" v-text="'Sin anticipo'"></td>    
-                                                <td class="text-center">
-                                                    <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
-                                                        <i class="fa fa-cloud-download"></i>
-                                                    </a>
-                                                    <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
-                                                </td>
-                                            </template>
-                                            <template>
-                                                <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
-                                                    <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
-                                                </td>
-                                                <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
-                                                    <a href="#" v-text="'Sin fecha'"></a>
-                                                </td>    
-                                            </template>
-                                            <template>
-                                                <td v-if="equipamientos.fin_instalacion" class="td2" >
-                                                    <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
-                                                </td>
-                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
-                                                    <a href="#" v-text="'Sin fecha'"></a>
-                                                </td>    
-                                            </template>
-                                            <td class="text-center">
-                                                <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
-                                                <span v-else>0</span>
-                                            </td>
-                                            <template>
-                                                <td v-if="equipamientos.status == '0'" class="td2">
-                                                    <span class="badge badge-warning">Rechazado</span>
-                                                </td>
-                                                <td v-if="equipamientos.status == '1'" class="td2">
-                                                    <span class="badge badge-primary">Pendiente</span>
-                                                </td>
-                                                <td v-if="equipamientos.status == '2'" class="td2">
-                                                    <span class="badge badge-primary">En proceso de instalación</span>
-                                                </td>
-                                                <td v-if="equipamientos.status == '3'" class="td2">
-                                                    <span class="badge badge-primary">En Revisión</span>
-                                                </td>
-                                                <td v-if="equipamientos.status == '4'" class="td2">
-                                                    <span class="badge badge-success">Aprobado</span>
-                                                </td>    
-                                                <td v-if="equipamientos.status == '5'" class="td2">
-                                                    <span class="badge badge-danger">Cancelado</span>
-                                                </td>  
-                                            </template>
-                                            <template>
-                                                <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
-                                                <td v-else class="td2" v-text="'Sin programar'"></td>    
-                                                <td class="text-center">
-                                                    <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
-                                                        <i class="fa fa-cloud-download"></i>
-                                                    </a>
-                                                    <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
-                                                </td>
-                                            </template>
-                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
 
-                                                <td >
-                                                    <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
-                                                        class="btn btn-warning btn-sm"  target="_blank" 
-                                                        v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
-                                                        Ver Recepción
-                                                    </a>
-                                                    <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
-                                                        class="btn btn-warning btn-sm"  target="_blank" 
-                                                        v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
-                                                        Ver Recepción
-                                                    </a>
-                                                    <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
-                                                        class="btn btn-warning btn-sm"  target="_blank" 
-                                                        v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
-                                                        Ver Recepción
-                                                    </a>                                                    
-                                                </td>
+                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
+                            <li class="nav-item">
+                                <a @click="tab = 1, listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)"  class="nav-link" v-bind:class="{ 'text-info active': tab==1 }" v-text="'Pendientes'"></a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="tab = 2, listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }" v-text="'Liquidados'"></a>
+                            </li>
+                        </ul>
 
-                                            <td> 
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
-                                                    @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
-                                                </button> 
-                                            </td>
-                                        </template>
-                                    </tr>
-                                </tbody>
-                            </table>  
+                        <div class="tab-content" id="myTab1Content">
+                            <div class="tab-pane fade" v-bind:class="{ 'active show': tab==1 }" v-if="tab == 1">
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                <th></th>
+                                                <th># Ref</th>
+                                                <th>Cliente</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Fecha de solicitud</th>
+                                                <th>Equipamiento</th>
+                                                <th>Anticipo</th>
+                                                <th>Comp. de pago 1</th>
+                                                <th>Fecha programada de instalación</th>
+                                                <th>Fecha fin de instalación</th>
+                                                <th>Dias transcurridos</th>
+                                                <th>Status</th>
+                                                <th>Liquidación</th>
+                                                <th>Comp. de pago 2</th>
+                                                <th>Total pagado</th>
+                                                <th>Pendiente</th>
+                                                <th>Imprimir Recepción</th>
+                                                <th>Observaciones</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
+                                                <template>
+                                                    <td v-if="equipamientos.control == 0">
+                                                        <i class="btn btn-success btn-sm fa fa-check"></i>
+                                                    </td>
+                                                    <td class="td2" v-else-if="equipamientos.control == 1">
+                                                        <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
+                                                    </td>
+                                                    <td  class="td2" v-else>
+                                                        <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
+                                                    </td>
+                                                    <td class="td2" v-text="equipamientos.folio"></td>
+                                                    <td class="td2" v-text="equipamientos.nombre_cliente"></td>
+                                                    <td class="td2" v-text="equipamientos.proyecto"></td>
+                                                    <td class="td2" v-text="equipamientos.etapa"></td>
+                                                    <td class="td2" v-text="equipamientos.manzana"></td>
+                                                    <td class="td2" v-text="equipamientos.num_lote"></td>
+                                                    <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
+                                                    <td class="td2" v-text="equipamientos.equipamiento"></td>
+                                                    <template>
+                                                        <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                        <td v-else class="td2" v-text="'Sin anticipo'"></td>    
+                                                        <td class="text-center">
+                                                            <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                                <i class="fa fa-cloud-download"></i>
+                                                            </a>
+                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                        </td>
+                                                    </template>
+                                                    <template>
+                                                        <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
+                                                            <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                        </td>
+                                                        <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
+                                                            <a href="#" v-text="'Sin fecha'"></a>
+                                                        </td>    
+                                                    </template>
+                                                    <template>
+                                                        <td v-if="equipamientos.fin_instalacion" class="td2" >
+                                                            <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
+                                                        </td>
+                                                        <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
+                                                            <a href="#" v-text="'Sin fecha'"></a>
+                                                        </td>    
+                                                    </template>
+                                                    <td class="text-center">
+                                                        <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
+                                                        <span v-else>0</span>
+                                                    </td>
+                                                    <template>
+                                                        <td v-if="equipamientos.status == '0'" class="td2">
+                                                            <span class="badge badge-warning">Rechazado</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '1'" class="td2">
+                                                            <span class="badge badge-primary">Pendiente</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '2'" class="td2">
+                                                            <span class="badge badge-primary">En proceso de instalación</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '3'" class="td2">
+                                                            <span class="badge badge-primary">En Revisión</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '4'" class="td2">
+                                                            <span class="badge badge-success">Aprobado</span>
+                                                        </td>    
+                                                        <td v-if="equipamientos.status == '5'" class="td2">
+                                                            <span class="badge badge-danger">Cancelado</span>
+                                                        </td>  
+                                                    </template>
+                                                    <template>
+                                                        <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                        <td v-else class="td2" v-text="'Sin programar'"></td>    
+                                                        <td class="text-center">
+                                                            <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                                <i class="fa fa-cloud-download"></i>
+                                                            </a>
+                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                        </td>
+                                                    </template>
+                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
+
+                                                        <td >
+                                                            <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
+                                                                class="btn btn-warning btn-sm"  target="_blank" 
+                                                                v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
+                                                                Ver Recepción
+                                                            </a>
+                                                            <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
+                                                                class="btn btn-warning btn-sm"  target="_blank" 
+                                                                v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
+                                                                Ver Recepción
+                                                            </a>
+                                                            <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
+                                                                class="btn btn-warning btn-sm"  target="_blank" 
+                                                                v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
+                                                                Ver Recepción
+                                                            </a>                                                    
+                                                        </td>
+
+                                                    <td> 
+                                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                            @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
+                                                        </button> 
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </tbody>
+                                    </table>  
+                                </div>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page > 7">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination2.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page<pagination2.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Inicio</a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page<pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ultimo</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="tab-content" id="myTab1Content">
+                            <div class="tab-pane fade" v-bind:class="{ 'active show': tab==2 }" v-if="tab == 2">
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                <th></th>
+                                                <th># Ref</th>
+                                                <th>Cliente</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Fecha de solicitud</th>
+                                                <th>Equipamiento</th>
+                                                <th>Anticipo</th>
+                                                <th>Comp. de pago 1</th>
+                                                <th>Fecha programada de instalación</th>
+                                                <th>Fecha fin de instalación</th>
+                                                <th>Dias transcurridos</th>
+                                                <th>Status</th>
+                                                <th>Liquidación</th>
+                                                <th>Comp. de pago 2</th>
+                                                <th>Total pagado</th>
+                                                <th>Pendiente</th>
+                                                <th>Imprimir Recepción</th>
+                                                <th>Observaciones</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
+                                                <template>
+                                                    <td v-if="equipamientos.control == 0">
+                                                        <i class="btn btn-success btn-sm fa fa-check"></i>
+                                                    </td>
+                                                    <td class="td2" v-else-if="equipamientos.control == 1">
+                                                        <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
+                                                    </td>
+                                                    <td  class="td2" v-else>
+                                                        <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
+                                                    </td>
+                                                    <td class="td2" v-text="equipamientos.folio"></td>
+                                                    <td class="td2" v-text="equipamientos.nombre_cliente"></td>
+                                                    <td class="td2" v-text="equipamientos.proyecto"></td>
+                                                    <td class="td2" v-text="equipamientos.etapa"></td>
+                                                    <td class="td2" v-text="equipamientos.manzana"></td>
+                                                    <td class="td2" v-text="equipamientos.num_lote"></td>
+                                                    <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
+                                                    <td class="td2" v-text="equipamientos.equipamiento"></td>
+                                                    <template>
+                                                        <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                        <td v-else class="td2" v-text="'Sin anticipo'"></td>    
+                                                        <td class="text-center">
+                                                            <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                                <i class="fa fa-cloud-download"></i>
+                                                            </a>
+                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                        </td>
+                                                    </template>
+                                                    <template>
+                                                        <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
+                                                            <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                        </td>
+                                                        <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
+                                                            <a href="#" v-text="'Sin fecha'"></a>
+                                                        </td>    
+                                                    </template>
+                                                    <template>
+                                                        <td v-if="equipamientos.fin_instalacion" class="td2" >
+                                                            <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
+                                                        </td>
+                                                        <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
+                                                            <a href="#" v-text="'Sin fecha'"></a>
+                                                        </td>    
+                                                    </template>
+                                                    <td class="text-center">
+                                                        <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
+                                                        <span v-else>0</span>
+                                                    </td>
+                                                    <template>
+                                                        <td v-if="equipamientos.status == '0'" class="td2">
+                                                            <span class="badge badge-warning">Rechazado</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '1'" class="td2">
+                                                            <span class="badge badge-primary">Pendiente</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '2'" class="td2">
+                                                            <span class="badge badge-primary">En proceso de instalación</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '3'" class="td2">
+                                                            <span class="badge badge-primary">En Revisión</span>
+                                                        </td>
+                                                        <td v-if="equipamientos.status == '4'" class="td2">
+                                                            <span class="badge badge-success">Aprobado</span>
+                                                        </td>    
+                                                        <td v-if="equipamientos.status == '5'" class="td2">
+                                                            <span class="badge badge-danger">Cancelado</span>
+                                                        </td>  
+                                                    </template>
+                                                    <template>
+                                                        <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                        <td v-else class="td2" v-text="'Sin programar'"></td>    
+                                                        <td class="text-center">
+                                                            <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                                <i class="fa fa-cloud-download"></i>
+                                                            </a>
+                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                        </td>
+                                                    </template>
+                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
+
+                                                        <td >
+                                                            <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
+                                                                class="btn btn-warning btn-sm"  target="_blank" 
+                                                                v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
+                                                                Ver Recepción
+                                                            </a>
+                                                            <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
+                                                                class="btn btn-warning btn-sm"  target="_blank" 
+                                                                v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
+                                                                Ver Recepción
+                                                            </a>
+                                                            <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
+                                                                class="btn btn-warning btn-sm"  target="_blank" 
+                                                                v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
+                                                                Ver Recepción
+                                                            </a>                                                    
+                                                        </td>
+
+                                                    <td> 
+                                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                            @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
+                                                        </button> 
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </tbody>
+                                    </table>  
+                                </div>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page > 7">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination2.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page<pagination2.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
                         <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
@@ -433,6 +610,7 @@
                 modal2: 0,
                 modal3: 0,
                 tituloModal: '',
+                tab : 1,
 
                 //variables
                 lote_id: 0,
@@ -531,7 +709,11 @@
 
             listarHistorial(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + this.status;
+                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' 
+                    + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' 
+                    + b_manzana + '&b_lote=' + b_lote +  '&criterio=' 
+                    + criterio + '&status=' + this.status
+                    + '&liquidado=' + this.tab;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorialEquipamientos = respuesta.equipamientos.data;

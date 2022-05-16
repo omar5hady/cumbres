@@ -742,6 +742,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/reporteEntregas','ReportesController@reporteEntregas');
 
             Route::get('/reportes/digitalLeads','DigitalLeadController@reporteLeads');
+            Route::get('/reportes/prospectos','DigitalLeadController@reportesProspectos');
+            Route::get('/excel/reportes/prospectos','DigitalLeadController@excelReportesProspectos');
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');
@@ -1093,6 +1095,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/campanias/delete', 'CampaniaController@delete');
 
         Route::get('/leads/getCliente','DigitalLeadController@getCliente');
+        
 
         Route::get('/leads/index','DigitalLeadController@index');
         Route::delete('/leads/delete','DigitalLeadController@delete');

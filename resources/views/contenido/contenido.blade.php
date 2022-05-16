@@ -497,5 +497,9 @@
             <rep-empresas rol-id="{{ Auth::user()->usuario }}">
             </rep-empresas>
         </template>
+        <template v-if="menu==280">
+            <reporte-prospectos>
+            </reporte-prospectos>
+        </template>
     @endif
 @endsection

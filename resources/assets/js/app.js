@@ -162,6 +162,7 @@ Vue.component('reporte-modelos', require('./components/Reportes/ReporteModelos.v
 Vue.component('reporte-detalles', require('./components/Reportes/ResumenDetalles.vue'));
 Vue.component('reporte-leads', require('./components/Reportes/ReporteLeads.vue'));
 Vue.component('reporte-entregas', require('./components/Reportes/ReporteEntregas.vue'));
+Vue.component('reporte-prospectos', require('./components/Reportes/ReporteProspectos.vue'));
 
 
 Vue.component('avaluos', require('./components/Avaluos.vue'));

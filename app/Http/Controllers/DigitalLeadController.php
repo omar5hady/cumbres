@@ -837,6 +837,131 @@ class DigitalLeadController extends Controller
                 $asesor->sinAtender = 0;
             }
 
+            
+        
+        if($request->excel == 0) // Retorno de resultados en formato Json
+            return [
+                'campanias' => $campanias,
+                'camp_org' => $cont_org,
+                'asesor_org' => $asesor_org,
+                'asesores' => $asesores,
+                'desc_ase' => $desc_ase,
+                'cont_desc' => $cont_desc,
+
+            ];
+        else{ // Retorno de resultado en Excel.
+            return Excel::create('Rep Digital Leads', function($excel) use ($campanias, $cont_org, $asesor_org,
+                                                                $desc_ase, $cont_desc, $asesores){
+                $excel->sheet('Campaña', function($sheet) use ($campanias,  $cont_org, $asesor_org, $desc_ase, $cont_desc){
+                    
+                    $sheet->row(1, [
+                        'Campaña','','Fecha de Campaña', '# Leads', 'Descartado sin canalizar',
+                        'Canalizados a asesor', 'Descartado por asesor'
+                    ]);
+    
+                    $sheet->cells('A1:G1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+                    $cont=2;
+                    $sheet->row(2, [
+                        'Tráfico Organico', 
+                        '',
+                        '',
+                        $cont_org,
+                        $cont_desc,
+                        $asesor_org,
+                        $desc_ase,
+                    ]);
+    
+                    foreach($campanias as $index => $lead){
+                        if($lead->conteo >= 1){
+                            $cont++;
+
+                            $fecha = new Carbon($lead->fecha_ini);
+                            $lead->fecha_ini = $fecha->formatLocalized('%d de %B de %Y');
+                            $fecha2 = new Carbon($lead->fecha_fin);
+                            $lead->fecha_fin = $fecha2->formatLocalized('%d de %B de %Y');                         
+        
+                            $sheet->row($index+3, [
+                                substr($lead->nombre_campania ,0 ,strlen($lead->nombre) - 5 ),
+                                $lead->medio_digital,
+                                $lead->fecha_ini.' al '.$lead->fecha_fin,
+                                $lead->conteo,
+                                $lead->descartado,
+                                $lead->asesor,
+                                $lead->descAsesor
+                            ]);	
+                        }
+                    }
+                    $num='A1:G' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+
+                $excel->sheet('Asesor', function($sheet) use ($asesores){
+
+                    $sheet->mergeCells('A1:C1');
+                    
+                    $sheet->row(1, [
+                        'Reporte por asesor'
+                    ]);
+                    $sheet->row(2, [
+                        'Asesor', '#Leads asignados', 'Descartados'
+                    ]);
+    
+                    $sheet->cells('A1:C2', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+                    $cont=2;
+    
+                    foreach($asesores as $index => $asesor) {
+                        $cont++;
+
+                        $sheet->row($index+3, [
+                            $asesor->nombre.' '.$asesor->apellidos,
+                            $asesor->conteo,
+                            $asesor->descartados
+                        ]);	
+                    }
+                    $num='A1:B' . $cont;
+                    $sheet->setBorder($num, 'thin');
+
+                    $sheet->mergeCells('A'.$cont.':D'.$cont);
+                    
+                   
+
+                    $cont+=2;
+                    $row = $cont;
+    
+                });
+            }
+            )->download('xls');
+
+        }
+
+    }
+
+
+    private function getreportesProspectos($tipo){
             // Se obtienen todos los asesores internos registrados en el sistema 
             $vendedores = User::join('personal','users.id','=','personal.id')
                 ->join('vendedores','personal.id','vendedores.id')
@@ -844,7 +969,7 @@ class DigitalLeadController extends Controller
                 ->select('personal.id',
                         DB::raw("CONCAT(gerente.nombre,' ',gerente.apellidos) AS gerente"),
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
-                ->where('vendedores.tipo','=',0)
+                ->where('vendedores.tipo','=',$tipo)
                 ->where('users.condicion','=',1)
                 ->whereNotIn('users.usuario',['mayra_jaz','yasmin_ventas','e_preciado'])
                 ->where('users.usuario','!=','descartado')
@@ -917,107 +1042,33 @@ class DigitalLeadController extends Controller
                             $vendedor->dif15 = 0;
                     }
                 }
-        
-        if($request->excel == 0) // Retorno de resultados en formato Json
-            return [
-                'campanias' => $campanias,
-                'camp_org' => $cont_org,
-                'asesor_org' => $asesor_org,
-                'asesores' => $asesores,
-                'desc_ase' => $desc_ase,
-                'cont_desc' => $cont_desc,
+      
+            return $vendedores;
 
+    }
+
+    public function reportesProspectos(Request $request){
+        $tipo = $request->listado;
+
+        $vendedores=$this->getreportesProspectos($tipo);
+            return [
                 'vendedores' => $vendedores,
             ];
-        else{ // Retorno de resultado en Excel.
-            return Excel::create('Reporte Digital Leads', function($excel) use ($campanias, $cont_org, $asesor_org,
-                                                                $desc_ase, $cont_desc, $vendedores, $asesores){
-                $excel->sheet('Reporte por campaña', function($sheet) use ($campanias,  $cont_org, $asesor_org, $desc_ase, $cont_desc){
+      
+    }
+
+    public function excelReportesProspectos(Request $request){
+        $tipo = $request->listado;
+        $vendedores=$this->getreportesProspectos($tipo);
+
+        return Excel::create('Reporte Prospecto', function($excel) use ($vendedores){
+            
+
+                $excel->sheet('Asesor', function($sheet) use ($vendedores){
                     
-                    $sheet->row(1, [
-                        'Campaña','Fecha de Campaña', '# Leads', 'Descartado sin canalizar',
-                        'Canalizados a asesor', 'Descartado por asesor'
-                    ]);
+                    $cont=0;
     
-                    $sheet->cells('A1:F1', function ($cells) {
-                        $cells->setBackground('#052154');
-                        $cells->setFontColor('#ffffff');
-                        // Set font family
-                        $cells->setFontFamily('Calibri');
-    
-                        // Set font size
-                        $cells->setFontSize(13);
-    
-                        // Set font weight to bold
-                        $cells->setFontWeight('bold');
-                        $cells->setAlignment('center');
-                    });
-                    $cont=2;
-                    $sheet->row(2, [
-                        'Tráfico Organico', 
-                        '',
-                        $cont_org,
-                        $cont_desc,
-                        $asesor_org,
-                        $desc_ase,
-                    ]);
-    
-                    foreach($campanias as $index => $lead) {
-                        $cont++;
-
-                        $fecha = new Carbon($lead->fecha_ini);
-                        $lead->fecha_ini = $fecha->formatLocalized('%d de %B de %Y');
-                        $fecha2 = new Carbon($lead->fecha_fin);
-                        $lead->fecha_fin = $fecha2->formatLocalized('%d de %B de %Y');
-    
-                        $sheet->row($index+3, [
-                            $lead->nombre_campania.' ('.$lead->medio_digital.')', 
-                            $lead->fecha_ini.' al '.$lead->fecha_fin,
-                            $lead->conteo,
-                            $lead->descartado,
-                            $lead->asesor,
-                            $lead->descAsesor
-                        ]);	
-                    }
-                    $num='A1:F' . $cont;
-                    $sheet->setBorder($num, 'thin');
-                });
-
-                $excel->sheet('Asesor', function($sheet) use ($vendedores, $asesores){
-
-                    $sheet->mergeCells('A1:C1');
-                    
-                    $sheet->row(1, [
-                        'Reporte por asesor'
-                    ]);
-                    $sheet->row(2, [
-                        'Asesor', '#Leads asignados', 'Descartados'
-                    ]);
-    
-                    $sheet->cells('A1:C2', function ($cells) {
-                        $cells->setBackground('#052154');
-                        $cells->setFontColor('#ffffff');
-                        // Set font family
-                        $cells->setFontFamily('Calibri');
-    
-                        // Set font size
-                        $cells->setFontSize(13);
-    
-                        // Set font weight to bold
-                        $cells->setFontWeight('bold');
-                        $cells->setAlignment('center');
-                    });
-                    $cont=2;
-    
-                    foreach($asesores as $index => $asesor) {
-                        $cont++;
-
-                        $sheet->row($index+3, [
-                            $asesor->nombre.' '.$asesor->apellidos,
-                            $asesor->conteo,
-                            $asesor->descartados
-                        ]);	
-                    }
+                  
                     $num='A1:B' . $cont;
                     $sheet->setBorder($num, 'thin');
                     
@@ -1067,8 +1118,7 @@ class DigitalLeadController extends Controller
             }
             )->download('xls');
 
-        }
-
-
     }
+
+
 }

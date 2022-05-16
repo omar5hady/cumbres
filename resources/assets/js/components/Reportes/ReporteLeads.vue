@@ -127,53 +127,6 @@
                             
                         </div>
 
-                        <div class="form-group row">
-
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <table class="table2 table-light table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="3" class="text-center">SEGUIMIENTO DE PROSPECTOS</th>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2"></td>
-                                                <th colspan="3" class="text-center">Seguimiento asesor</th>
-                                                <td></td>
-                                                <th colspan="3" class="text-center">Seguimiento gerente</th>
-                                            </tr>
-                                            <tr>
-                                                <th>Gerente</th>
-                                                <th> Asesor</th>
-                                                <th> Prospectos en verde</th>
-                                                <th> Prospectos amarillo</th>
-                                                <th> Prospectos rojo</th>
-                                                <th></th>
-                                                <th> Prospectos en verde</th>
-                                                <th> Prospectos amarillo</th>
-                                                <th> Prospectos rojo</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="asesor in arrayVendedores" :key="asesor.id">
-                                                <th class="td2" v-text="asesor.gerente"></th>
-                                                <td class="td2" v-text="asesor.vendedor"></td>
-                                                <td class="td2 table-success" v-text="asesor.reg"></td>
-                                                <td class="td2 table-warning" v-text="asesor.dif7"></td>
-                                                <td class="td2 table-danger" v-text="asesor.dif15"></td>
-                                                <td></td>
-                                                <td class="td2 table-success" v-text="asesor.ger"></td>
-                                                <td class="td2 table-warning" v-text="asesor.ger7"></td>
-                                                <td class="td2 table-danger" v-text="asesor.ger15"></td>
-                                            </tr>     
-                                                                  
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            
-                        </div>
-
                         <div class="tab-content" id="myTab1Content">
                             <!-- Listado por ingresos -->
                             <div class="tab-pane fade active show" id="ingresos" role="tabpanel" aria-labelledby="ingresos-tab">
@@ -226,7 +179,6 @@
                     var respuesta = response.data;
                     me.arrayLeads = respuesta.campanias;
                     me.asesor_org = respuesta.asesor_org;
-                    me.arrayVendedores = respuesta.vendedores;
                     me.camp_org = respuesta.camp_org;
                     me.arrayAsesores = respuesta.asesores;
                     me.desc_ase = respuesta.desc_ase,

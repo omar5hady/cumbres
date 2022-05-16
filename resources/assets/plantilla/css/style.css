@@ -11193,6 +11193,11 @@ base-chart.chart {
     background: #153157;
 }
 
+.sidebar .nav-dropdown.open>.nav-dropdown-items2 {
+    max-height: 1000px;
+    background: #2c3e50;
+}
+
 .sidebar .nav-dropdown.open .nav-link,
 .sidebar .nav-dropdown.open .navbar .dropdown-toggle,
 .navbar .sidebar .nav-dropdown.open .dropdown-toggle {
@@ -11419,7 +11424,10 @@ base-chart.chart {
         background: #29363d;
     }
     .sidebar-minimized .sidebar .nav>.nav-dropdown:hover {
-        background: #00b0bb;;
+        background: #00b0bb;
+    }
+    .sidebar-minimized .sidebar .nav>.nav-dropdown2:hover {
+        background: #006dbb;
     }
     .sidebar-minimized .sidebar .nav>.nav-dropdown:hover>.nav-dropdown-items {
         position: absolute;

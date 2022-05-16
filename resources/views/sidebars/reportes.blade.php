@@ -1,21 +1,36 @@
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Reportes</a>
     <ul class="nav-dropdown-items">
-        @if(Auth::user()->mejora == 1)
-            <li @click="menu=90" class="nav-item">
-                <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
-            </li>
-        @endif
+        <li class="nav-item nav-dropdown">
+            @if( Auth::user()->mejora == 1 || Auth::user()->rep_publi == 1 || Auth::user()->rep_empresas == 1)
+                <a class="nav-link nav-dropdown-toggle" href="#">
+                    <i class="fa fa-line-chart"></i> Publicidad
+                </a>
+            @endif
+            <ul class="nav-dropdown-items nav-dropdown-items2">
+                @if(Auth::user()->mejora == 1)
+                    <li @click="menu=90" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
+                    </li>
+                @endif
+                @if(Auth::user()->rep_publi == 1)
+                    <li @click="menu=225" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
+                    </li>
+                @endif
+                @if(Auth::user()->rep_empresas == 1)
+                    <li @click="menu=279" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Empresas</a>
+                    </li>
+                @endif
+            </ul>
+        </li>
         @if(Auth::user()->rep_proy == 1)
             <li @click="menu=91" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
             </li>
         @endif
-        @if(Auth::user()->rep_publi == 1)
-            <li @click="menu=225" class="nav-item">
-                <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
-            </li>
-        @endif
+        
         @if(Auth::user()->inventario == 1)
             <li @click="menu=232" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
@@ -47,7 +62,6 @@
         </li>
         @endif
         @if(Auth::user()->rep_vent_modelos == 1)
-            
             <li @click="menu=245" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte por modelo</a>
             </li>
@@ -85,9 +99,10 @@
                 <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
             </li>
         @endif
-        @if(Auth::user()->rep_empresas == 1)
-            <li @click="menu=279" class="nav-item">
-                <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Empresas</a>
+        
+        @if(Auth::user()->rep_leads == 1)
+            <li @click="menu=280" class="nav-item">
+                <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Prospectos</a>
             </li>
         @endif
     </ul>
