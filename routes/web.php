@@ -714,6 +714,8 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////// REPORTES ////////////////
             Route::get('/reprotes/inventario','ReportesController@reporteInventario');
+            Route::get('/reprotes/reporteEmpresas','ReportesController@reporteEmpresas');
+            Route::get('/reprotes/reporteEmpresasExcel','ReportesController@reporteEmpresasExcel');
             Route::get('/reprotes/reporteVendedores','ReportesController@reporteVendedores');
             Route::get('/reprotes/reporteLotesVentas','ReportesController@reporteLotesVentas');
             Route::get('/reprotes/excelReporteLotesVentas','ReportesController@excelReporteLotesVentas');
@@ -734,6 +736,7 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/reporteDetallesExcel','ReportesController@reporteDetallesExcel');
 
             Route::get('/reportes/reporteModelos','ReportesController@reporteModelos');
+            Route::get('/reportes/excelReporteModelos','ReportesController@excelReporteModelos');
 
             Route::get('/reportes/revicionprevia','ReportesController@revicionPreviaRep');
             Route::get('/reportes/reporteEntregas','ReportesController@reporteEntregas');

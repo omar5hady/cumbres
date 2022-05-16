@@ -85,5 +85,10 @@
                 <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
             </li>
         @endif
+        @if(Auth::user()->rep_empresas == 1)
+            <li @click="menu=279" class="nav-item">
+                <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Empresas</a>
+            </li>
+        @endif
     </ul>
 </li>

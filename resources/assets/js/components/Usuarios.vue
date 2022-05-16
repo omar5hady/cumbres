@@ -299,6 +299,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-book"></i> <input v-model="admin_rentas" type="checkbox" value="1"/> Admin Rentas</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-book"></i> <input v-model="pagos_rentas" type="checkbox" value="1"/> Edo Cuenta</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div>
@@ -450,6 +453,9 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_leads" type="checkbox" value="1"/> Reporte Digital Leads</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_empresas" type="checkbox" value="1"/> Reporte Empresas</a>
                                                     </li>
                                                     
                                                 </ul>
@@ -973,6 +979,7 @@
 
                     //Rentas
                     admin_rentas : 0,
+                    pagos_rentas : 0,
 
                     //Saldos
                     edo_cuenta:0,
@@ -1033,6 +1040,7 @@
                     rep_escrituras:0,
                     rep_leads:0,
                     rep_entregas:0,
+                    rep_empresas : 0,
 
                 pagination : {
                     'total' : 0,         
@@ -1212,6 +1220,7 @@
             },
             limpiarRentas(){
                 this.admin_rentas=0;
+                this.pagos_rentas=0;
             },
             limpiarComisiones(){
                 this.bono_com=0;
@@ -1273,6 +1282,7 @@
                 this.rep_escrituras = 0;
                 this.rep_leads = 0;
                 this.rep_entregas = 0;
+                this.rep_empresas = 0;
             },
 
             selectPersonas(){
@@ -1385,6 +1395,9 @@
 
                     //Rentas 
                     me.admin_rentas = usuarios[0].admin_rentas;
+                    me.pagos_rentas = usuarios[0].pagos_rentas;
+                    if(me.admin_rentas == 1 || me.pagos_rentas == 2)
+                        me.rentas = 1;
 
                     //Saldos
                     me.edo_cuenta = usuarios[0].edo_cuenta;
@@ -1435,6 +1448,7 @@
                     me.rep_escrituras = usuarios[0].rep_escrituras;
                     me.rep_leads = usuarios[0].rep_leads;
                     me.rep_entregas = usuarios[0].rep_entregas;
+                    me.rep_empresas = usuarios[0].rep_empresas;
 
                     //Creditos Puente
                     me.bases = usuarios[0].bases;
@@ -1719,6 +1733,7 @@
                     'reubicaciones':this.reubicaciones,
                         //Rentas
                     'admin_rentas':this.admin_rentas,
+                    'pagos_rentas':this.pagos_rentas,
                         //Cotizador de lotes
                     'calc_lotes':this.calc_lotes,
                     'edit_cotizacion':this.edit_cotizacion,
@@ -1771,7 +1786,8 @@
                     'rep_ingresos' : this.rep_ingresos,
                     'rep_escrituras' : this.rep_escrituras,
                     'rep_leads' : this.rep_leads,
-                    'rep_entregas' : this.rep_entregas
+                    'rep_entregas' : this.rep_entregas,
+                    'rep_empresas' : this.rep_empresas
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');

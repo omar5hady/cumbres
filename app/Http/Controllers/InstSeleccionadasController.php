@@ -180,13 +180,15 @@ class InstSeleccionadasController extends Controller
             $depositos = $depositos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
         //Busqueda por monto depositado
         if($request->bMonto != "") $depositos = $depositos->where('dep_creditos.cant_depo','=',$request->bMonto);
+
+        return $depositos;
     }
 
     //Función que retorna el historial de depositos por entidades de financiamiento.
     public function historialDepositos(Request $request){
         if(!$request->ajax())return redirect('/');
         //Llamada a la función privada que retorna la query necesaria.
-        $depositos = $depositos->getHistorialDep($request);
+        $depositos = $this->getHistorialDep($request);
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
         
         return [
@@ -198,14 +200,14 @@ class InstSeleccionadasController extends Controller
                 'from'          => $depositos->firstItem(),
                 'to'            => $depositos->lastItem(),
             ],
-            'depositos' => $depositos,'fecha1'=>$fecha1
+            'depositos' => $depositos,'fecha1'=>$request->fecha1
         ];
     }
 
     ////Función que retorna el historial de depositos por entidades de financiamiento en excel
     public function excelHistorialDep(Request $request){
         //Llamada a la función privada que retorna la query necesaria.
-        $depositos = $depositos->getHistorialDep($request);
+        $depositos = $this->getHistorialDep($request);
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->get();
         //Creación y retorno de los resultados en Excel.
         return Excel::create('Depositos', function($excel) use ($depositos){

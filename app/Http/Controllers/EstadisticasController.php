@@ -23,7 +23,7 @@ class EstadisticasController extends Controller
         */
     public function estad_datos_extra(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        //if(!$request->ajax())return redirect('/');
         $proyecto = $request->buscar;
         $etapa = $request->b_etapa;
         $fecha = $request->fecha;

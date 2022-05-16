@@ -144,6 +144,7 @@ Vue.component('perfil-user', require('./components/Perfil.vue'));
 Vue.component('listar-notifications', require('./components/ListarNotifications.vue'));
 
 // REPORTES
+Vue.component('rep-empresas', require('./components/Reportes/ReporteEmpresas.vue'));
 Vue.component('datos-extra', require('./components/Reportes/EstaditicaDatosExtra.vue'));
 Vue.component('res-proyecto', require('./components/Reportes/ResumenProyecto.vue'));
 Vue.component('res-puplicidad', require('./components/Reportes/ReportePublicidad.vue'));

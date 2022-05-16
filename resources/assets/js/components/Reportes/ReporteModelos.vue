@@ -10,9 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte por modelo de casas &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                         <!-- <a class="btn btn-success" v-bind:href="'/reprotes/excelReporteRecursosPropios'">
-                            <i class="fa fa-file-text"></i>&nbsp; Excel
-                        </a> -->
+                        
                         <!---->
                     </div>
                     <div class="card-body">
@@ -42,9 +40,15 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <button type="submit" @click="listarReporte(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a class="btn btn-success" 
+                                    v-bind:href="'/reportes/excelReporteModelos?fraccionamiento=' + proyecto + 
+                                    '&etapa=' + b_etapa + 
+                                    '&fecha1=' + fecha1 + '&fecha2=' + fecha2">
+                                        <i class="fa fa-file-text"></i>&nbsp; Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>

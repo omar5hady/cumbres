@@ -9,6 +9,7 @@ use Excel;
 use Auth;
 use Carbon\Carbon;
 use App\Etapa;
+use App\Empresa;
 use App\Fraccionamiento;
 use App\Credito;
 use App\Contrato;
@@ -134,7 +135,6 @@ class ReportesController extends Controller
 
         return ['resumen'=>$proyectos];
     }
-
     // Función para generar el reporte de ventas por vendedor
     public function reporteVendedores(Request $request){
         $fecha1 = $request->fecha1;
@@ -228,7 +228,6 @@ class ReportesController extends Controller
 
         return ['vendedores' => $vendedores,'mostrar' => $mostrar];
     }
-
     //Función privada que retorna el numero de contratos generados, 
     //Recibe como parametro el id del vendedor a buscar, proyecto en el que compro y el rango de fechas
     private function getNumContratos($vendedorId, $fecha1, $fecha2, $fecha3, $fecha4, $proyecto){
@@ -246,7 +245,6 @@ class ReportesController extends Controller
                     $contratos = $contratos->count();
         return $contratos;
     }
-
     // Función para retorna los datos para generar el Reporte de Inicio, Termino, Ventas y Cobranza 
     public function reporteLotesVentas(Request $request){
         //if(!$request->ajax())return redirect('/');
@@ -522,7 +520,6 @@ class ReportesController extends Controller
                 'total11'=>$total11
             ];
     }
-
     // Función para retorna el Reporte de Inicio, Termino, Ventas y Cobranza en excel
     public function excelReporteLotesVentas(Request $request){
         //Llamada a la funcion que retorna los datos necesarios
@@ -635,7 +632,6 @@ class ReportesController extends Controller
         }
         )->download('xls');
     }
-
     //Función para retornar los datos para el reporte de ventas y cancelaciones.
     public function reporteVentas(Request $request){
         //Llamada a la funcion que retorna los registros de ventas
@@ -1436,7 +1432,6 @@ class ReportesController extends Controller
         
         )->download('xls');
     }
-
     //Función para retornar los datos de reporte acumulado 
     //Expedientes, Escrituras e Ingresos de Créditos
     public function reporteAcumulado(Request $request){
@@ -1479,7 +1474,6 @@ class ReportesController extends Controller
         }
 
     }
-
     //Función para retornar los datos de reporte acumulado de expedientes en Excel
     public function excelExpedientes(Request $request){
         $mes = $request->mes;
@@ -1699,7 +1693,6 @@ class ReportesController extends Controller
             });
         })->download('xls');
     }
-
     //Función para retornar los datos de reporte acumulado de ingresos institucionales en Excel
     public function excelIngresos(Request $request){
         $fecha1 = $request->fecha1;
@@ -1783,7 +1776,6 @@ class ReportesController extends Controller
         }
         )->download('xls');
     }
-
     //Función para retornar los datos de reporte acumulado de escrituras en Excel
     public function excelEscrituras(Request $request){
         $mes = $request->mes;
@@ -1985,7 +1977,6 @@ class ReportesController extends Controller
         
         )->download('xls');
     }
-
     //Función privada que retorna los Depositos de Crédito ingresados en el periodo seleccionado
     private function getRepExpedientes($mes, $anio, $empresa){
         $mes2 = $mes + 1;
@@ -2052,7 +2043,6 @@ class ReportesController extends Controller
         }
         return $depositos;
     }
-
     //Función privada que retorna los Contratos con firma de escrituras, pero pendientes por cobrar financiamiento bancario
     private function getSinEntregarRep($mes, $anio, $empresa){
         //Query para obtener las ventas que se han escriturado
@@ -2485,7 +2475,6 @@ class ReportesController extends Controller
         
         )->download('xls');
     }
-
     //Función para generar el reporte de lotes construidos con Credito puente con saldo pendiente
     public function reporteCasasCreditoPuente(Request $request){
         $lotes = [];
@@ -2721,7 +2710,7 @@ class ReportesController extends Controller
 
         return $lotes;
     }
-    //Función para generar el reporte ventas y disponibilidad de lotes.
+    //Función para generar el reporte ventas y disponibilidad de lotes por modelo
     public function reporteModelos(Request $request){
         $fraccionamiento = $request->fraccionamiento;
         $etapa = $request->etapa;
@@ -2954,6 +2943,66 @@ class ReportesController extends Controller
             'diferencia'=>$diff_in_months,
             ];
 
+    }
+    //Función para generar el reporte ventas y disponibilidad de lotes por modelo en excel
+    public function excelReporteModelos(Request $request){
+        $reporte = $this->reporteModelos($request);
+
+        // $modelos =  $reporte['modelos'];
+        // $modelos =  $reporte['modelos'];
+
+        //Creación y retorno de los resultados en Excel.
+        return Excel::create('Reporte por modelo', function($excel) use ($reporte){
+                $excel->sheet('Reporte', function($sheet) use ($reporte){
+                    $sheet->row(1, [
+                        'Modelo', 'Total', 'Individualizadas',
+                        'Vendidas proceso', 'Vendidas terminadas',
+                        'Vendidas', 'Total vendidas', 'Disponible proceso', 
+                        'Disponible terminadas', 'Disponibles', 'Inventario',
+                        'Promedio mensual'
+                    ]);
+
+                    $sheet->cells('A1:L1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+                    $cont=1;
+                    foreach($reporte['modelos'] as $index => $modelo) {
+                        $prom = 0;
+                        if($reporte['diferencia'] != 0)
+                            $prom = ($modelo->vendida + $modelo->indiv)/$reporte['diferencia'];
+                        $cont++;
+
+                        $sheet->row($index+2, [
+                            $modelo->nombre,
+                            $modelo->total,
+                            $modelo->indiv,
+                            $modelo->vendidaProc,
+                            $modelo->vendidaTerm,
+                            $modelo->vendida,
+                            $modelo->total_vendidas,
+                            $modelo->disponibleProc,
+                            $modelo->disponibleTerm,
+                            $modelo->disponible,
+                            $modelo->disponible + $modelo->vendida,
+                            $prom
+
+                        ]);	
+                    }
+                    $num='A1:L' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+                }
+        )->download('xls');
     }
     //Función privada para obtener el listado de detalles
     private function getCatalogoDetalles(){
@@ -3350,6 +3399,238 @@ class ReportesController extends Controller
                     $firmadas = $firmadas->orderBy('expedientes.fecha_firma_esc','desc')->get();
 
         return $firmadas;
+    }
+
+    public function reporteEmpresas(Request $request){
+        $proyecto = $request->proyecto;
+        $num = $request->num;
+        $fecha = $request->b_fecha1;
+        $fecha2 = $request->b_fecha2;
+        $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->select('fraccionamientos.nombre as proyecto')
+                ->where('contratos.status','=',3);
+                if($proyecto != '')
+                        $ventas = $ventas->where('lotes.fraccionamiento_id','=',$proyecto);
+                if($fecha != '' && $fecha2 != '')
+                        $ventas = $ventas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                if($request->b_empresa != '')
+                        $ventas = $ventas->where('clientes.empresa','like','%'.$request->b_empresa.'%');
+        $ventas = $ventas->distinct()->get();
+
+        $ventasEmp = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->select('clientes.empresa')
+                ->where('contratos.status','=',3);
+                if($proyecto != '')
+                        $ventasEmp = $ventasEmp->where('lotes.fraccionamiento_id','=',$proyecto);
+                if($fecha != '' && $fecha2 != '')
+                        $ventasEmp = $ventasEmp->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                if($request->b_empresa != '')
+                        $ventasEmp = $ventasEmp->where('clientes.empresa','like','%'.$request->b_empresa.'%');
+
+                        $ventasEmp = $ventasEmp->distinct()->get();
+
+        $empresas = Empresa::select('nombre')->whereIn('nombre',$ventasEmp)->distinct()->get();
+
+        $fraccionamientos = Fraccionamiento::select('nombre as proyecto','id')->whereIn('nombre',$ventas)->orderBy('id','asc')->distinct()->get();
+
+        if(sizeof($fraccionamientos))
+            foreach($fraccionamientos as $proyecto){
+                $proyecto->etapas = Etapa::select('num_etapa','id')->where('fraccionamiento_id','=',$proyecto->id)->where('num_etapa','!=','Sin Asignar')->orderBy('id','asc')->get();
+                $proyecto->numEtapas = $proyecto->etapas->count();
+            }
+
+        if(sizeof($empresas)){}
+            foreach($empresas as $key => $empresa){
+                $empresa->total = 0;
+                foreach($fraccionamientos as $proyecto)
+                    foreach($proyecto->etapas as $etapa){
+                        $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto] = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->select('clientes.empresa','lotes.fraccionamiento_id')
+                                                ->where('contratos.status','=',3)
+                                                ->where('lotes.etapa_id','=',$etapa->id)
+                                                ->where('clientes.empresa','=',$empresa->nombre);
+                                                if($fecha != '' && $fecha2 != '')
+                                                    $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto] = $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto]->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                                $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto] = $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto]->count();
+                        $empresa->total += $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto];
+                    }
+                if($request->b_limite != '')
+                    if($empresa->total < $request->b_limite)
+                        unset($empresas[$key]);
+            }
+
+        return ['empresas' => $empresas,
+            'proyecto' => $fraccionamientos
+        ];//Empresa::all();
+    }
+
+    public function reporteEmpresasExcel(Request $request){
+        $reporte = $this->reporteEmpresas($request);
+
+        $empresas = $reporte['empresas'];
+        $fraccionamientos = $reporte['proyecto'];
+
+        //Creación y retorno de los resultados en excel.
+        return Excel::create('Reporte de empresas', function($excel) use ($empresas,$fraccionamientos){
+            $excel->sheet('Empresas', function($sheet) use ($fraccionamientos,$empresas){
+
+                $cabecera1 = ['',''];
+                $cabecera2 = ['Empresa','Total'];
+                $num = 0;
+                foreach($fraccionamientos as $index => $proyecto)
+                    foreach($proyecto->etapas as $index => $etapa){
+                        $num++;
+                        array_push($cabecera1, $proyecto->proyecto);
+                        array_push($cabecera2, $etapa->num_etapa);
+                    }
+                
+                $ancho = 'B';
+                switch($num){
+                    case 1:{
+                        $ancho = 'C';
+                        break;
+                    }
+                    case 2:{
+                        $ancho = 'D';
+                        break;
+                    }
+                    case 3:{
+                        $ancho = 'E';
+                        break;
+                    }
+                    case 4:{
+                        $ancho = 'F';
+                        break;
+                    }
+                    case 5:{
+                        $ancho = 'G';
+                        break;
+                    }
+                    case 6:{
+                        $ancho = 'H';
+                        break;
+                    }
+                    case 7:{
+                        $ancho = 'I';
+                        break;
+                    }
+                    case 8:{
+                        $ancho = 'J';
+                        break;
+                    }
+                    case 9:{
+                        $ancho = 'K';
+                        break;
+                    }
+                    case 10:{
+                        $ancho = 'L';
+                        break;
+                    }
+                    case 11:{
+                        $ancho = 'M';
+                        break;
+                    }
+                    case 12:{
+                        $ancho = 'N';
+                        break;
+                    }
+                    case 13:{
+                        $ancho = 'O';
+                        break;
+                    }
+                    case 14:{
+                        $ancho = 'P';
+                        break;
+                    }
+                    case 15:{
+                        $ancho = 'Q';
+                        break;
+                    }
+                    case 16:{
+                        $ancho = 'R';
+                        break;
+                    }
+                    case 17:{
+                        $ancho = 'S';
+                        break;
+                    }
+                    case 18:{
+                        $ancho = 'T';
+                        break;
+                    }
+                    case 19:{
+                        $ancho = 'U';
+                        break;
+                    }
+                    case 20:{
+                        $ancho = 'V';
+                        break;
+                    }
+                    case 21:{
+                        $ancho = 'W';
+                        break;
+                    }
+                    case 22:{
+                        $ancho = 'X';
+                        break;
+                    }
+                    case 22:{
+                        $ancho = 'Y';
+                        break;
+                    }
+                    case 23:{
+                        $ancho = 'Z';
+                        break;
+                    }
+                    case 24:{
+                        $ancho = 'AA';
+                        break;
+                    }
+                }
+
+                $sheet->row(1,$cabecera1);
+                $sheet->row(2,$cabecera2);
+
+                //$sheet->mergeCells('A1:'.$ancho.'1');
+
+                $sheet->cells('A1:'.$ancho.'2', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+    
+                    $cont = 3;
+
+                    foreach($empresas as $index => $empresa) {
+                        $cont++;
+                        $datos = [$empresa->nombre,$empresa->total];
+                        foreach($fraccionamientos as $index => $proyecto)
+                            foreach($proyecto->etapas as $index => $etapa)
+                                array_push($datos, $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto]);
+
+                        $sheet->row($cont, $datos);	
+                        
+                    }
+
+                $num='A1:'.$ancho . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        )->download('xls');
     }
     
 }

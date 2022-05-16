@@ -493,5 +493,9 @@
             <pagos-rentas rol-id="{{ Auth::user()->usuario }}">
             </pagos-rentas>
         </template>
+        <template v-if="menu==279">
+            <rep-empresas rol-id="{{ Auth::user()->usuario }}">
+            </rep-empresas>
+        </template>
     @endif
 @endsection

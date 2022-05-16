@@ -90,6 +90,7 @@ class User extends Authenticatable
 
         //Rentas
         'admin_rentas',
+        'pagos_rentas',
         
         //Saldos
         'edo_cuenta',
@@ -146,6 +147,7 @@ class User extends Authenticatable
         'rep_acumulado',
         'rep_leads',
         'rep_entregas',
+        'rep_empresas',
 
         //Cotizador Lotes
         'calc_lotes',

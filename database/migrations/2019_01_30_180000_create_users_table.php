@@ -102,6 +102,7 @@ class CreateUsersTable extends Migration
 
             //Rentas
             $table->boolean('admin_rentas')->default(0);
+            $table->boolean('pagos_rentas')->default(0);
 
             //Saldos
             $table->boolean('edo_cuenta')->default(0);
@@ -164,7 +165,7 @@ class CreateUsersTable extends Migration
             $table->boolean('rep_escrituras')->default(0);
             $table->boolean('rep_leads')->default(0);
             $table->boolean('rep_entregas')->default(0);
-
+            $table->boolean('rep_empresas')->default(0);
 
             $table->boolean('rep_asesores')->default(0);
             $table->boolean('rep_ini_term_ventas')->default(0);

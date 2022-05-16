@@ -2111,6 +2111,7 @@ class ContratoController extends Controller
             $varContrato = $lote_ant->contrato;
             $lote_ant->contrato = 0;
             $lote_ant->paquete = '';
+            $lote_ant->apartado = 0;
             $lote_ant->save();
             DB::beginTransaction();
 
