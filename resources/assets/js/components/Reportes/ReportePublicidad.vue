@@ -9,9 +9,16 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> <strong>Reporte Medios Publicitarios</strong> 
+                        <!--   Boton Nuevo    -->
+                        &nbsp;&nbsp;
+                        <button 
+                        v-if="listado == 1"
+                        type="button" @click="listado = 0" class="btn btn-secondary">
+                            <i class="fa fa-mail-reply"></i>&nbsp;Regresar
+                        </button>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body" v-if="listado == 0">
                         <div class="form-group row">
                             <div class="input-group">
                                 <button title="Mostrar Filtros" type="button" v-if="filtros==0" @click="filtros=1" class="btn btn-primary btn-sm">
@@ -61,12 +68,14 @@
                             </div>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body" v-if="listado == 0">
                         <div class="form-group row">
                             <div class="col-md-3" >
                                 <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Ventas (Total {{totalVentas}}) {{porcVentas.toFixed(2) + '%'}}</h6></div>
                                 <div class="card text-dark bg-light" v-for="venta in arrayDatosVentas" :key="venta.id">
-                                    <div class="card-body">
+                                    <div class="card-body"
+                                        @click="verCliente(venta.clientes,1)"
+                                    >
                                         <div class="h6 text-muted text-left mb-2">{{venta.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{venta.cant}} ({{((venta.cant/totalVentas)*100).toFixed(2) + '%'}})</div>
                                         <div class="progress progress-primary progress-xs my-2">
@@ -79,7 +88,9 @@
                             <div class="col-md-3" >
                                 <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Prospectos Nuevos (Total {{totalProspectos}})</h6></div>
                                 <div class="card text-light bg-dark" v-for="prospecto in arrayDatosProspectos" :key="prospecto.id">
-                                    <div class="card-body text-light">
+                                    <div class="card-body text-light"
+                                        @click="verCliente(prospecto.clientes,1)"
+                                    >
                                         <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
                                         <div class="progress progress-dark progress-xs my-2">
@@ -93,7 +104,9 @@
                             <div class="col-md-3" >
                                 <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Prospectos Atendidos (Total {{totalTodos}})</h6></div>
                                 <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosPros" :key="prospecto.id">
-                                    <div class="card-body text-dark">
+                                    <div class="card-body text-dark"
+                                        @click="verCliente(prospecto.clientes,2)"
+                                    >
                                         <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
                                         <div class="progress progress-dark progress-xs my-2">
@@ -106,7 +119,9 @@
                             <div class="col-md-3" >
                                 <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Atendidos Descartados (Total {{totalDesc}})</h6></div>
                                 <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosDesc" :key="prospecto.id">
-                                    <div class="card-body text-dark">
+                                    <div class="card-body text-dark"
+                                        @click="verCliente(prospecto.clientes,2)"
+                                    >
                                         <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
                                         <div class="progress progress-dark progress-xs my-2">
@@ -118,6 +133,33 @@
                         </div>
                         
                         
+                    </div>
+
+                    <div class="card-body"  v-if="listado == 1">
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Cliente</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template v-if="tipo == 2">
+                                        <tr v-for="cliente,index in clientes2" :key="cliente.nombre+'-'+cliente.apellidos+index">
+                                            <td v-text="parseInt(index+1)"></td>
+                                            <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
+                                        </tr>      
+                                    </template>    
+                                    <template v-if="tipo == 1">
+                                        <tr v-for="cliente,index in clientes" :key="index">
+                                            <td v-text="parseInt(index+1)"></td>
+                                            <td class="td2" v-text="cliente"></td>
+                                        </tr>      
+                                    </template>                      
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -151,7 +193,12 @@
                hasta:'',
                etapa_id:'',
                asesor_id:'',
-               proyecto_id:''
+               proyecto_id:'',
+
+               listado : 0,
+               clientes: [],
+               clientes2 : [],
+               tipo:2,
             }
         },
         computed:{
@@ -203,7 +250,14 @@
                 });
               
             },
-            
+            verCliente(data, tipo){
+                this.listado = 1;
+                this.tipo = tipo;
+                if(tipo == 1)
+                    this.clientes = data;
+                else
+                    this.clientes2 = data;
+            },
             getDatos(){
                 let me = this;
                 me.arrayDatosProspectos=[];

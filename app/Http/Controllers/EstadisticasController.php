@@ -168,38 +168,6 @@ class EstadisticasController extends Controller
                         }
 
 
-                $empresas = $this->queryGral($request) // Ventas por lugar de trabajo del comprador.
-                        ->select('clientes.empresa')
-                        ->where('contratos.status','=',3);
-
-                        if($proyecto != '')
-                                $empresas = $empresas->where('lotes.fraccionamiento_id',$proyecto);
-                        if($etapa != '')
-                                $empresas = $empresas->where('lotes.etapa_id',$etapa);
-                        if($fecha != '' && $fecha2 != '')
-                                $empresas = $empresas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-
-                        $empresas = $empresas->orderBy('clientes.empresa','asc')->distinct()->get();
-
-                        if(sizeof($empresas)){
-                                $empresas_cliente=[];
-                                foreach($empresas as $er=>$empresa){
-                                        $empresas_cliente[$er] = $empresa->empresa;
-                                        $empresa->num = $this->queryGral($request)
-                                                ->select('clientes.empresa')
-                                                ->where('contratos.status','=',3);
-
-                                                if($proyecto != '')
-                                                        $empresa->num = $empresa->num->where('lotes.fraccionamiento_id',$proyecto);
-                                                if($etapa != '')
-                                                        $empresa->num = $empresa->num->where('lotes.etapa_id',$etapa);
-                                                if($fecha != '' && $fecha2 != '')
-                                                        $empresa->num = $empresa->num->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                                                
-                                                $empresa->num = $empresa->num->where('clientes.empresa','=',$empresa->empresa)
-                                                ->count();
-                                }
-                        }
 
                         if(sizeof($origen)){
                                 $lugarNacimiento=[];
@@ -344,8 +312,6 @@ class EstadisticasController extends Controller
 
         return [
                 'lugarNacimiento'=>$lugarNacimiento,
-                'empresas'=>$empresas_cliente,
-                'empresasVentas'=>$empresas,
                 'autos' => $autos,
                 'total' => $total,
                 'edadesVenta'=>$edadesVenta,

@@ -131,7 +131,8 @@ class MedioPublicitarioController extends Controller
                     //Se obtienen los ids de los clientes registrados en la publicidad elegida y que no sean ventas ni coacreditados
                     $res = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                                     ->join('clientes_observaciones as cb','clientes.id','=','cb.cliente_id')
-                                    ->select('clientes.id')
+                                    ->join('personal','clientes.id','=','personal.id')
+                                    ->select('clientes.id','personal.nombre','personal.apellidos')
                                     ->where('clientes.publicidad_id','=',$publiAll->id)
                                     ->where('vendedor_id','!=',104)
                                     ->where('clasificacion','!=',7)
@@ -146,9 +147,11 @@ class MedioPublicitarioController extends Controller
                                     else{
                                         $res = $res->whereBetween('cb.created_at', ['2000-02-01', $hoy]);
                                     }
-                                    $res = $res->distinct()->count('clientes.id');
-                    
-                        $publiAll->cant = $res;
+                                    $res = $res->distinct()->get();
+                                    
+                                    // ->count('clientes.id');
+                        $publiAll->clientes = $res;
+                        $publiAll->cant = $res->count('clientes.id');
             }
         
         // Llenado publicidad descartados
@@ -157,7 +160,8 @@ class MedioPublicitarioController extends Controller
                         //Se obtienen los ids de los clientes registrados en la publicidad elegida y que sean descartados
                         $res = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                                         ->join('clientes_observaciones as cb','clientes.id','=','cb.cliente_id')
-                                        ->select('clientes.id')
+                                        ->join('personal','clientes.id','=','personal.id')
+                                        ->select('clientes.id','personal.nombre','personal.apellidos')
                                         ->where('clientes.publicidad_id','=',$descartado->id)
                                         ->where('vendedor_id','=',104)//Vendedor descartado
                                         ->where('clasificacion','!=',7)
@@ -170,42 +174,61 @@ class MedioPublicitarioController extends Controller
                                             $res = $res->whereBetween('cb.created_at', [$desde, $hasta]);
                                         else
                                             $res = $res->whereBetween('cb.created_at', ['2000-02-01', $hoy]);
-                                        $res = $res->distinct()->count('clientes.id');
+                                        $res = $res->distinct()->get();
                         
-                            $descartado->cant = $res;
+                        $descartado->clientes = $res;
+                        $descartado->cant = $res->count('clientes.id');
+                            
+                            
         }
 
         ////////// Llenado por publicidad para ventas
 
             foreach ($publicidadVentas as $ep => $publiV) {
                 $publiV->cant = 0;
-                if(sizeof($clientesID_contrato))
+                $nombres = [];
+
+                if(sizeof($clientesID_contrato)){
                     foreach ($clientesID_contrato as $et => $cliente) {
                         $res = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->select('creditos.prospecto_id','contratos.publicidad_id')->where('creditos.prospecto_id','=',$cliente->id)
+                                ->join('personal','creditos.prospecto_id','=','personal.id')
+                                ->select('creditos.prospecto_id','contratos.publicidad_id',
+                                    'personal.nombre','personal.apellidos'
+                                )
+                                ->where('creditos.prospecto_id','=',$cliente->id)
                                 ->where('contratos.publicidad_id','=',$publiV->id)
                                 ->where('contratos.id','=',$cliente->contrato)
                                 ->get();
                         
                         if(sizeof($res)){
                             $publiV->cant ++;
+                            array_push($nombres, $res[0]->nombre.' '.$res[0]->apellidos);
                         }
                     }
+                    $publiV->clientes = $nombres;
+                }
             }
 
         ////////// Llenado por publicidad para prospectos
             foreach ($publicidadProspectos as $ep => $publiC) {
                 $publiC->cant = 0;
-                if(sizeof($prospectos))
+                $nombres = [];
+                if(sizeof($prospectos)){
                     foreach ($prospectos as $et => $cliente) {
                         $res = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                ->select('clientes.id','clientes.publicidad_id')->where('clientes.id','=',$cliente->id)
+                                ->join('personal','clientes.id','=','personal.id')
+                                ->select('clientes.id','clientes.publicidad_id',
+                                    'personal.nombre','personal.apellidos'
+                                )->where('clientes.id','=',$cliente->id)
                                 ->where('clientes.publicidad_id','=',$publiC->id)->get();
                         
                         if(sizeof($res)){
                             $publiC->cant ++;
+                            array_push($nombres, $res[0]->nombre.' '.$res[0]->apellidos);
                         }
                     }
+                    $publiC->clientes = $nombres;
+                }
             }
 
         return[

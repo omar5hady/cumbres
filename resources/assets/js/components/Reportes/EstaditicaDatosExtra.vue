@@ -139,17 +139,6 @@
                                         <th v-text="this.rang7"></th>
                                     </tr>
                                 <tr>
-                                    <th @click="loadEmpresas()" style="text-align: center;" colspan="2">
-                                        <button v-if="ver_empresas == 0" @click="loadEmpresas()" class="btn btn-dark btn-sm">Empresas</button>
-                                        <button v-if="ver_empresas == 1" @click="loadEmpresas()" class="btn btn-default btn-sm">Empresas</button></th>
-                                </tr>
-                                    <template v-if="ver_empresas == 1">
-                                        <tr v-for="empresa in empresasCant" :key="empresa.empresa">
-                                            <th v-text="empresa.empresa"></th>
-                                            <th v-text="empresa.num"></th>
-                                        </tr>
-                                    </template>
-                                <tr>
                                     <th @click="loadMascotas()" style="text-align: center;" colspan="2">
                                         <button v-if="ver_mascotas == 0" @click="loadMascotas()" class="btn btn-dark btn-sm">Mascotas</button>
                                         <button v-if="ver_mascotas == 1" @click="loadMascotas()" class="btn btn-default btn-sm">Mascotas</button></th>
@@ -480,9 +469,6 @@
 
                     me.colonias_cliente = respuesta.colonias_cliente;
                     me.colonias = respuesta.colonias;
-
-                    me.empresas = respuesta.empresas;
-                    me.empresasCant = respuesta.empresasVentas;
 
                     me.autos = respuesta.autos;
                     me.perros = respuesta.conPerro;
@@ -1086,63 +1072,6 @@
                             backgroundColor: 'rgba(102, 0, 0, 0.4)',
                                                 
                             borderColor: 'rgba(102, 0, 0, 1)',
-                            borderWidth: 1
-                        },
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
-                        },
-                        legend: {display:false}
-                    }
-                });
-            },
-
-            loadEmpresas(){
-                let me=this;
-                me.borrarGraficas();
-                me.titulo = 'Empresas';
-                me.ver_edades = 0;
-                me.ver_edadesComp = 0;
-                me.ver_mascotas = 0;
-                me.ver_genero = 0;
-                me.ver_edoCivil = 0;
-                me.ver_discap = 0;
-                me.ver_autos = 0;
-                me.ver_lugarNac = 0;
-                me.ver_amasCasa = 0;
-                me.ver_colonia = 0;
-                me.ver_empresas = 1;
-                me.grafico = 1;
-                
-                me.varEmpresas=document.getElementById('empresas').getContext('2d');
-
-                me.empresasCant.sort((a, b) => (a.num < b.num) ? 1 : -1)
-
-                me.listaEmpresa = [];
-                me.listaEmpresa2 = [];
-                var i =0;
-                me.empresas.forEach(element => {
-                    me.listaEmpresa.push(me.empresasCant[i].num);
-                    me.listaEmpresa2.push(me.empresasCant[i].empresa);
-                    i++;
-                });
-
-                me.charEmpresas = new Chart(me.varEmpresas, {
-                    type: 'horizontalBar',
-                    data: {
-                        labels: me.listaEmpresa2,
-                        datasets: [{
-                            label: '# ',
-                            data: me.listaEmpresa,
-                            backgroundColor: 'rgba(8, 8, 47, 0.74)',
-                                                
-                            borderColor: 'rgba(1, 1, 30, 0.90)',
                             borderWidth: 1
                         },
                         ]

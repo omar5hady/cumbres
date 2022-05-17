@@ -107,6 +107,7 @@ class NotificacionPeriodica extends Command
                     )
                     ->where('pagos_rentas.fecha','=',$fecha)
                     ->where('pagos_rentas.status','=',$status)
+                    ->where('rentas.status','=',2)
                     ->orderBy('id','desc')
                     ->get();
     }
