@@ -152,6 +152,16 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control col-md-4" v-model="tipo">
+                                            <option value="0">Interno</option>
+                                            <option value="1">Externo</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row" v-if="tipoAccion==1">
                                     <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
                                     <div class="col-md-6">
@@ -314,6 +324,7 @@
                 telefono : '',
                 email : '',
                 email2 : '',
+                tipo: 0,
                 usuario : '',
                 password : '',
                 rfc: '',
@@ -488,7 +499,8 @@
                     'usuario': this.usuario,
                     'password': this.password,
                     'rfc': this.rfc,
-                    'email2': this.email2
+                    'email2': this.email2,
+                    'tipo' : this.tipo
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -566,6 +578,7 @@
                     'telefono': this.telefono,
                     'email': this.email,
                     'email2': this.email2,
+                    'tipo' : this.tipo,
                     'id': this.id
                 }).then(function (response){
                     me.proceso=false;
@@ -719,6 +732,7 @@
                                 this.usuario ='';
                                 this.password ='';
                                 this.rfc='';
+                                this.tipo = 0;
                                 break;
                             }
                             case 'actualizar':
@@ -735,6 +749,7 @@
                                 this.colonia = data['colonia'];
                                 this.email = data['email'];
                                 this.email2 = data['email2'];
+                                this.tipo = data['tipo'];
                                 break;
                             }
                         }

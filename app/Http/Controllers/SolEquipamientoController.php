@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Equipamiento;
+use App\Proveedor;
 use App\Contrato;
 use DB;
 use Carbon\Carbon;
@@ -62,6 +63,7 @@ class SolEquipamientoController extends Controller
                     'solic_equipamientos.anticipo_cand',
                     'solic_equipamientos.liquidacion_cand',
                     'proveedores.proveedor',
+                    'proveedores.tipo',
                     'equipamientos.equipamiento',
                     'equipamientos.tipoRecepcion',
                     'contratos.id as folio',
@@ -181,8 +183,16 @@ class SolEquipamientoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fecha_colocacion = $request->fecha_colocacion;
-        $solicitud->fin_instalacion = NULL;
-        $solicitud->status = 2;
+        $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
+        $proveedor = Proveedor::findOrFail($equipamiento->proveedor_id);
+        if($proveedor->tipo == 1){
+            $solicitud->fin_instalacion = $request->fecha_colocacion;
+            $solicitud->status = 4;
+        }
+        else{
+            $solicitud->fin_instalacion = NULL;
+            $solicitud->status = 2;
+        }
         $solicitud->save();
 
         $observacion = new Obs_solic_equipamiento();

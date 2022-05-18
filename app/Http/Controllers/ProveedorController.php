@@ -19,7 +19,7 @@ class ProveedorController extends Controller
 
        
         $proveedores = Proveedor::select('id','proveedor', 'contacto', 'direccion', 'colonia',
-                    'telefono', 'email', 'email2', 'poliza');
+                    'telefono', 'email', 'email2', 'poliza','tipo');
                     
         if($buscar != '') $proveedores = $proveedores->where($criterio, 'like', '%'. $buscar . '%');
                     
@@ -73,6 +73,7 @@ class ProveedorController extends Controller
             $proveedor->email =$request->email;
             $proveedor->email2 =$request->email2;
             $proveedor->poliza=$request->poliza;
+            $proveedor->tipo=$request->tipo;
             $proveedor->save();
  
             $user = new User();
@@ -103,6 +104,7 @@ class ProveedorController extends Controller
         $proveedor->email =$request->email;
         $proveedor->email2 =$request->email2;
         $proveedor->poliza=$request->poliza;
+        $proveedor->tipo=$request->tipo;
         $proveedor->save();
     }
 
