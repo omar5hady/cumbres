@@ -129,6 +129,11 @@
                             @include('sidebars.ventas')
                         @endif
 
+                <!-- Modulo Cotizador de lotes ---->
+                        @if(Auth::user()->opc_cotizador == 1 || Auth::user()->calc_lotes ==1 || Auth::user()->edit_cotizacion ==1)
+                            @include('sidebars.cotizador')
+                        @endif
+
                 <!-- Modulo para Rentas-->
                         @if(Auth::user()->admin_rentas == 1)
                             @include('sidebars.rentas')
@@ -154,10 +159,7 @@
                             @include('sidebars.pagosinternos')
                         @endif
                 <!-- Fin pago internos -->
-                <!-- Modulo Accesos ---->
-                        @if(Auth::user()->acceso == 1)
-                            @include('sidebars.acceso')
-                        @endif
+                
                 <!-- Modulo Comisiones ---->   
                         @if(Auth::user()->comisiones == 1)
                             @include('sidebars.comisiones')
@@ -166,9 +168,10 @@
                         @if(Auth::user()->reportes == 1)
                             @include('sidebars.reportes')
                         @endif
-                <!-- Modulo Cotizador de lotes ---->
-                        @if(Auth::user()->opc_cotizador == 1 || Auth::user()->calc_lotes ==1 || Auth::user()->edit_cotizacion ==1)
-                            @include('sidebars.cotizador')
+
+                <!-- Modulo Accesos ---->
+                        @if(Auth::user()->acceso == 1)
+                            @include('sidebars.acceso')
                         @endif
 
                 <!-- Manual para el administrador -->

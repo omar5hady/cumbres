@@ -44,6 +44,9 @@
                                     <input type="text" v-model="b_cliente" @keyup.enter="listarContratos(1)" class="form-control" placeholder="Arrendatario"/>
                                 </div>
                                 <div class="input-group">
+                                    <input type="text" v-model="b_arrendador" @keyup.enter="listarContratos(1)" class="form-control" placeholder="Arrendador"/>
+                                </div>
+                                <div class="input-group">
                                     <select class="form-control col-md-3" v-model="b_status">
                                         <option value="2">Vigente</option>
                                         <option value="3">Finalizado</option>
@@ -56,6 +59,7 @@
                                         + '&b_etapa=' + b_etapa
                                         + '&b_direccion=' + b_direccion
                                         + '&b_status=' + b_status
+                                        + '&b_arrendador=' + b_arrendador
                                         + '&b_cliente=' + b_cliente"  
                                     class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 </div>
@@ -505,6 +509,7 @@ export default {
             arrayEtapas: [],
             listado: 1,
             b_cliente: '',
+            b_arrendador : '',
             b_proyecto: '',
             b_etapa: '',
             b_direccion: '',
@@ -577,7 +582,8 @@ export default {
                 + '&b_etapa=' + this.b_etapa
                 + '&b_direccion=' + this.b_direccion
                 + '&b_status=' + this.b_status
-                + '&b_cliente=' + this.b_cliente;
+                + '&b_cliente=' + this.b_cliente
+                + '&b_arrendador=' + this.b_arrendador;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayContratos = respuesta;

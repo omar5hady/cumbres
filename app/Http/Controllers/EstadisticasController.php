@@ -447,7 +447,13 @@ class EstadisticasController extends Controller
                                         DB::raw("SUM(contratos.monto_total_credito) as credito_netoSum"),
                                         DB::raw("SUM(contratos.saldo) as totSaldo")
                                 )
-                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        ->where('lotes.fraccionamiento_id','=',$proyecto)
+                        ->when($request->bAudit,function($query, $audit){
+                                        if($audit == 1){
+                                                $query->whereNull('contratos.fecha_audit')->get();
+                                        }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
+                                }
+                        );
                         if($etapa != '')
                                 $sumas = $sumas->where('lotes.etapa_id','=',$etapa);
                         $sumas = $sumas->where('contratos.status','=',3)
@@ -459,7 +465,13 @@ class EstadisticasController extends Controller
                         ->select(       
                                         DB::raw("SUM(contratos.total_pagar) as enganche")
                                 )
-                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        ->where('lotes.fraccionamiento_id','=',$proyecto)
+                        ->when($request->bAudit,function($query, $audit){
+                                        if($audit == 1){
+                                                $query->whereNull('contratos.fecha_audit')->get();
+                                        }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
+                                }
+                        );
                         if($etapa != '')
                                 $sumaDirecto = $sumaDirecto->where('lotes.etapa_id','=',$etapa);
                         $sumaDirecto = $sumaDirecto->where('contratos.status','=',3)
@@ -553,7 +565,7 @@ class EstadisticasController extends Controller
         $proyecto = $request->proyecto;
         $etapa = $request->etapa;
 
-        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
+        $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -576,21 +588,22 @@ class EstadisticasController extends Controller
                                         'contratos.monto_total_credito','lotes.interior',
                                         'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
                                         'modelos.nombre as modelo'
-                );
+                )
+                ->where('contratos.status','=',3)
+                ->where('i.elegido', '=', 1)
+                ->when($request->bAudit,function($query, $audit){
+                                        if($audit == 1){
+                                                $query->whereNull('contratos.fecha_audit')->get();
+                                        }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
+                                }
+                        );
 
-        if($etapa != ''){
-                $resContratos = $query
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
-                                ->where('i.elegido', '=', 1)->get();
-        }
-        else{
-                $resContratos = $query
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->where('i.elegido', '=', 1)->get();
-        }
+        if($proyecto != '')
+                $resContratos = $resContratos->where('lotes.fraccionamiento_id','=',$proyecto);
+        if($etapa != '')
+                $resContratos = $resContratos->where('lotes.etapa_id','=',$etapa);
+
+        $resContratos = $resContratos->get();
 
         return Excel::create('Resumen', function($excel) use ($resContratos){
                 $excel->sheet('Resumen', function($sheet) use ($resContratos){

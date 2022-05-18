@@ -135,7 +135,7 @@
                         </div>
                         <div class="form-group row" v-if="mostrar == 1">
                             <div class="col-md-3">
-                                <a class="btn btn-success" v-bind:href="'/estadisticas/res_proyecto/excel?proyecto='+ b_proyecto + '&etapa='+ b_etapa">
+                                <a class="btn btn-success" v-bind:href="'/estadisticas/res_proyecto/excel?proyecto='+ b_proyecto + '&etapa='+ b_etapa + '&bAudit='+bAudit">
                                     <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                                 </a>
                             </div>

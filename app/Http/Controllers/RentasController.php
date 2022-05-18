@@ -269,6 +269,8 @@ class RentasController extends Controller
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->join('licencias','lotes.id','=','licencias.id')
+                    ->join('arrendadores','licencias.duenio_id','arrendadores.id')
                     ->select('rentas.id','rentas.num_meses','rentas.fecha_fin', 'rentas.facturar',
                         'rentas.status', 'rentas.monto_renta', 'rentas.nombre_arrendatario',
                         'lotes.calle', 'lotes.numero', 'lotes.interior', 'etapas.num_etapa as etapa',
@@ -283,6 +285,8 @@ class RentasController extends Controller
                     $rentas = $rentas->where(DB::raw("CONCAT(lotes.calle,' Num',lotes.numero)"), 'like', '%'. $request->b_direccion . '%');
                 if($request->b_cliente != '')//Busqueda por arrendatarios
                     $rentas = $rentas->where('rentas.nombre_arrendatario','like','%'.$request->b_cliente.'%');   
+                if($request->b_arrendador != '')//Busqueda por arrendatarios
+                    $rentas = $rentas->where('arrendadores.nombre','like','%'.$request->b_arrendador.'%');   
                 if($request->b_status != '')//Busqueda por status
                     $rentas = $rentas->where('rentas.status','=',$request->b_status);   
                     

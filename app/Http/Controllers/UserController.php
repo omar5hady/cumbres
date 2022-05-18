@@ -238,6 +238,12 @@ class UserController extends Controller
                     $user->lotes_disp=1;
                     $user->mis_prospectos=1;
                     $user->simulacion_credito=1;
+                    $user->docs = 1;
+                    $user->calc_lotes = 1;
+                    $user->edit_cotizacion = 1;
+                    if($request->tipo_vendedor == 0)
+                        $user->digital_lead = 1;
+                    
                     break;
                 }
                 case 3: //Gerente de proyectos
