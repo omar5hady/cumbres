@@ -140,64 +140,161 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="table-responsive" v-if="mostrar == 1">
-                        <table class="table2 table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Modelo</th>
-                                    <th>Direccion</th>
-                                    <th>Venta</th>
-                                    <th>Cliente</th>
-                                    <th>Institución</th>
-                                    <th>Tipo Crédito</th>
-                                    <th>Firma de escrituras</th>
-                                    <th>Precio venta</th>
-                                    <th>Enganche</th>
-                                    <th>Crédito</th>
-                                    <th>Saldo</th>
-                                    <th v-if="rolId == 1 || rolId == 9">Auditoria</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="contrato in arrayResProyecto" :key="contrato.id">
-                                    <td class="td2" v-text="contrato.manzana"></td>
-                                    <td class="td2" v-text="contrato.num_lote"></td>
-                                    <td class="td2" v-text="contrato.modelo"></td>
-                                    <td v-if="contrato.interior == null" class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
-                                    <td v-else class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero + '-' + contrato.interior"></td>
-                                    <td class="td2" v-text="this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <td class="td2" v-text="contrato.nombre_cliente.toUpperCase()"></td>
-                                    <td class="td2" v-text="contrato.institucion"></td>
-                                    <td class="td2" v-text="contrato.tipo_credito"></td>
-                                    <td v-if="contrato.fecha_firma_esc == null" class="td2" v-text="''"></td>
-                                    <td v-else class="td2" v-text="this.moment(contrato.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <td class="td2" v-text="'$'+formatNumber(contrato.precio_venta - contrato.descuento_promocion + contrato.costo_paquete)"></td>
-                                    <td class="td2" v-text="'$'+formatNumber(contrato.total_pagar)"></td>
-                                    <td class="td2" v-text="'$'+formatNumber(contrato.monto_total_credito)"></td>
-                                    <td class="td2" v-text="'$'+formatNumber(contrato.saldo)"></td>
-                                    <td v-if="rolId == 1 || rolId == 9" class="td2">
-                                        <button class="btn btn-dark" @click="abrirModal('auditar',contrato.id)" v-if="contrato.fecha_audit == null">Auditar</button>
-                                        <button class="btn btn-success" @click="abrirModal('observaciones',contrato.id),listarObservacion(contrato.id)" v-else>{{'Auditado el: ' + this.moment(contrato.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</button>
-                                    </td>
-                                </tr>                                
-                            </tbody>
-                        </table>
+
+                        <hr>
+
+                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
+                            <li class="nav-item">
+                                <a @click="tab = 1" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }" v-text="'Resuemn contratos'"></a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="tab = 2" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }" v-text="'Lotes disponibles'"></a>
+                            </li>
+                        </ul>
+
+                        <!-- Resuemn contratos -->
+                        <div class="tab-content" id="myTab1Content">
+                            <div class="tab-pane fade" v-bind:class="{ 'active show': tab==1 }" v-if="tab == 1">
+                                <div class="table-responsive" v-if="mostrar == 1">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                            <th>Modelo</th>
+                                            <th>Direccion</th>
+                                            <th>Venta</th>
+                                            <th>Cliente</th>
+                                            <th>Institución</th>
+                                            <th>Tipo Crédito</th>
+                                            <th>Firma de escrituras</th>
+                                            <th>Precio venta</th>
+                                            <th>Enganche</th>
+                                            <th>Crédito</th>
+                                            <th>Saldo</th>
+                                            <th v-if="rolId == 1 || rolId == 9">Auditoria</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="contrato in arrayResProyecto" :key="contrato.id">
+                                            <td class="td2" v-text="contrato.manzana"></td>
+                                            <td class="td2" v-text="contrato.num_lote"></td>
+                                            <td class="td2" v-text="contrato.modelo"></td>
+                                            <td v-if="contrato.interior == null" class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
+                                            <td v-else class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero + '-' + contrato.interior"></td>
+                                            <td class="td2" v-text="this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="contrato.nombre_cliente.toUpperCase()"></td>
+                                            <td class="td2" v-text="contrato.institucion"></td>
+                                            <td class="td2" v-text="contrato.tipo_credito"></td>
+                                            <td v-if="contrato.fecha_firma_esc == null" class="td2" v-text="''"></td>
+                                            <td v-else class="td2" v-text="this.moment(contrato.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.precio_venta - contrato.descuento_promocion + contrato.costo_paquete)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.total_pagar)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.monto_total_credito)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.saldo)"></td>
+                                            <td v-if="rolId == 1 || rolId == 9" class="td2">
+                                                <button class="btn btn-dark" @click="abrirModal('auditar',contrato.id)" v-if="contrato.fecha_audit == null">Auditar</button>
+                                                <button class="btn btn-success" @click="abrirModal('observaciones',contrato.id),listarObservacion(contrato.id)" v-else>{{'Auditado el: ' + this.moment(contrato.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</button>
+                                            </td>
+                                        </tr>                                
+                                    </tbody>
+                                </table>
+                                </div>
+                                <nav>
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,b_proyecto,b_etapa)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,b_proyecto,b_etapa)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,b_proyecto,b_etapa)">Sig</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
-                        <nav>
+
+                        <!-- Resuemn contratos -->
+                        <div class="tab-content" id="myTab1Content">
+                            <div class="tab-pane fade" v-bind:class="{ 'active show': tab==2 }" v-if="tab == 2">
+                                <div class="table-responsive" v-if="mostrar == 1">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                            <th>Modelo</th>
+                                            <th>Direccion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="lote in arrayLotesDisponibles.data" :key="lote.id">
+                                            <td class="td2" v-text="lote.manzana"></td>
+                                            <td class="td2" v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="lote.modelo"></td>
+                                            <td v-if="lote.interior == null" class="td2" v-text="lote.calle + ' Num. '+ lote.numero"></td>
+                                            <td v-else class="td2" v-text="lote.calle + ' Num. '+ lote.numero + '-' + lote.interior"></td>
+                                        </tr>                                
+                                    </tbody>
+                                </table>
+                                </div>
+                                <nav>
+                                    <!--Botones de paginacion -->
                             <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,b_proyecto,b_etapa)">Ant</a>
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page > 5" @click="listarResumen(1,b_proyecto,b_etapa)">
+                                    <a class="page-link" href="#" >Inicio</a>
                                 </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,b_proyecto,b_etapa)" v-text="page"></a>
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page > 1"
+                                    @click="listarResumen(arrayLotesDisponibles.current_page-1,b_proyecto,b_etapa)">
+                                    <a class="page-link" href="#" >Ant</a>
                                 </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,b_proyecto,b_etapa)">Sig</a>
+
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page-3 >= 1"
+                                    @click="listarResumen(arrayLotesDisponibles.current_page-3,b_proyecto,b_etapa)">
+                                    <a class="page-link" href="#" v-text="arrayLotesDisponibles.current_page-3"></a>
+                                </li>
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page-2 >= 1"
+                                    @click="listarResumen(arrayLotesDisponibles.current_page-2,b_proyecto,b_etapa)">
+                                    <a class="page-link" href="#" v-text="arrayLotesDisponibles.current_page-2"></a>
+                                </li>
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page-1 >= 1"
+                                    @click="listarResumen(arrayLotesDisponibles.current_page-1)">
+                                    <a class="page-link" href="#" v-text="arrayLotesDisponibles.current_page-1"></a>
+                                </li>
+                                <li class="page-item active" >
+                                    <a class="page-link" href="#" v-text="arrayLotesDisponibles.current_page"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayLotesDisponibles.current_page+1 <= arrayLotesDisponibles.last_page">
+                                    <a class="page-link" href="#" @click="listarResumen(arrayLotesDisponibles.current_page+1,b_proyecto,b_etapa)" 
+                                    v-text="arrayLotesDisponibles.current_page+1"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayLotesDisponibles.current_page+2 <= arrayLotesDisponibles.last_page">
+                                    <a class="page-link" href="#" @click="listarResumen(arrayLotesDisponibles.current_page+2,b_proyecto,b_etapa)"
+                                     v-text="arrayLotesDisponibles.current_page+2"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayLotesDisponibles.current_page+3 <= arrayLotesDisponibles.last_page">
+                                    <a class="page-link" href="#" @click="listarResumen(arrayLotesDisponibles.current_page+3,b_proyecto,b_etapa)"
+                                    v-text="arrayLotesDisponibles.current_page+3"></a>
+                                </li>
+
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page < arrayLotesDisponibles.last_page"
+                                    @click="listarResumen(arrayLotesDisponibles.current_page+1,b_proyecto,b_etapa)">
+                                    <a class="page-link" href="#" >Sig</a>
+                                </li>
+                                <li class="page-item" v-if="arrayLotesDisponibles.current_page < 5 && arrayLotesDisponibles.last_page > 5" @click="listarResumen(arrayLotesDisponibles.last_page,b_proyecto,b_etapa)">
+                                    <a class="page-link" href="#" >Ultimo</a>
                                 </li>
                             </ul>
-                        </nav>
+                                </nav>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -275,6 +372,7 @@
             return {
                 proceso:false,
                 arrayResProyecto : [],
+                arrayLotesDisponibles : [],
                 arrayFraccionamientos: [],
                 arrayAllEtapas:[],
                 arrayObservacion:[],
@@ -310,6 +408,7 @@
                 tipoAccion : 0,
                 titulo : '',
                 bAudit: 0,
+                tab: 1,
             }
         },
         computed:{
@@ -349,6 +448,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.arrayResProyecto = respuesta.resContratos.data;
+                    me.arrayLotesDisponibles = respuesta.lotesDisp;
                     me.pagination= respuesta.pagination;
                     me.lotes = respuesta.lotes;
                     me.disponibles = respuesta.disponibles;

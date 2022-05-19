@@ -619,6 +619,10 @@ class RentasController extends Controller
                 ->where('status','<',2)
                 ->where('renta_id','=',$renta->id)->count();
 
+                $renta->saldo_pendiente = Pago_renta::select(DB::raw("SUM(pagos_rentas.saldo) as suma"))
+                ->where('status','=',0)
+                ->where('renta_id','=',$renta->id)->first();
+
                 $renta->ultimo = Pago_renta::select('fecha')->where('status','=',2)->orderBy('fecha','desc')->first();
             }
         return $rentas;
@@ -633,6 +637,10 @@ class RentasController extends Controller
                 ->where('status','<',2)
                 ->where('renta_id','=',$renta->id)->count();
 
+                $renta->saldo_pendiente = Pago_renta::select(DB::raw("SUM(pagos_rentas.saldo) as suma"))
+                ->where('status','=',0)
+                ->where('renta_id','=',$renta->id)->first();
+
                 $renta->ultimo = Pago_renta::select('fecha')->where('status','=',2)->orderBy('fecha','desc')->first();
             }
 
@@ -644,10 +652,11 @@ class RentasController extends Controller
                     $sheet->row(1, [
                         '#Folio', 'Cliente', 'Proyecto', 'Etapa', 'Modelo',
                         'Dirección', 'Renta mensual', 'IVA', 'Pagos pendientes',
+                        'Saldo vencido',
                         'Ultimo mes pagado', 'Termino del contrato'
                     ]);
     
-                    $sheet->cells('A1:L1', function ($cells) {
+                    $sheet->cells('A1:M1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -666,6 +675,7 @@ class RentasController extends Controller
                     $sheet->setColumnFormat(array(
                         'G' => '$#,##0.00',
                         'H' => '$#,##0.00',
+                        'J' => '$#,##0.00',
                     ));
     
                     foreach($rentas as $index => $renta) {
@@ -697,6 +707,7 @@ class RentasController extends Controller
                             $renta->monto_renta,
                             $renta->monto_renta*.16,
                             $renta->num_pendientes.' de '.$renta->num_meses,
+                            $renta->saldo_pendiente->suma,
                             $ultimo,
                             $fin->formatLocalized('%d de %B de %Y'),
                             $status
@@ -782,6 +793,7 @@ class RentasController extends Controller
     }
     //Funcion privada que actualiza el saldo y status de todos los pagares de un contrato
     private function actualizarStatusPagares($renta_id){
+        $now = Carbon::now();
         $depositos = Dep_renta::select(DB::raw("SUM(monto_cap) as total"))->where('renta_id','=',$renta_id)->first();
         if($depositos->total == NULL)
             $depositos->total = 0;
@@ -800,6 +812,10 @@ class RentasController extends Controller
                 $pago->status = 1;
                 $pago->saldo = $pago->saldo - $depositos->total;
                 $depositos->total = 0;
+                $fechaDif = Carbon::parse($pago->fecha);
+                $diferencia = $fechaDif->diffInDays($now,false);
+                if($diferencia > 0)
+                    $pago->status = 0;
             }
             $pago->save();
         }

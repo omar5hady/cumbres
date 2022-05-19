@@ -27,7 +27,9 @@
             </li>
         @endif
         {{-- Ejecutivos --}}
-        @if( Auth::user()->rep_proy == 1 || Auth::user()->rep_recursos_propios == 1 || Auth::user()->rep_empresas == 1
+        @if( Auth::user()->rep_proy == 1 || Auth::user()->rep_recursos_propios == 1
+            || Auth::user()->rep_ini_term_ventas == 1
+            || Auth::user()->rep_empresas == 1
             || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310
         )
             <li class="nav-item nav-dropdown">
@@ -48,6 +50,11 @@
                     @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
                         <li @click="menu=244" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de casas con crédito puente</a>
+                        </li>
+                    @endif
+                    @if(Auth::user()->rep_ini_term_ventas == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
+                        <li @click="menu=238" class="nav-item">
+                            <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
                         </li>
                     @endif
                 </ul>
@@ -107,19 +114,13 @@
             </li>
         @endif
         {{-- Cobranza --}}
-        @if( Auth::user()->rep_ini_term_ventas == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 
-            || Auth::user()->rep_acumulado == 1 || Auth::user()->rep_ingresos == 1
+        @if(Auth::user()->rep_acumulado == 1 || Auth::user()->rep_ingresos == 1
         )
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
                     <i class="fa fa-line-chart"></i> Cobranza
                 </a>
                 <ul class="nav-dropdown-items nav-dropdown-items2">
-                    @if(Auth::user()->rep_ini_term_ventas == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
-                        <li @click="menu=238" class="nav-item">
-                            <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
-                        </li>
-                    @endif
                     @if(Auth::user()->rep_acumulado == 1)
                         <li @click="menu=240" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de expedientes</a>

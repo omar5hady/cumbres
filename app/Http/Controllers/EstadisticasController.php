@@ -515,6 +515,26 @@ class EstadisticasController extends Controller
                         $resContratos = $resContratos->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->paginate(20);
 
+
+
+
+
+        // Retorno de Lotes disponibles
+        $lotesDisp = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->select(      
+                                        'lotes.id', 'lotes.manzana', 'lotes.num_lote',
+                                        'fraccionamientos.nombre as proyecto',
+                                        'lotes.calle','lotes.numero',
+                                        'modelos.nombre as modelo',
+                                        'lotes.habilitado'
+                                )
+                        ->where('lotes.contrato','=',0)
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                                $lotesDisp = $lotesDisp->where('lotes.etapa_id','=',$etapa);
+                        $lotesDisp = $lotesDisp->paginate(20);
+
         if(sizeOf($resContratos)){
                 foreach($resContratos as $index => $contrato){
                         $contrato->fecha_firma_esc ='';
@@ -544,6 +564,7 @@ class EstadisticasController extends Controller
                 'sumas'=>$sumas,
                 'directo'=>$sumaDirecto,
                 'resContratos'=>$resContratos,
+                'lotesDisp'=>$lotesDisp,
                 'habilitados'=>$lotesHabilitados,
                 'diferencia'=>$diff_in_months,
                 'fecha_inicio'=>$fecha,
@@ -605,7 +626,25 @@ class EstadisticasController extends Controller
 
         $resContratos = $resContratos->get();
 
-        return Excel::create('Resumen', function($excel) use ($resContratos){
+
+        // Retorno de Lotes disponibles
+        $lotesDisp = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->select(      
+                                        'lotes.id', 'lotes.manzana', 'lotes.num_lote',
+                                        'fraccionamientos.nombre as proyecto',
+                                        'lotes.calle','lotes.numero',
+                                        'modelos.nombre as modelo',
+                                        'lotes.habilitado'
+                                )
+                        ->where('lotes.contrato','=',0)
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                                $lotesDisp = $lotesDisp->where('lotes.etapa_id','=',$etapa);
+                        $lotesDisp = $lotesDisp->get();
+
+
+        return Excel::create('Resumen', function($excel) use ($resContratos, $lotesDisp){
                 $excel->sheet('Resumen', function($sheet) use ($resContratos){
                     
                     $sheet->row(1, [
@@ -679,6 +718,47 @@ class EstadisticasController extends Controller
                     $num='A1:O' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
+                $excel->sheet('Disponibles', function($sheet) use ($lotesDisp){
+                    
+                        $sheet->row(1, [
+                            'Proyecto', 'Manzana',
+                            '# Lote', 'Modelo','Dirección', 
+                        ]);
+    
+    
+                        $sheet->cells('A1:E1', function ($cells) {
+                            $cells->setBackground('#052154');
+                            $cells->setFontColor('#ffffff');
+                            // Set font family
+                            $cells->setFontFamily('Calibri');
+    
+                            // Set font size
+                            $cells->setFontSize(13);
+    
+                            // Set font weight to bold
+                            $cells->setFontWeight('bold');
+                            $cells->setAlignment('center');
+                        });
+    
+                        
+                        $cont=1;
+    
+                        foreach($lotesDisp as $index => $lote) {
+                            $cont++;
+    
+                            $direccion = $lote->calle.' Num. '.$lote->numero;
+    
+                            $sheet->row($index+2, [
+                                $lote->proyecto, 
+                                $lote->manzana,
+                                $lote->num_lote,
+                                $lote->modelo,
+                                $direccion,
+                            ]);	
+                        }
+                        $num='A1:E' . $cont;
+                        $sheet->setBorder($num, 'thin');
+                    });
                 }
         )->download('xls');
     }

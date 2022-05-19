@@ -79,6 +79,7 @@
                                         <th>Renta mensual</th>
                                         <th>IVA</th>
                                         <th>Pagos pendientes</th>
+                                        <th>Saldo Vencido</th>
                                         <th>Ultimo mes pagado</th>
                                         <th>Termino de contrato</th>
                                         <th>Status</th>
@@ -110,6 +111,7 @@
                                             href="#" v-text="contrato.num_pendientes + ' de ' + contrato.num_meses"></a>
                                         </td>
                                         <td style="text-align:center" v-else class="td2" v-text="contrato.num_pendientes + ' de ' + contrato.num_meses"></td>
+                                        <td class="td2" v-text="'$' +formatNumber(contrato.saldo_pendiente.suma)"></td>
                                         <td v-if="contrato.ultimo.fecha != null" v-text="this.moment(contrato.ultimo.fecha).locale('es').format('MMM/YYYY')"></td>
                                         <td v-else></td>
                                         <td class="td2" v-text="this.moment(contrato.fecha_fin).locale('es').format('DD/MMM/YYYY')"></td>
