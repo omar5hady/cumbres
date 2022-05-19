@@ -89,7 +89,7 @@
                                 <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Prospectos Nuevos (Total {{totalProspectos}})</h6></div>
                                 <div class="card text-light bg-dark" v-for="prospecto in arrayDatosProspectos" :key="prospecto.id">
                                     <div class="card-body text-light"
-                                        @click="verCliente(prospecto.clientes,1)"
+                                        @click="verCliente(prospecto.clientes,2)"
                                     >
                                         <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
@@ -142,6 +142,19 @@
                                     <tr>
                                         <th></th>
                                         <th>Cliente</th>
+                                        <template v-if="tipo == 2">
+                                            <th>Asesor</th>
+                                            <th>Proyecto de interes</th>
+                                        </template>
+                                        <template v-if="tipo == 1">
+                                            <th>Fraccionamiento</th>
+                                            <th>Etapa</th>
+                                            <th>Manzana</th>
+                                            <th>Lote</th>
+                                            <th>Institucion Fin.</th>
+                                            <th>Tipo de Crédito</th>
+                                            <th>Asesor</th>
+                                        </template>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -149,12 +162,21 @@
                                         <tr v-for="cliente,index in clientes2" :key="cliente.nombre+'-'+cliente.apellidos+index">
                                             <td v-text="parseInt(index+1)"></td>
                                             <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
+                                            <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
+                                            <td class="td2" v-text="cliente.proyecto"></td>
                                         </tr>      
                                     </template>    
                                     <template v-if="tipo == 1">
-                                        <tr v-for="cliente,index in clientes" :key="index">
+                                        <tr v-for="cliente,index in clientes" :key="cliente.id">
                                             <td v-text="parseInt(index+1)"></td>
-                                            <td class="td2" v-text="cliente"></td>
+                                            <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
+                                            <td class="td2" v-text="cliente.proyecto"></td>
+                                            <td class="td2" v-text="cliente.etapa"></td>
+                                            <td class="td2" v-text="cliente.manzana"></td>
+                                            <td class="td2" v-text="cliente.num_lote"></td>
+                                            <td class="td2" v-text="cliente.institucion"></td>
+                                            <td class="td2" v-text="cliente.tipo_credito"></td>
+                                            <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
                                         </tr>      
                                     </template>                      
                                 </tbody>
@@ -197,7 +219,6 @@
 
                listado : 0,
                clientes: [],
-               clientes2 : [],
                tipo:2,
             }
         },
@@ -253,10 +274,7 @@
             verCliente(data, tipo){
                 this.listado = 1;
                 this.tipo = tipo;
-                if(tipo == 1)
-                    this.clientes = data;
-                else
-                    this.clientes2 = data;
+                this.clientes = data;
             },
             getDatos(){
                 let me = this;
