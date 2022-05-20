@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\NotificacionesAvisosController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
 use Illuminate\Http\Request;
 use App\Notifications\NotifyAdmin;
 use App\User;
@@ -601,7 +603,7 @@ class RentasController extends Controller
                 if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
-                    //Mail::to($correo)->send(new NotificationReceived($msj));
+                    Mail::to($correo)->send(new NotificationReceived($msj));
                     User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                 }
             }

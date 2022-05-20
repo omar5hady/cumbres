@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Http\Controllers\NotificacionesAvisosController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
 use App\Notificacion_aviso;
 use Carbon\Carbon;
 use App\Pago_renta;
@@ -81,7 +83,8 @@ class NotificacionPeriodica extends Command
 
         if(sizeof($pagos))
         {
-            $users = User::select('id')->whereIn('usuario',
+            $users = User::join('personal', 'users.id', '=', 'personal.id')
+                ->select('personal.id','personal.email')->whereIn('users.usuario',
                         ['uriel.al','enrique.mag','shady'])->get();
 
             foreach($pagos as $ind => $pago){
@@ -89,6 +92,8 @@ class NotificacionPeriodica extends Command
                 $msj = 'El Pago #'.$pago->num_pago.' por la cantidad de $'.$monto.' a nombre de '.$pago->nombre_arrendatario.' esta próximo a vencer';
                 foreach ($users as $index => $user) {
                     $aviso = new NotificacionesAvisosController();
+                    $correo = $user->email;
+                    Mail::to($correo)->send(new NotificationReceived($msj));
                     $aviso->store($user->id,$msj);
                 }
             }

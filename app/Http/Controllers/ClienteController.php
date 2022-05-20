@@ -1274,7 +1274,7 @@ class ClienteController extends Controller
             ->whereNotIn('users.usuario',[
                 'mayra_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
-                'yasmin_ventas'
+                'yasmin_ventas', 'ivan.mtz'
             ])
             ->where('users.usuario','!=','descartado')
             ->where('users.usuario','!=','oficina')
@@ -1305,7 +1305,7 @@ class ClienteController extends Controller
                     ->whereNotIn('users.usuario',[
                         'mayra_jaz', 'vero', 'e_preciado',
                         'ALEJANDROT',
-                        'yasmin_ventas'
+                        'yasmin_ventas', 'ivan.mtz'
                     ])
                     ->whereIn('users.id',$as)
                     ->where('users.usuario','!=','descartado')
@@ -1326,7 +1326,7 @@ class ClienteController extends Controller
                     ->whereNotIn('users.usuario',[
                         'mayra_jaz', 'vero', 'e_preciado',
                         'Guadalupe', 'ALEJANDROT',
-                        'yasmin_ventas','lisseth_rios'
+                        'yasmin_ventas','lisseth_rios', 'ivan.mtz'
                     ])
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
