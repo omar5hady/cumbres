@@ -72,7 +72,7 @@
     </div>
 </div> 
 <div style="position: static;  margin-top: -20px;">
-<p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 470px; background-color: #163253;">DATOS DEL CREDITO</p>
+<p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #163253;">DATOS DEL CREDITO</p>
     <div class="table1" style="border: ridge #163253 1px; color:black;  margin-top: -10px;">
         <div class="table-row">
             <div class="table-cell1">TIPO DE CREDITO: <u>{{mb_strtoupper($contratos[0]->tipo_credito)}}</u> </div>
@@ -86,7 +86,7 @@
 </div>
     
     <div style="position: static;  margin-top: -25px;">
-    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #163253;">DATOS DEL COMPRADOR</p>
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:27px; background-color: #163253;">DATOS DEL COMPRADOR</p>
         <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
                     <div colspan="4" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}</u></div>
@@ -266,7 +266,7 @@
 @endif
 
 <div style="position: static; margin-top: -20px;">
-    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #163253;">DATOS DE LA PROPIEDAD</p>        
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #163253;">DATOS DE LA PROPIEDAD</p>        
         <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
                
                 <div class="table-row">
@@ -310,7 +310,7 @@
 </div>
 
 <div style="position: static; margin-top: -20px;">
-    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 500px; background-color: #163253;">PRESUPUESTO</p>        
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 450px; margin-top:25px; background-color: #163253;">PRESUPUESTO</p>        
         <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
  
                 <div class="table-row">
@@ -382,7 +382,7 @@
 </div>
 
 
-<div style="display: inline-block; float: right;" >
+<div style="display: inline-block; float: right; margin-top:-35px">
     <IMG SRC="img/contratos/logoContratoC2.png" width="170" height="170">
 </div>
 
@@ -396,7 +396,7 @@
         <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110">
     </div>
 
-    <table class="myTable" style="margin-left:95px; margin-top:0px; width:95%;">
+    <table class="myTable" style="margin-left:135px; margin-top:0px; width:95%;">
         <thead>
             <tr>
                 <th class="text-right" colspan="3">Fecha de emisión: {{$contratos[0]->fecha}}</th>

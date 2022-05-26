@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use Illuminate\Http\Request;
 use App\Notifications\NotifyAdmin;
+use App\Notifications\PhoneVerificationCreated;
 use App\User;
 use App\Lote;
 use App\Licencia;
@@ -611,6 +612,12 @@ class RentasController extends Controller
             $contrato->save();
 
     }
+
+    public function pruebaSms(Request $request){
+        $mensaje = 'Prueba SMS';
+        User::findOrFail(3)->notify(new PhoneVerificationCreated($mensaje));
+    }
+    
     //Funcion que retorna el listado de contratos de renta registrados para el modulo estado de cuenta.
     public function indexEdoCta(Request $request){
         $rentas = $this->getQueryRentas($request);

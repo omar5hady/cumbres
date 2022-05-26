@@ -282,6 +282,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/lotes/getDatosLoteRenta','RentasController@getDatosLoteRenta');
         Route::get('/rentas/getArrendador','RentasController@getArrendador');
         Route::get('/rentas/getTestigos','RentasController@getTestigos');
+        Route::get('/rentas/pruebaSms','RentasController@pruebaSms');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
         Route::put('/rentas/updateRenta','RentasController@updateRenta');

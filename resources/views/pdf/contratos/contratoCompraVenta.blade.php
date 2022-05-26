@@ -40,7 +40,7 @@ body {
     </div>
 </div> 
 <div style="position: static;  margin-top: -20px;">
-<p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 470px; background-color: #0B173B;">DATOS DEL CREDITO</p>
+<p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 300px; margin-top:25px; background-color: #0B173B;">DATOS DEL CREDITO</p>
     <div class="table1" style="border: ridge #0B173B 1px; color:black;  margin-top: -10px;">
         <div class="table-row">
             <div class="table-cell1">TIPO DE CREDITO: <u>{{mb_strtoupper($contratos[0]->tipo_credito)}}</u> </div>
@@ -54,7 +54,7 @@ body {
 </div>
     
     <div style="position: static;  margin-top: -25px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL COMPRADOR</p>
+    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 300px; margin-top:27px; background-color: #0B173B;">DATOS DEL COMPRADOR</p>
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
                     <div colspan="4" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}</u></div>
@@ -151,7 +151,7 @@ body {
 </div>
 @if($contratos[0]->coacreditado == 1)
     <div style="position: static; margin-top: -25px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL CONYUGE O COACREDITADO</p>        
+    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 200px; margin-top:27px; background-color: #0B173B;">DATOS DEL CONYUGE O COACREDITADO</p>        
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
                     <div colspan="2" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->nombre_coa)}} {{mb_strtoupper($contratos[0]->apellidos_coa)}}</u></div>
@@ -233,12 +233,12 @@ body {
 <div style="position: static; margin-top: -20px;">
     @if($contratos[0]->tipo_proyecto == 1)
         @if($contratos[0]->modelo == 'Terreno')
-            <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL TERRENO</p>
+            <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #0B173B;">DATOS DEL TERRENO</p>
         @else
-        <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>
+        <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>
         @endif
     @elseif($contratos[0]->tipo_proyecto == 2)
-        <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL DEPARTAMENTO</p>        
+        <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #0B173B;">DATOS DEL DEPARTAMENTO</p>        
     @endif
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
             @if($contratos[0]->tipo_proyecto == 1)
@@ -304,7 +304,7 @@ body {
 </div>
 
         <div style="position: static; margin-top: -20px;">
-            <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 500px; background-color: #0B173B;">PRESUPUESTO</p>        
+            <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; margin-top:20px; background-color: #0B173B;">PRESUPUESTO</p>        
             <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                
                 @if($contratos[0]->tipo_proyecto == 1)
@@ -541,7 +541,7 @@ body {
 </div>
 
 
-<div style="display: inline-block; float: right; margin-top: -10px;" >
+<div style="display: inline-block; float: right; margin-top: -40px;" >
     @if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
         <IMG SRC="img/contratos/logoContratoC2.png" width="170" height="170">
     @else 

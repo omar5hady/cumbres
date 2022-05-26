@@ -2113,6 +2113,15 @@ class ContratoController extends Controller
             $lote_ant->paquete = '';
             $lote_ant->apartado = 0;
             $lote_ant->save();
+
+            //Se elimina el apartado asignado al lote anterior
+            $apartado = Apartado::select('id')->where('lote_id','=',$lote_ant->id)->get();
+            if(sizeof($apartado))
+                foreach($apartado as $ap){
+                    $borrarApartado = Apartado::findOrFail($ap->id);
+                    $borrarApartado->delete();
+                }
+                
             DB::beginTransaction();
 
             //Nuevo lote

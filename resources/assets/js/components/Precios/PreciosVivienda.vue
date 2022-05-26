@@ -98,7 +98,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
 
                                         <td style="width:90%">
-                                        <input type="text" pattern="\d*" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
+                                        <input type="text" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
                                         </td>
                                     </tr>
                                 </tbody>

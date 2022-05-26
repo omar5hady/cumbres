@@ -86,8 +86,8 @@ class ServicioController extends Controller
         ->join('lotes','creditos.lote_id','=','lotes.id')
         ->join('etapas','lotes.etapa_id','=','etapas.id')
         ->select('personal.nombre','personal.apellidos','creditos.fraccionamiento as proyecto','etapas.empresas_telecom',
-        'lotes.emp_constructora',
-         'etapas.empresas_telecom_satelital','etapas.plantilla_telecom','creditos.manzana','creditos.num_lote')
+            'lotes.emp_constructora', 'etapas.num_etapa',
+            'etapas.empresas_telecom_satelital','etapas.plantilla_telecom','creditos.manzana','creditos.num_lote')
         ->where('contratos.id','=',$id)
         ->get();
 
@@ -167,6 +167,7 @@ class ServicioController extends Controller
         $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
         ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
         ->select('etapas.plantilla_telecom','fraccionamientos.nombre as proyecto','etapas.empresas_telecom',
+        'etapas.num_etapa',
         'etapas.empresas_telecom_satelital')
         ->where('modelos.nombre','!=','Por Asignar')
         ->where('etapas.num_etapa','!=','Sin Asignar')
