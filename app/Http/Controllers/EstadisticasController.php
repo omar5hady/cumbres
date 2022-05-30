@@ -57,6 +57,14 @@ class EstadisticasController extends Controller
 
                 // Ventas con clientes que tienen perro
                 $conPerro = $this->queryGral($request)
+                                ->select(
+                                        'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
+                                        'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
+                                        'contratos.id as folio', 
+                                        'creditos.fraccionamiento' ,'creditos.etapa',
+                                        'creditos.manzana', 'lotes.num_lote',
+                                        'creditos.precio_venta'
+                                )
                                 ->where('datos_extra.mascota','=',1)
                                 ->where('datos_extra.num_perros','>',0)
                                 ->where('contratos.status','=',3);
@@ -67,7 +75,7 @@ class EstadisticasController extends Controller
                                 $conPerro = $conPerro->where('lotes.etapa_id',$etapa);
                         if($fecha != '' && $fecha2 != '')
                                 $conPerro = $conPerro->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                        $conPerro = $conPerro->get()->count();
+                        $conPerro = $conPerro->get();
 
                 $autos->sinAuto = $this->getVentasAuto($request,0); // Ventas con clientes que no tienen autos
                 $autos->unAuto = $this->getVentasAuto($request,1); // Ventas con clientes que tienen un auto
@@ -191,6 +199,14 @@ class EstadisticasController extends Controller
                         
                 
                 $discapacitados = $this->queryGral($request) // Ventas con persona con capacidad diferente.
+                        ->select(
+                                'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
+                                'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
+                                'contratos.id as folio', 
+                                'creditos.fraccionamiento' ,'creditos.etapa',
+                                'creditos.manzana', 'lotes.num_lote',
+                                'creditos.precio_venta'
+                        )
                         ->where('datos_extra.persona_discap','=',1)
                         ->where('contratos.status','=',3);
 
@@ -201,9 +217,17 @@ class EstadisticasController extends Controller
                         if($fecha != '' && $fecha2 != '')
                                 $discapacitados = $discapacitados->whereBetween('contratos.fecha', [$fecha, $fecha2]);
                         
-                        $discapacitados = $discapacitados->get()->count();
+                        $discapacitados = $discapacitados->get();
                 
                 $silla_ruedas = $this->queryGral($request) // Ventas con personas que requieren silla de ruedas
+                        ->select(
+                                'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
+                                'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
+                                'contratos.id as folio', 
+                                'creditos.fraccionamiento' ,'creditos.etapa',
+                                'creditos.manzana', 'lotes.num_lote',
+                                'creditos.precio_venta'
+                        )
                         ->where('datos_extra.silla_ruedas','=',1)
                         ->where('contratos.status','=',3);
                         if($proyecto != '')
@@ -213,7 +237,7 @@ class EstadisticasController extends Controller
                         if($fecha != '')
                                 $silla_ruedas = $silla_ruedas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
                                 
-                        $silla_ruedas = $silla_ruedas->get()->count();
+                        $silla_ruedas = $silla_ruedas->get();
         
                 
                 $SinMascotas = $this->queryGral($request) // Ventas con clientes sin mascota
@@ -250,7 +274,7 @@ class EstadisticasController extends Controller
         
         $mascotas[0]->sin_mascotas = $SinMascotas;
         $totalPersonas = $mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota;
-        $sinDiscap = $totalPersonas - $discapacitados;
+        $sinDiscap = $totalPersonas - sizeOf($discapacitados);
 
         if($totalPersonas > 0){
                 $mascotas[0]->promedioPerros = $mascotas[0]->perros/$totalPersonas;
@@ -771,7 +795,15 @@ class EstadisticasController extends Controller
         $fecha2 = $request->fecha2;
 
         
-        $query = $this->queryGral($request);
+        $query = $this->queryGral($request)
+                ->select(
+                        'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
+                        'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
+                        'contratos.id as folio', 
+                        'creditos.fraccionamiento' ,'creditos.etapa',
+                        'creditos.manzana', 'lotes.num_lote',
+                        'creditos.precio_venta'
+                );
                 $query = $query->where('contratos.status','=',3);
                         if($proyecto != '')
                                 $query = $query->where('lotes.fraccionamiento_id',$proyecto);
@@ -781,9 +813,9 @@ class EstadisticasController extends Controller
                                 $query = $query->whereBetween('contratos.fecha', [$fecha, $fecha2]);
 
                         if($num<=3)
-                                $query = $query->where('datos_extra.num_vehiculos','=',$num)->get()->count();
+                                $query = $query->where('datos_extra.num_vehiculos','=',$num)->get();
                         else
-                                $query = $query->where('datos_extra.num_vehiculos','>',3)->get()->count();
+                                $query = $query->where('datos_extra.num_vehiculos','>',3)->get();
 
         return $query;
     }
@@ -796,7 +828,14 @@ class EstadisticasController extends Controller
         $fecha2 = $request->fecha2;
 
         $query = $this->queryGral($request);
-                $query = $query->select('clientes.edo_civil');
+                $query = $query->select('clientes.edo_civil',
+                        'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
+                        'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
+                        'contratos.id as folio', 
+                        'creditos.fraccionamiento' ,'creditos.etapa',
+                        'creditos.manzana', 'lotes.num_lote',
+                        'creditos.precio_venta'
+                );
                 
                 if($proyecto != '')
                         $query = $query->where('lotes.fraccionamiento_id',$proyecto);
@@ -807,7 +846,7 @@ class EstadisticasController extends Controller
 
                 $query = $query->where('clientes.edo_civil','=',$civil)
                         ->where('contratos.status','=',3)
-                        ->count();
+                        ->get();
 
         return $query;
     }
@@ -866,6 +905,7 @@ class EstadisticasController extends Controller
                 ->join('lotes','creditos.lote_id','=','lotes.id')
                 ->join('contratos','creditos.id','=','contratos.id')
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->join('personal as v', 'creditos.vendedor_id', '=', 'v.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id');
 
         return $query;

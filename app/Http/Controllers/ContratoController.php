@@ -2111,16 +2111,16 @@ class ContratoController extends Controller
             $varContrato = $lote_ant->contrato;
             $lote_ant->contrato = 0;
             $lote_ant->paquete = '';
-            $lote_ant->apartado = 0;
+            //$lote_ant->apartado = 0;
             $lote_ant->save();
 
             //Se elimina el apartado asignado al lote anterior
-            $apartado = Apartado::select('id')->where('lote_id','=',$lote_ant->id)->get();
-            if(sizeof($apartado))
-                foreach($apartado as $ap){
-                    $borrarApartado = Apartado::findOrFail($ap->id);
-                    $borrarApartado->delete();
-                }
+            // $apartado = Apartado::select('id')->where('lote_id','=',$lote_ant->id)->get();
+            // if(sizeof($apartado))
+            //     foreach($apartado as $ap){
+            //         $borrarApartado = Apartado::findOrFail($ap->id);
+            //         $borrarApartado->delete();
+            //     }
                 
             DB::beginTransaction();
 
@@ -2263,7 +2263,17 @@ class ContratoController extends Controller
 
             $varContrato = $lote_ant->contrato;
             $lote_ant->paquete = '';
+            //$lote_ant->apartado = 0;
             $lote_ant->save();
+
+            // //Se elimina el apartado asignado al lote anterior
+            // $apartado = Apartado::select('id')->where('lote_id','=',$lote_ant->id)->get();
+            // if(sizeof($apartado))
+            //     foreach($apartado as $ap){
+            //         $borrarApartado = Apartado::findOrFail($ap->id);
+            //         $borrarApartado->delete();
+            //     }
+                
             DB::beginTransaction();
 
             // Se accede al nuevo lote.

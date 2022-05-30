@@ -175,20 +175,20 @@
                         @endif
 
                 <!-- Manual para el administrador -->
-                        @if(Auth::user()->rol_id == 1)
+                        {{-- @if(Auth::user()->rol_id == 1)
                             <li @click="menu=31" class="nav-item">
                                 <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAdm.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>
                             </li>
-                        @endif
-                <!-- Manual para los asesores -->
+                        @endif --}}
+                {{-- <!-- Manual para los asesores -->
                         @if(Auth::user()->rol_id == 2)
                             <li @click="menu=31" class="nav-item">
                                 <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAsesor.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>
                             </li>
-                        @endif
-                        <li class="nav-item">
+                        @endif --}}
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </nav>
                 <button class="sidebar-minimizer brand-minimizer" type="button"></button>
