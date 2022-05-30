@@ -1007,8 +1007,10 @@ class SolicDetallesController extends Controller
                             'lotes.manzana'
                         )
                         // filtros por contratista, proyecto y margen de fechas 
-                        ->where('fraccionamientos.id','=',$request->proyecto)
-                        ->where('contratistas.id','=',$request->contratista)
+                        ->where('fraccionamientos.id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $agenda  = $agenda->where('etapas.id','=',$request->etapa);
+                        $agenda  = $agenda->where('contratistas.id','=',$request->contratista)
                         ->whereBetween('solic_detalles.fecha_program', [$fecha1, $fecha2])
 
                         ->orderBy('fecha_program','asc')
@@ -1016,7 +1018,7 @@ class SolicDetallesController extends Controller
 
                         ->get();
 
-        // return ['agenda'=>$agenda];
+     //return ['agenda'=>$agenda];
 
         // funcion para crear el documento
         return Excel::create(

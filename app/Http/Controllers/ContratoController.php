@@ -2847,6 +2847,6 @@ class ContratoController extends Controller
     public function downloadFileFisc($fileName)
     {
         $pathtoFile = public_path() . '/files/datosFisc/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 }

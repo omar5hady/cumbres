@@ -343,19 +343,19 @@ class EtapaController extends Controller
     // Función para descargar reglamento
     public function downloadReglamento ($fileName){
         $pathtoFile = public_path().'/files/etapas/reglamentos/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Funcion para descargar la plantilla para carta de servicios
     public function downloadPlantillaCartaServicios ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Funcion para descargar la plantilla para carta de servicios en terrenos
     public function downloadPlantillaCartaServicios2 ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Funcion para descargar reglamento por contrato de venta.
@@ -368,7 +368,7 @@ class EtapaController extends Controller
         ->where('contratos.id','=',$id)->get();
 
         $pathtoFile = public_path().'/files/etapas/reglamentos/'.$reglamento[0]->archivo_reglamento;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Función para registrar el costo por cuota de mantenimiento
@@ -419,7 +419,7 @@ class EtapaController extends Controller
     // Función para descargar la plantilla de telecomunicaciones.
     public function downloadPlantillaTelecom ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasTelecom/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Funcion para descargar el reglamento de una etapa en especifico.
@@ -433,7 +433,7 @@ class EtapaController extends Controller
                           ->get();
 
         $pathtoFile = public_path().'/files/etapas/reglamentos/'.$archivos[0]->archivo_reglamento;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Función para almacenar la Carta de Bienvenida.
@@ -471,7 +471,8 @@ class EtapaController extends Controller
     // Función para descargar carta de bienvenida
     public function downloadCartaBienvenida ($fileName){
         $pathtoFile = public_path().'/files/etapas/cartasBienvenida/'.$fileName;
-        return response()->download($pathtoFile);
+        
+        return response()->file($pathtoFile);
     }
 
     // Función para almacenar factibilidad
@@ -506,6 +507,6 @@ class EtapaController extends Controller
     // Función para descargar la factibilidad.
     public function downloadFactibilidad ($fileName){
         $pathtoFile = public_path().'/files/etapas/factibilidad/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 }

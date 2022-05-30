@@ -529,7 +529,7 @@ class AvaluoController extends Controller
     public function downloadFile($fileName)
     {
         $pathtoFile = public_path() . '/files/avaluos/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     public function listarObservaciones(Request $request){

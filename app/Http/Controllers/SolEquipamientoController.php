@@ -376,7 +376,7 @@ class SolEquipamientoController extends Controller
 
     // funcion para descargar el archivo 
     public function downloadPago1($fileName){
-        return response()->download(public_path().'/files/sol_esquip/sol_1/'.$fileName);
+        return response()->file(public_path().'/files/sol_esquip/sol_1/'.$fileName);
     }
 
     // funcion para subir el archivo de comprobante de pago
@@ -399,7 +399,7 @@ class SolEquipamientoController extends Controller
 
     // descarga el archivo 
     public function downloadPago2($fileName){
-        return response()->download(public_path().'/files/sol_esquip/sol_2/'.$fileName);
+        return response()->file(public_path().'/files/sol_esquip/sol_2/'.$fileName);
     }
 
     // Esta funcion es reutilizada para guardar los diferentes archivos subidos por el ususario

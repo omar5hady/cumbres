@@ -690,7 +690,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
 
-                                <a :href="'/detalles/agendaContratista?proyecto=' + proyecto + '&contratista=' + contratista + '&fecha1=' + fecha1 + '&fecha2=' + fecha2"  class="btn btn-success">
+                                <a :href="'/detalles/agendaContratista?proyecto=' + proyecto + '&etapa='+ etapa +'&contratista=' + contratista + '&fecha1=' + fecha1 + '&fecha2=' + fecha2"  class="btn btn-success">
                                     <i class="fa fa-file-text"></i> Descargar
                                 </a>
                             </div>

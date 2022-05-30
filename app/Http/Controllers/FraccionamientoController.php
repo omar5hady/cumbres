@@ -360,7 +360,7 @@ class FraccionamientoController extends Controller
     //funciones para descarga de planos
     public function downloadFilePlanos($fileName){       
         $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //funciones para carga y descarga de archivos de escrituras
@@ -405,7 +405,7 @@ class FraccionamientoController extends Controller
     public function downloadFileEscrituras($fileName){
         
         $pathtoFile = public_path().'/files/fraccionamientos/escrituras/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //funciones para carga y descarga de los logos de los fraccionamientos
@@ -428,7 +428,7 @@ class FraccionamientoController extends Controller
     public function downloadFileLogoFraccionamiento($fileName){
         
         $pathtoFile = public_path().'/img/logosFraccionamientos/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
    
     // Funcion privada para guardar los planos del fraccionamiento para el historial de versiones

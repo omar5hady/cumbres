@@ -133,6 +133,7 @@ class RevisionPreviaController extends Controller
             ->join('expedientes','contratos.id','=','expedientes.id')
             ->join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
             ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as c', 'clientes.id', '=', 'c.id')

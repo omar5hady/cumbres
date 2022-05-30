@@ -776,7 +776,7 @@ class LicenciasController extends Controller
     {
 
         $pathtoFile = public_path() . '/files/licencias/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //funciones para carga y descarga de la acta
@@ -826,7 +826,7 @@ class LicenciasController extends Controller
     {
 
         $pathtoFile = public_path() . '/files/actas/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //funciones para carga y descarga de predial
@@ -877,7 +877,7 @@ class LicenciasController extends Controller
     {
 
         $pathtoFile = public_path() . '/files/prediales/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //Función para obtener los registros en excel de licencias para los lotes dados de alta 

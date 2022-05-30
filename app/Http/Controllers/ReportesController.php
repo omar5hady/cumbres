@@ -3301,7 +3301,7 @@ class ReportesController extends Controller
     public function downloadFile($fileName)
     {
         $pathtoFile = public_path() . '/files/escrituras/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Funcion para generar el reporte de entra de viviendas
     public function reporteEntregas(Request $request){

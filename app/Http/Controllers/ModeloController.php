@@ -300,7 +300,7 @@ class ModeloController extends Controller
     //Función para descargar el archivo especificaciones de modelo.
     public function downloadFile($fileName){
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Función que retorna los modelos ligados a un proyecto
     public function selectModelo_proyecto(Request $request){
@@ -408,7 +408,7 @@ class ModeloController extends Controller
         ->get();
 
         $pathtoFile = public_path().'/files/modelos/'.$archivos[0]->archivo;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Función para subir el archivo de especificaciones de obra
     public function formSubmitEspecObra(Request $request, $id)
@@ -429,6 +429,6 @@ class ModeloController extends Controller
     //Función para descargar el archivo de especificaciones de obra.
     public function downloadFileEspecObra($fileName){
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 }

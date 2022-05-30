@@ -1568,7 +1568,7 @@ class CreditoPuenteController extends Controller
             $pathtoFile = public_path().'/files/comprobantes/pagos/'.$fileName;
         else
             $pathtoFile = public_path().'/files/comprobantes/interes/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     // Función para actualizar el folio del crédito puente de manera manual.

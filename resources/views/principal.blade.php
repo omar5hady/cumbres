@@ -174,6 +174,23 @@
                             @include('sidebars.acceso')
                         @endif
 
+                <!-- Modulo para contratista ---->
+                        @if(Auth::user()->rol_id == 13 || Auth::user()->rol_id == 1 || Auth::user()->rol_id == 12)
+                        <li class="nav-item nav-dropdown">
+                                <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
+                                <ul class="nav-dropdown-items">
+                                    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13 || Auth::user()->id == 25694)
+                                        <li @click="menu=217" class="nav-item">
+                                            <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
+                                        </li>
+                                        <li @click="menu=223" class="nav-item">
+                                            <a class="nav-link" href="#"><i class="fa fa-archive"></i> Revisión Previa</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                        @endif
+
                 <!-- Manual para el administrador -->
                         {{-- @if(Auth::user()->rol_id == 1)
                             <li @click="menu=31" class="nav-item">

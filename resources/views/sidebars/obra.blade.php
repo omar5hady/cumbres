@@ -26,6 +26,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Avance</a>
             </li>
         @endif
+        @if(Auth::user()->entregas == 1)
+            <li @click="menu=216" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
+            </li>
+        @endif
         @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9)
             <li @click="menu=55 "class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
@@ -39,12 +44,6 @@
         @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816 && Auth::user()->id != 25816)
             <li @click="menu=213" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
-            </li>
-        @endif
-
-        @if(Auth::user()->entregas == 1)
-            <li @click="menu=216" class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
             </li>
         @endif
 

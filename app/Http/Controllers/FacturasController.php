@@ -205,17 +205,17 @@ class FacturasController extends Controller
     //Función para descargar la factura al deposito
     public function descargaFacturaD($name){
         $pathtoFile = public_path().'/files/facturas/depositos/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Función para descargar la factura correspondiente al monto del terreno
     public function descargaFacturaTer($name){
         $pathtoFile = public_path().'/files/facturas/terreno/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Función para descargar la factura correspondiente al pago de intereses
     public function descargaFacturaInt($name){
         $pathtoFile = public_path().'/files/facturas/depositos/interes/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     
     //Creditos Directos
@@ -337,12 +337,12 @@ class FacturasController extends Controller
     //Función para descargar la factura del Contrato
     public function descargaFacturaC($name){
         $pathtoFile = public_path().'/files/facturas/contratos/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Funcion para descargar la factura para contrato Concretania
     public function descargaFacturaCon($name){
         $pathtoFile = public_path().'/files/facturas/contratos/concretania/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //Creditos Escriturados
@@ -435,7 +435,7 @@ class FacturasController extends Controller
     //Función para descargar la factura de la liquidación del crédito bancario
     public function descargaFacturaLC($name){
         $pathtoFile = public_path().'/files/facturas/lcredito/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //depositos de credito
@@ -588,11 +588,11 @@ class FacturasController extends Controller
     //Funcion para dewscargar las facturas de deposito bancario
     public function descargaFacturaDC($name){
         $pathtoFile = public_path().'/files/facturas/depocredito/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //funcion para descargar la factura del deposito bancario correspondiente al terreno.
     public function descargaFacturaDCT($name){
         $pathtoFile = public_path().'/files/facturas/depocreditoterreno/'.$name;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 }

@@ -2105,7 +2105,7 @@ class LoteController extends Controller
     public function downloadFile($fileName){
         
         $pathtoFile = public_path().'/files/lotes/colindancias/'.$fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
 }

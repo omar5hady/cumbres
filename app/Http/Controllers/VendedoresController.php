@@ -165,7 +165,7 @@ class VendedoresController extends Controller
     {
 
         $pathtoFile = public_path() . '/files/vendedores/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //funcion para crear un rango de fechas ( periodo vacacional del vendedor)

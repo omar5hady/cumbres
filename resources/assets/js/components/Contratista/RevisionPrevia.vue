@@ -88,11 +88,7 @@
                                                 <span style="font-size:85%;" v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
                                             </td>
                                              <td>
-                                                <button v-if="contratos.revision_previa == 0" title="Realizar revision" type="button" 
-                                                    class="btn btn-success pull-right" @click="realizarRevision(contratos.folio,contratos.diferencia)">
-                                                    <i class="fa fa-check-square-o"></i> Realizar revisión
-                                                </button>
-                                                <a v-else title="Ver revision" type="button" 
+                                                <a title="Ver revision" type="button" 
                                                     class="btn btn-danger pull-right" target="_blank" :href="'/postventa/checklist/pdf/'+contratos.folio">
                                                     <i class="fa fa-file-pdf-o"></i>&nbsp;Ver revisión
                                                 </a> 

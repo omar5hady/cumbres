@@ -822,14 +822,14 @@ class IniObraController extends Controller
     public function downloadFile($fileName)
     {
         $pathtoFile = public_path() . '/files/contratos/obra/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
     //Función para descargar el archivo correspondiente registro de obra
     public function downloadRegistroObra($fileName)
     {
 
         $pathtoFile = public_path() . '/files/contratos/registro_obra/' . $fileName;
-        return response()->download($pathtoFile);
+        return response()->file($pathtoFile);
     }
 
     //Función que retorna los avisos de obra que no tienen registradas estimaciones.

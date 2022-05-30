@@ -115,10 +115,10 @@ class EntregaController extends Controller
                         $sheet->row(1, [
                             '# Ref','Proyecto', 'Etapa', 'Manzana',
                             'Lote','Cliente','Celular', 'Paquete y/o Promocioón', 'Fecha de firma de escrituras',
-                            'Fecha entrega programada', 'Hora entrega programada'
+                            'Fecha entrega programada', 'Hora entrega programada', 'avance'
                         ]);
 
-                        $sheet->cells('A1:K1', function ($cells) {
+                        $sheet->cells('A1:L1', function ($cells) {
                             $cells->setBackground('#052154');
                             $cells->setFontColor('#ffffff');
                             // Set font family
@@ -154,10 +154,11 @@ class EntregaController extends Controller
                                 "Paquete: $entrega->paquete | Promoción: $entrega->promocion",
                                 $entrega->fecha_firma_esc,
                                 "$entrega->fecha_program",
-                                "$entrega->hora_entrega_prog"
+                                "$entrega->hora_entrega_prog",
+                                $entrega->avance_lote.'%'
                             ]);	
                         }
-                        $num='A1:K'.$cont;
+                        $num='A1:L'.$cont;
                         $sheet->setBorder($num, 'thin');
                     });
                 }
