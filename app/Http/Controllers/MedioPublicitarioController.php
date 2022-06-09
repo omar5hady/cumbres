@@ -91,7 +91,7 @@ class MedioPublicitarioController extends Controller
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('contratos.id as contrato')->where('contratos.status','!=',2);
+                        ->select('contratos.id as contrato')->where('contratos.status','=',3);
 
                         if($proyecto != '')
                             $clientesID_contrato = $clientesID_contrato->where('lotes.fraccionamiento_id','=',$proyecto);
@@ -100,7 +100,8 @@ class MedioPublicitarioController extends Controller
                         if($asesor != '')
                             $clientesID_contrato = $clientesID_contrato->where('creditos.vendedor_id','=',$asesor);
                         if($desde != '' && $hasta != ''){
-                            $clientesID_contrato = $clientesID_contrato->whereBetween('contratos.fecha', [$desde.' 00:00:00', $hasta.' 23:59:59']);
+                            //$clientesID_contrato = $clientesID_contrato->whereBetween('contratos.fecha', [$desde.' 00:00:00', $hasta.' 23:59:59']);
+                            $clientesID_contrato = $clientesID_contrato->whereBetween('contratos.fecha', [$desde, $hasta]);
                         }
                         else{
                             $clientesID_contrato = $clientesID_contrato->whereBetween('clientes.created_at', ['2000-02-01', $hoy]);
@@ -212,6 +213,8 @@ class MedioPublicitarioController extends Controller
                                     'creditos.num_lote'
                                 )
                                 ->where('contratos.publicidad_id','=',$publiV->id)
+                                ->where('contratos.status','=',3)
+                                ->where('inst_seleccionadas.elegido','=',1)
                                 ->whereIn('contratos.id',$clientesID_contrato)
                                 ->get();
                         

@@ -53,7 +53,7 @@ class EstadisticasController extends Controller
                                 $total = $total->where('lotes.etapa_id',$etapa);
                         if($fecha != '' && $fecha2 != '')
                                 $total = $total->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                        $total = $total->where('contratos.status','=',3)->count();
+                        $total = $total->where('contratos.status','=',3)->distinct()->count();
 
                 // Ventas con clientes que tienen perro
                 $conPerro = $this->queryGral($request)
@@ -117,7 +117,7 @@ class EstadisticasController extends Controller
                         if($fecha != '' && $fecha2 != '')
                                 $edadesVenta = $edadesVenta->whereBetween('contratos.fecha', [$fecha, $fecha2]);
                                 
-                        $edadesVenta = $edadesVenta->distinct()->get();
+                        $edadesVenta = $edadesVenta->get();
 
 
                 $participantes->dosParticipantes = $this->getVentasParticipantes($request,1); // Ventas por sociedad conyugal
@@ -901,12 +901,12 @@ class EstadisticasController extends Controller
 
     // Funcion privada que retorna la query principal.
     private function queryGral(Request $request){
-        $query = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratos','creditos.id','=','contratos.id')
+                ->leftJoin('datos_extra','creditos.id','=','datos_extra.id')
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->join('personal as v', 'creditos.vendedor_id', '=', 'v.id')
-                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id');
+                ->join('clientes', 'personal.id', '=', 'clientes.id');
 
         return $query;
 

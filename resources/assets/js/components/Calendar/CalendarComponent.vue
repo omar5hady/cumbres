@@ -148,6 +148,8 @@
           </form>
         </div>
         <div class="col-md-10">
+          <button v-if="calendarOptions.weekends== false" @click="toggleWeekends">Ver Fin de Semana</button>
+          <button v-else @click="toggleWeekends">Ocultar Fin de Semana</button>
           <Fullcalendar :options="calendarOptions" :events="events"/>
         </div>
       </div>
@@ -174,11 +176,16 @@ export default {
       calendarOptions: {
         eventClick: this.showEvent,
         plugins: [dayGridPlugin, interactionPlugin],
-        initialView: 'dayGridMonth',
+        initialView: 'dayGridWeek',
+        duration: { days: 3 },
+        //initialView: 'dayGridDay',
+        //initialView: 'dayGridMonth',
         //dateClick: this.handleDateClick,
         events: [{}],
         locale: 'es',
         selectable:true,
+        weekends: true,
+
         
       },
       
@@ -301,6 +308,10 @@ export default {
         proyecto_id : proyecto_id,
       };
       this.nombre = nombre;
+      this.nuevo = 1;
+    },
+    toggleWeekends: function() {
+      this.calendarOptions.weekends = !this.calendarOptions.weekends // toggle the boolean!
     },
     updateEvent() {
       axios

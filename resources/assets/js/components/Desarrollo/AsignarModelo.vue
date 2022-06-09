@@ -1232,7 +1232,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarLote(1);
+                    me.listarLote(me.arrayRenta.current_page);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -1284,7 +1284,7 @@
                         'Lote borrado correctamente.',
                         'success'
                         )
-                        me.listarLote(1);
+                        me.listarLote(me.arrayRenta.current_page);
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -1443,7 +1443,6 @@
                         }
                     }
                 }
-                this.selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);

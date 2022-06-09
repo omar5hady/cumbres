@@ -1041,7 +1041,12 @@ class DigitalLeadController extends Controller
                         if($vendedor->dif15 < 0)
                             $vendedor->dif15 = 0;
                     }
+
+                    if($vendedor->total == 0){
+                        unset($vendedores[$index]);
+                    }
                 }
+
       
             return $vendedores;
 

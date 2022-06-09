@@ -496,13 +496,16 @@ body {
                     @for($i=0; $i < count($pagos); $i++)
                         <div class="table-cell">{{$pagos[$i]->fecha_pago}} PAGO NO.{{$pagos[$i]->num_pago + 1}}: <u>${{$pagos[$i]->monto_pago}}</u></div>
                     @endfor
-                        
                 </div>
             @endif
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
+                    <div colspan="4" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
                    
-                    <div colspan="2" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
+                    <div colspan="4" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
+
+                    @if($contratos[0]->coacreditado == 1)
+                        <div colspan="4" class="table-cell">Y : {{mb_strtoupper($contratos[0]->nombre_coa)}} {{mb_strtoupper($contratos[0]->apellidos_coa)}}____________________</div>
+                    @endif
                 </div>
                 @if($contratos[0]->vendedor_aux != NULL)
                     <div class="table-row">
@@ -512,17 +515,17 @@ body {
                     </div>
                 @endif
                 <div class="table-row">
-                    <div colspan="5" class="table-cell">NOTA: ESTE DOCUMENTO PIERDE SU EFECTO SI EN EL LAPSO DE 5 DIAS NATURALES NO ES LIQUIDADO EL PAGO #1.</div>
+                    <div colspan="12" class="table-cell">NOTA: ESTE DOCUMENTO PIERDE SU EFECTO SI EN EL LAPSO DE 5 DIAS NATURALES NO ES LIQUIDADO EL PAGO #1.</div>
                 </div>    
                 <div class="table-row">
                 @if ($contratos[0]->medio_publicidad === 'Recomendado')
-                    <div colspan="5" class="table-cell">MEDIO POR EL CUAL SE ENTERO: RECOMENDADO. (NOMBRE: {{mb_strtoupper($contratos[0]->nombre_recomendado)}})</div>
+                    <div colspan="12" class="table-cell">MEDIO POR EL CUAL SE ENTERO: RECOMENDADO. (NOMBRE: {{mb_strtoupper($contratos[0]->nombre_recomendado)}})</div>
                 @else
-                    <div colspan="5" class="table-cell">MEDIO POR EL CUAL SE ENTERO: {{mb_strtoupper($contratos[0]->medio_publicidad)}}</div>
+                    <div colspan="12" class="table-cell">MEDIO POR EL CUAL SE ENTERO: {{mb_strtoupper($contratos[0]->medio_publicidad)}}</div>
                 @endif
                 </div>   
                 <div class="table-row">
-                    <div colspan="5" class="table-cell">OBSERVACIONES: {{mb_strtoupper($contratos[0]->observacion)}}</div>
+                    <div colspan="12" class="table-cell">OBSERVACIONES: {{mb_strtoupper($contratos[0]->observacion)}}</div>
                 </div>          
                 <!--<div class="table-row">
                     <div colspan="5" class="table-cell"></div>

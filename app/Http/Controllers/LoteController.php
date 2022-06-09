@@ -2076,7 +2076,7 @@ class LoteController extends Controller
     //Función que retorna las empresas constructoras
     public function selectEmpresaConstructora(Request $request){
         if(!$request->ajax())return redirect('/');
-        $empresas = ['Grupo Constructor Cumbres','CONCRETANIA'];
+        $empresas = ['Grupo Constructor Cumbres','CONCRETANIA','SER CUMBRES'];
 
         return ['empresas'=>$empresas];
     }

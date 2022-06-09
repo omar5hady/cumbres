@@ -105,38 +105,40 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="lote in arrayExpCreditos" :key="lote.id" v-if="lote.flag == 1 && lote.mes == 1" >
-                                                <td class="td2" v-text="lote.id"></td>
-                                                <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
-                                                <td class="td2" v-text="lote.proyecto"></td>
-                                                <td class="td2" v-text="lote.num_etapa"></td>
-                                                <td class="td2" v-text="lote.manzana"></td>
-                                                <td class="td2" v-text="lote.num_lote"></td>
-                                                <td class="td2" v-text="lote.tipo_credito"></td>
-                                                <td></td>
+                                            <template v-for="lote in arrayExpCreditos" >
+                                                <tr :key="lote.id" v-if="lote.flag == 1 && lote.mes == 1" >
+                                                    <td class="td2" v-text="lote.id"></td>
+                                                    <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
+                                                    <td class="td2" v-text="lote.proyecto"></td>
+                                                    <td class="td2" v-text="lote.num_etapa"></td>
+                                                    <td class="td2" v-text="lote.manzana"></td>
+                                                    <td class="td2" v-text="lote.num_lote"></td>
+                                                    <td class="td2" v-text="lote.tipo_credito"></td>
+                                                    <td></td>
 
-                                                <td class="td2" v-if="lote.send_exp == null">
-                                                    <button class="btn btn-dark" @click="enviarExp(lote.id)">Enviar exp</button>
-                                                </td>
-                                                <td class="td2" v-else v-text="'Expediente enviado el: '+lote.send_exp"></td>
-                                                <td class="td2" v-if="lote.send_exp == null">
-                                                    Expediente pendiente de envio
-                                                </td>
-                                                <td class="td2" v-else-if="lote.received_exp == null">
-                                                    <button class="btn btn-dark" @click="recibirExp(lote.id)">Confirmar expediente recibido</button>
-                                                </td>
-                                                <td class="td2" v-else v-text="'Expediente recibido el: '+lote.received_exp"></td>
+                                                    <td class="td2" v-if="lote.send_exp == null">
+                                                        <button class="btn btn-dark" @click="enviarExp(lote.id)">Enviar exp</button>
+                                                    </td>
+                                                    <td class="td2" v-else v-text="'Expediente enviado el: '+lote.send_exp"></td>
+                                                    <td class="td2" v-if="lote.send_exp == null">
+                                                        Expediente pendiente de envio
+                                                    </td>
+                                                    <td class="td2" v-else-if="lote.received_exp == null">
+                                                        <button class="btn btn-dark" @click="recibirExp(lote.id)">Confirmar expediente recibido</button>
+                                                    </td>
+                                                    <td class="td2" v-else v-text="'Expediente recibido el: '+lote.received_exp"></td>
 
-                                                <td class="td2">
-                                                    <button class="btn btn-primary" @click="comentarios(lote.id,0)">Ver Comentarios</button>
-                                                </td>
+                                                    <td class="td2">
+                                                        <button class="btn btn-primary" @click="comentarios(lote.id,0)">Ver Comentarios</button>
+                                                    </td>
 
-                                                <td v-if="rolId == 1 || userId == 24977" class="td2">
-                                                    <button class="btn btn-dark" @click="comentarios(lote.id,1)" v-if="lote.fecha_audit == null">Auditar</button>
-                                                    <span v-else>{{'Auditado el: ' + this.moment(lote.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</span>
-                                                </td>
-                                                
-                                            </tr>                             
+                                                    <td v-if="rolId == 1 || userId == 24977" class="td2">
+                                                        <button class="btn btn-dark" @click="comentarios(lote.id,1)" v-if="lote.fecha_audit == null">Auditar</button>
+                                                        <span v-else>{{'Auditado el: ' + this.moment(lote.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</span>
+                                                    </td>
+                                                </tr> 
+                                            </template>
+                                                                        
                                         </tbody>
                                     </table>
                                     <br>

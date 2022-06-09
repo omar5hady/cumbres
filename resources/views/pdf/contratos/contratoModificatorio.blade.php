@@ -48,7 +48,11 @@ body{
                     sociedad 
                     <strong>{{$contrato->emp_constructora}}, S.A. de C.V., </strong> 
                     representada en este acto por su representante legal el Sr. ING. DAVID CALVILLO MARTÍNEZ a quien en lo sucesivo se le 
-                    denominará <strong>“LA PARTE VENDEDORA”</strong>; y por otra parte el Sr. (a) {{mb_strtoupper($contrato->nombre_completo)}}, a 
+                    denominará <strong>“LA PARTE VENDEDORA”</strong>; y por otra parte el Sr. (a) {{mb_strtoupper($contrato->nombre_completo)}}
+                    @if($contrato->coacreditado == 1)
+                        y el Sr (a) {{$contrato->nombre_coa}} {{$contrato->apellidos_coa}}
+                    @endif
+                    , a 
                     quien en lo sucesivo se le denominará  <strong>“LA PARTE COMPRADORA”</strong>, acordando los contratantes, 
                     que el presente acto se realice bajo el tenor de las siguientes: 
                 </p>
@@ -59,7 +63,11 @@ body{
                     representada en este acto por su representante legal el Sr. ING. DAVID CALVILLO MARTÍNEZ y la sociedad 
                     <strong>{{mb_strtoupper($contrato->emp_terreno)}},S.A. de C.V.</strong>, representada en este acto por su representante legal 
                     el Sr. ING. ALEJANDRO F. PEREZ ESPINOSA a quien en lo sucesivo se les 
-                    denominará <strong>“LA PARTE VENDEDORA”</strong>; y por otra parte el Sr. (a) {{mb_strtoupper($contrato->nombre_completo)}}, a 
+                    denominará <strong>“LA PARTE VENDEDORA”</strong>; y por otra parte el Sr. (a) {{mb_strtoupper($contrato->nombre_completo)}}
+                    @if($contrato->coacreditado == 1)
+                        y el Sr (a) {{$contrato->nombre_coa}} {{$contrato->apellidos_coa}}
+                    @endif
+                    , a 
                     quien en lo sucesivo se le denominará  <strong>“LA PARTE COMPRADORA”</strong>, acordando los contratantes, 
                     que el presente acto se realice bajo el tenor de las siguientes: 
                 </p>

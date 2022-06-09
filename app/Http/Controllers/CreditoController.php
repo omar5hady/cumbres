@@ -1032,6 +1032,7 @@ class CreditoController extends Controller
                             'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
                             'expedientes.valor_escrituras', 'inst_seleccionadas.tipo_credito',
                             'expedientes.liquidado','expedientes.fecha_firma_esc',
+                            'creditos.lote_id',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
         if($request->buscar != '')                            
@@ -1058,17 +1059,111 @@ class CreditoController extends Controller
                     ->where('contratos.status','!=',2)
                     ->where('inst_seleccionadas.elegido', '=', '1')
                     ->where('creditos.saldo_terreno', '>', 0)
-                    ->whereRaw('creditos.valor_terreno = creditos.saldo_terreno')
+                    ->whereRaw('creditos.valor_terreno <= creditos.saldo_terreno')
                     ->orderBy('contratos.id')->get();
 
         if(sizeof($liquidados)){
+            $cuentas = $this->getCuentas();
             foreach ($liquidados as $key => $liquidado) {
                 $liquidado->devuelto = 0;
                 if($liquidado->tipo_credito == 'Crédito Directo' && $liquidado->liquidado == 1 || 
                     $liquidado->tipo_credito != 'Crédito Directo' && $liquidado->fecha_firma_esc != NULL
                 )
                     $liquidado->status = 4;
+
+
+                    $liquidado->devueltoVirtual = 0;
+                    $liquidado->transferido = 0;
+    
+                    //Se obtienen las devoluciones que salieron por cuenta de cumbres
+                    $devoluciones = Devolucion::whereIn('devoluciones.cuenta',$cuentas)
+                                    ->where('devoluciones.contrato_id','=',$liquidado->id)
+                                    ->get();
+    
+                    // Se obtienen las devoluciones virtuales para ese contrato
+                    $dev_virtuales = Dev_virtual::where('contrato_id','=',$liquidado->id)
+                                    ->get();
+    
+                    // Depositos transferidos a cumbres.
+                    $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                    ->select('depositos.id','depositos.fecha_ingreso_concretania','depositos.cuenta',
+                            'depositos.monto_terreno','depositos.num_recibo')
+                    ->where('pagos_contratos.contrato_id','=',$liquidado->id)
+                    ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                    ->where('depositos.monto_terreno','>',0)
+                    ->where('depositos.lote_id','=',$liquidado->lote_id)
+                    ->get();
+    
+                    
+                    $depositoGCC = Deposito_gcc::select('id','fecha as fecha_ingreso_concretania',
+                            'cuenta','monto as monto_terreno','cheque as num_recibo')
+                        ->where('depositos_gcc.contrato_id','=',$liquidado->id)
+                        ->where('depositos_gcc.lote_id','=',$liquidado->lote_id)
+                        ->get();
+    
+                    // Se realiza la sumatoria de los resultados
+                    if(sizeof($dev_virtuales)){
+                        $liquidado->dev_virtuales = $dev_virtuales;
+                        foreach ($dev_virtuales as $key => $dev) {
+                            $liquidado->devueltoVirtual += $dev->monto;
+                        }
+                    }
+    
+                    if(sizeof($devoluciones)){
+                        $liquidado->devoluciones = $devoluciones;
+                        foreach ($devoluciones as $key => $dev) {
+                            $liquidado->devuelto += $dev->devolver;
+                        }
+                    }
+    
+                    if(sizeof($depositos_pagado)){
+                            $liquidado->depositos_transferidos = collect($depositos_pagado)->merge(collect($depositoGCC));
+                        foreach($depositos_pagado as $key => $deposito) {
+                            $liquidado->transferido += $deposito->monto_terreno;
+                        }
+                    }
+    
+                    // // Depositos reubicados a cumbres
+                    // $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
+                    //     ->where('depositos_gcc.contrato_id','=',$liquidado->id)
+                    //     ->where('depositos_gcc.lote_id','=',$liquidado->lote_id)
+                    //     ->get();
+                    //     if($depositoGCC[0]->suma == NULL){
+                    //         $depositoGCC[0]->suma = 0;
+                    //     }
+    
+                    // Depositos reubicados a concretania para sumatoria
+                    $depositoConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as suma"))
+                        ->where('depositos_conc.contrato_id','=',$liquidado->id)
+                        ->where('depositos_conc.lote_id','=',$liquidado->lote_id)
+                        ->where('depositos_conc.devolucion','=',1)
+                        ->get();
+                        if($depositoConc[0]->suma == NULL){
+                            $depositoConc[0]->suma = 0;
+                        }
+    
+                    // Depositos reubicados a concretania
+                    $depositoConcTransf = Deposito_conc::select('id','fecha',
+                                'cuenta','monto','cheque')
+                        ->where('depositos_conc.contrato_id','=',$liquidado->id)
+                        ->where('depositos_conc.lote_id','=',$liquidado->lote_id)
+                        ->where('depositos_conc.devolucion','=',1)
+                        ->get();
+    
+                        if(sizeof($depositoConcTransf)){
+                            $liquidado->depositoConcTransf = $depositoConcTransf;
+                        }
+                        
+                    
+    
+                        //$liquidado->gcc = $depositoGCC[0]->suma;
+                        //$liquidado->transferido =  $liquidado->transferido +  $liquidado->gcc;
+    
+                        $liquidado->conc =  $depositoConc[0]->suma;
+                    
             }
+
+            
         }
 
         return $liquidados;
