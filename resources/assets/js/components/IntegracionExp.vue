@@ -686,7 +686,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayObservacion = respuesta.observacion;
-                    console.log(url);
+                    //console.log(url);
                 })
                 .catch(function (error) {
                     console.log(error);

@@ -16,7 +16,7 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
-                                      <option value="nombre">Fraccionamiento</option>
+                                      <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                       <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
                                     

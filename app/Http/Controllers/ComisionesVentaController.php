@@ -648,6 +648,7 @@ class ComisionesVentaController extends Controller
                                 'det_com_ventas.comision_pagar',
                                 'det_com_ventas.iva',
                                 'det_com_ventas.isr',
+                                'det_com_ventas.valor_venta as precio_venta',
                                 'det_com_ventas.retencion',
                                 'det_com_ventas.este_pago',
                                 'det_com_ventas.por_pagar')
@@ -901,6 +902,7 @@ class ComisionesVentaController extends Controller
                             'contratos.fecha_exp',
                             'contratos.fecha',
                             'lotes.extra',
+                            'det_com_ventas.valor_venta as precio_venta',
                             //'det_com_individualizadas.pago',
                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                             'lotes.extra_ext')

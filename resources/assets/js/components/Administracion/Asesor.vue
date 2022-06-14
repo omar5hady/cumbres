@@ -353,7 +353,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
                                     <div class="col-md-4">
-                                        <input type="password" v-model="password" class="form-control" placeholder="Contraseña" >
+                                        <input type="password" autocomplete="off" v-model="password" class="form-control">
                                     </div>
                                 </div>
 
@@ -1072,7 +1072,7 @@
         methods : {
             onImageChangeComprobante(e){
 
-                console.log(e.target.files[0]);
+                //console.log(e.target.files[0]);
 
                 this.archivo = e.target.files[0];
 
@@ -1115,7 +1115,7 @@
 
             onImageChangeIne(e){
 
-                console.log(e.target.files[0]);
+                //console.log(e.target.files[0]);
 
                 this.archivo = e.target.files[0];
 
@@ -1158,7 +1158,7 @@
 
             onImageChangeCV(e){
 
-                console.log(e.target.files[0]);
+                c//onsole.log(e.target.files[0]);
 
                 this.archivo = e.target.files[0];
 

@@ -684,7 +684,7 @@
                 me.buscar2="";
                 me.buscar="";
                 me.arrayFraccionamientosLote=[];
-                var url = '/select_fraccionamiento';
+                var url = '/select_fraccionamiento?tipo_proyecto=1';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientosLote = respuesta.fraccionamientos;

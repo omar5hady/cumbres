@@ -35,7 +35,9 @@ class PartidaController extends Controller
             if($buscar2 != '')
                 $partidas = $partidas->where('modelos.nombre',  'like', '%'. $buscar2 . '%'); //  con una segunda variable se hace la busqueda por nombre
                 
-        $partidas = $partidas->orderBy('partidas.id','ASC')->paginate(49);
+        $partidas = $partidas
+            ->where('fraccionamientos.tipo_proyecto','=',1)
+            ->orderBy('partidas.id','ASC')->paginate(49);
             
         return [
             'pagination' => [

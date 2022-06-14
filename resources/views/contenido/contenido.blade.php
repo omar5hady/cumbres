@@ -501,5 +501,9 @@
             <reporte-prospectos>
             </reporte-prospectos>
         </template>
+        <template v-if="menu==281">
+            <aviso-dep>
+            </aviso-dep>
+        </template>
     @endif
 @endsection

@@ -33,6 +33,7 @@ class CreateIniObrasTable extends Migration
             $table->double('total_superficie')->nullable();
             $table->boolean('iva')->default(0);
             $table->string('tipo',30)->nullable();
+            $table->integer('num_torres')->nullable();
 
             $table->string('emp_constructora')->default('Grupo Constructor Cumbres');
             $table->float('porc_garantia_ret', 8, 2)->default(0);

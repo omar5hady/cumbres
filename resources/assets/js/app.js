@@ -84,6 +84,8 @@ Vue.component('avance', require('./components/Obra/Avance.vue'));
 Vue.component('visita-avaluo', require('./components/Obra/VisitaAvaluo.vue'));
 Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamientos.vue'));
 Vue.component('uri-equipamiento', require('./components/Obra/EquipamientosUri.vue'));
+    //OBRA DEPARTAMENTOS
+    Vue.component('aviso-dep', require('./components/Obra/Departamentos/AvisoObraDep.vue'));
 
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));
@@ -236,7 +238,7 @@ const app = new Vue({
                 // console.log(response.data);
                 me.notifications = response.data;
             }).catch(function(error) {
-                console.log(error);
+                //console.log(error);
             });
     
             var userId = $('meta[name="userId"]').attr('content');

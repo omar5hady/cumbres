@@ -821,27 +821,28 @@ export default {
             this.interesMensual = 0.0;
 
             switch(this.r_mensualidad){
-                case 12:{
-                    this.interesAnual = parseFloat(this.arrayListA[6].valor);
-                    this.interesMensual = ((this.interesAnual/100)/12);
+                case '12':{
+                    this.interesAnual = this.arrayListA[6].valor;
+                    this.interesMensual = ((this.arrayListA[6].valor/100)/12);
                     break;
                 }
-                case 24:{
-                    this.interesAnual = parseFloat(this.arrayListA[7].valor);
-                    this.interesMensual = ((this.interesAnual.valor/100)/12);
+                case '24':{
+                    this.interesAnual = this.arrayListA[7].valor;
+                    this.interesMensual = ((this.arrayListA[7].valor/100)/12);
                     break;
                 }
-                case 36:{
-                    this.interesAnual = parseFloat(this.arrayListA[8].valor);
-                    this.interesMensual = ((this.interesAnual/100)/12);
+                case '36':{
+                    this.interesAnual = this.arrayListA[8].valor;
+                    this.interesMensual = ((this.arrayListA[8].valor/100)/12);
                     break;
                 }
-                case 48:{
-                    this.interesAnual = parseFloat(this.arrayListA[9].valor);
-                    this.interesMensual = ((this.interesAnual/100)/12);
+                case '48':{
+                    this.interesAnual = this.arrayListA[9].valor;
+                    this.interesMensual = ((this.arrayListA[9].valor/100)/12);
                     break;
                 }
                 default:{
+                    this.interesAnual = 0;
                     this.interesMensual = 0;
                     break; 
                 }
@@ -853,6 +854,7 @@ export default {
 
             let fullPrice = parseFloat(this.r_valor_venta-this.r_valor_descuento);
             let fechaPago = '';
+            
 
             //asignacion de fecha actual
                 if(this.r_fecha =="") this.r_fecha = moment().format('YYYY-MM-DD');
@@ -863,17 +865,22 @@ export default {
                 );
             //asignacion de fecha actual
 
-             //asignacion de primer pago o enganche
+            //asignacion de primer pago o enganche
                 //y pagos restantes
                 if(this.r_mensualidad == 48){
-                   this.valor_enganche = parseFloat(fullPrice*0.3);
+                    //this.valor_enganche = 30000;//parseFloat(fullPrice*0.3);
+                    this.valor_enganche = parseFloat(fullPrice*0.3);
                     //this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
                     this.valor_minMens = (((fullPrice-this.valor_enganche)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
+                    
 
                 }else if(this.r_mensualidad == 1){  
                     this.valor_enganche = parseFloat(fullPrice.toFixed(2));
+                
+                }else if(this.r_mensualidad == 2){  
+                    this.valor_minMens = parseFloat((fullPrice-10000).toFixed(2));
 
-                }else if(this.r_mensualidad >= 2 && this.r_mensualidad <=6){
+                }else if(this.r_mensualidad > 2 && this.r_mensualidad <=6){
                     this.valor_minMens = ((fullPrice-10000)/this.r_mensualidad).toFixed(2);
                     
                 }else this.valor_minMens = (((fullPrice-10000)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
@@ -882,12 +889,15 @@ export default {
 
             //creacion de array vacio
             for(let i=0; this.r_mensualidad >=i; i++){
-                
-                let monto = 0.0;
+
                 let montoInteres = 0.0;
+
+                //asignar monto inicial de pago
+                let monto = 0.0;
                 if(i == this.r_mensualidad && this.r_mensualidad != 1){
                     this.arrayMensualidad.forEach(item =>{
                         monto = monto+parseFloat(item.cantidad);
+                        
                     });
                     monto = (fullPrice-monto).toFixed(2);
                 }else monto = i?this.valor_minMens:this.valor_enganche;
@@ -895,8 +905,8 @@ export default {
                 //Setear Fecha de pago
                     let mes = '',dia = '';
                     if(i==1)
-                        fechaPago.setDate(fechaPago.getDate()+10);
-                    else if(i > 1) fechaPago.setMonth(fechaPago.getMonth()+1);
+                        fechaPago.setDate(fechaPago.getDate()+30);
+                    else if(i > 1) fechaPago.setDate(fechaPago.getDate()+30);
                     if(fechaPago.getMonth()<9)
                         mes = '0'+(fechaPago.getMonth()+1);
                     else mes = fechaPago.getMonth()+1;
@@ -911,23 +921,27 @@ export default {
 
                 let pagoCap = monto - intMes;
 
+                if(this.r_mensualidad > 6 && i == this.r_mensualidad){
+                    pagoCap = pagoCap + intMes;
+                }
+
                 this.arrayMensualidad.push({
                     folio: i+1,
                     pago: this.r_mensualidad==1?1:i?1:0,
-                    cantidad:parseFloat(pagoCap).toFixed(2),
+                    cantidad: parseFloat(pagoCap).toFixed(2),
                     fecha: fechaPagoFinal,
                     descuento:0,
                     dias:0,
-                    descuento_porc:0,
-                    interes_monto:parseFloat(intMes).toFixed(2),
-                    total_a_pagar:parseFloat(monto).toFixed(2),
+                    interesesPor:0,
+                    interesMont:parseFloat(intMes).toFixed(2),
+                    totalAPagar:parseFloat(monto).toFixed(2),
                     pagoCapital:parseFloat(pagoCap).toFixed(2),
                     saldo:0
                 });
             }
             
             //si la mensualidad es 1 se elimina un campo
-            if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
+            if(this.r_mensualidad == 1 || this.r_mensualidad == 2) this.arrayMensualidad.pop();
 
             //actualiza los precios
             this.actualizar();

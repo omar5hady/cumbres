@@ -37,6 +37,10 @@ class IniObraController extends Controller
             'ini_obras.total_superficie','ini_obras.emp_constructora', 'ini_obras.calle1', 'ini_obras.calle2', 'ini_obras.registro_obra',
             'ini_obras.direccion_proy',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
+        if($request->tipo == 'Departamentos')
+            $avisos = $avisos->where('ini_obras.tipo','=','Departamentos');
+        else
+            $avisos = $avisos->where('ini_obras.tipo','!=','Departamentos');
         //Filtro por empresa constructora
         if($request->empresa != '')
             $avisos = $avisos->where('ini_obras.emp_constructora','=',$request->empresa);
@@ -157,6 +161,7 @@ class IniObraController extends Controller
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
+            'ini_obras.porc_garantia_ret', 'ini_obras.num_torres',
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga', 'ini_obras.direccion_proy',
             'ini_obras.iva','ini_obras.tipo','ini_obras.total_superficie')
         ->where('ini_obras.id','=',$id)
@@ -188,6 +193,7 @@ class IniObraController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $fecha_ini = $request->f_ini;
         $fecha_fin = $request->f_fin;
+        $lotes = $request->data;//Array de detalles
  
         try{
             DB::beginTransaction(); 
@@ -209,13 +215,19 @@ class IniObraController extends Controller
             $ini_obra->descripcion_larga = $request->descripcion_larga;
             $ini_obra->descripcion_corta = $request->descripcion_corta;
             $ini_obra->tipo = $request->tipo;
+            if($request->porc_garantia_ret != ''){
+                $ini_obra->porc_garantia_ret = $request->porc_garantia_ret;
+                $ini_obra->garantia_ret =  $ini_obra->total_importe * ($ini_obra->porc_garantia_ret/100);
+            }
             $ini_obra->iva = $request->iva;
             $ini_obra->total_superficie = $request->total_superficie;
             $ini_obra->emp_constructora = $request->emp_constructora;
             $ini_obra->direccion_proy = $request->direccion_proy;
+            $ini_obra->num_torres = $request->num_torres;
+            $ini_obra->num_casas = sizeof($lotes);
             $ini_obra->save();
             
-            $lotes = $request->data;//Array de detalles
+            
             //Recorro todos los elementos del array
             foreach($lotes as $ep=>$det)
             {
@@ -295,12 +307,13 @@ class IniObraController extends Controller
     public function select_lotes (Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
+        $manzana = $request->buscar;
+        $proyecto = $request->buscar2;
         $lotes = Lote::select('num_lote','sublote', 'id','fecha_fin','emp_constructora')
-                        ->where('fraccionamiento_id','=',$buscar2)
-                        ->where('manzana','=',$buscar)
-                        ->where('ini_obra', '=', '1')
+                        ->where('fraccionamiento_id','=',$proyecto);
+                        if($manzana != '')
+                            $lotes = $lotes->where('manzana','=',$manzana);
+                        $lotes = $lotes->where('ini_obra', '=', '1')
                         ->where('aviso','=','0')
                         ->get();
 
@@ -350,6 +363,7 @@ class IniObraController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $fecha_ini = $request->f_ini;
         $fecha_fin = $request->f_fin;
+        $lotes = $request->data;//Array de detalles
 
         try{
             DB::beginTransaction(); 
@@ -374,9 +388,14 @@ class IniObraController extends Controller
             $ini_obra->iva = $request->iva;
             $ini_obra->total_superficie = $request->total_superficie;
             $ini_obra->direccion_proy = $request->direccion_proy;
+            if($request->porc_garantia_ret != ''){
+                $ini_obra->porc_garantia_ret = $request->porc_garantia_ret;
+                $ini_obra->garantia_ret =  round($ini_obra->total_importe * ($ini_obra->porc_garantia_ret/100),2);
+            }
+            $ini_obra->num_torres = $request->num_torres;
+            $ini_obra->num_casas = sizeof($lotes);
             $ini_obra->save();
 
-            $lotes = $request->data;//Array de detalles
             //Recorro todos los elementos del array
             foreach($lotes as $ep=>$det)
             {
@@ -404,8 +423,6 @@ class IniObraController extends Controller
                     $lote->obra_extra=$det['obra_extra'];
                     $lote->fin_obra= $det['fin_obra'];
                     if($lote->contrato==0){
-                        
-
                         $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
                         ->where('contrato','=',0)->get();
 
@@ -469,17 +486,13 @@ class IniObraController extends Controller
         //Query para obtener los datos del contrato
         $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-        ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+        ->select('ini_obras.*',
             'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
             'contratistas.direccion as direccion','contratistas.colonia as colonia',
             'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
             'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
             'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc', 'fraccionamientos.delegacion',
-            'fraccionamientos.estado as estadoFracc','ini_obras.anticipo', 'fraccionamientos.ciudad as ciudadFracc',
-            'ini_obras.emp_constructora', 'ini_obras.direccion_proy',
-            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
+            'fraccionamientos.estado as estadoFracc','fraccionamientos.ciudad as ciudadFracc')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
         //Se obtienen los datos relacionados a los lotes del contrato.

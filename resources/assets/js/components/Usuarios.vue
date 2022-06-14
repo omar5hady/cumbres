@@ -732,7 +732,7 @@
                                 <div class="form-group row" v-if="tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
                                     <div class="col-md-9">
-                                        <input type="password" v-model="password" class="form-control" placeholder="Contraseña" >
+                                        <input type="password" v-model="password" autocomplete="off" class="form-control">
                                     </div>
                                 </div>
 
