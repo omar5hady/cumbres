@@ -848,10 +848,12 @@ class IniObraController extends Controller
     //Función que retorna los avisos de obra que no tienen registradas estimaciones.
     public function getSinEstimaciones(Request $request){
         if(!$request->ajax())return redirect('/');
-        $query = Ini_obra::select('id','clave','num_casas','total_importe')
-        ->where('num_casas','=',0)
-        ->where('clave', 'like', '%'. $request->buscar . '%')
-        ->orderBy('clave','asc')
+        $query = Ini_obra::select('id','clave','num_casas','total_importe','porc_garantia_ret')
+        ->where('total_importe2','=',0)
+        ->where('clave', 'like', '%'. $request->buscar . '%');
+        if($request->tipo != '')
+            $query = $query->where('tipo','=',$request->tipo);
+        $query = $query->orderBy('clave','asc')
         ->get();
 
         return['contratos'=>$query];

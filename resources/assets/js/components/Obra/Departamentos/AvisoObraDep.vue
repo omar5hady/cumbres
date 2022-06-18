@@ -153,14 +153,19 @@
                                 <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.porc_garantia_ret" v-on:keypress="isNumber($event)">
                             </div>
 
+                            <div class="col-md-3">
+                                    <label for="">% Costo Indirecto </label>
+                                    <input type="number" class="form-control" min="0" max="100" v-model="datosContrato.costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                </div>
+
                             <div class="col-md-4">
-                                <label for="">Importe Total </label>
-                                <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_importe" v-on:keypress="isNumber($event)">
+                                <label for="">Costo Directo </label>
+                                <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_costo_directo" v-on:keypress="isNumber($event)">
                             </div>
 
-                            <div class="col-md-4" v-show="datosContrato.total_importe > 0">
+                            <div class="col-md-4" v-show="datosContrato.total_costo_directo > 0">
                                 <label for=""></label>
-                                <h6>${{ formatNumber(datosContrato.total_importe) }}</h6>
+                                <h6>${{ formatNumber(datosContrato.total_costo_directo) }}</h6>
                             </div>
 
                             <div class="col-md-4" ></div>
@@ -457,14 +462,19 @@
                                 <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.porc_garantia_ret" v-on:keypress="isNumber($event)">
                             </div>
 
+                            <div class="col-md-3">
+                                    <label for="">% Costo Indirecto </label>
+                                    <input type="number" class="form-control" min="0" max="100" v-model="datosContrato.costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                </div>
+
                             <div class="col-md-4">
-                                <label for="">Importe Total </label>
-                                <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_importe" v-on:keypress="isNumber($event)">
+                                <label for="">Costo Directo </label>
+                                <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_costo_directo" v-on:keypress="isNumber($event)">
                             </div>
 
-                            <div class="col-md-4" v-show="datosContrato.total_importe > 0">
+                            <div class="col-md-4" v-show="datosContrato.total_costo_directo > 0">
                                 <label for=""></label>
-                                <h6>${{ formatNumber(datosContrato.total_importe) }}</h6>
+                                <h6>${{ formatNumber(datosContrato.total_costo_directo) }}</h6>
                             </div>
 
                             <div class="col-md-4">
@@ -1104,7 +1114,9 @@
                     return;
                 this.proceso=true;
                 let me = this;
-                me.datosContrato.total_anticipo=(me.datosContrato.anticipo/100)*me.datosContrato.total_importe;
+                me.datosContrato.total_costo_indirecto = parseFloat((me.datosContrato.costo_indirecto_porcentaje/100) * me.datosContrato.total_costo_directo).toFixed(2);
+                me.datosContrato.total_importe = parseFloat(me.datosContrato.total_costo_directo) + parseFloat(me.datosContrato.total_costo_indirecto);
+                me.datosContrato.total_anticipo = parseFloat((me.datosContrato.anticipo/100)*me.datosContrato.total_importe.toFixed(2)).toFixed(2);
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/iniobra/registrar',{
                     'fraccionamiento_id': this.datosContrato.fraccionamiento_id,
@@ -1115,13 +1127,13 @@
                     'calle1': this.datosContrato.calle1,
                     'calle2': this.datosContrato.calle2,
                     'total_importe' :this.datosContrato.total_importe,
-                    'total_costo_directo':0,
-                    'total_costo_indirecto':0,
+                    'total_costo_directo':this.datosContrato.total_costo_directo,
+                    'total_costo_indirecto':this.datosContrato.total_costo_indirecto,
                     'anticipo':this.datosContrato.anticipo,
                     'total_anticipo':this.datosContrato.total_anticipo,
                     'data':this.arrayAvisoObraLotes,
                     'emp_constructora':this.arrayAvisoObraLotes[0].emp_constructora,
-                    'costo_indirecto_porcentaje':0,
+                    'costo_indirecto_porcentaje':this.datosContrato.costo_indirecto_porcentaje,
                     'tipo':this.datosContrato.tipo,
                     'iva':this.datosContrato.iva,
                     'descripcion_larga':this.datosContrato.descripcion_larga,
@@ -1157,7 +1169,9 @@
                 
                 this.proceso=true;
                 let me = this;
-                me.datosContrato.total_anticipo=(me.datosContrato.anticipo/100)*me.datosContrato.total_importe;
+                me.datosContrato.total_costo_indirecto = parseFloat((me.datosContrato.costo_indirecto_porcentaje/100) * me.datosContrato.total_costo_directo).toFixed(2);
+                me.datosContrato.total_importe = parseFloat(me.datosContrato.total_costo_directo) + parseFloat(me.datosContrato.total_costo_indirecto);
+                me.datosContrato.total_anticipo = parseFloat((me.datosContrato.anticipo/100)*me.datosContrato.total_importe.toFixed(2)).toFixed(2);
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.put('/iniobra/actualizar',{
                     'id':this.datosContrato.id,
@@ -1169,12 +1183,12 @@
                     'f_ini': this.datosContrato.f_ini,
                     'f_fin': this.datosContrato.f_fin,
                     'total_importe' :this.datosContrato.total_importe,
-                    'total_costo_directo': 0,
-                    'total_costo_indirecto': 0,
+                    'total_costo_directo': this.datosContrato.total_costo_directo,
+                    'total_costo_indirecto': this.datosContrato.total_costo_indirecto,
                     'anticipo':this.datosContrato.anticipo,
                     'total_anticipo':this.datosContrato.total_anticipo,
                     'data':this.arrayAvisoObraLotes,
-                    'costo_indirecto_porcentaje': 0,
+                    'costo_indirecto_porcentaje': this.datosContrato.costo_indirecto_porcentaje,
                     'tipo':this.datosContrato.tipo,
                     'iva':this.datosContrato.iva,
                     'descripcion_larga': '',

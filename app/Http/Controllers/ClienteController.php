@@ -1603,6 +1603,20 @@ class ClienteController extends Controller
         $cliente->save();
     }
 
+    public function upApp(Request $request){
+        $apiKey = getenv("API_SII");
+        //return $request->key;
+        if(!strcmp($request->key, $apiKey)){
+            //return 'OSO';
+            $c = Cliente::findOrFail($request->id);
+            $c->app_alta = 1;
+            $c->save();
+            return 'Listo';
+        }
+        
+
+    }
+
     
     
 }

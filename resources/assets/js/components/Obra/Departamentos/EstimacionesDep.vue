@@ -8,20 +8,12 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Estimaciones &nbsp;
+                        <i class="fa fa-align-justify"></i> Partidas para departamentos &nbsp;
                         <button v-if="listado == 1" type="button" @click="abrirModal('nuevo')" class="btn btn-primary">
                             <i class="icon-plus"></i>&nbsp;Asignar Partidas
                         </button>
                         <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
                             <i class="fa fa-mail-reply"></i> Regresar
-                        </button>
-
-                        <button v-if="listado == 1" type="button" @click="abrirModal('resumen')" class="btn btn-dark">
-                            <i class="icon-share-alt"></i>&nbsp;Resumen de estimaciones
-                        </button>
-
-                        <button v-if="listado == 1" type="button" @click="abrirModal('reporte')" class="btn btn-dark">
-                            <i class="icon-share-alt"></i>&nbsp;Reporte de finalización de obra
                         </button>
                     </div>
 
@@ -438,171 +430,6 @@
                                 </table>
                             </div>
 
-                            <div class="table-responsive" >
-                                <br><br>
-                            </div>
-                            
-                            <div class="form-group row">
-                                <!-- TABLA ANTICIPOS -->
-                                <div class="col-md-5">
-                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" >
-                                        <table class="table2 table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Anticipo</th>
-                                                    <th v-text="'$'+formatNumber(total_anticipo)"></th>
-                                                    <th v-if="arrayNumEstim.length == 0">
-                                                        <button title="Añadir" type="button" @click="abrirModal('anticipo')" class="btn btn-success btn-sm">
-                                                            <i class="icon-plus"></i>
-                                                        </button>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="anticipo in arrayAnticipos" :key="anticipo.id">
-                                                    <td class="td2" v-text="'Pago de Anticipo de Vivienda ('+this.moment(anticipo.fecha_anticipo).locale('es').format('DD/MMM/YYYY')+')'"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(anticipo.monto_anticipo)"></td>
-                                                </tr>   
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <!-- MONTO ESTIMACION ACTUAL -->
-                                <div class="col-md-2">
-                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
-                                        <center>
-                                            Esta estimacion: 
-                                            <h5 style="color: #153157;">
-                                                <strong> ${{formatNumber(pagado_total_estimacion)}} </strong>
-                                            </h5> 
-                                        </center> 
-                                    </div>
-                                </div>
-
-                                <!-- TABLA FONDO DE GARANTIA -->
-                                <div class="col-md-5">
-                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" >
-                                        <table class="table2 table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th colspan="4">Fondo de Garantia</th>
-                                                    <th>
-                                                        <button title="Añadir" type="button" @click="abrirModal('fg')" class="btn btn-success btn-sm">
-                                                            <i class="icon-plus"></i>
-                                                        </button>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="td2" v-text="'Viviendas'"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(importe_garantia)"></td>
-                                                    <td class="td2" v-text="num_casas"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(fg_indiv = importe_garantia/num_casas)"></td>
-                                                </tr>   
-                                                <tr v-for="fg in arrayFG" :key="fg.id">
-                                                    <td class="td2" colspan="2" v-text="'Pago de ' + fg.cantidad + ' FG (' + this.moment(fg.fecha_fg).locale('es').format('DD/MMM/YYYY')+')'"></td>
-                                                    <td class="td2" v-text="fg.cantidad"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(fg.monto_fg)"></td>
-
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="form-group row">
-
-                                <div class="col-md-6">
-                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
-                                        <table class="table2 table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th colspan="2">Obra extra</th>
-
-                                                    <th v-if="edit2 == 1">
-                                                        <input type="text" pattern="\d*" @keyup.esc="cancel()" 
-                                                            v-on:keypress="isNumber($event)" v-model="total_impAux">
-                                                    </th>
-
-                                                    <th v-else>
-                                                        <a href="#" @dblclick="edit2 = 1, total_impAux = impExtra" 
-                                                            title="Doble clic para editar">$ {{formatNumber(impExtra)}}</a>
-                                                    </th>
-
-                                                    <th v-if="edit2 == 1">
-                                                        <input type="date" @keyup.esc="cancel()" 
-                                                            v-on:keypress="isNumber($event)" v-model="dateAux">
-                                                    </th>
-
-                                                    <th v-else v-text="fechaExtra"></th>
-                                                    
-                                                    <th>
-                                                        <button v-if="edit2 == 1" title="Guardar" type="button" @click="storeImporteExtra()" class="btn btn-success btn-sm">
-                                                            <i class="icon-check"></i>
-                                                        </button>
-                                                        <button v-if="edit2 == 1" title="Cancelar" type="button" @click="cancel()" class="btn btn-danger btn-sm">
-                                                            <i class="icon-close"></i>
-                                                        </button>
-                                                    </th>
-                                                </tr>
-                                            
-                                                
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="td2"><strong>No.</strong> </td>
-                                                    <td class="td2"><strong>Fecha</strong> </td>
-                                                    <td colspan="2" class="td2"><strong>Concepto</strong> </td>
-                                                    <td class="td2"><strong>Importe</strong> </td>
-                                                        <button v-if="impExtra>0" title="Añadir" type="button" @click="abrirModal('extra')" class="btn btn-success btn-sm">
-                                                            <i class="icon-plus"></i>
-                                                        </button>
-                                                </tr>   
-                                                <tr v-for="(extra,index) in arrayExtra" :key="extra.id">
-                                                    <td class="td2" v-text="index+1"></td>
-                                                    <td class="td2" v-text="this.moment(extra.fecha).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td colspan="2" class="td2" v-text="extra.concepto"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(extra.importe)"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
-                                        <table class="table2 table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th colspan="2">Observaciones</th>
-                                                    <th>
-                                                        <button title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
-                                                            <i class="icon-plus"></i>
-                                                        </button>
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Usuario</th>
-                                                    <th>Observación</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody> 
-                                                <tr v-for="obs in arrayObs" :key="obs.id">
-                                                    <td class="td2" v-text="this.moment(obs.fecha).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td class="td2" v-text="obs.usuario"></td>
-                                                    <td class="td2" v-text="obs.observacion"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            </div>
 
                         </div>
                     </template>
@@ -640,10 +467,12 @@
                                 </div>
 
                                 <div class="form-group row" v-if="total_importe!=0">
-                                    <div class="col-md-6">
-                                        <h6 style="color: #153157;">Importe del Contrato  
+                                    <div class="col-md-5">
+                                        <h6 style="color: #153157;">Importe del Contrato:&nbsp;  
                                             <strong> ${{formatNumber(total_importe)}} </strong>
                                         </h6>
+                                    </div>
+                                    <div class="col-md-4">
                                         <input type="text" v-on:keypress="isNumber($event)" v-model="total_importe">
                                     </div>
                                 </div>
@@ -651,14 +480,14 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">% Garantía a retención</label>
                                     <div class="col-md-2">
-                                        <input type="number" min="0" step="0.01" maxlength="5" style="right: 10px;" class="form-control" v-model="porcentaje_garantia">
+                                        <input type="number" min="0" step="0.01" maxlength="5" style="right: 10px;" class="form-control" v-model="porc_garantia_ret">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <h6 >Fondo de Garantia a Retención:  
-                                            <strong> ${{formatNumber(garantia_ret=(total_importe*porcentaje_garantia)/100)}} </strong>
+                                            <strong> ${{formatNumber(garantia_ret=(total_importe*porc_garantia_ret)/100)}} </strong>
                                         </h6>
                                     </div>
                                 </div>
@@ -689,215 +518,6 @@
             </div>
             <!--Fin del modal-->
 
-            <!-- Inicio Modal FG, Anticipos y Obra extra -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <template v-if="tipoAccion == 1">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de anticipo</label>
-                                        <div class="col-md-4">
-                                            <input type="date" v-model="fecha_anticipo" class="form-control" placeholder="Fecha">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                                        <div class="col-md-2">
-                                            <input type="text" v-on:change="validarAnticipo()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="monto_anticipo" class="form-control" placeholder="Monto" >
-                                        </div>
-                                        <div class="col-md-2">
-                                            <h6><strong> ${{ formatNumber(monto_anticipo)}} </strong></h6>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template v-else-if="tipoAccion == 2">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Cantidad</label>
-                                        <div class="col-md-4">
-                                            <input type="number" min="0" v-on:change="validarFG()" v-model="fg_cantidad" class="form-control" placeholder="Cantidad">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                                        <div class="col-md-2">
-                                            <h6><strong> ${{ formatNumber(monto_fg = fg_indiv * fg_cantidad)}} </strong></h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                        <div class="col-md-4">
-                                            <input type="date" v-model="fecha_fg" class="form-control" placeholder="Fecha">
-                                        </div>
-                                    </div>
-                                </template>
-                                <template v-else-if="tipoAccion == 4">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Importe</label>
-                                        <div class="col-md-2">
-                                            <input type="text" v-on:change="validarOExtra()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="importe" class="form-control" placeholder="Importe" >
-                                        </div>
-                                        <div class="col-md-2">
-                                            <h6><strong> ${{ formatNumber(importe)}} </strong></h6>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Concepto</label>
-                                        <div class="col-md-5">
-                                            <input type="text" v-model="concepto" class="form-control" placeholder="Concepto" >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                        <div class="col-md-4">
-                                            <input type="date" v-model="fecha_extra" class="form-control" placeholder="Fecha">
-                                        </div>
-                                    </div>
-                                </template>
-                                <template v-else-if="tipoAccion == 3">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                        <div class="col-md-5">
-                                            <select class="form-control" v-model="fraccionamiento"  @change="selectEtapas(fraccionamiento)">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                        <div class="col-md-5">
-                                            <select class="form-control" v-model="etapa" >
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
-                                        <div class="col-md-5">
-                                            <select class="form-control" v-model="contratista">
-                                                <option value=''> Seleccione </option>
-                                                <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Emp. Constructora</label>
-                                        <div class="col-md-5">
-                                            <select class="form-control" v-model="constructora" >
-                                                <option value="">Empresa constructora</option>
-                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template v-else-if="tipoAccion == 5">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
-                                        <div class="col-md-5">
-                                            <select class="form-control" v-model="contratista">
-                                                <option value=''> Seleccione </option>
-                                                <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input"></label>
-                                        <div class="col-md-4">
-                                            <select class="form-control" v-model="mes">
-                                                <option value=''> Selec. Mes </option>
-                                                <option value='01'> Enero </option>
-                                                <option value='02'> Febrero </option>
-                                                <option value='03'> Marzo </option>
-                                                <option value='04'> Abril </option>
-                                                <option value='05'> Mayo </option>
-                                                <option value='06'> Junio </option>
-                                                <option value='07'> Julio </option>
-                                                <option value='08'> Agosto </option>
-                                                <option value='09'> Septiembre </option>
-                                                <option value='10'> Octubre </option>
-                                                <option value='11'> Noviembre </option>
-                                                <option value='12'> Diciembre </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <select class="form-control" v-model="anio">
-                                                <option value=''> Selec. Año </option>
-                                                <option value='2021'> 2021 </option>
-                                                <option value='2022'> 2022 </option>
-                                                <option value='2023'> 2023 </option>
-                                                <option value='2024'> 2024 </option>
-                                                <option value='2025'> 2025 </option>
-                                                <option value='2026'> 2026 </option>
-                                                <option value='2027'> 2027 </option>
-                                                <option value='2028'> 2028 </option>
-                                                <option value='2029'> 2029 </option>
-                                                <option value='2030'> 2030 </option>
-                                                <option value='2031'> 2031 </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                </template>
-                                <template v-else-if="tipoAccion == 6">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Observación</label>
-                                        <div class="col-md-5">
-                                            <input type="text" v-model="observacion" class="form-control" placeholder="Observación" >
-                                        </div>
-                                    </div>
-                                </template>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button v-if="tipoAccion == 1 && monto_anticipo != 0 && fecha_anticipo != ''" 
-                                type="button" class="btn btn-primary" @click="storeAnticipos()">Guardar Anticipo</button>
-                            <button v-if="tipoAccion == 2 && fg_cantidad != 0 " 
-                                type="button" class="btn btn-primary" @click="storeFondoG()">Guardar FG</button>
-
-                            <button v-if="tipoAccion == 4 && importe != 0 " 
-                                type="button" class="btn btn-primary" @click="storeConceptoExtra()">Guardar importe extra</button>
-                            
-                            <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/resumen?fraccionamiento='+ fraccionamiento 
-                                    + '&constructora='+ constructora + '&contratista='+ contratista + '&etapa=' + etapa">
-                                    <i class="fa fa-file-text"></i>&nbsp; Descargar excel
-                            </a>
-
-                            <a v-if="tipoAccion == 5" class="btn btn-success" v-bind:href="'/estimaciones/resumenEdoCuenta?contratista='+ contratista 
-                                + '&mes='+ mes + '&anio='+ anio">
-                                <i class="fa fa-file-text"></i>&nbsp; Descargar excel
-                            </a>
-                             <button v-if="tipoAccion == 6 && observacion != ''" 
-                                type="button" class="btn btn-primary" @click="storeObs()">Guardar</button>
-                        </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-
 
         </main>
 </template>
@@ -914,19 +534,10 @@
         },
         data(){
             return{
-                contratista:'',
                 fraccionamiento:'',
                 etapa : '',
                 constructora:'',
                 listado:1,
-                nueva:0,
-                arrayNumEstim:[],
-                arrayAnticipos:[],
-                arrayFG:[],
-                arrayObs:[],
-                b_estimacion:'',
-                num_estimacion:0,
-                n_excel:0,
                 id:0,
                 aviso_id:0,
                 proceso:false,
@@ -955,7 +566,7 @@
                 buscar:'',
                 b_proyecto:'',
                 clave:'',
-                porcentaje_garantia:0,
+                porc_garantia_ret:0,
                 total_importe:0,
                 garantia_ret:0,
                 importe_garantia:0,
@@ -1045,55 +656,6 @@
                 }
                 return pagesArray2;
             },
-            totalPU: function(){
-                var total =0.0;
-                for(var i=0;i<this.arrayPartidas.length;i++){
-                    total += parseFloat(this.arrayPartidas[i].pu_prorrateado)
-                }
-                total = Math.round(total*100)/100;
-                return total;
-            },
-            totalEst2: function(){
-                var total =0.0;
-                for(var i=0;i<this.arrayPartidas.length;i++){
-                    total += parseFloat(this.arrayPartidas[i].costoA)
-                }
-                total = Math.round(total*100)/100;
-                return total;
-            },
-            totalEst: function(){
-                var total =0.0;
-                for(var i=0;i<this.arrayPartidas.length;i++){
-                    total += parseFloat(this.arrayPartidas[i].costo)
-                }
-                total = Math.round(total*100)/100;
-                return total;
-            },
-            totalTope: function(){
-                var total =0.0;
-                for(var i=0;i<this.arrayPartidas.length;i++){
-                    total += parseFloat(this.arrayPartidas[i].tope)
-                }
-                total = Math.round(total*100)/100;
-                return total;
-            },
-            totalAcum: function(){
-                var total =0.0;
-                for(var i=0;i<this.arrayPartidas.length;i++){
-                    total += parseFloat(this.arrayPartidas[i].acumCostoTotal)
-                }
-                total = Math.round(total*100)/100;
-                return total;
-            },
-            totalPorEst: function(){
-                var total =0.0;
-                for(var i=0;i<this.arrayPartidas.length;i++){
-                    total += parseFloat(this.arrayPartidas[i].porEstimarCosto)
-                }
-                total = Math.round(total*100)/100;
-                return total;
-            },
-          
         },
        
         methods : {
@@ -1114,7 +676,7 @@
                let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('contrato', this.clave);
-                formData.append('porcentaje_garantia', this.porcentaje_garantia);
+                formData.append('porc_garantia_ret', this.porc_garantia_ret);
                 formData.append('garantia_ret', this.garantia_ret);
                 formData.append('total_importe', this.total_importe);
                 let me = this;
@@ -1206,7 +768,7 @@
             getSinEstimaciones(search, loading){
                 let me = this;
                 loading(true)
-                var url = '/estimaciones/getSinEstimaciones?buscar='+search+'&tipo=Vivienda';
+                var url = '/estimaciones/getSinEstimaciones?buscar='+search+'&tipo=Departamentos';
                 axios.get(url).then(function (response) {
                     let respuesta = response.data;
                     q: search
@@ -1222,6 +784,7 @@
                 me.loading = true;
                 me.clave = val1.id;
                 me.total_importe = val1.total_importe;
+                me.porc_garantia_ret = val1.porc_garantia_ret;
             },
             selectContratistas(){
                 let me = this;
@@ -1424,7 +987,7 @@
                         this.tituloModal='Asignar Partidas';
                         this.total_importe=0;
                         this.arrayContratos=[];
-                        this.porcentaje_garantia=0;
+                        this.porc_garantia_ret=0;
                         this.garantia_ret=0;
                         
                         break;

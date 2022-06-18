@@ -54,6 +54,11 @@
                             <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Aviso Departamentos</a>
                         </li>
                     @endif
+                    @if(Auth::user()->rol_id == 1)
+                        <li @click="menu=282" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Estimaciones</a>
+                        </li>
+                    @endif
                 </ul>
             </li>
         @endif

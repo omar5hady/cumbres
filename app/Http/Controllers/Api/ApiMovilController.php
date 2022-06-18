@@ -29,6 +29,7 @@ class ApiMovilController extends Controller
                                 // 'personal.celular', 'personal.clv_lada',
                                 'personal.email')
                         ->where('entregas.status','=',1)
+                        ->where('clientes.app_alta','=',0)
                         ->where('etapas.num_etapa','!=','EXTERIOR')
                         ->where('modelos.nombre','!=','Terreno')
                         ->groupBy('personal.id');

@@ -12,6 +12,7 @@
 */
 
 Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
+Route::get('/clientes/upApp','ClienteController@upApp');
 
 Route::group(['middleware' => ['guest']],function(){
 
@@ -21,7 +22,6 @@ Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
     Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
-    
     
 
     

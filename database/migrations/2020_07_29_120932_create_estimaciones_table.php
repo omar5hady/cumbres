@@ -20,6 +20,9 @@ class CreateEstimacionesTable extends Migration
             $table->string('partida',191);
             $table->double('pu_prorrateado',10,2)->default(0);
             $table->double('cant_tope',10,2)->default(0);
+
+            $table->string('nivel')->nullable();
+            $table->boolean('comun')->default(0);
             $table->timestamps();
         });
     }

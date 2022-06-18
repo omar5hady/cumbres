@@ -70,6 +70,7 @@ class CreateClientesTable extends Migration
 
             $table->integer('vendedor_aux')->nullable();
             $table->boolean('reasignar')->default(0);
+            $table->boolean('app_alta')->default(0);
 
             $table->date('seguimiento')->nullable();
 

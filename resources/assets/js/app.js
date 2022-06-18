@@ -86,6 +86,7 @@ Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamient
 Vue.component('uri-equipamiento', require('./components/Obra/EquipamientosUri.vue'));
     //OBRA DEPARTAMENTOS
     Vue.component('aviso-dep', require('./components/Obra/Departamentos/AvisoObraDep.vue'));
+    Vue.component('estimaciones-dep', require('./components/Obra/Departamentos/EstimacionesDep.vue'));
 
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));

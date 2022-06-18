@@ -505,5 +505,8 @@
             <aviso-dep>
             </aviso-dep>
         </template>
+        <template v-if="menu==282">
+            <estimaciones-dep></estimaciones-dep>
+        </template>
     @endif
 @endsection

@@ -4107,7 +4107,7 @@
                 }).then(function (response){
                     me.getNewDatosLote(lote);
                     me.reubicacion = 0;
-                    me.observacion = '';
+                    me.observacion_r = '';
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
