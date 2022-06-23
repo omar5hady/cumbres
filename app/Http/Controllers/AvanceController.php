@@ -114,7 +114,7 @@ class AvanceController extends Controller
                         ->addSelect('modelos.nombre as modelos', 'modelos.archivo','modelos.espec_obra')
                         ->where('lotes.fraccionamiento_id', '=', $buscar)
                         ->where('lotes.aviso', '!=', '0')
-                        ->where('fraccionamientos.tipo_proyecto','=',2)
+                        ->where('fraccionamientos.tipo_proyecto','!=',2)
                         ->groupBy('avances.lote_id')
                         ->paginate(8);
                     }
@@ -129,7 +129,7 @@ class AvanceController extends Controller
                                 ->where('lotes.fraccionamiento_id', '=', $buscar)
                                 ->where('lotes.num_lote', '=', $buscar2)
                                 ->where('lotes.aviso', '!=', '0')
-                                ->where('fraccionamientos.tipo_proyecto','=',2)
+                                ->where('fraccionamientos.tipo_proyecto','!=',2)
                                 ->paginate(8);
                         }
                         else{
@@ -143,7 +143,7 @@ class AvanceController extends Controller
                                     ->where('lotes.fraccionamiento_id', '=', $buscar)
                                     ->where('lotes.manzana', '=', $buscar1)
                                     ->where('lotes.aviso', '!=', '0')
-                                    ->where('fraccionamientos.tipo_proyecto','=',2)
+                                    ->where('fraccionamientos.tipo_proyecto','!=',2)
                                     ->paginate(8);
                             }
                             else{
@@ -157,7 +157,7 @@ class AvanceController extends Controller
                                     ->where('lotes.manzana', '=', $buscar1)
                                     ->where('lotes.num_lote', '=', $buscar2)
                                     ->where('lotes.aviso', '!=', '0')
-                                    ->where('fraccionamientos.tipo_proyecto','=',2)
+                                    ->where('fraccionamientos.tipo_proyecto','!=',2)
                                     ->paginate(8);
                             }
                         }

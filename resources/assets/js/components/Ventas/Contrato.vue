@@ -1916,6 +1916,7 @@
                                     <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
                                     <div class="col-md-4">
                                         <select class="form-control" v-model="datosFiscales.cfi_fisc">
+                                            <option value="Por definir">Por definir</option>
                                             <option value="Adquisición de mercancias">Adquisición de mercancias</option>
                                             <option value="Devoluciones, Descuentos o bonificaciones">Devoluciones, Descuentos o bonificaciones</option>
                                             <option value="Gastos en general">Gastos en general</option>
