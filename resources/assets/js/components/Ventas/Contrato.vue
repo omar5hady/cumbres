@@ -4170,8 +4170,10 @@
                 });
             },    
         },
-        mounted() {          
+        created(){
             this.listarContratos(1,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+        },
+        mounted() {          
             this.$root.selectFraccionamientos();
             this.selectAsesores();
             this.selectCreditos();

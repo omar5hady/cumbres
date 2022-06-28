@@ -933,7 +933,8 @@ class IniObraController extends Controller
             'ini_obras.anticipo',
             'ini_obras.porc_garantia_ret',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
-            ->where('ini_obras.num_casas','!=',0);
+            ->where('ini_obras.total_importe2','!=',0)
+            ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
         //Busqueda por proyecto
         if($request->proyecto != '')
             $ini_obra = $ini_obra->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
@@ -993,6 +994,18 @@ class IniObraController extends Controller
     //Función privada que retorna los importes extra del Aviso de Obra
     private function getImporteExtra($clave){
         return Importe_extra::where('aviso_id','=',$clave)->orderBy('fechaExtra','desc')->get();
+    }
+
+    //Funcion para obtener las partidas de un contrato para modulo de departamentos
+    public function getPartidasDep (Request $request) {
+        return Estimacion::where('aviso_id','=',$request->clave)->orderBy('id','asc')->get();
+    }
+
+    public function getNivelesDep(Request $request){
+        return Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+                        ->select('lotes.manzana as nivel')
+                        ->where('ini_obra_lotes.ini_obra_id','=',$request->clave)
+                        ->orderBy('lotes.manzana','asc')->distinct()->get();
     }
 
     //Funcion que retorna las partidas de las estimaciones para el aviso de obra
@@ -1143,6 +1156,21 @@ class IniObraController extends Controller
             'observaciones' => $observaciones,
             'fecha_pago' => $fecha_pago
         ];
+    }
+
+    public function updatePartidasDep(Request $request){
+        $partidas = $request->datos;
+
+        foreach($partidas as $p){
+            $partida = Estimacion::findOrFail($p['id']);
+            $partida->comun = $p['comun'];
+            if($partida->comun == 0)
+                $partida->nivel = $p['nivel'];
+            else
+                $partida->nivel = NULL;
+            $partida->porc = round($p['porc'],2);
+            $partida->save();
+        }
     }
 
     //Funcion que retorna las partidas de las estimaciones para el aviso de obra en excel
@@ -1687,6 +1715,7 @@ class IniObraController extends Controller
         $anticipo->monto_anticipo = $request->monto_anticipo;
         $anticipo->save();
     }
+    
     //Funciíon para registrar un Fondo de Garantia
     public function storeFG(Request $request){
         $anticipo = new Fg_estimacion();

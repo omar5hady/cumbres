@@ -1193,7 +1193,7 @@
                 this.total4 = 0;
                 this.total5 = 0;
                 this.b_estimacion = '';
-                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto;
+                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto + '&tipo=1';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEstimaciones = respuesta.estimaciones.data;

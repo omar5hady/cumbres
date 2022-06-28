@@ -53,8 +53,6 @@
                                             <th>Fraccionamiento</th>
                                             <th>Importe del contrato</th>
                                             <th>Fondo de Garantía a Retener</th>
-                                            <!-- <th>Total por Pagar</th> -->
-                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -286,6 +284,7 @@
                                     </div>
                                 </div>
                             </template>
+                            
                             <!-- TABLA DE PARTIDAS Y AVANCE -->
                             <div class="table-responsive" >
                                 <table class="table2 table-bordered table-striped table-sm">
@@ -350,37 +349,9 @@
                                             <td class="td2">
                                                 $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
                                             </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th colspan="2" class="text-right">Gran Total: </th>
-                                            <th class="td2">$ {{formatNumber(total1 = totalPU)}}</th>
-                                            <template v-if="nueva == 0 && editarEstimacion == 0">
-                                                <template v-if="(total2 = totalEst2) > 0">
-                                                    <th colspan="2"></th>
-                                                    <th class="td2">$ {{formatNumber(total2)}}</th>
-                                                </template>
-                                                <template v-else>
-                                                    <th></th>
-                                                </template>
-                                            </template>
-                                            <template v-else>
-                                                <th colspan="2"></th>
-                                                <th class="td2">$ {{formatNumber(total2 = totalEst)}}</th>
-                                            </template>
-                                            <th>Importe: </th>
-                                            <th class="td2">$ {{formatNumber(total3 = totalTope)}}</th>
-                                            <th></th>
-                                            <th class="td2">$ {{formatNumber(to5al4 = totalAcum)}}</th>
-                                            <th></th>
-                                            <th class="td2">$ {{formatNumber(total3 = totalPorEst)}}</th>
-
-                                        </tr>                         
+                                        </tr>            
                                     </tbody>
                                 </table>
-                            </div>
-
-                            <div class="table-responsive" > <br>
                             </div>
 
                             <!-- TABLA RESUMEN -->
@@ -429,7 +400,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
 
                         </div>
                     </template>
@@ -530,31 +500,34 @@
     import vSelect from 'vue-select';
     export default {
         props:{
-            userName:{type: String}
+            userName:{
+                type: String,
+                required: true
+            }
         },
         data(){
             return{
-                fraccionamiento:'',
+                fraccionamiento: '',
                 etapa : '',
-                constructora:'',
-                listado:1,
-                id:0,
-                aviso_id:0,
-                proceso:false,
-                arrayEstimaciones:[],
-                arrayFraccionamientos:[],
-                arrayEtapas:[],
-                empresas:[],
-                edit:0,
-                total_impAux:0,
-                periodo1:'',
-                periodo2:'',
-                fecha_pago:'',
-                editarPartida : 0,
+                constructora: '',
+                listado: 1,
+                id: 0,
+                aviso_id: 0,
+                proceso: false,
+                arrayEstimaciones: [],
+                arrayFraccionamientos: [],
+                arrayEtapas: [],
+                empresas: [],
+                edit: 0,
+                total_impAux: 0,
+                periodo1: '',
+                periodo2: '',
+                fecha_pago: '',
+                editarPartida: 0,
                 
-                arrayContratos:[],
-                arrayContratistas:[],
-                arrayPartidas:[],
+                arrayContratos: [],
+                arrayContratistas: [],
+                arrayPartidas: [],
                 pagination2 : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -563,70 +536,70 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                buscar:'',
-                b_proyecto:'',
-                clave:'',
-                porc_garantia_ret:0,
-                total_importe:0,
-                garantia_ret:0,
-                importe_garantia:0,
-                num_casas:0,
-                numero:0,
-                actual:0,
-                offset2 : 3,
+                buscar: '',
+                b_proyecto: '',
+                clave: '',
+                porc_garantia_ret: 0,
+                total_importe: 0,
+                garantia_ret: 0,
+                importe_garantia: 0,
+                num_casas: 0,
+                numero: 0,
+                actual: 0,
+                offset2: 3,
                 
                 modal: 0,
                 tituloModal: '',
-                modal1:0,
-                tipoAccion : 0,
-                monto_anticipo:0,
-                fecha_anticipo:'',
-                fecha_fg:'',
-                monto_fg : 0,
-                fg_cantidad : 0,
-                fg_indiv : 0,
-                file:'',
-                proceso:false,
-                acumuladoVol:0,
-                acumCosto:0,
-                porEstimarVol:0,
-                porEstimarCosto:0,
-                porc_anticipo : 0,
-                porc_garantia : 0,
-                total_estimacion :0,
-                total_acum_ant : 0,
-                total_acum_actual : 0,
-                total_por_estimar : 0,
-                amor_total_estimacion :0,
-                amor_total_acum_ant : 0,
-                amor_total_acum_actual : 0,
-                amor_total_por_estimar : 0,
-                fg_total_estimacion :0,
-                fg_total_acum_ant : 0,
-                fg_total_acum_actual : 0,
-                fg_total_por_estimar : 0,
-                pagado_total_estimacion :0,
-                pagado_total_acum_ant : 0,
-                pagado_total_acum_actual : 0,
-                pagado_total_por_estimar : 0,
-                total1:0,
-                total2:0,
-                total3:0,
-                total4:0,
-                total5:0,
-                edit2:0,
-                impExtra:0,
-                dateAux:'',
-                fechaExtra:'',
-                arrayExtra:[],
-                fecha_extra:'',
-                concepto:'',
-                importe:0,
-                mes:'01',
-                anio:2021,
-                observacion : '',
-                editarEstimacion : 0,
-                fecha_pago_act : ''
+                modal1: 0,
+                tipoAccion: 0,
+                monto_anticipo: 0,
+                fecha_anticipo: '',
+                fecha_fg: '',
+                monto_fg: 0,
+                fg_cantidad: 0,
+                fg_indiv: 0,
+                file: '',
+                proceso: false,
+                acumuladoVol: 0,
+                acumCosto: 0,
+                porEstimarVol: 0,
+                porEstimarCosto: 0,
+                porc_anticipo: 0,
+                porc_garantia: 0,
+                total_estimacion: 0,
+                total_acum_ant: 0,
+                total_acum_actual: 0,
+                total_por_estimar: 0,
+                amor_total_estimacion: 0,
+                amor_total_acum_ant: 0,
+                amor_total_acum_actual: 0,
+                amor_total_por_estimar: 0,
+                fg_total_estimacion: 0,
+                fg_total_acum_ant: 0,
+                fg_total_acum_actual: 0,
+                fg_total_por_estimar: 0,
+                pagado_total_estimacion: 0,
+                pagado_total_acum_ant: 0,
+                pagado_total_acum_actual: 0,
+                pagado_total_por_estimar: 0,
+                total1: 0,
+                total2: 0,
+                total3: 0,
+                total4: 0,
+                total5: 0,
+                edit2: 0,
+                impExtra: 0,
+                dateAux: '',
+                fechaExtra: '',
+                arrayExtra: [],
+                fecha_extra: '',
+                concepto: '',
+                importe: 0,
+                mes: '01',
+                anio: 2021,
+                observacion: '',
+                editarEstimacion: 0,
+                fecha_pago_act: ''
             }
         },
         components:{
@@ -676,7 +649,7 @@
                let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('contrato', this.clave);
-                formData.append('porc_garantia_ret', this.porc_garantia_ret);
+                formData.append('porcentaje_garantia', this.porc_garantia_ret);
                 formData.append('garantia_ret', this.garantia_ret);
                 formData.append('total_importe', this.total_importe);
                 let me = this;
@@ -699,7 +672,12 @@
                 });
             },
             modoEditar(){
-                if(this.userName == 'shady' || userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')
+                if(     
+                        this.userName == 'shady' 
+                    ||  this.userName == 'uriel.al' 
+                    ||  this.userName == 'guadalupe.ff' 
+                    ||  this.userName == 'pablo.torrescano'
+                )
                     this.editarPartida = 1;
             },
             editCantTope(id, cant_tope){
@@ -755,7 +733,7 @@
                 this.total4 = 0;
                 this.total5 = 0;
                 this.b_estimacion = '';
-                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto;
+                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto + '&tipo=2';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEstimaciones = respuesta.estimaciones.data;

@@ -23,6 +23,7 @@ class CreateEstimacionesTable extends Migration
 
             $table->string('nivel')->nullable();
             $table->boolean('comun')->default(0);
+            $table->float('porc',10,2)->default(0);
             $table->timestamps();
         });
     }

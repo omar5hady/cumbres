@@ -13,6 +13,7 @@
 
 Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
 Route::get('/clientes/upApp','ClienteController@upApp');
+Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 
 Route::group(['middleware' => ['guest']],function(){
 
@@ -485,6 +486,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/import','IniObraController@import');
         Route::get('/estimaciones/indexEstimaciones','IniObraController@indexEstimaciones');
         Route::get('/estimaciones/getPartidas','IniObraController@getPartidas');
+        Route::get('/estimaciones/getPartidasDep','IniObraController@getPartidasDep');
+        Route::get('/estimaciones/getNivelesDep','IniObraController@getNivelesDep');
+        Route::put('/estimaciones/updatePartidasDep','IniObraController@updatePartidasDep');
+        
         Route::get('/estimaciones/excelEstimaciones','IniObraController@excelEstimaciones');
 
         Route::put('/estimaciones/updateImporTotal','IniObraController@updateImporTotal');
@@ -1259,7 +1264,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/campanias/campaniaActiva','CampaniaController@campaniaActiva');
         Route::get('/ruvs/selectRuv','RuvController@selectRuv');
-        Route::get('/getClavesLadas','PersonalController@getClavesLadas');
+        
 
         Route::get('/getPendientesPagos','DepositoController@getPagosVencidos');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
