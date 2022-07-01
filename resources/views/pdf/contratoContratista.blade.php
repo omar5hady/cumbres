@@ -141,7 +141,7 @@
         #footer {
             position: fixed;
             left: 0px;
-            bottom: -160px;
+            bottom: -200px;
             right: 0px;
             height: 180px;
         }

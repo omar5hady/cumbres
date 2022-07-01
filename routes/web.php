@@ -486,11 +486,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/import','IniObraController@import');
         Route::get('/estimaciones/indexEstimaciones','IniObraController@indexEstimaciones');
         Route::get('/estimaciones/getPartidas','IniObraController@getPartidas');
+        Route::get('/estimaciones/getEstimacionesDep','IniObraController@getEstimacionesDep');
         Route::get('/estimaciones/getPartidasDep','IniObraController@getPartidasDep');
         Route::get('/estimaciones/getNivelesDep','IniObraController@getNivelesDep');
         Route::put('/estimaciones/updatePartidasDep','IniObraController@updatePartidasDep');
         
         Route::get('/estimaciones/excelEstimaciones','IniObraController@excelEstimaciones');
+
+        Route::get('/estimaciones/updateAvace','IniObraController@updateAvace');
 
         Route::put('/estimaciones/updateImporTotal','IniObraController@updateImporTotal');
         Route::put('/estimaciones/editCantTope','IniObraController@editCantTope');

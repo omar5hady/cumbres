@@ -509,5 +509,8 @@
             <partidas-dep user-name="{{ Auth::user()->usuario }}">
             </partidas-dep>
         </template>
+        <template  v-if="menu==283">
+            <estimaciones-dep user-name="{{ Auth::user()->usuario }}"></estimaciones-dep>
+        </template>
     @endif
 @endsection

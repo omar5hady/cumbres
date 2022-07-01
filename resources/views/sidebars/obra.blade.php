@@ -56,7 +56,12 @@
                     @endif
                     @if(Auth::user()->partidas == 1)
                         <li @click="menu=282" class="nav-item">
-                            <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Partidas</a>
+                            <a class="nav-link" href="#"><i class="fa fa-star-half"></i> Partidas</a>
+                        </li>
+                    @endif
+                    @if(Auth::user()->rol_id == 1)
+                        <li @click="menu=283" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Estimaciones</a>
                         </li>
                     @endif
                 </ul>

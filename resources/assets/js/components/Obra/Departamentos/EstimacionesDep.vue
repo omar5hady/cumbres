@@ -8,10 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Partidas para departamentos &nbsp;
-                        <button v-if="listado == 1" type="button" @click="abrirModal('nuevo')" class="btn btn-primary">
-                            <i class="icon-plus"></i>&nbsp;Asignar Partidas
-                        </button>
+                        <i class="fa fa-align-justify"></i> Estimaciones &nbsp;
                         <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
                             <i class="fa fa-mail-reply"></i> Regresar
                         </button>
@@ -53,6 +50,8 @@
                                             <th>Fraccionamiento</th>
                                             <th>Importe del contrato</th>
                                             <th>Fondo de Garantía a Retener</th>
+                                            <!-- <th>Total por Pagar</th> -->
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -79,14 +78,14 @@
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
-                                    <li class="page-item" v-if="pagination2.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1)">Ant</a>
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
                                     </li>
-                                    <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2)" v-text="page2"></a>
+                                    <li class="page-item" v-for="page2 in pagesNumber" :key="page2" :class="[page2 == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page2)" v-text="page2"></a>
                                     </li>
-                                    <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1)">Sig</a>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -97,65 +96,62 @@
                     <template v-if="listado == 0">
                        <div class="card-body"> 
                             <!--Encabezado-->
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <center> <h5 style="color: #153157;">Contrato: {{clave}}</h5> </center>
-                                </div>
-                            </div> 
+                            <template>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <center> <h5 style="color: #153157;">Contrato: {{encabezado.clave}}</h5> </center>
+                                    </div>
+                                </div> 
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <center> <h6 style="color: #153157;">Contratista: {{contratista}}</h6> </center>
-                                </div>
-                            </div> 
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <center> <h6 style="color: #153157;">Contratista: {{encabezado.contratista}}</h6> </center>
+                                    </div>
+                                </div> 
 
-                            <div class="col-md-12">
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Importe del Contrato</label>
-                                    <div class="col-md-4" v-if="arrayFG.length > 0">
-                                            $ {{formatNumber(total_importe)}}
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Importe del Contrato</label>
+                                        <div class="col-md-4">
+                                                $ {{formatNumber(encabezado.total_importe)}}
+                                        </div>
                                     </div>
-                                    <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 0">
-                                            <a href="#" @dblclick="edit = 1, total_impAux = total_importe" title="Doble clic para editar">$ {{formatNumber(total_importe)}}</a>
-                                    </div>
-                                    <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 1">
-                                            <input type="text" pattern="\d*" @keyup.esc="cancel()" v-on:keypress="isNumber($event)" v-model="total_impAux" @keyup.enter="updateTotal()">
-                                    </div>
-                                </div>
-                            </div> 
+                                </div> 
 
 
-                            <div class="col-md-12">
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Importe del Anticipo</label>
-                                    <div class="col-md-4">
-                                            $ {{formatNumber(total_anticipo)}}
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Importe del Anticipo</label>
+                                        <div class="col-md-4">
+                                                $ {{formatNumber(encabezado.total_anticipo)}}
+                                        </div>
+                                        <div class="col-md-1">
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
+                                        <div class="col-md-2">
+                                                {{formatNumber((resumen.total_acum_actual/encabezado.total_importe)*100)}}%
+                                        </div>
                                     </div>
-                                    <div class="col-md-1">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
-                                    <div class="col-md-2">
-                                            {{formatNumber((total_acum_actual/total_importe)*100)}}%
-                                    </div>
-                                </div>
-                            </div> 
+                                </div> 
 
-                            <div class="col-md-12">
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fonde de Garantía a Retención</label>
-                                    <div class="col-md-4">
-                                            $ {{formatNumber(importe_garantia)}}
-                                    </div>
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Fonde de Garantía a Retención</label>
+                                        <div class="col-md-4">
+                                                $ {{formatNumber(encabezado.importe_garantia)}}
+                                        </div>
 
-                                    <div class="col-md-1">
-                                            
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Número de casas</label>
-                                    <div class="col-md-2">
-                                            {{num_casas}}
+                                        <div class="col-md-1">
+                                                
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Número de departamentos</label>
+                                        <div class="col-md-2">
+                                                {{encabezado.num_casas}}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                            </template>
                             
                             <template v-if="nueva == 0">
                                 <div class="col-md-12">
@@ -163,9 +159,15 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
                                         <div class="col-md-2">
-                                            <select class="form-control" :disabled="editarEstimacion == 1" v-model="b_estimacion" @click="getPartidas(aviso_id), n_excel = b_estimacion">
+                                            <select class="form-control" :disabled="editarEstimacion == 1" 
+                                                v-model="b_estimacion" 
+                                                @click="getPartidas(aviso_id), n_excel = b_estimacion"
+                                            >
                                                 <option value="">Seleccione</option>
-                                                <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" :value="estimacion.num_estimacion" v-text="estimacion.num_estimacion"></option>
+                                                <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" 
+                                                    :value="estimacion.num_estimacion" 
+                                                    v-text="estimacion.num_estimacion">
+                                                </option>
                                             </select>
                                         </div>
 
@@ -179,7 +181,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
+                                        <div class="col-md-2" v-if="((resumen.total_acum_actual/encabezado.total_importe)*100) < 100">
                                             <button type="button" @click="nueva = 1"  class="btn btn-primary">
                                                 <i class="icon-plus"></i>&nbsp;Nueva estimación
                                             </button>
@@ -194,7 +196,7 @@
                                         </div>
                             
                                         <div class="col-md-2">
-                                            <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+num_casas"  
+                                            <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+encabezado.num_casas"  
                                                 class="btn btn-success"><i class="fa fa-file-text"></i> Excel
                                             </a>
                                         </div>
@@ -239,7 +241,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group row">
                                         <div class="col-md-2">
-                                            <button type="button" v-if="periodo1 != '' && periodo2 != ''" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
+                                            <button type="button" v-if="periodo1 != '' && periodo2 != ''" @click="storeEstimacion()"  class="btn btn-success">
                                                 <i class="icon-check"></i>&nbsp;Guardar
                                             </button>
                                         </div>
@@ -247,7 +249,8 @@
                                         <div class="col-md-1"></div>
                                         
                                         <div class="col-md-2">
-                                            <button type="button" @click="nueva = 0"  class="btn btn-warning">
+                                            <button type="button" @click="nueva = 0, getPartidas(aviso_id)"  
+                                                class="btn btn-warning">
                                                 <i class="icon-close"></i>&nbsp;Cancelar
                                             </button>
                                         </div>
@@ -277,29 +280,31 @@
                                         
                                         <div class="col-md-2">
                                             <button type="button" @click="editarEstimacion = 0, getPartidas(
-                                                aviso_id);"  class="btn btn-warning">
+                                                aviso_id)"  class="btn btn-warning">
                                                 <i class="icon-close"></i>&nbsp;Cancelar
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </template>
-                            
                             <!-- TABLA DE PARTIDAS Y AVANCE -->
                             <div class="table-responsive" >
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>Paquete</th>
-                                            <th>P.U. Prorrateado</th>
-                                            <th>No. de Viviendas</th>
-                                            <th colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}}</th>
-                                            <th colspan="2" v-else-if="nueva == 1">Estimación No. {{num_estimacion}}</th>
+                                            <th>Concepto</th>
+                                            <th>Importe</th>
+                                            <th>%</th>
+                                            <th colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}} 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;</th>
+                                            <th class="td2" colspan="2" v-else-if="nueva == 1">Estimación No. {{num_estimacion}}
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                &nbsp;&nbsp;&nbsp;</th>
                                             <th colspan="2">Cantidad Tope</th>
                                             <th colspan="2">Acumulado</th>
                                             <th colspan="2">Por Estimar</th>
-                                            <!-- <th>Total por Pagar</th> -->
                                             
                                         </tr>
                                         <tr>
@@ -307,51 +312,133 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(partida,index) in arrayPartidas" :key="partida.id">
-                                            <td class="td2" v-text="index+1"></td>
-                                            <td class="td2" v-text="partida.partida"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(partida.pu_prorrateado)"></td>
-                                            <template><!--Numero de casas -->
-                                                <td class="td2" v-if="editarPartida == 0" v-text="partida.num_casas" @dblclick="modoEditar()"></td>
-                                                <td class="td2" v-else>
-                                                    <input type="number" pattern="\d*" @keyup.enter="editCantTope(partida.id,$event.target.value)" :id="partida.id" :value="partida.num_casas" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
+                                        <template v-for="(partida,index) in arrayPartidas">
+                                            <tr :key ="partida.nivel"
+                                                v-if="index != 0 && partida.nivel != arrayPartidas[index-1].nivel"
+                                            >
+                                                <td class="text-center" colspan="12"> Fin {{arrayPartidas[index-1].nivel}}</td>
+                                            </tr>
+
+                                            <tr :key="partida.id">
+                                                <td class="td2" v-text="index+1"></td>
+                                                <td class="td2" v-text="partida.partida"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(partida.pu_prorrateado)"></td>
+                                                <td class="td2" v-text="`${formatNumber(partida.porc)} %`"></td>
+                                                
+                                                <template v-if="nueva == 0 && editarEstimacion == 0">
+                                                    <td class="td2" v-if="numero != 0" v-text="partida.vol"></td>
+                                                    <td class="td2" v-if="numero != 0" v-text="'$' + formatNumber( partida.costoA )"></td>
+                                                </template>
+
+                                                <template v-else-if="nueva == 1">
+                                                    <td class="td2">
+                                                        <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
+                                                    </td>
+                                                    <td class="td2" v-text="'$' + formatNumber( partida.costo = (partida.num_estimacion/100) * partida.pu_prorrateado )"></td>
+                                                </template>
+
+                                                <template v-else-if="editarEstimacion == 1 && nueva == 0">
+                                                    <td class="td2">
+                                                        <input type="number"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
+                                                    </td>
+                                                    <td class="td2" v-text="'$' + formatNumber( partida.costo = (partida.num_estimacion/100) * partida.pu_prorrateado )"></td>
+                                                </template>
+                                                
+                                                <td class="td2" v-text="`${partida.num_casas}%`"></td>
+                                                <td class="td2" v-text="'$'+ formatNumber( partida.tope = (partida.pu_prorrateado) )"></td>
+                                                <td class="td2"> 
+                                                    {{ partida.acumVolTotal=(parseFloat(partida.acumVol) + parseFloat(partida.num_estimacion)).toFixed(2) }} %
                                                 </td>
-                                            </template>
+                                                <td class="td2">
+                                                    $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
+                                                </td>
+                                                <td class="td2">
+                                                    {{ partida.porEstimarVol=(parseFloat(partida.num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol)).toFixed(2) }} %
+                                                </td>
+                                                <td class="td2">
+                                                    $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
+                                                </td>
+                                            </tr>
                                             
+                                        </template>
+                                        
+                                        <tr>
+                                            <th colspan="2" class="text-right">Costo fabriación: </th>
+                                            <th class="td2">$ {{formatNumber(total1 = totalPU)}}</th>
                                             <template v-if="nueva == 0 && editarEstimacion == 0">
-                                                <td class="td2" v-if="numero != 0" v-text="partida.vol"></td>
-                                                <td class="td2" v-if="numero != 0" v-text="'$' + formatNumber( partida.costoA )"></td>
+                                                <template v-if="(total2 = totalEst2) > 0">
+                                                    <th colspan="2"></th>
+                                                    <th class="td2 text-right">$ {{formatNumber(total2 = totalEst2)}}</th>
+                                                </template>
+                                                <template v-else>
+                                                    <th></th>
+                                                </template>
                                             </template>
-                                            <template v-else-if="nueva == 1">
-                                                <td class="td2">
-                                                    <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
-                                                </td>
-                                                <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
+                                            <template v-else>
+                                                <th colspan="2"></th>
+                                                <th class="td2 text-right">$ {{formatNumber(total2 = totalEst2)}}</th>
                                             </template>
-                                            <template v-else-if="editarEstimacion == 1 && nueva == 0">
-                                                <td class="td2">
-                                                    <input type="number"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
-                                                </td>
-                                                <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
+                                            <th>Importe: </th>
+                                            <th class="td2 text-right">$ {{formatNumber(total3 = totalTope)}}</th>
+                                            <th></th>
+                                            <th class="td2 text-right">$ {{formatNumber(total4 = totalAcum)}}</th>
+                                            <th></th>
+                                            <th class="td2 text-right">$ {{formatNumber(total5 = totalPorEst)}}</th>
+
+                                        </tr>     
+                                        
+                                        <tr>
+                                            <th colspan="2" class="text-right">Indirectos y garantias: </th>
+                                            <th class="td2">$ {{formatNumber(iTotal1 = total1 * encabezado.costo_indirecto_porcentaje)}}</th>
+                                            <template v-if="nueva == 0 && editarEstimacion == 0">
+                                                <template v-if="(total2 = totalEst2) > 0">
+                                                    <th colspan="2"></th>
+                                                    <th class="td2 text-right">$ {{formatNumber(iTotal2 = total2 * encabezado.costo_indirecto_porcentaje)}}</th>
+                                                </template>
+                                                <template v-else>
+                                                    <th></th>
+                                                </template>
                                             </template>
-                                            
-                                            <td class="td2" v-text="partida.num_casas"></td>
-                                            <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * partida.num_casas) )"></td>
-                                            <td class="td2"> 
-                                                {{ partida.acumVolTotal=(parseFloat(partida.acumVol) + parseFloat(partida.num_estimacion)).toFixed(2) }} 
-                                            </td>
-                                            <td class="td2">
-                                                $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
-                                            </td>
-                                            <td class="td2">
-                                                {{ partida.porEstimarVol=(parseFloat(partida.num_casas) - parseFloat(partida.num_estimacion) - parseFloat(partida.acumVol)).toFixed(2) }}
-                                            </td>
-                                            <td class="td2">
-                                                $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
-                                            </td>
-                                        </tr>            
+                                            <template v-else>
+                                                <th colspan="2"></th>
+                                                <th class="td2 text-right">$ {{formatNumber(iTotal2 = total2 * encabezado.costo_indirecto_porcentaje)}}</th>
+                                            </template>
+                                            <th>Importe: </th>
+                                            <th class="td2 text-right">$ {{formatNumber(iTotal3 = totalTope * encabezado.costo_indirecto_porcentaje)}}</th>
+                                            <th></th>
+                                            <th class="td2 text-right">$ {{formatNumber(iTotal4 = total4 * encabezado.costo_indirecto_porcentaje)}}</th>
+                                            <th></th>
+                                            <th class="td2 text-right">$ {{formatNumber(iTotal5 = total5 * encabezado.costo_indirecto_porcentaje)}}</th>
+                                        </tr>   
+
+                                        <tr>
+                                            <th colspan="2" class="text-right">Precio de fabricación: </th>
+                                            <th class="td2">$ {{formatNumber(iTotal1 + total1 )}}</th>
+                                            <template v-if="nueva == 0 && editarEstimacion == 0">
+                                                <template v-if="(totalEst2) > 0">
+                                                    <th colspan="2"></th>
+                                                    <th class="td2 text-right">$ {{formatNumber(iTotal2 + total2)}}</th>
+                                                </template>
+                                                <template v-else>
+                                                    <th></th>
+                                                </template>
+                                            </template>
+                                            <template v-else>
+                                                <th colspan="2"></th>
+                                                <th class="td2 text-right">$ {{formatNumber(iTotal2 + total2)}}</th>
+                                            </template>
+                                            <th>Importe: </th>
+                                            <th class="td2 text-right">$ {{formatNumber(iTotal3 + total3)}}</th>
+                                            <th></th>
+                                            <th class="td2 text-right">$ {{formatNumber(iTotal4 + total4 )}}</th>
+                                            <th></th>
+                                            <th class="td2 text-right">$ {{formatNumber(iTotal5 + total5 )}}</th>
+                                        </tr>         
                                     </tbody>
                                 </table>
+                            </div>
+
+                            <div class="table-responsive" > <br>
                             </div>
 
                             <!-- TABLA RESUMEN -->
@@ -371,35 +458,72 @@
                                     <tbody>
                                         <tr>
                                             <td class="td2" v-text="'ESTIMADO'"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(total_acum_ant)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(total_estimacion)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(total_acum_actual = total_estimacion + total_acum_ant)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(total_por_estimar = total_importe - total_acum_actual)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.total_acum_ant )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.total_estimacion )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.total_acum_actual     = resumen.total_estimacion + resumen.total_acum_ant )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.total_por_estimar     = encabezado.total_importe - resumen.total_acum_actual )"></td>
                                         </tr>   
                                         <tr>
                                             <td class="td2" v-text="'AMOR. ANTICIPO'"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(amor_total_acum_ant = total_acum_ant * porc_anticipo)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(amor_total_estimacion = total_estimacion * porc_anticipo)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(amor_total_acum_actual = amor_total_acum_ant + amor_total_estimacion)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(amor_total_por_estimar = total_anticipo - amor_total_acum_actual)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.amor_total_acum_ant       = resumen.total_acum_ant * porc_anticipo )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.amor_total_estimacion     = resumen.total_estimacion * porc_anticipo )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.amor_total_acum_actual    = resumen.amor_total_acum_ant + resumen.amor_total_estimacion )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.amor_total_por_estimar    = encabezado.total_anticipo - resumen.amor_total_acum_actual )"></td>
                                         </tr>  
                                         <tr>
                                             <td class="td2" v-text="'F. G.'"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(fg_total_acum_ant = total_acum_ant * porc_garantia)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(fg_total_estimacion = total_estimacion * porc_garantia)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(fg_total_acum_actual = fg_total_acum_ant + fg_total_estimacion)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(fg_total_por_estimar = importe_garantia - fg_total_acum_actual)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.fg_total_acum_ant     = resumen.total_acum_ant * porc_garantia )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.fg_total_estimacion   = resumen.total_estimacion * porc_garantia )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.fg_total_acum_actual  = resumen.fg_total_acum_ant + resumen.fg_total_estimacion )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.fg_total_por_estimar  = encabezado.importe_garantia - resumen.fg_total_acum_actual )"></td>
                                         </tr>  
                                         <tr>
                                             <td class="td2" v-text="'PAGADO'"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_ant = total_acum_ant - ( fg_total_acum_ant + amor_total_acum_ant))"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_estimacion = total_estimacion - ( fg_total_estimacion + amor_total_estimacion ))"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_actual = total_acum_actual - ( fg_total_acum_actual + amor_total_acum_actual))"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(pagado_total_por_estimar = total_por_estimar - ( fg_total_por_estimar + amor_total_por_estimar))"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.pagado_total_acum_ant     = resumen.total_acum_ant - ( resumen.fg_total_acum_ant + resumen.amor_total_acum_ant) )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.pagado_total_estimacion   = resumen.total_estimacion - ( resumen.fg_total_estimacion + resumen.amor_total_estimacion ) )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.pagado_total_acum_actual  = resumen.total_acum_actual - ( resumen.fg_total_acum_actual + resumen.amor_total_acum_actual) )"></td>
+                                            <td class="td2" v-text="'$'+formatNumber( resumen.pagado_total_por_estimar  = resumen.total_por_estimar - ( resumen.fg_total_por_estimar + resumen.amor_total_por_estimar) )"></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
+
+                            <div class="table-responsive" >
+                                <br>
+
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <div class="table-responsive"  v-if="nueva == 0 && editarEstimacion == 0" > 
+                                            <table class="table2 table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Observaciones</th>
+                                                        <th>
+                                                            <button title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
+                                                                <i class="icon-plus"></i>
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Usuario</th>
+                                                        <th>Observación</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody> 
+                                                    <tr v-for="obs in arrayObs" :key="obs.id">
+                                                        <td class="td2" v-text="this.moment(obs.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                                        <td class="td2" v-text="obs.usuario"></td>
+                                                        <td class="td2" v-text="obs.observacion"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
 
                         </div>
                     </template>
@@ -408,7 +532,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
-            <!-- Inicio Modal Asignar Partidas -->
+            <!-- Inicio Modal FG, Anticipos y Obra extra -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -420,66 +544,20 @@
                         </div>
 
                         <div class="modal-body">
-                            <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
-                        
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Contrato</label>
-                                    <div class="col-md-4">
-                                        <v-select 
-                                            :on-search="getSinEstimaciones"
-                                            label="clave"
-                                            :options="arrayContratos"
-                                            placeholder="Buscar contrato..."
-                                            :onChange="getDatosContrato"
-                                        >
-                                        </v-select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="total_importe!=0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observación</label>
                                     <div class="col-md-5">
-                                        <h6 style="color: #153157;">Importe del Contrato:&nbsp;  
-                                            <strong> ${{formatNumber(total_importe)}} </strong>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input type="text" v-on:keypress="isNumber($event)" v-model="total_importe">
+                                        <input type="text" v-model="observacion" class="form-control" placeholder="Observación" >
                                     </div>
                                 </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">% Garantía a retención</label>
-                                    <div class="col-md-2">
-                                        <input type="number" min="0" step="0.01" maxlength="5" style="right: 10px;" class="form-control" v-model="porc_garantia_ret">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <h6 >Fondo de Garantia a Retención:  
-                                            <strong> ${{formatNumber(garantia_ret=(total_importe*porc_garantia_ret)/100)}} </strong>
-                                        </h6>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row line-separator"></div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                         Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
-                                    </div>
-                                </div>
-
-                                <input v-if="proceso == false && file!=''" type="submit" value="Cargar" class="btn btn-primary" style="margin-top: 3%">
-                            
-                         </form>
-
-
-                      
+                            </form>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button v-if="observacion != ''" 
+                                type="button" class="btn btn-primary" @click="storeObs()">Guardar</button>
                         </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -500,35 +578,71 @@
     import vSelect from 'vue-select';
     export default {
         props:{
-            userName:{
-                type: String,
-                required: true
-            }
+            userName:{type: String}
         },
         data(){
             return{
-                fraccionamiento: '',
-                etapa : '',
-                constructora: '',
-                listado: 1,
-                id: 0,
-                aviso_id: 0,
-                proceso: false,
-                arrayEstimaciones: [],
-                arrayFraccionamientos: [],
-                arrayEtapas: [],
-                empresas: [],
-                edit: 0,
-                total_impAux: 0,
-                periodo1: '',
-                periodo2: '',
-                fecha_pago: '',
-                editarPartida: 0,
+                arrayNumEstim:[],
+                arrayObs:[],
+                arrayEstimaciones:[],
+                arrayFraccionamientos:[],
+                arrayPartidas:[],
+
+                //Filtros de busqueda
+                buscar:'',
+                b_proyecto:'',
+
+                //Encabezado contrato
+                encabezado:{
+                    clave:'',
+                    contratista: '',
+                    total_importe: 0,
+                    total_anticipo: 0,
+                    importe_garantia: 0,
+                    num_casas: 0,
+                    tipo_proyecto : 0,
+                    costo_indirecto_porcentaje : 0
+                },
+
+                resumen:{
+                    total_estimacion :0,
+                    total_acum_ant : 0,
+                    total_acum_actual : 0,
+                    total_por_estimar : 0,
+                    
+                    amor_total_estimacion :0,
+                    amor_total_acum_ant : 0,
+                    amor_total_acum_actual : 0,
+                    amor_total_por_estimar : 0,
+
+                    fg_total_estimacion :0,
+                    fg_total_acum_ant : 0,
+                    fg_total_acum_actual : 0,
+                    fg_total_por_estimar : 0,
+
+                    pagado_total_estimacion :0,
+                    pagado_total_acum_ant : 0,
+                    pagado_total_acum_actual : 0,
+                    pagado_total_por_estimar : 0,
+                },
+
+                listado:1,
+                nueva:0,
+                b_estimacion:'',
+                num_estimacion:0,
+                n_excel:0,
+                id:0,
+                aviso_id:0,
+                proceso:false,
                 
-                arrayContratos: [],
-                arrayContratistas: [],
-                arrayPartidas: [],
-                pagination2 : {
+                edit:0,
+                total_impAux:0,
+                periodo1:'',
+                periodo2:'',
+                fecha_pago:'',
+                editarPartida : 0,
+
+                pagination : {
                     'total' : 0,         
                     'current_page' : 0,
                     'per_page' : 0,
@@ -536,148 +650,118 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                buscar: '',
-                b_proyecto: '',
-                clave: '',
-                porc_garantia_ret: 0,
-                total_importe: 0,
-                garantia_ret: 0,
-                importe_garantia: 0,
-                num_casas: 0,
-                numero: 0,
-                actual: 0,
-                offset2: 3,
                 
-                modal: 0,
+                numero:0,
+                actual:0,
+                offset2 : 3,
+                
                 tituloModal: '',
-                modal1: 0,
-                tipoAccion: 0,
-                monto_anticipo: 0,
-                fecha_anticipo: '',
-                fecha_fg: '',
-                monto_fg: 0,
-                fg_cantidad: 0,
-                fg_indiv: 0,
-                file: '',
-                proceso: false,
-                acumuladoVol: 0,
-                acumCosto: 0,
-                porEstimarVol: 0,
-                porEstimarCosto: 0,
-                porc_anticipo: 0,
-                porc_garantia: 0,
-                total_estimacion: 0,
-                total_acum_ant: 0,
-                total_acum_actual: 0,
-                total_por_estimar: 0,
-                amor_total_estimacion: 0,
-                amor_total_acum_ant: 0,
-                amor_total_acum_actual: 0,
-                amor_total_por_estimar: 0,
-                fg_total_estimacion: 0,
-                fg_total_acum_ant: 0,
-                fg_total_acum_actual: 0,
-                fg_total_por_estimar: 0,
-                pagado_total_estimacion: 0,
-                pagado_total_acum_ant: 0,
-                pagado_total_acum_actual: 0,
-                pagado_total_por_estimar: 0,
-                total1: 0,
-                total2: 0,
-                total3: 0,
-                total4: 0,
-                total5: 0,
-                edit2: 0,
-                impExtra: 0,
-                dateAux: '',
-                fechaExtra: '',
-                arrayExtra: [],
-                fecha_extra: '',
-                concepto: '',
-                importe: 0,
-                mes: '01',
-                anio: 2021,
-                observacion: '',
-                editarEstimacion: 0,
-                fecha_pago_act: ''
+                modal:0,
+                tipoAccion : 0,
+               
+                proceso:false,
+                porc_anticipo : 0,
+                porc_garantia : 0,
+
+                total1:0,
+                total2:0,
+                total3:0,
+                total4:0,
+                total5:0,
+
+                iTotal1:0,
+                iTotal2:0,
+                iTotal3:0,
+                iTotal4:0,
+                iTotal5:0,
+                
+                concepto:'',
+                observacion : '',
+                editarEstimacion : 0,
+                fecha_pago_act : ''
             }
         },
         components:{
             vSelect
         },
         computed:{
-            isActived2: function(){
-                return this.pagination2.current_page;
+            isActived: function(){
+                return this.pagination.current_page;
             },
             //Calcula los elementos de la paginación
-            pagesNumber2:function(){
-                if(!this.pagination2.to){
+            pagesNumber:function(){
+                if(!this.pagination.to){
                     return [];
                 }
-                var from = this.pagination2.current_page - this.offset2;
+                var from = this.pagination.current_page - this.offset2;
                 if(from < 1){
                     from = 1;
                 }
                 var to = from + (this.offset2 * 2);
-                if(to >= this.pagination2.last_page){
-                    to = this.pagination2.last_page;
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
                 }
-                var pagesArray2 = [];
+                var pagesArray = [];
                 while(from <= to){
-                    pagesArray2.push(from);
+                    pagesArray.push(from);
                     from++;
                 }
-                return pagesArray2;
+                return pagesArray;
             },
+            totalPU: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].pu_prorrateado)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalEst2: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].costoA)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalEst: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].costo)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalTope: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].tope)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalAcum: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].acumCostoTotal)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalPorEst: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].porEstimarCosto)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+          
         },
        
         methods : {
-            onImageChange(e){
-                console.log(e.target.files[0]);
-                this.file = e.target.files[0];
-                if(this.file==''){
-                    return;
-                }
-            },
-            formSubmit(e) {
-                if(this.proceso==true || this.file==''){
-                    return;
-                }
-                this.proceso=true;
-                e.preventDefault();
-               
-               let formData = new FormData();
-                formData.append('file', this.file);
-                formData.append('contrato', this.clave);
-                formData.append('porcentaje_garantia', this.porc_garantia_ret);
-                formData.append('garantia_ret', this.garantia_ret);
-                formData.append('total_importe', this.total_importe);
-                let me = this;
-                axios.post('/estimaciones/import',formData)
-                .then(function (response) {
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo cargado correctamente',
-                        showConfirmButton: false,
-                        timer: 2500
-                        })
-                    me.proceso=false;
-                    me.cerrarModal();
-                    me.indexEstimaciones(me.pagination2.current_page)
-                    //me.listarLote(1,'','','','lote');
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            },
             modoEditar(){
-                if(     
-                        this.userName == 'shady' 
-                    ||  this.userName == 'uriel.al' 
-                    ||  this.userName == 'guadalupe.ff' 
-                    ||  this.userName == 'pablo.torrescano'
-                )
+                if(this.userName == 'shady' || userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')
                     this.editarPartida = 1;
             },
             editCantTope(id, cant_tope){
@@ -703,78 +787,16 @@
             },
             indexEstimaciones(page){
                 let me = this;
-                this.arrayAnticipos = [];
-                this.arrayFG = [];
-                this.acumuladoVol = 0;
-                this.acumCosto = 0;
-                this.porEstimarVol = 0;
-                this.porEstimarCosto = 0;
-                this.porc_anticipo = 0;
-                this.porc_garantia = 0;
-                this.total_estimacion  = 0;
-                this.total_acum_ant = 0;
-                this.total_acum_actual = 0;
-                this.total_por_estimar = 0;
-                this.amor_total_estimacion  = 0;
-                this.amor_total_acum_ant = 0;
-                this.amor_total_acum_actual = 0;
-                this.amor_total_por_estimar = 0;
-                this.fg_total_estimacion  = 0;
-                this.fg_total_acum_ant = 0;
-                this.fg_total_acum_actual = 0;
-                this.fg_total_por_estimar = 0;
-                this.pagado_total_estimacion  = 0;
-                this.pagado_total_acum_ant = 0;
-                this.pagado_total_acum_actual = 0;
-                this.pagado_total_por_estimar = 0;
-                this.total1 = 0;
-                this.total2 = 0;
-                this.total3 = 0;
-                this.total4 = 0;
-                this.total5 = 0;
-                this.b_estimacion = '';
-                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto + '&tipo=2';
+                me.b_estimacion = '';
+                const url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto + '&tipo=2';
                 axios.get(url).then(function (response) {
-                    var respuesta = response.data;
+                    const respuesta = response.data;
                     me.arrayEstimaciones = respuesta.estimaciones.data;
-                    me.pagination2 = respuesta.pagination;
+                    me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 })
-            },
-            getSinEstimaciones(search, loading){
-                let me = this;
-                loading(true)
-                var url = '/estimaciones/getSinEstimaciones?buscar='+search+'&tipo=Departamentos';
-                axios.get(url).then(function (response) {
-                    let respuesta = response.data;
-                    q: search
-                    me.arrayContratos = respuesta.contratos;
-                    loading(false)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            getDatosContrato(val1){
-                let me = this;
-                me.loading = true;
-                me.clave = val1.id;
-                me.total_importe = val1.total_importe;
-                me.porc_garantia_ret = val1.porc_garantia_ret;
-            },
-            selectContratistas(){
-                let me = this;
-                me.arrayContratistas = [];
-                var url = '/select_contratistas';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayContratistas = respuesta.contratista;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
             },
             selectFraccionamientos(){
                 let me = this;
@@ -785,36 +807,10 @@
                 }
                 
                 me.arrayFraccionamientos=[];
-                var url = '/select_fraccionamiento';
+                const url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
-                    var respuesta = response.data;
+                    const respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            selectEtapas(buscar){
-                let me = this;
-                me.etapa = '';
-                
-                me.arrayEtapas=[];
-                var url = '/select_etapa_proyecto?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayEtapas = respuesta.etapas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            getEmpresa(){
-                let me = this;
-                me.empresas=[];
-                var url = '/lotes/empresa/select';
-                axios.get(url).then(function (response) {
-                    var respuesta = response;
-                    me.empresas = respuesta.data.empresas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -824,21 +820,20 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-            cambiarPagina2(page){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
-                me.pagination2.current_page = page;
+                me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.indexEstimaciones(page);
             },       
             cerrarModal(){
                 this.modal = 0;
-                this.modal1 = 0;
                 this.tituloModal = '';
             },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                const charCode = (evt.which) ? evt.which : evt.keyCode;
                 if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
                     evt.preventDefault();;
                 } else {
@@ -858,38 +853,33 @@
                     element.acumCosto = element.acumCosto - costo;
                 });
             },
-            getPartidas(id){
+            getPartidas(id, porc){
                 let me = this;
                 me.periodo1 = '';
                 me.periodo2 = '';
                 me.fecha_pago = '';
                 me.fecha_pago_act = '';
                 me.arrayCreditos=[];
-                var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion+'&total_importe='+this.total_importe;
+                const url = '/estimaciones/getEstimacionesDep?clave='+id+'&numero='+this.b_estimacion+'&total_importe='+this.encabezado.total_importe;
                 axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    var extra= [];
+                    const respuesta = response.data;
                     me.arrayPartidas = respuesta.estimaciones;
                     me.numero = respuesta.numero;
                     me.fecha_pago_act = respuesta.fecha_pago;
                     me.num_estimacion = respuesta.num_est;
                     me.arrayNumEstim = respuesta.numeros;
-                    if(me.arrayNumEstim.length > 0)
-                        me.b_estimacion = me.numero;
+                    
+                    (me.arrayNumEstim.length > 0) ? me.b_estimacion = me.numero : '';
+
                     me.actual = respuesta.actual;
-                    me.total_estimacion = respuesta.total_estimacion;
-                    me.total_acum_ant = respuesta.totalEstimacionAnt;
-                    me.arrayAnticipos = respuesta.anticipos;
-                    me.arrayFG = respuesta.fondos;
+                    const totalEstimacionInd = respuesta.total_estimacion * porc
+                    const totalAcumEstimacionInd = respuesta.totalEstimacionAnt * porc
+                    me.resumen.total_estimacion = respuesta.total_estimacion + totalEstimacionInd;
+                    me.resumen.total_acum_ant = respuesta.totalEstimacionAnt + totalAcumEstimacionInd;
 
-                    me.arrayExtra = respuesta.conceptosExtra;
                     me.arrayObs = respuesta.observaciones;
-                    extra = respuesta.importesExtra;
-                    me.fechaExtra = extra[0].fechaExtra;
-                    me.impExtra = extra[0].impExtra;
 
-                    me.total_anticipo = respuesta.total_anticipo;
-                    me.porc_anticipo = respuesta.anticipo/ 100;
+                    me.porc_anticipo = me.total_anticipo.anticipo/ 100;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -897,156 +887,49 @@
             },
             validar(index){
                 let me = this;
-                var acumulado = parseFloat (me.arrayPartidas[index].porEstimarVol);
-                var volumen = 0;
+                const acumulado = parseFloat (me.arrayPartidas[index].porEstimarVol);
                 if(acumulado<0){
-                    volumen = parseFloat( me.arrayPartidas[index].num_estimacion );
+                    const volumen = parseFloat( me.arrayPartidas[index].num_estimacion );
                     me.arrayPartidas[index].num_estimacion = volumen + acumulado;
                 }
                 
             },
-            validarOExtra(){
-                let me = this;
-                var monto = 0;
-                if(me.arrayExtra.length > 0)
-                    for(var i=0;i<me.arrayExtra.length;i++){
-                        monto += parseFloat(me.arrayExtra[i].importe);
-                    }
-                
-                var porPagar = me.impExtra - monto;
-                if(me.importe>porPagar)
-                    me.importe = porPagar;
-            },
-            validarAnticipo(){
-                let me = this;
-                var monto = 0;
-                if(me.arrayAnticipos.length > 0)
-                    for(var i=0;i<me.arrayAnticipos.length;i++){
-                        monto += parseFloat(me.arrayAnticipos[i].monto_anticipo);
-                    }
-                
-                var porPagar = me.total_importe - monto;
-                if(me.monto_anticipo>porPagar)
-                    me.monto_anticipo = porPagar;
-                
-            },
-            validarFG(){
-                let me = this;
-                var num = 0;
-                if(me.arrayFG.length > 0)
-                    for(var i=0;i<me.arrayFG.length;i++){
-                        num += parseFloat(me.arrayFG[i].cantidad);
-                    }
-                
-                var porFG = me.num_casas - num;
-                if(me.fg_cantidad>porFG)
-                    me.fg_cantidad = porFG;
-                
-            },
             verDetalle(contrato){
-                
-                this.clave = contrato['clave'];
-                this.total_importe = contrato['total_importe'];
-                this.total_anticipo = contrato['total_anticipo'];
-                this.importe_garantia = contrato['garantia_ret'];
+                this.encabezado.clave = contrato['clave'];
+                this.encabezado.total_importe = contrato['total_importe'];
+                this.encabezado.total_anticipo = contrato['total_anticipo'];
+                this.encabezado.importe_garantia = contrato['garantia_ret'];
+                this.encabezado.tipo_proyecto = contrato['tipo_proyecto']
                 this.listado = 0;
                 this.porc_garantia = contrato['porc_garantia_ret'] / 100;
                 this.porc_anticipo = contrato['anticipo'] / 100;
-                this.num_casas = contrato['num_casas'];
+                this.encabezado.num_casas = contrato['num_casas'];
                 this.aviso_id = (contrato['id']);
-                this.contratista = contrato['contratista'];
-                this.getPartidas(contrato['id']);
+                this.encabezado.contratista = contrato['contratista'];
+                this.encabezado.costo_indirecto_porcentaje = contrato['costo_indirecto_porcentaje']/100
+
+                this.getPartidas(contrato['id'], this.encabezado.costo_indirecto_porcentaje);
             },
-            abrirModal(accion,data =[]){
+            abrirModal(accion){
                 switch(accion){
-                    case 'nuevo':
-                    {
-                        this.modal = 1;
-                        this.tituloModal='Asignar Partidas';
-                        this.total_importe=0;
-                        this.arrayContratos=[];
-                        this.porc_garantia_ret=0;
-                        this.garantia_ret=0;
-                        
-                        break;
-                    }
-                    case 'anticipo':
-                    {
-                        this.modal1 = 1;
-                        this.tipoAccion = 1;
-                        this.tituloModal = 'Añadir anticipo';
-                        this.fecha_anticipo = '';
-                        this.monto_anticipo = 0;
-                        break;
-                    }
-                    case 'fg':
-                    {
-                        this.modal1 = 1;
-                        this.tipoAccion = 2;
-                        this.tituloModal = 'Fondo de garantia';
-                        this.fg_cantidad = 0;
-                        this.monto_fg = 0;
-                        this.fecha_fg = '';
-                        break;
-                    }
-
-                    case 'extra':
-                    {
-                        this.modal1 = 1;
-                        this.tipoAccion = 4;
-                        this.tituloModal = 'Obra extra';
-                        this.importe = 0;
-                        this.concepto = 0;
-                        this.fecha_extra = '';
-                        break;
-                    }
-
-                    case 'resumen':
-                    {
-                        this.selectFraccionamientos();
-                        this.getEmpresa();
-                        this.selectContratistas();
-                        this.etapa = '';
-                        this.arrayEtapas = [];
-                        this.modal1 = 1;
-                        this.tipoAccion = 3;
-                        this.tituloModal = 'Resumen de estimaciones';
-                        this.fraccionamiento = '';
-                        this.contratista = '';
-                        this.constructora = '';
-                        break;
-                    }
-
-                    case 'reporte':
-                    {
-                        this.selectContratistas();
-                        this.modal1 = 1;
-                        this.tipoAccion = 5;
-                        this.tituloModal = 'Reporte de finalización de obra';
-                        this.mes = '';
-                        this.contratista = '';
-                        this.anio = '';
-                        break;
-                    }
                     case 'observacion':{
-                        this.modal1 = 1;
+                        this.modal = 1;
                         this.tipoAccion = 6;
                         this.tituloModal = 'Reporte de finalización de obra';
                         this.observacion = '';
                         break;
                     }
-                    
                 }
             },
-            storeEstimacion(data){
+            storeEstimacion(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
 
-                let amorEstimacion = me.total2*me.porc_anticipo;
-                let totalGarantia = me.total2*me.porc_garantia;
+                const amorEstimacion = me.total2*me.porc_anticipo;
+                const totalGarantia = me.total2*me.porc_garantia;
 
-                let totalPagar = me.total2 - (amorEstimacion + totalGarantia);
-                let fecha_pago = this.fecha_pago;
+                const totalPagar = me.total2 - (amorEstimacion + totalGarantia);
+                const fecha_pago = this.fecha_pago;
                 
                 Swal({
                     title: '¿Desea continuar?',
@@ -1073,7 +956,10 @@
                                     'total_pagado' : totalPagar,
                                     'periodo1' : this.periodo1,
                                     'periodo2' : this.periodo2,
-                                    'fecha_pago' : fecha_pago
+                                    'fecha_pago' : fecha_pago,
+                                    'tipo_proyecto' : this.encabezado.tipo_proyecto,
+                                    'clave' : this.aviso_id,
+                                    'nivel' : element.nivel
                                 }); 
                                 me.nueva = 0;
                                 me.b_estimacion = '';
@@ -1122,6 +1008,9 @@
                                     'num_estimacion' : this.actual,
                                     'total_estimacion' : this.total2,
                                     'total_pagado' : totalPagar,
+                                    'tipo_proyecto' : this.encabezado.tipo_proyecto,
+                                    'clave' : this.aviso_id,
+                                    'nivel' : element.nivel
                                 }); 
                                 me.editarEstimacion = 0;
                                 me.b_estimacion = '';
@@ -1180,148 +1069,9 @@
             },
             cancel(){
                 this.edit = 0;
-                this.edit2 = 0;
                 
                 this.getPartidas(this.aviso_id);
                 this.total_impAux = 0;
-            },
-            storeAnticipos(){
-                let me = this;
-                Swal({
-                    title: '¿Desea continuar?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Estos cambios no se pueden revertir",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-                    if (result.value) {
-                        axios.post('/estimaciones/storeAnticipo',{
-                            'aviso_id' : me.aviso_id,
-                            'monto_anticipo' : me.monto_anticipo,
-                            'fecha_anticipo' : me.fecha_anticipo
-                        }); 
-                        me.nueva = 0;
-                        me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Anticipo guardado correctamente',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
-                    }
-                })
-            },
-            storeFondoG(){
-                let me = this;
-                Swal({
-                    title: '¿Desea continuar?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Estos cambios no se pueden revertir",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-                    if (result.value) {
-                        axios.post('/estimaciones/storeFG',{
-                            'aviso_id' : me.aviso_id,
-                            'cantidad' : me.fg_cantidad,
-                            'monto_fg' : me.monto_fg,
-                            'fecha_fg' : me.fecha_fg
-                        }); 
-                        me.nueva = 0;
-                        me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Fonddo de garantia guardado correctamente',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
-                    }
-                })
-            },
-            storeImporteExtra(){
-                let me = this;
-                Swal({
-                    title: '¿Desea continuar?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Estos cambios no se pueden revertir",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-                    if (result.value) {
-                        axios.post('/estimaciones/storeImporteExtra',{
-                            'clave' : me.aviso_id,
-                            'impExtra' : me.total_impAux,
-                            'fechaExtra' : me.dateAux,
-                        }); 
-                        me.edit2 = 0;
-                        me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Fonddo de garantia guardado correctamente',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
-                    }
-                })
-            },
-            storeConceptoExtra(){
-                let me = this;
-                Swal({
-                    title: '¿Desea continuar?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Estos cambios no se pueden revertir",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-                    if (result.value) {
-                        axios.post('/estimaciones/storeConceptoExtra',{
-                            'clave' : me.aviso_id,
-                            'fecha' : me.fecha_extra,
-                            'concepto' : me.concepto,
-                            'importe' : me.importe
-                        }); 
-                        me.nueva = 0;
-                        me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Fonddo de garantia guardado correctamente',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
-                    }
-                })
             },
             storeObs(){
                 let me = this;

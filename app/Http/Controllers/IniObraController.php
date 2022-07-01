@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Ini_obra;
 use App\Ini_obra_lote;
 use App\Lote;
+use App\Licencia;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use NumerosEnLetras;
@@ -929,8 +930,8 @@ class IniObraController extends Controller
         $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe2 as total_importe', 'ini_obras.garantia_ret',
-            'ini_obras.total_anticipo', 'ini_obras.num_casas',
-            'ini_obras.anticipo',
+            'ini_obras.total_anticipo', 'ini_obras.num_casas', 'ini_obras.costo_indirecto_porcentaje',
+            'ini_obras.anticipo', 'fraccionamientos.tipo_proyecto',
             'ini_obras.porc_garantia_ret',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.total_importe2','!=',0)
@@ -956,13 +957,15 @@ class IniObraController extends Controller
         if(sizeof($ini_obra))
         //Se recorren los contratos
             foreach($ini_obra as $index => $obra){
-                $obra->anticipo = 0;
                 //Se obtiene el monto de anticipo del contrato.
                 $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
                                     ->where('aviso_id','=',$obra->id)->first();
-                $obra->total_anticipo = 0;
-                if($anticipoT->total != null)
+                if($anticipoT->total != null){
+                    $obra->anticipo = 0;
+                    $obra->total_anticipo = 0;
                     $obra->total_anticipo = $anticipoT->total;
+                }
+                    
 
                 if($obra->total_importe != 0)
                     $obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
@@ -1000,7 +1003,7 @@ class IniObraController extends Controller
     public function getPartidasDep (Request $request) {
         return Estimacion::where('aviso_id','=',$request->clave)->orderBy('id','asc')->get();
     }
-
+    //Función que retorna las partidas de las estimaciones
     public function getNivelesDep(Request $request){
         return Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
                         ->select('lotes.manzana as nivel')
@@ -1027,9 +1030,7 @@ class IniObraController extends Controller
 
         $acumAntTotal = [];
         //Query para obtener las partidas de las estimaciones
-        $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
-                        ->where('aviso_id','=',$request->clave)
-                        ->orderBy('id','asc')->get();
+        $estimaciones = $this->getPartidasDep($request);
         //Query que obtiene del historial de estimaciones el numero de estimaciones que se han creado.
         $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                         ->select('num_estimacion')
@@ -1153,6 +1154,128 @@ class IniObraController extends Controller
             'total_anticipo' => $total_anticipo,
             'conceptosExtra' => $conceptosExtra,
             'importesExtra' => $importesExtra,
+            'observaciones' => $observaciones,
+            'fecha_pago' => $fecha_pago
+        ];
+    }
+
+    //Funcion que retorna los encabezados e historial de estimaciones para departamentos
+    public function getEstimacionesDep(Request $request){
+        $observaciones = $this->getObs($request->clave);
+        //Variable para almacenar la fecha de pago de la estimación.
+        $fecha_pago = '';
+
+        $acumAntTotal = [];
+        //Query para obtener las partidas de las estimaciones
+        $estimaciones = $this->getPartidasDep($request);
+        //Query que obtiene del historial de estimaciones el numero de estimaciones que se han creado.
+        $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+                        ->select('num_estimacion')
+                        ->where('estimaciones.aviso_id','=',$request->clave)
+                        ->orderBy('num_estimacion','desc')->distinct()->get();
+        //Query que obtiene todo el historial de estimaciones del aviso de obra
+        $est = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+                                ->select('num_estimacion','total_estimacion')
+                                ->where('estimaciones.aviso_id','=',$request->clave);
+        //Filtro para numero de estimacion a buscar
+        if($request->numero != '')
+            $est = $est->where('num_estimacion','<=',$request->numero);
+
+        $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
+        
+
+        if(sizeof($est) == 0){
+            $total_estimacion = 0;
+            $num_est = 0;
+        }
+        else{
+            //Se almacena el numero de estimación a mostrar y el monto total
+            $num_est = $est[0]->num_estimacion;
+            $total_estimacion = $est[0]->total_estimacion;
+        }
+
+        //Se obtienen los montos total de las estimaciones anteriores.
+        $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+            ->select('total_estimacion')
+            ->where('estimaciones.aviso_id','=',$request->clave)
+            ->where('num_estimacion','<',$num_est)
+            ->distinct('total_estimacion')->get();
+
+        $totalEstimacionAnt = 0;
+
+        if(sizeof($acumAntTotal)){
+            //Se recorren los resultados obtenidos y se calcula el total
+            foreach($acumAntTotal as $index => $acum){
+                $totalEstimacionAnt += $acum->total_estimacion;
+            }
+        }
+            
+        $num = $num_est + 1;
+
+        (sizeof($act) == 0) ? $actual = 0 : $actual = $act[0]->num_estimacion;
+
+        //Se recorren las partidas de las estimaciones
+        foreach($estimaciones as $index => $estimacion){
+            $estimacion->num_estimacion = 0;
+            $estimacion->costo = 0;
+            $estimacion->vol = 0;
+            $estimacion->acumVol = 0;
+            $estimacion->acumCosto = 0;
+            $estimacion->porEstimarCosto = 0;
+            $estimacion->porEstimarVol = 0;
+            $estimacion->costoA = 0;
+            $estimacion->num_casas = 100;
+
+            // Si hay una estimacion a mostrar
+            if($num_est != 0){
+                //Se obtienen el total de volumen y costo acumulados
+                $acum = Hist_estimacion::select(
+                        DB::raw("SUM(vol) as volumen"),
+                        DB::raw("SUM(costo) as totalCosto")
+                    )
+                    ->where('estimacion_id','=',$estimacion->id)
+                    ->where('num_estimacion','<=',$num_est)
+                    ->get();
+                
+                //Se asignan los totales a la partida
+                if( $acum[0]->volumen > 0 ){
+                    $estimacion->acumVol = $acum[0]->volumen;
+                    $estimacion->acumCosto = $acum[0]->totalCosto;
+                }
+                //Se obtiene el vol, costo y el numero actual
+                $historial = Hist_estimacion::select(
+                    'vol', 'costo', 'num_estimacion', 'fecha_pago'
+                )
+                ->where('estimacion_id','=',$estimacion->id)
+                ->where('num_estimacion','=',$num_est)
+                ->get();
+                //Se asigna el valor actual en la estimación
+                if( sizeOf($historial) > 0 ){
+                    $estimacion->vol = $historial[0]->vol;
+                    $estimacion->costoA = $historial[0]->costo;
+                    $fecha_pago = $historial[0]->fecha_pago;
+                }
+            }
+        }
+        //Se obtienen monto total del anticipo capturado
+        $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
+            ->where('aviso_id','=',$request->clave)->first();
+            $total_anticipo = 0;
+            if($anticipoT->total != null)
+                $total_anticipo = $anticipoT->total;
+
+            $total_anticipo = $total_anticipo;
+            //Se calcula el % de anticipo.
+            $anticipo = round(($total_anticipo/$request->total_importe)*100,3);
+
+        return [
+            'estimaciones' => $estimaciones, 
+            'total_estimacion' => $total_estimacion,
+            'num_est' => $num ,
+            'numero' => $num_est,
+            'numeros' => $act,
+            'actual' => $actual,
+            'totalEstimacionAnt' => $totalEstimacionAnt,
             'observaciones' => $observaciones,
             'fecha_pago' => $fecha_pago
         ];
@@ -1667,6 +1790,92 @@ class IniObraController extends Controller
         $estimacion->fin = $request->periodo2;
         $estimacion->fecha_pago = $request->fecha_pago;
         $estimacion->save();
+
+        if($request->tipo_proyecto == 2)
+            $this->updateAvace($request);
+    }
+
+    public function updateAvace(Request $request){
+        $topeNivel = $this->totalPorcentajeNivel($request);
+        return $topeComun = $this->totalPorcentajeComun($request);
+
+        $actualNivel = $this->totalActualNivel($request);
+        $actualComun = $this->totalActualComun($request);
+
+        $porcNivel = ($actualNivel * 65)/$topeNivel;
+        $porcComun = ($actualNivel * 35)/$topeComun;
+
+        $avanceReal = round( $porcNivel + $porcComun, 2 );
+
+        $departamentos = $this->getDepManzana($request);
+
+        foreach($departamentos as $dep){
+            $lote = Licencia::findOrFail($dep['id']);
+            $lote->avance = $avanceReal;
+            $lote->save();
+        }
+
+    }
+
+    private function getDepManzana(Request $request){
+        return Ini_obra_lote::select('lote_id as id')
+                ->where('manzana','=',$request->nivel)
+                ->where('ini_obra_id','=',$request->clave)
+                ->get();
+    }
+
+    private function totalPorcentajeNivel(Request $request){
+        $estimaciones = Estimacion::select(DB::raw("SUM(estimaciones.pu_prorrateado) as total"))
+                    ->where('estimaciones.aviso_id','=',$request->clave)
+                    ->where('nivel','=',$request->nivel)
+                    ->where('comun','=',0)
+                    ->first();
+        
+        return round($estimaciones->total,2);
+    }
+
+    private function totalActualNivel(Request $request){
+        $estimaciones = Estimacion::select('id')
+                    ->where('estimaciones.aviso_id','=',$request->clave)
+                    ->where('nivel','=',$request->nivel)
+                    ->where('comun','=',0)
+                    ->get();
+
+        if(sizeof($estimaciones)){
+            $actual = Hist_estimacion::select(DB::raw("SUM(hist_estimaciones.costo) as total"))
+                ->whereIn('estimacion_id',$estimaciones)
+                ->first();
+
+            return round($actual->total,2);
+
+        }
+            
+        return 0;
+
+        
+    }
+
+    private function totalActualComun(Request $request){
+        $estimaciones = Estimacion::select('id')
+                    ->where('estimaciones.aviso_id','=',$request->clave)
+                    ->where('comun','=',1)
+                    ->get();
+
+        if(sizeof($estimaciones))
+            $actual = Hist_estimacion::select(DB::raw("SUM(hist_estimaciones.costo) as total"))
+                ->whereIn('estimacion_id',$estimaciones)
+                ->first();
+
+        return round($actual->total,2);
+    }
+
+    private function totalPorcentajeComun(Request $request){
+        $estimaciones = Estimacion::select(DB::raw("SUM(estimaciones.pu_prorrateado) as total"))
+                    ->where('estimaciones.aviso_id','=',$request->clave)
+                    ->where('comun','=',1)
+                    ->first();
+        
+        return round($estimaciones->total,2);
     }
 
     //Función para actualizar una nueva estimacion en el historial
@@ -1705,6 +1914,10 @@ class IniObraController extends Controller
             $estimacion->total_pagado = $request->total_pagado;
             $estimacion->save();
         }
+
+        
+        if($request->tipo_proyecto == 2)
+            $this->updateAvace($request);
     }
 
     //Función para registrar un anticipo
