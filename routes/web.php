@@ -492,6 +492,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/estimaciones/updatePartidasDep','IniObraController@updatePartidasDep');
         
         Route::get('/estimaciones/excelEstimaciones','IniObraController@excelEstimaciones');
+        Route::get('/estimaciones/excelEstimacionesDep','IniObraController@excelEstimacionesDep');
 
         Route::get('/estimaciones/updateAvace','IniObraController@updateAvace');
 
@@ -1273,6 +1274,8 @@ Route::group(['middleware' => ['auth']],function(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
         Route::get('/asignarPartidasUrb','AvanceController@addPartidasUrbanizacion');
         Route::get('/asignarLotesDep','DepositoController@asignarLotes');
+
+        Route::get('/ventasAbastos','ReportesController@ventasAbastos');
 
 });
 

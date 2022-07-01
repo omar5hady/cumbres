@@ -161,7 +161,7 @@
                                         <div class="col-md-2">
                                             <select class="form-control" :disabled="editarEstimacion == 1" 
                                                 v-model="b_estimacion" 
-                                                @click="getPartidas(aviso_id), n_excel = b_estimacion"
+                                                @click="getPartidas(aviso_id, encabezado.costo_indirecto_porcentaje), n_excel = b_estimacion"
                                             >
                                                 <option value="">Seleccione</option>
                                                 <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" 
@@ -181,22 +181,22 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <div class="col-md-2" v-if="((resumen.total_acum_actual/encabezado.total_importe)*100) < 100">
+                                        <div class="col-md-3" v-if="((resumen.total_acum_actual/encabezado.total_importe)*100) < 100">
                                             <button type="button" @click="nueva = 1"  class="btn btn-primary">
                                                 <i class="icon-plus"></i>&nbsp;Nueva estimación
                                             </button>
                                         </div>
 
-                                        <div class="col-md-2" v-if="actual == numero && 
-                                            (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')"
+                                        <div class="col-md-3" v-if="actual == numero && 
+                                            (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano' || userName == 'shady')"
                                         >
                                             <button type="button" @click="editarEstimacion = 1, partidasAct()"  class="btn btn-warning">
                                                 <i class="icon-pencil"></i>&nbsp;Editar estimacioón
                                             </button>
                                         </div>
                             
-                                        <div class="col-md-2">
-                                            <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+encabezado.num_casas"  
+                                        <div class="col-md-3">
+                                            <a  :href="'/estimaciones/excelEstimacionesDep?clave='+aviso_id+'&numero='+numero+'&num_casas='+encabezado.num_casas"  
                                                 class="btn btn-success"><i class="fa fa-file-text"></i> Excel
                                             </a>
                                         </div>
@@ -249,7 +249,7 @@
                                         <div class="col-md-1"></div>
                                         
                                         <div class="col-md-2">
-                                            <button type="button" @click="nueva = 0, getPartidas(aviso_id)"  
+                                            <button type="button" @click="nueva = 0, getPartidas(aviso_id, encabezado.costo_indirecto_porcentaje)"  
                                                 class="btn btn-warning">
                                                 <i class="icon-close"></i>&nbsp;Cancelar
                                             </button>
@@ -270,7 +270,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <button type="button" @click="updateEstimacion(arrayPartidas)"  class="btn btn-success">
                                                 <i class="icon-check"></i>&nbsp;Actualizar
                                             </button>
@@ -278,9 +278,10 @@
 
                                         <div class="col-md-1"></div>
                                         
-                                        <div class="col-md-2">
-                                            <button type="button" @click="editarEstimacion = 0, getPartidas(
-                                                aviso_id)"  class="btn btn-warning">
+                                        <div class="col-md-3">
+                                            <button type="button" @click="editarEstimacion = 0, 
+                                                getPartidas(aviso_id, encabezado.costo_indirecto_porcentaje)"  
+                                                class="btn btn-warning">
                                                 <i class="icon-close"></i>&nbsp;Cancelar
                                             </button>
                                         </div>
@@ -296,8 +297,8 @@
                                             <th>Concepto</th>
                                             <th>Importe</th>
                                             <th>%</th>
-                                            <th colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}} 
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <th class="td2" colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}} 
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 &nbsp;&nbsp;&nbsp;</th>
                                             <th class="td2" colspan="2" v-else-if="nueva == 1">Estimación No. {{num_estimacion}}
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -315,6 +316,7 @@
                                         <template v-for="(partida,index) in arrayPartidas">
                                             <tr :key ="partida.nivel"
                                                 v-if="index != 0 && partida.nivel != arrayPartidas[index-1].nivel"
+                                                style="background-color : #80bfff"
                                             >
                                                 <td class="text-center" colspan="12"> Fin {{arrayPartidas[index-1].nivel}}</td>
                                             </tr>
@@ -363,7 +365,7 @@
                                         </template>
                                         
                                         <tr>
-                                            <th colspan="2" class="text-right">Costo fabriación: </th>
+                                            <th colspan="2" class="text-right">Costo fabricación: </th>
                                             <th class="td2">$ {{formatNumber(total1 = totalPU)}}</th>
                                             <template v-if="nueva == 0 && editarEstimacion == 0">
                                                 <template v-if="(total2 = totalEst2) > 0">
@@ -772,7 +774,7 @@
                     'cant_tope' : cant_tope
                 }).then(function (response){
                     me.editarPartida = 0;
-                    me.getPartidas(me.aviso_id);
+                    me.getPartidas(me.aviso_id, me.encabezado.costo_indirecto_porcentaje);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -878,8 +880,6 @@
                     me.resumen.total_acum_ant = respuesta.totalEstimacionAnt + totalAcumEstimacionInd;
 
                     me.arrayObs = respuesta.observaciones;
-
-                    me.porc_anticipo = me.total_anticipo.anticipo/ 100;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -963,7 +963,7 @@
                                 }); 
                                 me.nueva = 0;
                                 me.b_estimacion = '';
-                                me.getPartidas(me.aviso_id);
+                                me.getPartidas(me.aviso_id,  me.encabezado.costo_indirecto_porcentaje);
                                 Swal({
                                     title: 'Hecho!',
                                     text: 'Estimacion guardada correctamente',
@@ -1014,7 +1014,7 @@
                                 }); 
                                 me.editarEstimacion = 0;
                                 me.b_estimacion = '';
-                                me.getPartidas(me.aviso_id);
+                                me.getPartidas(me.aviso_id,  me.encabezado.costo_indirecto_porcentaje);
                                 Swal({
                                     title: 'Hecho!',
                                     text: 'Estimacion actualizada correctamente',
@@ -1046,7 +1046,7 @@
                         me.edit = 0;
                         me.total_importe = me.total_impAux;
                         me.importe_garantia = me.total_importe * me.porc_garantia;
-                        me.getPartidas(me.aviso_id);
+                        me.getPartidas(me.aviso_id,  me.encabezado.costo_indirecto_porcentaje);
 
                         axios.put('/estimaciones/updateImporTotal',{
                             'id' : me.aviso_id,
@@ -1055,7 +1055,7 @@
                         }); 
                         me.nueva = 0;
                         me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
+                        me.getPartidas(me.aviso_id,  me.encabezado.costo_indirecto_porcentaje);
                         Swal({
                             title: 'Hecho!',
                             text: 'Cambios aplicados correctamente',
@@ -1070,7 +1070,7 @@
             cancel(){
                 this.edit = 0;
                 
-                this.getPartidas(this.aviso_id);
+                this.getPartidas(this.aviso_id, this.encabezado.costo_indirecto_porcentaje);
                 this.total_impAux = 0;
             },
             storeObs(){
@@ -1095,7 +1095,7 @@
                         }); 
                         me.nueva = 0;
                         me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
+                        me.getPartidas(me.aviso_id,  me.encabezado.costo_indirecto_porcentaje);
                         Swal({
                             title: 'Hecho!',
                             text: 'Comentario guardado correctamente',

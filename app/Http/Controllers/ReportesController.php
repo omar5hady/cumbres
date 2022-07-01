@@ -3632,5 +3632,79 @@ class ReportesController extends Controller
         }
         )->download('xls');
     }
+
+    public function ventasAbastos(Request $request){
+        //return $empresas = Empresa::select('nombre')->where('cp','=','78390')->where('colonia','like','%Abastos%')->get();
+
+        $ventasEmp = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->select('personal.nombre','personal.apellidos', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','creditos.modelo',
+                    'contratos.fecha_status','clientes.empresa',
+                    'contratos.direccion_empresa',
+                    'contratos.colonia_empresa'
+                    )
+                ->where('contratos.status','=',3)
+                //->where('cp_empresa','=','78390')
+                ->where('colonia_empresa','like','%Abastos%')
+                ->get();
+
+        // return [ 'contratos' => $ventasEmp,
+        //         'total' => $ventasEmp->count()
+        //     ];
+
+        //Creación y retorno de los resultados en excel.
+        return Excel::create('Reporte de empresas', function($excel) use ($ventasEmp){
+            $excel->sheet('Abastos', function($sheet) use ($ventasEmp){
+
+                $cabecera1 = ['Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Modelo',
+                    'Fecha de compra', 'Empresa', 'Direccion'
+                ];
+                
+                $ancho = 'J';
+                
+                $sheet->row(1,$cabecera1);
+
+                //$sheet->mergeCells('A1:'.$ancho.'1');
+
+                $sheet->cells('A1:'.$ancho.'1', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+    
+                $cont = 2;
+
+                foreach($ventasEmp as $index => $venta) {    
+                    $sheet->row($cont, [
+                        $venta->nombre.' '.$venta->apellidos, 
+                        $venta->fraccionamiento,
+                        $venta->etapa,
+                        $venta->manzana,
+                        $venta->num_lote,
+                        $venta->modelo,
+                        $venta->fecha_status,
+                        $venta->empresa,
+                        $venta->direccion_empresa.' Col.'.$venta->colonia_empresa,
+                    ]);	
+                    $cont++;
+                }
+                
+                $num='A1:'.$ancho . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        )->download('xls');
+        
+    }
     
 }

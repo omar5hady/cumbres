@@ -1777,6 +1777,421 @@ class IniObraController extends Controller
         })->download('xls');
     }
 
+    //Funcion que retorna las partidas de las estimaciones de departamentos para el aviso de obra en excel
+    public function excelEstimacionesDep(Request $request){
+        $clave = $request->clave;
+        $num_casas = 100;
+        $acumAntTotal = [];
+
+        //Llamada a la función privada que retorna las observaciones
+        $observaciones = $this->getObs($request->clave);
+        //Query para obtener las partidas de las estimaciones
+        $estimaciones = $this->getPartidasDep($request);
+
+        $aviso = Ini_obra::select('num_casas')->where('id','=',$request->clave)->first();
+        //Query que obtiene del historial de estimaciones el numero de estimaciones que se han creado.
+        $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+                        ->select('num_estimacion')
+                        ->where('estimaciones.aviso_id','=',$request->clave)
+                        ->orderBy('num_estimacion','desc')->distinct()->get();
+        //Query que obtiene todo el historial de estimaciones del aviso de obra
+        $est = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+                                ->select('num_estimacion', 'total_estimacion')
+                                ->where('estimaciones.aviso_id','=',$request->clave);
+        //Query para obtener los datos del contrato de obra
+        $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+                        ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave', 'costo_indirecto_porcentaje',
+                                'total_importe2 as total_importe', 'ini_obras.total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'ini_obras.anticipo',
+                                'contratistas.nombre as contratista'
+                        )->where('ini_obras.id','=',$request->clave)->get();
+
+        
+        //Filtro para numero de estimacion a buscar
+        if($request->numero != ''){
+            $est = $est->where('num_estimacion','<=',$request->numero);
+        }
+
+        $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
+
+        if(sizeof($est) == 0){
+            $total_estimacion = 0;
+            $num_est = 0;
+        }
+        else{
+            //Se almacena el numero de estimación a mostrar y el monto total
+            $num_est = $est[0]->num_estimacion;
+            $total_estimacion = $est[0]->total_estimacion;
+        }
+        
+
+        if(sizeof($est) == 0)
+            $num_est = 0;
+        else
+            $num_est = $est[0]->num_estimacion;
+
+        $num = $num_est + 1;
+
+        if(sizeof($act) == 0)
+            $actual = 0;
+        else
+            $actual = $act[0]->num_estimacion;
+
+        //Se obtienen los montos total de las estimaciones anteriores.
+        $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+        ->select(
+            'total_estimacion'
+        )
+        ->where('estimaciones.aviso_id','=',$request->clave)
+        ->where('num_estimacion','<',$num_est)
+        ->distinct('total_estimacion')
+        ->get();
+
+        $totalEstimacionAnt = 0;
+
+        if(sizeof($acumAntTotal)){
+            //Se recorren los resultados obtenidos y se calcula el total
+            foreach($acumAntTotal as $index => $acum){
+                $totalEstimacionAnt += $acum->total_estimacion;
+            }
+        }
+        
+        //Se recorren las partidas de las estimaciones
+        foreach($estimaciones as $index => $estimacion){
+            $estimacion->num_estimacion = 0;
+            $estimacion->costo = 0;
+            $estimacion->vol = 0;
+            $estimacion->acumVol = 0;
+            $estimacion->acumCosto = 0;
+            $estimacion->porEstimarCosto = 0;
+            $estimacion->porEstimarVol = 0;
+            $estimacion->costoA = 0;
+            $estimacion->ini = '';
+            $estimacion->fin = '';
+            $estimacion->num_casas = 100;
+            // Si hay una estimacion a mostrar
+            if($num_est != 0){
+                //Se obtienen el total de volumen y costo acumulados
+                $acum = Hist_estimacion::select(
+                        DB::raw("SUM(vol) as volumen"),
+                        DB::raw("SUM(costo) as totalCosto")
+                    )
+                    ->where('estimacion_id','=',$estimacion->id)
+                    ->where('num_estimacion','<=',$num_est)
+                    ->get();
+                //Se asignan los totales a la partida
+                if( $acum[0]->volumen > 0 ){
+                    $estimacion->acumVol = $acum[0]->volumen;
+                    $estimacion->acumCosto = $acum[0]->totalCosto;
+                }
+                //Se obtiene el vol, costo y el numero actual
+                $historial = Hist_estimacion::select(
+                    'vol', 'costo', 'num_estimacion','ini','fin'
+                )
+                ->where('estimacion_id','=',$estimacion->id)
+                ->where('num_estimacion','=',$num_est)
+                ->get();
+                //Se asigna el valor actual en la estimación
+                if( sizeOf($historial) > 0 ){
+                    $estimacion->vol = $historial[0]->vol;
+                    $estimacion->ini = $historial[0]->ini;
+                    $estimacion->fin = $historial[0]->fin;
+                    $estimacion->costoA = $historial[0]->costo;
+                }
+            }
+        }
+
+        //return $contrato;
+        //Creación y retorno de Excel
+        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
+                $num_est, $contrato, $num_casas , $totalEstimacionAnt , $observaciones,
+                $total_estimacion ){
+            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est, 
+                    $contrato, $num_casas , $totalEstimacionAnt, $observaciones,
+                    $total_estimacion ){
+                
+                $sheet->mergeCells('A1:L1');
+                $sheet->mergeCells('A3:L3');
+                $sheet->mergeCells('A4:L4');
+                $sheet->mergeCells('A5:L5');
+                
+                $sheet->mergeCells('E7:F7');
+                $sheet->mergeCells('G7:H7');
+                $sheet->mergeCells('I7:J7');
+                $sheet->mergeCells('K7:L7');
+                $sheet->setSize('A1', 40, 60);
+                $sheet->setSize('B1', 50, 20);
+                $sheet->setSize('C1', 30, 20);
+                $sheet->setSize('H1', 30, 20);
+                $sheet->setSize('J1', 30, 20);
+                $sheet->setSize('K1', 30, 20);
+                $sheet->setSize('L1', 30, 20);
+                $sheet->setSize('E7', 20, 20);
+                $sheet->setSize('F7', 20, 20);
+                $sheet->setSize('G7', 20, 20);
+    
+                $objDrawing = new PHPExcel_Worksheet_Drawing;
+                if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
+                if($contrato[0]->emp_constructora == 'CONCRETANIA');
+                    $objDrawing->setPath(public_path('img/contratos/logoConcretaniaObra.png')); //your image path
+                $objDrawing->setCoordinates('A1');
+                $objDrawing->setWorksheet($sheet);
+
+                if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    $sheet->cell('A1', function($cell) {
+
+                        // manipulate the cell
+                        $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(32);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    
+                    });
+                if($contrato[0]->emp_constructora == 'CONCRETANIA');
+                    $sheet->cell('A1', function($cell) {
+
+                        // manipulate the cell
+                        $cell->setValue(  'CONCRETANIA, SA DE CV');
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(20);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    
+                    });
+                    
+                $sheet->row(3, [
+                    'Control de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                ]);
+                $sheet->row(4, [
+                    'Contratista '.$contrato[0]->contratista 
+                ]);
+
+                $sheet->cell('A3', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                   // $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($estimaciones[0]->ini);
+                    $estimaciones[0]->ini = $fecha1->formatLocalized('%d de %B de %Y');
+
+                    $fecha2 = new Carbon($estimaciones[0]->fin);
+                    $estimaciones[0]->fin = $fecha2->formatLocalized('%d de %B de %Y');
+
+                
+                $sheet->row(6, [
+                    'Periodo: ', $estimaciones[0]->ini. ' al '.$estimaciones[0]->fin
+                ]);
+        
+                $sheet->row(7, [
+                    'No.', 'Paquete', 'Importe', '%', 'Estimación No.'.$num_est,'', 
+                    'Cantidad Tope','','Acumulado','',
+                    'Por Estimar',''
+                ]);
+
+
+                $sheet->cells('A7:L7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                    
+                $cont=8;
+
+                $sheet->setColumnFormat(array(
+                    'C' => '$#,##0.00',
+                    'F' => '$#,##0.00',
+                    'H' => '$#,##0.00',
+                    'J' => '$#,##0.00',
+                    'L' => '$#,##0.00'
+                ));
+
+                $suma0 = $suma1 = $suma2 = $suma3 = $suma4 = $suma5 = 0;
+                $iSuma0 = $iSuma1 = $iSuma2 = $iSuma3 = $iSuma4 = $iSuma5 = 0;
+                
+                foreach($estimaciones as $index => $detalle) {
+                    $cont++;       
+
+                    $montoTope = $volAcum = $montoAcum = $volPorEstimar = $montoPorEstimar = 0;
+                    
+
+                    $montoTope = $detalle->pu_prorrateado * ($detalle->num_casas/100);
+                    $volAcum = $detalle->acumVol + $detalle->num_estimacion;
+                    $montoAcum = $detalle->acumCosto + $detalle->costo;
+                    $volPorEstimar = $detalle->num_casas - $detalle->num_estimacion - $detalle->acumVol;
+                    $montoPorEstimar = ($detalle->pu_prorrateado * ($detalle->num_casas/100)) - ($detalle->acumCosto + $detalle->costo);
+
+                    $suma0+=$detalle->pu_prorrateado;
+                    $suma1+=$montoTope;
+                    $suma3+=$montoAcum;
+                    $suma5+=$montoPorEstimar;
+
+                    $sheet->row($cont, [
+                        $index+1, 
+                        $detalle->partida, 
+                        $detalle->pu_prorrateado, 
+                        $detalle->porc.' %', 
+                        $detalle->vol.' %',
+                        $detalle->costoA,
+                        $detalle->num_casas.'%',
+                        $montoTope,
+                        $volAcum.' %',
+                        $montoAcum,
+                        $volPorEstimar.' %',
+                        $montoPorEstimar,
+                    ]);	  
+                    
+                }
+                $cont+=2;
+                $sheet->row($cont, [
+                    '', 
+                    'Costo fabricación:', 
+                    $suma0, 
+                    '', 
+                    '',
+                    '',
+                    100,
+                    $suma1,
+                    '',
+                    $suma3,
+                    '',
+                    $suma5,
+                ]);	 
+
+                $iSuma0 = $suma0 * ($contrato[0]->costo_indirecto_porcentaje / 100);
+                $iSuma1 = $suma1 * ($contrato[0]->costo_indirecto_porcentaje / 100);
+                $iSuma3 = $suma3 * ($contrato[0]->costo_indirecto_porcentaje / 100);
+                $iSuma5 = $suma5 * ($contrato[0]->costo_indirecto_porcentaje / 100);
+
+                $cont++;
+                $sheet->row($cont, [
+                    '', 
+                    'Indirectos y garantias:', 
+                    $iSuma0, 
+                    '', 
+                    '',
+                    '',
+                    '',
+                    $iSuma1,
+                    '',
+                    $iSuma3,
+                    '',
+                    $iSuma5,
+                ]);	 
+
+                $cont++;
+                $sheet->row($cont, [
+                    '', 
+                    'Gran Total:', 
+                    $suma0 + $iSuma0, 
+                    '', 
+                    '',
+                    '',
+                    '',
+                    $suma1 + $iSuma1,
+                    '',
+                    $suma3 + $iSuma3,
+                    '',
+                    $suma5 + $iSuma5,
+                ]);	 
+                $num='A7:L' . $cont;
+                $sheet->setBorder($num, 'thin'); 
+
+                $total_estimacion = $total_estimacion + ($total_estimacion * ($contrato[0]->costo_indirecto_porcentaje / 100));
+                $totalEstimacionAnt = $totalEstimacionAnt + ($totalEstimacionAnt  * ($contrato[0]->costo_indirecto_porcentaje / 100));
+
+                $total_acum_actual = $totalEstimacionAnt + $total_estimacion;
+                $total_por_estimar = $contrato[0]->total_importe - $total_acum_actual;
+                $porcAnticipo = $contrato[0]->anticipo/ 100;
+
+                //'AMOR. ANTICIPO'
+                $amor_total_acum_ant = $totalEstimacionAnt * ($porcAnticipo);
+                $amor_total_estimacion = $total_estimacion * ($porcAnticipo);
+                $amor_total_acum_actual = $amor_total_acum_ant + $amor_total_estimacion;
+                $amor_total_por_estimar = $contrato[0]->total_anticipo - $amor_total_acum_actual;
+
+                // 'F. G.'
+                $fg_total_acum_ant = $totalEstimacionAnt * ($contrato[0]->porc_garantia_ret / 100);
+                $fg_total_estimacion = $total_estimacion * ($contrato[0]->porc_garantia_ret / 100);
+                $fg_total_acum_actual = $fg_total_acum_ant + $fg_total_estimacion;
+                $fg_total_por_estimar = $contrato[0]->garantia_ret - $fg_total_acum_actual;
+
+                // 'PAGADO'
+                $pagado_total_acum_ant = $totalEstimacionAnt - ( $fg_total_acum_ant + $amor_total_acum_ant);
+                $pagado_total_estimacion = $total_estimacion - ( $fg_total_estimacion + $amor_total_estimacion );
+                $pagado_total_acum_actual = $total_acum_actual - ( $fg_total_acum_actual + $amor_total_acum_actual);
+                $pagado_total_por_estimar = $total_por_estimar - ( $fg_total_por_estimar + $amor_total_por_estimar);
+
+                $cont += 2;
+
+                $sheet->row($cont, ['', '', '', 'Acum Ant', 'Esta estimación', 'Acum Actual', 'Por Estimar']);
+                $sheet->row($cont+1, ['', '', 'Estimado', $totalEstimacionAnt, $total_estimacion, $total_acum_actual, $total_por_estimar]);
+                $sheet->row($cont+2, ['', '', 'Amor. Anticipo', $amor_total_acum_ant, $amor_total_estimacion, $amor_total_acum_actual, $amor_total_por_estimar]);
+                $sheet->row($cont+3, ['', '', 'F. G.', $fg_total_acum_ant, $fg_total_estimacion, $fg_total_acum_actual, $fg_total_por_estimar]);
+                $sheet->row($cont+4, ['', '', 'Pagado', $pagado_total_acum_ant, $pagado_total_estimacion, $pagado_total_acum_actual, $pagado_total_por_estimar]);
+
+                $cont2 = $cont+4;
+                $num='C'.$cont.':G' . $cont2;
+                $sheet->setBorder($num, 'thin'); 
+
+                $sheet->setColumnFormat(array(
+                    'A'.$cont.':G'.$cont2 => '$#,##0.00'
+                ));
+
+                $sheet->row($cont+6, ['', '', '', '','Esta estimacion']);
+                $sheet->row($cont+7, ['', '', '', '',$pagado_total_estimacion]);
+                $cont2 = $cont+7;
+                $sheet->cell('E'.$cont2, function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->setColumnFormat(array(
+                    'A'.$cont2.':G'.$cont2 => '$#,##0.00'
+                ));
+            
+            });
+        })->download('xls');
+    }
+
     //Función para registrar una nueva estimacion en el historial
     public function storeEstimacion(Request $request){
         $estimacion = new Hist_estimacion();
