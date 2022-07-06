@@ -1094,8 +1094,10 @@ class LoteController extends Controller
                         ->where('lotes.contrato','=',0);
         }
 
-        if($buscar != '')//Busqueda general
-            $lotes = $lotes->where($criterio, '=', $buscar);
+        if($buscar != ''){//Busqueda general
+            ($criterio != 'modelos.nombre') ? $lotes = $lotes->where($criterio, '=', $buscar) 
+                :   $lotes = $lotes->where($criterio, 'like', '%'.$buscar.'%') ;
+        }
         if($b_modelo != '')//Busqueda por modelo
             $lotes = $lotes->where('modelos.id', '=', $b_modelo );
         if($buscar2 != '')//Busqueda por etapa

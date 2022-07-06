@@ -378,7 +378,7 @@
                                             </template>
                                             <template v-else>
                                                 <th colspan="2"></th>
-                                                <th class="td2 text-right">$ {{formatNumber(total2 = totalEst2)}}</th>
+                                                <th class="td2 text-right">$ {{formatNumber(total2 = totalEst)}}</th>
                                             </template>
                                             <th>Importe: </th>
                                             <th class="td2 text-right">$ {{formatNumber(total3 = totalTope)}}</th>
