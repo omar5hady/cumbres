@@ -932,13 +932,16 @@ class IniObraController extends Controller
             ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe2 as total_importe', 'ini_obras.garantia_ret',
             'ini_obras.total_anticipo', 'ini_obras.num_casas', 'ini_obras.costo_indirecto_porcentaje',
             'ini_obras.anticipo', 'fraccionamientos.tipo_proyecto',
-            'ini_obras.porc_garantia_ret',
+            'ini_obras.porc_garantia_ret', 'fin_estimaciones',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.total_importe2','!=',0)
             ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
         //Busqueda por proyecto
         if($request->proyecto != '')
             $ini_obra = $ini_obra->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
+
+        if($request->fin_estimaciones != '')
+            $ini_obra = $ini_obra->where('ini_obras.fin_estimaciones','=',$request->fin_estimaciones);
         
         if($buscar != ''){
             $ini_obra = $ini_obra
@@ -1157,6 +1160,12 @@ class IniObraController extends Controller
             'observaciones' => $observaciones,
             'fecha_pago' => $fecha_pago
         ];
+    }
+
+    public function finalizarEstimacion(Request $request){
+        $contrato = Ini_obra::findOrFail($request->id);
+        $contrato->fin_estimaciones = 1;
+        $contrato->save();
     }
 
     //Funcion que retorna los encabezados e historial de estimaciones para departamentos

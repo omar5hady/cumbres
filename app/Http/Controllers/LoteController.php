@@ -433,74 +433,14 @@ class LoteController extends Controller
     //Función para asignar modelos en masa.
     public function asignarMod(Request $request) // EN MASA
     {
-        $siembra = '';
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->id == 26516)return redirect('/');
-        $aviso = $request->aviso;
-        //Se obiene el nombre de la etapa
-        $etapa= Etapa::select('num_etapa')
-        ->where('id','=', $request->etapa_id)
-        ->get();
-        //Se obtienen los datos anteriores del lote
-        $modeloOld = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-        ->join('modelos','lotes.modelo_id','=','modelos.id')
-        ->select('lotes.modelo_id','lotes.num_lote','modelos.nombre',
-            'fraccionamientos.nombre as proyecto')
-        ->where('id','=',$request->id)
-        ->get();
-        //Se obtiene nombre y m2 de construccion del nuevo modelo asignado
-        $modelo= Modelo::select('construccion','nombre')
-        ->where('id','=', $request->modelo_id)
-        ->get();
 
         try {
             DB::beginTransaction();
             //FindOrFail se utiliza para buscar lo que recibe de argumento
             $lote = Lote::findOrFail($request->id);
             $lote->etapa_id = $request->etapa_id;
-            $lote->modelo_id = $request->modelo_id;
-            //Se verifica si hay un cambio de modelo
-            if($request->modelo_id != $modeloOld[0]->modelo_id){
-                //Se actualiza la fecha de siembra
-                $siembra = Carbon::today()->format('ymd');
-                $lote->siembra=$siembra;
-                //Se accede al registro de la licencia
-                $licencia = Licencia::findOrFail($request->id);
-                $licencia->cambios = 1;
-                //Se verifica si el modelo anterior es diferente de Por Asignar
-                if($modeloOld[0]->nombre != "Por Asignar")
-                    $licencia->modelo_ant = $modeloOld[0]->nombre;
-                $licencia->save();
-            }
-            $lote->construccion = $modelo[0]->construccion;
-            $lote->excedente_terreno = 0;
-            $lote->sobreprecio=0;
-            $lote->precio_base=0;
-            $lote->habilitado=0;
             $lote->save();
-            
-            if($aviso != '0'){
-                if($nombreModelo[0]->nombre != "Por Asignar"){
-                    $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-                    $fecha = Carbon::now();
-                    
-                    $arregloSimPendientes = [
-                        'notificacion' => [
-                            'usuario' => $imagenUsuario[0]->usuario,
-                            'foto' => $imagenUsuario[0]->foto_user,
-                            'fecha' => $fecha,
-                            'msj' => 'Asigno el modelo: '.$modelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$modeloOld[0]->proyecto,
-                            'titulo' => 'Nuevos modelos asignados'
-                        ]
-                    ];
-
-                    $users = User::select('id')->where('rol_id','=','1')
-                        ->orWhere('rol_id','=','6')
-                        ->orWhere('rol_id','=','4')->get();
-
-                    foreach($users as $notificar)
-                        User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
-                }
-            }
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

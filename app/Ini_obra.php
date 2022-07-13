@@ -11,7 +11,8 @@ class Ini_obra extends Model
     protected $fillable = ['fraccionamiento_id','contratista_id','f_ini','f_fin','clave',
                            'total_costo_directo','total_costo_idirecto','total_importe','anticipo','total_anticipo',
                             'tipo','iva','descripcion_corta','descripcion_larga','total_superficie','documento',
-                            'porc_garantia_ret','garantia_ret','num_casas', 'calle1', 'calle2' ,'registro_obra'
+                            'porc_garantia_ret','garantia_ret','num_casas', 'calle1', 'calle2' ,'registro_obra',
+                            'fin_estimaciones'
                         ];
 
     public function fraccionamiento(){

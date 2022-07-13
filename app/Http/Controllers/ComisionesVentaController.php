@@ -808,6 +808,11 @@ class ComisionesVentaController extends Controller
                 // Se inicializa una variable que nos indicara si el contrato se ha individualizado
                 $cambio->indiv = 0;
 
+                if($cambio->pago_ant == 0){
+                    $pend = Det_com_pendiente::select('monto_pagado')->where('detalle_id','=',$cambio->detalle_id)->get();
+                    if(sizeof($pend)) $cambio->pago_ant = $pend[0]->monto_pagado;
+                }
+
                 if($cambio->tipo_credito == 'Crédito Directo'){
                     // Para creditos directos, contrato liquidado
                     $expedientes = Expediente::select('liquidado')->where('id','=',$cambio->id)->where('liquidado','=',1)->get();

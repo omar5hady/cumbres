@@ -44,12 +44,23 @@
                                         <input  type="text" v-model="buscar" @keyup.enter="indexEstimaciones(1)" class="form-control" placeholder="Texto a buscar">
                                     </div>
                                 </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <select class="form-control" v-model="b_fin_estimaciones">
+                                            <option value="0">En Proceso</option>
+                                            <option value="1">Finalizados</option>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-6">
                                     <div class="input-group">
                                         <button type="submit" @click="indexEstimaciones(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
+
+                                
                             </div>
                             <div class="table-responsive">
                                 <table class="table2 table-bordered table-striped table-sm">
@@ -82,6 +93,11 @@
                                             <td class="td2" v-text="contrato.proyecto"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.total_importe)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.garantia_ret)"></td>
+                                            <td v-if="contrato.fin_estimaciones == 0">
+                                                <button 
+                                                    @click="finalizarEstimacion(contrato.id)"
+                                                    class="btn btn-danger">Finalizar estimación</button>
+                                            </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -954,6 +970,7 @@
                 },
                 buscar:'',
                 b_proyecto:'',
+                b_fin_estimaciones:0,
                 clave:'',
                 porcentaje_garantia:0,
                 total_importe:0,
@@ -1193,7 +1210,7 @@
                 this.total4 = 0;
                 this.total5 = 0;
                 this.b_estimacion = '';
-                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto + '&tipo=1';
+                var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar  + '&proyecto=' + me.b_proyecto + '&tipo=1' + '&fin_estimaciones=' + me.b_fin_estimaciones;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEstimaciones = respuesta.estimaciones.data;
@@ -1496,6 +1513,36 @@
                     }
                     
                 }
+            },
+            finalizarEstimacion(id){
+                let me = this
+
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+                    if (result.value) {
+                        axios.put('/estimaciones/finalizarEstimacion',{ id }); 
+                        me.indexEstimaciones(1)
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Contrato finalizado correctamente',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+
             },
             storeEstimacion(data){
                 let me = this;

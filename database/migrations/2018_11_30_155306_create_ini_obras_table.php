@@ -44,6 +44,7 @@ class CreateIniObrasTable extends Migration
             $table->string('registro_obra')->nullable();
 
             $table->string('direccion_proy')->nullable();
+            $table->boolean('fin_estimaciones')->default(0);
 
             $table->timestamps();
 

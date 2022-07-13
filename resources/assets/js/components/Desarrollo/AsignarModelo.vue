@@ -11,7 +11,7 @@
                         <i class="fa fa-align-justify"></i>Lotes
                         <!--   Boton   -->
                         <button type="button" class="btn btn-success" @click="abrirModal('lote','asignar')" >
-                            <i class="icon-pencil"></i>&nbsp;Asignar Modelos
+                            <i class="icon-pencil"></i>&nbsp;Asignar Etapas
                         </button>
                         
                         <!---->
@@ -813,15 +813,6 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" @change="selectConsYTerreno(modelo_id)" v-model="modelo_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -1016,7 +1007,7 @@
                     title: 'Estas seguro?',
                     animation: false,
                     customClass: 'animated bounceInDown',
-                    text: "Etapa y modelo se asignaran a los lotes seleccionados",
+                    text: "Etapa se asignaran a los lotes seleccionados",
                     type: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -1024,35 +1015,26 @@
                     cancelButtonText: 'Cancelar',
                     
                     confirmButtonText: 'Si, asignar!'
-                    }).then((result) => {
+                }).then((result) => {
 
                     if (result.value) {
-                        var tamaño=me.lotes_ini.length;
-                        var i=1;
-                        var aviso =0;
                         me.lotes_ini.forEach(element => {
-                            if(i == tamaño)
-                        aviso = tamaño;
-                    axios.put('/lote/actualizar3',{
-                    
-                    'id': element,
-                    'modelo_id' : this.modelo_id,
-                    'etapa_id' : this.etapa_id,
-                    'aviso' : aviso
-                    }); 
-                    i++;
-                });
-                   // me.listarLote(1,'','','','','','','lote');   
-                    me.listarLote(1);
-                    me.cerrarModal2();
-                    Swal({
-                        title: 'Hecho!',
-                        text: 'Los modelos se han asignado',
-                        type: 'success',
-                        animation: false,
-                        customClass: 'animated bounceInRight'
-                    })
-                    }})
+                            axios.put('/lote/actualizar3',{
+                                'id': element,
+                                'etapa_id' : this.etapa_id,
+                            }); 
+                        });
+                        me.listarLote(1);
+                        me.cerrarModal2();
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Los modelos se han asignado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
             },
 
             /**Metodo para mostrar los registros */

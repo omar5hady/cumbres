@@ -498,6 +498,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::put('/estimaciones/updateImporTotal','IniObraController@updateImporTotal');
         Route::put('/estimaciones/editCantTope','IniObraController@editCantTope');
+        Route::put('/estimaciones/finalizarEstimacion','IniObraController@finalizarEstimacion');
 
         Route::post('/estimaciones/store','IniObraController@storeEstimacion');
         Route::post('/estimaciones/update','IniObraController@updateEstimacion');
