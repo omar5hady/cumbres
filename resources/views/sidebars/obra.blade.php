@@ -43,7 +43,7 @@
             </li>
         @endif
 
-        @if(Auth::user()->aviso_obra == 1 || Auth::user()->partidas == 1)
+        @if(Auth::user()->aviso_obra == 1 || Auth::user()->partidas == 1 || Auth::user()->estimaciones == 1)
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
                     <i class="fa fa-building-o"></i> Departamentos
@@ -54,7 +54,7 @@
                             <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Aviso Departamentos</a>
                         </li>
                     @endif
-                    @if(Auth::user()->partidas == 1)
+                    @if(Auth::user()->estimaciones == 1)
                         <li @click="menu=282" class="nav-item">
                             <a class="nav-link" href="#"><i class="fa fa-star-half"></i> Partidas</a>
                         </li>

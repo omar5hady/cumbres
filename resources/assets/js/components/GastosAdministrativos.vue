@@ -278,6 +278,7 @@
                                             <option value="Investigacion">Investigacion</option>
                                             <option value="Pedido especial">Pedido especial</option>
                                             <option value="Registro de credito">Registro de credito</option>
+                                            <option value="Diferencia en traslado de dominio">Diferencia en traslado de dominio</option>
                                         </select>
                                 </div>
                             </div>

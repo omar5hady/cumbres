@@ -1184,6 +1184,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/inventarios/storeSalida','InventariosController@storeSalida');
         Route::get('/inventarios/getSalidas','InventariosController@getSalidas');
 
+        Route::delete('/inventarios/deleteEntrada','InventariosController@deleteEntrada');
+        Route::delete('/inventarios/deleteSalida','InventariosController@deleteSalida');
+
 
         ///////////////////// RUTAS INTEGRACION DE COBROS //////////////
         Route::get('/integracionCobros/getContratos','CobrosController@getContratos');

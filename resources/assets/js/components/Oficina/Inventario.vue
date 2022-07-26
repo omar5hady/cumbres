@@ -168,6 +168,8 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
+                                                <th v-if="userName == 'zaira.valt' 
+                                                    || userName == 'shady'"></th>
                                                 <th>Fecha</th>
                                                 <th>Concepto</th>
                                                 <th>Proveedor</th>
@@ -180,6 +182,12 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="compra in arrayCompras.data" :key="compra.id">
+                                                <td v-if="userName == 'zaira.valt' 
+                                                    || userName == 'shady'">
+                                                    <button class="btn btn-danger"
+                                                        @click="deleteEntrada(compra.id, compra.tipo_producto)"
+                                                    ><i class="icon-trash"></i></button>
+                                                </td>
                                                 <td class="td2" v-text="compra.fecha"></td>
                                                 <td class="td2" v-text="compra.concepto"></td>
                                                 <td class="td2" v-text="compra.nombre"></td>
@@ -250,6 +258,8 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
+                                                <th v-if="userName == 'zaira.valt' 
+                                                    || userName == 'shady'"></th>
                                                 <th>Fecha</th>
                                                 <th>Concepto</th>
                                                 <th>Oficina</th>
@@ -259,6 +269,12 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="salida in arraySalidas.data" :key="salida.id">
+                                                <td v-if="userName == 'zaira.valt' 
+                                                    || userName == 'shady'">
+                                                    <button class="btn btn-danger"
+                                                        @click="deleteSalida(salida.id, salida.tipo_producto)"
+                                                    ><i class="icon-trash"></i></button>
+                                                </td>
                                                 <td class="td2" v-text="salida.fecha"></td>
                                                 <td class="td2" v-text="salida.concepto"></td>
                                                 <td class="td2" v-text="salida.oficina"></td>
@@ -792,6 +808,62 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            deleteEntrada(id, tipo_producto){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/inventarios/deleteEntrada', 
+                        {params: {id,tipo_producto}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Registro borrado correctamente.',
+                        'success'
+                        )
+                        me.getCompras(1);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+            deleteSalida(id, tipo_producto){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/inventarios/deleteSalida', 
+                        {params: {id,tipo_producto}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Registro borrado correctamente.',
+                        'success'
+                        )
+                        me.getCompras(1);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
             },
             verDetalle(producto){
                 this.detalle = producto;

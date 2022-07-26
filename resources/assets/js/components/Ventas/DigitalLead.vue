@@ -709,7 +709,15 @@
                                     <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
                                         <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
 
-                                        <select class="form-control" v-if="userId == 25511 || userId == 28669 ||userId == 28270 || userId == 11 || userId == 28271 || rolId == 1"  v-model="vendedor_asign" >
+                                        <select class="form-control" 
+                                            v-if="userId == 25511 
+                                                || userId == 28669 
+                                                || userId == 28270 
+                                                || userId == 11 
+                                                || userId == 28271 
+                                                || userId == 29692 
+                                                || userId == 13 
+                                                || rolId == 1"  v-model="vendedor_asign" >
                                             <option value="">Vendedor asignado</option>
                                             <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                         </select>

@@ -140,4 +140,20 @@ class InventariosController extends Controller
         $inventario->save();
     }
 
+    public function deleteEntrada(Request $request){
+        //Se registra la compra
+        $compra = Inv_producto::findOrFail($request->id);
+        $compra->delete();
+        //Llamada a la función que se encarga de actualizar el stock en el inventario
+        $this->actualizarStock($request->tipo_producto);
+    }
+
+    public function deleteSalida(Request $request){
+        //Se registra la compra
+        $compra = Inv_salida::findOrFail($request->id);
+        $compra->delete();
+        //Llamada a la función que se encarga de actualizar el stock en el inventario
+        $this->actualizarStock($request->tipo_producto);
+    }
+
 }
