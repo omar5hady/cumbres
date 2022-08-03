@@ -87,6 +87,11 @@
                             <strong>5%</strong>
                         @endif
                         MENSUAL, PAGADERO EN ESTA CIUDAD JUNTAMENTE CON EL PRINCIPAL.
+
+                        @if($cliente[0]->id == 2311)
+                        <br><br>
+                        <sub>EL FINANCIAMIENTO GENERARA UN INTERES DE TIEE + 4,  Y UN INTERES MORATORIO  DE TIEE + 4 MULTIPLICADO POR  DOS.</sub>
+                        @endif
                     </p>
                 </div>
                 <br>

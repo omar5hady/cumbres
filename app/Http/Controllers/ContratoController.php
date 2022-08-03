@@ -981,7 +981,8 @@ class ContratoController extends Controller
                 'contratos.fecha',
                 'lotes.emp_constructora',
                 'lotes.emp_terreno',
-                'modelos.nombre as modelo'
+                'modelos.nombre as modelo',
+                'contratos.id'
             )
             ->where('contratos.id', '=', $id)->get();
 

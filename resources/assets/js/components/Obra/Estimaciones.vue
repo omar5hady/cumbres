@@ -212,7 +212,7 @@
                                         </div>
 
                                         <div class="col-md-2" v-if="actual == numero && 
-                                            (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')"
+                                            (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano' || userName == 'shady' )"
                                         >
                                             <button type="button" @click="editarEstimacion = 1, partidasAct()"  class="btn btn-warning">
                                                 <i class="icon-pencil"></i>&nbsp;Editar estimacioón
@@ -1154,11 +1154,12 @@
                 });
             },
             modoEditar(){
-                if(this.userName == 'shady' || userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano')
+                if(this.userName == 'shady' || this.userName == 'uriel.al' || this.userName == 'guadalupe.ff' || this.userName == 'pablo.torrescano')
                     this.editarPartida = 1;
             },
             editCantTope(id, cant_tope){
                 let me = this;
+                me.editarPartida = 0;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/estimaciones/editCantTope',{
                     'id': id,

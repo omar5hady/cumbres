@@ -834,6 +834,7 @@ class ExpedienteController extends Controller
             //Se accede al registro del contrato
             $contrato = Contrato::findOrFail($request->folio);
             $contrato->saldo = $contrato->saldo - round($request->descuento,2);
+            $contrato->integracion = 1;
             $contrato->save();
             //No hay saldo pendiente por liquidar
             if(round($request->total_liquidar,2) <= 0){
@@ -1401,6 +1402,10 @@ class ExpedienteController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try {
             DB::beginTransaction();
+            $contrato = Contrato::FindOrFail($request->folio);
+            $contrato->integracion = 1;
+            $contrato->save();
+
             //Se accede al registro de expediente
             $asignar = Expediente::findOrFail($request->folio);
             $asignar->fecha_firma_esc =  $request->fecha_firma_esc;

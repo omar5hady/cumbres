@@ -219,7 +219,8 @@ class CreditoPuenteController extends Controller
                                             ->whereIn('usuario',['alemunoz','shady',
                                                                     'cp.martin',
                                                                     // 'javis.mdz',
-                                                                    // 'fede.mon',
+                                                                    'fede.mon',
+                                                                    'dani_puente',
                                                                     'ing_david'
                                                                 ])
                                             ->get();
@@ -403,8 +404,8 @@ class CreditoPuenteController extends Controller
         if ($request->fraccionamiento != '')
             $creditos = $creditos->where('creditos_puente.fraccionamiento', '=', $request->fraccionamiento);
 
-        if(Auth::user()->rol_id == 3)
-            $creditos = $creditos->where('fraccionamientos.arquitecto_id', '=', Auth::user()->id);
+        // if(Auth::user()->rol_id == 3)
+        //     $creditos = $creditos->where('fraccionamientos.arquitecto_id', '=', Auth::user()->id);
 
         if ($request->folio != '')
             $creditos = $creditos->where('creditos_puente.folio', '=', $request->folio);

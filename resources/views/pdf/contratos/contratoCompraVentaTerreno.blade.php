@@ -76,7 +76,13 @@
     <div class="table1" style="border: ridge #163253 1px; color:black;  margin-top: -10px;">
         <div class="table-row">
             <div class="table-cell1">TIPO DE CREDITO: <u>{{mb_strtoupper($contratos[0]->tipo_credito)}}</u> </div>
-            <div class="table-cell1">INSTITUCION: <u>CONCRETANIA</u> </div>
+            <div class="table-cell1">INSTITUCION: 
+                @if($contratos[0]->institucion == 'Grupo Cumbres')
+                    <u>GRUPO CUMBRES</u> 
+                @else
+                    <u>CONCRETANIA</u> 
+                @endif
+            </div>
         </div>
         <div class="table-row">
             <div class="table-cell1">PLAZO: <u>{{$pago[0]->numPagos}} PAGOS</u> </div>
