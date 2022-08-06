@@ -208,6 +208,7 @@ Vue.component('puente-resumen', require('./components/CPuente/Resumen.vue'));
 
 // RH
 Vue.component('vehiculo-comodato', require('./components/Rh/VehiculoComodato.vue'));
+Vue.component('prestamos-personal', require('./components/Rh/PrestamosPersonal.vue'));
 
 // Inventario
 Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));

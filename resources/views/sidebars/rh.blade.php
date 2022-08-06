@@ -6,6 +6,13 @@
                 <a class="nav-link" href="#"><i class="fa fa-car"></i> Mantenimiento de vehiculos</a>
             </li>
         @endif
+
+        @if(Auth::user()->id==2)
+        <li @click="menu=284" class="nav-item">
+            <a class="nav-link" href="#"><i class="fa fa-money" aria-hidden="true">
+            </i> Prestamos personales</a>
+        </li>
+        @endif
         
     </ul>
 </li>

@@ -1167,6 +1167,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/vehiculos/getObservaciones','VehiculosController@getObservaciones');
         Route::post('/vehiculos/storeObs','VehiculosController@storeObs');
         Route::delete('/vehiculos/eliminarRetencion','VehiculosController@eliminarRetencion');
+        ////////////////////// RUTAS PRESTAMOS////////////////////
+        Route::get('/prestamos/getDataPrestamos','PrestamosController@getDataPrestamos');
+        Route::get('/prestamos/getColaborador','PrestamosController@dataColaborador');
+        Route::post('/prestamos/registrarPrestamo','PrestamosController@registrarPrestamo');
+        Route::put('/prestamos/firmar','PrestamosController@firmarPrestamo');
+        
+        
+        
 
         //////////////////////// RUTAS INVENTARIOS DE PRODUCTOS ///////////////////
         Route::get('/inventarios/getInventario','InventariosController@getInventario');
