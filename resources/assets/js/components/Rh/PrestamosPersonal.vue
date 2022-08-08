@@ -217,18 +217,29 @@
                                                         <th>No. quincena</th>
                                                         <th>Pago Nomina</th>
                                                         <th>Pago Extraordinario</th>
+                                                        <th>Pago Extraordinario</th>
                                                         <th>Saldo</th>
                                                         <th>Notas</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                        <tr  v-for="pago ,index in arrayPagos" :key="pago.id"> 
-                                                            <td  v-text="index"></td>
-                                                            <td v-text="pago"></td>
-                                                            <td></td>
-                                                            <td></td>
+                                                        <tr  v-for="pago in arrayPagos" :key="pago.id"> 
+                                                            <td  v-text="pago.id"></td>
+                                                            <td v-text="pago.pago"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
+                                        <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
+                                        <td class="td2" v-if="editAjuste ==0">
+                                            <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
+                                        </td>
+                                        <td class="td2"   v-if="editAjuste ==1">
+                                        <input title="Enter para guardar.. Nota: solo guarda el ultimo campo que modifico" class="form-control2" pattern="\d*" type="text"  
+                                                @keyup.enter="actualizarAjuste(pago.id,$event.target.value),editAjuste=0" :id="pago.id" :value="pago.pagoExtra" step="1"  
+                                                v-on:keypress="isNumber($event)" > 
+                                        </td>
+                                                            <td v-text="pago.saldo"></td>
                                                             <td></td>
                                                         </tr>
+                                                        <tr v-text="total"></tr>
                                                 </tbody>
 
                                             </table>
@@ -299,17 +310,15 @@
                     {id:'2',user:'admin', nombre: 'miguelin'}
                 ],
 
-                objPagos:[],
-                
                  arrayIdRH:[
                     '10','7','3',
                 ],
                  arrayIdDir:[
                     '10','7','3','2',
                 ],
-                arrayPagos:[],
                 arraySaldo:[],
-
+                
+                editAjuste:0,
                 isGerenteCurrent:false,
                 isRHCurrent:false,
                 isDireccionCurrent:false,
@@ -328,6 +337,9 @@
                 fecha_solic:null,
                 idJefe:null,
                 saldoFaltante:null,
+                pago_extraOrd:null,
+                total:0,
+
 
 
                 
@@ -346,33 +358,30 @@
                      this.borrarTabla();
 
                var NpagoQ= parseFloat(this.monto_solic )/ parseFloat(this.desc_quin )
-                    Math.ceil(NpagoQ) 
-                    
-                    
-                    dataObj={};
+                    Math.ceil(NpagoQ)       
                     var saldo = parseFloat(this.monto_solic );
                     var pagoQ = parseFloat(this.desc_quin )
                     for(var i=0; i<24; i++){
                         
-                        dataObj['id']= i+1;
-
+                         var dataObj={'pagoExtra':0};
+                            dataObj['id'] =i+1;
+                         
                         if(saldo <= 0 ){
                                 dataObj['pago']=0
-                                this.arrayPagos.push(dataObj)
                         }else{
                             if(saldo <= pagoQ ){
                                 dataObj['pago']=saldo
-                                this.arrayPagos.push(dataObj)
+                                this.total += saldo;
                                 }
                             else{
                                 dataObj['pago']=pagoQ
-                                this.arrayPagos.push(dataObj)
+                                this.total += pagoQ;
                             }
-                                 
                         }
+                        
                         if(saldo <= 0 ){
                             dataObj['saldo']=0
-                            this.arrayPagos.push(dataObj)
+                          
                         }else{
                             if(saldo <= pagoQ ){
                                 saldo -=saldo;
@@ -381,21 +390,62 @@
                                 saldo -=pagoQ;
                             }
                             dataObj['saldo']=saldo;
-                            this.arrayPagos.push(dataObj)
+                           
                         }
-                        
-
+                         
+                         this.arrayPagos.push(dataObj)
+                       
                     }
                      // terminar  
                     if(saldo > 0){
                         this.saldoFaltante = saldo;
+                        this.total += this.saldoFaltante;
+
                     }
 
                     console.log(this.saldoFaltante);
                     console.log(this.arrayPagos);
                     console.log(this.arraySaldo);
-                    console.log(this.objPagos);
+                   
 
+            },
+            actualizarAjuste(id,pagoExtr){
+               
+                  
+                   var pagoQ = parseFloat(this.desc_quin )
+                   var PagoE= parseFloat(pagoExtr);
+                   
+                   this.arrayPagos[id-1].pagoExtra = PagoE;
+                  // this.arrayPagos[id-1].saldo -= PagoE;
+                   var saldo = this.arrayPagos[id-1].saldo 
+                
+                  console.log('saldo id'+ id+ this.arrayPagos[id-1].saldo);
+
+                   for(var i=id-1; i<24; i++){
+                        
+                      
+                                console.log('saldoA ' +this.arrayPagos[i].saldo);
+                                console.log(pagoQ);
+
+                                saldo = this.arrayPagos[i].saldo;
+                                console.log('sald '+ saldo);
+                                var saldoD = saldo - pagoQ;
+                                console.log('saldoD'+ saldoD);
+
+                                this.arrayPagos[i].saldo = saldoD;
+
+                      
+
+                    }
+
+                        // console.log( this.arrayPagos);
+                    
+                     // terminar  
+                    // if( this.arrayPagos[id].saldo > 0){
+                    //     this.saldoFaltante =this.total - this.arrayPagos[id].saldo;
+                         
+                    // }
+                    // console.log( this.arrayPagos);
 
             },
 
@@ -573,6 +623,8 @@
                 
                 this.arrayPagos=[];
                 this.arraySaldo=[];
+                this.saldoFaltante=0;
+                this.pago_extraOrd=0;
 
 
             }
