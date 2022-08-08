@@ -515,10 +515,7 @@
         <template  v-if="menu==284">
             <prestamos-personal  
                 user-name="{{ Auth::user()->usuario }}" user-id="{{ Auth::user()->id }}"></prestamos-personal>
-<<<<<<< HEAD
         </template>
-=======
->>>>>>> modulo prestamos v3
         <template  v-if="menu==285">
             <fondo-ahorro user-mant="1"
                 user-id="{{  Auth::user()->id }}"
