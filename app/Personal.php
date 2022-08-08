@@ -49,4 +49,8 @@ class Personal extends Model
         return $this->hasOne('App\Vendedor');
     } 
 
+    public function fondo(){
+        return $this->hasOne('App\FondoAhorro');
+    }
+
 }

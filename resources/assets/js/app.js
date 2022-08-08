@@ -208,6 +208,7 @@ Vue.component('puente-resumen', require('./components/CPuente/Resumen.vue'));
 
 // RH
 Vue.component('vehiculo-comodato', require('./components/Rh/VehiculoComodato.vue'));
+Vue.component('fondo-ahorro', require('./components/Rh/FondoAhorro.vue'));
 
 // Inventario
 Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));
@@ -234,6 +235,8 @@ const app = new Vue({
                 v.created();
             }, 100000);
         },
+        /* Listening to the channel and when it receives a notification it adds it to the notifications
+        array. */
         created() {
             let me = this;
             Axios.post('notification/get').then(function(response) {
@@ -249,6 +252,7 @@ const app = new Vue({
                 me.notifications.unshift(notification);
             });
         },
+        /* Making an Axios call to the backend and getting the data from the database. */
         selectFraccionamientos(){
             let me = this;
             me.proyectos=[];
@@ -261,6 +265,22 @@ const app = new Vue({
                 console.log(error);
             });
         },
+        /* Formatting the number to have commas in the thousands place. */
+        formatNumber(value) {
+            let val = (value/1).toFixed(2)
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+        /* Checking if the key pressed is a number or not. */
+        isNumber: function(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
+
     },
     mounted () {
         this.created();

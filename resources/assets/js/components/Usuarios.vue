@@ -187,6 +187,9 @@
                                                         <i class="fa fa-car"></i><i class="icon-energy"></i><input v-model="admin_mant_vehiculos" type="checkbox" value="1"/> Admin. Mant. De vehiculos
                                                     </a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="fa fa-suitcase"></i> <input v-model="fondo_ahorro" type="checkbox" value="1"/> Fondo de ahorro</a>
+                                                </li>
                                                 
                                             </ul>
                                     </div>
@@ -927,6 +930,7 @@
                     vehiculos : 0,
                     mant_vehiculos : 0,
                     admin_mant_vehiculos : 0,
+                    fondo_ahorro : 0,
 
                     //Oficina
                     inventarios : 0,
@@ -1342,6 +1346,7 @@
                     me.vehiculos = usuarios[0].vehiculos;
                     me.mant_vehiculos = usuarios[0].mant_vehiculos;
                     me.admin_mant_vehiculos = usuarios[0].admin_mant_vehiculos;
+                    me.fondo_ahorro = usuarios[0].fondo_ahorro
 
                     // Oficina
                     me.inventarios = usuarios[0].inventarios;
@@ -1690,6 +1695,7 @@
                     'vehiculos':this.vehiculos,
                     'mant_vehiculos':this.mant_vehiculos,
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
+                    'fondo_ahorro': this.fondo_ahorro,
                         //Oficina
                     'inventarios' : this.inventarios,
                     'prov_inventarios' : this.prov_inventarios,

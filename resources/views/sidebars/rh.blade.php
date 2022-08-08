@@ -6,6 +6,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-car"></i> Mantenimiento de vehiculos</a>
             </li>
         @endif
+        @if( Auth::user()->fondo_ahorro == 1 )
+            <li @click="menu=285" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-suitcase"></i> Fondo de ahorro</a>
+            </li>
+        @endif
         
     </ul>
 </li>

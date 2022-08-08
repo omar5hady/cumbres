@@ -992,6 +992,7 @@
             },
             verDetalle(data,tipo){
                 this.datos = data;
+                if(this.datos.segundo_credito == null) this.datos.segundo_credito = 0
                 this.cerrarModal();
                 this.vista = 1;
                 this.editar = 0;

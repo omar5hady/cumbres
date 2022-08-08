@@ -187,11 +187,13 @@
                                 </div>
                                 <br>
                                 <div class="form-group row">
-                                    <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id" v-if="modelo.ver > 0">
-                                        <label class="col-md form-control-label" for="text-input">{{modelo.nombre}} </label>
-                                        <div class="col-md">
-                                            <input class="form-control" type="number" v-model="modelo.precio" @change="setPrice(modelo.id,modelo.precio)">
-                                        </div>
+                                    <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id">
+                                        <template v-if="modelo.ver > 0">
+                                           <label class="col-md form-control-label" for="text-input">{{modelo.nombre}} </label>
+                                            <div class="col-md">
+                                                <input class="form-control" type="number" v-model="modelo.precio" @change="setPrice(modelo.id,modelo.precio)">
+                                            </div>
+                                        </template>
                                     </div>
                                     
                                 </div>

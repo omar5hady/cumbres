@@ -512,5 +512,12 @@
         <template  v-if="menu==283">
             <estimaciones-dep user-name="{{ Auth::user()->usuario }}"></estimaciones-dep>
         </template>
+        <template  v-if="menu==285">
+            <fondo-ahorro user-mant="1"
+                user-id="{{  Auth::user()->id }}"
+                admin-mant="{{ Auth::user()->usuario }}"
+            >
+            </fondo-ahorro>
+        </template>
     @endif
 @endsection
