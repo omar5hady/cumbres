@@ -128,7 +128,6 @@ class User extends Authenticatable
         'vehiculos',
         'mant_vehiculos',
         'admin_mant_vehiculos',
-        'prestamos_personales',
         'fondo_ahorro',
         'prestamos_personales',
 
