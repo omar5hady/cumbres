@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Rh\FondoAhorro;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -1215,6 +1217,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/integracionCobros/eliminarCobro','CobrosController@eliminarCobro');
         //Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
         Route::get('/integracionCobros/printConvenioModificatorio','CobrosController@printConvenioModificatorio');
+
+        /////////////////////// Rutas Fondo de ahorro
+        Route::resource('/fondo-ahorro', Rh\FondoAhorroController::class);
+
     });
 
 

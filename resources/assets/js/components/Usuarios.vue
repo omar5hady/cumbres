@@ -191,6 +191,7 @@
                                                     <a class="nav-link">
                                                         <i class="fa fa-money"></i><input v-model="prestamos_personales" type="checkbox" value="1"/>  Prestamos personales.
                                                     </a>
+                                                    <a class="nav-link"><i class="fa fa-suitcase"></i> <input v-model="fondo_ahorro" type="checkbox" value="1"/> Fondo de ahorro</a>
                                                 </li>
                                                 
                                             </ul>
@@ -933,6 +934,7 @@
                     mant_vehiculos : 0,
                     admin_mant_vehiculos : 0,
                     prestamos_personales:0,
+                    fondo_ahorro : 0,
 
                     //Oficina
                     inventarios : 0,
@@ -1349,6 +1351,7 @@
                     me.mant_vehiculos = usuarios[0].mant_vehiculos;
                     me.admin_mant_vehiculos = usuarios[0].admin_mant_vehiculos;
                     me.prestamos_personales = usuarios[0].prestamos_personales;
+                    me.fondo_ahorro = usuarios[0].fondo_ahorro
 
                     // Oficina
                     me.inventarios = usuarios[0].inventarios;
@@ -1698,6 +1701,7 @@
                     'mant_vehiculos':this.mant_vehiculos,
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
                     'prestamos_personales':this.prestamos_personales,
+                    'fondo_ahorro': this.fondo_ahorro,
                         //Oficina
                     'inventarios' : this.inventarios,
                     'prov_inventarios' : this.prov_inventarios,

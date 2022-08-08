@@ -12,6 +12,10 @@
             <a class="nav-link" href="#"><i class="fa fa-money" aria-hidden="true">
             </i> Prestamos personales</a>
         </li>
+        @if( Auth::user()->fondo_ahorro == 1 )
+            <li @click="menu=285" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-suitcase"></i> Fondo de ahorro</a>
+            </li>
         @endif
         
     </ul>

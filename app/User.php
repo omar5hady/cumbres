@@ -129,6 +129,7 @@ class User extends Authenticatable
         'mant_vehiculos',
         'admin_mant_vehiculos',
         'prestamos_personales',
+        'fondo_ahorro',
 
         //Oficina
         'inventarios',
@@ -179,7 +180,7 @@ class User extends Authenticatable
     }
  
     public function persona(){
-        return $this->belongsTo('App\Personal');
+        return $this->belongsTo('App\Personal','id');
     }
 
     public function solicitudes_pagos(){
