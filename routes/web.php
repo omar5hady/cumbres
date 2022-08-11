@@ -1172,6 +1172,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/prestamos/getColaborador','PrestamosController@dataColaborador');
         Route::post('/prestamos/registrarPrestamo','PrestamosController@registrarPrestamo');
         Route::put('/prestamos/firmar','PrestamosController@firmarPrestamo');
+        Route::put('/prestamos/aprobar_rh','PrestamosController@aprobar_rh');
+        Route::post('/prestamos/post_obs','PrestamosController@observaciones_prestamos');
+        Route::get('/prestamos/get_obs','PrestamosController@getObservaciones');
+        Route::put('/prestamos/editarPrestamo','PrestamosController@editarPrestamo');
         
         
         

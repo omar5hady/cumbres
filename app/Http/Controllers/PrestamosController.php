@@ -23,6 +23,10 @@ class PrestamosController extends Controller
         $isRHCurrent=$request->isRHCurrent;
         $isDireccionCurrent=$request->isDireccionCurrent;
         $isGerenteCurrent=$request->isGerenteCurrent;
+        $b_colaborador=$request->b_colaborador;
+        $b_fecha1=$request->b_fecha1;
+        $b_fecha2=$request->b_fecha2;
+        $b_status=$request->b_status;
 
 
         $query=Prestamos_personales::join('personal','prestamos_personales.user_id','=','personal.id')
@@ -41,13 +45,38 @@ class PrestamosController extends Controller
                                     'desc_quin',
                                     'personal.nombre',
                                     'personal.apellidos',);
+
                                     if($isGerenteCurrent == 'true'){
-                                        $query=$query->where('jefe_id','=',$id_user)->orWhere('user_id','=',$id_user)->get();
+                                        $query=$query->where('jefe_id','=',$id_user)->orWhere('user_id','=',$id_user);
+                                        
                                     }elseif($isRHCurrent == 'true' || $isDireccionCurrent == 'true'){
-                                        $query=$query->get();
+                                        $query=$query;
                                     }else{
-                                        $query=$query->where('user_id','=',$id_user)->get();
+                                        $query=$query->where('user_id','=',$id_user);
                                     }
+
+                                    if($b_colaborador !='' ){
+                                        $query=$query->where('user_id','=',$b_colaborador);
+                                    }
+                                    
+                                    if($b_fecha1 !='' && $b_fecha2 !='' ){
+                                        $query = $query->whereBetween('fecha_ini', [$b_fecha1, $b_fecha2]);
+                                    }
+                                    
+                                else{
+                                    if ($b_fecha2 !='') {
+                                        $query = $query->where('fecha_ini','=', $b_fecha2);
+                                    }
+                                    if ($b_fecha1 !='') {
+                                        $query = $query->where('fecha_ini','=', $b_fecha1);
+                                    }
+
+                                }
+                                if($b_status !=''){
+                                    $query = $query->where('status','=',$b_status);
+                                }
+                                $query = $query->orderBy('personal.nombre','asc')->paginate(10);
+                                    
         return $query;
     }
   
@@ -77,17 +106,72 @@ class PrestamosController extends Controller
     }
 
    
-    public function store()
+    public function observaciones_prestamos(Request $request)
     {
+        $id=$request->id;
+        $obspres=$request->obs;
+
+        $obs=new Obs_prestamos_pers;
+        $obs->prestamo_id = $id;
+        $obs->observacion = $obspres;
+        $obs->usuario_id = Auth::user()->id;
+        $obs->save();
         
     }
 
+    public function getObservaciones(Request $request){
+        $obs = Obs_prestamos_pers::where('prestamo_id','=',$request->id)->get();
+        return $obs;
+    }
    
   
   
-    public function edit($id)
+    public function aprobar_rh(Request $request)
     {
-        //
+        $id=$request->id;
+        $band=$request->band; // aprobado o rechazado 
+        $fecha=$request->fecha_aprob;
+
+
+      
+                            $prestamo=Prestamos_personales::findOrFail($id);
+                                if($band == 0){
+                                    $prestamo->status=0;
+                                    $prestamo->status_rh=0;
+                                }
+                                else{
+                                    $prestamo->status_rh=2;
+                                }
+                                $prestamo->fecha_status_rh= $fecha;
+                                $prestamo->save();
+                        
+                
+        
+    }
+    public function editarPrestamo(Request $request)
+    {
+        
+        $solicitud_id=$request->solicitud_id;
+        $user_id=$request->id; 
+        $monto=$request->monto; 
+        $motivo=$request->motivo; 
+        $desc_quin=$request->desc_quin; 
+        $fecha_solic=$request->fecha_solic; 
+        $idJefe=$request->idJefe;
+
+      
+        $prestamo=Prestamos_personales::findOrFail($id);
+        $prestamo->user_id=$user_id;
+        $prestamo->monto_solicitado=$monto;
+        $prestamo->motivo=$motivo;
+        $prestamo->desc_quin =$desc_quin;
+        $prestamo->saldo =$monto;
+        $prestamo->fecha_ini =$fecha_solic;
+        $prestamo->jefe_id =$idJefe;
+        $prestamo->save();
+                        
+                
+        
     }
 
     

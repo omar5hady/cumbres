@@ -21,6 +21,8 @@ class Prestamos_personales extends Model
                             'status',
                             'saldo',
                             'desc_quin',
+                            'fecha_status_rh',
+                            'status_rh',
         
     ];
 

@@ -13,20 +13,49 @@
                     </div>
                     <div class=" card-body ">
 
-                        {{userName}}
-
                         <div class=" form-group flex-column ">
                             <button class=" btn btn-info " @click="abrirModal('registrar')"> <i class="fa fa-plus-circle"></i> Nueva Solicitud.</button>    
                         </div>
 
-                            <div class=" form-group ">
-                                <input type="text">
+                           <div class="form-group row">
+                            
+                            <div class="col-md-8" v-if="isRHCurrent">
+                                <div class="input-group">
+                                    <input type="text"  class="form-control col-md-3" disabled placeholder="Colaborador: ">
+                                    <input type="text"  v-model="b_colaborador" @keyup.enter="dataPrestamos()" class="form-control" placeholder="Nombre a buscar">
+                                </div>
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text"  class="form-control col-md-3" disabled placeholder="Fecha: ">
+                                    <input type="date"  v-model="b_fecha1" @keyup.enter="dataPrestamos()" class="form-control">
+                                    <input type="date"  v-model="b_fecha2" @keyup.enter="dataPrestamos()" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                     <select class="form-control" v-model="b_status" >
+                                        <option value="">Estatus</option>
+                                        <option value="0">Rechazado</option>
+                                        <option value="1">Pendiente</option>
+                                        <option value="2">Aprobado</option>
+                                        <option value="3">Liquidado</option>
+                                    </select>
+                                    <button type="submit" @click="dataPrestamos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+
+
 
                             <div class=" card-body ">
 
                 <!-- inicio de tabla -->
-                    <div class="table-responsive"> 
+                    <div v-if="vista_tabla ==1 "  class="table-responsive"> 
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
@@ -48,9 +77,12 @@
                                             <button type="button" @click="abrirModal('ver',prestamo)" class="btn btn-dark btn-sm">
                                                 <i class="icon-eye"></i>
                                             </button>
-                                            <button type="button" @click="abrirModal('editar',prestamo)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
+                                            <template v-if="isRHCurrent" >
+                                                <button type="button" @click="abrirModal('editar',prestamo)" class="btn btn-warning btn-sm">
+                                                    <i class="icon-pencil"></i>
+                                                </button>
+
+                                            </template>
                                         </td>
 
 
@@ -143,58 +175,107 @@
                             
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                          
                                 <div class="form-group row">
-                                    <label class="col-md-4 form-control-label " for="text-input">Colaborador:
+                                    <label class="col-md-3 " for="text-input">Colaborador:
                                     </label>
                                    
-                                        <input class=" col-md-6 " disabled="true" v-model="nom_colaborador" type="text" >
+                                         <label class="col-md-1 form-control" >fecha:</label>
+                                            <label class=" col-md-2 form-control " v-text="fecha_solic"></label>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-4 form-control-label ">Gerente a cargo:
+                                
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label ">Gerente a cargo:
                                     </label>
-                                   
-                                      <select  class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
-                                            <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-                                      </select>
+                                        <template v-if="modalVista == '0' || modalVista == '2'">
+                                            <select  class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                                    <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                                        <label class=" col-md-6 form-control disabled "  type="text" >{{nom_colaborador}}</label>
+                                            </select>
+
+                                        </template>
+                                           <template v-if="modalVista == '1'">
+                                            <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                                    <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                                            </select>
+
+                                        </template>
+
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-4 form-control-label" >Monto solicitado:
-                                        <span style="color:red;" v-show="true">*</span>
+                                        <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" >Monto solicitado:
+                                        <span style="color:red;" v-show="monto_solic == 0">*</span>
                                     </label>
+
+                                        <template v-if="modalVista =='0' || modalVista == '2' ">
+                                            <a  v-if="editAjusteMonto ==0"   class="form-control col-md-3 " style="cursor: pointer; color:deepskyblue; text-decoration: underline; text-shadow: slategrey;" title="Click para editar"  @click="editAjusteMonto=1" v-text="'$'+formatNumber(monto_solic)" ></a>
+
+                                        </template>
                                     
-                                            <input  type="text" v-on:keypress="isNumber($event)" v-model="monto_solic" >
+                                        
+                                        <template v-if="modalVista == '0' || modalVista == '2' ">
+                                            <input v-if="editAjusteMonto ==1" autofocus aria-selected="true" class=" form-control col-md-3" title="Enter para guardar.."  pattern="\d*" type="text"  
+                                                    @keyup.enter="editAjusteMonto=0"  
+                                                    v-on:keypress="isNumber($event)"  v-model="monto_solic"> 
+
+                                        </template>
+                                        <template   v-if="modalVista =='1'">
+                                            <input disabled class="col-md-3  form-control "  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
+                                            
+                                        </template>
+                                        
+                                    
                                             
                                     
                                 </div>
 
-                                <div class="form-group row">
+                                <!-- <div class="form-group row">
                                     <label class="col-md-4 form-control-label" >fecha. </label>
                                     
                                         <input type="date" v-model="fecha_solic" >
                                     
-                                </div>
+                                </div> -->
 
                                 <div class="form-group row">
-                                    <label class="col-md-4 form-control-label" for="text-descuento">Descuento por quincena.
-                                        <span style="color:red;" v-show="true">*</span>
+                                    <label class="col-md-3 form-control-label" for="text-descuento">Descuento por quincena.
+                                        <span style="color:red;" v-show="desc_quin ==0">*</span>
                                     </label>
-                                        <div class=" flex-column justify-content-lg-around">
-                                            <input type="text" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
-                                            <button type="button" v-show="desc_quin" class="btn btn-info " @click="generar_tab = 1 , generarTablaPagos()">Generar</button>
-                                             <button type="button" v-show="desc_quin" class="btn btn-warning " @click="generar_tab = 1 , borrarTabla()">Borrar</button>
+                                        <div class="form-group row col-md-9  ">
+                                                <template v-if="modalVista == '0' || modalVista == '2'">
+                                                    <a v-if="editAjusteQuin ==0"  class="form-control col-md-2 " style="cursor: pointer; color:deepskyblue; text-decoration: underline; " title="Click para editar"  @click="editAjusteQuin=1" v-text="'$'+formatNumber(desc_quin)" ></a>
+
+                                                </template>
+                                                <template v-if="modalVista =='0' || modalVista == '2' ">
+                                                    <input  v-if="editAjusteQuin ==1"  class=" form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"  
+                                                    @keyup.enter="editAjusteQuin=0"  
+                                                    v-on:keypress="isNumber($event)"  v-model="desc_quin"> 
+
+                                                </template>
+
+                                                 <template v-if="modalVista == '1'">
+                                                    <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
+
+                                                </template>
+                                                    <template v-if="modalVista == '0' || modalVista == '2'">
+                                                        <button class="form-control col-md-2 btn btn-info " type="button" v-show="desc_quin"  @click="generar_tab = 1 , generarTablaPagos()">Generar</button>
+                                                        <button class=" form-control col-md-2 btn btn-warning" type="button" v-show="desc_quin"  @click="generar_tab = 1 , borrarTabla()">Borrar</button>
+
+                                                    </template>
+
+
+
 
                                         </div>
                                     
                                 </div>
 
-                               <div class="form-group row">
-                                    <label class="col-md-4 form-control-label" >Motivo de prestamo.
-                                        <span style="color:red;" v-show="true">*</span>
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" >Motivo de prestamo.
+                                        <span style="color:red;" v-show="motivo">*</span>
                                     </label>
                                     
-                                        <textarea cols="30" rows="2"  type="text" class=" card-text " maxlength="50" v-model="motivo" ></textarea>
+                                        <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
                                     
                                 </div>
                                 <!-- <div class="form-group row">
@@ -209,37 +290,43 @@
                                    <template v-if="generar_tab == 1" >
 
                                     <div class="form-group row">
-                                        <div class=" col-md-10  justify-content-center">
+                                        <div class=" col-md-12">
                                             <div class="table-responsive"> 
-                                            <table class="table2 table-bordered table-striped table-sm"> 
+                                            <table class="table table-bordered table-striped table-sm"> 
                                                 <thead>
                                                     <tr>
                                                         <th>No. quincena</th>
                                                         <th>Pago Nomina</th>
-                                                        <th>Pago Extraordinario</th>
+                                                        <!-- <th>Pago Extraordinario</th> -->
                                                         <th>Pago Extraordinario</th>
                                                         <th>Saldo</th>
-                                                        <th>Notas</th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                        <tr  v-for="pago in arrayPagos" :key="pago.id"> 
+                                                        <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id"> 
                                                             <td  v-text="pago.id"></td>
                                                             <td v-text="pago.pago"></td>
-                                                            <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
-                                        <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
-                                        <td class="td2" v-if="editAjuste ==0">
-                                            <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
-                                        </td>
-                                        <td class="td2"   v-if="editAjuste ==1">
-                                        <input title="Enter para guardar.. Nota: solo guarda el ultimo campo que modifico" class="form-control2" pattern="\d*" type="text"  
-                                                @keyup.enter="actualizarAjuste(pago.id,$event.target.value),editAjuste=0" :id="pago.id" :value="pago.pagoExtra" step="1"  
-                                                v-on:keypress="isNumber($event)" > 
-                                        </td>
+                                                            <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
+                                                            <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
+                                                            <td class="td2" v-if="editAjuste ==0">
+                                                                <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
+                                                            </td>
+                                                            <td class="td2"   v-if="editAjuste ==1">
+                                                            <input title="Enter para guardar.. Nota: solo guarda el ultimo campo que modifico" class="form-control2" pattern="\d*" type="text"  
+                                                                    @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"  
+                                                                    v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra"> 
+                                                            </td>
                                                             <td v-text="pago.saldo"></td>
-                                                            <td></td>
+                                                            <td ></td>
                                                         </tr>
-                                                        <tr v-text="total"></tr>
+                                                        <tr >
+                                                            <td></td>
+                                                            <td class=" font-1xl bg-danger " v-text="total"></td>
+                                                            <td class=" font-1xl bg-danger " v-text="totalExtra"></td>
+                                                            <td class=" font-1xl bg-danger " v-text="saldoFaltante"></td>
+                                                        </tr>
+
                                                 </tbody>
 
                                             </table>
@@ -267,13 +354,22 @@
                                         </div>
                                     </div>
                                 </div> -->
-                            </form>
+                          
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
+                                <div v-if="isRHCurrent && modalVista == '0' && tituloModal !='Nueva Solicitud'">
+                                    <button type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
+                                    <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar</button>
+                                </div>
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-success"   @click="enviarSolicitud()">Enviar</button>
+                            <div v-if="modalVista == '0'">
+                                    <button type="button" class="btn btn-success"   @click="enviarSolicitud()">enviar</button>
+                            </div>
+                            <div v-if="modalVista == '2'">
+                                    <button type="button" class="btn btn-success"   @click="enviarSolicitud()">Guardar</button>
+                            </div>
 
                            
 
@@ -287,7 +383,59 @@
             </div>
             <!--Fin del modal-->
 
-           
+            <!-- inicio modal observaciones  -->
+             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="obs_prestamo" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="guardaObs()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
        
         </main>
 </template>
@@ -307,18 +455,22 @@
                 arrayIdGerentes:[
                    {id:'10',user:'admin1' ,nombre:'Elizabeth'},
                     {id:'11',user:'admin2', nombre: 'Yazmin'},
-                    {id:'2',user:'admin', nombre: 'miguelin'}
+                   // {id:'2',user:'admin', nombre: 'miguelin'}
                 ],
 
                  arrayIdRH:[
-                    '10','7','3',
+                    '10','7','3','2'
                 ],
                  arrayIdDir:[
-                    '10','7','3','2',
+                    '10','7','3',
                 ],
                 arraySaldo:[],
-                
+                arrayObservaciones:[],
                 editAjuste:0,
+                editAjusteMonto:0,
+                editAjusteQuin:0,
+                vista_tabla:0,
+                modalVista: '0',
                 isGerenteCurrent:false,
                 isRHCurrent:false,
                 isDireccionCurrent:false,
@@ -327,18 +479,26 @@
                 tituloModal:null,
                 arrayDataPrestamos:[],
                 generar_tab:0,
+                b_status:'',
+                b_colaborador:'',
+                b_fecha1:'',
+                b_fecha2:'',
+                e_nombre:'',
+                e_id_user:'',
 
                // variables colaborador //
-                nom_colaborador:'',
+                id_prestamo:null,
                 monto_solic:0,
                 motivo:null,
-                obs_prestamo:null,
+                obs_prestamo:'',
                 desc_quin:null,
                 fecha_solic:null,
                 idJefe:null,
                 saldoFaltante:null,
                 pago_extraOrd:null,
                 total:0,
+                totalExtra:0,
+                nom_colaborador:'',
 
 
 
@@ -371,11 +531,11 @@
                         }else{
                             if(saldo <= pagoQ ){
                                 dataObj['pago']=saldo
-                                this.total += saldo;
+                               //this.total += saldo;
                                 }
                             else{
                                 dataObj['pago']=pagoQ
-                                this.total += pagoQ;
+                               // this.total += pagoQ;
                             }
                         }
                         
@@ -399,59 +559,148 @@
                      // terminar  
                     if(saldo > 0){
                         this.saldoFaltante = saldo;
-                        this.total += this.saldoFaltante;
+                        
 
                     }
 
-                    console.log(this.saldoFaltante);
-                    console.log(this.arrayPagos);
-                    console.log(this.arraySaldo);
+                    this.arrayPagos.forEach(element => {
+                           this.total +=parseFloat(element.pago); 
+                           
+                        });
+                    // console.log(this.saldoFaltante);
+                    // console.log(this.arrayPagos);
+                    // console.log(this.arraySaldo);
                    
 
             },
-            actualizarAjuste(id,pagoExtr){
-               
-                  
-                   var pagoQ = parseFloat(this.desc_quin )
-                   var PagoE= parseFloat(pagoExtr);
-                   
-                   this.arrayPagos[id-1].pagoExtra = PagoE;
-                  // this.arrayPagos[id-1].saldo -= PagoE;
-                   var saldo = this.arrayPagos[id-1].saldo 
-                
-                  console.log('saldo id'+ id+ this.arrayPagos[id-1].saldo);
 
-                   for(var i=id-1; i<24; i++){
+            validarMonto(pagoQ, index ,extra){
                         
-                      
-                                console.log('saldoA ' +this.arrayPagos[i].saldo);
-                                console.log(pagoQ);
+                        console.log(pagoQ,index,extra);
+                        
+                        
+                        var extraO = parseFloat(extra);
+                        if(index == 0){
+                        var saldoAnt = parseFloat(this.monto_solic)
+                        }else {
+                        var  saldoAnt = parseFloat(this.arrayPagos[index-1].saldo)
+                        }
+                        var monto=parseFloat(pagoQ) + extraO
 
-                                saldo = this.arrayPagos[i].saldo;
-                                console.log('sald '+ saldo);
-                                var saldoD = saldo - pagoQ;
-                                console.log('saldoD'+ saldoD);
-
-                                this.arrayPagos[i].saldo = saldoD;
-
-                      
-
-                    }
-
-                        // console.log( this.arrayPagos);
+                if(parseFloat(saldoAnt) > monto ){
+                    this.arrayPagos[index].pagoExtra = extraO;
                     
-                     // terminar  
-                    // if( this.arrayPagos[id].saldo > 0){
-                    //     this.saldoFaltante =this.total - this.arrayPagos[id].saldo;
-                         
-                    // }
-                    // console.log( this.arrayPagos);
+                    this.arrayPagos[index].saldo = saldoAnt - monto;
+                    this.totalExtra +=extraO;
+                    this.total -=extraO   // pendinente 
+                    this.actualiTabla(index+1,0)
+                }else{
+                    this.arrayPagos[index].pago = saldoAnt;
+                    this.arrayPagos[index].pagoExtra = 0;
+                    this.arrayPagos[index].saldo = 0;
+                    this.actualiTabla(index+1,1)
+                }
+            },
+
+
+
+            actualiTabla(index,band){
+                     
+                if(index >=  this.arrayPagos.length ){
+                    return 
+                }else{
+                    
+                        console.log('index '+index);
+                        for ( index ; index < this.arrayPagos.length; index++) {
+                            let saldoAnt = this.arrayPagos[index-1].saldo
+                            if(band ==1){
+                                this.arrayPagos[index].pago = 0;
+                                this.arrayPagos[index].pagoExtra = 0;
+                                this.arrayPagos[index].saldo = 0;
+
+                            }else{
+                                    if(saldoAnt < this.desc_quin ){
+                                        this.arrayPagos[index].pago = saldoAnt;
+                                        this.arrayPagos[index].pagoExtra = 0;
+                                        this.arrayPagos[index].saldo = saldoAnt - saldoAnt;
+                                    }else{
+                                        this.arrayPagos[index].pago = this.desc_quin;
+                                        this.arrayPagos[index].pagoExtra = 0;
+                                        this.arrayPagos[index].saldo = saldoAnt - this.arrayPagos[index].pago  ;
+                                    }
+                            }
+                            
+                        }
+                      
+                    
+                }
+
+            },
+            guardaObs(){
+                let me = this;
+                axios.post('/prestamos/post_obs',{
+                    'id' :  me.id_prestamo,
+                    'obs' : me.obs_prestamo,
+                }).then(function (response){
+                    me.getObservaciones(me.id_prestamo); 
+                    me.obs_prestamo='';
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comentario guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            getObservaciones(id){
+                    let me = this;
+                var url = '/prestamos/get_obs?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayObservaciones = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+             editarSolicitud(){
+                let me = this;
+                var url = '/prestamos/editarPrestamo?id=' + this.e_id_user +
+                                                        '&monto='+ this.monto_solic +
+                                                        '&motivo='+ this.motivo +
+                                                        '&desc_quin='+this.desc_quin +
+                                                        '&fecha_solic='+ this.fecha_solic +
+                                                        '&idJefe=' + this.idJefe;
+                axios.put(url).then(function (response) {
+                    me.cerrarModal();
+                    me.dataPrestamos();
+                    
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Se ha enviado solicitud'
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
 
             },
 
             enviarSolicitud(){
                 let me = this;
                 var url = '/prestamos/registrarPrestamo?id=' + this.userId +
+                                                        '&solicitud_id='+ this.id_prestamo +
                                                         '&monto='+ this.monto_solic +
                                                         '&motivo='+ this.motivo +
                                                         '&desc_quin='+this.desc_quin +
@@ -459,6 +708,7 @@
                                                         '&idJefe=' + this.idJefe;
                 axios.post(url).then(function (response) {
                     me.cerrarModal();
+                    me.dataPrestamos();
                     
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -509,13 +759,61 @@
                 });
                
             },
+              aprobar_rh(band){
+                let me = this;
+                Swal.fire({
+                    title: 'AprobarSolicitud',
+                    text: "Este cambio no se podrá deshacer!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si continuar!',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.value) {
+                         axios.put('/prestamos/aprobar_rh',{
+                             'band':band,
+                            'id' : this.id_prestamo ,
+                            'fecha_aprob':this.fecha_solic,
+
+                            
+                        }).then(function (response){
+                                me.dataPrestamos();
+                                me.cerrarModal() 
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'Solicitud Aprobada',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                });
+               
+            },
             dataColaborador(){
             let me = this;
                 var url = '/prestamos/getColaborador?id=' + this.userId;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                   
-                     me.nom_colaborador = respuesta.nombre + ' ' +respuesta.apellidos ;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+             nom_col(id_user){
+            let me = this;
+                var url = '/prestamos/getColaborador?id=' + id_user;
+                axios.get(url).then(function (response) {
+                    me.nom_colaborador = respuesta.nombre + ' ' +respuesta.apellidos ;
+                    var respuesta = response.data;
+                     me.e_nombre=respuesta.nombre + ' ' +respuesta.apellidos ;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -525,17 +823,26 @@
             let me = this;
                 var url = '/prestamos/getDataPrestamos?idUser='+this.userId+ 
                             '&isGerenteCurrent='+this.isGerenteCurrent +
+                            '&b_colaborador='+ this.b_colaborador +
                             '&isRHCurrent='+ this.isRHCurrent +
+                            '&b_fecha1='+ this.b_fecha1 +
+                            '&b_fecha2='+ this.b_fecha2 +
+                            '&b_status='+ this.b_status +
                             '&isDireccionCurrent='+ this.isDireccionCurrent;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                   
-                     me.arrayDataPrestamos = respuesta;
+                     me.arrayDataPrestamos = respuesta.data;
+                     if(me.arrayDataPrestamos.length > 0){ // Mod
+                        me.vista_tabla =1;
+                     }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
+
+
               isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -552,7 +859,7 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
 
-             abrirModal(accion){
+             abrirModal(accion,data=[]){
                
                 switch(accion){
                     case 'registrar':
@@ -562,6 +869,7 @@
                         const mes  = fecha.getMonth()+1;
                         const dia  = fecha.getDate();
                         this.modal=1;
+                        this.modalVista='0';
                         this.tituloModal='Nueva Solicitud';
                         this.fecha_solic=anio+'-'+mes+'-'+dia;
 
@@ -569,17 +877,45 @@
                     }
                     case 'ver':
                     {
-                      
+                        this.modal=1;
+                        this.modalVista='1';
+                        this.tituloModal='Solicitud';
+                        this.fecha_solic=data['fecha_ini'];
+                        this.monto_solic=data['monto_solicitado'];
+                        this.idJefe=data['jefe_id'];
+                        this.motivo=data['motivo'];
+                        this.desc_quin=data['desc_quin'];
+                        this.generarTablaPagos();
+                        this.generar_tab=1;
                         break;
                     }
                     case 'editar':
                     {
-                       
-                        
+                        this.modal=1;
+                        this.modalVista='2';
+                        this.id_prestamo=data['id'];
+                        this.tituloModal='Editar Solicitud';
+                        this.fecha_solic=data['fecha_ini'];
+                        this.monto_solic=data['monto_solicitado'];
+                        this.idJefe=data['jefe_id'];
+                        this.motivo=data['motivo'];
+                        this.desc_quin=data['desc_quin'];
+                        this.nom_col(data['user_id']);
+                        this.e_id_user=data['user_id'];
+                        this.generarTablaPagos();
+                        this.nom_colaborador=this.e_nombre;
+                        this.generar_tab=1;
                         break;
+                       
+                      
                     }
                     case 'observaciones':
                     {
+                        this.modal=2;
+                        this.modalVista='1';
+                        this.id_prestamo=data['id'];
+                        this.getObservaciones(this.id_prestamo);
+                        this.obs_prestamo=null;
                        
                         break;
                     }
@@ -615,7 +951,18 @@
             cerrarModal(){
                 
                 this.modal=null;
+                this.id_prestamo=null;
                 this.tituloModal=null;
+                this.modalVista='0';
+                this.tituloModal=null;
+                this.fecha_solic=null;
+                this.monto_solic=0;
+                this.idJefe=null;
+                this.motivo=null;
+                this.desc_quin=null;
+                this.e_id_user='';
+                this.e_nombre='';
+                this.borrarTabla();
 
 
             },
@@ -631,11 +978,11 @@
            
         },
         mounted() {
-            this.dataPrestamos();
             this.dataColaborador();
             this.isGerenteCurrent_Id();
             this.isRHCurrent_Id();
             this.isDirecCurrent_Id();
+            this.dataPrestamos();
 
             
            
