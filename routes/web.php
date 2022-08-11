@@ -1176,6 +1176,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/prestamos/post_obs','PrestamosController@observaciones_prestamos');
         Route::get('/prestamos/get_obs','PrestamosController@getObservaciones');
         Route::put('/prestamos/editarPrestamo','PrestamosController@editarPrestamo');
+        Route::post('/prestamos/post_tablaPagosAprobada','PrestamosController@generaTablaPagos');
+        Route::get('/prestamos/getTablaPagos','PrestamosController@getTablaPagos');
         
         
         

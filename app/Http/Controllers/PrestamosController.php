@@ -102,6 +102,8 @@ class PrestamosController extends Controller
         $prestamo->jefe_id =$idJefe;
         $prestamo->save();
 
+        return $prestamo->id;
+
 
     }
 
@@ -160,7 +162,7 @@ class PrestamosController extends Controller
         $idJefe=$request->idJefe;
 
       
-        $prestamo=Prestamos_personales::findOrFail($id);
+        $prestamo=Prestamos_personales::findOrFail($solicitud_id);
         $prestamo->user_id=$user_id;
         $prestamo->monto_solicitado=$monto;
         $prestamo->motivo=$motivo;
@@ -169,8 +171,77 @@ class PrestamosController extends Controller
         $prestamo->fecha_ini =$fecha_solic;
         $prestamo->jefe_id =$idJefe;
         $prestamo->save();
+
+
+        $tablaPagos=$request->arrPagos;
+
+         $arrayPagos=[];
+        foreach ($tablaPagos as $key => $value) {
+            $arrayPagos[$key]['solic_id']=$solicitud_id;
+            $arrayPagos[$key]['monto_pago']=$value['pago'];
+            //$arrayPagos[$key]['fecha_pago']=$value['solicitud_id'];
+           // $arrayPagos[$key]['concepto']=$value['solicitud_id'];  ///PENDIENTE DE REVISAR
+            $arrayPagos[$key]['status']=0;
+            $arrayPagos[$key]['monto_pago_extra']=$value['pagoExtra'];
+            $arrayPagos[$key]['saldo']=$value['saldo'];
+        }
+
+        $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
+
+        foreach ($pagos  as $key => $pago){
+            $p=Pagos_prestamos::findOrFail($pago->id);
+            $p->monto_pago=$arrayPagos[$key]['monto_pago'];
+            $p->status =$arrayPagos[$key]['status'];
+            $p->monto_pago_extra =$arrayPagos[$key]['monto_pago_extra'];
+            $p->saldo =$arrayPagos[$key]['saldo'];
+            $p->save();
+        }
                         
                 
+        
+    }
+
+    public function generaTablaPagos(Request $request)
+    {
+        
+       
+            $solicitud_id=$request->id;
+    
+            $pagos=$request->arrPagos;
+    
+            foreach ($pagos as $key => $monto) {
+    
+                $pago=new Pagos_prestamos;
+                    $pago->solic_id=$solicitud_id;
+                $pago->monto_pago=$monto['pago'];
+                $pago->status =0;
+                $pago->monto_pago_extra =$monto['pagoExtra'];
+                $pago->saldo =$monto['saldo'];
+                $pago->save();
+                # code...
+            }
+        
+       
+        
+    }
+    public function getTablaPagos(Request $request)
+    {
+        
+        $solicitud_id=$request->id;
+
+        $pagos = Pagos_prestamos::where('solic_id','=',$solicitud_id)->get();
+        if(sizeof($pagos)>0 ){
+            foreach ($pagos as $key => $pago) {
+                $tabla[$key]['id']=$key+1;
+                $tabla[$key]['pago']=$pago->monto_pago;
+                $tabla[$key]['pagoExtra']=$pago->monto_pago_extra;
+                $tabla[$key]['saldo']=$pago->saldo;
+            }
+
+            return $tabla;
+        }else
+            return $tabla=[];
+       
         
     }
 

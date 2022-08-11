@@ -14,6 +14,8 @@ class Pagos_prestamos extends Model
                             'fecha_pago',
                             'concepto',
                             'status',
+                            'monto_pago_extra',
+                            'saldo',
         
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 }

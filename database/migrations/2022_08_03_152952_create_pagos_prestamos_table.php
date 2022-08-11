@@ -21,6 +21,8 @@ class CreatePagosPrestamosTable extends Migration
             $table->date('fecha_pago');
             $table->string('concepto',30);
             $table->boolean('status');
+            $table->float('monto_pago_extra',10,2);
+            $table->float('saldo',10,2);
 
             $table->foreign('solic_id')->references('id')->on('prestamos_personales')->onDelete('cascade');
 

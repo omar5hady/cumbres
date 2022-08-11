@@ -177,9 +177,11 @@
                         <div class="modal-body">
                           
                                 <div class="form-group row">
-                                    <label class="col-md-3 " for="text-input">Colaborador:
+                                    <label class="col-md-3 "  for="text-input">Colaborador:
                                     </label>
-                                   
+                                    <label v-if="modalVista == '0'  " class=" col-md-6 form-control " v-text="nom_colaborador"></label>
+                                    <label v-if="modalVista == '2' || modalVista == '1'" class=" col-md-6 form-control " v-text="e_nombre"></label>
+                                         
                                          <label class="col-md-1 form-control" >fecha:</label>
                                             <label class=" col-md-2 form-control " v-text="fecha_solic"></label>
                                 </div>
@@ -190,7 +192,7 @@
                                         <template v-if="modalVista == '0' || modalVista == '2'">
                                             <select  class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
                                                     <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-                                        <label class=" col-md-6 form-control disabled "  type="text" >{{nom_colaborador}}</label>
+                                        
                                             </select>
 
                                         </template>
@@ -258,7 +260,7 @@
 
                                                 </template>
                                                     <template v-if="modalVista == '0' || modalVista == '2'">
-                                                        <button class="form-control col-md-2 btn btn-info " type="button" v-show="desc_quin"  @click="generar_tab = 1 , generarTablaPagos()">Generar</button>
+                                                        <button class="form-control col-md-2 btn btn-info " type="button" v-show="desc_quin"  @click="generar_tab = 1 , editAjuste=0, generarTablaPagos()">Generar</button>
                                                         <button class=" form-control col-md-2 btn btn-warning" type="button" v-show="desc_quin"  @click="generar_tab = 1 , borrarTabla()">Borrar</button>
 
                                                     </template>
@@ -295,7 +297,8 @@
                                             <table class="table table-bordered table-striped table-sm"> 
                                                 <thead>
                                                     <tr>
-                                                        <th>No. quincena</th>
+                                                        <th></th>
+                                                        <th >No. quincena</th>
                                                         <th>Pago Nomina</th>
                                                         <!-- <th>Pago Extraordinario</th> -->
                                                         <th>Pago Extraordinario</th>
@@ -304,27 +307,36 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                        <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id"> 
-                                                            <td  v-text="pago.id"></td>
-                                                            <td v-text="pago.pago"></td>
+                                                        <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id">
+                                                            <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn btn-danger " style=" margin:1px "><i class=" fa small fa-trash"></i> </button> </td> 
+                                                            <td   v-text="pago.id"></td>
+                                                            <td v-text="'$'+formatNumber(pago.pago)"></td>
                                                             <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
                                                             <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
-                                                            <td class="td2" v-if="editAjuste ==0">
-                                                                <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
-                                                            </td>
-                                                            <td class="td2"   v-if="editAjuste ==1">
-                                                            <input title="Enter para guardar.. Nota: solo guarda el ultimo campo que modifico" class="form-control2" pattern="\d*" type="text"  
-                                                                    @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"  
-                                                                    v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra"> 
-                                                            </td>
-                                                            <td v-text="pago.saldo"></td>
-                                                            <td ></td>
+                                                            <template v-if="modalVista == '0' || modalVista == '2'">
+                                                                <td class="td2" v-if="editAjuste ==0">
+                                                                    <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
+                                                                </td>
+                                                                <td class="td2"   v-if="editAjuste ==1">
+                                                                <input title="Enter para guardar.. Nota: solo guarda el ultimo campo que modifico" class="form-control2" pattern="\d*" type="text"  
+                                                                        @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"  
+                                                                        v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra"> 
+                                                                </td>
+                                                            </template   >
+                                                            <template v-else>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
+
+                                                            </template>
+                                                            <td v-text="'$'+formatNumber(pago.saldo)"></td>
+                                                            <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn  " style="  margin:1px "><i class="  fa small fa-check-circle"></i> </button> </td> 
                                                         </tr>
                                                         <tr >
                                                             <td></td>
-                                                            <td class=" font-1xl bg-danger " v-text="total"></td>
-                                                            <td class=" font-1xl bg-danger " v-text="totalExtra"></td>
-                                                            <td class=" font-1xl bg-danger " v-text="saldoFaltante"></td>
+                                                            <td></td>
+                                                            <td class=" font-1xl bg-info " v-text="total"></td>
+                                                            <td class=" font-1xl bg-info " v-text="totalExtra"></td>
+                                                            <td v-if="saldoFaltante > 0" class=" font-1xl bg-danger " v-text="saldoFaltante"></td>
+                                                            <td v-else  class=" font-1xl bg-success " v-text="saldoFaltante"></td>
                                                         </tr>
 
                                                 </tbody>
@@ -358,8 +370,8 @@
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
-                                <div v-if="isRHCurrent && modalVista == '0' && tituloModal !='Nueva Solicitud'">
-                                    <button type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
+                                <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud'">
+                                    <button v-if="saldoFaltante <=0 " type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
                                     <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar</button>
                                 </div>
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -368,7 +380,7 @@
                                     <button type="button" class="btn btn-success"   @click="enviarSolicitud()">enviar</button>
                             </div>
                             <div v-if="modalVista == '2'">
-                                    <button type="button" class="btn btn-success"   @click="enviarSolicitud()">Guardar</button>
+                                    <button type="button" class="btn btn-success"   @click="editarSolicitud()">Guardar</button>
                             </div>
 
                            
@@ -464,6 +476,7 @@
                  arrayIdDir:[
                     '10','7','3',
                 ],
+                arrayPagos:[],
                 arraySaldo:[],
                 arrayObservaciones:[],
                 editAjuste:0,
@@ -592,12 +605,17 @@
                     
                     this.arrayPagos[index].saldo = saldoAnt - monto;
                     this.totalExtra +=extraO;
-                    this.total -=extraO   // pendinente 
+                            if(this.saldoFaltante > 0){
+                                this.saldoFaltante -=extraO;
+                            }else{
+                                this.total -=extraO;
+                            }
                     this.actualiTabla(index+1,0)
                 }else{
                     this.arrayPagos[index].pago = saldoAnt;
                     this.arrayPagos[index].pagoExtra = 0;
                     this.arrayPagos[index].saldo = 0;
+                    this.saldoFaltante=0;
                     this.actualiTabla(index+1,1)
                 }
             },
@@ -671,11 +689,13 @@
                 let me = this;
                 var url = '/prestamos/editarPrestamo?id=' + this.e_id_user +
                                                         '&monto='+ this.monto_solic +
+                                                        '&solicitud_id='+ this.id_prestamo +
                                                         '&motivo='+ this.motivo +
                                                         '&desc_quin='+this.desc_quin +
                                                         '&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
-                axios.put(url).then(function (response) {
+                axios.put(url,{'arrPagos': me.arrayPagos}).then(function (response) {
+                    me.guardaTablaPagos();
                     me.cerrarModal();
                     me.dataPrestamos();
                     
@@ -700,13 +720,18 @@
             enviarSolicitud(){
                 let me = this;
                 var url = '/prestamos/registrarPrestamo?id=' + this.userId +
-                                                        '&solicitud_id='+ this.id_prestamo +
+                                                        
                                                         '&monto='+ this.monto_solic +
                                                         '&motivo='+ this.motivo +
                                                         '&desc_quin='+this.desc_quin +
                                                         '&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
                 axios.post(url).then(function (response) {
+                    
+                    var respuesta = response.data;
+                    me.id_prestamo = respuesta;
+
+                    me.guardaTablaPagos();
                     me.cerrarModal();
                     me.dataPrestamos();
                     
@@ -760,6 +785,9 @@
                
             },
               aprobar_rh(band){
+                if(band == 1){
+                    this.guardaTablaPagos();
+                }
                 let me = this;
                 Swal.fire({
                     title: 'AprobarSolicitud',
@@ -795,12 +823,41 @@
                 });
                
             },
+            guardaTablaPagos(){
+                let me = this;
+                axios.post('/prestamos/post_tablaPagosAprobada',{
+                    'id' :  me.id_prestamo,
+                    'arrPagos' : me.arrayPagos,
+                }).then(function (response){
+                    me.cerrarModal();
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Tabla de pagos guardada',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+             getTablaPagos(id_solicitud){
+            let me = this;
+                var url = '/prestamos/getTablaPagos?id=' + id_solicitud;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayPagos=respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             dataColaborador(){
             let me = this;
                 var url = '/prestamos/getColaborador?id=' + this.userId;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                  
+                   me.nom_colaborador=respuesta.nombre + ' ' +respuesta.apellidos ;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -811,7 +868,6 @@
             let me = this;
                 var url = '/prestamos/getColaborador?id=' + id_user;
                 axios.get(url).then(function (response) {
-                    me.nom_colaborador = respuesta.nombre + ' ' +respuesta.apellidos ;
                     var respuesta = response.data;
                      me.e_nombre=respuesta.nombre + ' ' +respuesta.apellidos ;
                 })
@@ -879,13 +935,16 @@
                     {
                         this.modal=1;
                         this.modalVista='1';
+                        this.id_prestamo=data['id'];
                         this.tituloModal='Solicitud';
                         this.fecha_solic=data['fecha_ini'];
                         this.monto_solic=data['monto_solicitado'];
                         this.idJefe=data['jefe_id'];
+                        this.nom_col(data['user_id']);
                         this.motivo=data['motivo'];
                         this.desc_quin=data['desc_quin'];
-                        this.generarTablaPagos();
+                        this.getTablaPagos(data['id']);
+                        //this.generarTablaPagos();
                         this.generar_tab=1;
                         break;
                     }
@@ -902,8 +961,8 @@
                         this.desc_quin=data['desc_quin'];
                         this.nom_col(data['user_id']);
                         this.e_id_user=data['user_id'];
-                        this.generarTablaPagos();
-                        this.nom_colaborador=this.e_nombre;
+                        this.getTablaPagos(data['id']);
+                        //this.generarTablaPagos();
                         this.generar_tab=1;
                         break;
                        
@@ -972,6 +1031,8 @@
                 this.arraySaldo=[];
                 this.saldoFaltante=0;
                 this.pago_extraOrd=0;
+                this.total=0;
+                this.totalExtra=0;
 
 
             }
