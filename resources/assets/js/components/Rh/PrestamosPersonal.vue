@@ -276,8 +276,13 @@
                                     <label class="col-md-3 form-control-label" >Motivo de prestamo.
                                         <span style="color:red;" v-show="motivo">*</span>
                                     </label>
-                                    
+                                     <template v-if="modalVista == '0' || modalVista == '2'"> 
                                         <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                                     </template>
+                                      <template v-if="modalVista == '1'"> 
+                                        <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                                     </template>
+
                                     
                                 </div>
                                 <!-- <div class="form-group row">
@@ -297,28 +302,28 @@
                                             <table class="table table-bordered table-striped table-sm"> 
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
+                                                        
                                                         <th >No. quincena</th>
                                                         <th>Pago Nomina</th>
                                                         <!-- <th>Pago Extraordinario</th> -->
                                                         <th>Pago Extraordinario</th>
                                                         <th>Saldo</th>
-                                                        <th></th>
+                                                        <th v-if="modalVista == '1' || modalVista == '2' && status_rh == 2">Status pago</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                        <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id">
-                                                            <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn btn-danger " style=" margin:1px "><i class=" fa small fa-trash"></i> </button> </td> 
+                                                     <tr  v-for="(pago, index ) in arrayPagosCap" :key="pago.id">
+                                                            <!-- <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn btn-danger " style=" margin:1px "><i class=" fa small fa-trash"></i> </button> </td>  -->
                                                             <td   v-text="pago.id"></td>
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
                                                             <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
                                                             <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
-                                                            <template v-if="modalVista == '0' || modalVista == '2'">
+                                                            <template v-if="modalVista == '0' || modalVista == '2'  && pago.status != 1 ">
                                                                 <td class="td2" v-if="editAjuste ==0">
                                                                     <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
                                                                 </td>
-                                                                <td class="td2"   v-if="editAjuste ==1">
-                                                                <input title="Enter para guardar.. Nota: solo guarda el ultimo campo que modifico" class="form-control2" pattern="\d*" type="text"  
+                                                                <td class="td2"   v-if="editAjuste ==1 ">
+                                                                <input title="Enter para guardar.. " class="form-control2" pattern="\d*" type="text"  
                                                                         @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"  
                                                                         v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra"> 
                                                                 </td>
@@ -328,11 +333,54 @@
 
                                                             </template>
                                                             <td v-text="'$'+formatNumber(pago.saldo)"></td>
-                                                            <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn  " style="  margin:1px "><i class="  fa small fa-check-circle"></i> </button> </td> 
+                                                            <template v-if=" modalVista == '2'"  >
+                                                                <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
+                                                                <td v-if=" pago.status == 0 " class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn  " style="  margin:1px " @click="capturarPago(pago.id_pago)" ><i class="  fa small fa-check-circle"></i> </button> </td> 
+                                                                <td v-if=" pago.status == 1 " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td> 
+                                                                </template>
+                                                            </template>
+                                                            <template v-else >
+                                                                <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
+                                                                <td v-if=" pago.status == 1  " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+pago.fecha_pago"> </td> 
+                                                                </template>
+                                                            </template>
+                                                        </tr>
+                                                        <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id">
+                                                            <!-- <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn btn-danger " style=" margin:1px "><i class=" fa small fa-trash"></i> </button> </td>  -->
+                                                            <td   v-text="pago.id"></td>
+                                                            <td v-text="'$'+formatNumber(pago.pago)"></td>
+                                                            <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
+                                                            <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
+                                                            <template v-if="modalVista == '0' || modalVista == '2'  && pago.status != 1 ">
+                                                                <td class="td2" v-if="editAjuste ==0">
+                                                                    <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
+                                                                </td>
+                                                                <td class="td2"   v-if="editAjuste ==1 ">
+                                                                <input title="Enter para guardar.. " class="form-control2" pattern="\d*" type="text"  
+                                                                        @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"  
+                                                                        v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra"> 
+                                                                </td>
+                                                            </template   >
+                                                            <template v-else>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
+
+                                                            </template>
+                                                            <td v-text="'$'+formatNumber(pago.saldo)"></td>
+                                                            <template v-if=" modalVista == '2'"  >
+                                                                <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
+                                                                <td v-if=" pago.status == 0 " class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn  " style="  margin:1px " @click="capturarPago(pago.id_pago)" ><i class="  fa small fa-check-circle"></i> </button> </td> 
+                                                                <td v-if=" pago.status == 1 " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td> 
+                                                                </template>
+                                                            </template>
+                                                            <template v-else >
+                                                                <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
+                                                                <td v-if=" pago.status == 1  " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+pago.fecha_pago"> </td> 
+                                                                </template>
+                                                            </template>
                                                         </tr>
                                                         <tr >
                                                             <td></td>
-                                                            <td></td>
+                                                            
                                                             <td class=" font-1xl bg-info " v-text="total"></td>
                                                             <td class=" font-1xl bg-info " v-text="totalExtra"></td>
                                                             <td v-if="saldoFaltante > 0" class=" font-1xl bg-danger " v-text="saldoFaltante"></td>
@@ -370,7 +418,7 @@
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
-                                <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud'">
+                                <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud' && status_rh !=2">
                                     <button v-if="saldoFaltante <=0 " type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
                                     <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar</button>
                                 </div>
@@ -467,16 +515,17 @@
                 arrayIdGerentes:[
                    {id:'10',user:'admin1' ,nombre:'Elizabeth'},
                     {id:'11',user:'admin2', nombre: 'Yazmin'},
-                   // {id:'2',user:'admin', nombre: 'miguelin'}
+                    {id:'2',user:'admin', nombre: 'miguelin'}
                 ],
 
                  arrayIdRH:[
-                    '10','7','3','2'
+                    '31298','2'
                 ],
                  arrayIdDir:[
-                    '10','7','3',
+                    ,'3','2'
                 ],
                 arrayPagos:[],
+                arrayPagosCap:[],
                 arraySaldo:[],
                 arrayObservaciones:[],
                 editAjuste:0,
@@ -498,6 +547,11 @@
                 b_fecha2:'',
                 e_nombre:'',
                 e_id_user:'',
+                firma_jefe:0,
+                firma_rh:0,
+                firma_dir:0,
+                saldo_ant_Cap:0,
+                index_cap:null,
 
                // variables colaborador //
                 id_prestamo:null,
@@ -512,6 +566,7 @@
                 total:0,
                 totalExtra:0,
                 nom_colaborador:'',
+                status_rh:0,
 
 
 
@@ -580,23 +635,29 @@
                            this.total +=parseFloat(element.pago); 
                            
                         });
-                    // console.log(this.saldoFaltante);
-                    // console.log(this.arrayPagos);
-                    // console.log(this.arraySaldo);
                    
 
             },
 
-            validarMonto(pagoQ, index ,extra){
-                        
-                        console.log(pagoQ,index,extra);
+            validarMonto(pagoQ, inde ,extra){
                         
                         
+                         this.totalExtra=0;
+                        var index=parseFloat(inde);
+                        console.log(index);
+                        var index_capturado=parseFloat(this.index_cap);
+                        console.log('cap '+this.index_cap );
+                        console.log(index_capturado );
                         var extraO = parseFloat(extra);
                         if(index == 0){
                         var saldoAnt = parseFloat(this.monto_solic)
                         }else {
-                        var  saldoAnt = parseFloat(this.arrayPagos[index-1].saldo)
+                            if(this.arrayPagosCap.length >0 &&  index_capturado  == index ){
+                                 var  saldoAnt = this.saldo_ant_Cap;
+                                 console.log(this.saldo_ant_Cap);
+                            }else{
+                                var  saldoAnt = parseFloat(this.arrayPagos[index-1].saldo)
+                            }
                         }
                         var monto=parseFloat(pagoQ) + extraO
 
@@ -604,7 +665,7 @@
                     this.arrayPagos[index].pagoExtra = extraO;
                     
                     this.arrayPagos[index].saldo = saldoAnt - monto;
-                    this.totalExtra +=extraO;
+                    this.totalExtra +=extraO;  // PENDEINTE
                             if(this.saldoFaltante > 0){
                                 this.saldoFaltante -=extraO;
                             }else{
@@ -623,14 +684,15 @@
 
 
             actualiTabla(index,band){
-                     
+                     console.log(index);
                 if(index >=  this.arrayPagos.length ){
                     return 
                 }else{
                     
                         console.log('index '+index);
                         for ( index ; index < this.arrayPagos.length; index++) {
-                            let saldoAnt = this.arrayPagos[index-1].saldo
+                           
+                           let saldoAnt = this.arrayPagos[index-1].saldo
                             if(band ==1){
                                 this.arrayPagos[index].pago = 0;
                                 this.arrayPagos[index].pagoExtra = 0;
@@ -649,8 +711,8 @@
                             }
                             
                         }
-                      
-                    
+             
+            this.calculaTotales();        
                 }
 
             },
@@ -695,7 +757,7 @@
                                                         '&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
                 axios.put(url,{'arrPagos': me.arrayPagos}).then(function (response) {
-                    me.guardaTablaPagos();
+                   // me.guardaTablaPagos();
                     me.cerrarModal();
                     me.dataPrestamos();
                     
@@ -752,6 +814,40 @@
                 });
 
             },
+            capturarPago(pago_id){
+                console.log(pago_id);
+                let me = this;
+                Swal.fire({
+                    title: '¿Estas seguro de retener pago?',
+                    text: "Este cambio no se podrá deshacer!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si continuar!',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.value) {
+                         axios.put('/prestamos/capturar_pago',{
+                            'pago_id' : pago_id ,
+                            'solic_id': me.id_prestamo,
+                        }).then(function (response){
+                            me.dataPrestamos(); 
+                            me.getTablaPagos(me.id_prestamo);
+                            swal({
+                                position: 'top-end',
+                                text: "Se capturo el pago correctamente",
+                                type: 'success',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                });
+
+            },
               firmar(firma_f,id){
                 let me = this;
                 Swal.fire({
@@ -785,9 +881,7 @@
                
             },
               aprobar_rh(band){
-                if(band == 1){
-                    this.guardaTablaPagos();
-                }
+               
                 let me = this;
                 Swal.fire({
                     title: 'AprobarSolicitud',
@@ -808,7 +902,7 @@
                             
                         }).then(function (response){
                                 me.dataPrestamos();
-                                me.cerrarModal() 
+                                //me.cerrarModal()  esperar a boton de guardar
                             swal({
                                 position: 'top-end',
                                 type: 'success',
@@ -821,6 +915,9 @@
                         });
                     }
                 });
+                //  if(band == 1){
+                //      this.editarSolicitud();
+                // }
                
             },
             guardaTablaPagos(){
@@ -841,17 +938,50 @@
                     console.log(error);
                 });
             },
+          
              getTablaPagos(id_solicitud){
             let me = this;
                 var url = '/prestamos/getTablaPagos?id=' + id_solicitud;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                     me.arrayPagos=respuesta;
+                     me.arrayPagos=respuesta[0];
+                     me.arrayPagosCap=respuesta[1];
+                     if(me.arrayPagosCap.length >= 0){
+                        me.arrayPagosCap.forEach((element,index )=> {
+                            if(me.arrayPagosCap.length-1 == index ){
+                                me.saldo_ant_Cap=element.saldo;
+                                me.index_cap=element.id;
+                            }
+                        });
+                     }
+                     me.calculaTotales();
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
+
+            calculaTotales(){
+                if(this.arrayPagos.length > 0 ){
+                    
+                    this.total=0;
+                    this.saldoFaltante=0;
+                    this.totalExtra=0;
+                    let ultimo = this.arrayPagos.length -1 ;
+    
+                    this.arrayPagos.forEach((element,index) => {
+                       this.total +=parseFloat(element.pago);
+                       if(index == ultimo ){
+                           this.saldoFaltante = parseFloat(element.saldo)
+                       }
+                       this.totalExtra += element.pagoExtra
+                    });
+                } else{
+                    return
+                }
+                
+            },
+
             dataColaborador(){
             let me = this;
                 var url = '/prestamos/getColaborador?id=' + this.userId;
@@ -959,9 +1089,15 @@
                         this.idJefe=data['jefe_id'];
                         this.motivo=data['motivo'];
                         this.desc_quin=data['desc_quin'];
+                        this.status_rh=data['status_rh'];
+                        this.firma_jefe=data['jefe_band'];
+                        this.firma_rh=data['rh_band'];
+                        this.firma_dir=data['dir_band'];
+
                         this.nom_col(data['user_id']);
                         this.e_id_user=data['user_id'];
                         this.getTablaPagos(data['id']);
+
                         //this.generarTablaPagos();
                         this.generar_tab=1;
                         break;

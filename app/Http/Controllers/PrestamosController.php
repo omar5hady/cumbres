@@ -7,6 +7,7 @@ use App\Prestamos_personales;
 use App\Pagos_prestamos;
 use App\Personal;
 use App\Obs_prestamos_pers;
+use Carbon\Carbon;
 use Auth;
 
 class PrestamosController extends Controller
@@ -44,7 +45,11 @@ class PrestamosController extends Controller
                                     'saldo',
                                     'desc_quin',
                                     'personal.nombre',
-                                    'personal.apellidos',);
+                                    'personal.apellidos',
+                                    'status_rh',
+                                    'fecha_status_rh',
+                                    
+                                    );
 
                                     if($isGerenteCurrent == 'true'){
                                         $query=$query->where('jefe_id','=',$id_user)->orWhere('user_id','=',$id_user);
@@ -75,7 +80,7 @@ class PrestamosController extends Controller
                                 if($b_status !=''){
                                     $query = $query->where('status','=',$b_status);
                                 }
-                                $query = $query->orderBy('personal.nombre','asc')->paginate(10);
+                                $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','desc')->paginate(10);
                                     
         return $query;
     }
@@ -120,6 +125,27 @@ class PrestamosController extends Controller
         $obs->save();
         
     }
+    public function  capturar_pago(Request $request){
+
+
+        $pago_id=$request->pago_id;
+        $solicitud_id=$request->solic_id;
+        
+             $p=Pagos_prestamos::findOrFail($pago_id);
+             $p->fecha_pago=Carbon::now();
+             $p->status=1;
+             $p->save();
+
+             $saldo=Pagos_prestamos::select('saldo')->where('id','=', $pago_id)->first();
+                 
+            
+                 $prestamo=Prestamos_personales::findOrFail($solicitud_id);
+                 $prestamo->saldo=$saldo['saldo'];
+                 $prestamo->save();
+
+            
+
+    }
 
     public function getObservaciones(Request $request){
         $obs = Obs_prestamos_pers::where('prestamo_id','=',$request->id)->get();
@@ -160,23 +186,31 @@ class PrestamosController extends Controller
         $desc_quin=$request->desc_quin; 
         $fecha_solic=$request->fecha_solic; 
         $idJefe=$request->idJefe;
-
-      
+        $tablaPagos=$request->arrPagos;
+        
+        $index=key($tablaPagos);
+        
         $prestamo=Prestamos_personales::findOrFail($solicitud_id);
         $prestamo->user_id=$user_id;
         $prestamo->monto_solicitado=$monto;
         $prestamo->motivo=$motivo;
         $prestamo->desc_quin =$desc_quin;
+
+        if($index > 0){ // pendinnteeee
+
+        }
         $prestamo->saldo =$monto;
         $prestamo->fecha_ini =$fecha_solic;
         $prestamo->jefe_id =$idJefe;
         $prestamo->save();
 
 
-        $tablaPagos=$request->arrPagos;
 
          $arrayPagos=[];
+         $index=key($tablaPagos);
+
         foreach ($tablaPagos as $key => $value) {
+            
             $arrayPagos[$key]['solic_id']=$solicitud_id;
             $arrayPagos[$key]['monto_pago']=$value['pago'];
             //$arrayPagos[$key]['fecha_pago']=$value['solicitud_id'];
@@ -184,19 +218,21 @@ class PrestamosController extends Controller
             $arrayPagos[$key]['status']=0;
             $arrayPagos[$key]['monto_pago_extra']=$value['pagoExtra'];
             $arrayPagos[$key]['saldo']=$value['saldo'];
+            
         }
 
-        $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
+    
+       $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
 
-        foreach ($pagos  as $key => $pago){
-            $p=Pagos_prestamos::findOrFail($pago->id);
-            $p->monto_pago=$arrayPagos[$key]['monto_pago'];
-            $p->status =$arrayPagos[$key]['status'];
-            $p->monto_pago_extra =$arrayPagos[$key]['monto_pago_extra'];
-            $p->saldo =$arrayPagos[$key]['saldo'];
+        for($index ;$index < sizeof($pagos) ; $index++ ){
+            $p=Pagos_prestamos::findOrFail($pagos[$index]->id);
+            $p->monto_pago=$arrayPagos[$index]['monto_pago'];
+            $p->status =$arrayPagos[$index]['status'];
+            $p->monto_pago_extra =$arrayPagos[$index]['monto_pago_extra'];
+            $p->saldo =$arrayPagos[$index]['saldo'];
             $p->save();
         }
-                        
+
                 
         
     }
@@ -230,17 +266,38 @@ class PrestamosController extends Controller
         $solicitud_id=$request->id;
 
         $pagos = Pagos_prestamos::where('solic_id','=',$solicitud_id)->get();
+        //$pagos_cap = Pagos_prestamos::where('solic_id','=',$solicitud_id)->where('status','=','1')->get();
         if(sizeof($pagos)>0 ){
             foreach ($pagos as $key => $pago) {
-                $tabla[$key]['id']=$key+1;
-                $tabla[$key]['pago']=$pago->monto_pago;
-                $tabla[$key]['pagoExtra']=$pago->monto_pago_extra;
-                $tabla[$key]['saldo']=$pago->saldo;
+                if($pago->status == 0){
+                    $tabla[$key]['id']=$key+1;
+                    $tabla[$key]['id_pago']=$pago->id;
+                    $tabla[$key]['status']=$pago->status;
+                    $tabla[$key]['fecha_pago']=$pago->fecha_pago;
+                    $tabla[$key]['pago']=$pago->monto_pago;
+                    $tabla[$key]['pagoExtra']=$pago->monto_pago_extra;
+                    $tabla[$key]['saldo']=$pago->saldo;
+                }else{
+                    $tabla_p[$key]['id']=$key+1;
+                    $tabla_p[$key]['id_pago']=$pago->id;
+                    $tabla_p[$key]['status']=$pago->status;
+                    $tabla_p[$key]['fecha_pago']=$pago->fecha_pago;
+                    $tabla_p[$key]['pago']=$pago->monto_pago;
+                    $tabla_p[$key]['pagoExtra']=$pago->monto_pago_extra;
+                    $tabla_p[$key]['saldo']=$pago->saldo;
+                }
             }
+            if(sizeof($tabla_p)<= 0 ){
+                return [$tabla,$tabla_p=[]];
+            }else return [$tabla,$tabla_p];
 
-            return $tabla;
-        }else
-            return $tabla=[];
+        }else return [$tabla=[],$tabla_p=[]];
+
+           
+        
+
+      
+         
        
         
     }
