@@ -40,37 +40,26 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Empresa</th>
-                                        <th>Direccion</th>
-                                        <th>Colonia</th>
-                                        <th>CP</th>
-                                        <th>Telefono</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="empresa in arrayEmpresa" :key="empresa.id">
-                                        <td>
-                                            <button type="button" @click="abrirModal('empresa','actualizar',empresa)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresa(empresa)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="empresa.nombre"></td>
-                                        <td v-text="empresa.direccion"></td>
-                                        <td v-text="empresa.colonia"></td>
-                                        <td v-text="empresa.cp"></td>
-                                        <td v-text="empresa.telefono"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['Opciones','Empresa','Direccion','Colonia','CP','Teléfono']">
+                            <template v-slot:tbody>
+                                <tr v-for="empresa in arrayEmpresa" :key="empresa.id">
+                                    <td>
+                                        <button type="button" @click="abrirModal('empresa','actualizar',empresa)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button> &nbsp;
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresa(empresa)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td v-text="empresa.nombre"></td>
+                                    <td v-text="empresa.direccion"></td>
+                                    <td v-text="empresa.colonia"></td>
+                                    <td v-text="empresa.cp"></td>
+                                    <td v-text="empresa.telefono"></td>
+                                </tr>       
+                            </template>
+                        </TableComponent>
+
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -96,33 +85,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Empresa</th>
-                                        <th>Contacto</th>
-                                        <th>Telefono</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="empresa in arrayEmpresaVerificadora" :key="empresa.id">
-                                        <td>
-                                            <button type="button" @click="abrirModal('empresaVerif','actualizar',empresa)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresaVerif(empresa)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="empresa.empresa"></td>
-                                        <td v-text="empresa.contacto"></td>
-                                        <td v-text="empresa.telefono"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['Opciones','Empresa','Contacto','Teléfono']">
+                            <template v-slot:tbody>
+                                <tr v-for="empresa in arrayEmpresaVerificadora" :key="empresa.id">
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('empresaVerif','actualizar',empresa)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button> &nbsp;
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresaVerif(empresa)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="empresa.empresa"></td>
+                                    <td class="td2" v-text="empresa.contacto"></td>
+                                    <td class="td2" v-text="empresa.telefono"></td>
+                                </tr>     
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -141,135 +120,121 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+            
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de la empresa">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion < 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Calle">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion > 2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion < 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
-                                    <div class="col-md-6">
-                                        <input type="text" maxlength="5" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion < 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="colonia">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion < 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
-                                            <option value="San Luis Potosí">San Luis Potosí</option>
-                                            <option value="Baja California">Baja California</option>
-                                            <option value="Baja California Sur">Baja California Sur</option>
-                                            <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
-                                            <option value="Colima">Colima</option>
-                                            <option value="Chiapas">Chiapas</option>
-                                            <option value="Chihuahua">Chihuahua</option>
-                                            <option value="Ciudad de México">Ciudad de México</option>
-                                            <option value="Durango">Durango</option>
-                                            <option value="Guanajuato">Guanajuato</option>
-                                            <option value="Guerrero">Guerrero</option>
-                                            <option value="Hidalgo">Hidalgo</option>
-                                            <option value="Jalisco">Jalisco</option>
-                                            <option value="México">México</option>
-                                            <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
-                                            <option value="Morelos">Morelos</option>
-                                            <option value="Nayarit">Nayarit</option>
-                                            <option value="Nuevo León">Nuevo León</option>
-                                            <option value="Oaxaca">Oaxaca</option>
-                                            <option value="Puebla">Puebla</option>
-                                            <option value="Querétaro">Querétaro</option>
-                                            <option value="Quintana Roo">Quintana Roo</option>
-                                            <option value="Sinaloa">Sinaloa</option>
-                                            <option value="Sonora">Sonora</option>
-                                            <option value="Tabasco">Tabasco</option>
-                                            <option value="Tamaulipas">Tamaulipas</option>
-                                            <option value="Tlaxcala">Tlaxcala</option>
-                                            <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
-                                            <option value="Yucatán">Yucatán</option>
-                                            <option value="Zacatecas">Zacatecas</option>
-                                        </select>
-                                        <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion < 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="ciudad">
-                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                                        </select>
-                                        <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-5">
-                                        <input type="text" maxlength="10" v-model="telefono" class="form-control" placeholder="Telefono">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion < 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Extension</label>
-                                    <div class="col-md-3">
-                                        <input type="text" maxlength="5" v-model="ext" class="form-control" placeholder="Ext">
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorEmpresa" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjEmpresa" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEmpresa()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarEmpresaVerificadora()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
-                            <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="actualizarEmpresaVerif()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de la empresa">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row" v-if="tipoAccion < 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="direccion" class="form-control" placeholder="Calle">
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion > 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion < 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
+                        <div class="col-md-6">
+                            <input type="text" maxlength="5" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion < 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="colonia">
+                                <option value="0">Seleccione</option>
+                                <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion < 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
+                                <option value="San Luis Potosí">San Luis Potosí</option>
+                                <option value="Baja California">Baja California</option>
+                                <option value="Baja California Sur">Baja California Sur</option>
+                                <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                                <option value="Colima">Colima</option>
+                                <option value="Chiapas">Chiapas</option>
+                                <option value="Chihuahua">Chihuahua</option>
+                                <option value="Ciudad de México">Ciudad de México</option>
+                                <option value="Durango">Durango</option>
+                                <option value="Guanajuato">Guanajuato</option>
+                                <option value="Guerrero">Guerrero</option>
+                                <option value="Hidalgo">Hidalgo</option>
+                                <option value="Jalisco">Jalisco</option>
+                                <option value="México">México</option>
+                                <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                                <option value="Morelos">Morelos</option>
+                                <option value="Nayarit">Nayarit</option>
+                                <option value="Nuevo León">Nuevo León</option>
+                                <option value="Oaxaca">Oaxaca</option>
+                                <option value="Puebla">Puebla</option>
+                                <option value="Querétaro">Querétaro</option>
+                                <option value="Quintana Roo">Quintana Roo</option>
+                                <option value="Sinaloa">Sinaloa</option>
+                                <option value="Sonora">Sonora</option>
+                                <option value="Tabasco">Tabasco</option>
+                                <option value="Tamaulipas">Tamaulipas</option>
+                                <option value="Tlaxcala">Tlaxcala</option>
+                                <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                                <option value="Yucatán">Yucatán</option>
+                                <option value="Zacatecas">Zacatecas</option>
+                            </select>
+                            <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion < 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="ciudad">
+                                <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                            </select>
+                            <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                        <div class="col-md-5">
+                            <input type="text" maxlength="10" v-model="telefono" class="form-control" placeholder="Telefono">
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion < 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Extension</label>
+                        <div class="col-md-3">
+                            <input type="text" maxlength="5" v-model="ext" class="form-control" placeholder="Ext">
+                        </div>
+                    </div>
+                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                    <div v-show="errorEmpresa" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjEmpresa" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEmpresa()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarEmpresaVerificadora()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
+                    <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="actualizarEmpresaVerif()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-            
 
         </main>
 </template>
@@ -279,7 +244,15 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+
+    import ModalComponent from '../Componentes/ModalComponent.vue'
+    import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -757,16 +730,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -775,4 +738,19 @@
         color: red !important;
         font-weight: bold;
     }
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
+    } 
 </style>

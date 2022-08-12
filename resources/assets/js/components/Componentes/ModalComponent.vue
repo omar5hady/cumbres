@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style scoped>
-.modal-content{
+    .modal-content{
         width: 100% !important;
         position: absolute !important;
     }
@@ -49,8 +49,7 @@ export default {
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
-         overflow-y: auto;
-        
+        overflow-y: auto;
     }
     .div-error{
         display:flex;

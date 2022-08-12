@@ -34,35 +34,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th># Cuenta</th>
-                                        <th>Sucursal</th>
-                                        <th>Banco</th>
-                                        <th>Empresa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="cuenta in arrayCuentas" :key="cuenta.id">
-                                        <td style="width:20%">
-                                            <button type="button" @click="abrirModal('actualizar',cuenta)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarCuenta(cuenta)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="cuenta.num_cuenta"></td>
-                                        <td v-text="cuenta.sucursal"></td>
-                                        <td v-text="cuenta.banco"></td>
-                                        <td v-text="cuenta.empresa"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['','# Cuenta','Sucursal','Banco','Empresa']">
+                            <template v-slot:tbody>
+                                <tr v-for="cuenta in arrayCuentas" :key="cuenta.id">
+                                    <td class="td2" style="width:20%">
+                                        <button type="button" @click="abrirModal('actualizar',cuenta)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button> &nbsp;
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarCuenta(cuenta)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="cuenta.num_cuenta"></td>
+                                    <td class="td2" v-text="cuenta.sucursal"></td>
+                                    <td class="td2" v-text="cuenta.banco"></td>
+                                    <td class="td2" v-text="cuenta.empresa"></td>
+                                </tr>    
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -82,66 +71,54 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input"># Cuenta</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="num_cuenta" maxlength="50" class="form-control" placeholder="Numero de cuenta">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Sucursal</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="sucursal" maxlength="50" class="form-control" placeholder="Sucursal">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Banco</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="banco">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="empresa" >
-                                            <option value="">Empresa</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorCuenta" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjCuenta" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCuenta()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCuenta()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input"># Cuenta</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="num_cuenta" maxlength="50" class="form-control" placeholder="Numero de cuenta">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Sucursal</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="sucursal" maxlength="50" class="form-control" placeholder="Sucursal">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Banco</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="banco">
+                                <option value="">Seleccione</option>
+                                <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="empresa" >
+                                <option value="">Empresa</option>
+                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                    <div v-show="errorCuenta" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjCuenta" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCuenta()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCuenta()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
             
 
@@ -153,7 +130,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -328,9 +312,6 @@
             },
             eliminarCuenta(data =[]){
                 this.id=data['id'];
-                this.num_cuenta=data['num_cuenta'];
-                this.sucursal=data['sucursal'];
-                this.banco=data['banco'];
                 //console.log(this.id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -425,16 +406,23 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
     }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
     }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
     .div-error{
         display:flex;
         justify-content: center;

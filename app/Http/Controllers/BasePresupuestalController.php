@@ -61,7 +61,9 @@ class BasePresupuestalController extends Controller
             echo($namePagina);
 
             //Se busca el modelo que corresponda al nombre de la pagina.
-            $modelo = Modelo::select('id','fraccionamiento_id','nombre')->where('fraccionamiento_id','=',$fraccionamiento)->where('nombre','like','%'.$namePagina.'%')->get();
+            $modelo = Modelo::select('id','fraccionamiento_id','nombre')
+                ->where('fraccionamiento_id','=',$fraccionamiento)
+                ->where('nombre','like','%'.$namePagina.'%')->get();
             echo($modelo);
             //Si se obtiene resultado
             if(sizeof($modelo)){
@@ -71,9 +73,11 @@ class BasePresupuestalController extends Controller
                 $baseAnt = Base_presupuestal::select('id')->where('modelo_id','=',$modelo_id)->get();
                 /// SE ELIMINA REGISTRO ANTERIOR
                 if(sizeOf($baseAnt)){
-                    $bAnt = Base_presupuestal::findOrFail($baseAnt[0]->id);
-                    $bAnt->activo = 0;
-                    $bAnt->save();
+                    foreach($baseAnt as $index => $base){
+                        $bAnt = Base_presupuestal::findOrFail($base->id);
+                        $bAnt->activo = 0;
+                        $bAnt->save();
+                    }
                 }
 
                 //Creación de nueva base presupuestal
