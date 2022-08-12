@@ -491,6 +491,13 @@ class CreditoPuenteController extends Controller
             ->orderBy('modelos.nombre', 'asc')
             ->get();
 
+
+        if(sizeof($modelos)){
+            foreach($modelos as $index => $modelo){
+                $modelo->total = Lote_puente::where('modelo_id','=',$modelo->modelo_id)->count();
+            }
+        }
+
         return ['modelos' => $modelos];
     }
 

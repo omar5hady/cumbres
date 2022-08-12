@@ -494,16 +494,17 @@ body {
             @if(count($pagos) > 0)
                 <div class="table-row">
                     @for($i=0; $i < count($pagos); $i++)
-                        <div class="table-cell">{{$pagos[$i]->fecha_pago}} PAGO NO.{{$pagos[$i]->num_pago + 1}}: <u>${{$pagos[$i]->monto_pago}}</u></div>
+                        <div colspan="4" class="table-cell">{{$pagos[$i]->fecha_pago}} PAGO NO.{{$pagos[$i]->num_pago + 1}}: <u>${{$pagos[$i]->monto_pago}}</u></div>
                     @endfor
                 </div>
             @endif
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
-                   
-                    <div colspan="4" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
-
-                    @if($contratos[0]->coacreditado == 1)
+                    @if($contratos[0]->coacreditado == 0)
+                        <div colspan="6" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
+                        <div colspan="6" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
+                    @else
+                        <div colspan="4" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
+                        <div colspan="4" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
                         <div colspan="4" class="table-cell">Y : {{mb_strtoupper($contratos[0]->nombre_coa)}} {{mb_strtoupper($contratos[0]->apellidos_coa)}}____________________</div>
                     @endif
                 </div>

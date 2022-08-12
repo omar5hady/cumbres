@@ -47,42 +47,29 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive"> 
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Vehiculo</th>
-                                        <th>Marca</th>
-                                        <th>Modelo</th>
-                                        <th>Clave</th>
-                                        <th># Serie</th>
-                                        <th># Motor</th>
-                                        <th># Placa</th>
-                                        <th>Responsable</th>
-                                        <th>Empresa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="vehiculo in arrayVehiculos.data" :key="vehiculo.id">
-                                        <td class="td2">
-                                            <button type="button" @click="abrirModal('actualizar',vehiculo)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="vehiculo.vehiculo"></td>
-                                        <td class="td2" v-text="vehiculo.marca"></td>
-                                        <td class="td2" v-text="vehiculo.modelo"></td>
-                                        <td class="td2" v-text="vehiculo.clave"></td>
-                                        <td class="td2" v-text="vehiculo.numero_serie"></td>
-                                        <td class="td2" v-text="vehiculo.numero_motor"></td>
-                                        <td class="td2" v-text="vehiculo.placas"></td>
-                                        <td class="td2" v-text="vehiculo.nombre + ' '+ vehiculo.apellidos"></td>
-                                        <td class="td2" v-text="vehiculo.empresa"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+
+                        <TableComponent 
+                            :cabecera="['Opciones','Vehiculo','Marca','Modelo','Clave','# Serie','# Motor','# Placa','Responsable','Empresa']">
+                            <template v-slot:tbody>
+                                <tr v-for="vehiculo in arrayVehiculos.data" :key="vehiculo.id">
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('actualizar',vehiculo)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="vehiculo.vehiculo"></td>
+                                    <td class="td2" v-text="vehiculo.marca"></td>
+                                    <td class="td2" v-text="vehiculo.modelo"></td>
+                                    <td class="td2" v-text="vehiculo.clave"></td>
+                                    <td class="td2" v-text="vehiculo.numero_serie"></td>
+                                    <td class="td2" v-text="vehiculo.numero_motor"></td>
+                                    <td class="td2" v-text="vehiculo.placas"></td>
+                                    <td class="td2" v-text="vehiculo.nombre + ' '+ vehiculo.apellidos"></td>
+                                    <td class="td2" v-text="vehiculo.empresa"></td>
+                                </tr> 
+                            </template>
+                        </TableComponent>
+                        
                         <nav>
                             <!--Botones de paginacion -->
                            <!--Botones de paginacion -->
@@ -140,132 +127,118 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Vehiculo <span style="color:red;" v-show="vehiculo==''">*</span>
-                                    </label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="vehiculo" class="form-control" placeholder="Nombre de vehiculo">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Marca <span style="color:red;" v-show="marca==''">*</span>
-                                    </label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="marca" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="marcas in marcasAutos" :key="marcas" :value="marcas" v-text="marcas"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input" >
-                                        Modelo <span style="color:red;" v-show="modelo==''">*</span>
-                                    </label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="modelo" maxlength="4" v-on:keypress="isNumber($event)" class="form-control" placeholder="Modelo">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Clave</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="clave" maxlength="10" class="form-control" placeholder="Clave">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Número de Serie</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="numero_serie" maxlength="20" class="form-control" placeholder="Número de serie">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Número de Motor</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="numero_motor" maxlength="11" class="form-control" placeholder="Número de motor">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Número de Placa <span style="color:red;" v-show="placas==''">*</span>
-                                    </label>
-                                    <div class="col-md-5">
-                                        <input type="text" v-model="placas" maxlength="7" class="form-control" placeholder="Número de placa">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Responsable <span style="color:red;" v-show="responsable_id==''">*</span>
-                                    </label>
-                                    <div class="col-md-6">
-                                        <input v-if="vista==2" disabled type="text" v-model="nombre" class="form-control col-md-8">
-                                        <button v-if="vista == 2" class="form-control btn btn-sm btn-secondary col-md-4" @click="vista = 1, responsable_id = ''">Cambiar</button>
-                                        <input v-if="vista==1" type="text" name="user" list="usersName" @keyup="selectUsuario(responsable_id)" @change="getNombre(responsable_id)"  class="form-control col-md-8" v-model="responsable_id">
-                                        <datalist v-if="vista==1" id="usersName">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="users in arrayUsers" :key="users.id" :value="users.id" v-text="users.nombre + ' '+ users.apellidos"></option>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Comodato?</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="comodato" >
-                                            <option value="0">No</option>
-                                            <option value="1">Si</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="empresa" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Div para mostrar los errores que mande validerNotaria -->
-                                <div v-show="errorVehiculo" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Vehiculo <span style="color:red;" v-show="vehiculo==''">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="vehiculo" class="form-control" placeholder="Nombre de vehiculo">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Marca <span style="color:red;" v-show="marca==''">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="marca" >
+                                <option value="">Seleccione</option>
+                                <option v-for="marcas in marcasAutos" :key="marcas" :value="marcas" v-text="marcas"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input" >
+                            Modelo <span style="color:red;" v-show="modelo==''">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="modelo" maxlength="4" v-on:keypress="isNumber($event)" class="form-control" placeholder="Modelo">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Clave</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="clave" maxlength="10" class="form-control" placeholder="Clave">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Número de Serie</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="numero_serie" maxlength="20" class="form-control" placeholder="Número de serie">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Número de Motor</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="numero_motor" maxlength="11" class="form-control" placeholder="Número de motor">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Número de Placa <span style="color:red;" v-show="placas==''">*</span>
+                        </label>
+                        <div class="col-md-5">
+                            <input type="text" v-model="placas" maxlength="7" class="form-control" placeholder="Número de placa">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Responsable <span style="color:red;" v-show="responsable_id==''">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <input v-if="vista==2" disabled type="text" v-model="nombre" class="form-control col-md-8">
+                            <button v-if="vista == 2" class="form-control btn btn-sm btn-secondary col-md-4" @click="vista = 1, responsable_id = ''">Cambiar</button>
+                            <input v-if="vista==1" type="text" name="user" list="usersName" @keyup="selectUsuario(responsable_id)" @change="getNombre(responsable_id)"  class="form-control col-md-8" v-model="responsable_id">
+                            <datalist v-if="vista==1" id="usersName">
+                                <option value="">Seleccione</option>
+                                <option v-for="users in arrayUsers" :key="users.id" :value="users.id" v-text="users.nombre + ' '+ users.apellidos"></option>
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Comodato?</label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="comodato" >
+                                <option value="0">No</option>
+                                <option value="1">Si</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="empresa" >
+                                <option value="">Seleccione</option>
+                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Div para mostrar los errores que mande validerNotaria -->
+                    <div v-show="errorVehiculo" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error">
+
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -275,7 +248,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import ModalComponent from '../Componentes/ModalComponent.vue'
+    import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent,
+        },
         data(){
             return{
                 id:'',
@@ -521,17 +501,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -539,15 +508,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {

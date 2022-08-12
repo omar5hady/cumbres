@@ -24,18 +24,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Institución</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <TableComponent :cabecera="['Opciones','Institución']">
+                            <template v-slot:thead>
                                 <tr v-for="institucion in arrayInstituciones" :key="institucion.id">
-                                    <td style="width:15%">
+                                    <td class="td2" style="width:15%">
                                         <button title="Editar" type="button" @click="abrirModal('institucion','actualizar',institucion)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                         </button>  
@@ -43,13 +35,13 @@
                                             <i class="icon-trash"></i>
                                         </button>                                       
                                     </td>
-                                    <td v-text="institucion.nombre"></td>
-                                    <td v-if="lic == 0"> Licencia antes</td>
-                                    <td v-if="lic == 1"> Licencia despues</td>
-                                </tr>                                
-                            </tbody>
-                        </table>
-                        </div>
+                                    <td class="td2" v-text="institucion.nombre"></td>
+                                    <td class="td2" v-if="lic == 0"> Licencia antes</td>
+                                    <td class="td2" v-if="lic == 1"> Licencia despues</td>
+                                </tr> 
+                            </template>
+                        </TableComponent>
+                        
                         <nav>
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
@@ -68,59 +60,51 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <!--<form action="" method="" enctype="multipart/form-data" class="form-horizontal">-->
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Institucion</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Institucion de Financiamiento">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Licencia</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" v-model="lic">
-                                            <option value="0">Antes</option>
-                                            <option value="1">Despues</option>
-                                        </select>
-                                    </div>
-                                </div>
-                             
-                                <div v-show="errorInstitucion" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjInstitucion" :key="error" v-text="error"></div>
-                                    </div>
-                                </div>
-                           <!-- </form>-->
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarInstitucion()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarInstitucion()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Institucion</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="nombre" class="form-control" placeholder="Institucion de Financiamiento">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Licencia</label>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="lic">
+                                <option value="0">Antes</option>
+                                <option value="1">Despues</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div v-show="errorInstitucion" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjInstitucion" :key="error" v-text="error"></div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarInstitucion()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarInstitucion()">Actualizar</button>
+                </template>
+
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
 
 <script>
+    import ModalComponent from '../Componentes/ModalComponent.vue'
+    import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data (){
             return {
                 proceso:false,
@@ -342,18 +326,6 @@
     }
 </script>
 <style>    
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-
-    }
     .div-error{
         display: flex;
         justify-content: center;
@@ -361,5 +333,20 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

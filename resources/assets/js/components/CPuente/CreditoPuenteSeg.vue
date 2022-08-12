@@ -457,14 +457,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row border" v-if="cabecera.base_p == 1 && cabecera.status != 5">
+                            <div class="form-group row border" v-if="cabecera.status != 5">
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
                                 </div>
                                 <template v-if="cabecera.status == 0">
                                     <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
                                         <div class="form-group" v-if="modelo.precio > 0">
-                                            <strong><label>{{modelo.modelo}}</label></strong>
+                                            <strong><label>{{modelo.modelo}} ({{modelo.total}})</label></strong>
                                             <div class="form-inline">
                                                 <label>$ {{formatNumber(modelo.precio)}}</label>
                                             </div>
@@ -524,7 +524,7 @@
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="5"></td>
+                                                <td align="right" colspan="6"></td>
                                                 <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
                                                 <td align="right" colspan="6"></td>
                                             </tr>

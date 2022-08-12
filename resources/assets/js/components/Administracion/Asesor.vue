@@ -48,62 +48,41 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Nombre</th>
-                                        <th>Usuario</th>
-                                        <th>Rol</th>
-                                        <th>Tipo</th>
-                                        <th>Inmobiliaria</th>
-                                        <th>Esquema</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)" >
-                                        <td width="10%">
-                                            <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <template v-if="Personal.condicion">
-                                                <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
+                        <!--Tabla para Asesores-->
+                        <TableComponent :cabecera="['Opciones','Nombre','Usuario','Rol','Tipo','Inmobiliaria','Esquema','Status']">
+                            <template v-slot:tbody>
+                                <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)" >
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button>
+                                        <template v-if="Personal.condicion">
+                                            <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
                                                 <i class="fa fa-user-times"></i>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                            </template>
-
-                                            <!-- <button type="button" @click="abrirModal('Vacaciones','',Personal)" class="btn btn-success btn-sm" title="Periodo vacacional">
-                                                <i class="fa fa-calendar"></i>
-                                            </button> -->
-                                      
-                                        </td>
-                                        <td title="Ver prospectos">
-                                            <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
-                                        </td>
-                                        
-                                        <td v-text="Personal.usuario"></td>
-                                        <td v-text="Personal.rol"></td>
-                                        <td v-if="Personal.tipo==0" v-text="'Interno'"></td>
-                                        <td v-else v-text="'Externo'"></td>
-                                        <td v-text="Personal.inmobiliaria"></td>
-                                        <td v-text="Personal.esquema+'%'"></td>
-                                        <td>
-                                            <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
-                                            <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
-                                        </td>
-                                                           
-                                    
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                                            </button>
+                                        </template>
+                                        <template v-else>
+                                            <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                        </template>
+                                    </td>
+                                    <td class="td2" title="Ver prospectos">
+                                        <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                    </td>
+                                    <td class="td2" v-text="Personal.usuario"></td>
+                                    <td class="td2" v-text="Personal.rol"></td>
+                                    <td class="td2" v-if="Personal.tipo==0" v-text="'Interno'"></td>
+                                    <td class="td2" v-else v-text="'Externo'"></td>
+                                    <td class="td2" v-text="Personal.inmobiliaria"></td>
+                                    <td class="td2" v-text="Personal.esquema+'%'"></td>
+                                    <td class="td2">
+                                        <span v-if="Personal.condicion==1" class="badge badge-success">Activo</span>
+                                        <span v-if="Personal.condicion==0" class="badge badge-danger">Inactivo</span>
+                                    </td>             
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -118,8 +97,8 @@
                                 </li>
                             </ul>
                         </nav>
-
                     </div>
+                    <button @click="manual=1" class="btn btn-sm btn-default">Manual</button>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -177,59 +156,44 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th># Id.</th>
-                                            <th>Nombre</th>
-                                            <th>Lugar de contacto</th>
-                                            <th>Proyecto de interes</th>
-                                            <th>Correo</th>
-                                            <th>Celular</th>
-                                            <th>RFC</th>
-                                            <th>Empresa donde trabaja</th>
-                                            <th>Clasificación</th>
-                                            <th>Fecha alta</th>
-                                            <th>Observaciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="Personal in arrayProspectos" :key="Personal.id" @dblclick="abrirModal4('ver',Personal)" title="Ver Detalles">
-                                            <td class="td2" width="10%">
-                                                <button type="button" @click="abrirModalCambio(Personal)" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-exchange"></i>
-                                                </button>
-                                                <button type="button" @click="abrirModal4('actualizar',Personal)" class="btn btn-warning btn-sm">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                            </td>
-                                            <td class="td2" v-text="Personal.id" ></td>
-                                            <td class="td2">
-                                                <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
-                                            </td>
-                                            <td class="td2" v-text="Personal.lugar_contacto"></td>
-                                            <td class="td2" v-text="Personal.proyecto"></td>
-                                            <td class="td2" v-text="Personal.email"></td>
-                                            <td class="td2" v-text="Personal.celular"></td>
-                                            <td class="td2" v-text="Personal.rfc"></td>
-                                            <td class="td2" v-text="Personal.empresa"></td>
-                                                <td class="td2" v-if="Personal.clasificacion==1" > No viable</td>
-                                                <td class="td2" v-if="Personal.clasificacion==2" > Tipo A</td>
-                                                <td class="td2" v-if="Personal.clasificacion==3" > Tipo B</td>
-                                                <td class="td2" v-if="Personal.clasificacion==4" > Tipo C</td>
-                                                <td class="td2" v-if="Personal.clasificacion==5" > Ventas</td>
-                                                <td class="td2" v-if="Personal.clasificacion==6" > Cancelado</td>
-                                                <td class="td2" v-if="Personal.clasificacion==7" > Coacreditado</td>
-                                                <td class="td2" v-text="this.moment(Personal.created_at).locale('es').format('DD/MMM/YYYY')" > Coacreditado</td>
-                                            <td class="td2">
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
-                                            </td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                            </div>
+                            <TableComponent :cabecera="['Opciones','# Id.','Nombre','Lugar de contacto',
+                                'Proyecto de interes','Correo','Celular','RFC','Empresa donde trabaja',
+                                'Clasificación','Fecha alta','Observaciones',
+                            ]">
+                                <template v-slot:tbody>
+                                    <tr v-for="Personal in arrayProspectos" :key="Personal.id" @dblclick="abrirModal4('ver',Personal)" title="Ver Detalles">
+                                        <td class="td2" width="10%">
+                                            <button type="button" @click="abrirModalCambio(Personal)" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-exchange"></i>
+                                            </button>
+                                            <button type="button" @click="abrirModal4('actualizar',Personal)" class="btn btn-warning btn-sm">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        </td>
+                                        <td class="td2" v-text="Personal.id" ></td>
+                                        <td class="td2">
+                                            <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                        </td>
+                                        <td class="td2" v-text="Personal.lugar_contacto"></td>
+                                        <td class="td2" v-text="Personal.proyecto"></td>
+                                        <td class="td2" v-text="Personal.email"></td>
+                                        <td class="td2" v-text="Personal.celular"></td>
+                                        <td class="td2" v-text="Personal.rfc"></td>
+                                        <td class="td2" v-text="Personal.empresa"></td>
+                                            <td class="td2" v-if="Personal.clasificacion==1" > No viable</td>
+                                            <td class="td2" v-if="Personal.clasificacion==2" > Tipo A</td>
+                                            <td class="td2" v-if="Personal.clasificacion==3" > Tipo B</td>
+                                            <td class="td2" v-if="Personal.clasificacion==4" > Tipo C</td>
+                                            <td class="td2" v-if="Personal.clasificacion==5" > Ventas</td>
+                                            <td class="td2" v-if="Personal.clasificacion==6" > Cancelado</td>
+                                            <td class="td2" v-if="Personal.clasificacion==7" > Coacreditado</td>
+                                            <td class="td2" v-text="this.moment(Personal.created_at).locale('es').format('DD/MMM/YYYY')" > Coacreditado</td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -249,591 +213,490 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
             <!--Inicio del modal agregar/actualizar Asesor-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                  <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" >
-                                    </div>
-                                </div>
-                                   <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-9">
-                                        <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" >
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" >
-                                    </div>
-                                </div>
-                                     <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-4">
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" >
-                                    </div>
-                                    <div class="col-md-4" >
-                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="colonia" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Direccion" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Extension</label>
-                                    <div class="col-md-3">
-                                        <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
-                                    </div>
-                                </div>
-                            
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Correo electronico</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="email" class="form-control" placeholder="Correo electronico" >
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="usuario" class="form-control" placeholder="Usuario" >
-                                    </div>
-                                </div>
-
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
-                                    <div class="col-md-4">
-                                        <input type="password" autocomplete="off" v-model="password" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="rol_id==2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                                    <div class="col-md-4">
-                                       <select class="form-control" v-model="tipo_vendedor" >
-                                            <option value="0">Interno</option>
-                                            <option value="1">Externo</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-4" v-if="tipo_vendedor == 1">
-                                       <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="modalArchivos = 1">Archivos</button>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Inmobiliaria</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="inmobiliaria" class="form-control" placeholder="Inmobiliaria" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control" v-model="esquema" >
-                                            <option value=2>2%</option>
-                                            <option value=3>3%</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Retencion</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control" v-model="retencion" >
-                                            <option value=0>No</option>
-                                            <option value=1>Si</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
-                                    <label class="col-md-3 form-control-label" for="text-input">ISR</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control" v-model="isr" >
-                                            <option value=0>No</option>
-                                            <option value=1>Si</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores que mande validerPersonal -->
-                                <div v-show="errorPersonal" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjPersonal" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPersonal()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersonal()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" >
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                        <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                        <div class="col-md-9">
+                            <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" >
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" >
+                        </div>
+                    </div>
+                            <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                        <div class="col-md-4">
+                            <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" >
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
+                        <div class="col-md-4">
+                            <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="colonia" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="(colonias, index) in arrayColonias" :key="colonias.colonia+index" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="direccion" class="form-control" placeholder="Direccion" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                        <div class="col-md-5">
+                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Extension</label>
+                        <div class="col-md-3">
+                            <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
+                        </div>
+                    </div>
+                
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Celular</label>
+                        <div class="col-md-5">
+                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Correo electronico</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="email" class="form-control" placeholder="Correo electronico" >
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="usuario" class="form-control" placeholder="Usuario" >
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
+                        <div class="col-md-4">
+                            <input type="password" autocomplete="off" v-model="password" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="rol_id==2">
+                        <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="tipo_vendedor" >
+                                <option value="0">Interno</option>
+                                <option value="1">Externo</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4" v-if="tipo_vendedor == 1">
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="modalArchivos = 1">Archivos</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                        <label class="col-md-3 form-control-label" for="text-input">Inmobiliaria</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="inmobiliaria" class="form-control" placeholder="Inmobiliaria" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                        <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
+                        <div class="col-md-2">
+                            <select class="form-control" v-model="esquema" >
+                                <option value=2>2%</option>
+                                <option value=3>3%</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                        <label class="col-md-3 form-control-label" for="text-input">Retencion</label>
+                        <div class="col-md-2">
+                            <select class="form-control" v-model="retencion" >
+                                <option value=0>No</option>
+                                <option value=1>Si</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                        <label class="col-md-3 form-control-label" for="text-input">ISR</label>
+                        <div class="col-md-2">
+                            <select class="form-control" v-model="isr" >
+                                <option value=0>No</option>
+                                <option value=1>Si</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Div para mostrar los errores que mande validerPersonal -->
+                    <div v-show="errorPersonal" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjPersonal" :key="error" v-text="error">
+
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPersonal()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersonal()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal asignar prospecto-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="'Reasignar cliente a: ' + tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                    <!--Criterios para el listado de busqueda -->
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="asesor_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary" @click="asignarProspecto(asesor_id,prospecto_id)">Reasignar </button>
+            <ModalComponent v-if="modal2"
+                :titulo="`Reasignar cliente a: ${tituloModal2}`"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="asesor_id" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" class="btn btn-primary" @click="asignarProspecto(asesor_id,prospecto_id)">Reasignar </button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
-               <!--Inicio del modal observaciones-->            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3 == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal3"></h4>
-                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nueva observación</label>
-                                    <div class="col-md-9">
-                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <button class="btn btn-primary" @click="registrarObservacion()">Guardar</button>
-                                    </div>
-                                </div>
-                                <table class="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Observacion</th>
-                                            <th>Fecha</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                            
-                                            <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.comentario" ></td>
-                                            <td v-text="observacion.created_at"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                                
-                            
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+            <!--Inicio del modal observaciones-->     
+            <ModalComponent v-if="modal3 == 1"
+                :titulo="tituloModal3"
+                @closeModal="cerrarModal3()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Nueva observación</label>
+                        <div class="col-md-9">
+                            <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" @click="registrarObservacion()">Guardar</button>
+                        </div>
+                    </div>
+                    <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                <td class="td2" v-text="observacion.usuario" ></td>
+                                <td class="td2" v-text="observacion.comentario" ></td>
+                                <td class="td2" v-text="observacion.created_at"></td>
+                            </tr> 
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
 
             <!--Inicio del modal actualizar/ver Prospecto-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal4"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal4()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Apellidos</label>
+                        <div class="col-md-4">
+                            <input type="text" :disabled="tipoAccion==2" v-model="apellidosProspecto" class="form-control" placeholder="Apellidos" >
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Apellidos</label>
-                                    <div class="col-md-4">
-                                        <input type="text" :disabled="tipoAccion==2" v-model="apellidosProspecto" class="form-control" placeholder="Apellidos" >
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-4">
-                                        <input type="text" :disabled="tipoAccion==2" v-model="nombreProspecto" class="form-control" placeholder="Apellidos" >
-                                    </div>
-                                </div>
-                                 
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Clasificación</label>
-                                    <div class="col-md-3">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="clasificacionProspecto" >
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                        </select>
-                                    </div>
-                                    <label class="col-md-1 form-control-label" for="text-input">Sexo</label>
-                                    <div class="col-md-3">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="sexoProspecto" >
-                                            <option value="">Seleccione</option>
-                                            <option value="F">Femenino</option>
-                                            <option value="M">Masculino</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-6">
-                                        <input :disabled="tipoAccion==2" type="text" style="text-transform:uppercase" v-model="direccionProspecto" class="form-control" placeholder="RFC" >
-                                    </div>
-                                    <label class="col-md-1 form-control-label" for="text-input">C.P. </label>
-                                    <div class="col-md-3" >
-                                        <input :disabled="tipoAccion==2" type="text" style="text-transform:uppercase" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cpProspecto)" v-model="cpProspecto" class="form-control" placeholder="Codigo Postal" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    
-                                    <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-4">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="coloniaProspecto" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-4">
-                                        <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="10" v-model="telefonoProspecto" class="form-control" placeholder="Telefono" >
-                                    </div>
-
-                                    <label class="col-md-2 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-4">
-                                        <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="10" v-model="celProspecto" class="form-control" placeholder="Celular" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Email</label>
-                                    <div class="col-md-4">
-                                        <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="correoProspecto"  placeholder="Email" >
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Email Inst.</label>
-                                    <div class="col-md-4">
-                                        <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="correo_instProspecto"  placeholder="Email" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">F. Nacimiento</label>
-                                    <div class="col-md-3">
-                                        <input :disabled="tipoAccion==2" type="date" class="form-control"  v-model="fecha_nacProspecto" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-4">
-                                        <input disabled type="text" maxlength="10" style="text-transform:uppercase" v-model="rfcProspecto" class="form-control" placeholder="RFC" >
-                                    </div>
-                                    <div class="col-md-2" >
-                                        <input :disabled="tipoAccion==2" type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclaveProspecto" class="form-control" placeholder="Homoclave" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">CURP</label>
-                                    <div class="col-md-4">
-                                        <input :disabled="tipoAccion==2" type="text" maxlength="13" style="text-transform:uppercase" v-model="curpProspecto" class="form-control" placeholder="CURP" >
-                                    </div>
-                                    <label class="col-md-1 form-control-label" for="text-input">NSS</label>
-                                    <div class="col-md-4" >
-                                        <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="11" style="text-transform:uppercase" v-model="nssProspecto" class="form-control" placeholder="Homoclave" >
-                                    </div>
-                                </div>
-                            
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Edo. Civil</label>
-                                    <div class="col-md-4">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="e_civilProspecto" >
-                                            <option value="0">Seleccione</option> 
-                                            <option value="1">Casado - separacion de bienes</option> 
-                                            <option value="2">Casado - sociedad conyugal</option> 
-                                            <option value="3">Divorciado</option> 
-                                            <option value="4">Soltero</option> 
-                                            <option value="5">Union libre</option>
-                                            <option value="6">Viudo</option> 
-                                            <option value="7">Otro</option>    
-                                        </select>
-                                    </div>
-
-                                    <label class="col-md-2 form-control-label" for="text-input">Vive en casa</label>
-                                    <div class="col-md-4">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="tipo_casaProspecto" >
-                                            <option value="0">Seleccione</option>  
-                                            <option value="De familiares">De familiares</option>
-                                            <option value="Prestada">Prestada</option>
-                                            <option value="Propia">Propia</option>
-                                            <option value="Rentada">Rentada</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-4 form-control-label" for="text-input">Proyecto en el que esta interesado</label>
-                                    <div class="col-md-4">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="ProyectoProspecto" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row">
-                                    <label class="col-md-4 form-control-label" for="text-input">Medio donde se entero de nostros</label>
-                                    <div class="col-md-4">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="publicidad_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="actualizarProspecto()">Actualizar</button>
+                        <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
+                        <div class="col-md-4">
+                            <input type="text" :disabled="tipoAccion==2" v-model="nombreProspecto" class="form-control" placeholder="Apellidos" >
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                        
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Clasificación</label>
+                        <div class="col-md-3">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="clasificacionProspecto" >
+                                <option value="1">No viable</option>
+                                <option value="2">Tipo A</option>
+                                <option value="3">Tipo B</option>
+                                <option value="4">Tipo C</option>
+                                <option value="5">Ventas</option>
+                                <option value="6">Cancelado</option>                               
+                            </select>
+                        </div>
+                        <label class="col-md-1 form-control-label" for="text-input">Sexo</label>
+                        <div class="col-md-3">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="sexoProspecto" >
+                                <option value="">Seleccione</option>
+                                <option value="F">Femenino</option>
+                                <option value="M">Masculino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Direccion</label>
+                        <div class="col-md-6">
+                            <input :disabled="tipoAccion==2" type="text" style="text-transform:uppercase" v-model="direccionProspecto" class="form-control" placeholder="RFC" >
+                        </div>
+                        <label class="col-md-1 form-control-label" for="text-input">C.P. </label>
+                        <div class="col-md-3" >
+                            <input :disabled="tipoAccion==2" type="text" style="text-transform:uppercase" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cpProspecto)" v-model="cpProspecto" class="form-control" placeholder="Codigo Postal" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        
+                        <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
+                        <div class="col-md-4">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="coloniaProspecto" >
+                                <option value="">Seleccione</option>
+                                <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Telefono</label>
+                        <div class="col-md-4">
+                            <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="10" v-model="telefonoProspecto" class="form-control" placeholder="Telefono" >
+                        </div>
+
+                        <label class="col-md-2 form-control-label" for="text-input">Celular</label>
+                        <div class="col-md-4">
+                            <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="10" v-model="celProspecto" class="form-control" placeholder="Celular" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Email</label>
+                        <div class="col-md-4">
+                            <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="correoProspecto"  placeholder="Email" >
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Email Inst.</label>
+                        <div class="col-md-4">
+                            <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="correo_instProspecto"  placeholder="Email" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">F. Nacimiento</label>
+                        <div class="col-md-3">
+                            <input :disabled="tipoAccion==2" type="date" class="form-control"  v-model="fecha_nacProspecto" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">RFC</label>
+                        <div class="col-md-4">
+                            <input disabled type="text" maxlength="10" style="text-transform:uppercase" v-model="rfcProspecto" class="form-control" placeholder="RFC" >
+                        </div>
+                        <div class="col-md-2" >
+                            <input :disabled="tipoAccion==2" type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclaveProspecto" class="form-control" placeholder="Homoclave" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">CURP</label>
+                        <div class="col-md-4">
+                            <input :disabled="tipoAccion==2" type="text" maxlength="13" style="text-transform:uppercase" v-model="curpProspecto" class="form-control" placeholder="CURP" >
+                        </div>
+                        <label class="col-md-1 form-control-label" for="text-input">NSS</label>
+                        <div class="col-md-4" >
+                            <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="11" style="text-transform:uppercase" v-model="nssProspecto" class="form-control" placeholder="Homoclave" >
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Edo. Civil</label>
+                        <div class="col-md-4">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="e_civilProspecto" >
+                                <option value="0">Seleccione</option> 
+                                <option value="1">Casado - separacion de bienes</option> 
+                                <option value="2">Casado - sociedad conyugal</option> 
+                                <option value="3">Divorciado</option> 
+                                <option value="4">Soltero</option> 
+                                <option value="5">Union libre</option>
+                                <option value="6">Viudo</option> 
+                                <option value="7">Otro</option>    
+                            </select>
+                        </div>
+
+                        <label class="col-md-2 form-control-label" for="text-input">Vive en casa</label>
+                        <div class="col-md-4">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="tipo_casaProspecto" >
+                                <option value="0">Seleccione</option>  
+                                <option value="De familiares">De familiares</option>
+                                <option value="Prestada">Prestada</option>
+                                <option value="Propia">Propia</option>
+                                <option value="Rentada">Rentada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-4 form-control-label" for="text-input">Proyecto en el que esta interesado</label>
+                        <div class="col-md-4">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="ProyectoProspecto" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-4 form-control-label" for="text-input">Medio donde se entero de nostros</label>
+                        <div class="col-md-4">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="publicidad_id" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                            </select>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="actualizarProspecto()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
 
             <!-- modal para la carga de archivos -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modalArchivos}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="'Cargar archivos'"></h4>
-                            <button type="button" class="close" @click="cerrarModal3(), modal=1" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                            <div class="modal-body">
-
-                                <div class="form-group">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr><th>
-                                                <form  method="post" @submit="formSubmitIne" enctype="multipart/form-data">
-                                                    <div class="form-group row">
-                                                        <label class="col-md-3 form-control-label" for="text-input"> <strong>INE</strong> </label>
-                                                        
-                                                        <div class="col-md-5">
-                                                            <input type="file" class="form-control" v-on:change="onImageChangeIne">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <button type="submit" class="btn btn-success">Cargar</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </th></tr>
-
-                                            <tr><th>
-                                                <form  method="post" @submit="formSubmitComprobante" enctype="multipart/form-data">
-                                                    <div class="form-group row">
-                                                        <label class="col-md-3 form-control-label" for="text-input"> <strong>Comprobante de domicilio</strong> </label>
-                                                        
-                                                        <div class="col-md-5">
-                                                            <input type="file" class="form-control" v-on:change="onImageChangeComprobante">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <button type="submit" class="btn btn-success">Cargar</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </th></tr>
-
-                                            <tr><th>
-                                                <form  method="post" @submit="formSubmitCV" enctype="multipart/form-data">
-                                                    <div class="form-group row">
-                                                        <label class="col-md-3 form-control-label" for="text-input"> <strong>Curruculum</strong> </label>
-                                                        
-                                                        <div class="col-md-5">
-                                                            <input type="file" class="form-control" v-on:change="onImageChangeCV">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <button type="submit" class="btn btn-success">Cargar</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </th></tr>
-                                        </thead>
-                                    </table>
-
-                                        <div class="col-md-12">
-                                            <div class="form-group row">
-                                                <div class="col-md-12">
-                                                    <table class="table table-bordered table-striped table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style="width:12%"></th>
-                                                                <th>Archivo</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr v-if="doc_ine != null">
-                                                                <td style="width:12%">
-                                                                    
-                                                                </td>
-                                                                <td>
-                                                                    <a v-bind:href="'/asesores/downloadFile/'+ doc_ine"> INE</a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr v-if="doc_comprobante != null">
-                                                                <td style="width:12%">
-                                                                    
-                                                                </td>
-                                                                <td>
-                                                                    <a v-bind:href="'/asesores/downloadFile/'+ doc_comprobante"> Comprobante de domicilio</a>
-                                                                </td>
-                                                            </tr>
-                                                            <tr v-if="curriculum != null">
-                                                                <td style="width:12%">
-                                                                    
-                                                                </td>
-                                                                <td>
-                                                                    <a v-bind:href="'/asesores/downloadFile/'+ curriculum"> Curriculum vitae</a>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+            <ModalComponent v-if="modalArchivos"
+                :titulo="'Carga de archivos'"
+                @closeModal="cerrarModal3()"
+            >
+                <template v-slot:body>
+                    <div class="form-group">
+                        <TableComponent>
+                            <template v-slot:tbody>
+                                <tr><th>
+                                    <form  method="post" @submit="formSubmitIne" enctype="multipart/form-data">
+                                        <div class="form-group row">
+                                            <label class="col-md-3 form-control-label" for="text-input"> <strong>INE</strong> </label>
+                                            
+                                            <div class="col-md-5">
+                                                <input type="file" class="form-control" v-on:change="onImageChangeIne">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="submit" class="btn btn-success">Cargar</button>
                                             </div>
                                         </div>
+                                    </form>
+                                </th></tr>
 
-                                </div>
+                                <tr><th>
+                                    <form  method="post" @submit="formSubmitComprobante" enctype="multipart/form-data">
+                                        <div class="form-group row">
+                                            <label class="col-md-3 form-control-label" for="text-input"> <strong>Comprobante de domicilio</strong> </label>
+                                            
+                                            <div class="col-md-5">
+                                                <input type="file" class="form-control" v-on:change="onImageChangeComprobante">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="submit" class="btn btn-success">Cargar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </th></tr>
+
+                                <tr><th>
+                                    <form  method="post" @submit="formSubmitCV" enctype="multipart/form-data">
+                                        <div class="form-group row">
+                                            <label class="col-md-3 form-control-label" for="text-input"> <strong>Curriculum</strong> </label>
+                                            
+                                            <div class="col-md-5">
+                                                <input type="file" class="form-control" v-on:change="onImageChangeCV">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="submit" class="btn btn-success">Cargar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </th></tr>
+                            </template>
+                        </TableComponent>
+                            
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="['','Archivo']">
+                                    <template v-slot:tbody>
+                                        <tr v-if="doc_ine != null">
+                                            <td style="width:12%">
+                                                
+                                            </td>
+                                            <td>
+                                                <a v-bind:href="'/asesores/downloadFile/'+ doc_ine"> INE</a>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="doc_comprobante != null">
+                                            <td style="width:12%">
+                                                
+                                            </td>
+                                            <td>
+                                                <a v-bind:href="'/asesores/downloadFile/'+ doc_comprobante"> Comprobante de domicilio</a>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="curriculum != null">
+                                            <td style="width:12%">
+                                                
+                                            </td>
+                                            <td>
+                                                <a v-bind:href="'/asesores/downloadFile/'+ curriculum"> Curriculum vitae</a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                             </div>
-
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal3(), modal = 1">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                        </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+            <ModalComponent v-if="manual"
+                :titulo="'Manual'"
+                @closeModal="manual=0"
+            >
+                <template v-slot:body>
                     <div class="modal-body">
                         <p><strong>El usuario “Descartado”</strong> es un asesor por defecto donde se almacenarán todos los usuarios que se 
                             han descartado y por lo tanto no son un buen candidato para una venta.
@@ -846,51 +709,8 @@
                             <strong>Re-Asignar:</strong> Recuerde que al re-asignar un cliente el anterior asesor no tendrá acceso a la información del cliente.
                         </p>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--Inicio del modal observaciones-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3 == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Inicio de vacaciones</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="ini_vacaciones" class="form-control"  >
-                                    </div>
-
-                                    <label class="col-md-3 form-control-label" for="text-input">Fin de vacaciones</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="fin_vacaciones" class="form-control"  >
-                                    </div>
-                                </div>
-                                
-                                
-                            
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
-                            <button type="button" v-if="modal3 == 2" class="btn btn-primary" @click="actPeriodoVacacional()">Guardar cambios</button>
-                        </div>
-                    </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-
+                </template>
+            </ModalComponent>
         </main>
 </template>
 
@@ -899,7 +719,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import TableComponent from '../Componentes/TableComponent.vue'
+    import ModalComponent from '../Componentes/ModalComponent.vue'
+
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         data(){
             return{
                 listadoProspectos:0,
@@ -964,6 +791,7 @@
                 publicidad_id:0,
                 esquema:2,
                 archivo:'',
+                manual:0,
 
                 inmobiliaria:'',
                 arrayPersonal : [],
@@ -1464,32 +1292,6 @@
                     console.log(error);
                 });
             },
-            actPeriodoVacacional(){
-                
-
-                let me = this;
-                //Con axios se llama el metodo update de PersonalController
-                axios.put('/asesores/actPeriodoVacacional',{
-                    
-                    'id' : this.id,
-                    'ini_vacaciones' : this.ini_vacaciones,
-                    'fin_vacaciones' : this.fin_vacaciones,
-                    
-                }).then(function (response){
-                    me.cerrarModal3();
-                    me.listarPersonal(1,'','nombre');
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Cambios guardados correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
             /**Metodo para actualizar  */
             actualizarProspecto(){
                 /*if(this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -1786,8 +1588,6 @@
                 this.archivoComprobante = '';
                 this.archivoCV = '';
                 this.modalArchivos = 0;
-                this.ini_vacaciones = '';
-                this.fin_vacaciones = '';
             
             },
             cerrarModal4(){
@@ -1892,16 +1692,6 @@
                         }
                         break;
                     }
-                    case "Vacaciones":{
-                        this.modal3 =2;
-                        this.tituloModal='Ingresar periodo vacacional';
-                        
-                        this.ini_vacaciones=data['ini_vacaciones'];
-                        this.fin_vacaciones=data['fin_vacaciones'];
-                        this.id=data['id'];
-                        break;
-                    }
-
                 }
                 this.selectColonias(this.cp);
             },
@@ -1987,18 +1777,6 @@
         font-size: 0.85rem;
         color: #27417b;
     }
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-        
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -2006,16 +1784,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {
