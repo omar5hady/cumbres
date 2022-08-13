@@ -179,29 +179,27 @@ class PrestamosController extends Controller
     public function editarPrestamo(Request $request)
     {
         
+        
         $solicitud_id=$request->solicitud_id;
-        $user_id=$request->id; 
         $monto=$request->monto; 
         $motivo=$request->motivo; 
-        $desc_quin=$request->desc_quin; 
-        $fecha_solic=$request->fecha_solic; 
-        $idJefe=$request->idJefe;
+        //$idJefe=$request->idJefe;
         $tablaPagos=$request->arrPagos;
         
-        $index=key($tablaPagos);
-        
+        $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo 
         $prestamo=Prestamos_personales::findOrFail($solicitud_id);
-        $prestamo->user_id=$user_id;
-        $prestamo->monto_solicitado=$monto;
-        $prestamo->motivo=$motivo;
-        $prestamo->desc_quin =$desc_quin;
-
-        if($index > 0){ // pendinnteeee
-
+       $prestamo->motivo=$motivo;
+        if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar 
+            foreach ($tablaPagos as $key => $value) {
+                    if($value['saldo']==0){
+                        $prestamo->saldo =$tablaPagos[$key-1]['saldo'];
+                        break;   // rompe el ciclo , para quedarse con el ultimo registro de saldo en el arreglo
+                    }
+            }
+        }else{
+            $prestamo->saldo =$monto;
         }
-        $prestamo->saldo =$monto;
-        $prestamo->fecha_ini =$fecha_solic;
-        $prestamo->jefe_id =$idJefe;
+        
         $prestamo->save();
 
 

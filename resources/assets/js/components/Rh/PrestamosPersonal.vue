@@ -628,13 +628,13 @@
             validarMonto(pagoQ, inde ,extra){
                         
                         
-                         this.totalExtra=0;
-                        var index=parseFloat(inde);
-                        console.log(index);
-                        var index_capturado=parseFloat(this.index_cap);
-                        console.log('cap '+this.index_cap );
-                        console.log(index_capturado );
+                         this.totalExtra=0; /// se reinicia el monto total de los pagos extraordinarios d
+                                            /// de los pagos No capturados 
+                        var index=parseFloat(inde); // convierte de string a cadena
+                        var index_capturado=parseFloat(this.index_cap); // convierte el indice del arreglo de los pagos Capturados
                         var extraO = parseFloat(extra);
+
+
                         if(index == 0){
                         var saldoAnt = parseFloat(this.monto_solic)
                         }else {
@@ -645,7 +645,7 @@
                                 var  saldoAnt = parseFloat(this.arrayPagos[index-1].saldo)
                             }
                         }
-                        var monto=parseFloat(pagoQ) + extraO
+                        var monto=parseFloat(pagoQ) + extraO // total del monto a descontar del saldo anterior
 
                 if(parseFloat(saldoAnt) > monto ){
                     this.arrayPagos[index].pagoExtra = extraO;
@@ -659,11 +659,20 @@
                             }
                     this.actualiTabla(index+1,0)
                 }else{
-                    this.arrayPagos[index].pago = saldoAnt;
-                    this.arrayPagos[index].pagoExtra = 0;
-                    this.arrayPagos[index].saldo = 0;
-                    this.saldoFaltante=0;
-                    this.actualiTabla(index+1,1)
+                    if(parseFloat(saldoAnt) == monto ){
+                        this.arrayPagos[index].pago = monto - extraO;
+                        this.arrayPagos[index].pagoExtra = extraO;
+                        this.arrayPagos[index].saldo = 0;
+                        this.saldoFaltante=0;
+                        this.actualiTabla(index+1,1)
+                    }else{
+
+                        this.arrayPagos[index].pago = saldoAnt;
+                        this.arrayPagos[index].pagoExtra = 0;
+                        this.arrayPagos[index].saldo = 0;
+                        this.saldoFaltante=0;
+                        this.actualiTabla(index+1,1)
+                    }
                 }
             },
 
@@ -671,14 +680,16 @@
 
             actualiTabla(index,band){
                      console.log(index);
-                if(index >=  this.arrayPagos.length ){
+                    var n_e_arr =Object.keys(this.arrayPagos).length; //  devuelve el numero de elementos de un objeto 
+                 
+
+                if(index >=  n_e_arr){
                     return 
                 }else{
-                    
-                        console.log('index '+index);
-                        for ( index ; index < this.arrayPagos.length; index++) {
+                        for ( index ; index < n_e_arr; index++) {
                            
                            let saldoAnt = this.arrayPagos[index-1].saldo
+                           console.log(saldoAnt);
                             if(band ==1){
                                 this.arrayPagos[index].pago = 0;
                                 this.arrayPagos[index].pagoExtra = 0;
@@ -693,6 +704,7 @@
                                         this.arrayPagos[index].pago = this.desc_quin;
                                         this.arrayPagos[index].pagoExtra = 0;
                                         this.arrayPagos[index].saldo = saldoAnt - this.arrayPagos[index].pago  ;
+                                        console.log(this.arrayPagos[index].pago );
                                     }
                             }
                             
@@ -736,11 +748,11 @@
              editarSolicitud(){
                 let me = this;
                 var url = '/prestamos/editarPrestamo?id=' + this.e_id_user +
-                                                        '&monto='+ this.monto_solic +
+                                                        //'&monto='+ this.monto_solic +
                                                         '&solicitud_id='+ this.id_prestamo +
                                                         '&motivo='+ this.motivo +
-                                                        '&desc_quin='+this.desc_quin +
-                                                        '&fecha_solic='+ this.fecha_solic +
+                                                        //'&desc_quin='+this.desc_quin +
+                                                        //'&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
                 axios.put(url,{'arrPagos': me.arrayPagos}).then(function (response) {
                    // me.guardaTablaPagos();
