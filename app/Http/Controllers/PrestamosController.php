@@ -268,6 +268,9 @@ class PrestamosController extends Controller
         $pagos = Pagos_prestamos::where('solic_id','=',$solicitud_id)->get();
         //$pagos_cap = Pagos_prestamos::where('solic_id','=',$solicitud_id)->where('status','=','1')->get();
         if(sizeof($pagos)>0 ){
+            $tabla_p=[];
+            $tabla=[];
+
             foreach ($pagos as $key => $pago) {
                 if($pago->status == 0){
                     $tabla[$key]['id']=$key+1;
@@ -287,11 +290,11 @@ class PrestamosController extends Controller
                     $tabla_p[$key]['saldo']=$pago->saldo;
                 }
             }
-            if(sizeof($tabla_p)<= 0 ){
-                return [$tabla,$tabla_p=[]];
-            }else return [$tabla,$tabla_p];
+         
+            return [$tabla,$tabla_p];
 
-        }else return [$tabla=[],$tabla_p=[]];
+        }else [$tabla_p=[],$tabla=[]];
+        
 
            
         

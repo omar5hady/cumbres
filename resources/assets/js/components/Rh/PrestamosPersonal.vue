@@ -312,34 +312,20 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                     <tr  v-for="(pago, index ) in arrayPagosCap" :key="pago.id">
+                                                     <tr  v-for="(pago ) in arrayPagosCap" :key="pago.id">
                                                             <!-- <td class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn btn-danger " style=" margin:1px "><i class=" fa small fa-trash"></i> </button> </td>  -->
                                                             <td   v-text="pago.id"></td>
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
                                                             <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
                                                             <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
-                                                            <template v-if="modalVista == '0' || modalVista == '2'  && pago.status != 1 ">
-                                                                <td class="td2" v-if="editAjuste ==0">
-                                                                    <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
-                                                                </td>
-                                                                <td class="td2"   v-if="editAjuste ==1 ">
-                                                                <input title="Enter para guardar.. " class="form-control2" pattern="\d*" type="text"  
-                                                                        @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"  
-                                                                        v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra"> 
-                                                                </td>
-                                                            </template   >
-                                                            <template v-else>
+                                                          
+                                                            <template>
                                                                 <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
 
                                                             </template>
                                                             <td v-text="'$'+formatNumber(pago.saldo)"></td>
-                                                            <template v-if=" modalVista == '2'"  >
-                                                                <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
-                                                                <td v-if=" pago.status == 0 " class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn  " style="  margin:1px " @click="capturarPago(pago.id_pago)" ><i class="  fa small fa-check-circle"></i> </button> </td> 
-                                                                <td v-if=" pago.status == 1 " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td> 
-                                                                </template>
-                                                            </template>
-                                                            <template v-else >
+                                                           
+                                                            <template  >
                                                                 <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
                                                                 <td v-if=" pago.status == 1  " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+pago.fecha_pago"> </td> 
                                                                 </template>
