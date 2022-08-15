@@ -73,7 +73,14 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="prestamo in arrayDataPrestamos" :key="prestamo.id">
+
                                         <td class="td2">
+                                            <template v-if="isRHCurrent && prestamo.status_rh !=2  " >
+                                                <button type="button" @click="eliminaSolicitud(prestamo.id)" class="btn btn-danger btn-sm">
+                                                    <i class=" icon-trash"></i>
+                                                </button>
+
+                                            </template>
                                             <button type="button" @click="abrirModal('ver',prestamo)" class="btn btn-dark btn-sm">
                                                 <i class="icon-eye"></i>
                                             </button>
@@ -189,14 +196,27 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label ">Gerente a cargo:
                                     </label>
-                                        <template v-if="modalVista == '0' || modalVista == '2'">
-                                            <select  class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
-                                                    <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-                                        
-                                            </select>
+                                    <template v-if="status_rh !=2 " >
+                                            <template v-if="modalVista == '0' || modalVista == '2' ">
+                                                <select  class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                                        <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                                            
+                                                </select>
+
+                                            </template>
+
+                                    </template>
+                                          <template v-else >
+                                            <template v-if="modalVista =='2'">
+                                                <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                                        <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                                                </select>
+
+                                            </template>
 
                                         </template>
-                                           <template v-if="modalVista == '1'">
+                                        
+                                        <template v-if="modalVista == '1'">
                                             <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
                                                     <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
                                             </select>
@@ -209,19 +229,28 @@
                                     <label class="col-md-3 form-control-label" >Monto solicitado:
                                         <span style="color:red;" v-show="monto_solic == 0">*</span>
                                     </label>
+                                        <template v-if=" status_rh !=2">
+                                            <template v-if="modalVista =='0' || modalVista == '2' ">
+                                                <a  v-if="editAjusteMonto ==0"   class="form-control col-md-3 " style="cursor: pointer; color:deepskyblue; text-decoration: underline; text-shadow: slategrey;" title="Click para editar"  @click="editAjusteMonto=1" v-text="'$'+formatNumber(monto_solic)" ></a>
 
-                                        <template v-if="modalVista =='0' || modalVista == '2' ">
-                                            <a  v-if="editAjusteMonto ==0"   class="form-control col-md-3 " style="cursor: pointer; color:deepskyblue; text-decoration: underline; text-shadow: slategrey;" title="Click para editar"  @click="editAjusteMonto=1" v-text="'$'+formatNumber(monto_solic)" ></a>
-
-                                        </template>
-                                    
+                                            </template>
                                         
-                                        <template v-if="modalVista == '0' || modalVista == '2' ">
-                                            <input v-if="editAjusteMonto ==1" autofocus aria-selected="true" class=" form-control col-md-3" title="Enter para guardar.."  pattern="\d*" type="text"  
-                                                    @keyup.enter="editAjusteMonto=0"  
-                                                    v-on:keypress="isNumber($event)"  v-model="monto_solic"> 
+                                            
+                                            <template v-if="modalVista == '0' || modalVista == '2' ">
+                                                <input v-if="editAjusteMonto ==1"  aria-selected="true" class=" form-control col-md-3" title="Enter para guardar.."  pattern="\d*" type="text"  
+                                                        @keyup.enter="editAjusteMonto=0"  
+                                                        v-on:keypress="isNumber($event)"  v-model="monto_solic"> 
+
+                                            </template>
 
                                         </template>
+                                        <template v-else>
+                                             <template   v-if="modalVista =='2'">
+                                            <input disabled class="col-md-3  form-control "  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
+                                            
+                                            </template>
+                                        </template>
+
                                         <template   v-if="modalVista =='1'">
                                             <input disabled class="col-md-3  form-control "  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
                                             
@@ -244,22 +273,33 @@
                                         <span style="color:red;" v-show="desc_quin ==0">*</span>
                                     </label>
                                         <div class="form-group row col-md-9  ">
-                                                <template v-if="modalVista == '0' || modalVista == '2'">
-                                                    <a v-if="editAjusteQuin ==0"  class="form-control col-md-2 " style="cursor: pointer; color:deepskyblue; text-decoration: underline; " title="Click para editar"  @click="editAjusteQuin=1" v-text="'$'+formatNumber(desc_quin)" ></a>
+
+                                                <template v-if="status_rh !=2">
+                                                    <template v-if="modalVista == '0' || modalVista == '2'">
+                                                        <a v-if="editAjusteQuin ==0"  class="form-control col-md-2 " style="cursor: pointer; color:deepskyblue; text-decoration: underline; " title="Click para editar"  @click="editAjusteQuin=1" v-text="'$'+formatNumber(desc_quin)" ></a>
+
+                                                    </template>
+                                                    <template v-if="modalVista =='0' || modalVista == '2' ">
+                                                        <input  v-if="editAjusteQuin ==1"  class=" form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"  
+                                                        @keyup.enter="editAjusteQuin=0"  
+                                                        v-on:keypress="isNumber($event)"  v-model="desc_quin"> 
+
+                                                    </template>
 
                                                 </template>
-                                                <template v-if="modalVista =='0' || modalVista == '2' ">
-                                                    <input  v-if="editAjusteQuin ==1"  class=" form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"  
-                                                    @keyup.enter="editAjusteQuin=0"  
-                                                    v-on:keypress="isNumber($event)"  v-model="desc_quin"> 
+                                                <template v-else>
+                                                         <template v-if="modalVista == '2'">
+                                                        <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
 
+                                                        </template>
                                                 </template>
 
                                                  <template v-if="modalVista == '1'">
                                                     <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
 
-                                                </template>
-                                                    <template v-if="modalVista == '0' || modalVista == '2'">
+                                                </template >
+                                                    
+                                                    <template v-if="(modalVista == '0' || modalVista == '2') && status_rh !=2 ">
                                                         <button class="form-control col-md-2 btn btn-info " type="button" v-show="desc_quin"  @click="generar_tab = 1 , editAjuste=0, generarTablaPagos()">Generar</button>
                                                         <button class=" form-control col-md-2 btn btn-warning" type="button" v-show="desc_quin"  @click="generar_tab = 1 , borrarTabla()">Borrar</button>
 
@@ -276,9 +316,18 @@
                                     <label class="col-md-3 form-control-label" >Motivo de prestamo.
                                         <span style="color:red;" v-show="motivo">*</span>
                                     </label>
-                                     <template v-if="modalVista == '0' || modalVista == '2'"> 
-                                        <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                                     <template v-if="status_rh !=2">
+                                        <template v-if="modalVista == '0' || modalVista == '2'"> 
+                                            <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                                        </template>
+
                                      </template>
+                                     <template v-else>
+                                             <template v-if="modalVista == '2'"> 
+                                                <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                                            </template>
+                                     </template>
+
                                       <template v-if="modalVista == '1'"> 
                                         <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
                                      </template>
@@ -308,7 +357,7 @@
                                                         <!-- <th>Pago Extraordinario</th> -->
                                                         <th>Pago Extraordinario</th>
                                                         <th>Saldo</th>
-                                                        <th v-if="modalVista == '1' || modalVista == '2' && status_rh == 2">Status pago</th>
+                                                        <th v-if="(modalVista == '1' || modalVista == '2' )&& status_rh == 2">Status pago</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -337,7 +386,7 @@
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
                                                             <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
                                                             <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
-                                                            <template v-if="modalVista == '0' || modalVista == '2'  && pago.status != 1 ">
+                                                            <template v-if="(modalVista == '0' || modalVista == '2' )  && pago.status != 1 &&id_prestamo !=null">
                                                                 <td class="td2" v-if="editAjuste ==0">
                                                                     <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
                                                                 </td>
@@ -354,7 +403,7 @@
                                                             <td v-text="'$'+formatNumber(pago.saldo)"></td>
                                                             <template v-if=" modalVista == '2'"  >
                                                                 <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
-                                                                <td v-if=" pago.status == 0 " class=" py-sm-0 justify-content-center " > <button class=" py-sm-1 px-sm-1 btn  " style="  margin:1px " @click="capturarPago(pago.id_pago)" ><i class="  fa small fa-check-circle"></i> </button> </td> 
+                                                                <td v-if=" pago.status == 0 " class=" py-sm-0 justify-content-center " > <button class=" bg-success py-sm-1 px-sm-1 btn  " style="  margin:1px " @click="capturarPago(pago.id_pago)" ><i class="fa small fa-2x icon-check "></i> Retener Pago </button> </td> 
                                                                 <td v-if=" pago.status == 1 " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td> 
                                                                 </template>
                                                             </template>
@@ -364,13 +413,13 @@
                                                                 </template>
                                                             </template>
                                                         </tr>
-                                                        <tr >
+                                                        <tr v-if="status_rh !=2" >
                                                             <td></td>
                                                             
-                                                            <td class=" font-1xl bg-info " v-text="total"></td>
-                                                            <td class=" font-1xl bg-info " v-text="totalExtra"></td>
-                                                            <td v-if="saldoFaltante > 0" class=" font-1xl bg-danger " v-text="saldoFaltante"></td>
-                                                            <td v-else  class=" font-1xl bg-success " v-text="saldoFaltante"></td>
+                                                            <td class=" font-1xl bg-info " v-text="'$'+formatNumber(total)"></td>
+                                                            <td class=" font-1xl bg-info " v-text="'$'+formatNumber(totalExtra)"></td>
+                                                            <td v-if="saldoFaltante > 0" class=" font-1xl bg-danger " v-text="'$'+formatNumber(saldoFaltante)"></td>
+                                                            <td v-else  class=" font-1xl bg-success " v-text="'$'+formatNumber(saldoFaltante)"></td>
                                                         </tr>
 
                                                 </tbody>
@@ -393,13 +442,13 @@
 
                                
                                 
-                                <!-- Div para mostrar los errores que mande validerNotaria -->
-                                <!-- <div v-show="errorprestamo" class="form-group row div-error">
+                                <!-- Div para mostrar los errores -->
+                                <div v-show="error_en_solicitud" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error"> 
+                                        <div v-for="error in arrayErrorSolicitud" :key="error" v-text="error"> 
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>
                           
                         </div>
                         <!-- Botones del modal -->
@@ -413,8 +462,8 @@
                             <div v-if="modalVista == '0'">
                                     <button type="button" class="btn btn-success"   @click="enviarSolicitud()">enviar</button>
                             </div>
-                            <div v-if="modalVista == '2'">
-                                    <button type="button" class="btn btn-success"   @click="editarSolicitud()">Guardar</button>
+                            <div v-if="modalVista == '2' && status_rh !=2 ">
+                                    <button type="button" class="btn btn-success"   @click="editarSolicitud(0)">Guardar</button>
                             </div>
 
                            
@@ -499,21 +548,20 @@
         data(){
             return{
                 arrayIdGerentes:[
-                   {id:'10',user:'admin1' ,nombre:'Elizabeth'},
-                    {id:'11',user:'admin2', nombre: 'Yazmin'},
-                    {id:'2',user:'admin', nombre: 'miguelin'}
+                   {id:'10',user:'eli_hdz' ,nombre:'ELIZABETH HERNANDEZ LOERA'},
                 ],
 
                  arrayIdRH:[
                     '31298','2'
                 ],
                  arrayIdDir:[
-                    ,'3','2'
+                    ,'26545','2'
                 ],
                 arrayPagos:[],
                 arrayPagosCap:[],
                 arraySaldo:[],
                 arrayObservaciones:[],
+                arrayErrorSolicitud:[],
                 editAjuste:0,
                 editAjusteMonto:0,
                 editAjusteQuin:0,
@@ -538,6 +586,7 @@
                 firma_dir:0,
                 saldo_ant_Cap:0,
                 index_cap:null,
+                error_en_solicitud:0,
 
                // variables colaborador //
                 id_prestamo:null,
@@ -565,6 +614,29 @@
           
         },
         methods : {
+              validarRegistro(){
+                this.error_en_solicitud=0;
+                this.arrayErrorSolicitud=[];
+
+                if(!this.monto_solic)
+                    this.arrayErrorSolicitud.push("Escriba un monto solicitado");
+
+                if(!this.motivo)
+                    this.arrayErrorSolicitud.push("Escriba un motivo");
+
+                if(!this.desc_quin)
+                    this.arrayErrorSolicitud.push("Llena el campo de descuento quincenal");
+                
+                if(!this.idJefe)
+                    this.arrayErrorSolicitud.push("Seleccione el gerente a cargo");
+                if(!this.arrayPagos)
+                    this.arrayErrorSolicitud.push("Genere la tabla de pagos con el boton de generar");
+
+                if(this.arrayErrorSolicitud.length)//Si el mensaje tiene almacenado algo en el array
+                    this.error_en_solicitud = 1;
+
+                return this.error_en_solicitud;
+            },
 
                 // Math.ceil(11.123) devuelve el numero entero siguiente 
             generarTablaPagos(){
@@ -713,7 +785,11 @@
             this.calculaTotales();        
                 }
 
+                 this.editarSolicitud(1);
+
             },
+
+
             guardaObs(){
                 let me = this;
                 axios.post('/prestamos/post_obs',{
@@ -745,31 +821,23 @@
                     console.log(error);
                 });
             },
-             editarSolicitud(){
+             editarSolicitud(band ){
                 let me = this;
                 var url = '/prestamos/editarPrestamo?id=' + this.e_id_user +
-                                                        //'&monto='+ this.monto_solic +
+                                                        '&monto='+ this.monto_solic +
                                                         '&solicitud_id='+ this.id_prestamo +
                                                         '&motivo='+ this.motivo +
                                                         //'&desc_quin='+this.desc_quin +
                                                         //'&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
                 axios.put(url,{'arrPagos': me.arrayPagos}).then(function (response) {
-                   // me.guardaTablaPagos();
-                    me.cerrarModal();
-                    me.dataPrestamos();
+                   if(band == 0 ){
+                       me.cerrarModal();
+                   }
+                       me.dataPrestamos();
                     
                     //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Se ha enviado solicitud'
-                    })
+                  
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -778,6 +846,10 @@
             },
 
             enviarSolicitud(){
+                if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
                 let me = this;
                 var url = '/prestamos/registrarPrestamo?id=' + this.userId +
                                                         
@@ -899,8 +971,9 @@
 
                             
                         }).then(function (response){
-                                me.dataPrestamos();
-                                //me.cerrarModal()  esperar a boton de guardar
+                            me.editarSolicitud(0)
+                               // me.dataPrestamos();
+                                //me.cerrarModal();
                             swal({
                                 position: 'top-end',
                                 type: 'success',
@@ -914,7 +987,7 @@
                     }
                 });
                 //  if(band == 1){
-                //      this.editarSolicitud();
+                //      this.editarSolicitud(); 
                 // }
                
             },
@@ -957,6 +1030,37 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            eliminaSolicitud(id_solicitud){
+             
+                    
+                   swal({
+                title: '¿Desea eliminar esta solicitud?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/prestamos/eliminarSolicitud', 
+                        {params: {'id': id_solicitud}}).then(function (response){
+                        swal(
+                        'Eliminado!',
+                        'Solicitud eliminada correctamente.',
+                        'success'
+                        )
+                       me.dataPrestamos();//se enlistan nuevamente los registros
+                        
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
             },
 
             calculaTotales(){
@@ -1056,7 +1160,7 @@
                         this.modalVista='0';
                         this.tituloModal='Nueva Solicitud';
                         this.fecha_solic=anio+'-'+mes+'-'+dia;
-
+                        this.arrayPagosCap='';
                         break;
                     }
                     case 'ver':
@@ -1065,6 +1169,10 @@
                         this.modalVista='1';
                         this.id_prestamo=data['id'];
                         this.tituloModal='Solicitud';
+                        this.status_rh=data['status_rh'];
+                        this.firma_jefe=data['jefe_band'];
+                        this.firma_rh=data['rh_band'];
+                        this.firma_dir=data['dir_band'];
                         this.fecha_solic=data['fecha_ini'];
                         this.monto_solic=data['monto_solicitado'];
                         this.idJefe=data['jefe_id'];
@@ -1155,6 +1263,7 @@
                 this.desc_quin=null;
                 this.e_id_user='';
                 this.e_nombre='';
+                this.status_rh=0;
                 this.borrarTabla();
 
 

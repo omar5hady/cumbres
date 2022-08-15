@@ -111,17 +111,16 @@ class PrestamosController extends Controller
 
 
     }
-
+    public function observaciones_prestamos(Request $request){
+        $this->guarda_observaciones($request->id, $request->obs);
+    }
    
-    public function observaciones_prestamos(Request $request)
+    public function guarda_observaciones($prestamos_id, $observacion)
     {
-        $id=$request->id;
-        $obspres=$request->obs;
-
         $obs=new Obs_prestamos_pers;
-        $obs->prestamo_id = $id;
-        $obs->observacion = $obspres;
-        $obs->usuario_id = Auth::user()->id;
+        $obs->prestamo_id = $prestamos_id;
+        $obs->observacion = $observacion;
+        $obs->usuario = Auth::user()->usuario;
         $obs->save();
         
     }
@@ -172,7 +171,8 @@ class PrestamosController extends Controller
                                 }
                                 $prestamo->fecha_status_rh= $fecha;
                                 $prestamo->save();
-                        
+
+                                $this->guarda_observaciones($id, 'Se aprobo solicitud por RH ');
                 
         
     }
@@ -192,12 +192,19 @@ class PrestamosController extends Controller
         if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar 
             foreach ($tablaPagos as $key => $value) {
                     if($value['saldo']==0){
-                        $prestamo->saldo =$tablaPagos[$key-1]['saldo'];
+                        if($key == $index  ) // pendientee
+                        $prestamo->saldo =$value['saldo'];
+                        else
+                         $prestamo->saldo =$tablaPagos[$key-1]['saldo'];
                         break;   // rompe el ciclo , para quedarse con el ultimo registro de saldo en el arreglo
                     }
             }
         }else{
-            $prestamo->saldo =$monto;
+            if($tablaPagos[0]['pagoExtra'] != null ){
+                $prestamo->saldo =$tablaPagos[0]['saldo'];
+            }else{
+                $prestamo->saldo =$monto;
+            }
         }
         
         $prestamo->save();
@@ -205,7 +212,7 @@ class PrestamosController extends Controller
 
 
          $arrayPagos=[];
-         $index=key($tablaPagos);
+         
 
         foreach ($tablaPagos as $key => $value) {
             
@@ -308,7 +315,8 @@ class PrestamosController extends Controller
     {
         $id=$request->id;
         $firma_de=$request->firma_de;
-        
+        $fecha = new Carbon();
+        $fecha = $fecha->formatLocalized('%d de %B de %Y');
         $prestamo=Prestamos_personales::findOrFail($id);
         switch ($firma_de)  {
             
@@ -316,10 +324,12 @@ class PrestamosController extends Controller
                 $firmas=Prestamos_personales::select('rh_band','jefe_band','dir_band')->where('id','=',$id)->first();
                 $prestamo->jefe_band = 1;
                 $prestamo->save();
+                $this->guarda_observaciones($id, 'Se firmo solicitud por gerente ');
                         if( $firmas->rh_band == 1 && $firmas->dir_band == 1){
                             $status=Prestamos_personales::findOrFail($id);
                             $status->status=2;
                             $status->save();
+
                         }
                     
                 break;
@@ -327,6 +337,7 @@ class PrestamosController extends Controller
                 $firmas=Prestamos_personales::select('rh_band','jefe_band','dir_band')->where('id','=',$id)->first();
                 $prestamo->rh_band = 1;
                 $prestamo->save();
+                $this->guarda_observaciones($id, 'Se firmo solicitud por RH ');
                         if( $firmas->jefe_band == 1 && $firmas->dir_band == 1){
                             $status=Prestamos_personales::findOrFail($id);
                             $status->status=2;
@@ -337,6 +348,7 @@ class PrestamosController extends Controller
                 $firmas=Prestamos_personales::select('rh_band','jefe_band','dir_band')->where('id','=',$id)->first();
                 $prestamo->dir_band = 1;
                 $prestamo->save();
+                $this->guarda_observaciones($id, 'Se firmo solicitud por Dirección ');
                         if( $firmas->jefe_band == 1 && $firmas->rh_band == 1){
                             $status=Prestamos_personales::findOrFail($id);
                             $status->status=2;
@@ -351,8 +363,9 @@ class PrestamosController extends Controller
     }
 
 
-    public function destroy($id)
+    public function eliminarSolicitud(Request $request)
     {
-        //
+        $pago = Prestamos_personales::findOrFail($request->id);
+        $pago->delete();
     }
 }

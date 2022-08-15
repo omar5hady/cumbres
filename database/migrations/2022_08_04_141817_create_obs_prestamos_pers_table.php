@@ -17,9 +17,7 @@ class CreateObsPrestamosPersTable extends Migration
             $table->increments('id');
             $table->integer('prestamo_id');
             $table->string('observacion');
-            $table->string('usuario_id');
-            $table->date('fecha_status_rh');
-            $table->boolean('status_rh');
+            $table->string('usuario',30);
             $table->timestamps();
         });
     }
