@@ -1704,7 +1704,6 @@
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
                     'prestamos_personales':this.prestamos_personales,
                     'fondo_ahorro': this.fondo_ahorro,
-                    'prestamos_personales':this.prestamos_personales,
                         //Oficina
                     'inventarios' : this.inventarios,
                     'prov_inventarios' : this.prov_inventarios,
