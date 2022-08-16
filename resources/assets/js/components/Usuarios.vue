@@ -187,6 +187,11 @@
                                                         <i class="fa fa-car"></i><i class="icon-energy"></i><input v-model="admin_mant_vehiculos" type="checkbox" value="1"/> Admin. Mant. De vehiculos
                                                     </a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link">
+                                                        <i class="fa fa-money"></i><input v-model="prestamos_personales" type="checkbox" value="1"/>  Prestamos personales.
+                                                    </a>
+                                                </li>
                                                 
                                             </ul>
                                     </div>
@@ -927,6 +932,7 @@
                     vehiculos : 0,
                     mant_vehiculos : 0,
                     admin_mant_vehiculos : 0,
+                    prestamos_personales:0,
 
                     //Oficina
                     inventarios : 0,
@@ -1342,6 +1348,7 @@
                     me.vehiculos = usuarios[0].vehiculos;
                     me.mant_vehiculos = usuarios[0].mant_vehiculos;
                     me.admin_mant_vehiculos = usuarios[0].admin_mant_vehiculos;
+                    me.prestamos_personales = usuarios[0].prestamos_personales;
 
                     // Oficina
                     me.inventarios = usuarios[0].inventarios;
@@ -1690,6 +1697,7 @@
                     'vehiculos':this.vehiculos,
                     'mant_vehiculos':this.mant_vehiculos,
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
+                    'prestamos_personales':this.prestamos_personales,
                         //Oficina
                     'inventarios' : this.inventarios,
                     'prov_inventarios' : this.prov_inventarios,
@@ -2026,6 +2034,7 @@
                 me.mant_vehiculos = 0;
                 me.vehiculos = 0;
                 me.admin_mant_vehiculos = 0;
+                me.prestamos_personales=0;
 
 
                     //Desarrollo
