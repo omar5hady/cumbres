@@ -130,6 +130,7 @@ class User extends Authenticatable
         'admin_mant_vehiculos',
         'prestamos_personales',
         'fondo_ahorro',
+        'prestamos_personales',
 
         //Oficina
         'inventarios',
