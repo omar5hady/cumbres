@@ -512,18 +512,15 @@
         <template  v-if="menu==283">
             <estimaciones-dep user-name="{{ Auth::user()->usuario }}"></estimaciones-dep>
         </template>
-<<<<<<< HEAD
         <template  v-if="menu==284">
             <prestamos-personal  
                 user-name="{{ Auth::user()->usuario }}" user-id="{{ Auth::user()->id }}"></prestamos-personal>
-=======
         <template  v-if="menu==285">
             <fondo-ahorro user-mant="1"
                 user-id="{{  Auth::user()->id }}"
                 admin-mant="{{ Auth::user()->usuario }}"
             >
             </fondo-ahorro>
->>>>>>> Modulo Fondo de ahorro v1
         </template>
     @endif
 @endsection
