@@ -82,70 +82,64 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
-                                        </th>
-                                        <th>Opciones</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Calle</th>
-                                        <th># Oficial</th>
-                                        <th style="width:8%">Terreno m&sup2;</th>
-                                        <th style="width:8%">% Indiviso</th>
-                                        <th>Clave Catastral</th>
-                                        <th>Modelo</th>
-                                        <th>Construc. m&sup2;</th>
-                                        <th>Empresa terreno</th>
-                                        <th>Empresa constructora</th>
-                                        <th style="width:8%">Etapa de Servicio</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayLote" :key="lote.id">
-                                        
-                                        <td class="td2">
-                                            <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="allLic" >
-                                        </td>
-                                        <td class="td2" style="width:12%">
-                                            <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        
-                                        <td class="td2" v-text="lote.proyecto"></td>
-                                        <td class="td2" v-text="lote.num_etapa"></td>
-                                        <td class="td2" v-text="lote.manzana"></td>
-                                        <td class="td2" v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                        <td class="td2" v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                        <td class="td2" v-text="lote.calle"></td>
-                                        <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
-                                        <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                        <td class="td2" v-text="lote.terreno"></td>
-                                        <td class="td2" v-text="lote.indivisos+'%'"></td>
-                                        <td class="td2" v-text="lote.clv_catastral"></td>
-                                        <td class="td2">
-                                            <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
-                                            <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
-                                        <td class="td2" v-text="lote.construccion"></td>
-                                        <td class="td2" v-text="lote.emp_terreno"></td>
-                                        <td class="td2" v-text="lote.emp_constructora"></td>
-                                        <td class="td2" style="width:8%" v-text="lote.etapa_servicios"></td>
-                                       
-                                    </tr>                               
-                                </tbody>
-                            </table>  
-                        </div>
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                    </th>
+                                    <th>Opciones</th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Calle</th>
+                                    <th># Oficial</th>
+                                    <th>Terreno m&sup2;</th>
+                                    <th>% Indiviso</th>
+                                    <th>Clave Catastral</th>
+                                    <th>Modelo</th>
+                                    <th>Construc. m&sup2;</th>
+                                    <th>Empresa terreno</th>
+                                    <th>Empresa constructora</th>
+                                    <th>Etapa de Servicio</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="lote in arrayLote" :key="lote.id">   
+                                    <td class="td2">
+                                        <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="allLic" >
+                                    </td>
+                                    <td class="td2" style="width:12%">
+                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button>
+                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="lote.proyecto"></td>
+                                    <td class="td2" v-text="lote.num_etapa"></td>
+                                    <td class="td2" v-text="lote.manzana"></td>
+                                    <td class="td2" v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                    <td class="td2" v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                    <td class="td2" v-text="lote.calle"></td>
+                                    <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
+                                    <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                    <td class="td2" v-text="lote.terreno"></td>
+                                    <td class="td2" v-text="lote.indivisos+'%'"></td>
+                                    <td class="td2" v-text="lote.clv_catastral"></td>
+                                    <td class="td2">
+                                        <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td> 
+                                    <td class="td2" v-text="lote.construccion"></td>
+                                    <td class="td2" v-text="lote.emp_terreno"></td>
+                                    <td class="td2" v-text="lote.emp_constructora"></td>
+                                    <td class="td2" style="width:8%" v-text="lote.etapa_servicios"></td>
+                                </tr> 
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -171,240 +165,172 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select id="myselect" class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
-                                    <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="31" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                    <div class="col-md-5">
-                                        <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Sublote</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="sublote" class="form-control" placeholder="Sublote">
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="calle" class="form-control" placeholder="Calle">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" v-model="numero" class="form-control" placeholder="Numero">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" v-model="interior" class="form-control" placeholder="Interior">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
-                                    <div class="col-md-2" >
-                                        <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
-                                    </div>
-                                    <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
-                                    <div class="col-md-2">
-                                        <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">% Indiviso</label>
-                                    <div class="col-md-2" >
-                                        <input type="number"  v-model="indivisos" class="form-control" placeholder="Indivisos">
-                                    </div>
-                                </div>
-
-                              
-                                <!-- Div para mostrar los errores que mande validerModelo -->
-                                <div v-show="errorLote" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarLote()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Actualizar</button>
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal == 1"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                        <div class="col-md-6">
+                            <select id="myselect" class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
+                        <div class="col-md-5">
+                            <input type="text" pattern="\d*" maxlength="31" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
+                        <div class="col-md-4">
+                            <input type="text" pattern="\d*" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                        <div class="col-md-5">
+                            <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Sublote</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="sublote" class="form-control" placeholder="Sublote">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" v-model="numero" class="form-control" placeholder="Numero">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" v-model="interior" class="form-control" placeholder="Interior">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
+                        <div class="col-md-2" >
+                            <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
+                        </div>
+                        <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
+                        <div class="col-md-2">
+                            <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">% Indiviso</label>
+                        <div class="col-md-2" >
+                            <input type="number"  v-model="indivisos" class="form-control" placeholder="Indivisos">
+                        </div>
+                    </div>
+
+                    <!-- Div para mostrar los errores que mande validerModelo -->
+                    <div v-show="errorLote" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
+
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarLote()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!-- Modal para el archivo excel -->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal == 2"
+            >
+                <template v-slot:body>
+                    <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="fraccionamiento_id" >
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                         <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+                        <!-- {{ csrf_field() }} -->
+                        Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
 
-                             <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                            <!-- {{ csrf_field() }} -->
-                            Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
-
-                            <input v-if="proceso==false" type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
-                            
-                         </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                        </div>
-                    </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                        <input v-if="proceso==false" type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                    </form>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
-        <!-- Modal para descargar el excel-->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-LG" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal4"></h4>
-                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                         <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                             <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="buscar_fraccionamientoExcel" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                         </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <a class="btn btn-success" v-bind:href="'/lotes/export_excel/'+buscar_fraccionamientoExcel" >
-                            <i class="icon-pencil"></i>&nbsp;Descargar
-                            </a>
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+            <!-- Modal para descargar el excel-->
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal == 4"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="buscar_fraccionamientoExcel" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <a class="btn btn-success" v-bind:href="'/lotes/export_excel/'+buscar_fraccionamientoExcel" >
+                        <i class="icon-pencil"></i>&nbsp;Descargar
+                    </a>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
-        <!-- Modal para asignar empresa-->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-LG" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa dueña del terreno</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="empresaTerreno" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa constructora</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="empresaConst" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                         </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="guardarEmpresa()">Guardar cambios</button>
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+            <!-- Modal para asignar empresa-->
+            <ModalComponent v-if="modal == 5"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa dueña del terreno</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="empresaTerreno" >
+                                <option value="">Seleccione</option>
+                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                            </select>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa constructora</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="empresaConst" >
+                                <option value="">Seleccione</option>
+                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" class="btn btn-primary" @click="guardarEmpresa()">Guardar cambios</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
         </main>
@@ -415,8 +341,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
- import _ from 'lodash'
+import _ from 'lodash'
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -445,12 +377,6 @@
                 arrayLote : [],
                 modal : 0,
                 tituloModal : '',
-                modal2: 0,
-                modal4 : 0,
-                tituloModal4: '',
-                tituloModal2: '',
-                modal3: 0,
-                tituloModal3: '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -480,7 +406,6 @@
                 allLic: [],
                 empresaConst : '',
                 empresaTerreno : '',
-                modal5:0,
                 b_empresa:'',
                 b_empresa2:'',
                 arrayAllEtapas:[],
@@ -527,43 +452,35 @@
         methods : {
 
             selectAll: function() {
-            this.allLic = [];
-
-            if (!this.allSelected) {
-                for (var lote in this.arrayLote
-                ) {
-                    this.allLic.push(this.arrayLote[lote].id.toString());
+                this.allLic = [];
+                if (!this.allSelected) {
+                    for (var lote in this.arrayLote) 
+                        this.allLic.push(this.arrayLote[lote].id.toString());
                 }
-            }
             },
-
              select: function() {
-                this.allSelected =   false;
+                this.allSelected = false;
             },
-
             onImageChange(e){
-
                 console.log(e.target.files[0]);
 
                 this.file = e.target.files[0];
 
-                if(this.file==''){
+                if(this.file=='')
                     return;
-                }
 
             },
            
             formSubmit(e) {
 
-                if(this.proceso==true || this.file==''){
+                if(this.proceso==true || this.file=='')
                     return;
-                }
-
+                
                 this.proceso=true;
 
                 e.preventDefault();
                
-               let formData = new FormData();
+                let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento_id', this.fraccionamiento_id);
                 let me = this;
@@ -579,13 +496,11 @@
                     me.proceso=false;
                     me.cerrarModal2();
                     me.listarLote(1,'','','','lote');
-
                 })
 
                 .catch(function (error) {
-
                   console.log(error);
-
+                  me.proceso=false;
                 });
 
             },
@@ -722,9 +637,7 @@
             /**Metodo para registrar  */
             registrarLote(){
                 if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
                     return;
-                }
 
                 this.proceso=true;
                 let me = this;
@@ -767,13 +680,9 @@
 
             actualizarLote(){
                 if(this.validarLote()) //Se verifica si hay un error (campo vacio)
-                {
                     return;
-                }
 
                 let me = this;
-
-
                 (async function getFruit () {
                     const {value: comentario} = await Swal({
                     title: 'Observación',
@@ -840,23 +749,6 @@
             },
             eliminarLote(data =[]){
                 this.id=data['id'];
-                this.fraccionamiento_id=data['fraccionamiento_id'];
-                this.etapa_id=data['etapa_id'];
-                this.manzana=data['manzana'];
-                this.num_lote=data['num_lote'];
-                this.sublote=data['sublote'];
-                this.modelo_id=data['modelo_id'];
-                this.empresa_id=data['empresa_id'];
-                this.calle=data['calle'];
-                this.numero=data['numero'];
-                this.interior=data['interior'];
-                this.terreno=data['terreno'];
-                this.construccion=data['construccion'];
-                this.casa_muestra=data['casa_muestra'];
-                this.lote_comercial=data['lote_comercial'];
-                this.clv_catastral=data['clv_catastral'];
-                this.etapa_servicios=data['etapa_servicios'];
-                this.comentarios=data['comentarios'];
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -911,9 +803,8 @@
             },
 
             guardarEmpresa(){
-                 if(this.proceso==true){
+                 if(this.proceso==true)
                     return;
-                }
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -976,27 +867,13 @@
                 this.clv_catastral='';
                 this.etapa_servicios='';
                 this.comentarios= '';
-                this.modal5 = 0;
+                this.modal = 0;
                 this.indivisos = 0;
+                this.buscar_fraccionamientoExcel = 0;
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
 
-            },
-            cerrarModal2(){
-                this.modal2 = 0;
-                this.tituloModal2 = '';
-            },
-
-            cerrarModal3(){
-                this.modal3 = 0;
-                this.tituloModal3 = '';
-                this.tipoAccion = 1;
-            },
-                cerrarModal4(){
-                this.modal4 = 0;
-                this.tituloModal4 = '';
-                this.buscar_fraccionamientoExcel = 0;
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(lote, accion,data =[]){
@@ -1054,26 +931,24 @@
                                 this.indivisos = data['indivisos'];
                                 break;
                             }
-
                             case 'excel':
                             {
-                                this.modal2 =1;
-                                this.tituloModal2= 'Cargar desde Excel';
+                                this.modal = 2;
+                                this.tituloModal= 'Cargar desde Excel';
                                 this.tipoAccion=3;
                                 
                                 break;
                             }
-
                             case 'descargarExcel':
                             {
-                                this.modal4 =1;
-                                this.tituloModal4= 'Descarga listado de lotes';
+                                this.modal = 4;
+                                this.tituloModal= 'Descarga listado de lotes';
                                 this.buscar_fraccionamientoExcel = 0;
                                 break;
                             }
                             case 'empresa':
                             {
-                                this.modal5 = 1;
+                                this.modal = 5;
                                 this.tituloModal = "Asignar empresas"
                                 this.empresaConst = '';
                                 this.empresaTerreno = '';
@@ -1084,8 +959,6 @@
                         }
                     }
                 }
-                this.selectFraccionamientos();
-              
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);
@@ -1100,17 +973,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -1118,16 +980,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {

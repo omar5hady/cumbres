@@ -24,39 +24,28 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="table-responsive"> 
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Producto</th>
-                                        <th>Unidad</th>
-                                        <th>Cantidad</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="inventario in arrayInventario.data" :key="inventario.id">
-                                        <td class="td2">
-                                            <button 
-                                            v-if="userName == 'zaira.valt' || userName == 'shady'"
-                                            type="button" @click="abrirModal('actualizar',inventario)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button 
-                                                type="button" @click="verDetalle(inventario)" class="btn btn-primary btn-sm"
-                                                title="Ver detalle"
-                                            >
-                                                <i class="icon-eye"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="inventario.producto"></td>
-                                        <td class="td2" v-text="inventario.unidad"></td>
-                                        <td class="td2" v-text="inventario.stock"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['','Producto','Unidad','Cantidad']">
+                            <template v-slot:tbody>
+                                <tr v-for="inventario in arrayInventario.data" :key="inventario.id">
+                                    <td class="td2">
+                                        <button 
+                                        v-if="userName == 'zaira.valt' || userName == 'shady'"
+                                        type="button" @click="abrirModal('actualizar',inventario)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                        </button>
+                                        <button 
+                                            type="button" @click="verDetalle(inventario)" class="btn btn-primary btn-sm"
+                                            title="Ver detalle"
+                                        >
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="inventario.producto"></td>
+                                    <td class="td2" v-text="inventario.unidad"></td>
+                                    <td class="td2" v-text="inventario.stock"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                            <!--Botones de paginacion -->
@@ -159,50 +148,44 @@
                             </li>
                         </ul>
 
-
-                        <div class="tab-content" id="myTab1Content">
-                            
+                        <div class="tab-content" id="myTab1Content">              
                             <!-- Compras -->
                             <div class="tab-pane fade" v-bind:class="{ 'active show': tab==1 }" v-if="tab == 1">
-                                <div class="table-responsive"> 
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th v-if="userName == 'zaira.valt' 
-                                                    || userName == 'shady'"></th>
-                                                <th>Fecha</th>
-                                                <th>Concepto</th>
-                                                <th>Proveedor</th>
-                                                <th>Factura</th>
-                                                <th>Cant.</th>
-                                                <th>Unidad</th>
-                                                <th>P. Unit</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="compra in arrayCompras.data" :key="compra.id">
-                                                <td v-if="userName == 'zaira.valt' 
-                                                    || userName == 'shady'">
-                                                    <button class="btn btn-danger"
-                                                        @click="deleteEntrada(compra.id, compra.tipo_producto)"
-                                                    ><i class="icon-trash"></i></button>
-                                                </td>
-                                                <td class="td2" v-text="compra.fecha"></td>
-                                                <td class="td2" v-text="compra.concepto"></td>
-                                                <td class="td2" v-text="compra.nombre"></td>
-                                                <td class="td2" v-text="compra.num_factura"></td>
-                                                <td class="td2" v-text="compra.cantidad"></td>
-                                                <td class="td2" v-text="compra.unidad"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(compra.p_unit)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(compra.total)"></td>
-                                            </tr>                               
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th v-if="userName == 'zaira.valt' || userName == 'shady'"></th>
+                                            <th>Fecha</th>
+                                            <th>Concepto</th>
+                                            <th>Proveedor</th>
+                                            <th>Factura</th>
+                                            <th>Cant.</th>
+                                            <th>Unidad</th>
+                                            <th>P. Unit</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </template>
+                                    <template v-slot:tbody>
+                                        <tr v-for="compra in arrayCompras.data" :key="compra.id">
+                                            <td v-if="userName == 'zaira.valt' 
+                                                || userName == 'shady'">
+                                                <button class="btn btn-danger"
+                                                    @click="deleteEntrada(compra.id, compra.tipo_producto)"
+                                                ><i class="icon-trash"></i></button>
+                                            </td>
+                                            <td class="td2" v-text="compra.fecha"></td>
+                                            <td class="td2" v-text="compra.concepto"></td>
+                                            <td class="td2" v-text="compra.nombre"></td>
+                                            <td class="td2" v-text="compra.num_factura"></td>
+                                            <td class="td2" v-text="compra.cantidad"></td>
+                                            <td class="td2" v-text="compra.unidad"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(compra.p_unit)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(compra.total)"></td>
+                                        </tr>    
+                                    </template>
+                                </TableComponent>
                                 <nav>
                                     <!--Botones de paginacion -->
-                                <!--Botones de paginacion -->
                                     <ul class="pagination">
                                         <li class="page-item" v-if="arrayCompras.current_page > 5" @click="getCompras(1)">
                                             <a class="page-link" href="#" >Inicio</a>
@@ -254,39 +237,36 @@
                             </div>
 
                             <div class="tab-pane fade" v-bind:class="{ 'active show': tab==2 }" v-if="tab == 2">
-                                <div class="table-responsive"> 
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th v-if="userName == 'zaira.valt' 
-                                                    || userName == 'shady'"></th>
-                                                <th>Fecha</th>
-                                                <th>Concepto</th>
-                                                <th>Oficina</th>
-                                                <th>Solicitante</th>
-                                                <th>Cantidad</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="salida in arraySalidas.data" :key="salida.id">
-                                                <td v-if="userName == 'zaira.valt' 
-                                                    || userName == 'shady'">
-                                                    <button class="btn btn-danger"
-                                                        @click="deleteSalida(salida.id, salida.tipo_producto)"
-                                                    ><i class="icon-trash"></i></button>
-                                                </td>
-                                                <td class="td2" v-text="salida.fecha"></td>
-                                                <td class="td2" v-text="salida.concepto"></td>
-                                                <td class="td2" v-text="salida.oficina"></td>
-                                                <td class="td2" v-text="salida.nombre+ ' '+ salida.apellidos"></td>
-                                                <td class="td2" v-text="salida.cantidad"></td>
-                                            </tr>                               
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th v-if="userName == 'zaira.valt' 
+                                                || userName == 'shady'"></th>
+                                            <th>Fecha</th>
+                                            <th>Concepto</th>
+                                            <th>Oficina</th>
+                                            <th>Solicitante</th>
+                                            <th>Cantidad</th>
+                                        </tr>
+                                    </template>
+                                    <template v-slot:tbody>
+                                        <tr v-for="salida in arraySalidas.data" :key="salida.id">
+                                            <td v-if="userName == 'zaira.valt' 
+                                                || userName == 'shady'">
+                                                <button class="btn btn-danger"
+                                                    @click="deleteSalida(salida.id, salida.tipo_producto)"
+                                                ><i class="icon-trash"></i></button>
+                                            </td>
+                                            <td class="td2" v-text="salida.fecha"></td>
+                                            <td class="td2" v-text="salida.concepto"></td>
+                                            <td class="td2" v-text="salida.oficina"></td>
+                                            <td class="td2" v-text="salida.nombre+ ' '+ salida.apellidos"></td>
+                                            <td class="td2" v-text="salida.cantidad"></td>
+                                        </tr>   
+                                    </template>
+                                </TableComponent>
                                 <nav>
                                     <!--Botones de paginacion -->
-                                <!--Botones de paginacion -->
                                     <ul class="pagination">
                                         <li class="page-item" v-if="arraySalidas.current_page > 5" @click="getSalidas(1)">
                                             <a class="page-link" href="#" >Inicio</a>
@@ -344,224 +324,189 @@
                 <!-- Fin Listados -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Producto <span style="color:red;" v-show="producto==''">*</span>
-                                    </label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="producto" class="form-control" placeholder="Nombre del producto">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Unidad <span style="color:red;" v-show="unidad==''">*</span>
-                                    </label>
-                                    <div class="col-md-5">
-                                        <input type="text" v-model="unidad" class="form-control" placeholder="Unidad">
-                                    </div>
-                                </div>
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+            <ModalComponent :titulo="tituloModal" v-if="modal == 1"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Producto <span style="color:red;" v-show="producto==''">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="producto" class="form-control" placeholder="Nombre del producto">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Unidad <span style="color:red;" v-show="unidad==''">*</span>
+                        </label>
+                        <div class="col-md-5">
+                            <input type="text" v-model="unidad" class="form-control" placeholder="Unidad">
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal nuevo Movimiento-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de movimiento</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo_mov">
-                                            <option value="">Seleccione</option>
-                                            <option value="0">Compra</option>
-                                            <option value="1">Salida</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Compra -->
-                                <template v-if="tipo_mov == '0'">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Fecha <span style="color:red;" v-show="fecha==''">*</span>
-                                        </label>
-                                        <div class="col-md-3">
-                                            <input type="date" v-model="fecha" class="form-control" placeholder="Fecha">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Concepto <span style="color:red;" v-show="concepto==''">*</span>
-                                        </label>
-                                        <div class="col-md-5">
-                                            <input type="text" v-model="concepto" class="form-control" placeholder="Concepto">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Proveedor <span style="color:red;" v-show="proveedor==''">*</span>
-                                        </label>
-                                        <div class="col-md-5">
-                                            <select class="form-control" v-model="proveedor">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="proveedor in arrayProveedores" :key="proveedor.id" :value="proveedor.id" v-text="proveedor.nombre"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Factura <span style="color:red;" v-show="num_factura==''">*</span>
-                                        </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="num_factura" maxlength="11" 
-                                            pattern="\d*"
-                                             v-on:keypress="isNumber($event)"
-                                            class="form-control" placeholder="Factura">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Cantidad <span style="color:red;" v-show="cantidad==''">*</span>
-                                        </label>
-                                        <div class="col-md-3">
-                                            <input type="number" v-model="cantidad" class="form-control" placeholder="Cantidad">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Precio unitario <span style="color:red;" v-show="p_unit==0 || p_unit == ''">*</span>
-                                        </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="p_unit" maxlength="11" 
-                                            pattern="\d*"
-                                             v-on:keypress="isNumber($event)"
-                                            class="form-control" placeholder="Precio unitario">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label v-text="'$'+formatNumber(p_unit)"></label>
-                                        </div>
-                                    </div>
-                                    
-                                    <hr>
-
-                                    <div class="form-group row">
-                                        <div class="col-md-3 form-control-label">
-                                            <h6 class="text-primary">Total</h6>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h6 v-text="'$'+formatNumber(total=(p_unit*cantidad))"></h6>
-                                        </div>
-                                    </div>
-                                    
-                                </template>
-                                <!-- Salida -->
-                                <template v-if="tipo_mov == '1'">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Fecha <span style="color:red;" v-show="fecha==''">*</span>
-                                        </label>
-                                        <div class="col-md-3">
-                                            <input type="date" v-model="fecha" class="form-control" placeholder="Fecha">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Concepto <span style="color:red;" v-show="concepto==''">*</span>
-                                        </label>
-                                        <div class="col-md-5">
-                                            <input type="text" v-model="concepto" class="form-control" placeholder="Concepto">
-                                        </div>
-                                    </div>
-
-                                     <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Cantidad <span style="color:red;" v-show="cantidad==''">*</span>
-                                        </label>
-                                        <div class="col-md-3">
-                                            <input type="number" @change="validar()" v-model="cantidad" class="form-control" placeholder="Cantidad">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Solicitante <span style="color:red;" v-show="user_id==''">*</span>
-                                        </label>
-                                        <div class="col-md-6">
-                                            <input v-if="vista_solic==2" disabled type="text" v-model="nombre" class="form-control col-md-8">
-                                            <button v-if="vista_solic == 2" class="form-control btn btn-sm btn-secondary col-md-4" @click="vista_solic = 1, user_id = ''">Cambiar</button>
-                                            <input v-if="vista_solic==1" type="text" name="user" list="usersName" @keyup="selectUsuario(user_id)" @change="getNombre(user_id)"  class="form-control col-md-8" v-model="user_id">
-                                            <datalist v-if="vista_solic==1" id="usersName">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="users in arrayUsers" :key="users.id" :value="users.id" v-text="users.nombre + ' '+ users.apellidos"></option>
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">
-                                            Oficina <span style="color:red;" v-show="oficina==''">*</span>
-                                        </label>
-                                        <div class="col-md-5">
-                                            <input type="text" v-model="oficina" class="form-control" placeholder="Oficina">
-                                        </div>
-                                    </div>
-                                    
-                                </template>
-
-                                
-                                
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipo_mov==0" class="btn btn-primary" @click="registrarCompra()">Guardar</button>
-                            <button type="button" v-if="tipo_mov==1" class="btn btn-primary" @click="registrarSalida()">Guardar</button>
+            <ModalComponent :titulo="tituloModal" v-if="modal == 2"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Tipo de movimiento</label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="tipo_mov">
+                                <option value="">Seleccione</option>
+                                <option value="0">Compra</option>
+                                <option value="1">Salida</option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <!-- Compra -->
+                    <template v-if="tipo_mov == '0'">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Fecha <span style="color:red;" v-show="fecha==''">*</span>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="date" v-model="fecha" class="form-control" placeholder="Fecha">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Concepto <span style="color:red;" v-show="concepto==''">*</span>
+                            </label>
+                            <div class="col-md-5">
+                                <input type="text" v-model="concepto" class="form-control" placeholder="Concepto">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Proveedor <span style="color:red;" v-show="proveedor==''">*</span>
+                            </label>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="proveedor">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="proveedor in arrayProveedores" :key="proveedor.id" :value="proveedor.id" v-text="proveedor.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Factura <span style="color:red;" v-show="num_factura==''">*</span>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="num_factura" maxlength="11" 
+                                pattern="\d*"
+                                    v-on:keypress="isNumber($event)"
+                                class="form-control" placeholder="Factura">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Cantidad <span style="color:red;" v-show="cantidad==''">*</span>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="number" v-model="cantidad" class="form-control" placeholder="Cantidad">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Precio unitario <span style="color:red;" v-show="p_unit==0 || p_unit == ''">*</span>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="p_unit" maxlength="11" 
+                                pattern="\d*"
+                                    v-on:keypress="isNumber($event)"
+                                class="form-control" placeholder="Precio unitario">
+                            </div>
+                            <div class="col-md-3">
+                                <label v-text="'$'+formatNumber(p_unit)"></label>
+                            </div>
+                        </div>
+                        
+                        <hr>
+
+                        <div class="form-group row">
+                            <div class="col-md-3 form-control-label">
+                                <h6 class="text-primary">Total</h6>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 v-text="'$'+formatNumber(total=(p_unit*cantidad))"></h6>
+                            </div>
+                        </div>
+                        
+                    </template>
+                    <!-- Salida -->
+                    <template v-if="tipo_mov == '1'">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Fecha <span style="color:red;" v-show="fecha==''">*</span>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="date" v-model="fecha" class="form-control" placeholder="Fecha">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Concepto <span style="color:red;" v-show="concepto==''">*</span>
+                            </label>
+                            <div class="col-md-5">
+                                <input type="text" v-model="concepto" class="form-control" placeholder="Concepto">
+                            </div>
+                        </div>
+
+                            <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Cantidad <span style="color:red;" v-show="cantidad==''">*</span>
+                            </label>
+                            <div class="col-md-3">
+                                <input type="number" @change="validar()" v-model="cantidad" class="form-control" placeholder="Cantidad">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Solicitante <span style="color:red;" v-show="user_id==''">*</span>
+                            </label>
+                            <div class="col-md-6">
+                                <input v-if="vista_solic==2" disabled type="text" v-model="nombre" class="form-control col-md-8">
+                                <button v-if="vista_solic == 2" class="form-control btn btn-sm btn-secondary col-md-4" @click="vista_solic = 1, user_id = ''">Cambiar</button>
+                                <input v-if="vista_solic==1" type="text" name="user" list="usersName" @keyup="selectUsuario(user_id)" @change="getNombre(user_id)"  class="form-control col-md-8" v-model="user_id">
+                                <datalist v-if="vista_solic==1" id="usersName">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="users in arrayUsers" :key="users.id" :value="users.id" v-text="users.nombre + ' '+ users.apellidos"></option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">
+                                Oficina <span style="color:red;" v-show="oficina==''">*</span>
+                            </label>
+                            <div class="col-md-5">
+                                <input type="text" v-model="oficina" class="form-control" placeholder="Oficina">
+                            </div>
+                        </div>
+                        
+                    </template>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipo_mov==0" class="btn btn-primary" @click="registrarCompra()">Guardar</button>
+                    <button type="button" v-if="tipo_mov==1" class="btn btn-primary" @click="registrarSalida()">Guardar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -571,7 +516,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue'
+import ModalComponent from '../Componentes/ModalComponent.vue'
+
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         props:{
             userName:{type: String},
         },
@@ -928,17 +880,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -947,16 +888,6 @@
         color: red !important;
         font-weight: bold;
     }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;

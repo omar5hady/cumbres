@@ -32,41 +32,39 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Terreno m&sup2;</th>
-                                        <th>Fecha de inicio </th>
-                                        <th>Fecha de termino</th>
-                                        <th>Encargado</th>
-                                        <th v-if="rolId!=3">Fecha de inicio de ventas</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="etapa in arrayEtapa" :key="etapa.id">
-                                        <td>
-                                            <button type="button" @click="abrirModal('etapa','actualizar',etapa)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarEtapa(etapa)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="etapa.fraccionamiento"></td>
-                                        <td v-text="etapa.num_etapa"></td>
-                                        <td>{{etapa.terreno_m2}}m&sup2;</td>
-                                        <td v-text="etapa.f_ini"></td>
-                                        <td v-text="etapa.f_fin"></td>
-                                        <td v-text="etapa.name"></td>
-                                        <td v-if="rolId!=3" v-text="etapa.fecha_ini_venta"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Fraccionamiento</th>
+                                    <th>Etapa</th>
+                                    <th>Terreno m&sup2;</th>
+                                    <th>Fecha de inicio </th>
+                                    <th>Fecha de termino</th>
+                                    <th>Encargado</th>
+                                    <th v-if="rolId!=3">Fecha de inicio de ventas</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="etapa in arrayEtapa" :key="etapa.id">
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('etapa','actualizar',etapa)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button> &nbsp;
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEtapa(etapa)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="etapa.fraccionamiento"></td>
+                                    <td class="td2" v-text="etapa.num_etapa"></td>
+                                    <td class="td2">{{etapa.terreno_m2}}m&sup2;</td>
+                                    <td class="td2" v-text="etapa.f_ini"></td>
+                                    <td class="td2" v-text="etapa.f_fin"></td>
+                                    <td class="td2" v-text="etapa.name"></td>
+                                    <td class="td2" v-if="rolId!=3" v-text="etapa.fecha_ini_venta"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -81,119 +79,96 @@
                                 </li>
                             </ul>
                         </nav>
-                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                        <button class="btn btn-sm btn-default" @click="modal=2">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" @change="selectContador(fraccionamiento_id)" v-model="fraccionamiento_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="num_etapa" class="form-control" placeholder="# de etapa">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Superficie de terreno</label>
-                                    <div class="col-md-4">
-                                        <input type="number" v-model="terreno_m2" class="form-control" placeholder="Terreno">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Directivo</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="personal_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="directivos in arrayDirectores" :key="directivos.id" :value="directivos.id" v-text="directivos.name"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="rolId != 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorEtapa" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjEtapa" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEtapa()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEtapa()">Actualizar</button>
+            <ModalComponent v-if="modal == 1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
+                        <div class="col-md-6">
+                            <select class="form-control" @change="selectContador(fraccionamiento_id)" v-model="fraccionamiento_id">
+                                <option value="0">Seleccione</option>
+                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Superficie de terreno</label>
+                        <div class="col-md-4">
+                            <input type="number" v-model="terreno_m2" class="form-control" placeholder="Terreno">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Directivo</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="personal_id">
+                                <option value="0">Seleccione</option>
+                                <option v-for="directivos in arrayDirectores" :key="directivos.id" :value="directivos.id" v-text="directivos.name"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="rolId != 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
+                        </div>
+                    </div>
+                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                    <div v-show="errorEtapa" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjEtapa" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEtapa()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEtapa()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
             
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Para crear una nueva etapa solo debe dar clic sobre el botón de “Nuevo” y seleccionar el 
-                            fraccionamiento o proyecto al cual pertenecerá la nueva etapa.
-                        </p>
-                        <p>
-                            Un proyecto puede constar de más de una etapa y usted puede agregar cuantas etapas considere 
-                            sean necesarias para su proyecto, es recomendable que lleve el orden de sus etapas con el número de etapa.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
-
+            <ModalComponent v-if="modal == 2"
+                :titulo="'Manual'"
+                @closeModal="modal=0">
+                <template v-slot:body>
+                    <p>
+                        Para crear una nueva etapa solo debe dar clic sobre el botón de “Nuevo” y seleccionar el 
+                        fraccionamiento o proyecto al cual pertenecerá la nueva etapa.
+                    </p>
+                    <p>
+                        Un proyecto puede constar de más de una etapa y usted puede agregar cuantas etapas considere 
+                        sean necesarias para su proyecto, es recomendable que lleve el orden de sus etapas con el número de etapa.
+                    </p>
+                </template>
+            </ModalComponent>
         </main>
 </template>
 
@@ -202,7 +177,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         props:{
             rolId:{type: String}
         },
@@ -526,16 +508,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -543,5 +515,20 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

@@ -38,52 +38,41 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Tipo</th>
-                                        <th>Proyecto</th>
-                                        <th>Modelo</th>
-                                        <th>Terreno mts&sup2;</th>
-                                        <th>Construcción mts&sup2;</th>
-                                        <th>Catalogo de especificaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="modelo in arrayModelo" :key="modelo.id">
-                                        <td style="width:12%">
-                                            <button v-if="rolId != '7'" title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="rolId != '7'" title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                            <button title="Subir catalogo de especificaciones" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
-                                            <i class="icon-cloud-upload"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
-                                        <td v-if="modelo.tipo==2" v-text="'Departamento'"></td>
-                                        <td v-if="modelo.tipo==3" v-text="'Terreno'"></td>
-                                        <td v-text="modelo.fraccionamiento"></td>
-                                        <td v-text="modelo.nombre"></td>
-                                        <td v-text="modelo.terreno"></td>
-                                        <td v-text="modelo.construccion"></td>
-                                        <td v-if="modelo.archivo" style="width:7%">
-                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" @click="getVersiones(modelo.id)"><i class="icon-cloud-download"></i></a>
-                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                <a v-if="modelo.archivo" class="dropdown-item" v-bind:href="'/downloadModelo/'+modelo.archivo">Descargar versión 1</a>
-                                                <a v-for="archivo in arrayVersiones" :key="archivo.id" class="dropdown-item" v-bind:href="'/downloadModelo/'+ archivo.archivo">{{archivo.version}}</a>
-                                                <a v-if="modelo.espec_obra" class="dropdown-item" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+modelo.espec_obra">Especifiaciones obra</a>
-                                            </div>
-                                        </td>
-                                        <td v-else style="width:7%"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>  
-                        </div>
+                        <TableComponent :cabecera="['Opciones','Tipo','Proyecto','Modelo',
+                            'Terreno mts&sup2;','Construcción mts&sup2;','Catalogo de especificaciones',
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="modelo in arrayModelo" :key="modelo.id">
+                                    <td class="td2" style="width:12%">
+                                        <button v-if="rolId != '7'" title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button>
+                                        <button v-if="rolId != '7'" title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                        <button title="Subir catalogo de especificaciones" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
+                                        <i class="icon-cloud-upload"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
+                                    <td class="td2" v-if="modelo.tipo==2" v-text="'Departamento'"></td>
+                                    <td class="td2" v-if="modelo.tipo==3" v-text="'Terreno'"></td>
+                                    <td class="td2" v-text="modelo.fraccionamiento"></td>
+                                    <td class="td2" v-text="modelo.nombre"></td>
+                                    <td class="td2" v-text="modelo.terreno"></td>
+                                    <td class="td2" v-text="modelo.construccion"></td>
+                                    <td class="td2" v-if="modelo.archivo" style="width:7%">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" @click="getVersiones(modelo.id)"><i class="icon-cloud-download"></i></a>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                            <a v-if="modelo.archivo" class="dropdown-item" v-bind:href="'/downloadModelo/'+modelo.archivo">Descargar versión 1</a>
+                                            <a v-for="archivo in arrayVersiones" :key="archivo.id" class="dropdown-item" v-bind:href="'/downloadModelo/'+ archivo.archivo">{{archivo.version}}</a>
+                                            <a v-if="modelo.espec_obra" class="dropdown-item" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+modelo.espec_obra">Especifiaciones obra</a>
+                                        </div>
+                                    </td>
+                                    <td class="td2" v-else style="width:7%"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -98,241 +87,192 @@
                                 </li>
                             </ul>
                         </nav>
-                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                        <button class="btn btn-sm btn-default" @click="modal2=2">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del modelo">
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="tipo" @change="selectFraccionamientos(tipo)">
+                                <option value="0">Seleccione</option>
+                                <option value="1">Fraccionamiento</option>
+                                <option value="2">Departamento</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="fraccionamiento_id">
+                                <option value="0">Seleccione</option>
+                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="terreno" class="form-control" placeholder="Terreno">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
+                        <div class="col-md-7">
+                            <input type="text" v-model="construccion" class="form-control" placeholder="Construccion">
+                        </div>
+                    </div>
+                    <!-- Div para mostrar los errores que mande validerModelo -->
+                    <div v-show="errorModelo" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjModelo" :key="error" v-text="error">
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del modelo">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo" @change="selectFraccionamientos(tipo)">
-                                            <option value="0">Seleccione</option>
-                                            <option value="1">Fraccionamiento</option>
-                                            <option value="2">Departamento</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="terreno" class="form-control" placeholder="Terreno">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
-                                    <div class="col-md-7">
-                                        <input type="text" v-model="construccion" class="form-control" placeholder="Construccion">
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerModelo -->
-                                <div v-show="errorModelo" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjModelo" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarModelo()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->
+            <!-- modal para la carga de archivos -->
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal2 == 1"
+                @closeModal="cerrarModal2()"
+            >
+                <template v-slot:body>
+                    <div v-if="success != ''" class="alert alert-success" role="alert">
+                        {{success}}
+                    </div>
 
-                                        </div>
-                                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr><th>
+                                        <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                            <div class="form-group row">
+                                                <label class="col-md-1 form-control-label" for="text-input"><strong>Archivo:</strong></label>
+                                                <div class="col-md-8">
+                                                    <input type="file" class="form-control" v-on:change="onImageChange">
+                                                </div>
+                                                    <div class="col-md-3">
+                                                    <button type="submit" class="btn btn-success">Cargar</button>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-5">
+                                                    <button v-if="archivoOrg != null && nuevo == 0" type="button" @click="getVersiones(id)" class="btn btn-primary">Añadir nuevas especificaciones</button>
+                                                    <button v-if="archivoOrg != null && nuevo == 1" type="button" @click="nuevo = 0" class="btn btn-danger">Cerrar añadir nuevas especificaciones</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </th></tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group" v-if="nuevo == 1">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr><th>
+                                        <form  method="post" @submit="formSubmitOtro" enctype="multipart/form-data">
+                                            <div class="form-group row">
+                                                <label class="col-md-1 form-control-label" for="text-input"> <strong>Version</strong> </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="version" class="form-control" placeholder="Version del archivo">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <input type="file" class="form-control" v-on:change="onImageChangeOtro">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn btn-success">Cargar</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </th></tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                        <div class="col-md-12" v-if="arrayVersiones.length">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <TableComponent :cabecera="['','Versión']">
+                                        <template v-slot:tbody>
+                                            <tr v-for="version in arrayVersiones" :key="version.id">
+                                                <td style="width:12%">
+                                                    <button @click="eliminarVersion(version.id)" type="button" class="btn btn-danger btn-sm" title="Quitar archivo">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <a v-bind:href="'/downloadModelo/'+ version.archivo"> {{version.version}}</a>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </TableComponent>
                                 </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <form  v-if="rolId != '7'" method="post" @submit="formSubmitEspeObra" enctype="multipart/form-data">
+                                <strong>Archivo especificaciones obra:</strong>
+                                <input type="file" class="form-control" v-on:change="onImageChangeEspeObra">
+                                <button type="submit" class="btn btn-success">Cargar</button>
                             </form>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarModelo()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
-                        </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-
-            <!-- modal para la carga de archivos -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div v-if="success != ''" class="alert alert-success" role="alert">
-
-                          {{success}}
-
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group row">
-                                <table class="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr><th>
-                                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-                                                <div class="form-group row">
-                                                    <label class="col-md-1 form-control-label" for="text-input"><strong>Archivo:</strong></label>
-                                                    <div class="col-md-8">
-                                                        <input type="file" class="form-control" v-on:change="onImageChange">
-                                                    </div>
-                                                     <div class="col-md-3">
-                                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                                    </div>
-                                                    
-                                                </div>
-                                                <div class="form-group row">
-                                                    <div class="col-md-5">
-                                                        <button v-if="archivoOrg != null && nuevo == 0" type="button" @click="getVersiones(id)" class="btn btn-primary">Añadir nuevas especificaciones</button>
-                                                        <button v-if="archivoOrg != null && nuevo == 1" type="button" @click="nuevo = 0" class="btn btn-danger">Cerrar añadir nuevas especificaciones</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </th></tr>
-                                    </thead>
-                                </table>
-                            </div>
-
-
-                            <div class="form-group" v-if="nuevo == 1">
-                                <table class="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr><th>
-                                            <form  method="post" @submit="formSubmitOtro" enctype="multipart/form-data">
-                                                <div class="form-group row">
-                                                    <label class="col-md-1 form-control-label" for="text-input"> <strong>Version</strong> </label>
-                                                    <div class="col-md-3">
-                                                        <input type="text" v-model="version" class="form-control" placeholder="Version del archivo">
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <input type="file" class="form-control" v-on:change="onImageChangeOtro">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </th></tr>
-                                    </thead>
-                                </table>
-
-                                    <div class="col-md-12" v-if="arrayVersiones.length">
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <table class="table table-bordered table-striped table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="width:12%"></th>
-                                                            <th>Version</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="version in arrayVersiones" :key="version.id">
-                                                            <td style="width:12%">
-                                                                <button @click="eliminarVersion(version.id)" type="button" class="btn btn-danger btn-sm" title="Quitar archivo">
-                                                                    <i class="icon-close"></i>
-                                                                </button>
-                                                            </td>
-                                                            <td>
-                                                                <a v-bind:href="'/downloadModelo/'+ version.archivo"> {{version.version}}</a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                            </div>
-
-                            <div class="form-group row">
-                                <form  v-if="rolId != '7'" method="post" @submit="formSubmitEspeObra" enctype="multipart/form-data">
-
-                                        <strong>Archivo especificaciones obra:</strong>
-
-                                        <input type="file" class="form-control" v-on:change="onImageChangeEspeObra">
-
-                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                </form>
-                            </div>
-                            </div>
-
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-            
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Para agregar un nuevo modelo solo debe de dar clic sobre el botón agregar y llenar los campos 
-                            que se solicitan en la ventana emergente.
-                        </p>
-                        <p>
-                            También podrá agregar archivos de especificaciones y en caso de que un modelo cuente con mas 
-                            de un archivo de especificación el sistema le permitirá agregar mas de uno, 
-                            posteriormente podrá asignar un archivo de especificación de modelo a cada lote dentro del módulo 
-                            “Desarrollo -> Especificaciones de Modelo”.
-                        </p>
-                        <p>
-                            En caso de que desee puede descargar las especificaciones cargadas desde el icono de descarga 
-                            que se encuentra de lado derecho.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
-
+            <ModalComponent v-if="modal2 == 2"
+                :titulo="'Manual'"
+                @closeModal="cerrarModal2()">
+                <template v-slot:body>
+                    <p>
+                        Para agregar un nuevo modelo solo debe de dar clic sobre el botón agregar y llenar los campos 
+                        que se solicitan en la ventana emergente.
+                    </p>
+                    <p>
+                        También podrá agregar archivos de especificaciones y en caso de que un modelo cuente con mas 
+                        de un archivo de especificación el sistema le permitirá agregar mas de uno, 
+                        posteriormente podrá asignar un archivo de especificación de modelo a cada lote dentro del módulo 
+                        “Desarrollo -> Especificaciones de Modelo”.
+                    </p>
+                    <p>
+                        En caso de que desee puede descargar las especificaciones cargadas desde el icono de descarga 
+                        que se encuentra de lado derecho.
+                    </p>
+                </template>
+            </ModalComponent>
         </main>
 </template>
 
@@ -341,7 +281,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
          props:{
             rolId:{type: String}
         },
@@ -367,9 +313,8 @@
                 success: '',
                 arrayModelo : [],
                 modal : 0,
-                tituloModal : '',
                 modal2 : 0,
-                tituloModal2 : '',
+                tituloModal : '',
                 tipoAccion: 0,
                 errorModelo : 0,
                 errorMostrarMsjModelo : [],
@@ -420,23 +365,13 @@
         methods : {
             // Metodos para los archivos
             onImageChange(e){
-
                 console.log(e.target.files[0]);
-
                 this.archivo = e.target.files[0];
-
             },
 
             formSubmit(e) {
-
                 e.preventDefault();
-
                 let currentObj = this;
-                // const config = {
-
-                //     headers: { 'content-type': 'multipart/form-data' }
-
-                // }
                 let formData = new FormData();
                // formData.append('id', this.id);
                 formData.append('archivo', this.archivo);
@@ -455,33 +390,21 @@
                     me.listarModelo(1,'','modelo');
 
                 })
-
                 .catch(function (error) {
-
                     currentObj.output = error;
-
                 });
 
             },
 
             onImageChangeOtro(e){
-
                 console.log(e.target.files[0]);
-
                 this.archivoOtro = e.target.files[0];
-
             },
 
             formSubmitOtro(e) {
 
                 e.preventDefault();
-
                 let currentObj = this;
-                // const config = {
-
-                //     headers: { 'content-type': 'multipart/form-data' }
-
-                // }
                 let formData = new FormData();
                // formData.append('id', this.id);
                 formData.append('archivo', this.archivoOtro);
@@ -502,34 +425,23 @@
                 })
 
                 .catch(function (error) {
-
                     currentObj.output = error;
-
                 });
 
             },
 
             // Metodos para los archivos de las especificaciones de obra
             onImageChangeEspeObra(e){
-
                 console.log(e.target.files[0]);
-
                 this.archivoEspeObra = e.target.files[0];
-
             },
 
             formSubmitEspeObra(e) {
-
                 e.preventDefault();
 
                 let currentObj = this;
-                // const config = {
-
-                //     headers: { 'content-type': 'multipart/form-data' }
-
-                // }
                 let formData2 = new FormData();
-               // formData.append('id', this.id);
+                // formData.append('id', this.id);
                 formData2.append('archivoObra', this.archivoEspeObra);
                 let me = this;
                 axios.post('/formSubmitModelo/especificaciones/obra/'+this.id, formData2)
@@ -544,17 +456,12 @@
                         })
                     me.cerrarModal2();
                     me.listarModelo(1,'','modelo');
-
                 })
 
                 .catch(function (error) {
-
                     currentObj.output = error;
-
                 });
-
             },
-
 
             /**Metodo para mostrar los registros */
             listarModelo(page, buscar, criterio){
@@ -632,9 +539,7 @@
             /**Metodo para registrar  */
             registrarModelo(){
                 if(this.validarModelo() || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
                     return;
-                }
 
                 this.proceso=true;
 
@@ -669,9 +574,7 @@
             },
             actualizarModelo(){
                 if(this.validarModelo() || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
                     return;
-                }
 
                 this.proceso=true;
 
@@ -683,7 +586,7 @@
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                     'archivo': this.archivo,
+                    'archivo': this.archivo,
                     'id' : this.id
                 }).then(function (response){
                     me.proceso=false;
@@ -703,12 +606,6 @@
             },
             eliminarModelo(data =[]){
                 this.id=data['id'];
-                this.nombre=data['nombre'];
-                this.tipo=data['tipo'];
-                this.fraccionamiento_id=data['fraccionamiento_id'];
-                this.terreno=data['terreno'];
-                this.construccion=data['construccion'];
-                this.archivo=data['archivo'];
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -764,7 +661,7 @@
             },
               cerrarModal2(){
                 this.modal2 = 0;
-                this.tituloModal2 = '';
+                this.tituloModal = '';
                 this.nombre = '';
                 this.archivo = '';
                 this.errorModelo = 0;
@@ -808,7 +705,7 @@
                             case 'subirArchivo':
                             {
                                 this.modal2 =1;
-                                this.tituloModal2='Subir Archivo (Pdf) para modelo ' + data['nombre'];
+                                this.tituloModal='Subir Archivo (Pdf) para modelo ' + data['nombre'];
                                 this.tipoAccion=3;
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
@@ -816,7 +713,6 @@
                                 this.version='';
                                 this.nuevo = 0;
                                 this.archivoOrg = data['archivo'];
-                                
                                 break;
                             }
                         }
@@ -831,21 +727,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .modal-body{
-        height: 400px;
-        width: 100%;
-        overflow-y: auto;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -853,5 +734,20 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

@@ -10,7 +10,6 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Equipamientos solicitados
                     </div>
-
                 <!-------------------  Div historial equipamientos  --------------------->
                     <div class="card-body">
                         <div class="form-group row">
@@ -72,145 +71,122 @@
 
                         <div class="tab-content" id="myTab1Content">
                             <div class="tab-pane fade" v-bind:class="{ 'active show': tab==1 }" v-if="tab == 1">
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr> 
-                                                <th></th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>Fecha de solicitud</th>
-                                                <th>Equipamiento</th>
-                                                <th>Anticipo</th>
-                                                <th>Comp. de pago 1</th>
-                                                <th>Fecha programada de instalación</th>
-                                                <th>Fecha fin de instalación</th>
-                                                <th>Dias transcurridos</th>
-                                                <th>Status</th>
-                                                <th>Liquidación</th>
-                                                <th>Comp. de pago 2</th>
-                                                <th>Total pagado</th>
-                                                <th>Pendiente</th>
-                                                <th>Imprimir Recepción</th>
-                                                <th>Observaciones</th>
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
+                                <TableComponent :cabecera="[
+                                    '','# Ref','Cliente','Proyecto','Etapa','Manzana','Lote','Fecha de solicitud',
+                                    'Equipamiento','Anticipo','Comp. de pago 1','Fecha programada de instalación',
+                                    'Fecha fin de instalación','Dias transcurridos','Status','Liquidación',
+                                    'Comp. de pago 2','Total pagado','Pendiente','Imprimir Recepción','Observaciones',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
+                                            <template>
+                                                <td v-if="equipamientos.control == 0">
+                                                    <i class="btn btn-success btn-sm fa fa-check"></i>
+                                                </td>
+                                                <td class="td2" v-else-if="equipamientos.control == 1">
+                                                    <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
+                                                </td>
+                                                <td  class="td2" v-else>
+                                                    <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
+                                                </td>
+                                                <td class="td2" v-text="equipamientos.folio"></td>
+                                                <td class="td2" v-text="equipamientos.nombre_cliente"></td>
+                                                <td class="td2" v-text="equipamientos.proyecto"></td>
+                                                <td class="td2" v-text="equipamientos.etapa"></td>
+                                                <td class="td2" v-text="equipamientos.manzana"></td>
+                                                <td class="td2" v-text="equipamientos.num_lote"></td>
+                                                <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2" v-text="equipamientos.equipamiento"></td>
                                                 <template>
-                                                    <td v-if="equipamientos.control == 0">
-                                                        <i class="btn btn-success btn-sm fa fa-check"></i>
-                                                    </td>
-                                                    <td class="td2" v-else-if="equipamientos.control == 1">
-                                                        <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
-                                                    </td>
-                                                    <td  class="td2" v-else>
-                                                        <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
-                                                    </td>
-                                                    <td class="td2" v-text="equipamientos.folio"></td>
-                                                    <td class="td2" v-text="equipamientos.nombre_cliente"></td>
-                                                    <td class="td2" v-text="equipamientos.proyecto"></td>
-                                                    <td class="td2" v-text="equipamientos.etapa"></td>
-                                                    <td class="td2" v-text="equipamientos.manzana"></td>
-                                                    <td class="td2" v-text="equipamientos.num_lote"></td>
-                                                    <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td class="td2" v-text="equipamientos.equipamiento"></td>
-                                                    <template>
-                                                        <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
-                                                        <td v-else class="td2" v-text="'Sin anticipo'"></td>    
-                                                        <td class="text-center">
-                                                            <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
-                                                                <i class="fa fa-cloud-download"></i>
-                                                            </a>
-                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
-                                                        </td>
-                                                    </template>
-                                                    <template>
-                                                        <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
-                                                            <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
-                                                        </td>
-                                                        <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
-                                                            <a href="#" v-text="'Sin fecha'"></a>
-                                                        </td>    
-                                                    </template>
-                                                    <template>
-                                                        <td v-if="equipamientos.fin_instalacion" class="td2" >
-                                                            <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
-                                                        </td>
-                                                        <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
-                                                            <a href="#" v-text="'Sin fecha'"></a>
-                                                        </td>    
-                                                    </template>
+                                                    <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                    <td v-else class="td2" v-text="'Sin anticipo'"></td>    
                                                     <td class="text-center">
-                                                        <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
-                                                        <span v-else>0</span>
-                                                    </td>
-                                                    <template>
-                                                        <td v-if="equipamientos.status == '0'" class="td2">
-                                                            <span class="badge badge-warning">Rechazado</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '1'" class="td2">
-                                                            <span class="badge badge-primary">Pendiente</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '2'" class="td2">
-                                                            <span class="badge badge-primary">En proceso de instalación</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '3'" class="td2">
-                                                            <span class="badge badge-primary">En Revisión</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '4'" class="td2">
-                                                            <span class="badge badge-success">Aprobado</span>
-                                                        </td>    
-                                                        <td v-if="equipamientos.status == '5'" class="td2">
-                                                            <span class="badge badge-danger">Cancelado</span>
-                                                        </td>  
-                                                    </template>
-                                                    <template>
-                                                        <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
-                                                        <td v-else class="td2" v-text="'Sin programar'"></td>    
-                                                        <td class="text-center">
-                                                            <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
-                                                                <i class="fa fa-cloud-download"></i>
-                                                            </a>
-                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
-                                                        </td>
-                                                    </template>
-                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
-
-                                                        <td >
-                                                            <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
-                                                                class="btn btn-warning btn-sm"  target="_blank" 
-                                                                v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
-                                                                Ver Recepción
-                                                            </a>
-                                                            <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
-                                                                class="btn btn-warning btn-sm"  target="_blank" 
-                                                                v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
-                                                                Ver Recepción
-                                                            </a>
-                                                            <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
-                                                                class="btn btn-warning btn-sm"  target="_blank" 
-                                                                v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
-                                                                Ver Recepción
-                                                            </a>                                                    
-                                                        </td>
-
-                                                    <td> 
-                                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
-                                                            @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
-                                                        </button> 
+                                                        <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                            <i class="fa fa-cloud-download"></i>
+                                                        </a>
+                                                        <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
                                                     </td>
                                                 </template>
-                                            </tr>
-                                        </tbody>
-                                    </table>  
-                                </div>
+                                                <template>
+                                                    <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
+                                                        <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                    </td>
+                                                    <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
+                                                        <a href="#" v-text="'Sin fecha'"></a>
+                                                    </td>    
+                                                </template>
+                                                <template>
+                                                    <td v-if="equipamientos.fin_instalacion" class="td2" >
+                                                        <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    </td>
+                                                    <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
+                                                        <a href="#" v-text="'Sin fecha'"></a>
+                                                    </td>    
+                                                </template>
+                                                <td class="text-center">
+                                                    <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
+                                                    <span v-else>0</span>
+                                                </td>
+                                                <template>
+                                                    <td v-if="equipamientos.status == '0'" class="td2">
+                                                        <span class="badge badge-warning">Rechazado</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '1'" class="td2">
+                                                        <span class="badge badge-primary">Pendiente</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '2'" class="td2">
+                                                        <span class="badge badge-primary">En proceso de instalación</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '3'" class="td2">
+                                                        <span class="badge badge-primary">En Revisión</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '4'" class="td2">
+                                                        <span class="badge badge-success">Aprobado</span>
+                                                    </td>    
+                                                    <td v-if="equipamientos.status == '5'" class="td2">
+                                                        <span class="badge badge-danger">Cancelado</span>
+                                                    </td>  
+                                                </template>
+                                                <template>
+                                                    <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                    <td v-else class="td2" v-text="'Sin programar'"></td>    
+                                                    <td class="text-center">
+                                                        <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                            <i class="fa fa-cloud-download"></i>
+                                                        </a>
+                                                        <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                    </td>
+                                                </template>
+                                                <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
+
+                                                    <td >
+                                                        <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
+                                                            class="btn btn-warning btn-sm"  target="_blank" 
+                                                            v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
+                                                            Ver Recepción
+                                                        </a>
+                                                        <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
+                                                            class="btn btn-warning btn-sm"  target="_blank" 
+                                                            v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
+                                                            Ver Recepción
+                                                        </a>
+                                                        <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
+                                                            class="btn btn-warning btn-sm"  target="_blank" 
+                                                            v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
+                                                            Ver Recepción
+                                                        </a>                                                    
+                                                    </td>
+
+                                                <td> 
+                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
+                                                    </button> 
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                                 <nav>
                                     <!--Botones de paginacion -->
                                     <ul class="pagination">
@@ -235,145 +211,123 @@
                         </div>
                         <div class="tab-content" id="myTab1Content">
                             <div class="tab-pane fade" v-bind:class="{ 'active show': tab==2 }" v-if="tab == 2">
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr> 
-                                                <th></th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>Fecha de solicitud</th>
-                                                <th>Equipamiento</th>
-                                                <th>Anticipo</th>
-                                                <th>Comp. de pago 1</th>
-                                                <th>Fecha programada de instalación</th>
-                                                <th>Fecha fin de instalación</th>
-                                                <th>Dias transcurridos</th>
-                                                <th>Status</th>
-                                                <th>Liquidación</th>
-                                                <th>Comp. de pago 2</th>
-                                                <th>Total pagado</th>
-                                                <th>Pendiente</th>
-                                                <th>Imprimir Recepción</th>
-                                                <th>Observaciones</th>
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
+                                <TableComponent :cabecera="[
+                                    '','# Ref','Cliente','Proyecto','Etapa','Manzana','Lote',
+                                    'Fecha de solicitud','Equipamiento','Anticipo','Comp. de pago 1',
+                                    'Fecha programada de instalación','Fecha fin de instalación',
+                                    'Dias transcurridos','Status','Liquidación','Comp. de pago 2',
+                                    'Total pagado','Pendiente','Imprimir Recepción','Observaciones',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
+                                            <template>
+                                                <td v-if="equipamientos.control == 0">
+                                                    <i class="btn btn-success btn-sm fa fa-check"></i>
+                                                </td>
+                                                <td class="td2" v-else-if="equipamientos.control == 1">
+                                                    <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
+                                                </td>
+                                                <td  class="td2" v-else>
+                                                    <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
+                                                </td>
+                                                <td class="td2" v-text="equipamientos.folio"></td>
+                                                <td class="td2" v-text="equipamientos.nombre_cliente"></td>
+                                                <td class="td2" v-text="equipamientos.proyecto"></td>
+                                                <td class="td2" v-text="equipamientos.etapa"></td>
+                                                <td class="td2" v-text="equipamientos.manzana"></td>
+                                                <td class="td2" v-text="equipamientos.num_lote"></td>
+                                                <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2" v-text="equipamientos.equipamiento"></td>
                                                 <template>
-                                                    <td v-if="equipamientos.control == 0">
-                                                        <i class="btn btn-success btn-sm fa fa-check"></i>
-                                                    </td>
-                                                    <td class="td2" v-else-if="equipamientos.control == 1">
-                                                        <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
-                                                    </td>
-                                                    <td  class="td2" v-else>
-                                                        <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
-                                                    </td>
-                                                    <td class="td2" v-text="equipamientos.folio"></td>
-                                                    <td class="td2" v-text="equipamientos.nombre_cliente"></td>
-                                                    <td class="td2" v-text="equipamientos.proyecto"></td>
-                                                    <td class="td2" v-text="equipamientos.etapa"></td>
-                                                    <td class="td2" v-text="equipamientos.manzana"></td>
-                                                    <td class="td2" v-text="equipamientos.num_lote"></td>
-                                                    <td class="td2" v-text="this.moment(equipamientos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td class="td2" v-text="equipamientos.equipamiento"></td>
-                                                    <template>
-                                                        <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
-                                                        <td v-else class="td2" v-text="'Sin anticipo'"></td>    
-                                                        <td class="text-center">
-                                                            <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
-                                                                <i class="fa fa-cloud-download"></i>
-                                                            </a>
-                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
-                                                        </td>
-                                                    </template>
-                                                    <template>
-                                                        <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
-                                                            <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
-                                                        </td>
-                                                        <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
-                                                            <a href="#" v-text="'Sin fecha'"></a>
-                                                        </td>    
-                                                    </template>
-                                                    <template>
-                                                        <td v-if="equipamientos.fin_instalacion" class="td2" >
-                                                            <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
-                                                        </td>
-                                                        <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
-                                                            <a href="#" v-text="'Sin fecha'"></a>
-                                                        </td>    
-                                                    </template>
+                                                    <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                    <td v-else class="td2" v-text="'Sin anticipo'"></td>    
                                                     <td class="text-center">
-                                                        <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
-                                                        <span v-else>0</span>
-                                                    </td>
-                                                    <template>
-                                                        <td v-if="equipamientos.status == '0'" class="td2">
-                                                            <span class="badge badge-warning">Rechazado</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '1'" class="td2">
-                                                            <span class="badge badge-primary">Pendiente</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '2'" class="td2">
-                                                            <span class="badge badge-primary">En proceso de instalación</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '3'" class="td2">
-                                                            <span class="badge badge-primary">En Revisión</span>
-                                                        </td>
-                                                        <td v-if="equipamientos.status == '4'" class="td2">
-                                                            <span class="badge badge-success">Aprobado</span>
-                                                        </td>    
-                                                        <td v-if="equipamientos.status == '5'" class="td2">
-                                                            <span class="badge badge-danger">Cancelado</span>
-                                                        </td>  
-                                                    </template>
-                                                    <template>
-                                                        <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
-                                                        <td v-else class="td2" v-text="'Sin programar'"></td>    
-                                                        <td class="text-center">
-                                                            <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
-                                                                <i class="fa fa-cloud-download"></i>
-                                                            </a>
-                                                            <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
-                                                        </td>
-                                                    </template>
-                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
-
-                                                        <td >
-                                                            <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
-                                                                class="btn btn-warning btn-sm"  target="_blank" 
-                                                                v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
-                                                                Ver Recepción
-                                                            </a>
-                                                            <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
-                                                                class="btn btn-warning btn-sm"  target="_blank" 
-                                                                v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
-                                                                Ver Recepción
-                                                            </a>
-                                                            <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
-                                                                class="btn btn-warning btn-sm"  target="_blank" 
-                                                                v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
-                                                                Ver Recepción
-                                                            </a>                                                    
-                                                        </td>
-
-                                                    <td> 
-                                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
-                                                            @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
-                                                        </button> 
+                                                        <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                            <i class="fa fa-cloud-download"></i>
+                                                        </a>
+                                                        <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
                                                     </td>
                                                 </template>
-                                            </tr>
-                                        </tbody>
-                                    </table>  
-                                </div>
+                                                <template>
+                                                    <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
+                                                        <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                    </td>
+                                                    <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
+                                                        <a href="#" v-text="'Sin fecha'"></a>
+                                                    </td>    
+                                                </template>
+                                                <template>
+                                                    <td v-if="equipamientos.fin_instalacion" class="td2" >
+                                                        <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    </td>
+                                                    <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
+                                                        <a href="#" v-text="'Sin fecha'"></a>
+                                                    </td>    
+                                                </template>
+                                                <td class="text-center">
+                                                    <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
+                                                    <span v-else>0</span>
+                                                </td>
+                                                <template>
+                                                    <td v-if="equipamientos.status == '0'" class="td2">
+                                                        <span class="badge badge-warning">Rechazado</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '1'" class="td2">
+                                                        <span class="badge badge-primary">Pendiente</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '2'" class="td2">
+                                                        <span class="badge badge-primary">En proceso de instalación</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '3'" class="td2">
+                                                        <span class="badge badge-primary">En Revisión</span>
+                                                    </td>
+                                                    <td v-if="equipamientos.status == '4'" class="td2">
+                                                        <span class="badge badge-success">Aprobado</span>
+                                                    </td>    
+                                                    <td v-if="equipamientos.status == '5'" class="td2">
+                                                        <span class="badge badge-danger">Cancelado</span>
+                                                    </td>  
+                                                </template>
+                                                <template>
+                                                    <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                    <td v-else class="td2" v-text="'Sin programar'"></td>    
+                                                    <td class="text-center">
+                                                        <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                            <i class="fa fa-cloud-download"></i>
+                                                        </a>
+                                                        <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                    </td>
+                                                </template>
+                                                <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
+
+                                                    <td >
+                                                        <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
+                                                            class="btn btn-warning btn-sm"  target="_blank" 
+                                                            v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
+                                                            Ver Recepción
+                                                        </a>
+                                                        <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
+                                                            class="btn btn-warning btn-sm"  target="_blank" 
+                                                            v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
+                                                            Ver Recepción
+                                                        </a>
+                                                        <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
+                                                            class="btn btn-warning btn-sm"  target="_blank" 
+                                                            v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
+                                                            Ver Recepción
+                                                        </a>                                                    
+                                                    </td>
+
+                                                <td> 
+                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
+                                                    </button> 
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                                 <nav>
                                     <!--Botones de paginacion -->
                                     <ul class="pagination">
@@ -396,197 +350,107 @@
                                 </nav>
                             </div>
                         </div>
-                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                        <button class="btn btn-sm btn-default" @click="manual=1">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
-
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
             <!--Inicio del modal para diversos llenados de tabla en historial -->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" v-text="tituloModal"></h5>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+            <ModalComponent v-if="modal2"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row" v-if="tipoAccion == 2">
+                        <label class="col-md-2 form-control-label" for="text-input">Fecha programada para instalación</label>
+                        <div class="col-md-3">
+                            <input type="date" v-model="fecha_colocacion" class="form-control">
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 2">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de colocacion</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="fecha_colocacion" class="form-control">
-                                    </div>
-                                </div>
-
-                                 <div class="form-group row" v-if="tipoAccion == 2">
-                                    <label class="col-md-2 form-control-label" for="text-input">Observacion</label>
-                                    <div class="col-md-8">
-                                        <textarea v-model="observacion" cols="50" rows="4"></textarea>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Observacion (*)</label>
+                        <div class="col-md-8">
+                            <textarea v-model="observacion" cols="50" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <!-- Div para mostrar los errores  -->
+                    <div v-show="errorColocacion" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjColocacion" :key="error" v-text="error">
                             </div>
                         </div>
-                        <!-- /.modal-content -->
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
-            <!--Fin del modal-->
-
-             <!--Inicio del modal para diversos llenados de tabla en historial -->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" v-text="tituloModal"></h5>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-
-                                <div class="form-group row" v-if="tipoAccion == 2">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha programada para instalación</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="fecha_colocacion" class="form-control">
-                                    </div>
-                                </div>
-
-                                 <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Observacion (*)</label>
-                                    <div class="col-md-8">
-                                        <textarea v-model="observacion" cols="50" rows="4"></textarea>
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores  -->
-                                <div v-show="errorColocacion" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjColocacion" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                
-                            </div>
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion ==1" class="btn btn-success" @click="setInstalacion()">Finalizar instalación</button>
-                                <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
-                            </div>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="setInstalacion()">Finalizar instalación</button>
+                    <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="observacion" class="form-control">
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
-                                    </div>
-                                </div>
-
-
-                                <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                    
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Usuario</th>
-                                                <th>Observacion</th>
-                                                <th>Fecha</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                
-                                                <td v-text="observacion.usuario" ></td>
-                                                <td v-text="observacion.comentario" ></td>
-                                                <td v-text="observacion.created_at"></td>
-                                            </tr>                               
-                                        </tbody>
-                                    </table>
-                                    
-                                </form>
-                            </div>
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            </div>
+            <ModalComponent v-if="modal3"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="observacion" class="form-control">
                         </div>
-                        <!-- /.modal-content -->
+
+                        <div class="col-md-3">
+                            <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
+                        </div>
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                                <template v-slot:tbody>
+                                    <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                        <td class="td2" v-text="observacion.usuario" ></td>
+                                        <td class="td2" v-text="observacion.comentario" ></td>
+                                        <td class="td2" v-text="observacion.created_at"></td>
+                                    </tr>  
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
             
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Dentro del listado de “Seguimiento de instalación” podrá ver el listado de aquellas 
-                            solicitudes de instalación de algún lote (pueden ser una o más por lote).
-                        </p>
-                        <p>
-                            <strong>Fechas,</strong> se pueden asignar las fechas tentativas de instalación y esta indicara que la 
-                            solicitud se encuentra en proceso, también puede indicar una fecha definitiva de 
-                            instalación para indicar que la instalación fuese realizada con éxito, una vez colocada 
-                            la “Fecha fin de instalación” el registro pasara a estatus de “En revisión” a 
-                            espera de la revisión de obra (vea el modulo de <strong>“Obra -> Solic. Equipamiento”</strong>),
-                        </p>
-                        <p>
-                            <strong>Instalación rechazada</strong>, en caso de que una instalación sea rechazada debe asignar una nueva 
-                            “Fecha programada de instalación” y al finalizar la instalación una “Fecha fin de instalación”, 
-                            esto permitirá volver a realizar la revisión.
-                        </p>
-                        <p>
-                            <strong>Nota:</strong> el módulo también permitirá ver saldos.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
+            <ModalComponent :titulo="'Manual'" v-if="manual"
+                @closeModal="manual=0"
+            >
+                <template v-slot:body>
+                    <p>
+                        Dentro del listado de “Seguimiento de instalación” podrá ver el listado de aquellas 
+                        solicitudes de instalación de algún lote (pueden ser una o más por lote).
+                    </p>
+                    <p>
+                        <strong>Fechas,</strong> se pueden asignar las fechas tentativas de instalación y esta indicara que la 
+                        solicitud se encuentra en proceso, también puede indicar una fecha definitiva de 
+                        instalación para indicar que la instalación fuese realizada con éxito, una vez colocada 
+                        la “Fecha fin de instalación” el registro pasara a estatus de “En revisión” a 
+                        espera de la revisión de obra (vea el modulo de <strong>“Obra -> Solic. Equipamiento”</strong>),
+                    </p>
+                    <p>
+                        <strong>Instalación rechazada</strong>, en caso de que una instalación sea rechazada debe asignar una nueva 
+                        “Fecha programada de instalación” y al finalizar la instalación una “Fecha fin de instalación”, 
+                        esto permitirá volver a realizar la revisión.
+                    </p>
+                    <p>
+                        <strong>Nota:</strong> el módulo también permitirá ver saldos.
+                    </p>
+                </template>
+            </ModalComponent>
          
      </main>
 </template>
@@ -596,7 +460,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue'
+import ModalComponent from '../Componentes/ModalComponent.vue'
+
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         data(){
             return{
                 observacion:'',
@@ -637,6 +508,7 @@
                 fin_instalacion:'',
                 observacion:'',
                 status:'',
+                manual:0,
 
                 errorColocacion : 0,
                 errorMostrarMsjColocacion : [],
@@ -979,30 +851,11 @@
     }
 </script>
 <style>
-    .line-separator{
-        height:1px;
-        background:#717171;
-        border-bottom:1px solid #c2cfd6;
-    }
-
-
     .form-control:disabled, .form-control[readonly] {
     background-color: rgba(0, 0, 0, 0.06);
     opacity: 1;
     font-size: 0.85rem;
     color: #27417b;
-    }
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-         overflow-y: auto;
-        
     }
     .div-error{
         display:flex;
@@ -1011,15 +864,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {

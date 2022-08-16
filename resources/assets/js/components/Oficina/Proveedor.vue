@@ -24,29 +24,20 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="table-responsive"> 
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="proveedor in arrayProveedor.data" :key="proveedor.id">
-                                        <td class="td2">
-                                            <button 
-                                            v-if="userName == 'zaira.valt' || userName == 'shady'"
-                                            type="button" @click="abrirModal('actualizar',proveedor)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="proveedor.nombre"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['','Nombre']">
+                            <template v-slot:tbody>
+                                <tr v-for="proveedor in arrayProveedor.data" :key="proveedor.id">
+                                    <td class="td2">
+                                        <button 
+                                        v-if="userName == 'zaira.valt' || userName == 'shady'"
+                                        type="button" @click="abrirModal('actualizar',proveedor)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="proveedor.nombre"></td>
+                                </tr>  
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                            <!--Botones de paginacion -->
@@ -104,40 +95,25 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">
-                                        Proveedor <span style="color:red;" v-show="nombre==''">*</span>
-                                    </label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del proveedor">
-                                    </div>
-                                </div>
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">
+                            Proveedor <span style="color:red;" v-show="nombre==''">*</span>
+                        </label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del proveedor">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -147,7 +123,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             userName:{type: String},
         },

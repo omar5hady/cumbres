@@ -58,109 +58,91 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive"> 
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Vehiculo</th>
-                                        <th>Solicitante</th>
-                                        <th>Servicio</th>
-                                        <th>Importe total</th>
-                                        <th>Aportación compañero</th>
-                                        <th>Monto retenido</th>
-                                        <th>Saldo</th>
-                                        <th>Fecha de solic.</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                        <th>Jefe inmediato</th>
-                                        <th>RH</th>
-                                        <th>Dirección</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="vehiculo in arraySolicitudes.data" :key="vehiculo.id">
-                                        <td class="td2">
-                                            <button type="button" @click="abrirModal('ver',vehiculo)" class="btn btn-dark btn-sm">
-                                                <i class="icon-eye"></i>
+                        <TableComponent :cabecera="['',
+                            'Vehiculo','Solicitante','Servicio','Importe total','Aportación compañero',
+                            'Monto retenido','Saldo','Fecha de solic.','Status','','Jefe inmediato','RH','Dirección',
+                            ''
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="vehiculo in arraySolicitudes.data" :key="vehiculo.id">
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('ver',vehiculo)" class="btn btn-dark btn-sm">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                        <button v-if="adminMant == '1' && vehiculo.status == 1" type="button" @click="abrirModal('editar',vehiculo)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="vehiculo.marca + ' ' + vehiculo.auto + ' ' + vehiculo.modelo"></td>
+                                    <td class="td2" v-text="vehiculo.solicitante"></td>
+                                    <td class="td2" v-text="vehiculo.reparacion"></td>
+                                    <td class="td2" v-text="'$' + formatNumber(vehiculo.importe_total)"></td>
+                                    <td class="td2" v-text="'$' + formatNumber(vehiculo.monto_comp)"></td>
+                                    <td class="td2" v-text="'$' + formatNumber(vehiculo.totalRetenido)"></td>
+                                    <td class="td2">
+                                        <strong style="color:red"
+                                        v-if="(vehiculo.monto_comp - vehiculo.totalRetenido) > 0" 
+                                        v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
+                                        <strong style="color:green" v-else 
+                                        v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
+                                    </td>
+                                    <td class="td2" v-text="this.moment(vehiculo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td class="td2">
+                                        <!-- 0 Cancelado, 1 Pendiente, 2 Aprobado, 3 Liquidado -->
+                                        <span v-if="vehiculo.status == 0" class="badge badge-danger">Rechazado</span>
+                                        <span v-if="vehiculo.status == 1" class="badge badge-warning">Pendiente</span>
+                                        <span v-if="vehiculo.status == 2" class="badge badge-primary">Aprobado</span>
+                                        <span v-if="vehiculo.status == 3" class="badge badge-success">Liquidado</span>
+                                    </td>
+                                    <td></td>
+                                    <template v-if="adminMant == '1'">
+                                        <td class="td2" v-if="vehiculo.recep_jefe == null">
+                                            <button v-if="userId != vehiculo.responsable_id" type="button" @click="firmaJefe(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Jefe inmediato">
+                                                <i class="icon-check"></i>
                                             </button>
-                                            <button v-if="adminMant == '1' && vehiculo.status == 1" type="button" @click="abrirModal('editar',vehiculo)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
+                                            <label v-else>Sin Firma</label>
+                                        </td>
+                                        <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_jefe"></td>
+
+                                        <td class="td2" v-if="vehiculo.recep_rh == null">
+                                            <button v-if="userName == 'marce.gaytan'" type="button" @click="firmaRH(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado RH">
+                                                <i class="icon-check"></i>
                                             </button>
+                                            <label v-else>Sin Firma</label>
                                         </td>
-                                        <td class="td2" v-text="vehiculo.marca + ' ' + vehiculo.auto + ' ' + vehiculo.modelo"></td>
-                                        <td class="td2" v-text="vehiculo.solicitante"></td>
-                                        <td class="td2" v-text="vehiculo.reparacion"></td>
-                                        <td class="td2" v-text="'$' + formatNumber(vehiculo.importe_total)"></td>
-                                        <td class="td2" v-text="'$' + formatNumber(vehiculo.monto_comp)"></td>
-                                        <td class="td2" v-text="'$' + formatNumber(vehiculo.totalRetenido)"></td>
-                                        <td class="td2">
-                                            <strong style="color:red"
-                                            v-if="(vehiculo.monto_comp - vehiculo.totalRetenido) > 0" 
-                                            v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
-                                            <strong style="color:green" v-else 
-                                            v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
-                                        </td>
-                                        <td class="td2" v-text="this.moment(vehiculo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <!-- 0 Cancelado, 1 Pendiente, 2 Aprobado, 3 Liquidado -->
-                                            <span v-if="vehiculo.status == 0" class="badge badge-danger">Rechazado</span>
-                                            <span v-if="vehiculo.status == 1" class="badge badge-warning">Pendiente</span>
-                                            <span v-if="vehiculo.status == 2" class="badge badge-primary">Aprobado</span>
-                                            <span v-if="vehiculo.status == 3" class="badge badge-success">Liquidado</span>
-                                        </td>
-                                        <td></td>
-                                        <template v-if="adminMant == '1'">
-                                            <td class="td2" v-if="vehiculo.recep_jefe == null">
-                                                <button v-if="userId != vehiculo.responsable_id" type="button" @click="firmaJefe(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Jefe inmediato">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                                <label v-else>Sin Firma</label>
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_jefe"></td>
+                                        <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
 
-                                            <td class="td2" v-if="vehiculo.recep_rh == null">
-                                                <button v-if="userName == 'marce.gaytan'" type="button" @click="firmaRH(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado RH">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                                <label v-else>Sin Firma</label>
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
-
-                                            <td class="td2" v-if="vehiculo.recep_direccion == null">
-                                                <button v-if="userName=='karen.viramontes' || userName=='uriel.al'" type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                                <label v-else>Sin Firma</label>
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
-                                        </template>
-
-                                        <template v-if="adminMant == '0'">
-                                            <td class="td2" v-if="vehiculo.recep_jefe == null">
-                                                Sin Firma de Jefe
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_jefe"></td>
-                                            <td class="td2" v-if="vehiculo.recep_rh == null">
-                                                Sin Firma de RH
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
-                                            <td class="td2" v-if="vehiculo.recep_direccion == null">
-                                                Sin Firma de Dirección
-                                            </td>
-                                            <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
-                                        </template>
-                                        <td>
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
-                                                        @click="abrirModal('observaciones',vehiculo)">Observaciones</button>
+                                        <td class="td2" v-if="vehiculo.recep_direccion == null">
+                                            <button v-if="userName=='karen.viramontes' || userName=='uriel.al'" type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                            <label v-else>Sin Firma</label>
                                         </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                                        <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
+                                    </template>
+
+                                    <template v-if="adminMant == '0'">
+                                        <td class="td2" v-if="vehiculo.recep_jefe == null">
+                                            Sin Firma de Jefe
+                                        </td>
+                                        <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_jefe"></td>
+                                        <td class="td2" v-if="vehiculo.recep_rh == null">
+                                            Sin Firma de RH
+                                        </td>
+                                        <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
+                                        <td class="td2" v-if="vehiculo.recep_direccion == null">
+                                            Sin Firma de Dirección
+                                        </td>
+                                        <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
+                                    </template>
+                                    <td>
+                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                    @click="abrirModal('observaciones',vehiculo)">Observaciones</button>
+                                    </td>
+                                </tr> 
+                            </template>
+                        </TableComponent>
                         <nav>
-                            <!--Botones de paginacion -->
                            <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="arraySolicitudes.current_page > 5" @click="listarSolicitudes(1)">
@@ -216,289 +198,236 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Vehiculo
-                                        <span style="color:red;" v-show="vehiculo==''">*</span>
-                                    </label>
-                                    <div class="col-md-9">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="vehiculo" >
-                                            <option value="">Seleccione vehiculo</option>
-                                            <option v-for="vehiculo in arrayVehiculos" :key="vehiculo.id" :value="vehiculo.id" 
-                                                v-text="vehiculo.marca + ' ' + vehiculo.vehiculo + ' - ' + vehiculo.nombre + ' '+vehiculo.apellidos"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Servicio
-                                        <span style="color:red;" v-show="reparacion==''">*</span>
-                                    </label>
-                                    <div class="col-md-8">
-                                        <select class="form-control" @change="calcularMontos()" :disabled="tipoAccion==2" v-model="reparacion">
-                                            <option value="">Seleccione servicio</option>
-                                            <option value="Mantenimiento Preventivo">Mantenimiento Preventivo</option>
-                                            <option value="Seguro Cobertura Amplia">Seguro Cobertura Amplia</option>
-                                            <option value="Reparaciones mecánicas">Reparaciones mecánicas</option>
-                                            <option value="Llantas">Llantas</option>
-                                            <option value="Tenencia y placas a partir de que el vehículo se una a las filas de la empresa">Tenencia y placas a partir de que el vehículo se una a las filas de la empresa</option>
-                                            <option value="Hojalatería y pintura derivado de accidente en horas de trabajo">Hojalatería y pintura derivado de accidente en horas de trabajo</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Descripción de la reparación</label>
-                                    <div class="col-md-8">
-                                        <input type="text" v-model="descripcion" :disabled="tipoAccion==2" class="form-control" placeholder="Descripción">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Taller
-                                        <span style="color:red;" v-show="taller==''">*</span>
-                                    </label>
-                                    <div class="col-md-8">
-                                        <input type="text" :disabled="tipoAccion==2" v-model="taller" maxlength="50" class="form-control" placeholder="Nombre del taller">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="reparacion != ''">
-                                    <label class="col-md-3 form-control-label" for="text-input">Importe Total
-                                        <span style="color:red;" v-show="importe_total ==''">*</span>
-                                    </label>
-                                    <div class="col-md-4" v-if="tipoAccion == 1">
-                                        <input type="number" v-on:change="calcularMontos()" v-model="importe_total" maxlength="12" class="form-control" placeholder="Importe total">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label v-text="'$'+formatNumber(importe_total)"></label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Forma de pago</label>
-                                    <div class="col-md-4">
-                                        <select :disabled="tipoAccion==2" class="form-control" v-model="forma_pago">
-                                            <option value="0">Efectivo</option>
-                                            <option value="1">Tarjeta de Debito</option>
-                                            <option value="2">Tarjeta de Crédito</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="importe_total != 0 && importe_total != ''">
-                                    <label class="col-md-3 form-control-label" for="text-input">Aportación Compañero</label>
-
-                                    <div class="col-md-4" v-if="tipoAccion == 3">
-                                        <input type="number" v-on:change="monto_gcc = importe_total - monto_comp" v-model="monto_comp" maxlength="12" class="form-control" placeholder="Importe total">
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <strong v-text="'$'+formatNumber(monto_comp)"></strong>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="importe_total != 0 && importe_total != ''">
-                                    <label class="col-md-3 form-control-label" for="text-input">Aportación GCC</label>
-                                    
-                                    <div class="col-md-3">
-                                        <label v-text="'$'+formatNumber(monto_gcc)"></label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="total_retener<monto_comp && tipoAccion == 2 && status_rev > 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Retener pago</label>
-                                    <div class="col-md-6" >
-                                        <button type="button" v-if="vistaRetener == 0" @click="vistaRetener = 1" class="btn btn-success btn-sm" title="Retener pago">
-                                            <i class="icon-plus"></i>
-                                        </button>
-                                        
-                                        <button type="button" v-if="vistaRetener == 1" @click="getRetenciones()" class="btn btn-warning btn-sm" title="Retener pago">
-                                            <i class="icon-close">&nbsp;Cancelar</i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <template v-if="vistaRetener == 1">
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Monto a retener</label>
-                                        <div class="col-md-4">
-                                            <input type="number" v-on:change="validarMonto()" v-model="monto_retener" maxlength="12" class="form-control" placeholder="Monto a retener">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label v-text="'$'+formatNumber(monto_retener)"></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de retención:</label>
-                                        <div class="col-md-3">
-                                            <input type="date" v-model="fecha_retencion"  class="form-control">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="button" v-if="vistaRetener == 1 && monto_retener>0 && fecha_retencion != ''" @click="guardarPago()" class="btn btn-primary btn-sm" title="Retener pago">
-                                                <i class="icon-check">&nbsp;Retener pago</i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                </template>
-
-                                <!-- <div class="form-group row" >
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de renteciones</label>
-                                    
-                                    <div class="col-md-4">
-                                        <input type="date" :disabled="tipoAccion==2" v-model="fecha_ini" @change="getFechas()" class="form-control">
-                                    </div>
-                                </div> -->
-
-                                <div class="form-group row" v-if="arrayRetenciones.length>0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th v-if="adminMant == 1  && userName=='marce.gaytan'"></th>
-                                                    <th>Fecha</th>
-                                                    <th>Importe</th>
-                                                    <th>Status</th>
-                                                    <template v-if="adminMant == 1">
-                                                        <th v-if="status_rev > 1">
-                                                            Autorización
-                                                        </th>
-                                                    </template>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="retencion in arrayRetenciones" :key="retencion.id">
-                                                    <td v-if="adminMant == 1  && userName=='marce.gaytan' || userName == 'shady'">
-                                                        <button type="button" @click="eliminarRetencion(retencion.id)" class="btn btn-danger btn-sm" title="eliminar retención">
-                                                            <i class="icon-trash"></i>
-                                                        </button>
-                                                    </td>
-                                                    <td class="td2" v-text="retencion.fecha_retencion"></td>
-                                                    <td class="td2"
-                                                        v-text="'$' + formatNumber(retencion.importe)"
-                                                    ></td>
-                                                    <td class="td2" v-if="status_rev > 0">
-                                                        <span v-if="retencion.status == 0" class="badge badge-warning">Pendiente</span>
-                                                        <span v-if="retencion.status == 1" class="badge badge-warning">Retenido</span>
-                                                    </td>
-                                                    <template v-if="adminMant == 1">
-                                                        <td v-if="status_rev > 1 && retencion.status == 0">
-                                                            <button type="button" v-if="userName=='marce.gaytan'" @click="retenerPago(retencion.id)" class="btn btn-success btn-sm" title="Retener pago">
-                                                                <i class="icon-check"></i>
-                                                            </button>
-                                                            <label v-else>Sin retener</label>
-                                                        </td>
-                                                        <td v-if="status_rev > 1 && retencion.status == 1">
-                                                            Pago retenido el dia: {{retencion.fecha_real }}
-                                                        </td>
-                                                    </template>
-                                                </tr>     
-                                                <tr>
-                                                    <td></td>
-                                                    <th>
-                                                        $ {{formatNumber(total_retener = totalRetenido)}}
-                                                    </th>
-                                                </tr>          
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                
-                                <!-- Div para mostrar los errores que mande validerNotaria -->
-                                <div v-show="errorVehiculo" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1 && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-success" @click="actualizar()">Actualizar</button>
-
-                            <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
-                            <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
-
-
-                            
+            <ModalComponent v-if="modal == 1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()">
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Vehiculo
+                            <span style="color:red;" v-show="vehiculo==''">*</span>
+                        </label>
+                        <div class="col-md-9">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="vehiculo" >
+                                <option value="">Seleccione vehiculo</option>
+                                <option v-for="vehiculo in arrayVehiculos" :key="vehiculo.id" :value="vehiculo.id" 
+                                    v-text="vehiculo.marca + ' ' + vehiculo.vehiculo + ' - ' + vehiculo.nombre + ' '+vehiculo.apellidos"></option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Servicio
+                            <span style="color:red;" v-show="reparacion==''">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <select class="form-control" @change="calcularMontos()" :disabled="tipoAccion==2" v-model="reparacion">
+                                <option value="">Seleccione servicio</option>
+                                <option value="Mantenimiento Preventivo">Mantenimiento Preventivo</option>
+                                <option value="Seguro Cobertura Amplia">Seguro Cobertura Amplia</option>
+                                <option value="Reparaciones mecánicas">Reparaciones mecánicas</option>
+                                <option value="Llantas">Llantas</option>
+                                <option value="Tenencia y placas a partir de que el vehículo se una a las filas de la empresa">Tenencia y placas a partir de que el vehículo se una a las filas de la empresa</option>
+                                <option value="Hojalatería y pintura derivado de accidente en horas de trabajo">Hojalatería y pintura derivado de accidente en horas de trabajo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Descripción de la reparación</label>
+                        <div class="col-md-8">
+                            <input type="text" v-model="descripcion" :disabled="tipoAccion==2" class="form-control" placeholder="Descripción">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Taller
+                            <span style="color:red;" v-show="taller==''">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <input type="text" :disabled="tipoAccion==2" v-model="taller" maxlength="50" class="form-control" placeholder="Nombre del taller">
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="reparacion != ''">
+                        <label class="col-md-3 form-control-label" for="text-input">Importe Total
+                            <span style="color:red;" v-show="importe_total ==''">*</span>
+                        </label>
+                        <div class="col-md-4" v-if="tipoAccion == 1">
+                            <input type="number" v-on:change="calcularMontos()" v-model="importe_total" maxlength="12" class="form-control" placeholder="Importe total">
+                        </div>
+                        <div class="col-md-3">
+                            <label v-text="'$'+formatNumber(importe_total)"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Forma de pago</label>
+                        <div class="col-md-4">
+                            <select :disabled="tipoAccion==2" class="form-control" v-model="forma_pago">
+                                <option value="0">Efectivo</option>
+                                <option value="1">Tarjeta de Debito</option>
+                                <option value="2">Tarjeta de Crédito</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="importe_total != 0 && importe_total != ''">
+                        <label class="col-md-3 form-control-label" for="text-input">Aportación Compañero</label>
+
+                        <div class="col-md-4" v-if="tipoAccion == 3">
+                            <input type="number" v-on:change="monto_gcc = importe_total - monto_comp" v-model="monto_comp" maxlength="12" class="form-control" placeholder="Importe total">
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <strong v-text="'$'+formatNumber(monto_comp)"></strong>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="importe_total != 0 && importe_total != ''">
+                        <label class="col-md-3 form-control-label" for="text-input">Aportación GCC</label>
+                        
+                        <div class="col-md-3">
+                            <label v-text="'$'+formatNumber(monto_gcc)"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="total_retener<monto_comp && tipoAccion == 2 && status_rev > 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Retener pago</label>
+                        <div class="col-md-6" >
+                            <button type="button" v-if="vistaRetener == 0" @click="vistaRetener = 1" class="btn btn-success btn-sm" title="Retener pago">
+                                <i class="icon-plus"></i>
+                            </button>
+                            
+                            <button type="button" v-if="vistaRetener == 1" @click="getRetenciones()" class="btn btn-warning btn-sm" title="Retener pago">
+                                <i class="icon-close">&nbsp;Cancelar</i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <template v-if="vistaRetener == 1">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Monto a retener</label>
+                            <div class="col-md-4">
+                                <input type="number" v-on:change="validarMonto()" v-model="monto_retener" maxlength="12" class="form-control" placeholder="Monto a retener">
+                            </div>
+                            <div class="col-md-3">
+                                <label v-text="'$'+formatNumber(monto_retener)"></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Fecha de retención:</label>
+                            <div class="col-md-3">
+                                <input type="date" v-model="fecha_retencion"  class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" v-if="vistaRetener == 1 && monto_retener>0 && fecha_retencion != ''" @click="guardarPago()" class="btn btn-primary btn-sm" title="Retener pago">
+                                    <i class="icon-check">&nbsp;Retener pago</i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="form-group row" v-if="arrayRetenciones.length>0">
+                        <div class="col-md-12">
+                            <TableComponent>
+                                <template v-slot:thead>
+                                    <tr>
+                                        <th v-if="adminMant == 1  && userName=='marce.gaytan' || userName == 'shady'"></th>
+                                        <th>Fecha</th>
+                                        <th>Importe</th>
+                                        <th>Status</th>
+                                        <template v-if="adminMant == 1">
+                                            <th v-if="status_rev > 1">
+                                                Autorización
+                                            </th>
+                                        </template>
+                                    </tr>
+                                </template>
+                                <template v-slot:tbody>
+                                    <tr v-for="retencion in arrayRetenciones" :key="retencion.id">
+                                        <td v-if="adminMant == 1  && userName=='marce.gaytan' || userName == 'shady'">
+                                            <button type="button" @click="eliminarRetencion(retencion.id)" class="btn btn-danger btn-sm" title="eliminar retención">
+                                                <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td class="td2" v-text="retencion.fecha_retencion"></td>
+                                        <td class="td2"
+                                            v-text="'$' + formatNumber(retencion.importe)"
+                                        ></td>
+                                        <td class="td2" v-if="status_rev > 0">
+                                            <span v-if="retencion.status == 0" class="badge badge-warning">Pendiente</span>
+                                            <span v-if="retencion.status == 1" class="badge badge-warning">Retenido</span>
+                                        </td>
+                                        <template v-if="adminMant == 1">
+                                            <td class="td2" v-if="status_rev > 1 && retencion.status == 0">
+                                                <button type="button" v-if="userName=='marce.gaytan'" @click="retenerPago(retencion.id)" class="btn btn-success btn-sm" title="Retener pago">
+                                                    <i class="icon-check"></i>
+                                                </button>
+                                                <label v-else>Sin retener</label>
+                                            </td>
+                                            <td class="td2" v-if="status_rev > 1 && retencion.status == 1">
+                                                Pago retenido el dia: {{retencion.fecha_real }}
+                                            </td>
+                                        </template>
+                                    </tr>     
+                                    <tr>
+                                        <td v-if="adminMant == 1  && userName=='marce.gaytan' || userName == 'shady'"></td>
+                                        <td></td>
+                                        <th>
+                                            $ {{formatNumber(total_retener = totalRetenido)}}
+                                        </th>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </div>
+                    
+                    <!-- Div para mostrar los errores que mande validerNotaria -->
+                    <div v-show="errorVehiculo" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                    <button type="button" v-if="tipoAccion==1 && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==3" class="btn btn-success" @click="actualizar()">Actualizar</button>
+
+                    <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
+                    <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
+                </template>
+            </ModalComponent>    
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal == 2"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                        <div class="col-md-6">
+                                <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                                    <div class="col-md-6">
-                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
-                                    </div>
-                                </div>
-
-                                
-                                <table class="table table-bordered table-striped table-sm" >
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Observacion</th>
-                                            <th>Fecha</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
-                                            
-                                            <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.observacion" ></td>
-                                            <td v-text="observacion.created_at"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        <div class="col-md-2">
+                            <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.observacion" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>  
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
         </main>
 </template>
 
@@ -507,7 +436,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import ModalComponent from '../Componentes/ModalComponent.vue'
+    import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             adminMant:{type: String},
             userName:{type: String},
@@ -631,50 +566,6 @@
                     console.log(error);
                 });
             },
-            // getFechas(){
-            //     let me = this;
-            //     me.arrayRetenciones = [];
-            //     me.mes = me.fecha_ini.substring(5,7);
-            //     me.dia = me.fecha_ini.substring(8,10);
-            //     me.anio = me.fecha_ini.substring(0, 4);
-
-            //     let lastDay = moment(me.fecha_ini).endOf('month').format('YYYY-MM-DD');
-            //         if(parseInt(me.dia) <= 15){
-            //             me.fecha_ini = me.anio+'-'+me.mes+'-'+'15';
-            //         }    
-            //         if(parseInt(me.dia) > 15){
-            //             me.fecha_ini = lastDay;
-            //         }
-            //     var fecha = me.fecha_ini;
-
-            //     for(let i = 0; i<4; i ++){
-                    
-            //         me.arrayRetenciones.push({
-            //             id:i,
-            //             fecha_retencion: fecha,
-            //             importe: 0
-            //         });
-
-            //         let aux_mes = fecha.substring(5,7);
-            //         let aux_dia = fecha.substring(8,10);
-            //         let aux_anio = fecha.substring(0, 4);
-
-            //         let lastDay = moment(fecha).endOf('month').format('YYYY-MM-DD');
-            //         if(parseInt(aux_dia) <= 15){
-            //             fecha = lastDay;
-            //         }    
-            //         if(parseInt(aux_dia) > 15){
-            //             if(parseInt(aux_mes) == 12){
-            //                 aux_anio = parseInt(aux_anio) + 1;
-            //                 fecha = aux_anio +'-'+ '01-15';
-            //             }
-            //             else{
-            //                 aux_mes = parseInt(aux_mes) + 1;
-            //                 fecha = aux_anio +'-'+ aux_mes + '-15';
-            //             }
-            //         }
-            //     }
-            // },
             /**Metodo para registrar  */
             registrar(){
                 if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
@@ -1202,17 +1093,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -1221,16 +1101,6 @@
         color: red !important;
         font-weight: bold;
     }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
