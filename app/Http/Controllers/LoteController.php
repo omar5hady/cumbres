@@ -140,6 +140,7 @@ class LoteController extends Controller
         //Se recorre el resultado de lotes obtenidos para determinar el estado actual del lote (Vendido, Individualizado o disponible.)
         foreach ($lotes as $key => $lote) {
             $lote->status = 0;
+            /* Joining the tables and selecting the columns. */
             $expediente = Expediente::join('contratos','expedientes.id','=','contratos.id')
                         ->join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
@@ -171,6 +172,7 @@ class LoteController extends Controller
             }
         }
         //Filtros necesarios para obtener lotes habilitados para rentas
+        /* A query builder that is returning a paginated result. */
         $rentas = $rentas->where('lotes.habilitado','=', 1)
                         ->where('lotes.casa_renta','=', 1)
                         ->orderBy('fraccionamientos.nombre','ASC')
@@ -178,6 +180,7 @@ class LoteController extends Controller
                         ->orderBy('lotes.manzana','ASC')
                         ->orderBy('lotes.num_lote','ASC')
                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
+
         //Filtros necesarios para obtener lotes deshabilitados
         $deshabilitadas = $deshabilitadas->where('lotes.habilitado','=', 0)
                         ->orderBy('fraccionamientos.nombre','ASC')

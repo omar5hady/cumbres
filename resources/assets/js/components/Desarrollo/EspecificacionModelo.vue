@@ -11,7 +11,7 @@
                         <i class="fa fa-align-justify"></i>Especificaciones de Modelo
                         &nbsp;&nbsp;
                         <!--   Boton   -->
-                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal('asignar')" >
+                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal()" >
                             <i class="icon-pencil"></i>&nbsp;Asignar especificaciones
                         </button>
                         
@@ -49,41 +49,39 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
-                                        </th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Modelo</th>
-                                        <th>Especificaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayLote" :key="lote.id">
-                                        <td class="td2">
-                                            <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
-                                        </td>
-                                        <td class="td2" v-text="lote.proyecto"></td>
-                                        <td class="td2" v-text="lote.etapas"></td> 
-                                        <td class="td2" v-text="lote.manzana"></td>
-                                        <td class="td2" v-text="lote.num_lote"></td>
-                                        <td class="td2" v-text="lote.modelo"></td>
-                                        <td class="td2" v-if="lote.nombre_archivo == null">
-                                            <a v-bind:href="'/downloadModelo/'+lote.archivo">Versión 1</a>
-                                        </td> 
-                                        <td class="td2" v-else>
-                                            <a v-bind:href="'/downloadModelo/'+lote.archivo">{{lote.nombre_archivo}}</a>
-                                        </td> 
-                                    </tr>                               
-                                </tbody>
-                            </table> 
-                        </div> 
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                    </th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Modelo</th>
+                                    <th>Especificaciones</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="lote in arrayLote" :key="lote.id">
+                                    <td class="td2">
+                                        <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
+                                    </td>
+                                    <td class="td2" v-text="lote.proyecto"></td>
+                                    <td class="td2" v-text="lote.etapas"></td> 
+                                    <td class="td2" v-text="lote.manzana"></td>
+                                    <td class="td2" v-text="lote.num_lote"></td>
+                                    <td class="td2" v-text="lote.modelo"></td>
+                                    <td class="td2" v-if="lote.nombre_archivo == null">
+                                        <a v-bind:href="'/downloadModelo/'+lote.archivo">Versión 1</a>
+                                    </td> 
+                                    <td class="td2" v-else>
+                                        <a v-bind:href="'/downloadModelo/'+lote.archivo">{{lote.nombre_archivo}}</a>
+                                    </td> 
+                                </tr>
+                            </template>
+                        </TableComponent> 
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -110,43 +108,26 @@
             </div>
 
             <!-- Modal para asignar modelo -->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Version de especificaciones</label>
-                                <div class="col-md-6">
-                                    <select class="form-control" v-model="version">
-                                        <option value=''>Version 1</option>
-                                        <option v-for="version in arrayVersiones" :key="version.id" :value="version.version" v-text="version.version"></option>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button"  class="btn btn-primary" @click="actualizarVersion()">Actualizar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Version de especificaciones</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="version">
+                                <option value=''>Version 1</option>
+                                <option v-for="version in arrayVersiones" :key="version.id" :value="version.version" v-text="version.version"></option>
+                            </select>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-            
-
-
-                    
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button"  class="btn btn-primary" @click="actualizarVersion()">Actualizar</button>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->           
         </main>
 </template>
 
@@ -155,8 +136,15 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
- import _ from 'lodash'
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
+import _ from 'lodash'
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -374,30 +362,20 @@
                 this.allSelected = false;
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(accion,data =[]){
-                
-                if(this.lotes_ini.length<1 && accion=='asignar'){
+            abrirModal(){
+                if(this.lotes_ini.length<1){
                     Swal({
-                    title: 'No se ha seleccionado ningun lote',
-                    animation: false,
-                    customClass: 'animated tada'
+                        title: 'No se ha seleccionado ningun lote',
+                        animation: false,
+                        customClass: 'animated tada'
                     })
                     return;
                 }
                 this.getVersiones(this.b_modelo);
-                switch(accion){
-
-                    case 'asignar':
-                    {
-                        this.proceso=false;
-                        this.modal =1;
-                        this.tituloModal= 'Asignar Modelo';
-                        this.version = '';
-                        break;
-                    }
-                    
-                }
-
+                this.proceso=false;
+                this.modal =1;
+                this.tituloModal= 'Asignar Modelo';
+                this.version = '';
             }
         },
         mounted() {
@@ -406,18 +384,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-         overflow-y: auto;
-        
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -426,30 +392,11 @@
         color: red !important;
         font-weight: bold;
     }
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
 
     .td2, .th2 {
     border: solid rgb(200, 200, 200) 1px;
     padding: .5rem;
     }
-
-    /*th {
-    text-align: left;
-    background-color: rgb(190, 220, 250);
-    text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: rgb(50, 50, 100) solid 2px;
-    border-top: none;
-    }*/
 
     .td2 {
     white-space: nowrap;

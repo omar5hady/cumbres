@@ -30,42 +30,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Proveedor</th>
-                                        <th>Contacto</th>
-                                        <th>Direccion</th>
-                                        <th>Colonia</th>
-                                        <th>Telefono</th>
-                                        <th>Email</th>
-                                        <th>Poliza de Garantia</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="proveedor in arrayProveedores" :key="proveedor.id">
-                                        <td style="width:10%">
-                                            <button type="button" @click="abrirModal('proveedor','actualizar',proveedor)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success2 btn-sm" @click="abrirModal2('equipamiento','registrar',proveedor), listarEquipamiento(1, proveedor.id)" title="Asignar equipamiento">
-                                            <i class="icon-share"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="proveedor.proveedor" ></td>
-                                        <td v-text="proveedor.contacto" ></td>
-                                        <td v-text="proveedor.direccion" ></td>
-                                        <td v-text="proveedor.colonia" ></td>
-                                        <td v-text="proveedor.telefono" ></td>
-                                        <td v-text="proveedor.email" ></td>
-                                        <td v-text="proveedor.poliza" ></td>
-                                        
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent 
+                            :cabecera="['','Proveedor','Contacto','Dirección','Colonia','Teléfono','Email','P. Garantia']">
+                            <template v-slot:tbody>
+                                <tr v-for="proveedor in arrayProveedores" :key="proveedor.id">
+                                    <td class="td2" style="width:10%">
+                                        <button type="button" @click="abrirModal('proveedor','actualizar',proveedor)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-dark btn-sm" @click="abrirModal2('equipamiento','registrar',proveedor), listarEquipamiento(1, proveedor.id)" title="Asignar equipamiento">
+                                        <i class="icon-share"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="proveedor.proveedor" ></td>
+                                    <td class="td2" v-text="proveedor.contacto" ></td>
+                                    <td class="td2" v-text="proveedor.direccion" ></td>
+                                    <td class="td2" v-text="proveedor.colonia" ></td>
+                                    <td class="td2" v-text="proveedor.telefono" ></td>
+                                    <td class="td2" v-text="proveedor.email" ></td>
+                                    <td class="td2" v-text="proveedor.poliza" ></td>
+                                </tr> 
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -85,223 +71,191 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proveedor</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="proveedor" class="form-control" placeholder="Proveedor">
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proveedor</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="proveedor" class="form-control" placeholder="Proveedor">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion==1">
-                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="rfc" maxlength="13" class="form-control" placeholder="RFC">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-8">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-4">
-                                        <input type="text" maxlength="10" pattern="\d*" v-model="telefono" class="form-control" placeholder="Telefono" v-on:keypress="isNumber($event)">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="email" class="form-control" placeholder="Correo electronico">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email (Opcional)</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="email2" class="form-control" placeholder="Correo electronico">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control col-md-4" v-model="tipo">
-                                            <option value="0">Interno</option>
-                                            <option value="1">Externo</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion==1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="usuario" class="form-control" placeholder="User">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion==1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
-                                    <div class="col-md-6">
-                                        <input type="password" v-model="password" class="form-control" placeholder="Password">
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorProveedor" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjProveedor" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarProveedores()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarProveedores()">Actualizar</button>
-                        </div>
-                        
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion==1">
+                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="rfc" maxlength="13" class="form-control" placeholder="RFC">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                        <div class="col-md-8">
+                            <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                        <div class="col-md-4">
+                            <input type="text" maxlength="10" pattern="\d*" v-model="telefono" class="form-control" placeholder="Telefono" v-on:keypress="isNumber($event)">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Email</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="email" class="form-control" placeholder="Correo electronico">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Email (Opcional)</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="email2" class="form-control" placeholder="Correo electronico">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                        <div class="col-md-6">
+                            <select class="form-control col-md-4" v-model="tipo">
+                                <option value="0">Interno</option>
+                                <option value="1">Externo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion==1">
+                        <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="usuario" class="form-control" placeholder="User">
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="tipoAccion==1">
+                        <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
+                        <div class="col-md-6">
+                            <input type="password" v-model="password" class="form-control" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <!-- Div para mostrar los errores que mande validerPaquete -->
+                    <div v-show="errorProveedor" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjProveedor" :key="error" v-text="error">
+
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarProveedores()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarProveedores()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
 
             <!--Inicio del modal asignar equipamiento-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal2" :titulo="tituloModal2"
+                @closeModal="cerrarModal2()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Equipamiento</label>
+                        <div class="col-md-6">
+                            <input type="text" name="city3" list="cityname3" class="form-control" v-model="equipamiento">
+                            <datalist id="cityname3">
+                                <option value="">Seleccione</option>
+                                <option value="Espejos de baño">Espejos de baño</option>
+                                <option value="Closets">Closets</option>
+                                <option value="Vestidores">Vestidores</option>
+                                <option value="Muebles">Muebles</option>
+                            </datalist>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Equipamiento</label>
-                                    <div class="col-md-6">
-                                       <input type="text" name="city3" list="cityname3" class="form-control" v-model="equipamiento">
-                                        <datalist id="cityname3">
-                                            <option value="">Seleccione</option>
-                                            <option value="Espejos de baño">Espejos de baño</option>
-                                            <option value="Closets">Closets</option>
-                                            <option value="Vestidores">Vestidores</option>
-                                            <option value="Muebles">Muebles</option>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Recepcion de documentos</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control col-md-4" v-model="tipoRecepcion">
-                                            <option value="0">General</option>
-                                            <option value="1">Recepción de cocina</option>
-                                            <option value="2">Recepción de vestidores</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorEquipamiento" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjEquipamiento" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Recepcion de documentos</label>
+                        <div class="col-md-5">
+                            <select class="form-control" v-model="tipoRecepcion">
+                                <option value="0">General</option>
+                                <option value="1">Recepción de cocina</option>
+                                <option value="2">Recepción de vestidores</option>
+                            </select>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary" @click="registrarEquipamiento()">Guardar</button>
-
-                            </div>
-                                <div class="modal-header" v-if="mostrar == 1">
-                                    <h5 class="modal-title"> Equipamiento</h5>
-                                </div>
-                                <table class="table table-bordered table-striped table-sm" v-if="mostrar == 1">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Equipamiento</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="equipamiento in arrayEquipamientos" :key="equipamiento.id">
-                                            <td style="width:25%">
-                                                <button type="button" v-if="equipamiento.activo == 1" class="btn btn-success2 btn-sm" @click="eliminarEquipamiento(equipamiento)">
-                                                <i class="fa fa-check"></i>
-                                                </button>
-                                                <button type="button" v-if="equipamiento.activo == 0" class="btn btn-danger btn-sm" @click="activarEquipamiento(equipamiento)">
-                                                <i class="fa fa-remove"></i>
-                                                </button>
-                                            </td>
-                                            <td v-text="equipamiento.equipamiento" ></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                                <nav>
-                                    <!--Botones de paginacion -->
-                                    <ul class="pagination">
-                                        <li class="page-item" v-if="pagination2.current_page > 1">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
-                                        </li>
-                                        <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-success" @click="registrarEquipamiento()">Añadir</button>
                         </div>
-                    <!-- /.modal-content -->
-                
-                <!-- /.modal-dialog -->
-            </div>
+                    </div>
+                    
+                    <!-- Div para mostrar los errores que mande validerPaquete -->
+                    <div v-show="errorEquipamiento" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjEquipamiento" :key="error" v-text="error"></div>
+                        </div>
+                    </div>
+
+                    <template v-if="mostrar == 1">
+                        <div class="modal-header" style="background-color: #EC008C;">
+                            <h5 class="modal-title"> Equipamiento</h5>
+                        </div>
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Opciones</th>
+                                    <th>Equipamiento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="equipamiento in arrayEquipamientos" :key="equipamiento.id">
+                                    <td style="width:25%">
+                                        <button type="button" v-if="equipamiento.activo == 1" class="btn btn-dark btn-sm" @click="eliminarEquipamiento(equipamiento)">
+                                        <i class="fa fa-check"></i>
+                                        </button>
+                                        <button type="button" v-if="equipamiento.activo == 0" class="btn btn-danger btn-sm" @click="activarEquipamiento(equipamiento)">
+                                        <i class="fa fa-remove"></i>
+                                        </button>
+                                    </td>
+                                    <td v-text="equipamiento.equipamiento" ></td>
+                                </tr>                               
+                            </tbody>
+                        </table>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </template>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
         </main>
@@ -312,7 +266,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -782,17 +743,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -801,22 +751,19 @@
         color: red !important;
         font-weight: bold;
     }    
-    .btn-success2 {
-        color: #fff;
-        background-color: #2c309e;
-        border-color: #313a98;
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
-    .btn-success2:active, .btn-success2.active, .show > .btn-success2.dropdown-toggle {
-        background-color: #2c309e;
-        background-image: none;
-        border-color: #313a98;
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
     }
-    .btn-success2:focus, .btn-success2.focus {
-        box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
     }
-    .btn-success2:hover {
-        color: #fff;
-        background-color: #2c309e;
-        border-color: #313a98;
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

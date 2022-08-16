@@ -3,7 +3,7 @@
         <table class="table2 table-bordered table-striped table-sm">
             <thead>
                 <template v-if="cabecera">
-                    <th v-for="titulo in cabecera" :key="titulo">{{titulo}}</th>
+                    <th v-for="titulo in cabecera" :key="titulo" v-html="titulo"></th>
                 </template>
                 <slot name="thead"></slot>
             </thead>

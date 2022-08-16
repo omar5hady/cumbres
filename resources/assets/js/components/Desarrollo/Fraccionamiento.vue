@@ -21,7 +21,7 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                    <select class="form-control col-md-4" v-model="criterio" @click="buscra=''">
                                       <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                       <option value="fraccionamientos.tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
@@ -39,51 +39,48 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive"> 
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Tipo de proyecto</th>
-                                        <th>Direccion</th>
-                                        <th>Colonia</th>
-                                        <th>Estado</th>
-                                        <th>Delegacion</th>
-                                        <th v-if="rolId != 3">Fecha de inicio de ventas</th>
-                                        <th v-if="rolId != 3">Gerente</th>
-                                        <th>Arquitecto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
-                                        <td class="td2">
-                                            <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                            <button title="Planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
-                                            <i class="icon-cloud-upload"></i>
-                                            </button>
-                                            
-                                        </td>
-                                        <td class="td2" v-text="fraccionamiento.nombre"></td>
-                                        <td class="td2" v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
-                                        <td class="td2" v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
-                                        <td class="td2" v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                        <td class="td2" v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
-                                        <td class="td2" v-text="fraccionamiento.colonia"></td>
-                                        <td class="td2" v-text="fraccionamiento.estado"></td>
-                                        <td class="td2" v-text="fraccionamiento.delegacion"></td>
-                                        <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
-                                        <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.gerente"></td>
-                                        <td class="td2" v-text="fraccionamiento.arquitecto"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Fraccionamiento</th>
+                                    <th>Tipo de proyecto</th>
+                                    <th>Direccion</th>
+                                    <th>Colonia</th>
+                                    <th>Estado</th>
+                                    <th>Delegacion</th>
+                                    <th v-if="rolId != 3">Fecha de inicio de ventas</th>
+                                    <th v-if="rolId != 3">Gerente</th>
+                                    <th>Arquitecto</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                        <button title="Planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
+                                        <i class="icon-cloud-upload"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="fraccionamiento.nombre"></td>
+                                    <td class="td2" v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
+                                    <td class="td2" v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
+                                    <td class="td2" v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
+                                    <td class="td2" v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
+                                    <td class="td2" v-text="fraccionamiento.colonia"></td>
+                                    <td class="td2" v-text="fraccionamiento.estado"></td>
+                                    <td class="td2" v-text="fraccionamiento.delegacion"></td>
+                                    <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
+                                    <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.gerente"></td>
+                                    <td class="td2" v-text="fraccionamiento.arquitecto"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -103,294 +100,247 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <!--Criterios para el listado de busqueda -->
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo_proyecto">
-                                            <option value="0">Seleccione</option>
-                                            <option value="1">Lotificación</option>
-                                            <option value="2">Departamento</option>
-                                            <option value="3">Terreno</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Calle</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="calle" class="form-control" placeholder="Calle">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Num. </label>
-                                    <div class="col-md-3">
-                                        <input type="number" min="0" v-model="numero" class="form-control" placeholder="Numero">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
-                                            <option value="San Luis Potosí">San Luis Potosí</option>
-                                            <option value="Baja California">Baja California</option>
-                                            <option value="Baja California Sur">Baja California Sur</option>
-                                            <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
-                                            <option value="Colima">Colima</option>
-                                            <option value="Chiapas">Chiapas</option>
-                                            <option value="Chihuahua">Chihuahua</option>
-                                            <option value="Ciudad de México">Ciudad de México</option>
-                                            <option value="Durango">Durango</option>
-                                            <option value="Guanajuato">Guanajuato</option>
-                                            <option value="Guerrero">Guerrero</option>
-                                            <option value="Hidalgo">Hidalgo</option>
-                                            <option value="Jalisco">Jalisco</option>
-                                            <option value="México">México</option>
-                                            <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
-                                            <option value="Morelos">Morelos</option>
-                                            <option value="Nayarit">Nayarit</option>
-                                            <option value="Nuevo León">Nuevo León</option>
-                                            <option value="Oaxaca">Oaxaca</option>
-                                            <option value="Puebla">Puebla</option>
-                                            <option value="Querétaro">Querétaro</option>
-                                            <option value="Quintana Roo">Quintana Roo</option>
-                                            <option value="Sinaloa">Sinaloa</option>
-                                            <option value="Sonora">Sonora</option>
-                                            <option value="Tabasco">Tabasco</option>
-                                            <option value="Tamaulipas">Tamaulipas</option>
-                                            <option value="Tlaxcala">Tlaxcala</option>
-                                            <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
-                                            <option value="Yucatán">Yucatán</option>
-                                            <option value="Zacatecas">Zacatecas</option>
-                                        </select>
-                                        <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="ciudad">
-                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Delegacion</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="delegacion" class="form-control" placeholder="Delegacion">
-                                    </div>
-                                </div>
-                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Codigo postal</label>
-                                    <div class="col-md-9">
-                                        <input type="text" maxlength="5" v-model="cp" class="form-control" placeholder="Codigo postal">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="rolId != 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
-                                    <label class="col-md-3 form-control-label" for="text-input">Gerente del proyecto</label>
-                                    <!--Criterios para el listado de busqueda -->
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="gerente_id">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="gerente in arrayGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre + ' ' + gerente.apellidos"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
-                                    <label class="col-md-3 form-control-label" for="text-input">Arquitecto del proyecto</label>
-                                    <!--Criterios para el listado de busqueda -->
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="arquitecto_id">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorFraccionamiento" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjFraccionamiento" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFraccionamiento()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarFraccionamiento()">Actualizar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                        <!--Criterios para el listado de busqueda -->
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="tipo_proyecto">
+                                <option value="0">Seleccione</option>
+                                <option value="1">Lotificación</option>
+                                <option value="2">Departamento</option>
+                                <option value="3">Terreno</option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Calle</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Num. </label>
+                        <div class="col-md-3">
+                            <input type="number" min="0" v-model="numero" class="form-control" placeholder="Numero">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
+                                <option value="San Luis Potosí">San Luis Potosí</option>
+                                <option value="Baja California">Baja California</option>
+                                <option value="Baja California Sur">Baja California Sur</option>
+                                <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                                <option value="Colima">Colima</option>
+                                <option value="Chiapas">Chiapas</option>
+                                <option value="Chihuahua">Chihuahua</option>
+                                <option value="Ciudad de México">Ciudad de México</option>
+                                <option value="Durango">Durango</option>
+                                <option value="Guanajuato">Guanajuato</option>
+                                <option value="Guerrero">Guerrero</option>
+                                <option value="Hidalgo">Hidalgo</option>
+                                <option value="Jalisco">Jalisco</option>
+                                <option value="México">México</option>
+                                <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                                <option value="Morelos">Morelos</option>
+                                <option value="Nayarit">Nayarit</option>
+                                <option value="Nuevo León">Nuevo León</option>
+                                <option value="Oaxaca">Oaxaca</option>
+                                <option value="Puebla">Puebla</option>
+                                <option value="Querétaro">Querétaro</option>
+                                <option value="Quintana Roo">Quintana Roo</option>
+                                <option value="Sinaloa">Sinaloa</option>
+                                <option value="Sonora">Sonora</option>
+                                <option value="Tabasco">Tabasco</option>
+                                <option value="Tamaulipas">Tamaulipas</option>
+                                <option value="Tlaxcala">Tlaxcala</option>
+                                <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                                <option value="Yucatán">Yucatán</option>
+                                <option value="Zacatecas">Zacatecas</option>
+                            </select>
+                            <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="ciudad">
+                                <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Delegacion</label>
+                        <div class="col-md-9">
+                            <input type="text" v-model="delegacion" class="form-control" placeholder="Delegacion">
+                        </div>
+                    </div>
+                        <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Codigo postal</label>
+                        <div class="col-md-9">
+                            <input type="text" maxlength="5" v-model="cp" class="form-control" placeholder="Codigo postal">
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="rolId != 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                        <label class="col-md-3 form-control-label" for="text-input">Gerente del proyecto</label>
+                        <!--Criterios para el listado de busqueda -->
+                        <div class="col-md-5">
+                            <select class="form-control" v-model="gerente_id">
+                                <option value="">Seleccione</option>
+                                <option v-for="gerente in arrayGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre + ' ' + gerente.apellidos"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                        <label class="col-md-3 form-control-label" for="text-input">Arquitecto del proyecto</label>
+                        <!--Criterios para el listado de busqueda -->
+                        <div class="col-md-5">
+                            <select class="form-control" v-model="arquitecto_id">
+                                <option value="">Seleccione</option>
+                                <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                    <div v-show="errorFraccionamiento" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjFraccionamiento" :key="error" v-text="error">
+
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFraccionamiento()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarFraccionamiento()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
             
             <!-- Modal para la carga de los archivos-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal4"></h4>
-                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-md-6" style="float:left;">
-                                <form  method="post" @submit="formSubmitPlanos" enctype="multipart/form-data">
-                                    <div class="form-group row">
-                                        <label class="col-md-12 form-control-label" for="text-input">
-                                            <strong>Sube aqui los planos</strong>
-                                        </label>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-12">
-                                            <input type="text" v-if="plano_original != null" class="form-control" v-model="nombre_plano" placeholder="Versión del plano">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <input type="file" class="form-control" v-on:change="onImageChangePlanos">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="submit" class="btn btn-success">Cargar Planos</button>
-                                        </div>   
-                                    </div>
-                                </form>
-                                <br>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Version</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-if="plano_original != null">
-                                                <td>
-                                                    <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano_original">
-                                                        <i class="fa fa-map fa-md"></i>
-                                                    </a>
-                                                </td>
-                                                <td>Primera versión</td>
-                                            </tr>
-                                            <tr v-for="plano in arrayPlanos" :key="plano.id">
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-sm" @click="deletePlanos(plano)">
-                                                        <i class="icon-trash"></i>
-                                                    </button>
-                                                    <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano.archivo">
-                                                        <i class="fa fa-map fa-md"></i>
-                                                    </a>
-                                                </td>
-                                                <td v-text="plano.version"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+            <ModalComponent v-if="modal4"
+                :titulo="tituloModal4"
+                @closeModal="cerrarModal4()"
+            >
+                <template v-slot:body>
+                    <div class="col-md-6" style="float:left;">
+                        <form  method="post" @submit="formSubmitPlanos" enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <label class="col-md-12 form-control-label" for="text-input">
+                                    <strong>Sube aqui los planos</strong>
+                                </label>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input type="text" v-if="plano_original != null" class="form-control" v-model="nombre_plano" placeholder="Versión del plano">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <input type="file" class="form-control" v-on:change="onImageChangePlanos">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success">Cargar Planos</button>
+                                </div>   
+                            </div>
+                        </form>
+                        <br>
+                        <TableComponent :cabecera="['','Versión']">
+                            <template v-slot:tbody>
+                                <tr v-if="plano_original != null">
+                                    <td>
+                                        <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano_original">
+                                            <i class="fa fa-map fa-md"></i>
+                                        </a>
+                                    </td>
+                                    <td>Primera versión</td>
+                                </tr>
+                                <tr v-for="plano in arrayPlanos" :key="plano.id">
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" @click="deletePlanos(plano)">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                        <a title="Descargar planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+plano.archivo">
+                                            <i class="fa fa-map fa-md"></i>
+                                        </a>
+                                    </td>
+                                    <td v-text="plano.version"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
 
-                            <div class="col-md-6" style="float:right;">
-                                <form  method="post" @submit="formSubmitEscrituras" enctype="multipart/form-data">
-                                    <div class="form-group row">
-                                        <label class="col-md-12 form-control-label" for="text-input">
-                                            <strong>Sube aqui las escrituras</strong>
-                                        </label>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-12">
-                                            <input type="text" v-if="escritura_original != null" class="form-control" v-model="nombre_escritura" placeholder="Versión de escritura">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <input type="file" class="form-control" v-on:change="onImageChangeEscrituras">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="submit" class="btn btn-success">Cargar Escrituras</button>
-                                        </div>   
-                                    </div>
-                                </form>
-                                <br>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Version</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-if="escritura_original != null">
-                                                <td>
-                                                    <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura_original">
-                                                        <i class="fa fa-file-archive-o fa-lg"></i>
-                                                    </a>
-                                                </td>
-                                                <td>Primera versión</td>
-                                            </tr>
-                                            <tr v-for="escritura in arrayEscrituras" :key="escritura.id">
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-sm" @click="deleteEscrituras(escritura)">
-                                                        <i class="icon-trash"></i>
-                                                    </button>
-                                                    <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura.archivo">
-                                                        <i class="fa fa-file-archive-o fa-lg"></i>
-                                                    </a>
-                                                </td>
-                                                <td v-text="escritura.version"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                    <div class="col-md-6" style="float:right;">
+                        <form  method="post" @submit="formSubmitEscrituras" enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <label class="col-md-12 form-control-label" for="text-input">
+                                    <strong>Sube aqui las escrituras</strong>
+                                </label>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <input type="text" v-if="escritura_original != null" class="form-control" v-model="nombre_escritura" placeholder="Versión de escritura">
                                 </div>
                             </div>
-
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <input type="file" class="form-control" v-on:change="onImageChangeEscrituras">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success">Cargar Escrituras</button>
+                                </div>   
+                            </div>
+                        </form>
+                        <br>
+                        <TableComponent :cabecera="['','Versión']">
+                            <template v-slot:tbody>
+                                <tr v-if="escritura_original != null">
+                                        <td>
+                                            <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura_original">
+                                                <i class="fa fa-file-archive-o fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td>Primera versión</td>
+                                    </tr>
+                                    <tr v-for="escritura in arrayEscrituras" :key="escritura.id">
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm" @click="deleteEscrituras(escritura)">
+                                                <i class="icon-trash"></i>
+                                            </button>
+                                            <a  title="Descargar escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/' + escritura.archivo">
+                                                <i class="fa fa-file-archive-o fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td v-text="escritura.version"></td>
+                                    </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-
-
-
         </main>
 </template>
 
@@ -399,7 +349,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             rolId:{type: String}
         },
@@ -550,9 +507,6 @@
 
             },
 
-
-
-
             /**Metodo para mostrar los registros */
             listarFraccionamiento(page, buscar, criterio){
                 let me = this;
@@ -625,13 +579,10 @@
             },
             /**Metodo para registrar  */
             registrarFraccionamiento(){
-                if(this.proceso==true){
+                if(this.proceso==true)
                     return;
-                }
                 if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
-                {
                     return;
-                }
 
                 this.proceso=true;
                 let me = this;
@@ -663,11 +614,8 @@
                 });
             },
             actualizarFraccionamiento(){
-              
                 if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
-                {
                     return;
-                }
                
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
@@ -704,14 +652,6 @@
 
             eliminarFraccionamiento(data =[]){
                 this.id=data['id'];
-                this.nombre=data['nombre'];
-                this.tipo_proyecto=data['tipo_proyecto'];
-                this.calle=data['calle'];
-                this.colonia=data['colonia'];
-                this.estado=data['estado'];
-                this.ciudad=data['ciudad'];
-                this.delegacion=data['delegacion'];
-                this.cp=data['cp'];
                 //console.log(this.fraccionamiento_id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -808,11 +748,6 @@
                 }
                 })
             },
-            
-            limpiarBusqueda(){
-                let me=this;
-                me.buscar= "";
-            },
             validarFraccionamiento(){
                 this.errorFraccionamiento=0;
                 this.errorMostrarMsjFraccionamiento=[];
@@ -850,7 +785,6 @@
                 this.nombre_plano = '';
                 this.errorFraccionamiento = 0;
                 this.errorMostrarMsjFraccionamiento = [];
-
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
@@ -925,17 +859,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -944,31 +867,18 @@
         color: red !important;
         font-weight: bold;
     }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
     }
-
     .td2 {
         white-space: nowrap;
         border-bottom: none;
         color: rgb(20, 20, 20);
     }
-
     .td2:first-of-type, th:first-of-type {
        border-left: none;
     }
-
     .td2:last-of-type, th:last-of-type {
        border-right: none;
     }

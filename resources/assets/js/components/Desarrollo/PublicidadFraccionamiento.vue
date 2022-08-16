@@ -15,7 +15,7 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="buscar=''">
                                       <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                       <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
@@ -32,36 +32,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive"> 
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Tipo de proyecto</th>
-                                        <th>Direccion</th>
-                                        <th>Logo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
-                                        <td>
-                                           <button type="button" @click="abrirModal('fraccionamiento','subirArchivoLogo',fraccionamiento)" class="btn btn-info btn-sm">
-                                            <i class="icon-cloud-upload"></i>
-                                            </button> &nbsp;
-                                        </td>
-                                        <td v-text="fraccionamiento.nombre"></td>
-                                        <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
-                                        <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
-                                        <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                        <td v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
-                                        <td class="td2" style="width:7%" v-if = "fraccionamiento.logo_fracc"><a class="btn btn-success btn-sm" v-bind:href="'/downloadLogoFraccionamiento/'+fraccionamiento.logo_fracc"><i class="fa fa-download fa-spin"></i></a></td>
-                                        <td class="td2" v-else></td>
-            
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['','Nombre','Tipo','Dirección','Logo']">
+                            <template v-slot:tbody>
+                                <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
+                                    <td>
+                                        <button type="button" @click="abrirModal(fraccionamiento)" class="btn btn-info btn-sm">
+                                        <i class="icon-cloud-upload"></i>
+                                        </button> &nbsp;
+                                    </td>
+                                    <td v-text="fraccionamiento.nombre"></td>
+                                    <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
+                                    <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
+                                    <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
+                                    <td v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
+                                    <td class="td2" style="width:7%" v-if = "fraccionamiento.logo_fracc"><a class="btn btn-success btn-sm" v-bind:href="'/downloadLogoFraccionamiento/'+fraccionamiento.logo_fracc"><i class="fa fa-download fa-spin"></i></a></td>
+                                    <td class="td2" v-else></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -80,44 +68,25 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-        
             
             <!-- Modal para la carga de los archivos-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal4"></h4>
-                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                     <div style="float:left;">
-                            <form  method="post" @submit="formSubmitLogo" enctype="multipart/form-data">
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div style="float:left;">
+                        <form  method="post" @submit="formSubmitLogo" enctype="multipart/form-data">
+                            <strong>Sube aqui el logo del fraccionamiento</strong>
 
-                                    <strong>Sube aqui el logo del fraccionamiento</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChangeLogo">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
+                            <input type="file" class="form-control" v-on:change="onImageChangeLogo">
+                            <br/>
+                            <button type="submit" class="btn btn-success">Cargar</button>
+                        </form>
                      </div>
-
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-
-
-
         </main>
 </template>
 
@@ -126,7 +95,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -139,9 +115,9 @@
                
                 arrayFraccionamiento : [],
                 modal : 0,
-                modal4: 0,
+                modal: 0,
               
-                tituloModal4: '',
+                tituloModal: '',
                 tipoAccion: 0,
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
@@ -188,9 +164,7 @@
             }
         },
         methods : {
-
             //funciones para carga de los logo del fraccionamiento 
-
             onImageChangeLogo(e){
                 console.log(e.target.files[0]);
                 this.archivo_logo = e.target.files[0];
@@ -213,16 +187,14 @@
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    me.cerrarModal4();
+                    me.cerrarModal();
                    me.listarFraccionamiento(1,'','fraccionamiento');
 
                 }).catch(function (error) {
                     currentObj.output = error;
 
                 });
-
             },
-
 
             /**Metodo para mostrar los registros */
             listarFraccionamiento(page, buscar, criterio){
@@ -245,38 +217,20 @@
                 me.listarFraccionamiento(page,buscar,criterio);
             },
             
-             limpiarBusqueda(){
-                let me=this;
-                me.buscar= "";
-            },
-    
-     
-            cerrarModal4(){
-                this.modal4 = 0;
-                this.tituloModal4 = '';
+            cerrarModal(){
+                this.modal = 0;
+                this.tituloModal = '';
                 this.archivo_logo = '';
                 this.errorFraccionamiento = 0;
                 this.errorMostrarMsjFraccionamiento = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(modelo, accion,data =[]){
-                switch(modelo){
-                    case "fraccionamiento":
-                    {
-                        switch(accion){  
-                            case 'subirArchivoLogo':
-                            {
-                                this.modal4 =1;
-                                this.tituloModal4='Subir Logo';
-                                this.id=data['id'];
-                                this.archivo_logo=data['logo_fracc'];
-                                break;
-                            }
-                        }
-                    }
-                }
-                //this.selectCiudades(this.estado);
+            abrirModal(data =[] ){
+                this.modal = 1;
+                this.tituloModal='Subir Logo';
+                this.id=data['id'];
+                this.archivo_logo=data['logo_fracc'];
             }
         },
         mounted() {
@@ -285,16 +239,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -302,5 +246,20 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

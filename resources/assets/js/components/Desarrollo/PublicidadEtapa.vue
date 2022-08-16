@@ -26,60 +26,46 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Etapa</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Fecha de inicio </th>
-                                        <th>Fecha de termino</th>
-                                        <th>Reglamento</th>
-                                        <th>Plantilla para carta de servicios</th>
-                                        <th>Costo de mantenimiento Casa</th>
-                                        <th>Costo de mantenimiento Lote</th>
-                                        <th>Empresa(s) de telecomunicacion</th>
-                                        <th>Empresa(s) de telecomunicacion satelital</th>
-                                        <th>Plantilla servicios de telecomunicacion</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="etapa in arrayEtapa" :key="etapa.id">
-                                        <td class="td2" style="width:10%">
-                                            <button type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="btn btn-info btn-sm">
-                                            <i class="icon-cloud-upload"></i>
-                                            </button> &nbsp;
-                                            <button title="Asignar costo de mantenimiento" type="button" @click="abrirModal('etapa','costo',etapa)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                        </td>
-                                        <td class="td2" v-text="etapa.num_etapa"></td>
-                                        <td class="td2" v-text="etapa.fraccionamiento"></td>
-                                        <td class="td2" v-text="etapa.f_ini"></td>
-                                        <td class="td2" v-text="etapa.f_fin"></td>
-                                        <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
-                                        <td class="td2" v-else></td>
-                                        <td class="td2"  v-if="etapa.plantilla_carta_servicios || etapa.plantilla_carta_servicios2">
-                                            
-                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Plantilla de servicio</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a v-if="etapa.plantilla_carta_servicios" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download"> Casa</i></a>
-                                                    <a v-if="etapa.plantilla_carta_servicios2" class="btn btn-primary btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios2/'+etapa.plantilla_carta_servicios2"><i class="fa fa-download"> Lote</i></a>
-                                                </div>
-                                        </td>
-                                        <td class="td2" v-else></td>
-                                        <td class="td2" v-text="'$' + etapa.costo_mantenimiento"></td>
-                                        <td class="td2" v-text="'$' + etapa.costo_mantenimiento2"></td>
-                                        <td class="td2" v-text="etapa.empresas_telecom"></td>
-                                        <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
-                                        <td class="td2" v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
-                                        <td class="td2" v-else></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent 
+                            :cabecera="['','Etapa','Fraccionamiento','Fecha de inicio ','Fecha de termino',
+                            'Reglamento','Plantilla para carta de servicios','Costo de mantenimiento Casa',
+                            'Costo de mantenimiento Lote','Empresa(s) de telecomunicacion',
+                            'Empresa(s) de telecomunicacion satelital',
+                            'Plantilla servicios de telecomunicacion',
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="etapa in arrayEtapa" :key="etapa.id">
+                                    <td class="td2" style="width:10%">
+                                        <button type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="btn btn-info btn-sm">
+                                        <i class="icon-cloud-upload"></i>
+                                        </button> &nbsp;
+                                        <button title="Asignar costo de mantenimiento" type="button" @click="abrirModal('etapa','costo',etapa)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button> &nbsp;
+                                    </td>
+                                    <td class="td2" v-text="etapa.num_etapa"></td>
+                                    <td class="td2" v-text="etapa.fraccionamiento"></td>
+                                    <td class="td2" v-text="etapa.f_ini"></td>
+                                    <td class="td2" v-text="etapa.f_fin"></td>
+                                    <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
+                                    <td class="td2" v-else></td>
+                                    <td class="td2"  v-if="etapa.plantilla_carta_servicios || etapa.plantilla_carta_servicios2">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Plantilla de servicio</a>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                            <a v-if="etapa.plantilla_carta_servicios" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download"> Casa</i></a>
+                                            <a v-if="etapa.plantilla_carta_servicios2" class="btn btn-primary btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios2/'+etapa.plantilla_carta_servicios2"><i class="fa fa-download"> Lote</i></a>
+                                        </div>
+                                    </td>
+                                    <td class="td2" v-else></td>
+                                    <td class="td2" v-text="'$' + etapa.costo_mantenimiento"></td>
+                                    <td class="td2" v-text="'$' + etapa.costo_mantenimiento2"></td>
+                                    <td class="td2" v-text="etapa.empresas_telecom"></td>
+                                    <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
+                                    <td class="td2" v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
+                                    <td class="td2" v-else></td>
+                                </tr>  
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -99,114 +85,101 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal"
+            >
+                <template
+                    v-slot:body>
+                    <template  v-if="tipoAccion != 2">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                            </div>
                         </div>
-                        <div v-if="tipoAccion != 2" class="modal-body">
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                                    <div class="col-md-4">
-                                        <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
-                                    </div>
-                                </div>
+                        <div>
+                            <form  method="post" @submit="formSubmitServicios" enctype="multipart/form-data">
 
-                                <div>
-                                    <form  method="post" @submit="formSubmitServicios" enctype="multipart/form-data">
+                                <strong>Sube aqui la plantilla para la carta de los servicios Casa <u>794 x 986</u></strong>
 
-                                        <strong>Sube aqui la plantilla para la carta de los servicios Casa <u>794 x 986</u></strong>
+                                <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServicios">
+                                <br/>
+                                <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
 
-                                        <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServicios">
-                                        <br/>
-                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                   </form>
+                            <br/>   
 
-                                    <br/>   
+                            <form  method="post" @submit="formSubmitServiciosL" enctype="multipart/form-data">
 
-                                    <form  method="post" @submit="formSubmitServiciosL" enctype="multipart/form-data">
+                                <strong>Sube aqui la plantilla para la carta de los servicios Lote<u>794 x 986</u></strong>
 
-                                        <strong>Sube aqui la plantilla para la carta de los servicios Lote<u>794 x 986</u></strong>
+                                <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServiciosL">
+                                <br/>
+                                <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
 
-                                        <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServiciosL">
-                                        <br/>
-                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                   </form>
+                            <br/>   
 
-                                    <br/>   
+                            <form  method="post" @submit="formSubmitTelecom" enctype="multipart/form-data">
 
-                                    <form  method="post" @submit="formSubmitTelecom" enctype="multipart/form-data">
+                                <strong>Sube aqui la plantilla para los servicios de telecomunicacion <u>794 x 986</u></strong>
 
-                                    <strong>Sube aqui la plantilla para los servicios de telecomunicacion <u>794 x 986</u></strong>
+                                <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeTelecom">
+                                <br/>
+                                <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
 
-                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeTelecom">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                                    </form>
+                        </div>
+                        <br>
+                        <div>
+                            <form  method="post" @submit="formSubmitReglamento" enctype="multipart/form-data">
+                                <strong>Sube aqui el reglamento para esta etapa</strong>
 
-                                </div>
-                            <br>
-                        <div v-if="tipoAccion != 2">
-                             <form  method="post" @submit="formSubmitReglamento" enctype="multipart/form-data">
-
-                                    <strong>Sube aqui el reglamento para esta etapa</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChangeReglamento">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
+                                <input type="file" class="form-control" v-on:change="onImageChangeReglamento">
+                                <br/>
+                                <button type="submit" class="btn btn-success">Cargar</button>
                             </form>
                         </div>
-                        </div>       
-                    
-                        <div v-if="tipoAccion == 2" class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento Casa</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento" class="form-control" placeholder="$">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento Lote</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento2" class="form-control" placeholder="$">
-                                    </div>
-                                </div>
- 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="empresas_telecom" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion satelital</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="empresas_telecom_satelital" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
-                                    </div>
-                                </div>
-                      
-                          </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-info" v-if="tipoAccion==2" @click="registrarCostosMantenimiento()">Guardar</button>
+                    </template>
+                    <template v-if="tipoAccion == 2"
+                    >
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento Casa</label>
+                            <div class="col-md-4">
+                                <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento" class="form-control" placeholder="$">
+                            </div>
                         </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento Lote</label>
+                            <div class="col-md-4">
+                                <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento2" class="form-control" placeholder="$">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="empresas_telecom" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion satelital</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="empresas_telecom_satelital" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                
+                <template v-if="tipoAccion==2" v-slot:buttons-footer>
+                    <button type="button" class="btn btn-info" @click="registrarCostosMantenimiento()">Guardar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-
-            
-
         </main>
 </template>
 
@@ -215,7 +188,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 proceso : false,
@@ -344,21 +323,14 @@
             },
 
             onImageChangeReglamento(e){
-
                 console.log(e.target.files[0]);
-
                 this.archivo_reglamento = e.target.files[0];
-
             },
 
             formSubmitReglamento(e) {
-
                 e.preventDefault();
-
                 let currentObj = this;
-            
                 let formData = new FormData();
-           
                 formData.append('archivo_reglamento', this.archivo_reglamento);
                 let me = this;
                 axios.post('/formSubmitReglamento/'+this.id, formData)
@@ -377,7 +349,6 @@
                 }).catch(function (error) {
                     currentObj.output = error;
                 });
-
             },
 
             onImageChangeTelecom(e){
@@ -531,18 +502,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-         overflow-y: auto;
-        
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -550,16 +509,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {
