@@ -91,9 +91,11 @@
                         @endif
 
                 <!-- RH -->
-                        @if(Auth::user()->mant_vehiculos == 1 || Auth::user()->admin_mant_vehiculos == 1)
+                       
                             @include('sidebars.rh')
-                        @endif
+                      
+                       
+                        
 
                 <!-- Oficina -->
                         @if(Auth::user()->inventarios == 1 || Auth::user()->prov_inventarios == 1)

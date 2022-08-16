@@ -1169,6 +1169,22 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/vehiculos/getObservaciones','VehiculosController@getObservaciones');
         Route::post('/vehiculos/storeObs','VehiculosController@storeObs');
         Route::delete('/vehiculos/eliminarRetencion','VehiculosController@eliminarRetencion');
+        ////////////////////// RUTAS PRESTAMOS////////////////////
+        Route::get('/prestamos/getDataPrestamos','PrestamosController@getDataPrestamos');
+        Route::get('/prestamos/getColaborador','PrestamosController@dataColaborador');
+        Route::post('/prestamos/registrarPrestamo','PrestamosController@registrarPrestamo');
+        Route::put('/prestamos/firmar','PrestamosController@firmarPrestamo');
+        Route::put('/prestamos/aprobar_rh','PrestamosController@aprobar_rh');
+        Route::post('/prestamos/post_obs','PrestamosController@observaciones_prestamos');
+        Route::get('/prestamos/get_obs','PrestamosController@getObservaciones');
+        Route::put('/prestamos/editarPrestamo','PrestamosController@editarPrestamo');
+        Route::post('/prestamos/post_tablaPagosAprobada','PrestamosController@generaTablaPagos');
+        Route::get('/prestamos/getTablaPagos','PrestamosController@getTablaPagos');
+        Route::put('/prestamos/capturar_pago','PrestamosController@capturar_pago');
+        Route::delete('/prestamos/eliminarSolicitud','PrestamosController@eliminarSolicitud');
+        
+        
+        
 
         //////////////////////// RUTAS INVENTARIOS DE PRODUCTOS ///////////////////
         Route::get('/inventarios/getInventario','InventariosController@getInventario');
