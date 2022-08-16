@@ -147,6 +147,7 @@ class CreateUsersTable extends Migration
            $table->boolean('admin_mant_vehiculos')->default(0);
            $table->boolean('prestamos_personales')->default(0);
            $table->boolean('fondo_ahorro')->default(0);
+           $table->boolean('prestamos_personales')->default(0);
 
            //OFICINA
            $table->boolean('inventarios')->default(0);
