@@ -1263,6 +1263,7 @@ class UserController extends Controller
         $user->admin_mant_vehiculos = $request->admin_mant_vehiculos;
         $user->prestamos_personales = $request->prestamos_personales;
         $user->fondo_ahorro = $request->fondo_ahorro;
+        $user->prestamos_personales = $request->prestamos_personales;
         //Oficina
         $user->inventarios = $request->inventarios;
         $user->prov_inventarios = $request->prov_inventarios;
