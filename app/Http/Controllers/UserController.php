@@ -1131,7 +1131,7 @@ class UserController extends Controller
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //RH
-                                'users.vehiculos', 'users.mant_vehiculos','users.admin_mant_vehiculos', 'users.fondo_ahorro',
+                                'users.vehiculos', 'users.mant_vehiculos','users.admin_mant_vehiculos', 'users.fondo_ahorro','prestamos_personales',
                                 //Oficina
                                 'users.inventarios', 'users.prov_inventarios',
                                 //Reportes
@@ -1261,6 +1261,7 @@ class UserController extends Controller
         $user->vehiculos = $request->vehiculos;
         $user->mant_vehiculos = $request->mant_vehiculos;
         $user->admin_mant_vehiculos = $request->admin_mant_vehiculos;
+        $user->prestamos_personales = $request->prestamos_personales;
         $user->fondo_ahorro = $request->fondo_ahorro;
         //Oficina
         $user->inventarios = $request->inventarios;

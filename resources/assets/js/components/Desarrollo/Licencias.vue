@@ -152,7 +152,43 @@
                                 <th>Empresa constructora</th>
                             </tr>
                         </template>
-                        <template v-slot:tbody>
+                    </TableComponent>
+                    <div class="table-responsive">
+                        <table class="table2 table-bordered table-striped table-sm">
+                            <thead>
+                                <tr v-if="rolId != '5'">
+                                    <th v-if="rolId != '5'" colspan="9"></th>
+                                    <th v-if="rolId != '5'" class="text-center" colspan="2">Inicio</th>
+                                    <th v-if="rolId != '5'" colspan="8"></th>
+                                </tr>
+                                <tr>
+                                    <th v-if="rolId != '5'">
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                    </th>
+                                    <th v-if="rolId != '5'">Opciones</th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Terreno mts&sup2;</th>
+                                    <th>Construcción mts&sup2;</th>
+                                    <th>Modelo</th>
+                                    <th>Arquitecto</th>
+                                    <th>% Avance</th>
+                                    <th v-if="rolId != '5'">No. Inicio</th>
+                                    <th v-if="rolId != '5'">RUV</th>
+                                    <th v-if="rolId != '5'">Fecha</th>
+                                    <th v-if="rolId != '5'">Siembra de obra</th>
+                                    <th v-if="rolId != '5'">Planos licencia</th>
+                                    <th>DRO</th>
+                                    <th v-if="rolId != '5'">Ingreso</th>
+                                    <th v-if="rolId != '5'">Salida</th>
+                                    <th>Num. Licencia</th>
+                                    <th v-if="rolId != '5'">Credito puente</th>
+                                    <th v-if="rolId == '5'">Catalogo de especificaciones</th>
+                                    <th>Empresa constructora</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id" title="Ver detalle">
 
@@ -253,8 +289,8 @@
                                     <td class="td2" v-text="licencias.emp_constructora"></td>
                                 </tr>                               
                             </tbody>
-                        </template>
-                    </TableComponent>
+                        </table>  
+                    </div>
                     <nav>
                         <!--Botones de paginacion -->
                         <ul class="pagination">

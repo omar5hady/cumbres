@@ -12,7 +12,7 @@
             </li>
         @endif
 
-        @if(Auth::user()->rol_id==1)
+        @if(Auth::user()->prestamos_personales ==1)
         <li @click="menu=284" class="nav-item">
             <a class="nav-link" href="#"><i class="fa fa-money" aria-hidden="true">
             </i> Prestamos personales</a>
