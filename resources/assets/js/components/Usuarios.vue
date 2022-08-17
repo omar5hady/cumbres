@@ -1702,6 +1702,7 @@
                     'vehiculos':this.vehiculos,
                     'mant_vehiculos':this.mant_vehiculos,
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
+                    'prestamos_personales':this.prestamos_personales,
                     'fondo_ahorro': this.fondo_ahorro,
                     'prestamos_personales':this.prestamos_personales,
                         //Oficina
