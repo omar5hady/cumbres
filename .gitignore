@@ -22,3 +22,6 @@ database/seeds
 *.xlsx
 *.PNG
 public_html/img/avatars/6248998649997.gif
+public_html/mix-manifest.json
+public_html/css/plantilla.css
+public_html/js/plantilla.js
