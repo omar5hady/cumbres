@@ -108,6 +108,7 @@ class PrestamosController extends Controller
         $prestamo->motivo=$motivo;
         $prestamo->desc_quin =$desc_quin;
         $prestamo->saldo =$monto;
+        $prestamo->user_id = $user_id;
         $prestamo->fecha_ini =$fecha_solic;
         $prestamo->jefe_id =$idJefe;
         $prestamo->save();

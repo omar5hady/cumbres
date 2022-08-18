@@ -653,7 +653,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/contrato/reasignar2','ContratoController@reasignarCliente2');
 
         Route::post('/contratos/formSubmitFisc/{id}','ContratoController@formSubmitFisc');
+        Route::post('/contratos/formSubmitConstFisc/{id}','ContratoController@formSubmitConstFisc');
         Route::get('/contratos/downloadFileFisc/{fileName}' , 'ContratoController@downloadFileFisc');
+        Route::get('/contratos/downloadFileConstFisc/{fileName}' , 'ContratoController@downloadFileConstFisc');
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
         Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');

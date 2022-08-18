@@ -152,145 +152,107 @@
                                 <th>Empresa constructora</th>
                             </tr>
                         </template>
+                        <template v-slot:tbody>
+                            <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id" title="Ver detalle">
+
+                                <td v-if="rolId != '5'" class="td2">
+                                <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
+                                </td>
+                                
+                                <td v-if="rolId != '5'" class="td2" >
+                                    <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
+                                    <i class="icon-pencil"></i>
+                                    </button> 
+                                    <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
+                                    <i class="icon-cloud-upload"></i>
+                                    </button>
+                                    <a title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
+                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                    </a>
+                                
+                                </td>
+                                <td class="td2">
+                                    <a href="#" v-text="licencias.proyecto"></a>
+                                </td>
+                                <td class="td2">
+                                    <a href="#" v-text="licencias.num_etapa"></a>
+                                </td>
+                                <td class="td2" v-text="licencias.manzana"></td>
+                                <td class="td2" v-text="licencias.num_lote"></td>
+                                <td class="td2" v-text="formatNumber(licencias.terreno)"></td>
+                                <td class="td2" v-text="formatNumber(licencias.construccion)"></td>
+                                <!--Modelo-->
+                                <td class="td2">
+                                    <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
+                                    <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
+                                    <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-dark" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
+                                    <span v-if = "licencias.cambios==1 && licencias.modelo_ant == 'N/A'" class="badge badge-warning" v-text="licencias.modelo"></span>
+                                </td>
+                                <!--Arquitecto -->
+                                <td class="td2">
+                                    <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
+                                    <span v-else class="badge badge-danger"> Por Asignar </span>
+                                </td>
+                                <td v-text="licencias.avance + '%'"></td>
+                                <!-- SIEMBRA -->
+                                <template v-if="rolId != '5'">
+                                        <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
+                                        <td class="td2" v-else v-text="licencias.num_inicio"></td>
+                                </template>
+                                <!--RUV-->
+                                <template v-if="rolId != '5'">
+                                        <td class="td2" v-text="licencias.paq_ruv"></td>
+                                </template>
+                                <template v-if="rolId != '5'">
+                                        <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
+                                        <td class="td2" v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                </template>
+                                
+                                    <!-- Fecha planos obra -->
+                                <template v-if="rolId != '5'">
+                                    <td class="td2" v-if="!licencias.f_planos_obra" v-text="''"></td>
+                                    <td class="td2" v-else v-text="this.moment(licencias.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
+                                </template>
+                                
+                                <!-- Fecha planos licencias--> 
+                                <template v-if="rolId != '5'">
+                                    <td class="td2" v-if="!licencias.f_planos" v-text="''"></td>
+                                    <td class="td2" v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+                                </template>   
+                                
+                                <!-- perito -->
+                                <td class="td2">
+                                    <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="licencias.perito"></span>
+                                    <span v-else class="badge badge-danger"> Por Asignar </span>
+                                </td>
+
+                                <!-- Fecha Ingreso -->
+                                <template v-if="rolId != '5'">
+                                        <td class="td2" v-if="!licencias.f_ingreso" v-text="''"></td>
+                                        <td class="td2" v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                </template>
+                                
+                                <!-- Fecha Salida -->
+                                <template v-if="rolId != '5'">
+                                        <td class="td2" v-if="!licencias.f_salida" v-text="''"></td>
+                                        <td class="td2" v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                </template>
+                                
+                                <template>
+                                        <td class="td2"  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
+                                        <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
+                                </template>
+                                
+                                <td v-if="rolId != '5'" class="td2"  v-text="licencias.credito_puente"></td>
+                                
+                                <template v-if="rolId == '5'">
+                                    <td class="td2" style="width:7%" v-if="licencias.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+licencias.archivo"><i class="icon-cloud-download"></i></a></td>
+                                    <td class="td2" v-else ></td>
+                                </template>
+                                <td class="td2" v-text="licencias.emp_constructora"></td>
+                            </tr>
+                        </template>
                     </TableComponent>
-                    <div class="table-responsive">
-                        <table class="table2 table-bordered table-striped table-sm">
-                            <thead>
-                                <tr v-if="rolId != '5'">
-                                    <th v-if="rolId != '5'" colspan="9"></th>
-                                    <th v-if="rolId != '5'" class="text-center" colspan="2">Inicio</th>
-                                    <th v-if="rolId != '5'" colspan="8"></th>
-                                </tr>
-                                <tr>
-                                    <th v-if="rolId != '5'">
-                                        <input type="checkbox" @click="selectAll" v-model="allSelected">
-                                    </th>
-                                    <th v-if="rolId != '5'">Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Terreno mts&sup2;</th>
-                                    <th>Construcción mts&sup2;</th>
-                                    <th>Modelo</th>
-                                    <th>Arquitecto</th>
-                                    <th>% Avance</th>
-                                    <th v-if="rolId != '5'">No. Inicio</th>
-                                    <th v-if="rolId != '5'">RUV</th>
-                                    <th v-if="rolId != '5'">Fecha</th>
-                                    <th v-if="rolId != '5'">Siembra de obra</th>
-                                    <th v-if="rolId != '5'">Planos licencia</th>
-                                    <th>DRO</th>
-                                    <th v-if="rolId != '5'">Ingreso</th>
-                                    <th v-if="rolId != '5'">Salida</th>
-                                    <th>Num. Licencia</th>
-                                    <th v-if="rolId != '5'">Credito puente</th>
-                                    <th v-if="rolId == '5'">Catalogo de especificaciones</th>
-                                    <th>Empresa constructora</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id" title="Ver detalle">
-
-                                    <td v-if="rolId != '5'" class="td2">
-                                    <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
-                                    </td>
-                                    
-                                    <td v-if="rolId != '5'" class="td2" >
-                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button> 
-                                        <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
-                                        <i class="icon-cloud-upload"></i>
-                                        </button>
-                                        <a title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
-                                            <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                        </a>
-                                    
-                                    </td>
-                                    <td class="td2">
-                                        <a href="#" v-text="licencias.proyecto"></a>
-                                    </td>
-                                    <td class="td2">
-                                        <a href="#" v-text="licencias.num_etapa"></a>
-                                    </td>
-                                    <td class="td2" v-text="licencias.manzana"></td>
-                                    <td class="td2" v-text="licencias.num_lote"></td>
-                                    <td class="td2" v-text="formatNumber(licencias.terreno)"></td>
-                                    <td class="td2" v-text="formatNumber(licencias.construccion)"></td>
-                                    <!--Modelo-->
-                                    <td class="td2">
-                                        <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
-                                        <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
-                                        <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-dark" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
-                                        <span v-if = "licencias.cambios==1 && licencias.modelo_ant == 'N/A'" class="badge badge-warning" v-text="licencias.modelo"></span>
-                                    </td>
-                                    <!--Arquitecto -->
-                                    <td class="td2">
-                                        <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td>
-                                    <td v-text="licencias.avance + '%'"></td>
-                                    <!-- SIEMBRA -->
-                                    <template v-if="rolId != '5'">
-                                            <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
-                                            <td class="td2" v-else v-text="licencias.num_inicio"></td>
-                                    </template>
-                                    <!--RUV-->
-                                    <template v-if="rolId != '5'">
-                                            <td class="td2" v-text="licencias.paq_ruv"></td>
-                                    </template>
-                                    <template v-if="rolId != '5'">
-                                            <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
-                                            <td class="td2" v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
-                                    </template>
-                                    
-                                        <!-- Fecha planos obra -->
-                                    <template v-if="rolId != '5'">
-                                        <td class="td2" v-if="!licencias.f_planos_obra" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
-                                    </template>
-                                    
-                                    <!-- Fecha planos licencias--> 
-                                    <template v-if="rolId != '5'">
-                                        <td class="td2" v-if="!licencias.f_planos" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
-                                    </template>   
-                                    
-                                    <!-- perito -->
-                                    <td class="td2">
-                                        <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="licencias.perito"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td>
-
-                                    <!-- Fecha Ingreso -->
-                                    <template v-if="rolId != '5'">
-                                            <td class="td2" v-if="!licencias.f_ingreso" v-text="''"></td>
-                                            <td class="td2" v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
-                                    </template>
-                                    
-                                    <!-- Fecha Salida -->
-                                    <template v-if="rolId != '5'">
-                                            <td class="td2" v-if="!licencias.f_salida" v-text="''"></td>
-                                            <td class="td2" v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
-                                    </template>
-                                    
-                                    <template>
-                                            <td class="td2"  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
-                                            <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
-                                    </template>
-                                    
-                                    <td v-if="rolId != '5'" class="td2"  v-text="licencias.credito_puente"></td>
-                                    
-                                    <template v-if="rolId == '5'">
-                                        <td class="td2" style="width:7%" v-if="licencias.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+licencias.archivo"><i class="icon-cloud-download"></i></a></td>
-                                        <td class="td2" v-else ></td>
-                                    </template>
-                                    <td class="td2" v-text="licencias.emp_constructora"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>  
-                    </div>
                     <nav>
                         <!--Botones de paginacion -->
                         <ul class="pagination">

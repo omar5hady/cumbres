@@ -73,6 +73,9 @@ class CreateContratosTable extends Migration
 
             $table->date('send_exp')->nullable();
             $table->date('received_exp')->nullable();
+
+            $table->string('constancia_fisc',100)->nullable();
+            $table->date('fecha_archivo_fisc')->nullable();
             
             
             $table->foreign('id')->references('id')->on('creditos');

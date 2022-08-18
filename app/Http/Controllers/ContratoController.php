@@ -331,6 +331,8 @@ class ContratoController extends Controller
                     'contratos.avance_lote',
                     'contratos.observacion',
                     'contratos.exp_bono',
+                    'contratos.constancia_fisc',
+                    'contratos.fecha_archivo_fisc',
                     'lotes.fraccionamiento_id',
                     'lotes.sublote'
         );
@@ -2848,6 +2850,62 @@ class ContratoController extends Controller
     public function downloadFileFisc($fileName)
     {
         $pathtoFile = public_path() . '/files/datosFisc/' . $fileName;
+        return response()->file($pathtoFile);
+    }
+
+    // Función para subir archivo fiscal para ventas.
+    public function formSubmitConstFisc(Request $request, $id){
+
+        $contrato = Contrato::findOrFail($id);
+        if( $contrato->constancia_fisc != NULL){
+            $pathAnterior = public_path() . '/files/datosFisc/constancias/' . $contrato->constancia_fisc;
+            File::delete($pathAnterior);
+        }
+        
+        $fileName = $request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/datosFisc/constancias/'), $id.$fileName);
+
+        if($moved){
+            $credito = Credito::findOrFail($id);
+            $p_cliente = Personal::findOrFail($credito->prospecto_id);
+
+            $contrato->constancia_fisc = $id.$fileName;
+            $contrato->fecha_archivo_fisc = Carbon::now();
+            $contrato->save(); //Insert
+
+            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $msj = "Se ha cargado la constancia de situacion fiscal para la venta del lote " . $credito->num_lote . " del proyecto " . $credito->fraccionamiento . " etapa " . $credito->etapa. 
+            " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos;
+            $arregloAceptado = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => $msj,
+                    'titulo' => 'Constancia Fiscal'
+                ]
+            ];
+
+            $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
+            $ruta = 'https://siicumbres.com///contratos/downloadFileConstFisc/'.$contrato->constancia_fisc;
+            if(sizeof($personal))
+            foreach ($personal as $personas) {
+                $correo = $personas->email;
+                Mail::to($correo)->send(new NotificationReceived($msj));
+                User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+            }
+        }
+
+        
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    // Función que descarga el archivo fiscal de una venta.
+    public function downloadFileConstFisc($fileName)
+    {
+        $pathtoFile = public_path() . '/files/datosFisc/constancias/' . $fileName;
         return response()->file($pathtoFile);
     }
 }

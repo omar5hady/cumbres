@@ -23,22 +23,22 @@
                     <button type="button" v-if="listado == 4 && btn_actualizar == 1 && status==1 && rolId != 2" @click="btn_actualizar = 0" class="btn btn-warning">
                         <i class="icon-pencil"></i>&nbsp;Ocultar vista actualizar
                     </button>
-                <!-- form para cambiar el status de los contratos -->
-                    <form action="" method="post" v-if="listado == 4 && status == 1 && liquidado != 1 && rolId != 2 || listado == 4 && status == 3 && liquidado != 1 && rolId != 2">
+                <!-- cambiar el status de los contratos -->
+                    <template v-if="listado == 4 && status == 1 && liquidado != 1 && rolId != 2 || listado == 4 && status == 3 && liquidado != 1 && rolId != 2">
                         <div style="text-align: right;" v-if="detenido == 0">
+                            <div>
                                 <div>
-                                    <div>
-                                        <label for="text-input"> <strong>Status</strong> </label>
-                                        <select v-model="status" @change="selectStatus(status)">
-                                            <option value="0">Cancelado</option>
-                                            <option value="1">Pendiente</option>
-                                            <option value="2">No firmado</option>
-                                            <option value="3">Firmado</option>
-                                        </select>
-                                    </div>
-                                </div>       
+                                    <label for="text-input"> <strong>Status</strong> </label>
+                                    <select v-model="status" @change="selectStatus(status)">
+                                        <option value="0">Cancelado</option>
+                                        <option value="1">Pendiente</option>
+                                        <option value="2">No firmado</option>
+                                        <option value="3">Firmado</option>
+                                    </select>
+                                </div>
+                            </div>       
                         </div>
-                    </form>
+                    </template>
 
                 </div>
 
@@ -256,41 +256,42 @@
                             </div>
                         </div>
 
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th># Contrato</th>
-                                        <th>Cliente</th>
-                                        <th>Vendedor</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Modelo</th>
-                                        <th>Tipo de credito</th>
-                                        <th>Institución</th>
-                                        <th>Precio de venta</th>
-                                        <th>Fecha del contrato</th>
-                                        <th>Status</th>
-                                        <th>Publicidad</th>
-                                        <th v-if="rolId!=2">Expediente</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th># Contrato</th>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Modelo</th>
+                                    <th>Tipo de credito</th>
+                                    <th>Institución</th>
+                                    <th>Precio de venta</th>
+                                    <th>Fecha del contrato</th>
+                                    <th>Status</th>
+                                    <th>Publicidad</th>
+                                    <th v-if="rolId!=2">Expediente</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="contrato in arrayContratos" :key="contrato.id" 
+                                    @dblclick="verContrato(contrato)" 
+                                    :style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
                                         <td class="td2">
                                              <button v-if="contrato.archivo_fisc != null"
-                                            type="button" @click="verImagen(contrato.archivo_fisc)" class="btn btn-dark btn-sm"
+                                                type="button" @click="verImagen(contrato.archivo_fisc)" class="btn btn-dark btn-sm"
                                                 title="Ver Archivo Fiscal"
                                             >
                                                 <i class="icon-eye"></i>
                                             </button>
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contrato.id}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
-                                                    <a class="dropdown-item" @click="abrirModal('archivoFisc',contrato)">Archivo Fiscal</a>
-                                                </div>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
+                                                <a class="dropdown-item" @click="abrirModal('archivoFisc',contrato)">Archivo Fiscal</a>
+                                            </div>
                                         </td>
                                         <td class="td2">
                                             <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></a>
@@ -318,19 +319,16 @@
                                         <td class="td2" v-if="contrato.status == '3'">
                                             <span class="badge badge-success">Firmado</span>
                                             <span v-if="contrato.status2 == 1" class="badge badge-dark"> INDIVIDUALIZADA </span>
-                                            
                                         </td>
-                                        
                                         <td class="td2" v-text="contrato.publicidad"></td>
                                         <td v-if="rolId!=2">
                                             <button v-if="contrato.exp_bono == 0" title="Registrar Expediente" type="button" class="btn btn-primary pull-right" 
                                                     @click="entregarExp(contrato.id)">Expediente</button>
                                             <span v-else class="badge badge-success">Exp. Completo</span>
                                         </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                                    </tr> 
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -354,7 +352,7 @@
                     <div class="card-body"> 
                         <div class="form-group row">
                             <div class="col-md-8">
-                                    <div class="input-group">
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
@@ -387,53 +385,35 @@
                                     <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                     <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
-                                
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th># Folio</th>
-                                        <th>Cliente</th>
-                                        <th>Vendedor</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Modelo</th>
-                                        <th>Precio Venta</th>
-                                        <th>Credito Solicitado</th>
-                                        <th>Plazo</th>
-                                        <th>Institucion</th>
-                                        <th>Tipo de credito</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id), nuevo = 1" title="Doble click">
-                                        <td class="td2" v-text="prospecto.id"></td>
-                                        <td class="td2">
-                                            <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></a>
-                                        </td>
-                                        <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
-                                        <td class="td2" v-text="prospecto.proyecto"></td>
-                                        <td class="td2" v-text="prospecto.etapa"></td>
-                                        <td class="td2" v-text="prospecto.manzana"></td>
-                                        <td class="td2" v-text="prospecto.num_lote"></td>
-                                        <td class="td2" v-text="prospecto.modelo"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
-                                        <td class="td2" v-text="prospecto.plazo + ' años'"></td>
-                                        <td class="td2" v-text="prospecto.institucion"></td>
-                                        <td class="td2" v-text="prospecto.tipo_credito"></td>
-                                        <td class="td2" v-if="prospecto.status == '2'">
-                                            <span class="badge badge-success">Aprobado</span>
-                                        </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['# Folio','Cliente','Vendedor','Proyecto','Etapa','Manzana','# Lote',
+                            'Modelo','Precio Venta','Credito Solicitado','Plazo','Institucion','Tipo de credito','Status',
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" 
+                                v-on:dblclick="obtenerDatosCredito(prospecto.id), nuevo = 1" title="Doble click">
+                                    <td class="td2" v-text="prospecto.id"></td>
+                                    <td class="td2">
+                                        <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></a>
+                                    </td>
+                                    <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
+                                    <td class="td2" v-text="prospecto.proyecto"></td>
+                                    <td class="td2" v-text="prospecto.etapa"></td>
+                                    <td class="td2" v-text="prospecto.manzana"></td>
+                                    <td class="td2" v-text="prospecto.num_lote"></td>
+                                    <td class="td2" v-text="prospecto.modelo"></td>
+                                    <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
+                                    <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
+                                    <td class="td2" v-text="prospecto.plazo + ' años'"></td>
+                                    <td class="td2" v-text="prospecto.institucion"></td>
+                                    <td class="td2" v-text="prospecto.tipo_credito"></td>
+                                    <td class="td2" v-if="prospecto.status == '2'">
+                                        <span class="badge badge-success">Aprobado</span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -454,7 +434,7 @@
         <!----------------- Vista para crear un contrato ------------------------------>
                 <!-- Div Card Body para registrar simulacion -->
                 <template v-else-if="listado == 3 || listado == 4">
-                <div class="card-body"> 
+                    <div class="card-body"> 
                         <div class="col-md-12">
                             <div class="form-group">
                                 <center> <h5 style="color:orange;" align="right" v-if="listado==4 && status==1" v-text="' Pendiente '"></h5> </center>
@@ -1853,278 +1833,327 @@
         </div>
 
         <!-- Inicio Modal Fecha para firma -->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal"></h4>
-                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <template  v-if="tipoAccion==1">
-                            <template v-if="status == 3">
-                                <hr>
-                                <div class="form-group row">
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4">
-                                        <center><h6>Datos Fiscales</h6></center>
-                                    </div>
-                                    <div class="col-md-4"></div>
-                                </div>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
-                                    <div class="col-md-4">
-                                        <input type="email" v-model="datosFiscales.email_fisc" class="form-control" placeholder="Email">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Teléfono</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.tel_fisc" class="form-control" maxlength="10" placeholder="Telefono">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="datosFiscales.nombre_fisc" class="form-control" placeholder="Nombre completo">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="datosFiscales.direccion_fisc" class="form-control" placeholder="Dirección">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="datosFiscales.col_fisc" class="form-control" placeholder="Colonia">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">C.P.</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.cp_fisc" class="form-control" placeholder="Código Postal">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-3">
-                                        <input type="text" maxlength="13"  style="text-transform:uppercase"
-                                        v-model="datosFiscales.rfc_fisc" class="form-control" placeholder="RFC">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" v-model="datosFiscales.cfi_fisc">
-                                            <option value="Por definir">Por definir</option>
-                                            <option value="Suspendido">Suspendido</option>
-                                            <option value="Adquisición de mercancias">Adquisición de mercancias</option>
-                                            <option value="Devoluciones, Descuentos o bonificaciones">Devoluciones, Descuentos o bonificaciones</option>
-                                            <option value="Gastos en general">Gastos en general</option>
-                                            <option value="Construcciones">Construcciones</option>
-                                            <option value="Mobiliario y equipo de oficina por inversiones">Mobiliario y equipo de oficina por inversiones</option>
-                                            <option value="Equipo de transporte">Equipo de transporte</option>
-                                            <option value="Equipo de computo y accesorios">Equipo de computo y accesorios</option>
-                                            <option value="Dados, troqueles, moldes, matrices y herramental">Dados, troqueles, moldes, matrices y herramental</option>
-                                            <option value="Comunicaciones telefónicas">Comunicaciones telefónicas</option>
-                                            <option value="Comunicaciones satelitales">Comunicaciones satelitales</option>
-                                            <option value="Otra maquinaria y equipo">Otra maquinaria y equipo</option>
-                                            <option value="Honorarios médicos, dentales y gastos hospitalarios">Honorarios médicos, dentales y gastos hospitalarios</option>
-                                            <option value="Gastos médicos por incapacidad o discapacidad">Gastos médicos por incapacidad o discapacidad</option>
-                                            <option value="Gastos funerales">Gastos funerales</option>
-                                            <option value="Donativos">Donativos</option>
-                                            <option value="Intereses reales efectivamente pagados por créditos hipotecarios">Intereses reales efectivamente pagados por créditos hipotecarios</option>
-                                            <option value="Aportaciones voluntarias al SAR">Aportaciones voluntarias al SAR</option>
-                                            <option value="Primas por seguros de gastos médicos">Primas por seguros de gastos médicos</option>
-                                            <option value="Gastos de transportación escolar obligatoria">Gastos de transportación escolar obligatoria</option>
-                                            <option value="Depósitos en cuentas para el ahorro">Depósitos en cuentas para el ahorro</option>
-                                            <option value="Pagos por servicios educativos (colegiaturas)">Pagos por servicios educativos (colegiaturas)</option>
-                                            <option value="Sin efectos fiscales">Sin efectos fiscales</option>
-                                            <option value="Pagos">Pagos</option>
-                                            <option value="Nómina">Nómina</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" v-model="datosFiscales.regimen_fisc">
-                                            <option value="Sueldos y Salarios e Ingresos Asimilados a Salarios">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
-                                            <option value="Arrendamiento">Arrendamiento</option>
-                                            <option value="Régimen e Enajenación o Adquisición de Bienes">Régimen e Enajenación o Adquisición de Bienes</option>
-                                            <option value="Demás ingresos">Demás ingresos</option>
-                                            <option value="Residentes en el Extranjero sin Establecimiento Permanente en México">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
-                                            <option value="Ingresos por Dividendos (socios y accionistas)">Ingresos por Dividendos (socios y accionistas)</option>
-                                            <option value="Personas Físicas con Actividades Empresariales y Profesionales">Personas Físicas con Actividades Empresariales y Profesionales</option>
-                                            <option value="Ingresos por intereses">Ingresos por intereses</option>
-                                            <option value="Régimen de los ingresos por obtención de premios">Régimen de los ingresos por obtención de premios</option>
-                                            <option value="Sin obligaciones fiscales">Sin obligaciones fiscales</option>
-                                            <option value="Incorporación Fiscal">Incorporación Fiscal</option>
-                                            <option value="Régimen de las Actividades Empresariales con ingresos a través de Plataforma">Régimen de las Actividades Empresariales con ingresos a través de Plataforma</option>
-                                            <option value="Régimen Simplificado de Confianza">Régimen Simplificado de Confianza</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Banco</label>
-                                    <div class="col-md-4">
-                                        <input type="text" 
-                                        v-model="datosFiscales.banco_fisc" class="form-control" placeholder="Banco">
-                                    </div>
-                                    <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-on:keypress="isNumber($event)" pattern="\d*"
-                                        v-model="datosFiscales.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
-                                    <div class="col-md-4">
-                                        <input type="text" 
-                                        v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
-                                    </div>
-                                </div>
-                            </template>
-                            <hr>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                <div class="col-md-9">
-                                    <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
-                                </div>
+        <ModalComponent v-if="modal==1"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <template  v-if="tipoAccion==1">
+                    <template v-if="status == 3">
+                        <hr>
+                        <div class="form-group row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <center><h6>Datos Fiscales</h6></center>
                             </div>
-                        </template>
-
-                        <div class="form-group row" v-if="tipoAccion==1 && status == 0">
-                            <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
-                            <div class="col-md-9">
-                                <textarea rows="3" cols="30" v-model="motivo_cancel" class="form-control" placeholder="Observaciones"></textarea>
+                            <div class="col-md-4"></div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
+                            <div class="col-md-4">
+                                <input type="email" v-model="datosFiscales.email_fisc" class="form-control" placeholder="Email">
+                            </div>
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono</label>
+                            <div class="col-md-3">
+                                <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.tel_fisc" class="form-control" maxlength="10" placeholder="Telefono">
                             </div>
                         </div>
-
-                        <template v-if="tipoAccion==2">
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_proyecto" @change="selectEtapa(sel_proyecto)">
-                                            <option value=0> Seleccione </option>
-                                            <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                    </select>
-                                </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosFiscales.nombre_fisc" class="form-control" placeholder="Nombre completo">
                             </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_etapa" @change="selectManzana(sel_etapa)">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosFiscales.direccion_fisc" class="form-control" placeholder="Dirección">
                             </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_manzana" @change="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="datosFiscales.col_fisc" class="form-control" placeholder="Colonia">
                             </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Lote</label>
-                                <div class="col-md-9">
-                                <select class="form-control" v-model="sel_lote">
-                                            <option value=''> Seleccione </option>
-                                            <template v-for="lotes in arrayLotes">
-                                                <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                                <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' '+ lotes.sublote"></option>
-                                            </template>
-                                            
-                                    </select>
-                                </div>
+                            <label class="col-md-2 form-control-label" for="text-input">C.P.</label>
+                            <div class="col-md-3">
+                                <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.cp_fisc" class="form-control" placeholder="Código Postal">
                             </div>
-
-                            <div class="form-group row" v-if="nuevo == 0">
-                                <label class="col-md-3 form-control-label" for="text-input">Reubicacion?</label>
-                                <div class="col-md-2">
-                                <input type="checkbox" v-model="reubicacion" value="1">
-                                </div>
-                                <div class="col-md-7" v-if="reubicacion == 1">
-                                <textarea rows="3" cols="30" class="form-control" v-model="observacion_r" placeholder="Observacion"></textarea>
-                                </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">RFC</label>
+                            <div class="col-md-3">
+                                <input type="text" maxlength="13"  style="text-transform:uppercase"
+                                v-model="datosFiscales.rfc_fisc" class="form-control" placeholder="RFC">
                             </div>
-                        </template>
-
+                            <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
+                            <div class="col-md-4">
+                                <select class="form-control" v-model="datosFiscales.cfi_fisc">
+                                    <option value="Por definir">Por definir</option>
+                                    <option value="Suspendido">Suspendido</option>
+                                    <option value="Adquisición de mercancias">Adquisición de mercancias</option>
+                                    <option value="Devoluciones, Descuentos o bonificaciones">Devoluciones, Descuentos o bonificaciones</option>
+                                    <option value="Gastos en general">Gastos en general</option>
+                                    <option value="Construcciones">Construcciones</option>
+                                    <option value="Mobiliario y equipo de oficina por inversiones">Mobiliario y equipo de oficina por inversiones</option>
+                                    <option value="Equipo de transporte">Equipo de transporte</option>
+                                    <option value="Equipo de computo y accesorios">Equipo de computo y accesorios</option>
+                                    <option value="Dados, troqueles, moldes, matrices y herramental">Dados, troqueles, moldes, matrices y herramental</option>
+                                    <option value="Comunicaciones telefónicas">Comunicaciones telefónicas</option>
+                                    <option value="Comunicaciones satelitales">Comunicaciones satelitales</option>
+                                    <option value="Otra maquinaria y equipo">Otra maquinaria y equipo</option>
+                                    <option value="Honorarios médicos, dentales y gastos hospitalarios">Honorarios médicos, dentales y gastos hospitalarios</option>
+                                    <option value="Gastos médicos por incapacidad o discapacidad">Gastos médicos por incapacidad o discapacidad</option>
+                                    <option value="Gastos funerales">Gastos funerales</option>
+                                    <option value="Donativos">Donativos</option>
+                                    <option value="Intereses reales efectivamente pagados por créditos hipotecarios">Intereses reales efectivamente pagados por créditos hipotecarios</option>
+                                    <option value="Aportaciones voluntarias al SAR">Aportaciones voluntarias al SAR</option>
+                                    <option value="Primas por seguros de gastos médicos">Primas por seguros de gastos médicos</option>
+                                    <option value="Gastos de transportación escolar obligatoria">Gastos de transportación escolar obligatoria</option>
+                                    <option value="Depósitos en cuentas para el ahorro">Depósitos en cuentas para el ahorro</option>
+                                    <option value="Pagos por servicios educativos (colegiaturas)">Pagos por servicios educativos (colegiaturas)</option>
+                                    <option value="Sin efectos fiscales">Sin efectos fiscales</option>
+                                    <option value="Pagos">Pagos</option>
+                                    <option value="Nómina">Nómina</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
+                            <div class="col-md-4">
+                                <select class="form-control" v-model="datosFiscales.regimen_fisc">
+                                    <option value="Sueldos y Salarios e Ingresos Asimilados a Salarios">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+                                    <option value="Arrendamiento">Arrendamiento</option>
+                                    <option value="Régimen e Enajenación o Adquisición de Bienes">Régimen e Enajenación o Adquisición de Bienes</option>
+                                    <option value="Demás ingresos">Demás ingresos</option>
+                                    <option value="Residentes en el Extranjero sin Establecimiento Permanente en México">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
+                                    <option value="Ingresos por Dividendos (socios y accionistas)">Ingresos por Dividendos (socios y accionistas)</option>
+                                    <option value="Personas Físicas con Actividades Empresariales y Profesionales">Personas Físicas con Actividades Empresariales y Profesionales</option>
+                                    <option value="Ingresos por intereses">Ingresos por intereses</option>
+                                    <option value="Régimen de los ingresos por obtención de premios">Régimen de los ingresos por obtención de premios</option>
+                                    <option value="Sin obligaciones fiscales">Sin obligaciones fiscales</option>
+                                    <option value="Incorporación Fiscal">Incorporación Fiscal</option>
+                                    <option value="Régimen de las Actividades Empresariales con ingresos a través de Plataforma">Régimen de las Actividades Empresariales con ingresos a través de Plataforma</option>
+                                    <option value="Régimen Simplificado de Confianza">Régimen Simplificado de Confianza</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Banco</label>
+                            <div class="col-md-4">
+                                <input type="text" 
+                                v-model="datosFiscales.banco_fisc" class="form-control" placeholder="Banco">
+                            </div>
+                            <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
+                            <div class="col-md-4">
+                                <input type="text" v-on:keypress="isNumber($event)" pattern="\d*"
+                                v-model="datosFiscales.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
+                            <div class="col-md-4">
+                                <input type="text" 
+                                v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
+                            </div>
+                        </div>
+                    </template>
+                    <hr>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                        <div class="col-md-9">
+                            <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
+                        </div>
                     </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        <button type="button" v-if="tipoAccion==1 && status != 3" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
-                        <button type="button" 
-                            v-if="tipoAccion==1 && status == 3 && datosFiscales.archivo_fisc != null
-                                && datosFiscales.email_fisc != '' && datosFiscales.email_fisc != null
-                                && datosFiscales.tel_fisc != '' && datosFiscales.tel_fisc != null
-                                && datosFiscales.nombre_fisc != '' && datosFiscales.nombre_fisc != null
-                                && datosFiscales.direccion_fisc != '' && datosFiscales.direccion_fisc != null
-                                && datosFiscales.regimen_fisc != '' && datosFiscales.cfi_fisc != null
-                                && datosFiscales.cp_fisc != '' && datosFiscales.cp_fisc != null" 
-                            class="btn btn-success" @click="registrarFechaStatus()"
-                        >Guardar</button>
-                        <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="mostrarDatosLote(sel_lote)">reasignar</button>
+                </template>
+
+                <div class="form-group row" v-if="tipoAccion==1 && status == 0">
+                    <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
+                    <div class="col-md-9">
+                        <textarea rows="3" cols="30" v-model="motivo_cancel" class="form-control" placeholder="Observaciones"></textarea>
                     </div>
-                </div> 
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+                </div>
+
+                <template v-if="tipoAccion==2">
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="sel_proyecto" @change="selectEtapa(sel_proyecto)">
+                                    <option value=0> Seleccione </option>
+                                    <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="sel_etapa" @change="selectManzana(sel_etapa)">
+                                    <option value=''> Seleccione </option>
+                                    <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                        <div class="col-md-9">
+                            <select class="form-control" v-model="sel_manzana" @change="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
+                                    <option value=''> Seleccione </option>
+                                    <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Lote</label>
+                        <div class="col-md-9">
+                        <select class="form-control" v-model="sel_lote">
+                                    <option value=''> Seleccione </option>
+                                    <template v-for="lotes in arrayLotes">
+                                        <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                        <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' '+ lotes.sublote"></option>
+                                    </template>
+                                    
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="nuevo == 0">
+                        <label class="col-md-3 form-control-label" for="text-input">Reubicacion?</label>
+                        <div class="col-md-2">
+                        <input type="checkbox" v-model="reubicacion" value="1">
+                        </div>
+                        <div class="col-md-7" v-if="reubicacion == 1">
+                        <textarea rows="3" cols="30" class="form-control" v-model="observacion_r" placeholder="Observacion"></textarea>
+                        </div>
+                    </div>
+                </template>
+            </template>
+            <template v-slot:buttons-footer>
+                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                    <button type="button" v-if="tipoAccion==1 && status != 3" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                    <button type="button" 
+                        v-if="tipoAccion==1 && status == 3 && datosFiscales.archivo_fisc != null
+                            && datosFiscales.email_fisc != '' && datosFiscales.email_fisc != null
+                            && datosFiscales.tel_fisc != '' && datosFiscales.tel_fisc != null
+                            && datosFiscales.nombre_fisc != '' && datosFiscales.nombre_fisc != null
+                            && datosFiscales.direccion_fisc != '' && datosFiscales.direccion_fisc != null
+                            && datosFiscales.regimen_fisc != '' && datosFiscales.cfi_fisc != null
+                            && datosFiscales.cp_fisc != '' && datosFiscales.cp_fisc != null" 
+                        class="btn btn-success" @click="registrarFechaStatus()"
+                    >Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="mostrarDatosLote(sel_lote)">reasignar</button>
+            </template>
+        </ModalComponent>
         <!--Fin del modal-->
 
         <!-- Inicio Modal Archivo Fiscal-->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal"></h4>
-                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
+        <ModalComponent v-if="modal==2"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <!-- <form  method="post" @submit="formSubmitFisc" enctype="multipart/form-data">
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
+                        <div class="col-md-9">
+                            <input type="file" accept="image/*" class="form-control" v-on:change="onImageFisc">
+                        </div>
                     </div>
-                    <div class="modal-body">
 
-                        <form  method="post" @submit="formSubmitFisc" enctype="multipart/form-data">
-
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Archivo</label>
-                                <div class="col-md-9">
-                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageFisc">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-9"></div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                                </div>
-                            </div>
-                            
-                            <br/>
-                        </form>
-
+                    <div class="form-group row">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-success">Cargar</button>
+                        </div>
                     </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        <a v-if="archivoFisc != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFisc/'+archivoFisc">Descargar</a>
+                    
+                    <br/>
+                </form> -->
+
+                    <div class="form-group row">
+                        <input type="file"
+                            v-show="false"
+                            ref="constanciaSelector"
+                            @change="onSelectedConstancia"
+                            accept="image/png, image/jpeg, image/gif, application/pdf"
+                        >
+                        <div class="col-md-9" v-if="!archivo">
+                            <button 
+                                @click="onSelectConstancia"
+                                class="btn btn-scarlet">
+                                Seleccionar Constancia de Situación fiscal
+                                <i class="fa fa-upload"></i>
+                            </button>
+                           
+                        </div>
+
+                        <div class="col-md-7" v-else>
+                            <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                            <button
+                                @click="onSelectConstancia"
+                                class="btn btn-info">
+                                Cambiar Archivo
+                                <i class="fa fa-upload"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-3" v-if="archivo">
+                            <button 
+                                @click="saveConstancia"
+                                class="btn btn-scarlet">
+                                Guardar Constancia
+                                <i class="icon-check"></i>
+                            </button>
+                        </div>
                     </div>
-                </div> 
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+
+                    <hr>
+
+                    <div class="form-group row">
+                        <input type="file"
+                            v-show="false"
+                            ref="archivoSelector"
+                            @change="onSelectedArchivo"
+                            accept="image/png, image/jpeg, image/gif"
+                        >
+                        <div class="col-md-9" v-if="!archivo2">
+                            <button 
+                                @click="onSelectArchivo"
+                                class="btn btn-dark">
+                                Seleccionar Archivo Datos Fiscales
+                                <i class="fa fa-upload"></i>
+                            </button>
+                           
+                        </div>
+
+                        <div class="col-md-7" v-else>
+                            <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo2.name}}</h6>
+                            <button
+                                @click="onSelectArchivo"
+                                class="btn btn-info">
+                                Cambiar Archivo
+                                <i class="fa fa-upload"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-3" v-if="archivo2">
+                            <button 
+                                @click="saveArchivo"
+                                class="btn btn-dark">
+                                Guardar Archivo
+                                <i class="icon-check"></i>
+                            </button>
+                        </div>
+                    </div>
+
+            </template>
+            <template v-slot:buttons-footer>
+                <a v-if="archivoFisc != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFisc/'+archivoFisc">Archivo Fiscal</a>
+                <a v-if="archivoConstancia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileConstFisc/'+archivoConstancia">Constancia de Situación Fisc.</a>
+            </template>
+        </ModalComponent>
         <!--Fin del modal-->
-
     </main>
 </template>
 
@@ -2133,7 +2162,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue'
+import ModalComponent from '../Componentes/ModalComponent.vue'
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             rolId:{type: String}
         },
@@ -2145,7 +2180,9 @@
                 change_credito:0,
                 detenido:0,
                 archivo:'',
+                archivo2:'',
                 archivoFisc:'',
+                archivoConstancia:'',
 
                 arraySimulaciones:[],
                 arrayContratos:[],
@@ -2490,37 +2527,69 @@
         },
        
         methods : {
-            onImageFisc(e){
-                this.archivo = e.target.files[0];
+            onSelectConstancia(){
+                this.$refs.constanciaSelector.click()
             },
-            formSubmitFisc(e) {
+            onSelectedConstancia( event ){
+                this.archivo = {}
+                this.archivo = event.target.files[0]
+            },
+            onSelectArchivo(){
+                this.$refs.archivoSelector.click()
+            },
+            onSelectedArchivo( event ){
+                this.archivo2 = {}
+                this.archivo2 = event.target.files[0]
+            },
+            saveArchivo(){
+                
+                let formData = new FormData();
+           
+                formData.append('archivo', this.archivo2);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/contratos/formSubmitFisc/'+me.id, formData)
+                .then(function (response) {
+                    
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo Fiscal guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.archivoFisc = me.archivo2.name
+                    me.archivo2 = undefined;
+                    me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
 
-                e.preventDefault();
-
-                let currentObj = this;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            saveConstancia(){
+                
                 let formData = new FormData();
            
                 formData.append('archivo', this.archivo);
                 formData.append('id', this.id);
                 let me = this;
-                axios.post('/contratos/formSubmitFisc/'+me.id, formData)
+                axios.post('/contratos/formSubmitConstFisc/'+me.id, formData)
                 .then(function (response) {
-                    currentObj.success = response.data.success;
+                    
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Archivo guardado correctamente',
+                        title: 'Constancia de situación Fiscal guardada correctamente',
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    me.cerrarModal
+                    me.archivoConstancia = me.id+me.archivo.name
+                    me.archivo = undefined;
                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
 
                 }).catch(function (error) {
-                    currentObj.output = error;
                     console.log(error);
                 });
-
             },
             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
@@ -3305,6 +3374,8 @@
                 this.sel_etapa='';
                 this.sel_manzana='';
                 this.sel_lote='';
+                this.archivo= undefined
+                this.archivo2=undefined
             },
 
             verImagen(imagen){
@@ -4020,18 +4091,6 @@
                 me.errorContrato = 0;
                 me.errorMostrarMsjContrato = [];
 
-                // me.criterio = 'personal.nombre'; 
-                // me.buscar = '';
-                // me.b_etapa= '';
-                // me.b_manzana= '';
-                // me.b_lote= '';
-
-                // me.criterio2 = 'personal.nombre'; 
-                // me.buscar2 = '';
-                // me.b_etapa2= '';
-                // me.b_manzana2= '';
-                // me.b_lote2= '';
-
             },
 
             limpiarBusqueda(){
@@ -4073,12 +4132,13 @@
                         this.modal = 2;
                         this.tituloModal = 'Subir imagen';
                         this.id = data['id'];
-                        this.archivo = '';
+                        this.archivo = undefined;
+                        this.archivo2 = undefined;
                         this.archivoFisc = data['archivo_fisc'];
+                        this.archivoConstancia = data['constancia_fisc'];
                         break;
                     }
                 }
-                this.$root.$methods.selectFraccionamientos();
             },
         /////
 
@@ -4185,23 +4245,6 @@
     }
 </script>
 <style>
-
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-       
-    }
-    .modal-body{
-        height: 450px;
-        width: 100%;
-        overflow-y: auto;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -4214,16 +4257,6 @@
         .btnagregar{
         margin-top: 2rem;
         }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
