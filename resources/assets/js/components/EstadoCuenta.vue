@@ -132,6 +132,7 @@
                                                     <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo != 'Terreno'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+contratos.folio">Contrato</a>
                                                     <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo == 'Terreno'" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+contratos.folio">Contrato</a>
                                                     <a v-if="contratos.liquidado == 1" class="dropdown-item" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+contratos.folio">Liquidación</a>
+                                                    <a v-if="contratos.archivoConstancia != null" class="dropdown-item" target="_blank" v-bind:href="'/contratos/downloadFileConstFisc/'+ contratos.archivoConstancia">Constancia de Situación Fisc.</a>
                                                 </div>
                                             </td>
                                         <td class="td2">

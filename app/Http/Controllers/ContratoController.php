@@ -2892,7 +2892,7 @@ class ContratoController extends Controller
             if(sizeof($personal))
             foreach ($personal as $personas) {
                 $correo = $personas->email;
-                Mail::to($correo)->send(new NotificationReceived($msj));
+                Mail::to($correo)->send(new NotificationReceived($msj,$ruta));
                 User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
             }
         }

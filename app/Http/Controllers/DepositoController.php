@@ -924,6 +924,7 @@ class DepositoController extends Controller
                         'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.constancia_fisc as archivoConstancia',
                         'lotes.calle','lotes.numero',
 
                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
