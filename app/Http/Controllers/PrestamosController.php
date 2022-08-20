@@ -105,6 +105,7 @@ class PrestamosController extends Controller
 
         $prestamo=new Prestamos_personales; // registra un nuevo registro en la latbla de prestamos personales 
         $prestamo->monto_solicitado=$monto;
+        $prestamo->user_id=$user_id;
         $prestamo->motivo=$motivo;
         $prestamo->desc_quin =$desc_quin;
         $prestamo->saldo =$monto;
