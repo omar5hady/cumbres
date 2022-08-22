@@ -36,6 +36,7 @@ class PrestamosController extends Controller
         $query=Prestamos_personales::join('personal','prestamos_personales.user_id','=','personal.id')
                                     ->select( 
                                     'prestamos_personales.id',
+                                    'prestamos_personales.created_at',
                                     'user_id',
                                     'jefe_id',
                                     'monto_solicitado',
@@ -145,7 +146,7 @@ class PrestamosController extends Controller
         $solicitud_id=$request->solic_id;
         
              $p=Pagos_prestamos::findOrFail($pago_id); 
-             $p->fecha_pago=Carbon::now();
+             $p->fecha_pago=$request->fecha_pago;
              $p->status=1;
              $p->save();
 
@@ -155,6 +156,9 @@ class PrestamosController extends Controller
             
                  $prestamo=Prestamos_personales::findOrFail($solicitud_id);
                  $prestamo->saldo=$saldo['saldo'];
+                 if($saldo->saldo == 0){
+                    $prestamo->status= 3;
+                 }
                  $prestamo->save();
 
             
@@ -162,7 +166,7 @@ class PrestamosController extends Controller
     }
 
     public function getObservaciones(Request $request){
-        $obs = Obs_prestamos_pers::where('prestamo_id','=',$request->id)->get();
+        $obs = Obs_prestamos_pers::where('prestamo_id','=',$request->id)->orderBy('obs_prestamos_pers.id','desc')->get();
         return $obs;
     }
    
@@ -201,10 +205,12 @@ class PrestamosController extends Controller
         $motivo=$request->motivo; 
         //$idJefe=$request->idJefe;
         $tablaPagos=$request->arrPagos;
+        $fecha_inicio_retencion=$request->fecha_solic;
         
         $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo 
         $prestamo=Prestamos_personales::findOrFail($solicitud_id);
        $prestamo->motivo=$motivo;
+       $prestamo->fecha_ini= $fecha_inicio_retencion;
         if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar 
             foreach ($tablaPagos as $key => $value) {
                     if($value['saldo']==0){

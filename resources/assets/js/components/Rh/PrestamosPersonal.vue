@@ -63,6 +63,7 @@
                                         <th>Colaborador </th>
                                         <th>Monto solicitado</th>
                                         <th>Fecha de solic.</th>
+                                        <th>Inicio de Retenciones</th>
                                         <th>Saldo</th>
                                         <th>Status</th>
                                         <th>Jefe inmediato</th>
@@ -102,6 +103,7 @@
 
                                         <td class="td2" v-text="prestamo.nombre + ' ' +prestamo.apellidos"></td>
                                         <td class="td2" v-text="'$' + formatNumber(prestamo.monto_solicitado)"></td>
+                                        <td class="td2" v-text="this.moment(prestamo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="this.moment(prestamo.fecha_ini).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="'$' + formatNumber(prestamo.saldo)"></td>
                                         <td class="td2">
@@ -201,8 +203,28 @@
 
                                 <div class="form-group row">
                                        
-                                            <label class="col-md-3 " >fecha de inicio de retencion:</label>
-                                            <input class=" col-md-6 form-control " type="date"  v-model="fecha_solic" >
+                                            <label class="col-md-3 " >Fecha de inicio de retencion:</label>
+
+                                            <template v-if="status_rh !=2 " >
+                                            <template v-if="modalVista == '0' || modalVista == '2' ">
+                                                <input class=" col-md-6 form-control " type="date"  v-model="fecha_solic" >
+
+                                            </template>
+
+                                    </template>
+                                          <template v-else >
+                                            <template v-if="modalVista =='2'">
+                                                <input disabled class=" col-md-6 form-control " type="date"  v-model="fecha_solic" >
+
+                                            </template>
+
+                                        </template>
+                                        
+                                        <template v-if="modalVista == '1'">
+                                             <input disabled class=" col-md-6 form-control " type="date"  v-model="fecha_solic" >
+                                        </template>
+                                        
+                                           
                                         
                                     
                                </div>
@@ -392,7 +414,6 @@
                                                         
                                                         <th >No. quincena</th>
                                                         <th>Pago Nomina</th>
-                                                        <!-- <th>Pago Extraordinario</th> -->
                                                         <th>Pago Extraordinario</th>
                                                         <th>Saldo</th>
                                                         <th v-if="(modalVista == '1' || modalVista == '2' )&& status_rh == 2">Status pago</th>
@@ -446,12 +467,28 @@
 
                                                             <template v-if=" modalVista == '2'"  >
                                                                 <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1 ">
-                                                                <td v-if=" pago.status == 0 " class=" py-sm-0 justify-content-center " >
-                                                                    <input type="date" class=" form-control" name="" :id="pago.id" v-model="fecha_captura_pago">
-                                                                    <button v-if="editAjuste ==0 && pago.pago !=0"  class=" bg-success py-sm-1 px-sm-1 btn  " style="  margin:1px " @click="capturarPago(pago.id_pago)" >
-                                                                        <i class="fa small fa-2x icon-check "></i>
-                                                                        Retener Pago 
-                                                                    </button> 
+                                                                <td v-if=" pago.status == 0 " class=" form-group-sm" >
+                                                                           
+                                                                                <button v-show="pago.fecha_captura_pago" v-if="editAjuste ==0 && pago.pago !=0"  
+                                                                                        class=" bg-success py-sm-1 px-sm-1 btn row" 
+                                                                                        style="  margin:1px " 
+                                                                                        @click="capturarPago(pago)" 
+                                                                                >
+                                                                                    <i class="fa small fa-2x icon-check ">
+
+                                                                                    </i>
+                                                                                    Retener Pago 
+                                                                                </button>
+
+                                                                                <input  
+                                                                                    type="date" 
+                                                                                    class=" form-control " 
+                                                                                    name="fecha" 
+                                                                                    placeholder="Capturar fecha de retencion"
+                                                                                    v-model="pago.fecha_captura_pago"
+                                                                                >
+
+                                                                  
                                                                 </td> 
                                                                 <td v-if=" pago.status == 1 " class=" py-sm-0 justify-content-center "  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td> 
                                                                 </template>
@@ -602,14 +639,17 @@ import { formatDayString } from '@fullcalendar/common';
                 arrayIdGerentes:[
                    {id:'10',user:'eli_hdz' ,nombre:'Elizabeth Hernandez'},
                    {id:'25695',user:'sajid.m' ,nombre:'Sajid  Meza'},
-                   {id:'2',user:'admin' ,nombre:'Miguelito'},
+                   {id:'23679',user:'bd_raul' ,nombre:'Raúl Palos López'},
+                   {id:'23684',user:'lucy.hdz' ,nombre:'Maria Lucia Hernandez'},
+                   {id:'26546',user:'cp.martin' ,nombre:'Martin Herrera Sanchez'},
+                   {id:'24100',user:'guadalupe.ff' ,nombre:'J. Guadalupe Flores Ferrer'},
                 ],
 
                  arrayIdRH:[
                     '31298','2'
                 ],
                  arrayIdDir:[
-                    ,'26545','2'
+                    ,'26310','26546','2'
                 ],
                 arrayPagos:[],
                 arrayPagosCap:[],
@@ -675,6 +715,9 @@ import { formatDayString } from '@fullcalendar/common';
 
                 if(!this.monto_solic)
                     this.arrayErrorSolicitud.push("Escriba un monto solicitado");
+                
+                if(!this.fecha_solic)
+                    this.arrayErrorSolicitud.push("Ingrese la fecha de inicio de retencion.");
 
                 if(!this.motivo)
                     this.arrayErrorSolicitud.push("Escriba un motivo");
@@ -700,7 +743,6 @@ import { formatDayString } from '@fullcalendar/common';
                                   var dia  = date.getDate();
                                   var mes = date.getMonth()+1;
                                   var anio = date.getFullYear();
-                                 console.log(this.fecha_solic);
                          
                          
                          for( i; i<n; i++){
@@ -756,7 +798,7 @@ import { formatDayString } from '@fullcalendar/common';
                           
                                    var lastDay = new Date(anio,mes,0).getDate();  // optiene el ultimo dia del mes que se le manda  
 
-                                    console.log(lastDay);
+                                   
                                    if(dia <= 15){
                                        var dat= new Date(anio , mes-1 , 15 );
                                        var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY');
@@ -784,7 +826,7 @@ import { formatDayString } from '@fullcalendar/common';
                                      var dia  = date.getDate();
                                      var mes = date.getMonth()+1;
                                      var anio = date.getFullYear();
-                                    console.log(date);
+                                   
                                
                                for( i; i<n; i++){
                            
@@ -897,7 +939,7 @@ import { formatDayString } from '@fullcalendar/common';
                         }else {
                             if(this.arrayPagosCap.length >0 &&  index_capturado  == index ){
                                  var  saldoAnt = this.saldo_ant_Cap;
-                                 console.log(this.saldo_ant_Cap);
+                                 
                             }else{
                                 var  saldoAnt = parseFloat(this.arrayPagos[index-1].saldo)
                             }
@@ -936,7 +978,6 @@ import { formatDayString } from '@fullcalendar/common';
 
 
             actualiTabla(index,band){
-                     console.log(index);
                     var n_e_arr =Object.keys(this.arrayPagos).length; //  devuelve el numero de elementos de un objeto 
                  
 
@@ -946,7 +987,7 @@ import { formatDayString } from '@fullcalendar/common';
                         for ( index ; index < n_e_arr; index++) {
                            
                            let saldoAnt = this.arrayPagos[index-1].saldo
-                           console.log(saldoAnt);
+                           
                             if(band ==1){
                                 this.arrayPagos[index].pago = 0;
                                 this.arrayPagos[index].pagoExtra = 0;
@@ -961,7 +1002,7 @@ import { formatDayString } from '@fullcalendar/common';
                                         this.arrayPagos[index].pago = this.desc_quin;
                                         this.arrayPagos[index].pagoExtra = 0;
                                         this.arrayPagos[index].saldo = saldoAnt - this.arrayPagos[index].pago  ;
-                                        console.log(this.arrayPagos[index].pago );
+                                       
                                     }
                             }
                             
@@ -1013,7 +1054,7 @@ import { formatDayString } from '@fullcalendar/common';
                                                         '&solicitud_id='+ this.id_prestamo +
                                                         '&motivo='+ this.motivo +
                                                         //'&desc_quin='+this.desc_quin +
-                                                        //'&fecha_solic='+ this.fecha_solic +
+                                                        '&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
                 axios.put(url,{'arrPagos': me.arrayPagos}).then(function (response) {
                    if(band == 0 ){
@@ -1069,8 +1110,7 @@ import { formatDayString } from '@fullcalendar/common';
                 });
 
             },
-            capturarPago(pago_id){
-                console.log(pago_id);
+            capturarPago(pago){
                 let me = this;
                 Swal.fire({
                     title: '¿Estas seguro de retener pago?',
@@ -1084,9 +1124,9 @@ import { formatDayString } from '@fullcalendar/common';
                 }).then((result) => {
                     if (result.value) {
                          axios.put('/prestamos/capturar_pago',{
-                            'pago_id' : pago_id ,
+                            'pago_id' : pago.id_pago,
                             'solic_id': me.id_prestamo,
-                            'fecha_captura_pago': me.fecha_captura_pago,
+                            'fecha_pago': pago.fecha_captura_pago,
                         }).then(function (response){
                             me.dataPrestamos(); 
                             me.getTablaPagos(me.id_prestamo);
@@ -1428,7 +1468,6 @@ import { formatDayString } from '@fullcalendar/common';
                     }
 
                 });
-                   console.log(this.isGerenteCurrent);
             },
               isRHCurrent_Id(){
              this.isRHCurrent = this.arrayIdRH.includes(this.userId)
@@ -1458,6 +1497,8 @@ import { formatDayString } from '@fullcalendar/common';
                 this.e_nombre='';
                 this.status_rh=0;
                 this.editAjuste=0;
+                this.error_en_solicitud=0;
+                this.arrayErrorSolicitud=[];
                 this.borrarTabla();
 
 
