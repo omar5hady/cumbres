@@ -481,10 +481,12 @@
                                                                                 </button>
 
                                                                                 <input  
-                                                                                    type="date" 
-                                                                                    class=" form-control " 
+                                                                                    class=" form-control "
+                                                                                    style="cursor: pointer; " 
                                                                                     name="fecha" 
                                                                                     placeholder="Capturar fecha de retencion"
+                                                                                    type="text" 
+                                                                                    onfocus="(this.type='date')"
                                                                                     v-model="pago.fecha_captura_pago"
                                                                                 >
 
@@ -1552,6 +1554,7 @@ button{
         position: absolute !important;
     }
     .mostrar{
+        
         display: list-item !important;
         opacity: 1 !important;
         position: fixed !important;
