@@ -228,7 +228,7 @@ const app = new Vue({
         notifications: [],
         proyectos : []
     },
-    
+
     methods:{
         callFunction: function () {
             var v = this;
@@ -246,9 +246,9 @@ const app = new Vue({
             }).catch(function(error) {
                 //console.log(error);
             });
-    
+
             var userId = $('meta[name="userId"]').attr('content');
-    
+
             window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
                 me.notifications.unshift(notification);
             });

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <body style="margin: 0; padding: 0;">
-	<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 		<tr>
 			<td style="padding: 10px 0 30px 0;">
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
@@ -16,18 +16,18 @@
 						</td>
 					</tr>
 					<tr>
-						<td bgcolor="#70bbd9" style="padding: 40px 30px 40px 30px;">
+						<td bgcolor="#153157" style="padding: 40px 30px 40px 30px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
-									<th colspan="2" align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 20px; font-weight: bold; font-family: Arial, sans-serif;">
-										<b>INTEGRACIÓN DE COBROS PARA ESCRITURACIÓN!</b>
+									<th colspan="2" align="center" bgcolor="#153157" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 20px; font-weight: bold; font-family: Arial, sans-serif;">
+										<b>Nueva notificación!</b>
 									</th>
 								</tr>
 								<tr>
-									<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 16px; font-weight: bold; font-family: Arial, sans-serif;">
-									{{$mensaje}}	
+									<td align="center" bgcolor="#153157" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 16px; font-weight: bold; font-family: Arial, sans-serif;">
+									{{$mensaje}}
 									</td>
-									<td bgcolor="#70bbd9" style="color: #ffffff; font-size: 16px; font-weight: bold; font-family: Arial, sans-serif;">
+									<td bgcolor="#153157" style="color: #ffffff; font-size: 16px; font-weight: bold; font-family: Arial, sans-serif;">
 										<a href="{{$ruta}}">Click para Descargar</a>
 									</td>
 								</tr>
@@ -35,7 +35,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td bgcolor="#ee4c50" style="padding: 30px 30px 30px 30px;">
+						<td bgcolor="#153157" style="padding: 30px 30px 30px 30px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">

@@ -44,7 +44,7 @@
                                     <option value="">Seleccione</option>
                                     <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                 </select>
-                                
+
                                 <select class="form-control"  v-if="criterio=='licencias.perito_dro'" v-model="buscar">
                                         <option value="">Seleccione</option>
                                         <option value="1">Por Asignar</option>
@@ -55,7 +55,7 @@
                                 <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar2"  @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
                                 <input type="date" v-if="criterio=='lotes.siembra'" v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
-                
+
                                 <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' && criterio!='lotes.siembra' && criterio!='licencias.perito_dro' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
                             </div>
                             <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
@@ -76,7 +76,7 @@
                             </div>
                             <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                 <!--Criterios para el listado de busqueda -->
-                                <select class="form-control"  v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                <select class="form-control"  v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)">
                                     <option value="">Credito Puente</option>
                                     <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                 </select>
@@ -85,7 +85,7 @@
                             </div>
                             <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                 <!--Criterios para el listado de busqueda -->
-                                <select class="form-control" v-model="b_ruv" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                <select class="form-control" v-model="b_ruv" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)">
                                     <option value="">Paquete Ruv</option>
                                     <option v-for="ruv in arrayRuv" :key="ruv.paq_ruv" :value="ruv.paq_ruv" v-text="ruv.paq_ruv"></option>
                                 </select>
@@ -106,11 +106,11 @@
                     <div class="form-group row">
                         <div class="col-md-8">
                             <div class="input-group">
-                                <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" 
+                                <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"
                                     class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + 
-                                        '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + 
-                                        '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio + '&b_empresa=' + b_empresa + 
+                                <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana +
+                                        '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio +
+                                        '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio + '&b_empresa=' + b_empresa +
                                         '&b_empresa2=' + b_empresa2 + '&b_etapa=' + b_etapa + '&b_ruv=' + b_ruv" >
                                     <i class="icon-pencil"></i>&nbsp;Excel
                                 </a>
@@ -158,18 +158,18 @@
                                 <td v-if="rolId != '5'" class="td2">
                                 <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
                                 </td>
-                                
+
                                 <td v-if="rolId != '5'" class="td2" >
                                     <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
                                     <i class="icon-pencil"></i>
-                                    </button> 
+                                    </button>
                                     <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
                                     <i class="icon-cloud-upload"></i>
                                     </button>
                                     <a title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
                                         <i class="fa fa-arrow-circle-down fa-lg"></i>
                                     </a>
-                                
+
                                 </td>
                                 <td class="td2">
                                     <a href="#" v-text="licencias.proyecto"></a>
@@ -207,19 +207,19 @@
                                         <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
                                         <td class="td2" v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
                                 </template>
-                                
+
                                     <!-- Fecha planos obra -->
                                 <template v-if="rolId != '5'">
                                     <td class="td2" v-if="!licencias.f_planos_obra" v-text="''"></td>
                                     <td class="td2" v-else v-text="this.moment(licencias.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
                                 </template>
-                                
-                                <!-- Fecha planos licencias--> 
+
+                                <!-- Fecha planos licencias-->
                                 <template v-if="rolId != '5'">
                                     <td class="td2" v-if="!licencias.f_planos" v-text="''"></td>
                                     <td class="td2" v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
-                                </template>   
-                                
+                                </template>
+
                                 <!-- perito -->
                                 <td class="td2">
                                     <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="licencias.perito"></span>
@@ -231,20 +231,20 @@
                                         <td class="td2" v-if="!licencias.f_ingreso" v-text="''"></td>
                                         <td class="td2" v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                                 </template>
-                                
+
                                 <!-- Fecha Salida -->
                                 <template v-if="rolId != '5'">
                                         <td class="td2" v-if="!licencias.f_salida" v-text="''"></td>
                                         <td class="td2" v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                 </template>
-                                
+
                                 <template>
                                         <td class="td2"  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
                                         <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
                                 </template>
-                                
+
                                 <td v-if="rolId != '5'" class="td2"  v-text="licencias.credito_puente"></td>
-                                
+
                                 <template v-if="rolId == '5'">
                                     <td class="td2" style="width:7%" v-if="licencias.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+licencias.archivo"><i class="icon-cloud-download"></i></a></td>
                                     <td class="td2" v-else ></td>
@@ -352,13 +352,13 @@
                             </div>
                         </form>
                     </div>
-                    
+
                     <!-- Botones del modal -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                         <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                         <button type="button"  class="btn btn-primary" @click="actualizarLicencia()">Actualizar</button>
-                        
+
                     </div>
                 </div>
                     <!-- /.modal-content -->
@@ -379,7 +379,7 @@
                     <div class="modal-body">
                         <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                            
+
                             <div class="form-group row" v-if="tipoAccion == 1">
                                 <label class="col-md-3 form-control-label" for="text-input">DRO</label>
                                 <div class="col-md-6">
@@ -419,7 +419,7 @@
                                     <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
                                 </div>
                             </div>
-                            
+
                         </form>
                     </div>
                     <!-- Botones del modal -->
@@ -428,7 +428,7 @@
                         <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                         <button type="button"  class="btn btn-primary" @click="actualizarMasa()" v-if="tipoAccion == 1">Actualizar</button>
                         <button type="button"  class="btn btn-primary" @click="updateMasaLicencias()" v-if="tipoAccion == 2">Actualizar</button>
-                        
+
                     </div>
                 </div>
                     <!-- /.modal-content -->
@@ -438,182 +438,166 @@
         <!--Fin del modal-->
 
         <!--Inicio del modal consulta-->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal2"></h4>
-                        <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+        <ModalComponent v-if="modal2"
+            @closeModal="cerrarModal2"
+            :titulo="tituloModal2"
+        >
+            <template v-slot:body>
 
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                <div class="col-md-6">
-                                    <input type="text" disabled v-model="fraccionamiento"  class="form-control"  placeholder="Proyecto">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
-                                <div class="col-md-4">
-                                    <input type="text" disabled v-model="clv_catastral" class="form-control"  placeholder="Clave catastral">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
-                                <div class="col-md-4">
-                                    <input type="text" disabled v-model="etapa_servicios" class="form-control"  placeholder="Etapa de servicios">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                <div class="col-md-4">
-                                    <input type="text" disabled v-model="manzana" class="form-control" placeholder="Manzana">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
-                                <div class="col-md-4">
-                                    <input type="text" disabled v-model="num_lote" class="form-control" placeholder="Numero de Lote">
-                                </div>
-                                <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Duplex</label>
-                                <div class="col-md-4" >
-                                    <input type="text" disabled v-model="sublote" style="width:200px;"  class="form-control" placeholder="Duplex">
-                                </div>
-                            </div>
-                            </div>
-                                <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Prototipo</label>
-                                <div class="col-md-6">
-                                    <input type="text" disabled v-model="modelo" class="form-control" placeholder="Prototipo">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
-                                <div class="col-md-4">
-                                    <input type="text" disabled v-model="calle " class="form-control" placeholder="Calle">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" disabled v-model="numero" class="form-control" placeholder="Numero">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" disabled v-model="interior" class="form-control" placeholder="Interior">
-                                </div>
-                            </div>
-                            
-                            
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
-                                <div class="col-md-4">
-
-                                    <input type="text" style="width:200px;" disabled v-model="construccion" class="form-control" placeholder="Construccion">
-                                
-                                </div>
-                                <div class="form-group row">
-                                <label class="col-md-4 form-control-label" for="text-input">Terreno(mts&sup2;)</label>
-                                <div class="col-md-3" >
-                                    
-                                    <input type="text" style="width:150px;" disabled v-model="terreno" class="form-control" placeholder="Terreno">
-                            
-                                </div>
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Arquitecto</label>
-                                <div class="col-md-4">
-
-                                    <input type="text"  disabled v-model="arquitecto" class="form-control" placeholder="Arquitecto">
-                                
-                                </div>
-                            </div>
-
-                            <hr style="border-top: 2px solid rgba(100,155,255,0.5);" />
-                            <h5 style="text-align:center">Licencia</h5>
-                            <br>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Siembra</label>
-                                <div class="col-md-4">
-
-                                    <input type="text" style="width:200px;" disabled v-model="siembra" class="form-control" placeholder="Siembra">
-                                
-                                </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
-                                <div class="col-md-4">
-
-                                    <input type="text" style="width:200px;" disabled v-model="f_planos_obra" class="form-control" placeholder="Planos obra">
-                                
-                                </div>
-                                </div>
-
-                            </div>
-
-                                <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Planos licencia</label>
-                                <div class="col-md-4">
-
-                                    <input type="text" style="width:200px;" disabled v-model="f_planos" class="form-control" placeholder="Planos licencia">
-                                
-                                </div>
-                            </div>
-                            
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Ingreso</label>
-                                <div class="col-md-4">
-
-                                    <input type="text" style="width:200px;" disabled v-model="f_ingreso" class="form-control" placeholder="Ingreso">
-                                
-                                </div>
-                                <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Salida</label>
-                                <div class="col-md-4">
-
-                                    <input type="text" style="width:200px;" disabled v-model="f_salida" class="form-control" placeholder="Salida">
-                                
-                                </div>
-                            </div>
-                            </div>
-                            
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Num. Licencia</label>
-                                <div class="col-md-4">
-
-                                    <input type="text"  disabled v-model="num_licencia" class="form-control" placeholder="Num. Licencia">
-                                
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Observación </label>
-                                <div class="col-md-6">
-
-                                    <textarea rows="5" cols="30"  disabled v-model="observacion_completa" class="form-control" placeholder="Observacion"></textarea>
-                                    <button type="button" class="btn btn-info pull-right" @click="abrirModal3('lote','ver_todo',id)">Ver todos</button>
-                                </div>
-                            </div>
-                            
-
-                        </form>
-                    </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                        
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                    <div class="col-md-6">
+                        <input type="text" disabled v-model="fraccionamiento"  class="form-control"  placeholder="Proyecto">
                     </div>
                 </div>
-                    <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
+                    <div class="col-md-4">
+                        <input type="text" disabled v-model="clv_catastral" class="form-control"  placeholder="Clave catastral">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
+                    <div class="col-md-4">
+                        <input type="text" disabled v-model="etapa_servicios" class="form-control"  placeholder="Etapa de servicios">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                    <div class="col-md-4">
+                        <input type="text" disabled v-model="manzana" class="form-control" placeholder="Manzana">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                    <div class="col-md-4">
+                        <input type="text" disabled v-model="num_lote" class="form-control" placeholder="Numero de Lote">
+                    </div>
+                    <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Duplex</label>
+                    <div class="col-md-4" >
+                        <input type="text" disabled v-model="sublote" style="width:200px;"  class="form-control" placeholder="Duplex">
+                    </div>
+                </div>
+                </div>
+                    <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Prototipo</label>
+                    <div class="col-md-6">
+                        <input type="text" disabled v-model="modelo" class="form-control" placeholder="Prototipo">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                    <div class="col-md-4">
+                        <input type="text" disabled v-model="calle " class="form-control" placeholder="Calle">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" disabled v-model="numero" class="form-control" placeholder="Numero">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" disabled v-model="interior" class="form-control" placeholder="Interior">
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
+                    <div class="col-md-4">
+
+                        <input type="text" style="width:200px;" disabled v-model="construccion" class="form-control" placeholder="Construccion">
+
+                    </div>
+                    <div class="form-group row">
+                    <label class="col-md-4 form-control-label" for="text-input">Terreno(mts&sup2;)</label>
+                    <div class="col-md-3" >
+
+                        <input type="text" style="width:150px;" disabled v-model="terreno" class="form-control" placeholder="Terreno">
+
+                    </div>
+                </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Arquitecto</label>
+                    <div class="col-md-4">
+
+                        <input type="text"  disabled v-model="arquitecto" class="form-control" placeholder="Arquitecto">
+
+                    </div>
+                </div>
+
+                <hr style="border-top: 2px solid rgba(100,155,255,0.5);" />
+                <h5 style="text-align:center">Licencia</h5>
+                <br>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Siembra</label>
+                    <div class="col-md-4">
+
+                        <input type="text" style="width:200px;" disabled v-model="siembra" class="form-control" placeholder="Siembra">
+
+                    </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
+                    <div class="col-md-4">
+
+                        <input type="text" style="width:200px;" disabled v-model="f_planos_obra" class="form-control" placeholder="Planos obra">
+
+                    </div>
+                    </div>
+
+                </div>
+
+                    <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Planos licencia</label>
+                    <div class="col-md-4">
+
+                        <input type="text" style="width:200px;" disabled v-model="f_planos" class="form-control" placeholder="Planos licencia">
+
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Ingreso</label>
+                    <div class="col-md-4">
+
+                        <input type="text" style="width:200px;" disabled v-model="f_ingreso" class="form-control" placeholder="Ingreso">
+
+                    </div>
+                    <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                    <div class="col-md-4">
+
+                        <input type="text" style="width:200px;" disabled v-model="f_salida" class="form-control" placeholder="Salida">
+
+                    </div>
+                </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Num. Licencia</label>
+                    <div class="col-md-4">
+
+                        <input type="text"  disabled v-model="num_licencia" class="form-control" placeholder="Num. Licencia">
+
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Observación </label>
+                    <div class="col-md-6">
+
+                        <textarea rows="5" cols="30"  disabled v-model="observacion_completa" class="form-control" placeholder="Observacion"></textarea>
+                        <button type="button" class="btn btn-info pull-right" @click="abrirModal3('lote','ver_todo',id)">Ver todos</button>
+                    </div>
+                </div>
+
+
+            </template>
+        </ModalComponent>
         <!--Fin del modal consulta-->
 
             <!--Inicio del modal observaciones-->
@@ -635,7 +619,7 @@
                                         <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
                                 </div>
                             </div>
-                            
+
                             <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
                                 <thead>
                                     <tr>
@@ -646,14 +630,14 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                        
+
                                         <td v-text="observacion.usuario" ></td>
                                         <td v-text="observacion.comentario" ></td>
                                         <td v-text="observacion.created_at"></td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
                             </table>
-                            
+
                         </form>
                     </div>
                     <!-- Botones del modal -->
@@ -667,7 +651,7 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
-        
+
         <!-- Modal para la carga de foto de licencia -->
         <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
             <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -710,7 +694,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
                         </div>
-                </div> 
+                </div>
                 <!-- /.modal-content -->
             </div>
             <!-- /.modal-dialog -->
@@ -729,11 +713,11 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        Para poder agregar una licencia a un lote debe asegurarse de tener creado(s) los lotes deseados, 
+                        Para poder agregar una licencia a un lote debe asegurarse de tener creado(s) los lotes deseados,
                         puede crearlos desde el módulo “Desarrollo->Lotes”.
                     </p>
                     <p>
-                        Para poder ver los botones que permite asignar la licencia debe asegurarse de seleccionar al menos 
+                        Para poder ver los botones que permite asignar la licencia debe asegurarse de seleccionar al menos
                             un lote de la lista dando clic sobre la casilla que aparece del lado izquierdo.
                     </p>
                 </div>
@@ -742,7 +726,7 @@
                 </div>
                 </div>
             </div>
-        </div>     
+        </div>
     </main>
 </template>
 
@@ -819,7 +803,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -827,7 +811,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 buscar2 : '',
                 b_manzana : '',
@@ -875,7 +859,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
         },
 
-        
+
         methods : {
 
             selectAll: function() {
@@ -893,7 +877,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.allSelected =   false;
             },
 
-            //funciones para carga de los prediales     
+            //funciones para carga de los prediales
 
             onImageChangePredial(e){
 
@@ -908,13 +892,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 e.preventDefault();
 
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('foto_predial', this.foto_predial);
                 axios.post('/formSubmitPredial/'+this.id, formData)
                 .then(function (response) {
-                   
+
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -950,9 +934,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 e.preventDefault();
 
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('foto_lic', this.foto_lic);
                 let me = this;
                 axios.post('/formSubmitLicencias/'+this.id, formData)
@@ -982,8 +966,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
             /**Metodo para mostrar los registros */
             listarLicencias(page, buscar,b_manzana,b_lote,b_modelo,b_arquitecto, criterio,buscar2){
                 let me = this;
-                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + 
-                            '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2 
+                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote +
+                            '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2
                             + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2
                             + '&b_etapa=' + me.b_etapa + '&b_ruv=' + me.b_ruv;
                 axios.get(url).then(function (response) {
@@ -995,7 +979,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
             listarObservacion(page, buscar){
                 let me = this;
@@ -1009,7 +993,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             getEmpresa(){
@@ -1083,7 +1067,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
             selectFraccionamientos(){
                 let me = this;
@@ -1115,7 +1099,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             selectEtapas(buscar){
                 let me = this;
                 me.b_etapa="";
-                
+
                 me.arrayAllEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -1141,7 +1125,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal3(); //al guardar el registro se cierra el modal
-                    
+
                     const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -1165,7 +1149,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                
+
                  Swal({
                     title: 'Estas seguro?',
                     animation: false,
@@ -1176,7 +1160,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                     }).then((result) => {
 
@@ -1187,7 +1171,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 'f_planos_obra' : this.f_planos_obra,
                                 'perito_dro' : this.perito_dro
 
-                            }); 
+                            });
                         })
                         me.proceso=false;
                         me.cerrarModal5();
@@ -1200,7 +1184,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             customClass: 'animated bounceInRight'
                         })
                     }})
-              
+
             },
 
             updateMasaLicencias(){
@@ -1210,7 +1194,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                
+
                  Swal({
                     title: 'Estas seguro?',
                     animation: false,
@@ -1221,7 +1205,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                     }).then((result) => {
 
@@ -1233,7 +1217,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 'f_salida' : this.f_salida,
                                 'num_licencia' : this.num_licencia
 
-                            }); 
+                            });
                         })
                         me.proceso=false;
                         me.cerrarModal5();
@@ -1246,7 +1230,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             customClass: 'animated bounceInRight'
                         })
                     }})
-              
+
             },
 
             actualizarLicencia(){
@@ -1265,8 +1249,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'num_licencia' : this.num_licencia,
                     'arquitecto_id':this.arquitecto_id,
                     'perito_dro' : this.perito_dro
-                    
-                    
+
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1304,8 +1288,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.f_ingreso = '';
                 this.f_salida = '';
                 this.num_licencia = '';
-                
-                
+
+
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
 
@@ -1335,7 +1319,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.siembra='';
                 this.id=0;
                 this.observacion_completa='';
-                
+
             },
             cerrarModal3(){
                 this.modal3 = 0;
@@ -1361,19 +1345,19 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.f_ingreso = '';
                 this.f_salida='';
                 this.num_licencia = '';
-                
+
 
             },
 
 
-           
+
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(licencias, accion,data =[]){
                 switch(licencias){
                     case "lote":
                     {
                         switch(accion){
-                           
+
                             case 'actualizar':
                             {
                                 this.modal =1;
@@ -1400,7 +1384,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.foto_predial=data['foto_predial'];
                                 break;
                             }
-                           
+
                         }
                     }
                 }this.selectArquitectos();
@@ -1411,7 +1395,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         case "lote":
                         {
                             switch(accion){
-                                
+
                                 case 'observacion':
                                 {
                                     this.modal3 =1;
@@ -1427,13 +1411,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                     this.modal3 =1;
                                     this.tituloModal3='Consulta Observaciones';
                                     this.tipoAccion= 4;
-                                    break;  
+                                    break;
                                 }
-                                
+
                             }
                         }
-                    
-                }    
+
+                }
             },
 
             abrirModal5(licencias,accion,lote){
@@ -1441,7 +1425,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     case "lote":
                     {
                         switch(accion){
-                            
+
                             case 'asignarMasa':
                             {
                                 this.modal5 =1;
@@ -1461,20 +1445,20 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.tipoAccion = 2;
                                 break;
                             }
-                             
-                            
+
+
                         }
                     }
-                 
+
             }
-                
+
          },
             abrirModal2(licencias, accion,data =[]){
                 switch(licencias){
                     case "lote":
                     {
                         switch(accion){
-                            
+
                             case 'ver':
                             {
                                 this.modal2 =1;
@@ -1485,7 +1469,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                     this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
                                 if(data['f_ingreso'])
                                     this.lic_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
-                                if(data['f_salida'])                                    
+                                if(data['f_salida'])
                                     this.lic_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
                                 this.num_licencia=data['num_licencia'];
                                 this.arquitecto=data['arquitecto'];
@@ -1506,7 +1490,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.id=data['id'];
                                 break;
                             }
-                            
+
                         }
                     }
                 }this.selectArquitectos();
@@ -1514,9 +1498,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     this.listarObservacion(1, data['id']);
 
             }
-        
+
         },
-       
+
         mounted() {
             this.listarLicencias(1,this.buscar,this.b_manzana,this.b_lote,this.b_modelo,this.b_arquitecto,this.criterio,this.buscar2);
             this.selectFraccionamientos();
@@ -1558,5 +1542,5 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

@@ -17,8 +17,8 @@ class PrestamosController extends Controller
         $data=Personal::select('nombre','apellidos')->where('id','=',$request->id)->first();
         return $data; // retorna el nombre del colaborador logueado para el modulo de prestamos
     }
-    
- 
+
+
     public function getDataPrestamos(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -32,10 +32,11 @@ class PrestamosController extends Controller
         $b_status=$request->b_status;
 
 
-        // query donde se hace la peticion de la informacion de la tabla de prestamos  
+        // query donde se hace la peticion de la informacion de la tabla de prestamos
         $query=Prestamos_personales::join('personal','prestamos_personales.user_id','=','personal.id')
-                                    ->select( 
+                                    ->select(
                                     'prestamos_personales.id',
+                                    'prestamos_personales.created_at',
                                     'user_id',
                                     'jefe_id',
                                     'monto_solicitado',
@@ -51,14 +52,14 @@ class PrestamosController extends Controller
                                     'personal.apellidos',
                                     'status_rh',
                                     'fecha_status_rh',
-                                    
+
                                     );
-                                    
-                                // En las siguientes condicionales se verifica que datos corresponden para la solicitud del usuario logueado   
-                                
-                                    if($isGerenteCurrent == 'true'){ 
+
+                                // En las siguientes condicionales se verifica que datos corresponden para la solicitud del usuario logueado
+
+                                    if($isGerenteCurrent == 'true'){
                                         $query=$query->where('jefe_id','=',$id_user)->orWhere('user_id','=',$id_user);
-                                        
+
                                     }elseif($isRHCurrent == 'true' || $isDireccionCurrent == 'true'){
                                         $query=$query;
                                     }else{
@@ -68,12 +69,12 @@ class PrestamosController extends Controller
                                     if($b_colaborador !='' ){
                                         $query=$query->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $b_colaborador . '%');
                                     }
-                                    
+
                                     // condicionales de busqueda.
                                     if($b_fecha1 !='' && $b_fecha2 !='' ){
                                         $query = $query->whereBetween('fecha_ini', [$b_fecha1, $b_fecha2]);
                                     }
-                                    
+
                                 else{
                                     if ($b_fecha2 !='') {
                                         $query = $query->where('fecha_ini','=', $b_fecha2);
@@ -87,24 +88,25 @@ class PrestamosController extends Controller
                                     $query = $query->where('status','=',$b_status);
                                 }
                                 $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','desc')->paginate(10);
-                                    
+
         return $query;
     }
-  
+
     public function registrarPrestamo(Request $request)
     {
-        
+
         if (!$request->ajax()) return redirect('/');
-        $user_id=$request->id; 
-        $monto=$request->monto; 
-        $motivo=$request->motivo; 
-        $desc_quin=$request->desc_quin; 
-        $fecha_solic=$request->fecha_solic; 
+        $user_id=$request->id;
+        $monto=$request->monto;
+        $motivo=$request->motivo;
+        $desc_quin=$request->desc_quin;
+        $fecha_solic=$request->fecha_solic;
         $idJefe=$request->idJefe;
 
 
-        $prestamo=new Prestamos_personales; // registra un nuevo registro en la latbla de prestamos personales 
+        $prestamo=new Prestamos_personales; // registra un nuevo registro en la latbla de prestamos personales
         $prestamo->monto_solicitado=$monto;
+        $prestamo->user_id=$user_id;
         $prestamo->motivo=$motivo;
         $prestamo->desc_quin =$desc_quin;
         $prestamo->saldo =$monto;
@@ -113,26 +115,26 @@ class PrestamosController extends Controller
         $prestamo->jefe_id =$idJefe;
         $prestamo->save();
 
-        return $prestamo->id; // retorna el id del prestamo creado , para posteriormente crear la tabla de pagos con ese Id 
+        return $prestamo->id; // retorna el id del prestamo creado , para posteriormente crear la tabla de pagos con ese Id
 
 
     }
-    
-    // crea un registro en la tabla de observaciones 
-    public function observaciones_prestamos(Request $request){ 
+
+    // crea un registro en la tabla de observaciones
+    public function observaciones_prestamos(Request $request){
         if (!$request->ajax()) return redirect('/');
         $this->guarda_observaciones($request->id, $request->obs);
     }
-   
+
     //esta es una funcion reutilizable que guarda las obervaciones
-    public function guarda_observaciones($prestamos_id, $observacion) 
+    public function guarda_observaciones($prestamos_id, $observacion)
     {
         $obs=new Obs_prestamos_pers;
         $obs->prestamo_id = $prestamos_id;
         $obs->observacion = $observacion;
         $obs->usuario = Auth::user()->usuario;
         $obs->save();
-        
+
     }
 
 
@@ -143,69 +145,77 @@ class PrestamosController extends Controller
 
         $pago_id=$request->pago_id;
         $solicitud_id=$request->solic_id;
-        
-             $p=Pagos_prestamos::findOrFail($pago_id); 
-             $p->fecha_pago=Carbon::now();
+
+             $p=Pagos_prestamos::findOrFail($pago_id);
+             $p->fecha_pago=$request->fecha_pago;
              $p->status=1;
              $p->save();
 
-             // Del pago capturado se busca por su id y se extrae  el saldo para 
+             // Del pago capturado se busca por su id y se extrae  el saldo para
              $saldo=Pagos_prestamos::select('saldo')->where('id','=', $pago_id)->first();
-                 
-            
+
+
                  $prestamo=Prestamos_personales::findOrFail($solicitud_id);
                  $prestamo->saldo=$saldo['saldo'];
+                 if($saldo->saldo == 0){
+                    $prestamo->status= 3;
+                 }
                  $prestamo->save();
 
-            
+
 
     }
 
     public function getObservaciones(Request $request){
-        $obs = Obs_prestamos_pers::where('prestamo_id','=',$request->id)->get();
+        $obs = Obs_prestamos_pers::where('prestamo_id','=',$request->id)->orderBy('obs_prestamos_pers.id','desc')->get();
         return $obs;
     }
-   
-  
-  
+
+
+
     public function aprobar_rh(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
         $id=$request->id;
-        $band=$request->band; // aprobado o rechazado 
+        $band=$request->band; // aprobado o rechazado
         $fecha=$request->fecha_aprob;
 
 
-      
+
                             $prestamo=Prestamos_personales::findOrFail($id);
                                 if($band == 0){
                                     $prestamo->status=0;
                                     $prestamo->status_rh=0;
+                                    $this->guarda_observaciones($id, 'Se rechazo la solicitud por RH ');
                                 }
                                 else{
                                     $prestamo->status_rh=2;
+                                    $prestamo->status=2;
+                                    $this->guarda_observaciones($id, 'Se aprobo la solicitud por RH ');
                                 }
                                 $prestamo->fecha_status_rh= $fecha;
                                 $prestamo->save();
 
-                                $this->guarda_observaciones($id, 'Se aprobo solicitud por RH ');
-                
-        
+
+
+
     }
     public function editarPrestamo(Request $request)
     {
-        
+
         if (!$request->ajax()) return redirect('/');
         $solicitud_id=$request->solicitud_id;
-        $monto=$request->monto; 
-        $motivo=$request->motivo; 
+        $monto=$request->monto;
+        $motivo=$request->motivo;
         //$idJefe=$request->idJefe;
         $tablaPagos=$request->arrPagos;
-        
-        $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo 
+        $fecha_inicio_retencion=$request->fecha_solic;
+
+        $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo
         $prestamo=Prestamos_personales::findOrFail($solicitud_id);
        $prestamo->motivo=$motivo;
-        if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar 
+       $prestamo->fecha_ini= $fecha_inicio_retencion;
+        if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar
             foreach ($tablaPagos as $key => $value) {
                     if($value['saldo']==0){
                         if($key == $index  ) // pendientee
@@ -222,16 +232,16 @@ class PrestamosController extends Controller
                 $prestamo->saldo =$monto;
             }
         }
-        
+
         $prestamo->save();
 
 
 
          $arrayPagos=[];
-         
+
 
         foreach ($tablaPagos as $key => $value) {
-            
+
             $arrayPagos[$key]['solic_id']=$solicitud_id;
             $arrayPagos[$key]['monto_pago']=$value['pago'];
             //$arrayPagos[$key]['fecha_pago']=$value['solicitud_id'];
@@ -239,10 +249,10 @@ class PrestamosController extends Controller
             $arrayPagos[$key]['status']=0;
             $arrayPagos[$key]['monto_pago_extra']=$value['pagoExtra'];
             $arrayPagos[$key]['saldo']=$value['saldo'];
-            
+
         }
 
-    
+
        $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
 
         for($index ;$index < sizeof($pagos) ; $index++ ){
@@ -254,20 +264,20 @@ class PrestamosController extends Controller
             $p->save();
         }
 
-                
-        
+
+
     }
 
     public function generaTablaPagos(Request $request)
     {
-        if (!$request->ajax()) return redirect('/'); 
-       
+        if (!$request->ajax()) return redirect('/');
+
             $solicitud_id=$request->id;
-    
+
             $pagos=$request->arrPagos;
-    
+
             foreach ($pagos as $key => $monto) {
-    
+
                 $pago=new Pagos_prestamos;
                     $pago->solic_id=$solicitud_id;
                 $pago->monto_pago=$monto['pago'];
@@ -277,9 +287,9 @@ class PrestamosController extends Controller
                 $pago->save();
                 # code...
             }
-        
-       
-        
+
+
+
     }
     public function getTablaPagos(Request $request)
     {
@@ -311,22 +321,22 @@ class PrestamosController extends Controller
                     $tabla_p[$key]['saldo']=$pago->saldo;
                 }
             }
-         
+
             return [$tabla,$tabla_p];
 
         }else [$tabla_p=[],$tabla=[]];
-        
 
-           
-        
 
-      
-         
-       
-        
+
+
+
+
+
+
+
     }
 
-    
+
     public function firmarPrestamo(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -336,7 +346,7 @@ class PrestamosController extends Controller
         $fecha = $fecha->formatLocalized('%d de %B de %Y');
         $prestamo=Prestamos_personales::findOrFail($id);
         switch ($firma_de)  {
-            
+
             case 'jefe':
                 $firmas=Prestamos_personales::select('rh_band','jefe_band','dir_band')->where('id','=',$id)->first();
                 $prestamo->jefe_band = 1;
@@ -348,7 +358,7 @@ class PrestamosController extends Controller
                             $status->save();
 
                         }
-                    
+
                 break;
             case 'rh':
                 $firmas=Prestamos_personales::select('rh_band','jefe_band','dir_band')->where('id','=',$id)->first();
