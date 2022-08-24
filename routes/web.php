@@ -1184,6 +1184,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/prestamos/getTablaPagos','PrestamosController@getTablaPagos');
         Route::put('/prestamos/capturar_pago','PrestamosController@capturar_pago');
         Route::delete('/prestamos/eliminarSolicitud','PrestamosController@eliminarSolicitud');
+        Route::get('/prestamos/getUsers','PrestamosController@getUsers');
+        Route::put('/prestamos/guardaTablaPagos','PrestamosController@guardaTablaPagos');
         
         
         
