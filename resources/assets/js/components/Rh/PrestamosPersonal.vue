@@ -195,8 +195,15 @@
                                 <div class="form-group row">
                                     <label class="col-md-3"  for="text-input">Colaborador:
                                     </label>
-                                    <label v-if="modalVista == '0' " class="col-md-6 form-control" v-text="nom_colaborador"></label>
-                                    <label v-if="modalVista == '2' || modalVista == '1'" class="col-md-6 form-control" v-text="e_nombre"></label>
+                                    <template  v-if="isRHCurrent && status_rh !=2">
+                                        <select class="col-md-6 form-control"  v-model="id_usuario"  name="" id="">
+                                            <option  class=" form-control " v-for="user in arrayUsers" :key="user.id" :value="user.id" v-text="user.nombre + ' '+ user.apellidos" ></option>
+                                        </select>
+                                    </template>
+                                    <template v-else>
+                                        <label v-if="modalVista == '0' " class="col-md-6 form-control" v-text="nom_colaborador"></label>
+                                        <label v-if="modalVista == '2' || modalVista == '1'" class="col-md-6 form-control" v-text="e_nombre"></label>
+                                    </template>
 
 
                                 </div>
@@ -423,7 +430,7 @@
                                                             <td v-text="'$'+formatNumber(pago.saldo)"></td>
 
                                                             <template  >
-                                                                <template v-if="status_rh == 2 && firma_jefe ==1 && firma_rh == 1 && firma_dir ==1">
+                                                                <template v-if="status_rh == 2 ">
                                                                     <td v-if="pago.status == 1 " class="py-sm-0 justify-content-center">
                                                                         <span class="badge badge-success">Fecha de retencion de pago: </span>&nbsp;{{pago.fecha_pago}}
                                                                     </td>
@@ -458,32 +465,32 @@
 
                                                             <template v-if="modalVista == '2'"  >
                                                                 <template v-if="status_rh == 2">
-                                                                <td v-if="pago.status == 0" class="form-group-sm" >
+                                                                    <td v-if="pago.status == 0" class="form-group-sm" >
 
-                                                                                <button v-show="pago.fecha_captura_pago" v-if="editAjuste ==0 && pago.pago !=0"
-                                                                                        class="bg-success py-sm-1 px-sm-1 btn row"
-                                                                                        style=" margin:1px"
-                                                                                        @click="capturarPago(pago)"
-                                                                                >
-                                                                                    <i class="fa small fa-2x icon-check">
+                                                                                    <button v-show="pago.fecha_captura_pago" v-if="editAjuste ==0 && pago.pago !=0"
+                                                                                            class="bg-success py-sm-1 px-sm-1 btn row"
+                                                                                            style=" margin:1px"
+                                                                                            @click="capturarPago(pago)"
+                                                                                    >
+                                                                                        <i class="fa small fa-2x icon-check">
 
-                                                                                    </i>
-                                                                                    Retener Pago
-                                                                                </button>
+                                                                                        </i>
+                                                                                        Retener Pago
+                                                                                    </button>
 
-                                                                                <input
-                                                                                    class="form-control"
-                                                                                    style="cursor: pointer;"
-                                                                                    name="fecha"
-                                                                                    placeholder="Capturar fecha de retencion"
-                                                                                    type="text"
-                                                                                    onfocus="(this.type='date')"
-                                                                                    v-model="pago.fecha_captura_pago"
-                                                                                >
+                                                                                    <input
+                                                                                        class="form-control"
+                                                                                        style="cursor: pointer;"
+                                                                                        name="fecha"
+                                                                                        placeholder="Capturar fecha de retencion"
+                                                                                        type="text"
+                                                                                        onfocus="(this.type='date')"
+                                                                                        v-model="pago.fecha_captura_pago"
+                                                                                    >
 
 
-                                                                </td>
-                                                                <td v-if="pago.status == 1" class="py-sm-0 justify-content-center"  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td>
+                                                                    </td>
+                                                                <td v-else class="py-sm-0 justify-content-center"  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td>
                                                                 </template>
                                                             </template>
                                                             <template v-else >
@@ -550,6 +557,10 @@
                             </div>
                             <div v-if="modalVista == '2' && status_rh !=2">
                                     <button type="button" class="btn btn-success"   @click="editarSolicitud(0)">Guardar</button>
+                            </div>
+
+                            <div v-if="modalVista == '2' && isRHCurrent  && status_rh ==2 ">
+                                    <button type="button" class="btn btn-info"   @click="guardaTablaPagos_editada()">Guardar</button>
                             </div>
 
 
@@ -644,16 +655,17 @@ import { formatDayString } from '@fullcalendar/common';
                 ],
 
                  arrayIdRH:[
-                    '31298','2','3'
+                    '31298','2'
                 ],
                  arrayIdDir:[
-                    ,'26310','26546','2','3'
+                    ,'26310','26546','3'
                 ],
                 arrayPagos:[],
                 arrayPagosCap:[],
                 arraySaldo:[],
                 arrayObservaciones:[],
                 arrayErrorSolicitud:[],
+                arrayUsers:[],
                 editAjuste:0,
                 editAjusteMonto:0,
                 editAjusteQuin:0,
@@ -680,6 +692,7 @@ import { formatDayString } from '@fullcalendar/common';
                 index_cap:null,
                 error_en_solicitud:0,
                 fecha_captura_pago:'',
+                id_usuario:'',
 
                // variables colaborador //
                 id_prestamo:null,
@@ -865,8 +878,8 @@ import { formatDayString } from '@fullcalendar/common';
 
                      this.borrarTabla();
 
-               var NpagoQ= parseFloat(this.monto_solic )/ parseFloat(this.desc_quin )
-                    Math.ceil(NpagoQ)
+              // var NpagoQ= parseFloat(this.monto_solic )/ parseFloat(this.desc_quin )
+                //    Math.ceil(NpagoQ)
                     var saldo = parseFloat(this.monto_solic );
                     var pagoQ = parseFloat(this.desc_quin )
 
@@ -924,16 +937,17 @@ import { formatDayString } from '@fullcalendar/common';
 
             validarMonto(pagoQ, inde ,extra){
 
-
-                         this.totalExtra=0; /// se reinicia el monto total de los pagos extraordinarios d
+                this.totalExtra=0; /// se reinicia el monto total de los pagos extraordinarios d
                                             /// de los pagos No capturados
                         var index=parseFloat(inde); // convierte de string a cadena
                         var index_capturado=parseFloat(this.index_cap); // convierte el indice del arreglo de los pagos Capturados
                         var extraO = parseFloat(extra);
 
+                        console.log(pagoQ,' ',inde,' ',extraO);
 
                         if(index == 0){
                         var saldoAnt = parseFloat(this.monto_solic)
+                            console.log('saldo ante',saldoAnt);
                         }else {
                             if(this.arrayPagosCap.length >0 &&  index_capturado  == index ){
                                  var  saldoAnt = this.saldo_ant_Cap;
@@ -948,6 +962,8 @@ import { formatDayString } from '@fullcalendar/common';
                     this.arrayPagos[index].pagoExtra = extraO;
 
                     this.arrayPagos[index].saldo = saldoAnt - monto;
+
+                    console.log('monto ',monto);
                     this.totalExtra +=extraO;  // PENDEINTE
                             if(this.saldoFaltante > 0){
                                 this.saldoFaltante -=extraO;
@@ -977,15 +993,16 @@ import { formatDayString } from '@fullcalendar/common';
 
             actualiTabla(index,band){
                     var n_e_arr =Object.keys(this.arrayPagos).length; //  devuelve el numero de elementos de un objeto
-
-
+                    
+                    console.log(n_e_arr);
                 if(index >=  n_e_arr){
                     return
                 }else{
-                        for ( index ; index < n_e_arr; index++) {
+                        for ( index ; index < n_e_arr; index++) { /// NOTA verificar el <= 
 
                            let saldoAnt = this.arrayPagos[index-1].saldo
-
+                            console.log('Actuali saldo ante',saldoAnt);
+                            console.log('desc qui',this.desc_quin);
                             if(band ==1){
                                 this.arrayPagos[index].pago = 0;
                                 this.arrayPagos[index].pagoExtra = 0;
@@ -996,20 +1013,22 @@ import { formatDayString } from '@fullcalendar/common';
                                         this.arrayPagos[index].pago = saldoAnt;
                                         this.arrayPagos[index].pagoExtra = 0;
                                         this.arrayPagos[index].saldo = saldoAnt - saldoAnt;
+                                        console.log('aqui mero entre', saldoAnt);
+                                        console.log('index ',index);
                                     }else{
                                         this.arrayPagos[index].pago = this.desc_quin;
                                         this.arrayPagos[index].pagoExtra = 0;
                                         this.arrayPagos[index].saldo = saldoAnt - this.arrayPagos[index].pago  ;
-
+                                    console.log('entro despues de 0');
                                     }
                             }
 
                         }
 
-            this.calculaTotales();
+            //this.calculaTotales();
                 }
 
-                 this.editarSolicitud(1);
+                 this.guardaTablaPagos_editada();
 
             },
 
@@ -1051,10 +1070,11 @@ import { formatDayString } from '@fullcalendar/common';
                                                         '&monto='+ this.monto_solic +
                                                         '&solicitud_id='+ this.id_prestamo +
                                                         '&motivo='+ this.motivo +
-                                                        //'&desc_quin='+this.desc_quin +
+                                                        '&desc_quin='+this.desc_quin +
                                                         '&fecha_solic='+ this.fecha_solic +
                                                         '&idJefe=' + this.idJefe;
-                axios.put(url,{'arrPagos': me.arrayPagos}).then(function (response) {
+                axios.put(url).then(function (response) {
+                    me.guardaTablaPagos_editada();
                    if(band == 0 ){
                        me.cerrarModal();
                    }
@@ -1075,8 +1095,12 @@ import { formatDayString } from '@fullcalendar/common';
                     return;
                 }
                 let me = this;
-                var url = '/prestamos/registrarPrestamo?id=' + this.userId +
-
+                if(this.isRHCurrent){
+                    var user = me.id_usuario;
+                }else{
+                    var user = me.userId; 
+                }
+                var url = '/prestamos/registrarPrestamo?id=' + user +
                                                         '&monto='+ this.monto_solic +
                                                         '&motivo='+ this.motivo +
                                                         '&desc_quin='+this.desc_quin +
@@ -1221,7 +1245,7 @@ import { formatDayString } from '@fullcalendar/common';
                     'id' :  me.id_prestamo,
                     'arrPagos' : me.arrayPagos,
                 }).then(function (response){
-                    me.cerrarModal();
+                   me.cerrarModal();
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -1229,6 +1253,20 @@ import { formatDayString } from '@fullcalendar/common';
                         showConfirmButton: false,
                         timer: 1500
                         })
+                  
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            guardaTablaPagos_editada(){
+                let me = this;
+                axios.put('/prestamos/guardaTablaPagos',{
+                    'id' :  me.id_prestamo,
+                    'arrPagos' : me.arrayPagos,
+                }).then(function (response){
+                   me.getTablaPagos(me.id_prestamo)
+                  
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1241,6 +1279,7 @@ import { formatDayString } from '@fullcalendar/common';
                     var respuesta = response.data;
                      me.arrayPagos=respuesta[0];
                      me.arrayPagosCap=respuesta[1];
+                      console.log(me.arrayPagos.length); ///// NOTAAAA 
                      if(me.arrayPagosCap.length >= 0){
 
                          me.arrayPagosCap.forEach((element,index )=> {
@@ -1252,7 +1291,25 @@ import { formatDayString } from '@fullcalendar/common';
                             me.generaFechaTabla(0,me.arrayPagosCap.length);
                             me.generaFechaTabla(me.arrayPagosCap.length,24);
                      }else{
+                        
                          me.generaFechaTabla(0,24);
+
+                            var array = me.arrayPagos ;
+                            me.arrayPagos =[];
+                        
+                        for(var i=0 ; i<  me.arrayPagos.length ; i++){
+                            me.arrayPagos.id = array[i].id;
+                            me.arrayPagos.id_pago = array[i].pago_id;
+                            me.arrayPagos.status = array[i].status;
+                            me.arrayPagos.fecha_pago = array[i].fecha_pago;
+                            me.arrayPagos.pago = array[i].pago;
+                            me.arrayPagos.pagoExtra = array[i].pagoExtra;
+                            me.arrayPagos.saldo = array[i].saldo;
+                            if(array[i].saldo ==0)
+                            break;
+                        }
+                       
+                    
                      }
 
                      me.calculaTotales();
@@ -1320,6 +1377,17 @@ import { formatDayString } from '@fullcalendar/common';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                    me.nom_colaborador=respuesta.nombre + ' ' +respuesta.apellidos ;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getUsers(){
+            let me = this;
+                var url = '/prestamos/getUsers';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                   me.arrayUsers=respuesta;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1430,7 +1498,7 @@ import { formatDayString } from '@fullcalendar/common';
                         this.firma_jefe=data['jefe_band'];
                         this.firma_rh=data['rh_band'];
                         this.firma_dir=data['dir_band'];
-
+                        this.id_usuario=data['user_id'];
                         this.nom_col(data['user_id']);
                         this.e_id_user=data['user_id'];
                         this.getTablaPagos(data['id']);
@@ -1497,6 +1565,7 @@ import { formatDayString } from '@fullcalendar/common';
                 this.editAjuste=0;
                 this.error_en_solicitud=0;
                 this.arrayErrorSolicitud=[];
+                this.id_usuario='';
                 this.borrarTabla();
 
 
@@ -1520,6 +1589,7 @@ import { formatDayString } from '@fullcalendar/common';
             this.isRHCurrent_Id();
             this.isDirecCurrent_Id();
             this.dataPrestamos();
+            this. getUsers();
 
 
 

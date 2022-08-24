@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Prestamos_personales;
 use App\Pagos_prestamos;
 use App\Personal;
+use App\User;
 use App\Obs_prestamos_pers;
 use Carbon\Carbon;
 use Auth;
@@ -14,8 +15,16 @@ use Auth;
 class PrestamosController extends Controller
 {
     public function dataColaborador(Request $request){
+        if (!$request->ajax()) return redirect('/');
         $data=Personal::select('nombre','apellidos')->where('id','=',$request->id)->first();
         return $data; // retorna el nombre del colaborador logueado para el modulo de prestamos
+    }
+
+    public function getUsers(Request $request){
+        //if (!$request->ajax()) return redirect('/');
+        $users=User::join('personal','users.id','=','personal.id')->select('nombre','apellidos','personal.id','usuario','usuario')
+                    ->where('condicion','=',1)->where('rol_id','!=',11)->where('rol_id','!=',13)->where('rol_id','!=',10)->orderBy('personal.nombre','asc')->get();
+        return $users; // retorna el nombre del colaborador logueado para el modulo de prestamos
     }
 
 
@@ -51,9 +60,7 @@ class PrestamosController extends Controller
                                     'personal.nombre',
                                     'personal.apellidos',
                                     'status_rh',
-                                    'fecha_status_rh',
-
-                                    );
+                                    'fecha_status_rh');
 
                                 // En las siguientes condicionales se verifica que datos corresponden para la solicitud del usuario logueado
 
@@ -87,7 +94,7 @@ class PrestamosController extends Controller
                                 if($b_status !=''){
                                     $query = $query->where('status','=',$b_status);
                                 }
-                                $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','desc')->paginate(10);
+                                $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','asc')->paginate(10);
 
         return $query;
     }
@@ -207,38 +214,53 @@ class PrestamosController extends Controller
         $solicitud_id=$request->solicitud_id;
         $monto=$request->monto;
         $motivo=$request->motivo;
-        //$idJefe=$request->idJefe;
-        $tablaPagos=$request->arrPagos;
+        $idJefe=$request->idJefe;
         $fecha_inicio_retencion=$request->fecha_solic;
+        $desc_quin=$request->desc_quin;
 
-        $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo
-        $prestamo=Prestamos_personales::findOrFail($solicitud_id);
-       $prestamo->motivo=$motivo;
-       $prestamo->fecha_ini= $fecha_inicio_retencion;
-        if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar
-            foreach ($tablaPagos as $key => $value) {
-                    if($value['saldo']==0){
-                        if($key == $index  ) // pendientee
-                        $prestamo->saldo =$value['saldo'];
-                        else
-                         $prestamo->saldo =$tablaPagos[$key-1]['saldo'];
-                        break;   // rompe el ciclo , para quedarse con el ultimo registro de saldo en el arreglo
-                    }
-            }
-        }else{
-            if($tablaPagos[0]['pagoExtra'] != null ){
-                $prestamo->saldo =$tablaPagos[0]['saldo'];
-            }else{
-                $prestamo->saldo =$monto;
-            }
-        }
+    //     $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo
+         $prestamo=Prestamos_personales::findOrFail($solicitud_id);
+        $prestamo->motivo=$motivo;
+        $prestamo->fecha_ini= $fecha_inicio_retencion;
+        $prestamo->jefe_id= $idJefe;
+        $prestamo->monto_solicitado= $monto;
+        $prestamo->saldo= $monto;
+        $prestamo->desc_quin= $desc_quin;
+       
+    //    if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar
+    //         foreach ($tablaPagos as $key => $value) {
+    //                 if($value['saldo']==0){
+    //                     if($key == $index  ) // pendientee
+    //                     $prestamo->saldo =$value['saldo'];
+    //                     else
+    //                      $prestamo->saldo =$tablaPagos[$key-1]['saldo'];
+    //                     break;   // rompe el ciclo , para quedarse con el ultimo registro de saldo en el arreglo
+    //                 }
+    //         }
+    //     }else{
+    //         if($tablaPagos[0]['pagoExtra'] != null ){
+    //             $prestamo->saldo =$tablaPagos[0]['saldo'];
+    //         }else{
+    //             $prestamo->saldo =$monto;
+    //         }
+    //     }
 
         $prestamo->save();
 
 
 
-         $arrayPagos=[];
+        
 
+
+
+    }
+    public function guardaTablaPagos(Request $request){
+            
+        $tablaPagos=$request->arrPagos;
+        $solicitud_id=$request->id;
+        $arrayPagos=[];
+
+        $index=key($tablaPagos);
 
         foreach ($tablaPagos as $key => $value) {
 
@@ -252,6 +274,7 @@ class PrestamosController extends Controller
 
         }
 
+       
 
        $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
 
@@ -263,10 +286,8 @@ class PrestamosController extends Controller
             $p->saldo =$arrayPagos[$index]['saldo'];
             $p->save();
         }
-
-
-
     }
+
 
     public function generaTablaPagos(Request $request)
     {
@@ -279,7 +300,7 @@ class PrestamosController extends Controller
             foreach ($pagos as $key => $monto) {
 
                 $pago=new Pagos_prestamos;
-                    $pago->solic_id=$solicitud_id;
+                $pago->solic_id=$solicitud_id;
                 $pago->monto_pago=$monto['pago'];
                 $pago->status =0;
                 $pago->monto_pago_extra =$monto['pagoExtra'];
