@@ -513,7 +513,7 @@
             <estimaciones-dep user-name="{{ Auth::user()->usuario }}"></estimaciones-dep>
         </template>
         <template  v-if="menu==284">
-            <prestamos-personal  
+            <prestamos-personal
                 user-name="{{ Auth::user()->usuario }}" user-id="{{ Auth::user()->id }}"></prestamos-personal>
         </template>
         <template  v-if="menu==285">
@@ -522,6 +522,13 @@
                 admin-mant="{{ Auth::user()->usuario }}"
             >
             </fondo-ahorro>
+        </template>
+        <template  v-if="menu==286">
+            <fondo-pension user-mant="1"
+                user-id="{{  Auth::user()->id }}"
+                admin-mant="{{ Auth::user()->usuario }}"
+            >
+            </fondo-pension>
         </template>
     @endif
 @endsection

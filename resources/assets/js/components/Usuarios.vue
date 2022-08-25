@@ -32,8 +32,8 @@
                                             <option value="users.usuario">Usuario</option>
                                             <option value="roles.nombre">Rol</option>
                                         </select>
-                                        
-                                        
+
+
                                         <select class="form-control" v-if="criterio == 'roles.nombre'" v-model="buscar">
                                             <option value="">Seleccione</option>
                                             <option v-for="rol in arrayRoles" :key="rol.id" :value="rol.nombre" v-text="rol.nombre"></option>
@@ -73,21 +73,21 @@
                                                  <button v-if="Personal.rol_id == 2" title="Asignar asesor a un gerente" type="button" @click="abrirModal('Personal','asignarGerente',Personal)" class="btn btn-dark btn-sm">
                                                 <i class="icon-share"></i>
                                                 </button>
-                                        
+
                                             </td>
                                             <td class="td2" width="60%">
                                                 <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
                                             </td>
-                                            
+
                                             <td class="td2" v-text="Personal.usuario"></td>
                                             <td class="td2" v-text="Personal.rol"></td>
                                             <td class="td2">
                                                 <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
                                                 <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
                                             </td>
-                                                            
-                                        
-                                        </tr>                               
+
+
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -107,15 +107,15 @@
                             </nav>
                         </div>
                     </template>
-                    
+
                     <template v-if="privilegios==1">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row border">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                   <center> <h4>Privilegios</h4> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Administracion -->
                                 <div class="col-md-4" >
@@ -169,15 +169,15 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="digital_campain" type="checkbox" value="1"/> Campañas digitales</a>
                                                 </li>
-                                                
+
                                             </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- RH -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">
-                                        <a class="nav-link nav-dropdown-toggle"><i class="fa fa-bank"></i> Modulo RH</a>
+                                        <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> Modulo RH</a>
                                             <ul class="nav-dropdown-items">
                                                 <li class="nav-item">
                                                     <a class="nav-link"><i class="fa fa-car"></i> <input v-model="mant_vehiculos" type="checkbox" value="1"/> Mantenimiento de vehiculos</a>
@@ -188,17 +188,18 @@
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                 
                                                     <a class="nav-link"><i class="fa fa-suitcase"></i> <input v-model="fondo_ahorro" type="checkbox" value="1"/> Fondo de ahorro</a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="fa fa-bank"></i> <input v-model="fondo_pension" type="checkbox" value="1"/> Fondo de pensión</a>
+                                                </li>
                                                   <li class="nav-item">
-                                                    
                                                     <a class="nav-link"><i class="fa fa-money"></i><input v-model="prestamos_personales" type="checkbox" value="1"/>  Prestamos personales. </a>
                                                 </li>
-                                                
+
                                             </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- Oficina -->
                                 <div class="col-md-4">
@@ -213,7 +214,7 @@
                                                         <i class="fa fa-address-card"></i><input v-model="prov_inventarios" type="checkbox" value="1"/> Proveedores
                                                     </a>
                                                 </li>
-                                                
+
                                             </ul>
                                     </div>
                                 </div>
@@ -258,7 +259,7 @@
                                                     </li>
                                                 </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Ventas -->
                                 <div class="col-md-4">
@@ -270,7 +271,7 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-group"></i> <input v-model="mis_prospectos" type="checkbox" value="1"/> Mis prospectos</a>
-                                                    </li> 
+                                                    </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-calculator"></i> <input v-model="simulacion_credito" type="checkbox" value="1"/> Simulacion de credito</a>
                                                     </li>
@@ -346,10 +347,10 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="icon-reload"></i> <input v-model="dev_virtual" type="checkbox" value="1"/> Devoluciones virtuales</a>
                                                     </li>
-                                                    
+
                                                 </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Gestoria -->
                                 <div class="col-md-4">
@@ -376,7 +377,7 @@
                                                     </li>
                                                 </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Obra -->
                                 <div class="col-md-4">
@@ -409,9 +410,9 @@
                                                     </li>
                                                 </ul>
                                     </div>
-                                </div> 
-                                
-                             
+                                </div>
+
+
                                 <!-- listado para privilegios del menu Reportes -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">
@@ -465,7 +466,7 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_empresas" type="checkbox" value="1"/> Reporte Empresas</a>
                                                     </li>
-                                                    
+
                                                 </ul>
                                     </div>
                                 </div> <!-- listado para privilegios del menu Cotizador de lotes -->
@@ -482,10 +483,10 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link"><i class="icon-book-open"></i> <input v-model="opc_cotizador" type="checkbox" value="1"/> Opciones de cotizador</a>
                                                 </li>
-                                                
+
                                             </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!--Creditos Puente -->
                                 <div class="col-md-4">
@@ -504,10 +505,10 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edo_cta_bancrea" type="checkbox" value="1"/> Estados de Cuenta</a>
                                                 </li>
-                                                
+
                                             </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                  <!-- listado para seguimiento de pagos -->
                                 <div class="col-md-4">
@@ -519,7 +520,7 @@
                                                     </li>
                                                 </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Precios -->
                                 <div class="col-md-4">
@@ -546,7 +547,7 @@
                                                     </li>
                                                 </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Postventa -->
                                 <div class="col-md-4">
@@ -594,9 +595,9 @@
                                                     </li>
                                                 </ul>
                                     </div>
-                                </div> 
-                               
-                                    
+                                </div>
+
+
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="cerrarPrivilegios()"> Cerrar </button>
@@ -604,11 +605,11 @@
                                 </div>
                             </div>
 
-                                
-                                
+
+
                             </div>
 
-                 
+
 
                         </div>
                     </template>
@@ -626,7 +627,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            
+
 
                                     <!--Criterios para el listado de busqueda -->
                                   <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
@@ -703,7 +704,7 @@
                                         <input type="text" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
                                     </div>
                                 </div>
-                            
+
                                 <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular</label>
                                     <div class="col-md-5">
@@ -736,7 +737,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <div class="form-group row" v-if="tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
                                     <div class="col-md-9">
@@ -829,7 +830,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            
+
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -881,7 +882,7 @@
                 celular: 0,
                 email: '',
                 esquema: 2,
-                activo: 1, 
+                activo: 1,
                 isr : 0,
                 retencion : 0,
                 tipo_vendedor:0,
@@ -937,6 +938,7 @@
                     admin_mant_vehiculos : 0,
                     prestamos_personales:0,
                     fondo_ahorro : 0,
+                    fondo_pension : 0,
 
                     //Oficina
                     inventarios : 0,
@@ -955,7 +957,7 @@
                     descarga_actas:0,
                     seg_ruv:0,
                     ruv:0,
-                   
+
                     //Pago interno
                     seg_pago:0,
 
@@ -1053,7 +1055,7 @@
                     rep_empresas : 0,
 
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -1061,7 +1063,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'personal.nombre', 
+                criterio : 'personal.nombre',
                 buscar : '',
                 arrayColonias : []
             }
@@ -1131,7 +1133,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             selectRoles(){
                 let me = this;
@@ -1144,9 +1146,9 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
-            
+
             selectGerentes(){
                 let me = this;
                 me.arrayGerentes=[];
@@ -1190,11 +1192,11 @@
                 this.descarga_actas = 0;
                 this.seg_ruv = 0;
                 this.ruv = 0;
-               
+
             },
             limpiarPrecios(){
                  //Precios
-                this.agregar_sobreprecios=0; 
+                this.agregar_sobreprecios=0;
                 this.precios_etapas=0;
                 this.precios_viviendas=0;
                 this.sobreprecios=0;
@@ -1306,7 +1308,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             getPrivilegios(id){
                 let me = this;
@@ -1353,7 +1355,8 @@
                     me.mant_vehiculos = usuarios[0].mant_vehiculos;
                     me.admin_mant_vehiculos = usuarios[0].admin_mant_vehiculos;
                     me.prestamos_personales = usuarios[0].prestamos_personales;
-                    me.fondo_ahorro = usuarios[0].fondo_ahorro
+                    me.fondo_ahorro = usuarios[0].fondo_ahorro;
+                    me.fondo_pension = usuarios[0].fondo_pension;
 
                     // Oficina
                     me.inventarios = usuarios[0].inventarios;
@@ -1405,7 +1408,7 @@
                     me.digital_lead = usuarios[0].digital_lead;
                     me.reubicaciones = usuarios[0].reubicaciones;
 
-                    //Rentas 
+                    //Rentas
                     me.admin_rentas = usuarios[0].admin_rentas;
                     me.pagos_rentas = usuarios[0].pagos_rentas;
                     if(me.admin_rentas == 1 || me.pagos_rentas == 2)
@@ -1475,7 +1478,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             limpiarBusqueda(){
                 let me=this;
@@ -1492,7 +1495,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
@@ -1514,8 +1517,8 @@
                     'usuario': this.usuario,
                     'password': this.password,
                     'rol_id' : this.rol_id,
-                    'condicion':this.condicion 
-                    
+                    'condicion':this.condicion
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -1529,7 +1532,7 @@
                         timer: 1500
                         })
                 }).catch(function (error){
-                
+
                     console.log(error);
                     me.proceso=false;
                 });
@@ -1569,7 +1572,7 @@
                     'esquema':this.esquema,
                     'retencion':this.retencion,
                     'isr':this.isr
-                    
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -1704,6 +1707,7 @@
                     'admin_mant_vehiculos':this.admin_mant_vehiculos,
                     'prestamos_personales':this.prestamos_personales,
                     'fondo_ahorro': this.fondo_ahorro,
+                    'fondo_pension': this.fondo_pension,
                         //Oficina
                     'inventarios' : this.inventarios,
                     'prov_inventarios' : this.prov_inventarios,
@@ -1719,7 +1723,7 @@
                     'descarga_actas':this.descarga_actas,
                     'ruv':this.ruv,
                     'seg_ruv':this.seg_ruv,
-                   
+
                         //Precios
                     'agregar_sobreprecios':this.agregar_sobreprecios,
                     'precios_etapas':this.precios_etapas,
@@ -1847,15 +1851,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
             activarPersonal(id){
                swal({
@@ -1886,15 +1890,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
             eliminarPersonal(data =[]){
                 this.id=data['id'];
@@ -1925,7 +1929,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/personal/eliminar', 
+                axios.delete('/personal/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -1948,13 +1952,13 @@
 
                 if(!this.email)
                     this.errorMostrarMsjPersonal.push("El correo no debe ir vacio");
-                
+
                 if(!this.rfc || this.rfc.length<10)
                     this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
-                
+
                 if(!this.celular || this.celular.length<10)
                     this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
-                
+
                 if(!this.direccion)
                     this.errorMostrarMsjPersonal.push("La direccion no puede ir vacio");
 
@@ -1966,7 +1970,7 @@
 
                 if(!this.usuario)
                     this.errorMostrarMsjPersonal.push("Ingresar nombre de usuario");
-                
+
                 if(!this.password)
                     this.errorMostrarMsjPersonal.push("Ingresar contraseña");
 
@@ -1986,7 +1990,7 @@
                     this.errorMostrarMsjPersonal.push("Seleccionar la persona");
                 if(!this.usuario)
                     this.errorMostrarMsjPersonal.push("Ingresar nombre de usuario");
-                
+
                 if(!this.password)
                     this.errorMostrarMsjPersonal.push("Ingresar contraseña");
 
@@ -2053,7 +2057,7 @@
                 me.acta_terminacion=0;
                 me.p_etapa=0;
                 me.descarga_actas = 0;
-               
+
 
                     //Precios
                 me.agregar_sobreprecios=0;
@@ -2126,7 +2130,7 @@
                 this.errorMostrarMsjPersonal = [];
                 this.inmobiliaria='',
                 this.tipo_vendedor=0
-            
+
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -2230,7 +2234,7 @@
                 this.selectDepartamento();
                 this.selectEmpresa();
                 this.selectColonias(this.cp);
-                
+
                 this.selectPersonas();
                 this.selectGerentes();
             }
@@ -2242,7 +2246,7 @@
     }
 </script>
 <style>
-    
+
     .form-control:disabled, .form-control[readonly] {
         background-color: rgba(0, 0, 0, 0.06);
         opacity: 1;
@@ -2259,7 +2263,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
         overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -2284,9 +2288,9 @@
     padding: .5rem;
     }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-   margin: 0;  
-} 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+   margin: 0;
+}
 </style>

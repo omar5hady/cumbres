@@ -77,7 +77,7 @@ class LoteController extends Controller
                     'modelos.tipo',
                     'lotes.*','licencias.*','modelos.nombre as modelo','empresas.nombre as empresa'
                   );
-    
+
                 if($buscar != '')//Busqueda principal por criterio
                     $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
                 if($b_puente != '')//Busqueda por crédito puente
@@ -188,7 +188,7 @@ class LoteController extends Controller
                         ->orderBy('lotes.manzana','ASC')
                         ->orderBy('lotes.num_lote','ASC')
                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
-        
+
         return [
             'lotes' => $lotes,
             'rentas' => $rentas,
@@ -255,7 +255,7 @@ class LoteController extends Controller
                 $lote->etapa_servicios = $request ->etapa_servicios;
                 $lote->arquitecto_id = 1;
                 $lote->indivisos = $request->indivisos;
-                $lote->save();   
+                $lote->save();
                 //Se crea el nuevo registro para la tabla licencias
                 $licencia = new Licencia();
                 $licencia->id = $lote->id;
@@ -265,10 +265,10 @@ class LoteController extends Controller
                 DB::commit();
 
 
-            } catch (Exception $e) { 
+            } catch (Exception $e) {
                 DB::rollBack();
             }
-        
+
 
     }
 
@@ -296,7 +296,7 @@ class LoteController extends Controller
     }
 
     //Función para actualizar el registro del lote para el modulo Asignar modelo
-    public function update2(Request $request) 
+    public function update2(Request $request)
     {
         $siembra = '';
         $terrenoExcedente = 0;
@@ -342,8 +342,8 @@ class LoteController extends Controller
         $lote->interior = $request->interior;
         $lote->terreno = $request->terreno;
         $lote->construccion = $request->construccion;
-        $lote->credito_puente = $request->credito_puente;  
-        $lote->lote_comercial = $request->lote_comercial;   
+        $lote->credito_puente = $request->credito_puente;
+        $lote->lote_comercial = $request->lote_comercial;
         $lote->casa_muestra = $request->casa_muestra;
         $lote->comentarios = $request->comentarios;
         $lote->regimen_condom = $request->regimen;
@@ -457,7 +457,7 @@ class LoteController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $aviso = $request->aviso;
         $id = $request->id;
-       
+
         try {
             DB::beginTransaction();
             //FindOrFail se utiliza para buscar lo que recibe de argumento
@@ -516,7 +516,7 @@ class LoteController extends Controller
             //Se crean las partidas necesarias para los avances de obra del lote.
             $partidas = Partida::select('id','partida')
                 ->where('modelo_id','=',$lote->modelo_id)->get();
-            
+
                 foreach($partidas as $index => $partida) {
                     $n_avance->store($lote->id, $partida->id);
                 }
@@ -549,7 +549,7 @@ class LoteController extends Controller
         $this->validate($request, array(
             'file'      => 'required'
         ));
- 
+
         if($request->hasFile('file')){
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
@@ -626,7 +626,7 @@ class LoteController extends Controller
                         $insertData2 = DB::table('licencias')->insert($insert2);
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
-                        }else {                        
+                        }else {
                             Session::flash('error', 'Error inserting the data..');
                             return back();
                         }
@@ -658,7 +658,7 @@ class LoteController extends Controller
     //Función que retorna las manzanas por etapa
     public function select_manzanas_etapa (Request $request){
         if(!$request->ajax())return redirect('/');
-        
+
         $buscar = $request->buscar;
         $buscar1 = $request->buscar1;
         $manzana = Lote::select('lotes.manzana')->distinct()
@@ -766,7 +766,7 @@ class LoteController extends Controller
             if($fecha != '' && $fecha2 != '')//Busqueda por fecha de solicitud
                 $lotes = $lotes->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2]);
             if($request->b_inicio != '')//Busqueda por número de inicio
-                $lotes = $lotes->where('lotes.num_inicio', '=',$request->b_inicio);          
+                $lotes = $lotes->where('lotes.num_inicio', '=',$request->b_inicio);
             if($request->b_empresa != '')//Busqueda por empresa constructora
                 $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
 
@@ -804,7 +804,7 @@ class LoteController extends Controller
         //Creación y retorno de los registros encontrados en Excel.
         return Excel::create('Inicios de Obra' , function($excel) use ($lotes){
             $excel->sheet('inicios', function($sheet) use ($lotes){
-                
+
                 $sheet->row(1, [
                     'Fraccionamiento', 'Etapa', 'Modelo', 'Inicio', 'Termino'
                 ]);
@@ -826,20 +826,20 @@ class LoteController extends Controller
                 $cont=1;
 
                 foreach($lotes as $index => $lote) {
-                    $cont++;       
+                    $cont++;
                     $sheet->row($index+2, [
-                        $lote->proyecto, 
-                        $lote->etapas, 
-                        $lote->modelo, 
+                        $lote->proyecto,
+                        $lote->etapas,
+                        $lote->modelo,
                         $lote->ehl_solicitado,
                         $lote->fecha_termino_ventas,
-                    ]);	
+                    ]);
                 }
                 $num='A1:E' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
 
     }
@@ -860,7 +860,7 @@ class LoteController extends Controller
 
         return Excel::create('Lotes de '. $lotes[0]->proyecto , function($excel) use ($lotes){
             $excel->sheet('lotes', function($sheet) use ($lotes){
-                
+
                 $sheet->row(1, [
                     'Etapa de servicios', 'Fraccionamiento', 'Manzana', 'Num. Lote', 'Duplex', 'Calle',
                     'Num. Oficial', 'Interior', 'Superficie de terreno','Clave catastral'
@@ -881,7 +881,7 @@ class LoteController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
@@ -889,26 +889,26 @@ class LoteController extends Controller
                 ));
 
                 foreach($lotes as $index => $lote) {
-                    $cont++;       
+                    $cont++;
 
                     $sheet->row($index+2, [
-                        $lote->etapa_servicios, 
-                        $lote->proyecto, 
-                        $lote->manzana, 
-                        $lote->num_lote, 
+                        $lote->etapa_servicios,
+                        $lote->proyecto,
+                        $lote->manzana,
+                        $lote->num_lote,
                         $lote->sublote,
                         $lote->calle,
                         $lote->numero_oficial,
                         $lote->interior,
                         $lote->terreno,
                         $lote->clv_catastral,
-                    ]);	
+                    ]);
                 }
                 $num='A1:J' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
     //Función que retorna el inventario de lotes habilitados para venta o renta.
@@ -918,7 +918,7 @@ class LoteController extends Controller
         //Llamada a la función que retorna los lotes habilitados.
         $lotes = $this->getInventario($request);
         if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 4)
-            $lotes = $lotes->paginate(25);  
+            $lotes = $lotes->paginate(25);
         else
             $lotes = $lotes->paginate(8);
 
@@ -951,7 +951,7 @@ class LoteController extends Controller
             }
             else
                 $lote->promocion = 'Sin Promoción';
-        } 
+        }
 
         return [
             'pagination' => [
@@ -976,6 +976,8 @@ class LoteController extends Controller
         $b_modelo = $request->b_modelo ;
         $b_lote = $request->b_lote;
         $b_apartado = $request->b_apartado;
+
+
         //Query para inventario de lotes para los gerentes y administradores
         $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('licencias','lotes.id','=','licencias.id')
@@ -1011,24 +1013,29 @@ class LoteController extends Controller
         if($request->tipo <= 2){//Filtro para casas o departamentos
            $query = $query->where('fraccionamientos.tipo_proyecto','=',$request->tipo)->where('lotes.casa_renta','=',0);
            $queryVendedores = $queryVendedores->where('fraccionamientos.tipo_proyecto','=',$request->tipo)->where('lotes.casa_renta','=',0);
+            if(Auth::user()->rol_id == 2){
+                $vendedor = Vendedor::findOrFail(Auth::user()->id);
+                if($vendedor->tipo == 1)
+                    $queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',0);
+            }
         }
         if($request->tipo == 3){//Filtrado para rentas
             $query = $query->where('lotes.casa_renta','=',1);
             $queryVendedores = $queryVendedores->where('lotes.casa_renta','=',1);
         }
-                   
+
         //Busqueda para gerentes y adminstradores
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 || $rolId == 7 ){
             //Lotes habilitados y sin contrato de venta
             $lotes = $query->where('lotes.habilitado','=',1)->where('lotes.contrato','=',0);
 
-            if($b_apartado != ''){ 
+            if($b_apartado != ''){
                 if($b_apartado == 0)//Los sin apartar
                     $lotes = $lotes->where('lotes.apartado','=',$b_apartado);
                 elseif($b_apartado == 1)//Lotes apartados
                     $lotes  = $lotes->where('lotes.apartado','!=',0);
             }
-    
+
         }
         else{//Busqueda para asesores
             $lotes = $queryVendedores
@@ -1038,7 +1045,7 @@ class LoteController extends Controller
         }
 
         if($buscar != ''){//Busqueda general
-            ($criterio != 'modelos.nombre') ? $lotes = $lotes->where($criterio, '=', $buscar) 
+            ($criterio != 'modelos.nombre') ? $lotes = $lotes->where($criterio, '=', $buscar)
                 :   $lotes = $lotes->where($criterio, 'like', '%'.$buscar.'%') ;
         }
         if($b_modelo != '')//Busqueda por modelo
@@ -1057,7 +1064,7 @@ class LoteController extends Controller
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
                     ->orderBy('lotes.manzana','ASC')
-                    ->orderBy('lotes.num_lote','ASC'); 
+                    ->orderBy('lotes.num_lote','ASC');
 
         return $lotes;
 
@@ -1087,7 +1094,7 @@ class LoteController extends Controller
     public function select_manzanas_disp(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        
+
         $etapa = $request->buscar;
         $lotes_manzanas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
@@ -1109,7 +1116,7 @@ class LoteController extends Controller
     public function select_lotes_disp(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        
+
         $manzana = $request->buscar;
         $etapa = $request->buscar2;
         $fraccionamiento = $request->buscar3;
@@ -1144,11 +1151,11 @@ class LoteController extends Controller
                     ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
                     ->where('lotes.manzana','=',$manzana)
                     ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
-                    
+
                     ->orderBy('lotes.num_lote','ASC')
                     ->get();
         }
-        
+
         return ['lotes_disp' => $lotes_disp];
     }
     //Función que retorna la información de lote seleccionado para venta.
@@ -1195,7 +1202,7 @@ class LoteController extends Controller
                 }
             //Se calcula tamaño de terreno excedente.
             $lote->terreno_tam_excedente = $lote->terreno - $lote->terreno_modelo;
-            
+
         }
 
         return ['lotes' => $lotes];
@@ -1205,13 +1212,13 @@ class LoteController extends Controller
     public function exportExcelLotesDisp(Request $request)
     {   //Llamada a la función que retorna los lotes habilitados.
         $lotes = $this->getInventario($request);
-        $lotes = $lotes->get(); 
-            //Creación y retorno en excel de lotes habilitados para venta 
+        $lotes = $lotes->get();
+            //Creación y retorno en excel de lotes habilitados para venta
             if($request->tipo == 1){
-                return Excel::create('Relacion lotes disponibles', 
+                return Excel::create('Relacion lotes disponibles',
                     function($excel) use ($lotes){
                         $excel->sheet('lotes', function($sheet) use ($lotes){
-                            
+
                             $sheet->row(1, [
                                 'Proyecto', 'Etapa' ,'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
                                 '# Oficial', 'Terreno', 'Construccion','Precio base','Terreno excedente','Obra extra',
@@ -1233,9 +1240,9 @@ class LoteController extends Controller
                                 $cells->setAlignment('center');
                             });
 
-                            
+
                             $cont=1;
-                            
+
                             $sheet->setColumnFormat(array(
                                 'K' => '$#,##0.00',
                                 'L' => '$#,##0.00',
@@ -1244,7 +1251,7 @@ class LoteController extends Controller
                                 'O' => '$#,##0.00',
                             ));
 
-                            
+
 
                             foreach($lotes as $index => $lote) {
                                 if($lote->fecha_termino_ventas == NULL){
@@ -1256,12 +1263,12 @@ class LoteController extends Controller
                                 }
                                 if($lote->casa_muestra == 1){
                                     $casaMuestra = 'Casa muestra';
-                                    
-                                    
+
+
                                 }else{
                                     $casaMuestra = '';
                                 }
-                                
+
                                 $lote->precio_base = $lote->precio_base + $lote->ajuste;
                                 $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
                                 $promocion=[];
@@ -1278,7 +1285,7 @@ class LoteController extends Controller
                                     $lote->promocion = 'Sin Promoción';
 
 
-                                $cont++; 
+                                $cont++;
                                 if($lote->sublote !=''){
                                     $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
                                 } else{
@@ -1289,14 +1296,14 @@ class LoteController extends Controller
                                 } else{
                                     $loteConInterior = $lote->numero;
                                 }
-                                
+
                                 $sheet->row($index+2, [
-                                    $lote->proyecto, 
+                                    $lote->proyecto,
                                     $lote->etapa,
                                     $lote->manzana,
-                                    $loteConSublote, 
-                                    $lote->avance, 
-                                    $lote->modelo, 
+                                    $loteConSublote,
+                                    $lote->avance,
+                                    $lote->modelo,
                                     $lote->calle,
                                     $loteConInterior,
                                     $lote->terreno,
@@ -1310,8 +1317,8 @@ class LoteController extends Controller
                                     $lote->fecha_termino_ventas,
                                     $lote->comentarios,
                                     $casaMuestra
-                                
-                                ]);	
+
+                                ]);
                             }
 
 
@@ -1319,20 +1326,20 @@ class LoteController extends Controller
                             $sheet->setBorder($num, 'thin');
                             $sheet->cells('S1:S'.$cont, function($cells) {
 
-                                
+
                                 $cells->setFontColor('#ff4040');
-                            
+
                             });
                         });
                     }
                 )->download('xls');
             }
-            //Creación y retorno en excel de departamentos habilitados para venta 
+            //Creación y retorno en excel de departamentos habilitados para venta
             elseif($request->tipo == 2){
-                return Excel::create('Relacion Departamentos disponibles', 
+                return Excel::create('Relacion Departamentos disponibles',
                     function($excel) use ($lotes){
                         $excel->sheet('Departamentos', function($sheet) use ($lotes){
-                            
+
                             $sheet->row(1, [
                                 'Proyecto', 'Etapa' ,'Nivel', '# Departamento', '% Avance', 'Modelo', 'Calle',
                                 '# Oficial', 'Construccion','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
@@ -1353,14 +1360,14 @@ class LoteController extends Controller
                                 $cells->setAlignment('center');
                             });
 
-                            
+
                             $cont=1;
-                            
+
                             $sheet->setColumnFormat(array(
                                 'J' => '$#,##0.00',
                             ));
 
-                            
+
 
                             foreach($lotes as $index => $lote) {
                                 if($lote->fecha_termino_ventas == NULL){
@@ -1372,12 +1379,12 @@ class LoteController extends Controller
                                 }
                                 if($lote->casa_muestra == 1){
                                     $casaMuestra = 'Departamento muestra';
-                                    
-                                    
+
+
                                 }else{
                                     $casaMuestra = '';
                                 }
-                                
+
                                 $lote->precio_base = $lote->precio_base + $lote->ajuste;
                                 $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
                                 $promocion=[];
@@ -1394,7 +1401,7 @@ class LoteController extends Controller
                                     $lote->promocion = 'Sin Promoción';
 
 
-                                $cont++; 
+                                $cont++;
                                 if($lote->sublote !=''){
                                     $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
                                 } else{
@@ -1405,14 +1412,14 @@ class LoteController extends Controller
                                 } else{
                                     $loteConInterior = $lote->numero;
                                 }
-                                
+
                                 $sheet->row($index+2, [
-                                    $lote->proyecto, 
+                                    $lote->proyecto,
                                     $lote->etapa,
                                     $lote->manzana,
-                                    $loteConSublote, 
-                                    $lote->avance, 
-                                    $lote->modelo, 
+                                    $loteConSublote,
+                                    $lote->avance,
+                                    $lote->modelo,
                                     $lote->calle,
                                     $loteConInterior,
                                     $lote->construccion,
@@ -1421,7 +1428,7 @@ class LoteController extends Controller
                                     $lote->fecha_termino_ventas,
                                     $lote->comentarios,
                                     $casaMuestra
-                                ]);	
+                                ]);
                             }
 
 
@@ -1429,9 +1436,9 @@ class LoteController extends Controller
                             $sheet->setBorder($num, 'thin');
                             $sheet->cells('N1:N'.$cont, function($cells) {
 
-                                
+
                                 $cells->setFontColor('#ff4040');
-                            
+
                             });
                         });
                     }
@@ -1440,10 +1447,10 @@ class LoteController extends Controller
             }
             //Creación y retorno en excel de lotes habilitados para renta
             else{
-                return Excel::create('Relacion lotes en renta', 
+                return Excel::create('Relacion lotes en renta',
                     function($excel) use ($lotes){
                         $excel->sheet('lotes', function($sheet) use ($lotes){
-                            
+
                             $sheet->row(1, [
                                 'Proyecto', 'Etapa' ,'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
                                 '# Oficial', 'Terreno', 'Construccion','Precio renta','Canal de venta'
@@ -1462,7 +1469,7 @@ class LoteController extends Controller
                                 $cells->setFontWeight('bold');
                                 $cells->setAlignment('center');
                             });
-                            
+
                             $cont=1;
                             $sheet->setColumnFormat(array(
                                 'K' => '$#,##0.00',
@@ -1470,7 +1477,7 @@ class LoteController extends Controller
 
                             foreach($lotes as $index => $lote) {
 
-                                $cont++; 
+                                $cont++;
                                 if($lote->sublote !=''){
                                     $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
                                 } else{
@@ -1481,22 +1488,22 @@ class LoteController extends Controller
                                 } else{
                                     $loteConInterior = $lote->numero;
                                 }
-                                
+
                                 $sheet->row($index+2, [
-                                    $lote->proyecto, 
+                                    $lote->proyecto,
                                     $lote->etapa,
                                     $lote->manzana,
-                                    $loteConSublote, 
-                                    $lote->avance, 
-                                    $lote->modelo, 
+                                    $loteConSublote,
+                                    $lote->avance,
+                                    $lote->modelo,
                                     $lote->calle,
                                     $loteConInterior,
                                     $lote->terreno,
                                     $lote->construccion,
                                     $lote->precio_renta,
                                     $lote->comentarios
-                                
-                                ]);	
+
+                                ]);
                             }
 
                             $num='A1:L' . $cont;
@@ -1505,8 +1512,8 @@ class LoteController extends Controller
                     }
                 )->download('xls');
             }
-        
-      
+
+
     }
     //Función que retorna los lotes habilitados con su precio base
     public function LotesConPrecioBase(Request $request){
@@ -1529,11 +1536,11 @@ class LoteController extends Controller
                                             ->where('contratos.status','=',3)
                                             ->where('expedientes.liquidado','=',1)
                                             ->get();
-                
+
                 if(sizeof($contrato))
                     $lote->firmado = 1;
             }
-            
+
         }
 
 
@@ -1557,22 +1564,22 @@ class LoteController extends Controller
         //Creación y retorno de los resultados obtenidos en excel.
         return Excel::create('lotes', function($excel) use ($lotes){
                 $excel->sheet('lotes', function($sheet) use ($lotes){
-                    
+
                     $sheet->row(1, [
                         'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Modelo', 'Avance', 'Status',
                         'Precio base', 'Ajuste'
                     ]);
-    
-    
+
+
                     $sheet->cells('A1:I1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(13);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
@@ -1582,10 +1589,10 @@ class LoteController extends Controller
                         'H' => '$#,##0.00',
                         'I' => '$#,##0.00',
                     ));
-    
-                    
+
+
                     $cont=1;
-    
+
                     foreach($lotes as $index => $lote) {
                         $cont++;
 
@@ -1595,24 +1602,24 @@ class LoteController extends Controller
                             $lote->status = 'Vendida';
                         else
                             $lote->status = 'Individualizada';
-                        
+
                         $sheet->row($index+2, [
-                            $lote->proyecto, 
-                            $lote->num_etapa, 
+                            $lote->proyecto,
+                            $lote->num_etapa,
                             $lote->manzana,
                             $lote->num_lote,
-                            $lote->modelo, 
+                            $lote->modelo,
                             $lote->avance.'%',
                             $lote->status,
                             $lote->precio_base,
                             $lote->ajuste,
-                        ]);	
+                        ]);
                     }
                     $num='A1:I' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }
-            
+
             )->download('xls');
     }
 
@@ -1733,7 +1740,7 @@ class LoteController extends Controller
         //Creación y retorno de los resultados en excel.
         return Excel::create('lotes', function($excel) use ($lotes,$rentas,$deshabilitadas){
             $excel->sheet('Habilitados venta', function($sheet) use ($lotes){
-                
+
                 $sheet->row(1, [
                     'Proyecto', 'Etapa comercial', 'Etapa de servicio', 'Manzana', 'Lote', 'Modelo',
                     'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Precio de Venta','Canal de ventas',
@@ -1758,7 +1765,7 @@ class LoteController extends Controller
                     'O' => '$#,##0.00',
                 ));
 
-                
+
                 $cont=1;
 
                 foreach($lotes as $index => $lote) {
@@ -1790,12 +1797,12 @@ class LoteController extends Controller
                         $casaenventa = 'Deshabilitada';
                     }
                     $sheet->row($index+2, [
-                        $lote->proyecto, 
-                        $lote->etapas, 
-                        $lote->etapa_servicios, 
+                        $lote->proyecto,
+                        $lote->etapas,
+                        $lote->etapa_servicios,
                         $lote->manzana,
                         $loteConSublote,
-                        $lote->modelo, 
+                        $lote->modelo,
                         $lote->calle,
                         $loteConInterior,
                         $lote->terreno,
@@ -1808,17 +1815,17 @@ class LoteController extends Controller
                         $lote->comentarios,
                         $lote->emp_constructora,
                         $lote->emp_terreno,
-                        
-                    ]);	
+
+                    ]);
                 }
                 $num='A1:R' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             $excel->sheet('Habilitados renta', function($sheet) use ($rentas){
-                
+
                 $sheet->row(1, [
                     'Proyecto', 'Etapa comercial', 'Etapa de servicio', 'Manzana', 'Lote', 'Modelo',
-                    'Calle','Numero','Terreno', 'Construcción',  'Avance','Canal de ventas' 
+                    'Calle','Numero','Terreno', 'Construcción',  'Avance','Canal de ventas'
                 ]);
 
 
@@ -1836,7 +1843,7 @@ class LoteController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 foreach($rentas as $index => $lote) {
@@ -1853,31 +1860,31 @@ class LoteController extends Controller
                     } else{
                         $loteConInterior = $lote->numero;
                     }
-                    
+
                     $sheet->row($index+2, [
-                        $lote->proyecto, 
-                        $lote->etapas, 
-                        $lote->etapa_servicios, 
+                        $lote->proyecto,
+                        $lote->etapas,
+                        $lote->etapa_servicios,
                         $lote->manzana,
                         $loteConSublote,
-                        $lote->modelo, 
+                        $lote->modelo,
                         $lote->calle,
                         $loteConInterior,
                         $lote->terreno,
                         $lote->construccion,
                         $lote->avance.'%',
                         $lote->comentarios,
-                        
-                    ]);	
+
+                    ]);
                 }
                 $num='A1:L' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             $excel->sheet('Deshabilitados', function($sheet) use ($deshabilitadas){
-                
+
                 $sheet->row(1, [
                     'Proyecto', 'Etapa comercial', 'Etapa de servicio', 'Manzana', 'Lote', 'Modelo',
-                    'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Canal de ventas' 
+                    'Calle','Numero','Terreno', 'Construcción', 'Credito puente', 'Avance','Casa en Venta','Status','Canal de ventas'
                 ]);
 
 
@@ -1895,7 +1902,7 @@ class LoteController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 foreach($deshabilitadas as $index => $lote) {
@@ -1927,12 +1934,12 @@ class LoteController extends Controller
                         $casaenventa = 'Deshabilitada';
                     }
                     $sheet->row($index+2, [
-                        $lote->proyecto, 
-                        $lote->etapas, 
-                        $lote->etapa_servicios, 
+                        $lote->proyecto,
+                        $lote->etapas,
+                        $lote->etapa_servicios,
                         $lote->manzana,
                         $loteConSublote,
-                        $lote->modelo, 
+                        $lote->modelo,
                         $lote->calle,
                         $loteConInterior,
                         $lote->terreno,
@@ -1942,21 +1949,21 @@ class LoteController extends Controller
                         $casaenventa,
                         $status,
                         $lote->comentarios,
-                        
-                    ]);	
+
+                    ]);
                 }
                 $num='A1:O' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
     //Función que retorna las etapas para lotes que ya fueron entregados al cliente
     public function select_etapas_entregados(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        
+
         $fraccionamiento = $request->buscar;
         $lotes_etapas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('creditos','lotes.id','=','creditos.lote_id')
@@ -1973,7 +1980,7 @@ class LoteController extends Controller
     public function select_manzanas_entregados(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        
+
         $etapa = $request->buscar;
         $lotes_manzanas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('creditos','lotes.id','=','creditos.lote_id')
@@ -1991,11 +1998,11 @@ class LoteController extends Controller
     public function select_lotes_entregados(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        
+
         $manzana = $request->buscar;
         $etapa = $request->buscar2;
         $fraccionamiento = $request->buscar3;
-        
+
             $lotes_entregados = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('creditos','lotes.id','=','creditos.lote_id')
                     ->join('contratos','creditos.id','=','contratos.id')
@@ -2006,7 +2013,7 @@ class LoteController extends Controller
                     ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                     ->orderBy('lotes.num_lote','ASC')
                     ->get();
-        
+
         return ['lotes_entregados' => $lotes_entregados];
     }
     //Función para asignar empresa constructora y empresa de terreno a un lote
@@ -2030,25 +2037,25 @@ class LoteController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $lote = Lote::findOrFail($request->id);
-    
+
         //$fileName = time().$request->archivo->getClientOriginalName().'.'.$request->archivo->getClientOriginalExtension();
         $fileName = time().$request->archivo->getClientOriginalName();
-            
+
             $pathAnterior = public_path() . '/files/lotes/colindancias/' . $lote->colindancias;
             File::delete($pathAnterior);
 
             $moved =  $request->archivo->move(public_path('/files/lotes/colindancias'), $fileName);
-    
+
             if($moved){
                 $lote->colindancias = $fileName;
                 $lote->save(); //Insert
             }
-            
+
             return response()->json(['success'=>'You have successfully upload file.']);
     }
     //Función para descargar el archivo de colindancias
     public function downloadFile($fileName){
-        
+
         $pathtoFile = public_path().'/files/lotes/colindancias/'.$fileName;
         return response()->file($pathtoFile);
     }

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FondoAhorroPago extends Model
+class PensionFondoPago extends Model
 {
     protected $fillable = [
         'monto', 'concepto', 'tipo_movimiento',
@@ -13,6 +13,6 @@ class FondoAhorroPago extends Model
 
     public function fondo()
     {
-        return $this->belongsTo('App\FondoAhorro');
+        return $this->belongsTo('App\PensionFondo');
     }
 }

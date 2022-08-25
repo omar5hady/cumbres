@@ -11,6 +11,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-suitcase"></i> Fondo de ahorro</a>
             </li>
         @endif
+        @if( Auth::user()->fondo_pension == 1 )
+            <li @click="menu=286" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-university"></i> Fondo de pensión</a>
+            </li>
+        @endif
 
         @if(Auth::user()->prestamos_personales ==1)
         <li @click="menu=284" class="nav-item">
