@@ -94,7 +94,7 @@ class PrestamosController extends Controller
                                 if($b_status !=''){
                                     $query = $query->where('status','=',$b_status);
                                 }
-                                $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','asc')->paginate(10);
+                                $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','asc')->paginate(8);
 
         return $query;
     }

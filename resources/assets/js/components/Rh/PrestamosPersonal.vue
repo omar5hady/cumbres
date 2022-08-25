@@ -22,7 +22,7 @@
                             <div class="col-md-8" v-if="isRHCurrent">
                                 <div class="input-group">
                                     <input type="text"  class="form-control col-md-3" disabled placeholder="Colaborador:">
-                                    <input type="text"  v-model="b_colaborador" @keyup.enter="dataPrestamos()" class="form-control" placeholder="Nombre a buscar">
+                                    <input type="text"  v-model="b_colaborador" @keyup.enter="dataPrestamos(1)" class="form-control" placeholder="Nombre a buscar">
                                 </div>
                             </div>
                         </div>
@@ -30,8 +30,8 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <input type="text"  class="form-control col-md-3" disabled placeholder="Fecha:">
-                                    <input type="date"  v-model="b_fecha1" @keyup.enter="dataPrestamos()" class="form-control">
-                                    <input type="date"  v-model="b_fecha2" @keyup.enter="dataPrestamos()" class="form-control">
+                                    <input type="date"  v-model="b_fecha1" @keyup.enter="dataPrestamos(1)" class="form-control">
+                                    <input type="date"  v-model="b_fecha2" @keyup.enter="dataPrestamos(1)" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                                         <option value="2">Aprobado</option>
                                         <option value="3">Liquidado</option>
                                     </select>
-                                    <button type="submit" @click="dataPrestamos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="dataPrestamos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -174,6 +174,58 @@
                         <!-- fin de tabla -->
 
                             </div>
+
+                        <nav>
+                           <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="arrPaginacion.current_page > 5" @click="dataPrestamos(1)">
+                                    <a class="page-link" href="#" >Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="arrPaginacion.current_page > 1"
+                                    @click="dataPrestamos(arrPaginacion.current_page-1)">
+                                    <a class="page-link" href="#" >Ant</a>
+                                </li>
+
+                                <li class="page-item" v-if="arrPaginacion.current_page-3 >= 1"
+                                    @click="dataPrestamos(arrPaginacion.current_page-3)">
+                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page-3"></a>
+                                </li>
+                                <li class="page-item" v-if="arrPaginacion.current_page-2 >= 1"
+                                    @click="dataPrestamos(arrPaginacion.current_page-2)">
+                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page-2"></a>
+                                </li>
+                                <li class="page-item" v-if="arrPaginacion.current_page-1 >= 1"
+                                    @click="dataPrestamos(arrPaginacion.current_page-1)">
+                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page-1"></a>
+                                </li>
+                                <li class="page-item active" >
+                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrPaginacion.current_page+1 <= arrPaginacion.last_page">
+                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+1)" 
+                                    v-text="arrPaginacion.current_page+1"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrPaginacion.current_page+2 <= arrPaginacion.last_page">
+                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+2)"
+                                     v-text="arrPaginacion.current_page+2"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrPaginacion.current_page+3 <= arrPaginacion.last_page">
+                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+3)"
+                                    v-text="arrPaginacion.current_page+3"></a>
+                                </li>
+
+                                <li class="page-item" v-if="arrPaginacion.current_page < arrPaginacion.last_page"
+                                    @click="dataPrestamos(arrPaginacion.current_page+1)">
+                                    <a class="page-link" href="#" >Sig</a>
+                                </li>
+                                <li class="page-item" v-if="arrPaginacion.current_page < 5 && arrPaginacion.last_page > 5" @click="dataPrestamos(arrayDataPrestamos.last_page)">
+                                    <a class="page-link" href="#" >Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
 
                     </div>
 
@@ -389,14 +441,7 @@
 
 
                                 </div>
-                                <!-- <div class="form-group row">
-                                    <label class="col-md-4 form-control-label" for="text-area-input">Observaciones
-                                        <span style="color:red;" v-show="true">*</span>
-                                    </label>
-
-                                        <textarea cols="30" rows="2" type="text" class="card-text" maxlength="50" v-model="obs_prestamo" ></textarea>
-
-                                </div> -->
+                          
 
                                    <template v-if="generar_tab == 1" >
 
@@ -417,12 +462,9 @@
                                                 <tbody>
 
                                                      <tr  v-for="(pago ) in arrayPagosCap" :key="pago.id">
-                                                            <!-- <td class="py-sm-0 justify-content-center" > <button class="py-sm-1 px-sm-1 btn btn-danger" style="margin:1px"><i class="fa small fa-trash"></i> </button> </td>  -->
+                                                           
                                                             <td   v-text="pago.id +'.- '+ pago.f_quincena"></td>
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
-                                                            <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
-                                                            <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
-
                                                             <template>
                                                                 <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
 
@@ -441,11 +483,9 @@
 
 
                                                         <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id" v-show="pago.pago !=0">
-                                                            <!-- <td class="py-sm-0 justify-content-center" > <button class="py-sm-1 px-sm-1 btn btn-danger" style="margin:1px"><i class="fa small fa-trash"></i> </button> </td>  -->
+                                                            
                                                             <td   v-text="pago.id +'.- '+ pago.f_quincena"></td>
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
-                                                            <!-- <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td> -->
-                                                            <!--Se agrega un condicional para editar el precio ajuste y validar que solo sean valores numericos -->
                                                             <template v-if="(modalVista == '0' || modalVista == '2' )  && pago.status != 1 &&id_prestamo !=null">
                                                                 <td class="td2" v-if="editAjuste ==0">
                                                                     <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
@@ -660,12 +700,14 @@ import { formatDayString } from '@fullcalendar/common';
                  arrayIdDir:[
                     ,'26310','26546','3'
                 ],
+                arrayDataPrestamos:[],
                 arrayPagos:[],
                 arrayPagosCap:[],
                 arraySaldo:[],
                 arrayObservaciones:[],
                 arrayErrorSolicitud:[],
                 arrayUsers:[],
+                arrPaginacion:[],
                 editAjuste:0,
                 editAjusteMonto:0,
                 editAjusteQuin:0,
@@ -677,7 +719,6 @@ import { formatDayString } from '@fullcalendar/common';
                 currentId:null,
                 modal:null,
                 tituloModal:null,
-                arrayDataPrestamos:[],
                 generar_tab:0,
                 b_status:'',
                 b_colaborador:'',
@@ -1405,9 +1446,10 @@ import { formatDayString } from '@fullcalendar/common';
                     console.log(error);
                 });
             },
-            dataPrestamos(){
+            dataPrestamos(page){
             let me = this;
-                var url = '/prestamos/getDataPrestamos?idUser='+this.userId+
+                var url = '/prestamos/getDataPrestamos?page='+ page +
+                            '&idUser='+this.userId+
                             '&isGerenteCurrent='+this.isGerenteCurrent +
                             '&b_colaborador='+ this.b_colaborador +
                             '&isRHCurrent='+ this.isRHCurrent +
@@ -1417,8 +1459,10 @@ import { formatDayString } from '@fullcalendar/common';
                             '&isDireccionCurrent='+ this.isDireccionCurrent;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-
                      me.arrayDataPrestamos = respuesta.data;
+                     me.arrPaginacion['current_page']=respuesta.current_page;
+                     me.arrPaginacion['last_page']=respuesta.last_page;
+
                      if(me.arrayDataPrestamos.length > 0){ // Mod
                         me.vista_tabla =1;
                      }
@@ -1588,7 +1632,7 @@ import { formatDayString } from '@fullcalendar/common';
             this.isGerenteCurrent_Id();
             this.isRHCurrent_Id();
             this.isDirecCurrent_Id();
-            this.dataPrestamos();
+            this.dataPrestamos(1);
             this. getUsers();
 
 
@@ -1597,6 +1641,15 @@ import { formatDayString } from '@fullcalendar/common';
     }
 </script>
 <style scoped>
+.table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
    body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;
