@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->integer('id')->unsigned();
             $table->foreign('id')->references('id')->on('personal')->onDelete('cascade');
-             
+
             $table->string('usuario')->unique();
             $table->string('password');
             $table->boolean('condicion')->default(1);
@@ -36,7 +36,7 @@ class CreateUsersTable extends Migration
             $table->boolean('acceso')->default(0);
             $table->boolean('reportes')->default(0);
             $table->boolean('postventa')->default(0);
-            
+
             $table->boolean('saldo')->default(0);
             $table->boolean('gestoria')->default(0);
             $table->boolean('comisiones')->default(0);
@@ -57,7 +57,7 @@ class CreateUsersTable extends Migration
             $table->boolean('cuenta')->default(0);
             $table->boolean('proveedores')->default(0);
             $table->boolean('digital_campain')->default(0);
-            
+
             //Desarrollo
             $table->boolean('fraccionamiento')->default(0);
             $table->boolean('etapas')->default(0);
@@ -147,6 +147,7 @@ class CreateUsersTable extends Migration
            $table->boolean('admin_mant_vehiculos')->default(0);
            $table->boolean('prestamos_personales')->default(0);
            $table->boolean('fondo_ahorro')->default(0);
+           $table->boolean('fondo_pension')->default(0);
 
            //OFICINA
            $table->boolean('inventarios')->default(0);
@@ -181,7 +182,7 @@ class CreateUsersTable extends Migration
             $table->boolean('seg_pago')->default(0);
 
 
-            
+
 
             $table->rememberToken();
             $table->timestamps();

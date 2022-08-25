@@ -91,7 +91,7 @@ class User extends Authenticatable
         //Rentas
         'admin_rentas',
         'pagos_rentas',
-        
+
         //Saldos
         'edo_cuenta',
         'depositos',
@@ -130,6 +130,7 @@ class User extends Authenticatable
         'admin_mant_vehiculos',
         'prestamos_personales',
         'fondo_ahorro',
+        'fondo_pension',
 
         //Oficina
         'inventarios',
@@ -161,7 +162,7 @@ class User extends Authenticatable
         'solic_credito_puente',
         'seg_cp',
         'edo_cta_bancrea',
-        
+
         //Pagos Internos
         'seg_pago'
     ];
@@ -178,7 +179,7 @@ class User extends Authenticatable
     public function rol(){
         return $this->belongsTo('App\Rol');
     }
- 
+
     public function persona(){
         return $this->belongsTo('App\Personal','id');
     }

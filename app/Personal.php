@@ -12,7 +12,7 @@ class Personal extends Model
         'departamento_id','apellidos','nombre','f_nacimiento','rfc','homoclave','direccion','colonia','cp'
         ,'telefono','ext','celular','email','activo','clv_lada'
         ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
-    
+
     public function departamento(){
         return $this->belongsTo('App\Departamento');
     }
@@ -47,10 +47,14 @@ class Personal extends Model
 
     public function cliente(){
         return $this->hasOne('App\Vendedor');
-    } 
+    }
 
     public function fondo(){
         return $this->hasOne('App\FondoAhorro');
+    }
+
+    public function fondo_pension(){
+        return $this->hasOne('App\PensionFondo');
     }
 
 }

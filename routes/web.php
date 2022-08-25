@@ -25,9 +25,9 @@ Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
     Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
-    
 
-    
+
+
 });
 
 
@@ -49,20 +49,20 @@ Route::group(['middleware' => ['auth']],function(){
 
     //RUTAS PARA LOS ASESORES
     Route::group(['middleware' => ['Asesor']],function(){
-        
+
     });
-    
+
     //RUTAS PARA GERENTE DE OBRA
     Route::group(['middleware' => ['Gerente_obra']],function(){
     });
-    
+
     // RUTAS PARA GERENTE DE PROYECTOS
     Route::group(['middleware' => ['Gerente_proyectos']],function(){
-    }); 
+    });
 
     // RUTAS PARA GERENTE DE VENTAS
     Route::group(['middleware' => ['Gerente_ventas']],function(){
-    }); 
+    });
 
     // RUTAS PARA EL ADMINISTRADOR
     Route::group(['middleware' => ['Administrador']],function(){
@@ -73,19 +73,19 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/cuenta/actualizar','CuentasController@update');
         Route::delete('/cuenta/eliminar','CuentasController@destroy');
         Route::get('/select_cuenta','CuentasController@selectCuenta');
-         
+
     ///////////////////        RUTAS DEPARTAMENTO    //////////////////////////////////
         Route::get('/departamento','DepartamentoController@index');
         Route::post('/departamento/registrar','DepartamentoController@store');
         Route::put('/departamento/actualizar','DepartamentoController@update');
         Route::delete('/departamento/eliminar','DepartamentoController@destroy');
-        
+
     ///////////////////        RUTAS Roles    //////////////////////////////////
         Route::get('/rol','RolController@index');
         Route::post('/rol/registrar','RolController@store');
         Route::put('/rol/actualizar','RolController@update');
         Route::delete('/rol/eliminar','RolController@destroy');
-    
+
     ///////////////////        RUTAS Usuarios    //////////////////////////////////
         Route::get('/usuarios','UserController@index');
         Route::get('/usuarios/selectUser','UserController@selectUser');
@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/usuarios/desactivar','UserController@desactivar');
         Route::put('/usuarios/act_privilegios','UserController@updatePrivilegios');
         Route::put('/usuarios/asignar/gerente','UserController@asignarGerentes');
-        
+
 
     ////////////////// VENDEDORES //////////////////////////////////////////
         Route::get('/asesores','UserController@indexAsesores');
@@ -116,7 +116,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/asesores/deleteAsignarProy','UserController@deleteAsignarProy');
 
         Route::get('/pruebaLead','ClienteController@asignarClienteAleatorio');
-        
+
         Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
         Route::post('/asesores/formSubmitComprobante/{id}','VendedoresController@formSubmitComprobante');
         Route::post('/asesores/formSubmitINE/{id}','VendedoresController@formSubmitINE');
@@ -172,7 +172,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/lugar_contacto/registrar','LugarContactoController@store');
         Route::put('/lugar_contacto/actualizar','LugarContactoController@update');
         Route::delete('/lugar_contacto/eliminar','LugarContactoController@destroy');
-    
+
     ///////////////////     RUTAS FRACCIONAMIENTO     ////////////////////////////////
         Route::get('/fraccionamiento','FraccionamientoController@index');
         Route::get('/fraccionamiento/excel','FraccionamientoController@excelIndex');
@@ -189,7 +189,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/fraccionamiento/getArchivos' , 'FraccionamientoController@getArchivos');
         Route::delete('/fraccionamiento/deletePlanos','FraccionamientoController@deletePlanos');
         Route::delete('/fraccionamiento/deleteEscrituras','FraccionamientoController@deleteEscrituras');
-        
+
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');
         Route::get('/etapa/excel','EtapaController@indexExcel');
@@ -236,7 +236,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/empresa/destroyVerificadora','EmpresaController@destroyVerificadora');
         Route::get('/empresa/selectEmpresaVerificadora','EmpresaController@selectEmpresaVerificadora');
     ////////////////////        RUTAS MODELOS     /////////////////////////////////
-        Route::get('/modelo','ModeloController@index'); 
+        Route::get('/modelo','ModeloController@index');
         Route::post('/modelo/registrar','ModeloController@store');
         Route::put('/modelo/actualizar','ModeloController@update');
         Route::delete('/modelo/eliminar','ModeloController@destroy');
@@ -244,10 +244,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadModelo/{fileName}' , 'ModeloController@downloadFile');
         Route::post('/formSubmitModelo/especificaciones/obra/{id}','ModeloController@formSubmitEspecObra');
         Route::get('/downloadModelo/obra/{fileName}' , 'ModeloController@downloadFileEspecObra');
-        
+
     ////////////////////        RUTAS LOTES    /////////////////////////////////
-        Route::get('/lote','LoteController@index'); 
-        Route::get('/lote/dispEspecificaciones','VersionModeloController@indexLotes'); 
+        Route::get('/lote','LoteController@index');
+        Route::get('/lote/dispEspecificaciones','VersionModeloController@indexLotes');
         Route::get('/asignar_modelo/excel','LoteController@exportExcelAsignarModelo');
         Route::get('/lote2','LoteController@index2');
         Route::get('/lotesDisponibles','LoteController@indexLotesDisponibles');
@@ -268,7 +268,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/preciosVivienda/excel','LoteController@excelPrecioBase');
         Route::put('/lotes/actualizar/ajuste','LoteController@updateAjuste');
         Route::put('/lotes/masa/empresa','LoteController@asignarEmpresa');
-        Route::get('/lotes/empresa/select','LoteController@selectEmpresaConstructora'); 
+        Route::get('/lotes/empresa/select','LoteController@selectEmpresaConstructora');
 
         Route::post('/lote/subirColindancias','LoteController@formSubmitColindancias');
         Route::get('/lote/colindancias/{fileName}' , 'LoteController@downloadFile');
@@ -307,7 +307,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/rentas/pagosPorVencer','RentasController@getPagosPorVencer');
         Route::get('/rentas/cambiarPagoAVencido','RentasController@cambiarPagoAVencido');
-        
+
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');
         Route::put('/apartado/actualizar','ApartadoController@update');
@@ -374,7 +374,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/ingresosConcretania/indexEdoCuentaTerreno','CreditoController@indexEdoCuentaTerreno');
         Route::get('/ingresosConcretania/indexEdoCuentaTerreno/excel','CreditoController@indexEdoCuentaTerrenoExcel');
         Route::get('/ingresosConcretania/indexTerrenosCerrados','CreditoController@indexTerrenosCerrados');
-        
+
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');
         Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
@@ -385,7 +385,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitPredial/{id}','LicenciasController@formSubmitPredial'); //carga de predial
         Route::get('/downloadPredial/{fileName}' , 'LicenciasController@downloadFilePredial'); //descarga de predial
         Route::get('/acta_terminacion/excel','LicenciasController@exportExcelActaTerminacion'); //excel de las actas
-        
+
     ////////////////////        RUTAS PRECIO TERRENO    /////////////////////////////////
         Route::get('/precio/terrenos/list','PrecioTerrenoController@show');
         Route::post('/precio/terrenos/storage','PrecioTerrenoController@storage');
@@ -403,13 +403,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/precio_etapa/actualizar','PrecioEtapaController@update');
         Route::delete('/precio_etapa/eliminar','PrecioEtapaController@destroy');
     //Route::post('/precio_modelo/registrar','PrecioEtapaController@storePrecioModelo');
-    
+
     ////////////////////        RUTAS PRECIO MODELO    /////////////////////////////////
         Route::get('/precio_modelo','PrecioModeloController@index');
         Route::post('/precio_modelo/registrar','PrecioModeloController@store');
         Route::put('/precio_modelo/actualizar','PrecioModeloController@update');
         Route::delete('/precio_modelo/eliminar','PrecioModeloController@destroy');
-        
+
     ////////////////////        RUTAS SOBREPRECIO ETAPA    /////////////////////////////////
         Route::get('/sobreprecios','SobreprecioEtapaController@ListarSobreprecio');
         Route::post('/sobreprecios/registrar','SobreprecioEtapaController@registrarSobreprecio');
@@ -418,14 +418,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/sobreprecio_etapa/registrar','SobreprecioEtapaController@store');
         Route::put('/sobreprecio_etapa/actualizar','SobreprecioEtapaController@update');
         Route::delete('/sobreprecio_etapa/eliminar','SobreprecioEtapaController@destroy');
-        
-        
+
+
     ////////////////////        RUTAS SOBREPRECIO MODELO    /////////////////////////////////
         Route::get('/sobreprecio_modelo','SobreprecioModeloController@index');
         Route::post('/sobreprecio_modelo/registrar','SobreprecioModeloController@store');
         Route::put('/sobreprecio_modelo/actualizar','SobreprecioModeloController@update');
         Route::delete('/sobreprecio_modelo/eliminar','SobreprecioModeloController@destroy');
-        
+
     ////////////////////        RUTAS PAQUETES    /////////////////////////////////
         Route::get('/paquete','PaqueteController@index');
         Route::post('/paquete/registrar','PaqueteController@store');
@@ -437,30 +437,30 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/servicio/registrar','ServicioController@store');
         Route::put('/servicio/actualizar','ServicioController@update');
         Route::delete('/servicio/eliminar','ServicioController@destroy');
-    
+
     ////////////////////        RUTAS Servicios Etapas  /////////////////////////////////
         Route::post('/servicio_etapa/registrar','ServEtapaController@store');
         Route::delete('/servicio_etapa/eliminar','ServEtapaController@destroy');
-        
+
     ////////////////////        RUTAS PROMOCIONES    /////////////////////////////////
         Route::get('/promocion','PromocionController@index');
         Route::get('/selectPromocion','PromocionController@selectPromocion');
         Route::post('/promocion/registrar','PromocionController@store');
         Route::put('/promocion/actualizar','PromocionController@update');
         Route::delete('/promocion/eliminar','PromocionController@destroy');
-    
+
     ////////////////////        RUTAS LOTES en PROMOCION    /////////////////////////////////
         Route::get('/lote_promocion','LotePromocionController@index');
         Route::post('/lote_promocion/registrar','LotePromocionController@store');
         Route::put('/lote_promocion/actualizar','LotePromocionController@update');
         Route::delete('/lote_promocion/eliminar','LotePromocionController@destroy');
-        
+
     ////////////////////        RUTAS CONTRATISTAS    /////////////////////////////////
         Route::get('/contratista','ContratistaController@index');
         Route::post('/contratista/registrar','ContratistaController@store');
         Route::put('/contratista/actualizar','ContratistaController@update');
         Route::delete('/contratista/eliminar','ContratistaController@destroy');
-        
+
     ////////////////////        RUTAS INICIO DE OBRA    /////////////////////////////////
         Route::get('/iniobra','IniObraController@index');
         Route::get('/iniobra/excelAvisos','IniObraController@excelAvisos');
@@ -478,10 +478,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/licencias/progFechaVisita','LicenciasController@AsigFechaVisita');
         Route::get('/avisoObra/siroc','IniObraController@imprimirSiroc');
 
-        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); 
-        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra'); 
-        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); 
-        Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra'); 
+        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
+        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra');
+        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile');
+        Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra');
 
     /////////////////////////// RUTAS ESTIMACIONES ////////////////
         Route::get('/estimaciones/getSinEstimaciones','IniObraController@getSinEstimaciones');
@@ -492,7 +492,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estimaciones/getPartidasDep','IniObraController@getPartidasDep');
         Route::get('/estimaciones/getNivelesDep','IniObraController@getNivelesDep');
         Route::put('/estimaciones/updatePartidasDep','IniObraController@updatePartidasDep');
-        
+
         Route::get('/estimaciones/excelEstimaciones','IniObraController@excelEstimaciones');
         Route::get('/estimaciones/excelEstimacionesDep','IniObraController@excelEstimacionesDep');
 
@@ -523,10 +523,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/partidas/actualizar','PartidaController@update');
         Route::delete('/partidas/eliminar','PartidaController@destroy');
 
-    
+
     /**********************************RUTAS OBSERVACION LOTES*************************** */
         Route::post('/observacion/registrar','ObservacionController@store');
-        Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
+        Route::get('/observacion/select_ultima','ObservacionController@select_ultima');
         Route::get('/observacion','ObservacionController@index');
 
     /**********************************RUTAS OBSERVACION AUDITORIA*************************** */
@@ -546,7 +546,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/postventa/excel','EntregaController@indexPendientesExcel');
         Route::get('/postventa/indexEntregas','EntregaController@indexEntregas');
         Route::get('/postventa/excelEntregas','EntregaController@excelEntregas');
-        
+
         Route::get('/postventa/indexObservacion','EntregaController@indexObservaciones');
         Route::post('/postventa/registrarObservacion','EntregaController@storeObservacion');
         Route::put('/lotes/setFechaEntregaObra','EntregaController@setFechaObra');
@@ -621,18 +621,18 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
         Route::put('/creditos_select/setFechaVigencia','CreditoController@updateFechaVigencia');
-        
-    
+
+
         Route::get('/serviciosTelecom/pdf/{id}','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/{id}','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
-        
+
 
         Route::put('/creditos/updateCostoDescuento','CreditoController@updateCostoDescuento');
         Route::put('/creditos/updateDescuentoTerreno','CreditoController@updateDescuentoTerreno');
         Route::put('/creditos/updateCostoAlarma','CreditoController@updateCostoAlarma');
         Route::put('/creditos/updateCostoCuotaMant','CreditoController@updateCostoCuotaMant');
         Route::put('/creditos/updateCostoProtecciones','CreditoController@updateCostoProtecciones');
-        
+
         Route::post('/users/foto/{id}','UserController@updateProfile');
         Route::put('/users/update/password','UserController@updatePassword');
 
@@ -690,7 +690,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/deposito/eliminar','DepositoController@delete');
 
         Route::get('/pagaresLotes/getDatosPago','CalculadoraLotesController@getDatosPago');
-        
+
 
     //////////////////////////////// RUTAS MODULO SALDOS ////////////////////////////
         Route::get('/estadoCuenta/index','DepositoController@indexEstadoCuenta');
@@ -776,7 +776,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/observacionExpediente/registrar','ExpedienteController@storeObservacion');
         Route::get('/expediente/Excel','ExpedienteController@exportExcel');
         Route::put('/expediente/fechaRecibido','AvisoPreventivoController@registrarFechaRecibido');
-        Route::get('/expediente/solicitudPDF/{id}','AvisoPreventivoController@solicitudPDF'); 
+        Route::get('/expediente/solicitudPDF/{id}','AvisoPreventivoController@solicitudPDF');
         Route::post('/expediente/integrar','ExpedienteController@store');
 
         Route::delete('/expediente/regresarExpediente','ExpedienteController@regresarExpediente');
@@ -789,7 +789,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/historialExpedientes','ComisionesController@historialExpedientes');
         Route::get('/comision/ventasAsesor','ComisionesController@ventasAsesor');
         Route::put('/comision/agregarExpediente','ComisionesController@agregarExpediente');
-        
+
         Route::get('/comision/detalleComision','ComisionesController@detalleComision');
         Route::get('/comision/bonosPorPagar','ComisionesController@bonosPorPagar');
         Route::get('/comision/bonos','ComisionesController@bonos');
@@ -918,7 +918,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/equipamiento/actualizar','EquipamientoController@update');
         Route::put('/equipamiento/eliminar','EquipamientoController@destroy');
         Route::put('/equipamiento/activar','EquipamientoController@activar');
-        
+
         Route::get('/select_equipamientos','EquipamientoController@selectEquipamiento');
         Route::post('/equipamiento/solicitar_equipamiento','EquipamientoController@solicitud_equipamiento');
         Route::get('/index/equipamiento/lote','EquipamientoController@index_equipamientos_lotes');
@@ -927,7 +927,7 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////// RUTAS SOLIC EQUIPAMIENTO
         Route::get('/equipamiento/indexContrato','EquipamientoController@indexContratos');
         Route::put('/equipamiento/terminarSolicitud','EquipamientoController@terminarSolicitud');
-        
+
         Route::put('/equipamiento/actCosto','SolEquipamientoController@actCosto');
         Route::put('/equipamiento/actAnticipo','SolEquipamientoController@actAnticipo');
         Route::put('/equipamiento/actLiquidacion','SolEquipamientoController@actLiquidacion');
@@ -942,7 +942,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/equipamiento/reubicar','SolEquipamientoController@reubicar');
         Route::put('/equipamiento/bloquearAnticipo','SolEquipamientoController@bloquearAnticipo');
         Route::put('/equipamiento/bloquearLiquidacion','SolEquipamientoController@bloquearLiquidacion');
-        
+
         Route::get('/equipamiento/indexObservacion','ObsservacionEquipamientoController@index');
         Route::post('/equipamiento/registrarObservacion','ObsservacionEquipamientoController@store');
         Route::post('/equipamiento/storeRecepcion','RecepEquipamientoController@storeRecepcion');
@@ -989,7 +989,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/detalles/finalizarReporte','SolicDetallesController@finalizarReporte');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
-    
+
     /////////////////////////// RUTAS CREDITOS PUENTE ////////////////////////
         Route::get('/c_puente/indexSinCredito','CreditoPuenteController@indexSinCredito');
         Route::get('/cPuentes/getLotes','CreditoPuenteController@getLotes');
@@ -1047,7 +1047,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/resumenCreditos','CreditoPuenteController@resumenCreditos');
 
         Route::get('/cPuentes/getInteresBBVA','CreditoPuenteController@getInteresBBVA');
-        
+
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');
         Route::post('/cat_bono/store', 'CatalogoBonoController@store');
@@ -1083,7 +1083,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/notificacion/updateAviso','NotificacionesAvisosController@updateAviso');
 
         Route::get('/notificacion/indexAvisos', 'NotificacionesAvisosController@indexAvisos');
-        
+
         /////////////////////// RUTAS BONOS VENTAS /////////////////////
         Route::get('/bonos_ventas/index_contratos', 'BonoVentaController@indexContratos');
         Route::get('/bonos_ventas/indexBonos', 'BonoVentaController@indexBonos');
@@ -1110,7 +1110,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/campanias/delete', 'CampaniaController@delete');
 
         Route::get('/leads/getCliente','DigitalLeadController@getCliente');
-        
+
 
         Route::get('/leads/index','DigitalLeadController@index');
         Route::delete('/leads/delete','DigitalLeadController@delete');
@@ -1186,9 +1186,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/prestamos/eliminarSolicitud','PrestamosController@eliminarSolicitud');
         Route::get('/prestamos/getUsers','PrestamosController@getUsers');
         Route::put('/prestamos/guardaTablaPagos','PrestamosController@guardaTablaPagos');
-        
-        
-        
+
+
+
 
         //////////////////////// RUTAS INVENTARIOS DE PRODUCTOS ///////////////////
         Route::get('/inventarios/getInventario','InventariosController@getInventario');
@@ -1224,6 +1224,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////////////////// Rutas Fondo de ahorro
         Route::resource('/fondo-ahorro', Rh\FondoAhorroController::class);
+        Route::resource('/fondo-pension', Rh\FondoPensionController::class);
 
     });
 
@@ -1236,29 +1237,29 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_empresas','EmpresaController@selectEmpresa');
         Route::get('/select_ciudades','CiudadController@selectCiudades');
         Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
-        Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
-        Route::get('/selectFraccionamientoConInventario','FraccionamientoController@selectFraccionamientoConInventario'); 
-        Route::get('/select_fraccionamiento2','FraccionamientoController@selectFraccionamientoVue'); 
-        Route::get('/select_coacreditadoVue','ClienteController@selectCoacreditadoVue'); 
-        Route::get('/contador_etapa','EtapaController@contEtapa'); 
-        Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
+        Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento');
+        Route::get('/selectFraccionamientoConInventario','FraccionamientoController@selectFraccionamientoConInventario');
+        Route::get('/select_fraccionamiento2','FraccionamientoController@selectFraccionamientoVue');
+        Route::get('/select_coacreditadoVue','ClienteController@selectCoacreditadoVue');
+        Route::get('/contador_etapa','EtapaController@contEtapa');
+        Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto');
         Route::get('/selectEtapaDisp','EtapaController@selectEtapaDisp');
-        Route::get('/select_etapa','EtapaController@selectEtapa'); 
+        Route::get('/select_etapa','EtapaController@selectEtapa');
         Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
         Route::get('/selectModeloDisp','ModeloController@selectModeloDisp');
-        Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
-        Route::get('/selectManzana_dist','CreditoController@selectManzana'); 
-        Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
-        Route::get('/select_modelos_etapa','LoteController@select_modelos_etapa'); 
-        Route::get('/select_manzanas_etapa','LoteController@select_manzanas_etapa'); 
-        Route::get('/select_lotes_manzana','LoteController@select_lote_manzana'); 
-        Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa'); 
-        Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
-        Route::get('/select_contratistas','ContratistaController@selectContratista'); 
-        Route::get('/select_contratistas2','ContratistaController@selectContratistaVue'); 
+        Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto');
+        Route::get('/selectManzana_dist','CreditoController@selectManzana');
+        Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno');
+        Route::get('/select_modelos_etapa','LoteController@select_modelos_etapa');
+        Route::get('/select_manzanas_etapa','LoteController@select_manzanas_etapa');
+        Route::get('/select_lotes_manzana','LoteController@select_lote_manzana');
+        Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa');
+        Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa');
+        Route::get('/select_contratistas','ContratistaController@selectContratista');
+        Route::get('/select_contratistas2','ContratistaController@selectContratistaVue');
         Route::get('/select_manzana_lotes','IniObraController@select_manzana_lotes');
-        Route::get('/select_lotes_obra','IniObraController@select_lotes'); 
-        Route::get('/select_datos_lotes','IniObraController@select_datos_lotes'); 
+        Route::get('/select_lotes_obra','IniObraController@select_lotes');
+        Route::get('/select_datos_lotes','IniObraController@select_datos_lotes');
         Route::get('/select_roles','RolController@selectRol');
         Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');
         Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');
@@ -1289,7 +1290,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_etapas_entregados','LoteController@select_etapas_entregados');
         Route::get('/select_manzanas_entregados','LoteController@select_manzanas_entregados');
 
-        Route::get('/select_datos_notaria','NotariaController@getDatosNotaria'); 
+        Route::get('/select_datos_notaria','NotariaController@getDatosNotaria');
         Route::get('/select_ultima_fecha_instalacion','EntregaController@select_ultimaFecha_instalacion');
         Route::get('/selectCreditoPuente','CuentasController@selectCreditoPuente');
 
@@ -1298,7 +1299,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/campanias/campaniaActiva','CampaniaController@campaniaActiva');
         Route::get('/ruvs/selectRuv','RuvController@selectRuv');
-        
+
 
         Route::get('/getPendientesPagos','DepositoController@getPagosVencidos');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
