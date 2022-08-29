@@ -48,41 +48,41 @@
                 POR <b>SU APODERADO LEGAL EL C.P. MARTÍN HERRERA SÁNCHEZ,</b> CON DOMICILIO <b>MANUEL GUTIERREZ NAJERA NO.190</b> COL.
                 <b>TEQUISQUIAPAN</b> DE LA CIUDAD DE <b>SAN LUIS POTOSI, S.L.P.</b> CON TELÉFONO <b>444-833-46-83</b>, A FAVOR DEL <b>C. {{mb_strtoupper($contratos[0]->nombre_cliente)}},</b>
                 EN LO SUCESIVO <i>"EL ACREDITADO",</i> RESPECTO A LA VIVIENDA UBICADA EN EL LOTE <b>{{$contratos[0]->num_lote}}</b> DE LA MANZANA <b>{{$contratos[0]->manzana}}</b> DE LA CALLE
-                <b>{{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}</b> DEL CONJUNTO HABITACIONAL <b>"{{mb_strtoupper($contratos[0]->proyecto)}}"</b> 
+                <b>{{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}</b> DEL CONJUNTO HABITACIONAL <b>"{{mb_strtoupper($contratos[0]->proyecto)}}"</b>
                 LOCALIZADO EN EL MUNICIPIO DE <b>{{mb_strtoupper($contratos[0]->delegacion)}}</b> DE LA CIUDAD DE <b>{{mb_strtoupper($contratos[0]->ciudadFraccionamiento)}}</b>.
             </p>
 
             <p>LA PRESENTE PÓLIZA SE EXPIDE EN CUMPLIMIENTO A LO DISPUESTO EN EL CONTRATO DE COMPRAVENTA DEL INMUEBLE ARRIBA CITADO, <i>LA CONSTRUCTORA</i>,
                 ASUMIÓ EL COMPROMISO PARA RESPONDER DIRECTAMENTE <i>"EL ACREDITADO"</i>, DE LAS SIGUIENTES:
             </p><br>
-        
+
             <h3 style="text-align: center;">O B L I G A C I O N E S</h3><br>
 
-            <p><u><b>PRIMERA</b></u>.- <i>"LA CONSTRUCTORA"</i> SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN EN LA VIVIENDA DESCRITA EN ÉSTA 
-                PÓLIZA, DURANTE UN TÉRMINO QUE NO EXCEDERÁ DE 
+            <p><u><b>PRIMERA</b></u>.- <i>"LA CONSTRUCTORA"</i> SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN EN LA VIVIENDA DESCRITA EN ÉSTA
+                PÓLIZA, DURANTE UN TÉRMINO QUE NO EXCEDERÁ DE
                 @if($tiempo == 2)
-                    DOS AÑOS, 
+                    DOS AÑOS,
                 @else
-                    CINCO AÑOS, 
+                    CINCO AÑOS,
                 @endif
                 CONTANDO A PARTIR DE LA FECHA DE LA ENTREG DE LA VIVIENDA.
             </p>
 
             <p><u><b>SEGUNDA</b></u>.- <i>"LA CONSTRUCTORA"</i>, SE COMPROMETE, FRENTE A <i>"EL ACREDITADO"</i> Y/O SUS BENEFICIARIOS,
-            DURANTE EL TÉRMINO DE 
+            DURANTE EL TÉRMINO DE
             @if($tiempo == 2)
-                DOS AÑOS 
+                DOS AÑOS
             @else
-                CINCO AÑOS 
+                CINCO AÑOS
             @endif
             A PROCEDER A LA REPARACIÓN, POR SU CUENTA Y COSTO, DE LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE
             SE PRESENTEN EN LA VIVIENDA OBJETO DE LA PRESENTE PÓLIZA. DICHOS TRABAJOS LOS INICIARÁ <i>"LA CONSTRUCTORA"</i> DENTRO DE UN PLAZO
-            NO MAYOR DE 10 DÍAS HÁBILES CONTADOS A PARTIR DE LA FECHA EN QUE RECIBA LA COMUNICACIÓN RESPECTIVA POR PARTE DE <i>"EL ACREDITADO"</i>, 
-            DEBIENDO CONCLUIRLOS DENTRO DE UNA PLAZO DE 15 DÍAS HÁBILES. <i>"LA COSTRUCTORA"</i> NO RESPONDERÁ POR DESPERFECTOS DERIVADOS DEL MAL USO O POR 
+            NO MAYOR DE 10 DÍAS HÁBILES CONTADOS A PARTIR DE LA FECHA EN QUE RECIBA LA COMUNICACIÓN RESPECTIVA POR PARTE DE <i>"EL ACREDITADO"</i>,
+            DEBIENDO CONCLUIRLOS DENTRO DE UNA PLAZO DE 15 DÍAS HÁBILES. <i>"LA COSTRUCTORA"</i> NO RESPONDERÁ POR DESPERFECTOS DERIVADOS DEL MAL USO O POR
             FALTA DE MANTENIMIENTO DE LA VIVIENDA, POR PARTE DE <i>"EL ACREDITADO"</i>.
             </p>
 
-            <p><u><b>TERCERA</b></u>.- <i>"EL ACREDITADO"</i> MANIFIESTA SU CONFORMIDAD CON EL ESTADO QUE GUARDAN LOS BIENES E INSTALACIONES DE LA VIVIENDA, 
+            <p><u><b>TERCERA</b></u>.- <i>"EL ACREDITADO"</i> MANIFIESTA SU CONFORMIDAD CON EL ESTADO QUE GUARDAN LOS BIENES E INSTALACIONES DE LA VIVIENDA,
             EN LOS TÉRMINOS SEÑALADOS EN EL ANEXO N°1 DE LA PRESENTE PÓLIZA.
             </p><br>
 
@@ -103,7 +103,7 @@
 
     <div style="page-break-after:always;"></div>
 
-        
+
 
         <div style="margin: 20px;">
             <p><u><b>CUARTA</b></u>.- LA GARANTÍA DE QUE SE TRATA SE HARÁ EFECTIVA, A FAVOR DE <i>"EL ACREDITADO"</i>, Y/O SUS
@@ -115,31 +115,31 @@
                 PUEDA EFECTUAR <i>"EL ACREDITADO"</i>.
             </p>
 
-            <p><u><b>QUINTA</b></u>.- <i>"EL ACREDITADO"</i> DEBERÁ CONSERVAR EN SU PODER LA PRESENTE PÓLIZA DE GARANTÍA Y AL 
-                REPORTAR ALGÚN DESPERFECTO, OBTENER DE <i>"LA CONSTRUCTORA"</i> EL QUE HAYA ATENDIDO SATISFACTORIAMENTE EL DESPERFECTO 
+            <p><u><b>QUINTA</b></u>.- <i>"EL ACREDITADO"</i> DEBERÁ CONSERVAR EN SU PODER LA PRESENTE PÓLIZA DE GARANTÍA Y AL
+                REPORTAR ALGÚN DESPERFECTO, OBTENER DE <i>"LA CONSTRUCTORA"</i> EL QUE HAYA ATENDIDO SATISFACTORIAMENTE EL DESPERFECTO
                 REPORTADO, TENIENDO LA OBLIGACION DE FIRMAR A ÉSTA, EL DOCUMENTO EN DONDE SE ACREDITE TAL CIRCUNSTANCIA.
             </p>
 
-            <p><u><b>SEXTA</b></u>.- CUALQUIER MODIFICACIÓN O AMPLIACIÓN QUE REALICE EL ACREDITADO O CLIENTE A LA VIVIENDA DEJARÁ SIN 
+            <p><u><b>SEXTA</b></u>.- CUALQUIER MODIFICACIÓN O AMPLIACIÓN QUE REALICE EL ACREDITADO O CLIENTE A LA VIVIENDA DEJARÁ SIN
                 EFECTO LA COBERTURA DE LA GARANTÍA DEL APÉNDICE CORRESPONDIENTE A LA PRESENTE PÓLIZA.
             </p>
 
-            <p><u><b>SEPTIMA</b></u>.- EL TÉRMINO DE VIGENCIA DE LA PRESENTE PÓLIZA COMENZARÁ A PARTIR DEL DÍA ______ DEL MES DE 
-                ___________________ DEL AÑO DE __________, Y CONCLUIRÁ EL DÍA _______ DEL MES DE _____________________ DEL AÑO DE 
-                ____________. AJUSTANDO CADA CONCEPTO AL PERIODO DE COBERTURA QUE SE ESPECIFICA EN EL 
+            <p><u><b>SEPTIMA</b></u>.- EL TÉRMINO DE VIGENCIA DE LA PRESENTE PÓLIZA COMENZARÁ A PARTIR DEL DÍA ______ DEL MES DE
+                ___________________ DEL AÑO DE __________, Y CONCLUIRÁ EL DÍA _______ DEL MES DE _____________________ DEL AÑO DE
+                ____________. AJUSTANDO CADA CONCEPTO AL PERIODO DE COBERTURA QUE SE ESPECIFICA EN EL
                 @if($tiempo == 2)
-                    APENDICE 1 Y APENDICE 2, 
+                    APENDICE 1 Y APENDICE 2,
                 @else
-                    APENDICE 1, APENDICE 2 Y APENDICE 3, 
+                    APENDICE 1, APENDICE 2 Y APENDICE 3,
                 @endif
                 DE ESTA MISMA PÓLIZA.
-            </p> 
-            
+            </p>
+
             <br><br><br><br>
             <br><br><br><br>
 
             <p style="text-align: center;">SAN LUIS POTOSI, S.L.P. A LOS ________ DÍAS DEL MES DE _________________ DE ____________.</p>
-            
+
             <br><br><br><br>
             <br><br><br><br>
 
@@ -153,7 +153,7 @@
                     <div class="table-cell" style="text-align:center;"><br><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
             </div>
-            
+
             <br><br><br>
 
             <p style="text-align:center; font-size: 9pt;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
@@ -163,8 +163,8 @@
         <div style="margin 20px;">
             <h3>A N E X O No.1</h3>
             <p>ESTADO QUE GUARDAN LOS BIENES E INSTALACIONES DE LA VIVIENDA</p>
-            
-            
+
+
 
         <div class="contenedor">
             <div class="table2" style="float:left; width: 350px;">
@@ -303,7 +303,7 @@
                     <div colspan="2" class="table-cell2">INSTALACIÓN DE GAS</div>
                     <div class="table-cell2">&#10004;</div>
                 </div>
-            </div> <br> 
+            </div> <br>
 
             <div class="table2" style="float:right; width: 350px;">
                 <div class="table-row" style="float:right;">
@@ -384,7 +384,7 @@
                     <div class="table-cell" style="text-align:center;"><br><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
             </div>
-            
+
             <br>
 
             <p style="text-align:center; font-size: 9pt;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
@@ -394,7 +394,7 @@
 
 
         <div style="margin: 20px;">
-            
+
             @if($tiempo == 2)
                 <h3>A P E N D I C E No. 1</h3>
                 <p>COBERTURA DE GARANTIA POR FALLAS TECNICAS Y VICIOS OCULTOS QUE REPORTE LA VIVIENDA</p>
@@ -442,7 +442,7 @@
                 <h3>BIENES E INSTALACIONES CON GARANTIA DE CINCO AÑOS. </h3>
                 <ul>
                     <li>DEFECTOS EN IMPERMEABILIZACIÓN, NO DERVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
-                    <li>DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN MUROS Y PLAFONES, AQUELLAS EN LAS 
+                    <li>DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN MUROS Y PLAFONES, AQUELLAS EN LAS
                         QUE SE PUEDE VER DE LADO A LADO, O QUE TENGA UNA APERTURA MAYOR A 1.5 MM</li>
                 </ul>
 
@@ -450,12 +450,12 @@
                 <h3>BIENES E INSTALACIONES CON GARANTIA DE SEIS MESES. </h3>
                 <ul>
                     <li>PUERTAS EXTERIORES E INTERIORES Y CHAPAS EN MAL ESTADO O DEFECTUOSAS.</li>
-                    
+
                 </ul>
             @endif
 
             <h4>NOTA:</h4>
-            <p>LA PÓLIZA <b>NO</b> APLICA PARA NINGÚN DEFECTO EN VIDRIOS; YA SEAN ROTOS, FISURADOS O RAYADOS; 
+            <p>LA PÓLIZA <b>NO</b> APLICA PARA NINGÚN DEFECTO EN VIDRIOS; YA SEAN ROTOS, FISURADOS O RAYADOS;
                 EN PUERTAS, VENTANAS NI DOMOS, DESPUÉS DE ENTREGADA LA VIVIENDA A <i>"EL ACREDITADO"</i>.</p>
             <br>
             <div class="table">
@@ -468,7 +468,7 @@
                     <div class="table-cell" style="text-align:center;"><br><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
             </div>
-            
+
             <br>
 
             <p style="text-align:center; font-size: 9pt;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
@@ -528,7 +528,7 @@
                     <div class="table-cell" style="text-align:center;"><br><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
             </div>
-            
+
             <br><br><br><br><br>
             <br><br><br>
 
@@ -538,15 +538,17 @@
     <div style="page-break-after:always;"></div>
 
         <div style="display: inline-block; float: center;">
-            <div margin: 10px; style="display: inline-block; float: left;" >
-                <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="17%" height="17%">
-            </div>
+            {{-- @if($contrato[0]->logo_fracc != NULL)
+                <div margin: 10px; style="display: inline-block; float: left;" >
+                    <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="17%" height="17%">
+                </div>
+            @endif --}}
             <div style="display: inline-block; float: right;" >
                 <IMG SRC="img/contratos/logoContrato.jpg" width="120" height="120">
             </div>
         </div>
-       
-        <div style="margin: 60px; margin-top: 120px;"> 
+
+        <div style="margin: 60px; margin-top: 120px;">
             <hr>
             <br>
             <br>
@@ -557,24 +559,24 @@
             <br>
             <br><br>
             <br>
-        
+
 
             <p style="margin: 10px; line-height: 190%; text-align: justify; font-size: 12pt;">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recibí de conformidad de <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</b> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recibí de conformidad de <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</b>
                 La vivienda ubicada en el <b>LOTE {{$contratos[0]->num_lote}}</b> de la <b>
-                    
+
                         MANZANA {{mb_strtoupper($contratos[0]->manzana)}}
-                 
-                </b> en la calle 
-                <b>{{mb_strtoupper($contratos[0]->calle)}} No. {{$contratos[0]->numero}}</b> del 
-                <b> FRACCIONAMIENTO "{{mb_strtoupper($contratos[0]->proyecto)}}"</b> en la 
-                {{ucwords ($contratos[0]->delegacion)}}, en la ciudad de San Luis Potosí. De la cual 
-                Recibí la Póliza de Garantía correspondiente a 
-                la vivienda en la dirección antes mencionada en la cual se 
+
+                </b> en la calle
+                <b>{{mb_strtoupper($contratos[0]->calle)}} No. {{$contratos[0]->numero}}</b> del
+                <b> FRACCIONAMIENTO "{{mb_strtoupper($contratos[0]->proyecto)}}"</b> en la
+                {{ucwords ($contratos[0]->delegacion)}}, en la ciudad de San Luis Potosí. De la cual
+                Recibí la Póliza de Garantía correspondiente a
+                la vivienda en la dirección antes mencionada en la cual se
                 asentaran los posibles detalles que pudiera existir en la construcción.
             </p>
 
-            
+
 
             <br>
             <br>
@@ -588,7 +590,7 @@
             <p style="text-align: center;">______________________________________</p>
             <p style="text-align: center; font-size: 12pt;"><b>{{mb_strtoupper($contratos[0]->nombre_cliente)}}</b></p>
 
-            
+
 
         </div>
 

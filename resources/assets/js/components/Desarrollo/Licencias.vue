@@ -15,11 +15,11 @@
                         <i class="icon-pencil"></i>&nbsp;Descargar resumen
                     </a>
                     <!---->
-                    <button class="btn btn-info btn-sm" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
+                    <button class="btn btn-info btn-sm" @click="abrirModal('asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
                         <i class="icon-pencil"></i>&nbsp;Asignar en masa
                     </button>
 
-                    <button class="btn btn-dark btn-sm" @click="abrirModal5('lote','asignarLicencias')"  v-if="allLic.length > 0 && rolId != '5'" >
+                    <button class="btn btn-dark btn-sm" @click="abrirModal('asignarLicencias')"  v-if="allLic.length > 0 && rolId != '5'" >
                         <i class="fa fa-drivers-license-o "></i>&nbsp;Asignar licencias
                     </button>
 
@@ -153,17 +153,17 @@
                             </tr>
                         </template>
                         <template v-slot:tbody>
-                            <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id" title="Ver detalle">
+                            <tr v-on:dblclick="abrirModal('ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id" title="Ver detalle">
 
                                 <td v-if="rolId != '5'" class="td2">
                                 <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
                                 </td>
 
                                 <td v-if="rolId != '5'" class="td2" >
-                                    <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',licencias)" class="btn btn-warning btn-sm">
                                     <i class="icon-pencil"></i>
                                     </button>
-                                    <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
+                                    <button title="Subir foto y predial" type="button" @click="abrirModal('subirArchivo',licencias)" class="btn btn-default btn-sm">
                                     <i class="icon-cloud-upload"></i>
                                     </button>
                                     <a title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
@@ -273,174 +273,131 @@
                             </li>
                         </ul>
                     </nav>
-                    <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                    <button class="btn btn-sm btn-default" @click="modal=3">Manual</button>
                 </div>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
         <!--Inicio del modal agregar/actualizar-->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal"></h4>
-                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
-                                <div class="col-md-6">
-                                    <select class="form-control" v-model="arquitecto_id">
-                                        <option value="0">Seleccione</option>
-                                        <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">DRO</label>
-                                <div class="col-md-6">
-                                    <select class="form-control" v-model="perito_dro">
-                                        <option value="0">Seleccione</option>
-                                        <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
-                                        <option value="23679">Raúl Palos López</option>
-                                        <option value="29836">Juan Antonio De La Torre</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <br><br>
-                                <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_planos_obra" class="form-control" >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Planos licencia</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_planos" class="form-control" >
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_ingreso" class="form-control" >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Salida</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_salida" class="form-control" >
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
-                                <div class="col-md-6">
-                                    <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Agregar Observación</label>
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-danger" @click="abrirModal3('lote','observacion',id)">Nueva Observación</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                        <button type="button"  class="btn btn-primary" @click="actualizarLicencia()">Actualizar</button>
-
+        <ModalComponent :titulo="tituloModal"
+            v-if="modal == 1"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Arquitecto</label>
+                    <div class="col-md-6">
+                        <select class="form-control" v-model="arquitecto_id">
+                            <option value="0">Seleccione</option>
+                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                        </select>
                     </div>
                 </div>
-                    <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">DRO</label>
+                    <div class="col-md-6">
+                        <select class="form-control" v-model="perito_dro">
+                            <option value="0">Seleccione</option>
+                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                            <option value="23679">Raúl Palos López</option>
+                            <option value="29836">Juan Antonio De La Torre</option>
+                        </select>
+                    </div>
+                </div>
+                <br><br>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Fecha planos obra</label>
+                    <div class="col-md-3">
+                        <input type="date" v-model="f_planos_obra" class="form-control" >
+                    </div>
+                    <label class="col-md-3 form-control-label" for="text-input">Fecha planos licencia</label>
+                    <div class="col-md-3">
+                        <input type="date" v-model="f_planos" class="form-control" >
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
+                    <div class="col-md-3">
+                        <input type="date" v-model="f_ingreso" class="form-control" >
+                    </div>
+                    <label class="col-md-3 form-control-label" for="text-input">Salida de licencia</label>
+                    <div class="col-md-3">
+                        <input type="date" v-model="f_salida" class="form-control" >
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
+                    <div class="col-md-4">
+                        <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Agregar Observación</label>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-danger" @click="abrirModalObs('observacion',id)">Nueva Observación</button>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <button type="button"  class="btn btn-primary" @click="actualizarLicencia()">Actualizar</button>
+            </template>
+        </ModalComponent>
         <!--Fin del modal-->
-            <!--Inicio del modal planos/obra en masa-->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal5"></h4>
-                        <button type="button" class="close" @click="cerrarModal5()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-
-                            <div class="form-group row" v-if="tipoAccion == 1">
-                                <label class="col-md-3 form-control-label" for="text-input">DRO</label>
-                                <div class="col-md-6">
-                                    <select class="form-control" v-model="perito_dro">
-                                        <option value="0">Seleccione</option>
-                                        <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
-                                        <option value="23679">Raúl Palos López</option>
-                                        <option value="29836">Juan Antonio De La Torre</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="form-group row" v-if="tipoAccion == 1">
-                                <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_planos_obra" class="form-control" >
-                                </div>
-                            </div>
-
-
-                                <div class="form-group row" v-if="tipoAccion == 2">
-                                <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_ingreso" class="form-control" >
-                                </div>
-                            </div>
-                            <div class="form-group row" v-if="tipoAccion == 2">
-                                <label class="col-md-3 form-control-label" for="text-input">Salida</label>
-                                <div class="col-md-6">
-                                    <input type="date" v-model="f_salida" class="form-control" >
-                                </div>
-                            </div>
-
-                            <div class="form-group row" v-if="tipoAccion == 2">
-                                <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
-                                <div class="col-md-6">
-                                    <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
-                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                        <button type="button"  class="btn btn-primary" @click="actualizarMasa()" v-if="tipoAccion == 1">Actualizar</button>
-                        <button type="button"  class="btn btn-primary" @click="updateMasaLicencias()" v-if="tipoAccion == 2">Actualizar</button>
-
+        <!--Inicio del modal planos/obra en masa-->
+        <ModalComponent :titulo="tituloModal"
+            v-if="modal== 5"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row" v-if="tipoAccion == 1">
+                    <label class="col-md-3 form-control-label" for="text-input">DRO</label>
+                    <div class="col-md-6">
+                        <select class="form-control" v-model="perito_dro">
+                            <option value="0">Seleccione</option>
+                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                            <option value="23679">Raúl Palos López</option>
+                            <option value="29836">Juan Antonio De La Torre</option>
+                        </select>
                     </div>
                 </div>
-                    <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+                <br><br>
+                <div class="form-group row" v-if="tipoAccion == 1">
+                    <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
+                    <div class="col-md-6">
+                        <input type="date" v-model="f_planos_obra" class="form-control" >
+                    </div>
+                </div>
+                <div class="form-group row" v-if="tipoAccion == 2">
+                    <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
+                    <div class="col-md-6">
+                        <input type="date" v-model="f_ingreso" class="form-control" >
+                    </div>
+                </div>
+                <div class="form-group row" v-if="tipoAccion == 2">
+                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                    <div class="col-md-6">
+                        <input type="date" v-model="f_salida" class="form-control" >
+                    </div>
+                </div>
+                <div class="form-group row" v-if="tipoAccion == 2">
+                    <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
+                    <div class="col-md-6">
+                        <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
+                    </div>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <button type="button"  class="btn btn-primary" @click="actualizarMasa()" v-if="tipoAccion == 1">Actualizar</button>
+                <button type="button"  class="btn btn-primary" @click="updateMasaLicencias()" v-if="tipoAccion == 2">Actualizar</button>
+            </template>
+        </ModalComponent>
         <!--Fin del modal-->
 
         <!--Inicio del modal consulta-->
-        <ModalComponent v-if="modal2"
-            @closeModal="cerrarModal2"
-            :titulo="tituloModal2"
+        <ModalComponent v-if="modal == 2"
+            @closeModal="cerrarModal"
+            :titulo="tituloModal"
         >
             <template v-slot:body>
 
@@ -591,7 +548,7 @@
                     <div class="col-md-6">
 
                         <textarea rows="5" cols="30"  disabled v-model="observacion_completa" class="form-control" placeholder="Observacion"></textarea>
-                        <button type="button" class="btn btn-info pull-right" @click="abrirModal3('lote','ver_todo',id)">Ver todos</button>
+                        <button type="button" class="btn btn-info pull-right" @click="abrirModalObs('ver_todo',id)">Ver todos</button>
                     </div>
                 </div>
 
@@ -600,133 +557,82 @@
         </ModalComponent>
         <!--Fin del modal consulta-->
 
-            <!--Inicio del modal observaciones-->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal3"></h4>
-                        <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                            <div class="form-group row" v-if="tipoAccion==3">
-                                <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                                <div class="col-md-6">
-                                        <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-                                </div>
-                            </div>
-
-                            <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
-                                <thead>
-                                    <tr>
-                                        <th>Usuario</th>
-                                        <th>Observacion</th>
-                                        <th>Fecha</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-
-                                        <td v-text="observacion.usuario" ></td>
-                                        <td v-text="observacion.comentario" ></td>
-                                        <td v-text="observacion.created_at"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </form>
-                    </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
-                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                        <button type="button"  v-if="tipoAccion==3"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+        <!--Inicio del modal observaciones-->
+        <ModalComponent v-if="modalObs"
+            :titulo="tituloObs"
+            @closeModal="cerrarObs()"
+        >
+            <template v-slot:body>
+                <div class="form-group row" v-if="tipoAccion==3">
+                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                    <div class="col-md-6">
+                            <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
                     </div>
                 </div>
-                    <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+                <TableComponent v-if="tipoAccion == 4" :cabecera="[
+                    'Usuario','Observacion','Fecha']">
+                    <template v-slot:tbody>
+                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                            <td class="td2" v-text="observacion.usuario" ></td>
+                            <td class="td2" v-text="observacion.comentario" ></td>
+                            <td class="td2" v-text="observacion.created_at"></td>
+                        </tr>
+                    </template>
+                    <template  v-if="tipoAccion==3" v-slot:buttons-footer>
+                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                    </template>
+                </TableComponent>
+            </template>
+        </ModalComponent>
 
         <!-- Modal para la carga de foto de licencia -->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal4"></h4>
-                        <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                    <div style="float:left;">
-                        <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+        <ModalComponent v-if="modal == 4"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div style="float:left;">
+                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                        <strong>Licencia:</strong>
 
-                                <strong>Licencia:</strong>
+                        <input disabled type="text" class="form-control" v-model="num_licencia" >
 
-                                <input disabled type="text" class="form-control" v-model="num_licencia" >
+                        <strong>Sube aqui foto de licencia</strong>
 
-                                <strong>Sube aqui foto de licencia</strong>
-
-                                <input type="file" class="form-control" v-on:change="onImageChange">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                        </form>
-                    </div>
-
-                    <div style="float:right;">
-                            <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
-
-                                <strong>Sube aqui foto del predial</strong>
-
-                                <input type="file" class="form-control" v-on:change="onImageChangePredial">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                        </form>
-                    </div>
-
-                    </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                        </div>
+                        <input type="file" class="form-control" v-on:change="onImageChange">
+                        <br/>
+                        <button type="submit" class="btn btn-success">Cargar</button>
+                    </form>
                 </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+
+                <div style="float:right;">
+                    <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
+                        <strong>Sube aqui foto del predial</strong>
+
+                        <input type="file" class="form-control" v-on:change="onImageChangePredial">
+                        <br/>
+                        <button type="submit" class="btn btn-success">Cargar</button>
+                    </form>
+                </div>
+            </template>
+        </ModalComponent>
         <!--Fin del modal-->
 
         <!-- Manual -->
-        <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Para poder agregar una licencia a un lote debe asegurarse de tener creado(s) los lotes deseados,
-                        puede crearlos desde el módulo “Desarrollo->Lotes”.
-                    </p>
-                    <p>
-                        Para poder ver los botones que permite asignar la licencia debe asegurarse de seleccionar al menos
-                            un lote de la lista dando clic sobre la casilla que aparece del lado izquierdo.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-                </div>
-            </div>
-        </div>
+        <ModalComponent v-if="modal==3"
+            :titulo="'Manual'" @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                 <p>
+                    Para poder agregar una licencia a un lote debe asegurarse de tener creado(s) los lotes deseados,
+                    puede crearlos desde el módulo “Desarrollo->Lotes”.
+                </p>
+                <p>
+                    Para poder ver los botones que permite asignar la licencia debe asegurarse de seleccionar al menos
+                        un lote de la lista dando clic sobre la casilla que aparece del lado izquierdo.
+                </p>
+            </template>
+        </ModalComponent>
     </main>
 </template>
 
@@ -790,15 +696,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 arrayPuentes: [],
                 arrayRuv: [],
                 modal : 0,
-                modal2 : 0,
-                modal3 : 0,
-                modal4 : 0,
-                modal5 : 0,
+                modalObs : 0,
                 tituloModal : '',
-                tituloModal2 : '',
-                tituloModal3: '',
-                tituloModal4: '',
-                tituloModal5: '',
+                tituloObs: '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -858,27 +758,20 @@ import TableComponent from '../Componentes/TableComponent.vue'
             },
 
         },
-
-
         methods : {
-
             selectAll: function() {
-            this.allLic = [];
+                this.allLic = [];
 
-            if (!this.allSelected) {
-                for (var lote in this.arrayLicencias
-                ) {
-                    this.allLic.push(this.arrayLicencias[lote].id.toString());
+                if (!this.allSelected) {
+                    for (var lote in this.arrayLicencias
+                    ) {
+                        this.allLic.push(this.arrayLicencias[lote].id.toString());
+                    }
                 }
-            }
             },
-
-             select: function() {
+            select: function() {
                 this.allSelected =   false;
             },
-
-            //funciones para carga de los prediales
-
             onImageChangePredial(e){
 
                 console.log(e.target.files[0]);
@@ -907,7 +800,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    me.cerrarModal4();
+                    me.cerrarModal();
                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
 
                 })
@@ -930,7 +823,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
             },
 
             formSubmit(e) {
-
                 e.preventDefault();
 
                 let currentObj = this;
@@ -949,16 +841,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    me.cerrarModal4();
+                    me.cerrarModal();
                     me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
-
-
                 })
 
                 .catch(function (error) {
-
                     currentObj.output = error;
-
                 });
 
             },
@@ -1014,7 +902,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
-             selectArquitectos(){
+            selectArquitectos(){
                 let me = this;
                 me.arrayArquitectos=[];
                 var url = '/select_personal?departamento_id=3';
@@ -1124,7 +1012,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'usuario': this.usuario
                 }).then(function (response){
                     me.proceso=false;
-                    me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    me.cerrarObs(); //al guardar el registro se cierra el modal
 
                     const toast = Swal.mixin({
                     toast: true,
@@ -1174,7 +1062,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             });
                         })
                         me.proceso=false;
-                        me.cerrarModal5();
+                        me.cerrarModal();
                         me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
                         Swal({
                             title: 'Hecho!',
@@ -1220,7 +1108,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             });
                         })
                         me.proceso=false;
-                        me.cerrarModal5();
+                        me.cerrarModal();
                         me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
                         Swal({
                             title: 'Hecho!',
@@ -1288,20 +1176,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.f_ingreso = '';
                 this.f_salida = '';
                 this.num_licencia = '';
-
-
-                this.errorLote = 0;
-                this.errorMostrarMsjLote = [];
-
-            },
-            cerrarModal2(){
-                this.modal2 = 0;
-                this.tituloModal2 = '';
-                this.f_planos='';
-                this.f_planos_obra='';
-                this.f_ingreso='';
-                this.f_salida='';
-                this.num_licencia='';
                 this.arquitecto='';
                 this.fraccionamiento='';
                 this.etapa_id=0;
@@ -1319,188 +1193,135 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.siembra='';
                 this.id=0;
                 this.observacion_completa='';
-
-            },
-            cerrarModal3(){
-                this.modal3 = 0;
-                this.tituloModal3 = '';
-                this.usuario = '';
-                this.observacion = '';
-            },
-            cerrarModal4(){
-                this.modal4 = 0;
-                this.tituloModal4 = '';
-                this.num_licencia = '';
                 this.foto_lic = '';
                 this.foto_predial = '';
+                this.perito_dro = 0;
+
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
 
             },
-            cerrarModal5(){
-                this.modal5 = 0;
-                this.tituloModal5 = '';
-                this.perito_dro = '';
-                this.f_planos_obra = '';
-                this.f_ingreso = '';
-                this.f_salida='';
-                this.num_licencia = '';
-
-
+            cerrarObs(){
+                this.modalObs = 0;
+                this.tituloObs = '';
+                this.usuario = '';
+                this.observacion = '';
             },
-
-
 
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(licencias, accion,data =[]){
-                switch(licencias){
-                    case "lote":
+            abrirModal(accion,data =[]){
+                switch(accion){
+
+                    case 'actualizar':
                     {
-                        switch(accion){
-
-                            case 'actualizar':
-                            {
-                                this.modal =1;
-                                this.tituloModal='Actualizar Licencia';
-                                this.f_planos=data['f_planos'];
-                                this.f_planos_obra=data['f_planos_obra'];
-                                this.f_ingreso=data['f_ingreso'];
-                                this.f_salida=data['f_salida'];
-                                this.num_licencia=data['num_licencia'];
-                                this.arquitecto_id=data['arquitecto_id'];
-                                this.perito_dro=data['perito_dro'];
-                                this.id=data['id'];
-                                break;
-                            }
-
-                            case 'subirArchivo':
-                            {
-                                this.modal4 =1;
-                                this.tituloModal4='Subir Archivo';
-                                this.tipoAccion=5;
-                                this.id=data['id'];
-                                this.num_licencia=data['num_licencia'];
-                                this.foto_lic=data['foto_lic'];
-                                this.foto_predial=data['foto_predial'];
-                                break;
-                            }
-
-                        }
+                        this.modal =1;
+                        this.tituloModal='Actualizar Licencia';
+                        this.f_planos=data['f_planos'];
+                        this.f_planos_obra=data['f_planos_obra'];
+                        this.f_ingreso=data['f_ingreso'];
+                        this.f_salida=data['f_salida'];
+                        this.num_licencia=data['num_licencia'];
+                        this.arquitecto_id=data['arquitecto_id'];
+                        this.perito_dro=data['perito_dro'];
+                        this.id=data['id'];
+                        break;
                     }
-                }this.selectArquitectos();
+
+                    case 'subirArchivo':
+                    {
+                        this.modal =4;
+                        this.tituloModal='Subir Archivo';
+                        this.tipoAccion=5;
+                        this.id=data['id'];
+                        this.num_licencia=data['num_licencia'];
+                        this.foto_lic=data['foto_lic'];
+                        this.foto_predial=data['foto_predial'];
+                        break;
+                    }
+
+                    case 'asignarMasa':
+                    {
+                        this.modal = 5;
+                        this.tituloModal='Asignación en masa';
+                        this.perito_dro = '';
+                        this.f_planos_obra='';
+                        this.tipoAccion = 1;
+                        break;
+                    }
+                    case 'asignarLicencias':
+                    {
+                        this.modal = 5;
+                        this.tituloModal='Asignación de licencias';
+                        this.f_ingreso = '';
+                        this.f_salida='';
+                        this.num_licencia = '';
+                        this.tipoAccion = 2;
+                        break;
+                    }
+
+                    case 'ver':
+                    {
+                        this.modal = 2;
+                        this.tituloModal='Consulta ';
+                            if(data['f_planos_obra'])
+                            this.f_planos_obra=moment(data['f_planos_obra']).locale('es').format('DD/MMM/YYYY');
+                        if(data['f_planos'])
+                            this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
+                        if(data['f_ingreso'])
+                            this.lic_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
+                        if(data['f_salida'])
+                            this.lic_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
+                        this.num_licencia=data['num_licencia'];
+                        this.arquitecto=data['arquitecto'];
+                        this.fraccionamiento=data['fraccionamiento'];
+                        this.etapa_id=data['etapa_id'];
+                        this.manzana=data['manzana'];
+                        this.num_lote=data['num_lote'];
+                        this.sublote=data['sublote'];
+                        this.modelo=data['modelo'];
+                        this.calle=data['calle'];
+                        this.numero=data['numero'];
+                        this.interior=data['interior'];
+                        this.terreno=data['terreno'];
+                        this.construccion=data['construccion'];
+                        this.clv_catastral=data['clv_catastral'];
+                        this.etapa_servicios=data['etapa_servicios'];
+                        this.siembra=moment(data['siembra']).locale('es').format('DD/MMM/YYYY');
+                        this.id=data['id'];
+
+                        this.selectUltimoComentario(data['id']);
+                        this.listarObservacion(1, data['id']);
+                        break;
+                    }
+                }
+                this.selectArquitectos();
 
             },
-            abrirModal3(licencias,accion,lote){
-                switch(licencias){
-                        case "lote":
-                        {
-                            switch(accion){
-
-                                case 'observacion':
-                                {
-                                    this.modal3 =1;
-                                    this.tituloModal3='Agregar Observación';
-                                    this.observacion='';
-                                    this.usuario='';
-                                    this.lote_id=lote;
-                                    this.tipoAccion= 3;
-                                    break;
-                                }
-                                case 'ver_todo':
-                                {
-                                    this.modal3 =1;
-                                    this.tituloModal3='Consulta Observaciones';
-                                    this.tipoAccion= 4;
-                                    break;
-                                }
-
-                            }
-                        }
+            abrirModalObs(accion,lote){
+                switch(accion){
+                    case 'observacion':
+                    {
+                        this.modalObs =1;
+                        this.tituloObs='Agregar Observación';
+                        this.observacion='';
+                        this.usuario='';
+                        this.lote_id=lote;
+                        this.tipoAccion= 3;
+                        break;
+                    }
+                    case 'ver_todo':
+                    {
+                        this.modalObs =1;
+                        this.tituloObs='Consulta Observaciones';
+                        this.tipoAccion= 4;
+                        break;
+                    }
 
                 }
             },
 
-            abrirModal5(licencias,accion,lote){
-                switch(licencias){
-                    case "lote":
-                    {
-                        switch(accion){
-
-                            case 'asignarMasa':
-                            {
-                                this.modal5 =1;
-                                this.tituloModal5='Asignación en masa';
-                                this.perito_dro = '';
-                                this.f_planos_obra='';
-                                this.tipoAccion = 1;
-                                break;
-                            }
-                            case 'asignarLicencias':
-                            {
-                                this.modal5 =1;
-                                this.tituloModal5='Asignación de licencias';
-                                this.f_ingreso = '';
-                                this.f_salida='';
-                                this.num_licencia = '';
-                                this.tipoAccion = 2;
-                                break;
-                            }
-
-
-                        }
-                    }
-
-            }
-
-         },
-            abrirModal2(licencias, accion,data =[]){
-                switch(licencias){
-                    case "lote":
-                    {
-                        switch(accion){
-
-                            case 'ver':
-                            {
-                                this.modal2 =1;
-                                this.tituloModal2='Consulta ';
-                                    if(data['f_planos_obra'])
-                                    this.f_planos_obra=moment(data['f_planos_obra']).locale('es').format('DD/MMM/YYYY');
-                                if(data['f_planos'])
-                                    this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
-                                if(data['f_ingreso'])
-                                    this.lic_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
-                                if(data['f_salida'])
-                                    this.lic_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
-                                this.num_licencia=data['num_licencia'];
-                                this.arquitecto=data['arquitecto'];
-                                this.fraccionamiento=data['fraccionamiento'];
-                                this.etapa_id=data['etapa_id'];
-                                this.manzana=data['manzana'];
-                                this.num_lote=data['num_lote'];
-                                this.sublote=data['sublote'];
-                                this.modelo=data['modelo'];
-                                this.calle=data['calle'];
-                                this.numero=data['numero'];
-                                this.interior=data['interior'];
-                                this.terreno=data['terreno'];
-                                this.construccion=data['construccion'];
-                                this.clv_catastral=data['clv_catastral'];
-                                this.etapa_servicios=data['etapa_servicios'];
-                                this.siembra=moment(data['siembra']).locale('es').format('DD/MMM/YYYY');
-                                this.id=data['id'];
-                                break;
-                            }
-
-                        }
-                    }
-                }this.selectArquitectos();
-                    this.selectUltimoComentario(data['id']);
-                    this.listarObservacion(1, data['id']);
-
-            }
 
         },
-
         mounted() {
             this.listarLicencias(1,this.buscar,this.b_manzana,this.b_lote,this.b_modelo,this.b_arquitecto,this.criterio,this.buscar2);
             this.selectFraccionamientos();

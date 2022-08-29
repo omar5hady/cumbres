@@ -31,7 +31,7 @@
                                         <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" @click="selectManzanas(buscar2,b_etapa2)" v-model="b_etapa2"> 
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" @click="selectManzanas(buscar2,b_etapa2)" v-model="b_etapa2">
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
@@ -40,7 +40,7 @@
                                     <input v-if="criterio2 == 'entregas.fecha_program'" type="date"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-if="criterio2 == 'c.nombre' || criterio2 == 'contratos.id'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
-                                   
+
                                 </div>
                             </div>
                             <div class="col-md-6" v-if="criterio2=='lotes.fraccionamiento_id'">
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
 
-                            
+
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6" v-if="criterio2=='lotes.fraccionamiento_id'">
@@ -71,192 +71,166 @@
                             <div class="col-md-8">
                                 <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 <a :href="'/postventa/excel?buscar='+buscar2 + '&b_etapa='+b_etapa2 + '&b_manzana='+b_manzana2+'&b_lote='+b_lote2+
-                                    '&criterio='+criterio2 +  '&b_desde='+b_desde +  '&b_hasta='+b_hasta" 
+                                    '&criterio='+criterio2 +  '&b_desde='+b_desde +  '&b_hasta='+b_hasta"
                                     class="btn btn-success"><i class="fa fa-file-excel-o"></i> Excel
                                 </a>
                             </div>
                         </div>
-                            
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr> 
-                                        <th># Ref</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th>Lote</th>
-                                        <th>Cliente</th>
-                                        <th>Contacto</th>
-                                        <th>Fecha entrega (Obra)</th>
-                                        <th>Paquete y/o Promocioón</th>
-                                        <th>Equipamiento</th>
-                                        <th>Fecha de firma de escrituras</th>
-                                        <th>Fecha entrega programada</th>
-                                        <th>Hora entrega programada</th>
-                                        <th>Finalizar Entrega</th>
-                                        <th>Observaciones</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-bind:style="{ backgroundColor : contratos.fecha_firma_esc == null ? '#C26F6F' : '#FFFFFF'}">
+
+                        <TableComponent :cabecera="['#','Proyecto','Etapa','Manzana','Lote','Cliente',
+                                'Fecha entrega (Obra)','Paquete y/o Promocioón',
+                                'Equipamiento','Firma de escrituras','Fecha de entrega','Finalizar Entrega',''
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="contratos in arrayContratos" :key="contratos.id" v-bind:style="{ backgroundColor : contratos.fecha_firma_esc == null ? '#C26F6F' : '#FFFFFF'}">
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ contratos.folio">Carta de mantenimiento</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ contratos.folio">Carta de alarma</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
+                                            </div>
+                                        </td>
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.proyecto}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
+                                                <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
+                                                <a v-if="contratos.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+contratos.carta_bienvenida">Carta de bienvenida</a>
+                                                <a v-if="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contratos.foto_predial">Predial</a>
+                                                <a v-if="contratos.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ contratos.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                                <a v-if="contratos.num_licencia" class="dropdown-item"  v-text="'Licencia: '+contratos.num_licencia" v-bind:href="'/downloadLicencias/'+contratos.foto_lic"></a>
+                                            </div>
+
+                                        </td>
+                                        <td class="td2" v-text="contratos.etapa"></td>
+                                        <td class="td2" v-text="contratos.manzana"></td>
+                                        <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.nombre_cliente}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a title="Llamar" target="_blank"  class="dropdown-item" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg" style="color:blue;"></i>Llamar</a>
+                                                <a title="Enviar whatsapp" class="dropdown-item" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg" style="color:green;"></i>Whatsapp</a>
+                                                <a title="Enviar correo" target="_blank"  class="dropdown-item" :href="'mailto:'+contratos.email"> <i class="fa fa-envelope-o fa-lg" style="color:orange;"></i>Email</a>
+                                                <a class="dropdown-item" target="_blank" @click="abrirModal('ver_personal',contratos)">Mas información</a>
+                                            </div>
+                                        </td>
+                                        <td class="td2">
+                                            <span v-if="contratos.fecha_entrega_obra && contratos.diferencia_obra < 2" class="badge badge-success">
+                                                {{this.moment(contratos.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')}}
+                                            </span>
+                                            <span v-else-if="contratos.fecha_entrega_obra && contratos.diferencia_obra > 2" class="badge badge-danger">
+                                                {{this.moment(contratos.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')}}
+                                            </span>
+                                            <span v-else class="badge badge-info">
+                                                Sin fecha asignada
+                                            </span>
+
+                                        </td>
+                                        <td class="td2">
+                                            <button title="Ver equipamiento" type="button" class="btn btn-primary pull-right"
+                                                v-if="(contratos.paquete != '' || contratos.promocion != '') && (contratos.paquete != null || contratos.promocion != null)"
+                                                @click="abrirModal('equipamiento', contratos)">Ver Equipamiento
+                                            </button>
+                                            <span v-else>Sin equipamiento</span>
+                                        </td>
                                         <template>
-                                            <td class="td2">
-                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ contratos.folio">Carta de mantenimiento</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ contratos.folio">Carta de alarma</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
-                                                </div>
-                                            </td>
-                                            <td class="td2">
-                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.proyecto}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
-                                                    <a v-if="contratos.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+contratos.carta_bienvenida">Carta de bienvenida</a>
-                                                    <a v-if="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contratos.foto_predial">Predial</a>
-                                                    <a v-if="contratos.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ contratos.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
-                                                    <a v-if="contratos.num_licencia" class="dropdown-item"  v-text="'Licencia: '+contratos.num_licencia" v-bind:href="'/downloadLicencias/'+contratos.foto_lic"></a>
-                                                </div>
-                                                
-                                            </td>
-                                            <td class="td2" v-text="contratos.etapa"></td>
-                                            <td class="td2" v-text="contratos.manzana"></td>
-                                            <td class="td2" v-text="contratos.num_lote"></td>
-                                            <td class="td2" @click="abrirModal('ver_personal',contratos)" v-text="contratos.nombre_cliente"></td>
-                                            <td class="td2">
-                                                 <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-                                            <template>
-                                                <td class="td2" v-if="contratos.fecha_entrega_obra && contratos.diferencia_obra < 2">
-                                                    <span v-text="this.moment(contratos.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
-                                                </td>
-                                                <td class="td2" v-else-if="contratos.fecha_entrega_obra && contratos.diferencia_obra > 2">
-                                                    <span v-text="this.moment(contratos.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-danger"></span>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    Sin fecha asignada
-                                                </td>
-                                            </template>
-                                            <template>
-                                                <td class="td2" v-if="(contratos.paquete != '' || contratos.promocion != '') && (contratos.paquete != null || contratos.promocion != null)">
-                                                    <button title="Ver equipamiento" type="button" class="btn btn-primary pull-right" 
-                                                        @click="abrirModal('equipamiento', contratos)">Ver Equipamiento
-                                                    </button> 
-                                                </td>
-                                                <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
-                                            </template>
-                                            <template>
-                                                <td class="td2" v-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 0">
-                                                    <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        Equipamiento sin solicitarse
-                                                    </button>
-                                                </td>
-                                                <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 0">
-                                                     <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        Equipamiento sin solicitarse
-                                                    </button>
-                                                </td>
-                                                <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 0">
-                                                     <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        Equipamiento sin solicitarse
-                                                    </button>
-                                                </td>
-
-                                                <td class="td2" v-else-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 1">
-                                                    <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        En proceso de instalación
-                                                    </button>
-                                                    
-                                                </td>
-                                                <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 1" >
-                                                    <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        En proceso de instalación
-                                                    </button>
-                                                </td>
-                                                <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 1">
-                                                    <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        En proceso de instalación
-                                                    </button>
-                                                </td>
-
-                                                <td class="td2" v-else-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 2">
-                                                    <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        Equipamiento instalado
-                                                    </button>
-                                                   
-                                                </td>
-                                                <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 2">
-                                                    <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        Equipamiento instalado
-                                                    </button>
-                                                </td>
-                                                <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 2">
-                                                    <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
-                                                        @click="ultimaFecha(contratos.folio)">
-                                                        Equipamiento instalado
-                                                    </button>
-                                                </td>
-                                                <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
-                                            </template>
-                                                <td v-if="contratos.fecha_firma_esc != null" class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td v-else class="td2" v-text="'Sin firma'"></td>
-                                            <template>
-                                                <td class="td2" @click="abrirModal('programar_fecha', contratos)" v-if="contratos.fecha_program">
-                                                    <span v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <button title="Programar fecha" type="button" class="btn btn-default pull-right" 
-                                                        @click="abrirModal('programar_fecha', contratos)">
-                                                        Programar fecha&nbsp;&nbsp;<i class="fa fa-calendar-plus-o fa-lg"></i>
-                                                    </button>
-                                                </td>
-                                            </template>
-                                            <template>
-                                                <td class="td2" @click="abrirModal('programar_hora', contratos)" v-if="contratos.hora_entrega_prog">
-                                                    <span v-text="contratos.hora_entrega_prog" class="badge badge-success"></span>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <button title="Programar hora" type="button" class="btn btn-default pull-right" 
-                                                        @click="abrirModal('programar_hora', contratos)">
-                                                        Programar hora&nbsp;&nbsp;<i class="fa fa-clock-o fa-lg"></i>
-                                                    </button>
-                                                </td>
-                                            </template>
-                                            <td class="td2">
-                                                <button v-if="contratos.fecha_program" title="Finalizar entrega" type="button" class="btn btn-dark pull-right" 
-                                                    @click="abrirModal('finalizar', contratos)">
-                                                    Finalizar&nbsp;&nbsp;<i class="fa fa-trophy fa-lg"></i>
+                                            <td class="td2" v-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 0">
+                                                <button title="Programar fecha" type="button" class="btn btn-danger pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    Equipamiento sin solicitarse
                                                 </button>
-                                                <label v-else>No se ha programado una fecha</label>
                                             </td>
-                                            <td> 
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
-                                                    @click="abrirModal('observaciones', contratos),listarObservacion(1,contratos.folio)">Ver observaciones
-                                                </button> 
+                                            <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 0">
+                                                    <button title="Programar fecha" type="button" class="btn btn-danger pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    Equipamiento sin solicitarse
+                                                </button>
                                             </td>
+                                            <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 0">
+                                                    <button title="Programar fecha" type="button" class="btn btn-danger pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    Equipamiento sin solicitarse
+                                                </button>
+                                            </td>
+
+                                            <td class="td2" v-else-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 1">
+                                                <button title="Programar fecha" type="button" class="btn btn-warning pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    En proceso de instalación
+                                                </button>
+
+                                            </td>
+                                            <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 1" >
+                                                <button title="Programar fecha" type="button" class="btn btn-warning pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    En proceso de instalación
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 1">
+                                                <button title="Programar fecha" type="button" class="btn btn-warning pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    En proceso de instalación
+                                                </button>
+                                            </td>
+
+                                            <td class="td2" v-else-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 2">
+                                                <button title="Programar fecha" type="button" class="btn btn-success pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    Equipamiento instalado
+                                                </button>
+
+                                            </td>
+                                            <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 2">
+                                                <button title="Programar fecha" type="button" class="btn btn-success pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    Equipamiento instalado
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 2">
+                                                <button title="Programar fecha" type="button" class="btn btn-success pull-right"
+                                                    @click="ultimaFecha(contratos.folio)">
+                                                    Equipamiento instalado
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-else v-text="'Sin equipamiento'" ></td>
                                         </template>
-                                    </tr>
-                                </tbody>
-                            </table>  
-                        </div>
+                                        <td  class="td2">
+                                            <span v-if="contratos.fecha_firma_esc != null">{{this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')}}</span>
+                                            <span v-else>Sin firma</span>
+                                        </td>
+                                        <td class="td2">
+                                            <button title="Programar fecha" type="button" class="btn" :class="!contratos.fecha_program ? 'btn-default' :' btn-primary'"
+                                                @click="abrirModal('programar_fecha', contratos)">
+                                                {{ !contratos.fecha_program ? 'Programar fecha' : this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY') }}
+                                                <i class="fa fa-calendar-plus-o fa-lg"></i>
+                                            </button>
+                                            <button title="Programar Hora" type="button" class="btn" :class="!contratos.hora_entrega_prog ? 'btn-default' :' btn-primary'"
+                                                @click="abrirModal('programar_hora', contratos)">
+                                                {{ !contratos.hora_entrega_prog ? 'Programar Hora' : contratos.hora_entrega_prog }}
+                                                <i class="fa fa-clock-o fa-lg"></i>
+                                            </button>
+                                        </td>
+                                        <td class="td2">
+                                            <button v-if="contratos.fecha_program" title="Finalizar entrega" type="button" class="btn btn-dark pull-right"
+                                                @click="abrirModal('finalizar', contratos)">
+                                                Finalizar&nbsp;&nbsp;<i class="fa fa-trophy fa-lg"></i>
+                                            </button>
+                                            <span class="badge badge-warning" v-else>No se ha programado una fecha</span>
+                                        </td>
+                                        <td>
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                                @click="abrirModal('observaciones', contratos),listarObservacion(1,contratos.folio)">Ver observaciones
+                                            </button>
+                                        </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -299,7 +273,7 @@
                                         <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @click="selectManzanas(buscar,b_etapa)" v-model="b_etapa"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @click="selectManzanas(buscar,b_etapa)" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
@@ -308,7 +282,7 @@
                                     <input v-if="criterio == 'entregas.fecha_entrega_real'" type="date"  v-model="b_etapa" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-if="criterio == 'c.nombre' || criterio == 'contratos.id'" type="text"  v-model="buscar" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                   
+
                                 </div>
                             </div>
                             <div class="col-md-6" v-if="criterio=='lotes.fraccionamiento_id'">
@@ -324,139 +298,85 @@
                                     </select>
                                 </div>
                             </div>
-                           
+
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <div class="input-group">
-                                    <button type="submit" @click="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>&nbsp;&nbsp;
+                                    <button type="button" @click="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>&nbsp;&nbsp;
                                     <strong><label class="text-muted" v-text="'Total: '+total_entregas"></label></strong>
                                 </div>
                             </div>
                         </div>
-                            
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr> 
-                                        <th># Ref</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th>Lote</th>
-                                        <th>Cliente</th>
-                                        <th>Contacto</th>
-                                        <th>Fecha de firma</th>
-                                        <th>Fecha entrega (Obra)</th>
-                                        <th>Paquete y/o Promocioón</th>
-                                        <th>Equipamiento</th>
-                                        <th>Fecha de Entrega</th>
-                                        <th># Reprogramaciones</th>
-                                        <th>Observaciones</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="entregas in arrayEntregas" :key="entregas.id">
-                                        <template>
-                                            <td class="td2">
-                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.folio}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a class="dropdown-item" @click="abrirPDF(entregas.folio)">Estado de cuenta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ entregas.folio">Contrato de compra venta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ entregas.folio">Carta de mantenimiento</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ entregas.folio">Carta de recepción</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ entregas.folio">Carta de alarma</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
-                                                </div>
-                                            </td>
-                                            <td class="td2">
-                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.proyecto}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ entregas.folio">Reglamento de la etapa</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ entregas.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
-                                                    <a v-if="entregas.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+entregas.carta_bienvenida">Carta de bienvenida</a>
-                                                    <a v-if="entregas.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ entregas.foto_predial">Predial</a>
-                                                    <a v-if="entregas.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ entregas.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
-                                                    <a v-if="entregas.num_licencia" class="dropdown-item"  v-text="'Licencia: '+entregas.num_licencia" v-bind:href="'/downloadLicencias/'+entregas.foto_lic"></a>
-                                                </div>
-                                                
-                                            </td>
-                                            <td class="td2" v-text="entregas.etapa"></td>
-                                            <td class="td2" v-text="entregas.manzana"></td>
-                                            <td class="td2" v-text="entregas.num_lote"></td>
-                                            <td class="td2" @click="abrirModal('ver_personal',entregas)" v-text="entregas.nombre_cliente"></td>
-                                            <td class="td2">
-                                                 <a title="Llamar" class="btn btn-dark" :href="'tel:'+entregas.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+entregas.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+entregas.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-                                            <td class="td2" v-text="this.moment(entregas.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <template>
-                                                <td class="td2" v-if="entregas.fecha_entrega_obra && entregas.diferencia_obra < 2">
-                                                    <span v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <span v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-danger"></span>
-                                                </td>
-                                            </template>
-                                            <template>
-                                                <td class="td2" v-if="entregas.descripcion_paquete || entregas.descripcion_promocion">
-                                                    <button title="Ver equipamiento" type="button" class="btn btn-primary pull-right" 
-                                                        @click="abrirModal('equipamiento', entregas)">Ver Equipamiento
-                                                    </button> 
-                                                </td>
-                                                <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
-                                            </template>
-                                            <template>
-                                                <td class="td2" v-if="entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 0">
-                                                     <span class="badge badge-danger">Equipamiento sin solicitarse</span>
-                                                </td>
-                                                <td class="td2" v-else-if="entregas.descripcion_paquete && !entregas.descripcion_promocion && entregas.equipamiento == 0">
-                                                    <span class="badge badge-danger">Equipamiento sin solicitarse</span>
-                                                </td>
-                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 0">
-                                                    <span class="badge badge-danger">Equipamiento sin solicitarse</span>
-                                                </td>
 
-                                                <td class="td2" v-else-if="entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 1">
-                                                    <span class="badge badge-warning">En proceso de instalación</span>
-                                                </td>
-                                                <td class="td2" v-else-if="entregas.descripcion_paquete && !entregas.descripcion_promocion && entregas.equipamiento == 1" >
-                                                    <span class="badge badge-warning">En proceso de instalación</span>
-                                                </td>
-                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 1">
-                                                    <span class="badge badge-warning">En proceso de instalación</span>
-                                                </td>
+                        <TableComponent :cabecera="[
+                            '# Ref','Proyecto','Etapa','Manzana','Lote','Cliente','Fecha de firma',
+                            'Fecha entrega (Obra)','Paquete y/o Promocioón','Fecha de Entrega',
+                            '# Reprogramaciones','Observaciones',
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="entregas in arrayEntregas" :key="entregas.id">
+                                    <td class="td2">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.folio}}</a>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                            <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ entregas.folio">Contrato de compra venta</a>
+                                            <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ entregas.folio">Carta de alarma</a>
+                                            <a class="dropdown-item" @click="abrirModal('garantia',entregas)">Poliza de Garantia</a>
+                                        </div>
+                                    </td>
+                                    <td class="td2">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.proyecto}}</a>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                            <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ entregas.folio">Servicios de telecomunición</a>
+                                            <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
+                                            <a v-if="entregas.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ entregas.foto_predial">Predial</a>
+                                            <a v-if="entregas.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ entregas.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                        </div>
 
-                                                <td class="td2" v-else-if="entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 2">
-                                                    <span class="badge badge-success">Equipamiento instalado</span>
-                                                </td>
-                                                <td class="td2" v-else-if="entregas.descripcion_paquete && !entregas.descripcion_promocion && entregas.equipamiento == 2">
-                                                    <span class="badge badge-success">Equipamiento instalado</span>
-                                                </td>
-                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 2">
-                                                    <span class="badge badge-success">Equipamiento instalado</span>
-                                                </td>
-                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && !entregas.descripcion_promocion" v-text="'Sin equipamiento'"></td>
-                                                <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
-                                            </template>
-                                            <td class="td2">
-                                                <span v-text="this.moment(entregas.fecha_entrega_real).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
-                                            </td>
-                                            <td class="td2" v-text="entregas.cont_reprogram"></td>
-                                            <td> 
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
-                                                    @click="abrirModal('observaciones', entregas),listarObservacion(1,entregas.folio)">Ver observaciones
-                                                </button> 
-                                            </td>
-                                        </template>
-                                    </tr>
-                                </tbody>
-                            </table>  
-                        </div>
+                                    </td>
+                                    <td class="td2" v-text="entregas.etapa"></td>
+                                    <td class="td2" v-text="entregas.manzana"></td>
+                                    <td class="td2" v-text="entregas.num_lote"></td>
+                                    <td class="td2">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.nombre_cliente}}</a>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                            <a title="Llamar" target="_blank"  class="dropdown-item" :href="'tel:'+entregas.celular"><i class="fa fa-phone fa-lg" style="color:blue;"></i>Llamar</a>
+                                            <a title="Enviar whatsapp" class="dropdown-item" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+entregas.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg" style="color:green;"></i>Whatsapp</a>
+                                            <a title="Enviar correo" target="_blank"  class="dropdown-item" :href="'mailto:'+entregas.email"> <i class="fa fa-envelope-o fa-lg" style="color:orange;"></i>Email</a>
+                                            <a class="dropdown-item" target="_blank" @click="abrirModal('ver_personal',entregas)">Mas información</a>
+                                        </div>
+                                    </td>
+                                    <td class="td2" v-text="this.moment(entregas.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td class="td2" >
+                                        <span v-if="entregas.fecha_entrega_obra && entregas.diferencia_obra < 2"
+                                            v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
+                                        <span v-else
+                                            v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-danger"></span>
+                                    </td>
+                                    <template>
+                                        <td class="td2" >
+                                            <button v-if="entregas.descripcion_paquete || entregas.descripcion_promocion"
+                                                title="Ver equipamiento" type="button" class="btn btn-primary pull-right"
+                                                @click="abrirModal('equipamiento', entregas)">Ver Equipamiento
+                                            </button>
+                                            <span v-else>
+                                                Sin equipamiento
+                                            </span>
+                                        </td>
+                                    </template>
+                                    <td class="td2">
+                                        <span v-text="this.moment(entregas.fecha_entrega_real).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
+                                    </td>
+                                    <td class="td2" v-text="entregas.cont_reprogram"></td>
+                                    <td>
+                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                            @click="abrirModal('observaciones', entregas),listarObservacion(1,entregas.folio)">Ver observaciones
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -483,418 +403,349 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
             <!--Inicio del modal para diversos llenados de tabla en historial -->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" v-text="tituloModal"></h5>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega programada</label>
-                                    <div class="col-md-3">
-                                        <input v-model="fecha_program" type="date" class="form-control">
-                                    </div>
-                                </div>
+            <ModalComponent v-if="modal == 2"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row" v-if="tipoAccion == 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega programada</label>
+                        <div class="col-md-3">
+                            <input v-model="fecha_program" type="date" class="form-control">
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 1 && reprogramar == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Motivo reprogramación</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control col-md-6" v-model="mot_reprogra">
-                                            <option value="">Seleccione</option>
-                                            <option value="Cliente">Cliente</option>
-                                            <option value="Contratista">Contratista</option>
-                                        </select>
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 1 && reprogramar == 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Motivo reprogramación</label>
+                        <div class="col-md-6">
+                            <select class="form-control col-md-6" v-model="mot_reprogra">
+                                <option value="">Seleccione</option>
+                                <option value="Cliente">Cliente</option>
+                                <option value="Contratista">Contratista</option>
+                            </select>
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observaciones</label>
-                                    <div class="col-md-8">
-                                        <input v-model="observacion" type="text" class="form-control">
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Observaciones</label>
+                        <div class="col-md-8">
+                            <input v-model="observacion" type="text" class="form-control">
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 2">  
-                                    <label class="col-md-3 form-control-label" for="text-input">Hora de entrega programada</label>
-                                    <div class="col-md-3">
-                                        <input type="time" v-model="hora_entrega_prog" class="form-control">
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Hora de entrega programada</label>
+                        <div class="col-md-3">
+                            <input type="time" v-model="hora_entrega_prog" class="form-control">
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega</label>
-                                    <div class="col-md-3">
-                                        <input v-model="fecha_entrega_real" type="date" class="form-control">
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega</label>
+                        <div class="col-md-3">
+                            <input v-model="fecha_entrega_real" type="date" class="form-control">
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 3">  
-                                    <label class="col-md-3 form-control-label" for="text-input">Hora de entrega</label>
-                                    <div class="col-md-3">
-                                        <input type="time" v-model="hora_entrega_real" class="form-control">
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Hora de entrega</label>
+                        <div class="col-md-3">
+                            <input type="time" v-model="hora_entrega_real" class="form-control">
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 3">  
-                                    <label class="col-md-3 form-control-label" for="text-input">Cero detalles</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control col-md-4" v-model="cero_detalles">
-                                            <option value="1">Si</option>
-                                            <option value="2">No</option>
-                                        </select>
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Cero detalles</label>
+                        <div class="col-md-4">
+                            <select class="form-control col-md-4" v-model="cero_detalles">
+                                <option value="1">Si</option>
+                                <option value="2">No</option>
+                            </select>
+                        </div>
+                    </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Comentarios</label>
-                                    <div class="col-md-8">
-                                        <input type="text" v-model="observacion" class="form-control">
-                                    </div>
-                                </div>
+                    <div class="form-group row" v-if="tipoAccion == 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Comentarios</label>
+                        <div class="col-md-8">
+                            <input type="text" v-model="observacion" class="form-control">
+                        </div>
+                    </div>
 
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorEntrega" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjEntrega" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
- 
-                            </div>
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="progFecha()">Programar fecha</button>
-                                <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="progHora()">Programar hora</button>
-                                <button type="button" v-if="tipoAccion == 3 && fecha_entrega_real != '' && hora_entrega_real != '' && fecha_entrega_real != null && hora_entrega_real != null" class="btn btn-success" @click="finalizarEntrega()">Finalizar</button>
+                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                    <div v-show="errorEntrega" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjEntrega" :key="error" v-text="error">
                             </div>
                         </div>
-                        <!-- /.modal-content -->
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="progFecha()">Programar fecha</button>
+                    <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="progHora()">Programar hora</button>
+                    <button type="button" v-if="tipoAccion == 3 && fecha_entrega_real != ''
+                                && hora_entrega_real != '' && fecha_entrega_real != null && hora_entrega_real != null"
+                        class="btn btn-success" @click="finalizarEntrega()">Finalizar
+                    </button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
+            <ModalComponent v-if="modal == 3"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <template v-if="tipoAccion == 1">
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="observacion" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
+                                </div>
                             </div>
-                            <template v-if="tipoAccion == 1">
-                                <div class="modal-body">
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="observacion" class="form-control">
-                                        </div>
 
-                                        <div class="col-md-3">
-                                            <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
-                                        </div>
-                                    </div>
-
-
-                                    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                        
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Usuario</th>
-                                                    <th>Observacion</th>
-                                                    <th>Fecha</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                    
-                                                    <td v-text="observacion.usuario" ></td>
-                                                    <td v-text="observacion.comentario" ></td>
-                                                    <td v-text="observacion.created_at"></td>
-                                                </tr>                               
-                                            </tbody>
-                                        </table>
-                                        
-                                    </form>
+                            <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
+                                <template v-slot:tbody>
+                                    <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                        <td v-text="observacion.usuario" ></td>
+                                        <td v-text="observacion.comentario" ></td>
+                                        <td v-text="observacion.created_at"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </template>
+                    <template v-if="tipoAccion == 2">
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Promoción</label>
+                                <div class="col-md-10">
+                                    <textarea disabled rows="5" cols="30" v-model="promocion" class="form-control" placeholder="Promoción"></textarea>
                                 </div>
-                            </template>
-                            <template v-if="tipoAccion == 2">
-                                <div class="modal-body">
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Promoción</label>
-                                        <div class="col-md-10">
-                                            <textarea disabled rows="5" cols="30" v-model="promocion" class="form-control" placeholder="Promoción"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Paquete</label>
-                                        <div class="col-md-10">
-                                            <textarea disabled rows="5" cols="30" v-model="paquete" class="form-control" placeholder="Paquete"></textarea>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Paquete</label>
+                                <div class="col-md-10">
+                                    <textarea disabled rows="5" cols="30" v-model="paquete" class="form-control" placeholder="Paquete"></textarea>
                                 </div>
-                            </template>
-                            
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             </div>
                         </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                    </template>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal para mostrar los datos del cliente -->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" v-text="tituloModal"></h5>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                        <div class="col-md-9">
-                                            <input type="text" disabled v-model="nombre_cliente" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="sexo_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                        <div class="col-md-3">
-                                            <input type="text" disabled v-model="telefono_cliente" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular_cliente" disabled class="form-control">
-                                        </div>
-                                        <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
-                                        <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email_cliente" disabled class="form-control">
-                                        </div>
-                                        <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="direccion_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">C.P</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="cp_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="colonia_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="estado_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="ciudad_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="fechanac_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">CURP</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="curp_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="rfc_cliente" disabled class="form-control">
-                                        </div>
-                                        <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
-                                        <div class="col-md-2">
-                                            <input type="text" v-model="homoclave_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">NSS</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="nss_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-
-                                    <hr>
-                                    <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
-                                    <hr>
-                                    
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="empresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="domicilio_empresa" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">C.P</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">EXT</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="ext_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="edocivil_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
-                                        </div>
-                                    </div>
-                            </div>
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            </div>
+            <ModalComponent v-if="modal==1"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                        <div class="col-md-9">
+                            <input type="text" disabled v-model="datosCliente.nombre_cliente" class="form-control">
                         </div>
-                        <!-- /.modal-content -->
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                        <div class="col-md-3">
+                            <input type="text" disabled v-model="datosCliente.telefono" class="form-control">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Celular</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="datosCliente.celular" disabled class="form-control">
+                            <a title="Llamar" class="btn btn-dark" :href="'tel:'+datosCliente.celular"><i class="fa fa-phone fa-lg"></i></a>
+                        <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+datosCliente.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Email</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="datosCliente.email" disabled class="form-control">
+                        </div>
+                        <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ datosCliente.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">CURP</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.curp" disabled class="form-control">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">NSS</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.nss" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.rfc" disabled class="form-control">
+                        </div>
+                        <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
+                        <div class="col-md-2">
+                            <input type="text" v-model="datosCliente.homoclave" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="datosCliente.f_nacimiento" disabled class="form-control">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="datosCliente.empresa" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="datosCliente.puesto" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="datosCliente.direccion_empresa" disabled class="form-control">
+                        </div>
+                         <label class="col-md-2 form-control-label" for="text-input">C.P</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.cp_empresa" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="datosCliente.colonia_empresa" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.estado_empresa" disabled class="form-control">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Ciudad</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.ciudad_empresa" disabled class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group row" v-if="datosCliente.email_institucional">
+                        <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="datosCliente.email_institucional" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
+                        <div class="col-md-4">
+                            <input type="text" v-model="datosCliente.telefono_empresa" disabled class="form-control">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">EXT</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="datosCliente.ext_empresa" disabled class="form-control">
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
+            <ModalComponent v-if="modal==4"
+                :titulo="'Manual'"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <p>
+                        Dentro del modulo de entregas de vivienda podrá agendar la fecha y la hora en la que se
+                        realizará la entrega de la vivienda.
+                    </p>
+                    <p>
+                        Reprogramaciones, en caso de necesitar una re reprogramación puede cambiar la fecha y
+                        la hora dando doble clic sobre la fecha y la hora, solo debe indicar la causa
+                        (si es a causa del cliente o es a casusa de un contratista) deberá agregar una observación y guardar.
+                    </p>
+                    <p>
+                        Podrá ver el estatus del equipamiento y en caso de que lo desee puede ver la
+                        ultima fecha del proceso de instalación dando clic sobre el botón de la columna de
+                        “Equipamiento”.
+                    </p>
+                    <p>
+                        En caso de que alguna vivienda o registro (renglón) se muestre con un color de
+                        fondo color rojo indicara que ese registro (lote) no cuenta aún con la firma de escritura.
+                    </p>
+                    <p>
+                        Una vez concretada la venta podrá dar clic sobre el botón de “Finalizar”,
+                        vera una ventana donde debe de indicar la fecha, hora, si existen detalles
+                        por arreglar y un comentario para finalizar.
+                    </p>
+                </template>
+            </ModalComponent>
+            <!-- -->
+
+            <!-- Inicio Modal Archivo Fiscal-->
+        <ModalComponent v-if="modal==5"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+
+                    <div class="form-group row">
+                        <input type="file"
+                            v-show="false"
+                            ref="archivoSelector"
+                            @change="onSelectedArchivo"
+                            accept="image/png, image/jpeg, image/gif, application/pdf"
+                        >
+                        <div class="col-md-9" v-if="!archivo">
+                            <button
+                                @click="onSelectArchivo"
+                                class="btn btn-scarlet">
+                                Seleccionar Poliza de Garantia
+                                <i class="fa fa-upload"></i>
+                            </button>
+
+                        </div>
+
+                        <div class="col-md-7" v-else>
+                            <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                            <button
+                                @click="onSelectArchivo"
+                                class="btn btn-info">
+                                Cambiar Archivo
+                                <i class="fa fa-upload"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-3" v-if="archivo">
+                            <button
+                                @click="saveArchivo"
+                                class="btn btn-scarlet">
+                                Guardar Poliza
+                                <i class="icon-check"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <p>
-                            Dentro del modulo de entregas de vivienda podrá agendar la fecha y la hora en la que se 
-                            realizará la entrega de la vivienda.
-                        </p>
-                        <p>
-                            Reprogramaciones, en caso de necesitar una re reprogramación puede cambiar la fecha y 
-                            la hora dando doble clic sobre la fecha y la hora, solo debe indicar la causa 
-                            (si es a causa del cliente o es a casusa de un contratista) deberá agregar una observación y guardar.
-                        </p>
-                        <p>
-                            Podrá ver el estatus del equipamiento y en caso de que lo desee puede ver la 
-                            ultima fecha del proceso de instalación dando clic sobre el botón de la columna de  
-                            “Equipamiento”.
-                        </p>
-                        <p>
-                            En caso de que alguna vivienda o registro (renglón) se muestre con un color de 
-                            fondo color rojo indicara que ese registro (lote) no cuenta aún con la firma de escritura.
-                        </p>
-                        <p>
-                            Una vez concretada la venta podrá dar clic sobre el botón de “Finalizar”, 
-                            vera una ventana donde debe de indicar la fecha, hora, si existen detalles 
-                            por arreglar y un comentario para finalizar.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
+
+            </template>
+            <template v-slot:buttons-footer>
+                <a v-if="polizaGarantia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/entregas/downloadPoliza/'+polizaGarantia">Descargar poliza</a>
+            </template>
+        </ModalComponent>
+        <!--Fin del modal-->
      </main>
 </template>
 
@@ -903,8 +754,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 observacion:'',
@@ -922,22 +779,21 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 arrayEntregas:[],
                 // Criterios para historial de contratos
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio : 'entregas.fecha_program', 
+                criterio : 'entregas.fecha_program',
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
+                archivo:'',
 
-                modal1:0,
-                modal2: 0,
-                modal3: 0,
+                modal:0,
                 tituloModal: '',
                 tipoAccion:0,
 
@@ -954,58 +810,34 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 cero_detalles : 1,
 
                 reprogramar : 0,
-                
+
 
                 //Datos clientes
-                nombre_cliente:'',
-                sexo_cliente:'',
-                telefono_cliente:'',
-                celular_cliente:'',
-                email_cliente:'',
-                direccion_cliente:'',
-                cp_cliente:'',
-                colonia_cliente:'',
-                estado_cliente:'',
-                ciudad_cliente:'',
-                fechanac_cliente:'',
-                curp_cliente:'',
-                rfc_cliente:'',
-                homoclave_cliente:'',
-                nss_cliente:'',
-                tipoeconomia_cliente:'',
-                empresa_cliente:'',
-                gironegocio_cliente:'',
-                domicilio_empresa:'',
-                cpempresa_cliente:'',
-                coloniaempresa_cliente:'',
-                estadoempresa_cliente:'',
-                ciudadempresa_cliente:'',
-                emailinstitucional_cliente:'',
-                telefonoempresa_cliente:'',
-                ext_cliente:'',
-                edocivil_cliente:'',
-                depeconomicos_cliente:'',
+                datosCliente:{
+
+                },
 
                 mot_reprogra : '',
                 promocion :'',
                 paquete:'',
+                polizaGarantia:'',
 
                 // Criterios para historial de contratos
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio2 : 'lotes.fraccionamiento_id', 
+                criterio2 : 'lotes.fraccionamiento_id',
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
 
-                criterio : 'entregas.fecha_entrega_real', 
+                criterio : 'entregas.fecha_entrega_real',
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
@@ -1079,8 +911,39 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
 
         },
 
-        
+
         methods : {
+            onSelectArchivo(){
+                this.$refs.archivoSelector.click()
+            },
+            onSelectedArchivo( event ){
+                this.archivo = {}
+                this.archivo = event.target.files[0]
+            },
+            saveArchivo(){
+                let formData = new FormData();
+
+                formData.append('archivo', this.archivo);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/entregas/formSubmitPoliza/'+me.contrato_id, formData)
+                .then(function (response) {
+
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.polizaGarantia = me.archivo.name
+                    me.archivo = undefined;
+                    me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/postventa/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&b_desde=' + this.b_desde +  '&b_hasta=' + this.b_hasta ;
@@ -1090,7 +953,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                     me.pagination2 = respuesta.pagination;
                     me.hora_entrega_real = respuesta.hora;
                     me.fecha_entrega_real = respuesta.hoy;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1104,7 +967,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                     me.arrayEntregas = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
                     me.total_entregas = respuesta.contratos.total;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1130,11 +993,11 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 });
             },
 
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 me.arrayFraccionamientos2=[];
                 var url = '/select_fraccionamiento';
@@ -1151,7 +1014,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
             selectEtapa(buscar){
                 let me = this;
                 me.b_etapa=""
-                
+
                 me.arrayEtapas=[];
                 me.arrayEtapas2=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
@@ -1196,7 +1059,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                     console.log(error);
                 });
             },
-            
+
             cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1234,7 +1097,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 axios.post('/postventa/registrarObservacion',{
                     'comentario' : this.observacion,
                     'entrega_id':this.folio,
-                    
+
                 }).then(function (response){
                     me.listarObservacion(1,me.folio);
                     //window.alert("Cambios guardados correctamente");
@@ -1264,12 +1127,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 .catch(function (error) {
                     console.log(error);
                 });
-                
-            },
 
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
             progFecha(){
@@ -1284,7 +1142,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                     'folio' : this.folio,
                     'observacion' : this.observacion,
                     'mot_program' : this.mot_reprogra,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1311,7 +1169,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 axios.put('/postventa/setHoraProg',{
                     'hora_entrega_prog' : this.hora_entrega_prog,
                     'folio' : this.folio,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1332,7 +1190,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 let me = this;
                 me.arrayUltimaFecha = [];
                 var url = '/select_ultima_fecha_instalacion?id=' + id;
-                
+
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayUltimaFecha = respuesta.fecha_ultima;
@@ -1345,7 +1203,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                         }
                         else
                             me.fecha ='Instalado el dia: ' + me.arrayUltimaFecha[0].fin_instalacion;
-                            
+
                     Swal({
                     title: me.fecha,
                     animation: false,
@@ -1367,7 +1225,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                     'comentario' : this.observacion,
                     'id' : this.folio,
                     'cero_detalles' : this.cero_detalles,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1412,39 +1270,12 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
             },
             cerrarModal(){
                 this.tituloModal = '';
-                this.modal2 = 0;
-                this.modal3 = 0;
-                this.modal1= 0;
+                this.modal= 0;
                 this.observacion = '';
                 this.arrayObservacion = [];
                 this.nombre_cliente="";
                 this.sexo_cliente="";
-                this.telefono_cliente="";
-                this.celular_cliente="";
-                this.email_cliente="";
-                this.direccion_cliente="";
-                this.cp_cliente="";
-                this.colonia_cliente="";
-                this.estado_cliente="";
-                this.ciudad_cliente="";
-                this.fechanac_cliente="";
-                this.curp_cliente="";
-                this.rfc_cliente="";
-                this.homoclave_cliente="";
-                this.nss_cliente="";
-                this.tipoeconomia_cliente="";
-                this.empresa_cliente="";
-                this.gironegocio_cliente="";
-                this.domicilio_empresa="";
-                this.cpempresa_cliente="";
-                this.coloniaempresa_cliente="";
-                this.estadoempresa_cliente="";
-                this.ciudadempresa_cliente="";
-                this.emailinstitucional_cliente="";
-                this.telefonoempresa_cliente="";
-                this.ext_cliente="";
-                this.edocivil_cliente="";
-                this.depeconomicos_cliente="";
+                this.datosCliente = {};
                 this.errorEntrega = 0;
                 this.errorMostrarMsjEntrega = [];
             },
@@ -1453,8 +1284,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                 switch(accion){
 
                     case 'observaciones':{
-                        this.modal3 =1;
-                        this.modal1=0;
+                        this.modal = 3;
                         this.tituloModal='Observaciones';
                         this.folio = data['folio'];
                         this.observacion = '';
@@ -1462,9 +1292,16 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                         break;
                     }
 
+                    case 'garantia':{
+                        this.modal = 5;
+                        this.tituloModal = 'Subir Poliza de Garantia';
+                        this.contrato_id = data['folio'];
+                        this.polizaGarantia = data['garantia_file'];
+                        break;
+                    }
+
                     case 'equipamiento':{
-                        this.modal3 = 1;
-                        this.modal1 = 0;
+                        this.modal = 3;
                         this.tituloModal = 'Equipamiento en la casa';
                         this.promocion = data['descripcion_promocion'];
                         this.paquete = data['descripcion_paquete'];
@@ -1474,78 +1311,47 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
 
                     case 'ver_personal':
                     {
-                        this.modal1 =1;
+                        this.modal =1;
                         this.tituloModal='Datos del prospecto';
                         this.tipoAccion=3;
-                        this.nombre_cliente = data['nombre_cliente'];
-                        if(data['sexo'] == "M"){
-                            this.sexo_cliente= 'Masculino';
-                        }else{
-                            this.sexo_cliente= 'Femenino';
-                        }
-                        this.telefono_cliente = data['telefono'];
-                        this.celular_cliente = data['celular'];
-                        this.email_cliente = data['email'];
-                        this.direccion_cliente =data['direccion'];
-                        this.cp_cliente= data['cp'];
-                        this.colonia_cliente = data['colonia'];
-                        this.estado_cliente=data['estado'];
-                        this.ciudad_cliente=data['ciudad'];
-                        this.fechanac_cliente=data['f_nacimiento'];
-                        this.curp_cliente=data['curp'];
-                        this.rfc_cliente=data['rfc'];
-                        this.homoclave_cliente=data['homoclave'];
-                        this.nss_cliente=data['nss'];
-                        this.tipoeconomia_cliente=data['tipo_economia'];
-                        this.empresa_cliente=data['empresa'];
-                        this.gironegocio_cliente=data['puesto'];
-                        this.domicilio_empresa=data['direccion_empresa'];
-                        this.cpempresa_cliente=data['cp_empresa'];
-                        this.coloniaempresa_cliente=data['colonia_empresa'];
-                        this.estadoempresa_cliente=data['estado_empresa'];
-                        this.ciudadempresa_cliente=data['ciudad_empresa'];
-                        this.emailinstitucional_cliente=data['email_institucional'];
-                        this.telefonoempresa_cliente=data['telefono_empresa'];
-                        this.ext_cliente=data['ext_empresa'];
+                        this.datosCliente = data;
 
                         switch(data['edo_civil']){
                             case 1: {
-                                this.edocivil_cliente = 'Casado - separacion de bienes';
+                                this.datosCliente.edocivil_cliente = 'Casado - separacion de bienes';
                                 break;
                             }
                             case 2:{
-                                this.edocivil_cliente = 'Casado - sociedad conyugal';
+                                this.datosCliente.edocivil_cliente = 'Casado - sociedad conyugal';
                                 break;
                             }
                             case 3:{
-                                this.edocivil_cliente = 'Divorciado';
+                                this.datosCliente.edocivil_cliente = 'Divorciado';
                                 break;
                             }
                             case 4:{
-                                this.edocivil_cliente = 'Soltero';
+                                this.datosCliente.edocivil_cliente = 'Soltero';
                                 break;
                             }
                             case 5:{
-                                this.edocivil_cliente = 'Union libre';
+                                this.datosCliente.edocivil_cliente = 'Union libre';
                                 break;
                             }
                             case 6:{
-                                this.edocivil_cliente = 'Viudo';
+                                this.datosCliente.edocivil_cliente = 'Viudo';
                                 break;
                             }
                             default:{
-                                this.edocivil_cliente = 'Otro';
+                                this.datosCliente.edocivil_cliente = 'Otro';
                                 break;
                             }
                         }
-                        
-                        this.depeconomicos_cliente=data['num_dep_economicos'];
                         break;
                     }
 
                     case 'programar_fecha':{
                         this.folio = data['folio'];
-                        this.modal2 = 1;
+                        this.modal = 2;
                         this.tituloModal = "Programar Fecha";
                         this.fecha_program = data['fecha_program'];
                         if(data['fecha_program'] != null){
@@ -1558,7 +1364,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
 
                     case 'programar_hora':{
                         this.folio = data['folio'];
-                        this.modal2 = 1;
+                        this.modal = 2;
                         this.tituloModal = "Programar Hora";
                         this.hora_entrega_prog = data['hora_entrega_prog'];
                         this.tipoAccion = 2;
@@ -1578,7 +1384,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                             }).then((result) => {
                             if (result.value) {
                                 this.folio = data['folio'];
-                                this.modal2 = 1;
+                                this.modal = 2;
                                 this.tituloModal = "Finalizar entrega";
                                 this.tipoAccion = 3;
                                 this.cero_detalles = 1;
@@ -1589,7 +1395,7 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                         }
                         else{
                             this.folio = data['folio'];
-                            this.modal2 = 1;
+                            this.modal = 2;
                             this.tituloModal = "Finalizar entrega";
                             this.tipoAccion = 3;
                             this.cero_detalles = 1;
@@ -1600,9 +1406,9 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
                     }
                 }
             }
-            
+
         },
-       
+
         mounted() {
             this.listarContratos(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
             this.listarEntregas(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
@@ -1616,25 +1422,11 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
         background:#717171;
         border-bottom:1px solid #c2cfd6;
     }
-
-
     .form-control:disabled, .form-control[readonly] {
     background-color: rgba(0, 0, 0, 0.06);
     opacity: 1;
     font-size: 0.85rem;
     color: #27417b;
-    }
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-         overflow-y: auto;
-        
     }
     .div-error{
         display:flex;
@@ -1644,32 +1436,11 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
         color: red !important;
         font-weight: bold;
     }
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
 
     .td2, .th2 {
     border: solid rgb(200, 200, 200) 1px;
     padding: .5rem;
     }
-
-    .badge2 {
-    display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 90%;
-    font-weight: bold;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
 
     .td2 {
     white-space: nowrap;
@@ -1683,5 +1454,5 @@ import EquipamientosUriVue from '../Obra/EquipamientosUri.vue';
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

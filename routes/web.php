@@ -559,6 +559,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/postventa/polizaDeGarantia/{id}','EntregaController@polizaDeGarantia');
         Route::get('/postventa/cartaAlarma','EntregaController@cartaAlarma');
 
+        Route::post('/entregas/formSubmitPoliza/{id}','EntregaController@formSubmitPoliza');
+        Route::get('/entregas/downloadPoliza/{fileName}' , 'EntregaController@downloadFilePoliza');
+
         Route::get('/postventa/cartaRecepcion/{id}','EntregaController@cartaRecepcion');
 
         Route::put('/postventa/datosDeposito/registrar','EntregaController@setDatosCuenta');

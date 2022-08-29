@@ -8,18 +8,18 @@
         </strong>
       </li>
     </ol>
-    
+
     <div class="container-fluid">
 
         <!-- Avisos generales -->
         <div class="row">
             <div class="col-xl-6 col-lg-6 col-md-4" v-for="rem in arrayAvisosGral" :key="rem.id">
                 <div class="col-sm-12 alert alert-primary alert-dismissible fade show" role="alert">
-                    <strong>¡Atención! : </strong> {{rem.mensaje}} 
+                    <strong>¡Atención! : </strong> {{rem.mensaje}}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                   
+
                     <div class="px-3 py-2 text-right">
                         <button type="button" class="btn btn-light rounded" data-dismiss="alert" @click="setEnterado(rem.id)">
                             <span aria-hidden="true">Enterado</span>
@@ -27,13 +27,13 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-4">
                 <div v-for="rem in arrayRemindersLead" :key="rem.id" class="col-sm-12 alert alert-dark alert-dismissible fade show" role="alert">
-                    <strong>¡Atención! : </strong> {{rem.comentario}} 
+                    <strong>¡Atención! : </strong> {{rem.comentario}}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -49,13 +49,13 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-4">
                 <div v-for="rem in arrayRemindersLeadFecha" :key="rem.id" class="col-sm-12 alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>¡No lo olvides! : </strong> {{rem.comentario}} 
+                    <strong>¡No lo olvides! : </strong> {{rem.comentario}}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -71,11 +71,11 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
         <div class="row">
             <div v-for="rem in arrayReminders" :key="rem.id" class="col-sm-12 alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>¡No lo olvides! : </strong> {{rem.comentario}} 
+                <strong>¡No lo olvides! : </strong> {{rem.comentario}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -88,15 +88,15 @@
 
         <div class="text-center" v-if="arrayCumple.length >= 1 && arrayCumple.length > 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         <div v-if="arrayCumple.length >= 1 && arrayCumple.length == 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
-        
+
         <div class="row" v-if="arrayCumple.length >= 1 && userId != 30993" >
             <div v-for="cumple in arrayCumple" :key="cumple.id" class="col-xl-4 col-lg-5 col-md-4">
                 <div class="card">
                     <div class="card-body p-3 d-flex align-items-center">
                         <div class="bg-gradient-primary p-3 mfe-3">
-                            
+
                                 <i style="font-size:1.5rem; color:white;" class="fa fa-birthday-cake"></i>
-                            
+
                         </div>
                         <div>
                             <div class="text-value text-primary">&nbsp;&nbsp;&nbsp;{{cumple.nombre.toUpperCase() + ' ' + cumple.apellidos.toUpperCase()}}</div>
@@ -121,11 +121,11 @@
                     </div>
 
                 </div>
-                
+
             </div>
 
-           
-            
+
+
         </div>
 
 
@@ -139,25 +139,21 @@
                     <!---->
                     <div class="card-body">
                         <div>
-                            <div class="author"><img
-                                    v-if="url"
-                                    :src="url"
-                                    class="avatar border-white"
-                                    
-                                    
+                            <div class="author">
+                                    <img
+                                        v-if="url"
+                                        :src="url"
+                                        class="avatar border-white"
                                     >
                                     <img
-                                    v-else
-                                    :src="'/img/avatars/'+foto_user"
-                                    class="avatar border-white"
-                                    
-                                    
+                                        v-else-if="foto_user"
+                                        :src="'/img/avatars/'+foto_user"
+                                        class="avatar border-white"
                                     >
                                 <h4 class="title">
-                                    
+
                                     <font style="vertical-align: inherit;">
-                                        <font v-text="nombre_completo" style="vertical-align: inherit;">
-                                        </font>
+                                        <font v-text="nombre_completo" style="vertical-align: inherit;"></font>
                                     </font><br><small>
                                             <font style="vertical-align: inherit;">
                                                 <font v-text="usuario" style="vertical-align: inherit;"></font>
@@ -173,12 +169,12 @@
                                 </font>
                             </p>
                         </div>
-                        
-                        
+
+
                     </div>
                     <!---->
                 </div>
-                
+
             </div>
             <div class="col-xl-8 col-lg-7 col-md-6">
                 <div class="card2 card2">
@@ -221,7 +217,7 @@
                                             <!---->
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <div class="form-group"><label>
                                                 <font style="vertical-align: inherit;">
@@ -284,9 +280,9 @@
                                                 placeholder="Celular" class="form-control" v-model="celular">
                                             <!----></div>
                                     </div>
-                                    
+
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group"><label class="control-label">
@@ -382,17 +378,17 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        Dentro de la vista principal los usuarios podrán encontrar información relevante a su 
-                        perfil e información personal y medio de contacto, los usuarios podrán editar la información, 
+                        Dentro de la vista principal los usuarios podrán encontrar información relevante a su
+                        perfil e información personal y medio de contacto, los usuarios podrán editar la información,
                         así como subir una imagen de perfil.
                     </p>
                     <p>
-                        En caso de que el usuario sea un asesor en la parte superior de la vista principal además 
+                        En caso de que el usuario sea un asesor en la parte superior de la vista principal además
                         podrá encontrar tarjetas con el o los nombres de clientes que cumplan años ese día.
                     </p>
                     <p>
-                        Además, podrán encontrar en la parte superior derecha un submenú para acceder a la 
-                        página principal, agenda de Google y botón de cerrar sesión. 
+                        Además, podrán encontrar en la parte superior derecha un submenú para acceder a la
+                        página principal, agenda de Google y botón de cerrar sesión.
                     </p>
                     <p>
                         También podan encontrar un icono de campana el cual podrán ver las notificaciones nuevas y antiguas.
@@ -552,7 +548,7 @@ export default {
           me.nombre = me.arrayUsuario[0].nombre;
           me.apellidos = me.arrayUsuario[0].apellidos;
           me.f_nacimiento = me.arrayUsuario[0].f_nacimiento;
-          
+
 
           me.email = me.arrayUsuario[0].email;
           me.password = "";

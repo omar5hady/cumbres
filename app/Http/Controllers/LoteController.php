@@ -505,7 +505,7 @@ class LoteController extends Controller
                     ]
                 ];
 
-                $users = User::select('id')->where('rol_id','=','5')->get();
+                $users = User::select('id')->where('rol_id','=','5')->orWhere('id','=',3)->get();
 
                 foreach($users as $notificar){
                     User::findOrFail($notificar->id)->notify(new NotifyAdmin($iniciosObra));
@@ -755,7 +755,8 @@ class LoteController extends Controller
                   'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.num_inicio',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                   'lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
-            ->where('modelos.nombre','!=','Por Asignar');
+            ->where('modelos.nombre','!=','Por Asignar')
+            ->where('lotes.ini_obra','!=','0');
 
             if($buscar != '')//Busqueda general
                 $lotes = $lotes->where($criterio, '=',$buscar);

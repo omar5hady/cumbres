@@ -92,7 +92,7 @@ class EntregaController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
 
     //{{{{{{{{{{{{{{{{{{{ SECCION PARA ENTREGA DE VIVIENDAS }}}}}}}}}}}}}}}}}}}
@@ -111,7 +111,7 @@ class EntregaController extends Controller
             // Creación y retorno de excel.
             return Excel::create('Entregas de vivienda', function($excel) use ($contratos){
                     $excel->sheet('Entregas de vivienda', function($sheet) use ($contratos){
-                        
+
                         $sheet->row(1, [
                             '# Ref','Proyecto', 'Etapa', 'Manzana',
                             'Lote','Cliente','Celular', 'Paquete y/o Promocioón', 'Fecha de firma de escrituras',
@@ -144,7 +144,7 @@ class EntregaController extends Controller
                             $entrega->fecha_program = $fecha_program->formatLocalized('%d de %B de %Y');
 
                             $sheet->row($index+2, [
-                                $entrega->folio, 
+                                $entrega->folio,
                                 $entrega->proyecto,
                                 $entrega->etapa,
                                 $entrega->manzana,
@@ -156,7 +156,7 @@ class EntregaController extends Controller
                                 "$entrega->fecha_program",
                                 "$entrega->hora_entrega_prog",
                                 $entrega->avance_lote.'%'
-                            ]);	
+                            ]);
                         }
                         $num='A1:L'.$cont;
                         $sheet->setBorder($num, 'thin');
@@ -214,10 +214,10 @@ class EntregaController extends Controller
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
-                ->select('contratos.id as folio', 
+                ->select('contratos.id as folio',
                     'contratos.equipamiento',
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                    'c.celular', 
+                    'c.celular',
                     'c.f_nacimiento','c.rfc',
                     'c.homoclave','c.direccion','c.colonia','c.cp',
                     'c.telefono','c.email','creditos.num_dep_economicos',
@@ -261,7 +261,7 @@ class EntregaController extends Controller
             if($buscar != '')
 
             switch($criterio){
-                case 'c.nombre':{ // Busqueda por cliente               
+                case 'c.nombre':{ // Busqueda por cliente
                         $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
@@ -342,7 +342,7 @@ class EntregaController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
 
     // Función para indicar la fecha de entrega programada.
@@ -354,10 +354,10 @@ class EntregaController extends Controller
         if($request->mot_program == 'Contratista'){
             $entrega->cont_reprogram += 1;
         }
-        $entrega->save();    
-        
+        $entrega->save();
+
         $credito = Credito::findOrFail($request->folio);
-        
+
         if($request->observacion != ''){
             // Se genera un nuevo comentario indicando la programación de entrega
             $observacion = new Obs_entrega();
@@ -399,7 +399,7 @@ class EntregaController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $entrega = Entrega::findOrFail($request->folio);
         $entrega->hora_entrega_prog = $request->hora_entrega_prog;
-        $entrega->save();       
+        $entrega->save();
     }
 
     // Función para registrar la finalizción de entrega de una vivienda.
@@ -434,7 +434,7 @@ class EntregaController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
 
     // Función que retorna los contratos que han sido entregados en jSon.
@@ -455,12 +455,12 @@ class EntregaController extends Controller
                 'from'          => $contratos->firstItem(),
                 'to'            => $contratos->lastItem(),
             ],'contratos' => $contratos,
-        ];   
+        ];
     }
 
     // Función que retorna los contratos que han sido entregados en excel.
     public function excelEntregas(Request $request){
-        
+
         //Llamada a función privada que retorna la Query de contratos entregados.
         $contratos = $this->getEntregas($request);
         $contratos = $contratos->orderBy('licencias.avance','desc')
@@ -470,7 +470,7 @@ class EntregaController extends Controller
         // Creación y retorno de resultado en Excel.
         return Excel::create('Entregas', function($excel) use ($contratos){
             $excel->sheet('Entregas', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref','Proyecto', 'Etapa', 'Manzana',
                     '# Lote', 'Calle', '# Oficial','Cliente','# Celular', 'Fecha de firma', 'Fecha entrega (Obra)', 'Paquete y/o Promoción',
@@ -499,31 +499,31 @@ class EntregaController extends Controller
 
                     if($entrega->descripcion_paquete && $entrega->descripcion_promocion && $entrega->equipamiento == 0)
                         $equipamiento='Equipamiento sin solicitarse';
-                
+
                     elseif ($entrega->descripcion_paquete && !$entrega->descripcion_promocion && $entrega->equipamiento == 0)
                         $equipamiento='Equipamiento sin solicitarse';
-                
+
                     elseif (!$entrega->descripcion_paquete && $entrega->descripcion_promocion && $entrega->equipamiento == 0)
                         $equipamiento='Equipamiento sin solicitarse';
-                
+
                     elseif ($entrega->descripcion_paquete && $entrega->descripcion_promocion && $entrega->equipamiento == 1)
                         $equipamiento='En proceso de instalación';
-                
+
                     elseif ($entrega->descripcion_paquete && !$entrega->descripcion_promocion && $entrega->equipamiento == 1)
                         $equipamiento='En proceso de instalación';
-                
+
                     elseif (!$entrega->descripcion_paquete && $entrega->descripcion_promocion && $entrega->equipamiento == 1)
                         $equipamiento='En proceso de instalación';
-                
+
                     elseif ($entrega->descripcion_paquete && $entrega->descripcion_promocion && $entrega->equipamiento == 2)
                         $equipamiento='Equipamiento instalado';
-                
+
                     elseif ($entrega->descripcion_paquete && !$entrega->descripcion_promocion && $entrega->equipamiento == 2)
                         $equipamiento='Equipamiento instalado';
-                
+
                     elseif (!$entrega->descripcion_paquete && $entrega->descripcion_promocion && $entrega->equipamiento == 2)
                         $equipamiento='Equipamiento instalado';
-                
+
                     elseif (!$entrega->descripcion_paquete && !$entrega->descripcion_promocion) $equipamiento='Sin equipamiento';
                     else $equipamiento='Sin equipamiento';
 
@@ -536,7 +536,7 @@ class EntregaController extends Controller
                     $entrega->fecha_entrega_real = $fecha3->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $entrega->folio, 
+                        $entrega->folio,
                         $entrega->proyecto,
                         $entrega->etapa,
                         $entrega->manzana,
@@ -552,7 +552,7 @@ class EntregaController extends Controller
                         $entrega->fecha_entrega_real,
                         $entrega->cont_reprogram
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:O' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -578,10 +578,10 @@ class EntregaController extends Controller
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as c', 'clientes.id', '=', 'c.id')
-            ->select('contratos.id as folio', 
+            ->select('contratos.id as folio',
                 'contratos.equipamiento',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                'c.celular', 
+                'c.celular',
                 'c.f_nacimiento','c.rfc',
                 'c.homoclave','c.direccion','c.colonia','c.cp',
                 'c.telefono','c.email','creditos.num_dep_economicos',
@@ -615,6 +615,7 @@ class EntregaController extends Controller
                 'entregas.fecha_entrega_real',
                 'entregas.hora_entrega_real',
                 'entregas.cont_reprogram',
+                'entregas.garantia_file',
                 DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
             )
             ->where('contratos.status', '!=', 0)
@@ -662,10 +663,10 @@ class EntregaController extends Controller
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
+                    ->select('contratos.id as folio',
                         'contratos.equipamiento',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
+                        'c.celular',
                         'c.f_nacimiento','c.rfc',
                         'c.homoclave','c.direccion','c.colonia','c.cp',
                         'c.telefono','c.email','creditos.num_dep_economicos',
@@ -684,7 +685,7 @@ class EntregaController extends Controller
                         'etapas.costo_mantenimiento',
                         'fraccionamientos.email_administracion',
                         'fraccionamientos.logo_fracc',
-                       
+
                         'lotes.id as loteId',
                         'entregas.fecha_program',
                         'entregas.hora_entrega_prog',
@@ -710,7 +711,7 @@ class EntregaController extends Controller
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
+                    ->select('contratos.id as folio',
                         'contratos.equipamiento',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'creditos.fraccionamiento as proyecto',
@@ -719,7 +720,7 @@ class EntregaController extends Controller
                         'creditos.num_lote',
                         'fraccionamientos.logo_fracc',
                         'fraccionamientos.delegacion',
-                       
+
                         'lotes.id as loteId',
                         'lotes.calle',
                         'lotes.numero'
@@ -749,10 +750,10 @@ class EntregaController extends Controller
         ->join('licencias', 'lotes.id', '=', 'licencias.id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')
-        ->select('contratos.id as folio', 
+        ->select('contratos.id as folio',
             'contratos.equipamiento',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-            'c.celular', 
+            'c.celular',
             'c.f_nacimiento','c.rfc',
             'c.homoclave','c.direccion','c.colonia','c.cp',
             'c.telefono','c.email','creditos.num_dep_economicos',
@@ -805,7 +806,7 @@ class EntregaController extends Controller
         ->join('creditos', 'contratos.id', '=', 'creditos.id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')
-        ->select('contratos.id as folio', 
+        ->select('contratos.id as folio',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente")
         )
         ->where('contratos.id','=',$request->id)
@@ -849,7 +850,7 @@ class EntregaController extends Controller
         $correo->save();
     }
 
-    // Función que retorna los datos de una entrega. 
+    // Función que retorna los datos de una entrega.
     public function getDatosLoteEntregado(Request $request){
         if(!$request->ajax() )return redirect('/');
         $datosLote = Entrega::join('contratos','entregas.id','=','contratos.id')
@@ -860,7 +861,7 @@ class EntregaController extends Controller
                     ->select('contratos.id as folio', 'creditos.modelo','creditos.fraccionamiento',
                         'creditos.etapa','creditos.manzana','creditos.num_lote',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
+                        'c.celular',
                         DB::raw("CONCAT(lotes.calle,' Num.',lotes.numero) AS direccion"),
                         'lotes.manzana', 'lotes.aviso','lotes.id as lote_id',
                         DB::raw('DATEDIFF(current_date,entregas.fecha_entrega_real) as diferencia'
@@ -875,6 +876,33 @@ class EntregaController extends Controller
         return ['datosLote' => $datosLote,
                 'datosContratista' => $datosContratista
                 ];
+    }
+
+    // Función para subir archivo fiscal para ventas.
+    public function formSubmitPoliza(Request $request, $id){
+
+        $contrato = Entrega::findOrFail($id);
+        if( $contrato->garantia_file != NULL){
+            $pathAnterior = public_path() . '/files/entregas/polizas/' . $contrato->garantia_file;
+            File::delete($pathAnterior);
+        }
+
+        $fileName = $request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/entregas/polizas/'), $id.$fileName);
+
+        if($moved){
+            $contrato->garantia_file = $id.$fileName;
+            $contrato->save(); //Insert
+        }
+
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    // Función que descarga el archivo fiscal de una venta.
+    public function downloadFilePoliza($fileName)
+    {
+        $pathtoFile = public_path() . '/files/entregas/polizas/' . $fileName;
+        return response()->file($pathtoFile);
     }
 
 }

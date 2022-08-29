@@ -12,8 +12,8 @@
     <title>Sistema cumbres</title>
 
     <!-- Hojas de estilo -->
-    <link href="vendors/css/font-awesome.min.css" rel="stylesheet">
-    <link href="vendors/css/simple-line-icons.min.css" rel="stylesheet">
+    <link href="vendor/css/font-awesome.min.css" rel="stylesheet">
+    <link href="vendor/css/simple-line-icons.min.css" rel="stylesheet">
     <!-- Estilo principal para la aplicacion -->
     <link href="css/plantilla.css" rel="stylesheet">
 </head>

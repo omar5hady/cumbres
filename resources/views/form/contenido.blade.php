@@ -13,8 +13,8 @@
     <title>Encuesta de satisfacción</title>
 
     <!-- Icons -->
-    <link href="vendors/css/font-awesome.min.css" rel="stylesheet">
-    <link href="vendors/css/simple-line-icons.min.css" rel="stylesheet">
+    <link href="vendor/css/font-awesome.min.css" rel="stylesheet">
+    <link href="vendor/css/simple-line-icons.min.css" rel="stylesheet">
 
     <!-- Main styles for this application -->
     <link href="css/plantilla.css" rel="stylesheet">
@@ -22,17 +22,17 @@
   </head>
   {{-- <img id="login" src="img/login.png" alt=""> --}}
   <body class="app flex-row align-items-center">
-    
+
       <div id="app" class="container">
         @yield('formulario')
       </div>
-    
-    
+
+
 
     <!-- Bootstrap and necessary plugins -->
     <script src="js/app.js"></script>
     <script src="js/plantilla.js"></script>
-    
+
 
   </body>
 </html>

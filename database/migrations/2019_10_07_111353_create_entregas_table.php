@@ -26,6 +26,7 @@ class CreateEntregasTable extends Migration
             $table->boolean('cero_detalles')->default(0);
 
             $table->integer('cont_reprogram')->default(0);
+            $table->date('garantia_file')->nullable();
 
             $table->timestamps();
 
