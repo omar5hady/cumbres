@@ -20,7 +20,7 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
                                     <input type="text"  v-model="b_etapa" @keyup.enter="listarRuvs(1)" class="form-control" placeholder="Etapa">
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -28,10 +28,10 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                   
+
                                     <input type="text"  v-model="b_manzana" @keyup.enter="listarRuvs(1)" class="form-control" placeholder="Manzana">
                                     <input type="text"  v-model="b_lote" @keyup.enter="listarRuvs(1)" class="form-control" placeholder="# Lote">
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                             <div class="col-md-5">
                                 <div class="input-group">
                                     <input type="text"  v-model="b_paquete" @keyup.enter="listarRuvs(1)" class="form-control" placeholder="Paquete Ruv">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -52,96 +52,93 @@
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
                                     <button type="submit" @click="listarRuvs(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/ruv/excelRuv?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' 
+                                    <a class="btn btn-success" v-bind:href="'/ruv/excelRuv?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana='
                                         + b_manzana + '&b_lote=' + b_lote + '&b_paquete=' + b_paquete + '&empresa=' + b_empresa" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th colspan="5"></th>
-                                        <th colspan="3" class="text-center">Solicitud</th>
-                                        <th colspan="2"></th>
-                                        <th colspan="2" class="text-center">Asignación</th>
-                                        <th colspan="3"></th>
-                                    </tr>
-                                    <tr>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Modelo</th>
-                                        <th>Paquete </th>
-                                        <th>Fecha</th>
-                                        <th>Solicitante</th>
-                                        <th>Carga de inf.</th>
-                                        <th>Num. CUV</th>
-                                        <th>Fecha</th>  
-                                        <th>Empresa</th>
-                                        <th>Rev. Documental</th>
-                                        <th>DTU</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayLotes" :key="lote.id">
-                                        <td class="td2" v-text="lote.proyecto"></td>
-                                        <td class="td2" v-text="lote.num_etapa"></td>
-                                        <td class="td2" v-text="lote.manzana"></td>
-                                        <td class="td2" v-text="lote.num_lote"></td>
-                                        <td class="td2" v-text="lote.modelo"></td>
-                                        <td class="td2" v-text="lote.paq_ruv"></td>
-                                        <td class="td2" v-text="this.moment(lote.fecha_siembra).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-text="lote.nombre + ' '+ lote.apellidos"></td>
-                                        <td class="td2 text-center" v-if="lote.fecha_carga == null">
-                                            <button type="button" @click="abrirModal('cargaInfo',lote)" class="btn btn-primary btn-sm" title="Carga de informacion">
-                                                <i class="fa fa-check"></i>
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th colspan="5"></th>
+                                    <th colspan="3" class="text-center">Solicitud</th>
+                                    <th colspan="2"></th>
+                                    <th colspan="2" class="text-center">Asignación</th>
+                                    <th colspan="3"></th>
+                                </tr>
+                                <tr>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Modelo</th>
+                                    <th>Paquete </th>
+                                    <th>Fecha</th>
+                                    <th>Solicitante</th>
+                                    <th>Carga de inf.</th>
+                                    <th>Num. CUV</th>
+                                    <th>Fecha</th>
+                                    <th>Empresa</th>
+                                    <th>Rev. Documental</th>
+                                    <th>DTU</th>
+                                    <th>Observaciones</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="lote in arrayLotes" :key="lote.id">
+                                    <td class="td2" v-text="lote.proyecto"></td>
+                                    <td class="td2" v-text="lote.num_etapa"></td>
+                                    <td class="td2" v-text="lote.manzana"></td>
+                                    <td class="td2" v-text="lote.num_lote"></td>
+                                    <td class="td2" v-text="lote.modelo"></td>
+                                    <td class="td2" v-text="lote.paq_ruv"></td>
+                                    <td class="td2" v-text="this.moment(lote.fecha_siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td class="td2" v-text="lote.nombre + ' '+ lote.apellidos"></td>
+                                    <td class="td2 text-center" >
+                                        <button v-if="!lote.fecha_carga" type="button" @click="abrirModal('cargaInfo',lote)" class="btn btn-primary btn-sm" title="Carga de informacion">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        {{ (lote.fecha_carga) ? this.moment(lote.fecha_carga).locale('es').format('DD/MMM/YYYY'):''}}
+                                    </td>
+                                    <td class="td2">
+                                        <button v-if="!lote.num_cuv" type="button" @click="obtenerCuv(lote.id)" class="btn btn-dark btn-sm" title="Num. CUV">
+                                            <i class="fa fa-edit">&nbsp;# CUV</i>
+                                        </button>
+                                        {{(lote.num_cuv) ? lote.num_cuv : ''}}
+                                    </td>
+                                    <template v-if="lote.empresa == null">
+                                        <td class="td2 text-center" colspan="2">
+                                            <button type="button" @click="abrirModal('asignacion',lote)" class="btn btn-primary btn-sm" title="Asignación de verificador">
+                                                <i class="fa fa-users">&nbsp;Asignar Verificador</i>
                                             </button>
                                         </td>
-                                        <td class="td2" v-else v-text="this.moment(lote.fecha_carga).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-if="lote.num_cuv == null">
-                                            <button type="button" @click="obtenerCuv(lote.id)" class="btn btn-dark btn-sm" title="Num. CUV">
-                                                <i class="fa fa-edit">&nbsp;# CUV</i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-else v-text="lote.num_cuv"></td>
-                                        <template v-if="lote.empresa == null">
-                                            <td class="td2 text-center" colspan="2">
-                                                <button type="button" @click="abrirModal('asignacion',lote)" class="btn btn-primary btn-sm" title="Asignación de verificador">
-                                                    <i class="fa fa-users">&nbsp;Asignar Verificador</i>
-                                                </button>
-                                            </td>
-                                        </template>
-                                        <template v-else>
-                                            <td class="td2" v-text="this.moment(lote.fecha_asignacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-text="lote.empresa"></td>
-                                        </template>
-                                        
-                                        <td class="td2 text-center" v-if="lote.fecha_revision == null">
-                                            <button type="button" @click="revDocumental(lote.id)" class="btn btn-dark btn-sm" title="Revisión Documental">
-                                                <i class="fa fa-check"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-else v-text="this.moment(lote.fecha_revision).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-if="lote.fecha_dtu == null">
-                                            <button type="button" @click="abrirModal('dtu',lote)" class="btn btn-primary btn-sm" title="Obtención de DTU">
-                                                <i class="fa fa-check"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-else v-text="this.moment(lote.fecha_dtu).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button type="button" @click="abrirModal('observaciones',lote)" class="btn btn-warning btn-sm" title="Observaciones">
-                                                <i class="fa fa-book">&nbsp;Observaciones</i>
-                                            </button>
-                                        </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>  
+                                    </template>
+                                    <template v-else>
+                                        <td class="td2" v-text="this.moment(lote.fecha_asignacion).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="lote.empresa"></td>
+                                    </template>
+                                    <td class="td2 text-center">
+                                        <button  v-if="!lote.fecha_revision" type="button" @click="revDocumental(lote.id)" class="btn btn-dark btn-sm" title="Revisión Documental">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        {{(lote.fecha_revision) ? this.moment(lote.fecha_revision).locale('es').format('DD/MMM/YYYY') : ''}}
+                                    </td>
+                                    <td class="td2">
+                                        <button  v-if="!lote.fecha_dtu" type="button" @click="abrirModal('dtu',lote)" class="btn btn-primary btn-sm" title="Obtención de DTU">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        {{(lote.fecha_dtu) ? this.moment(lote.fecha_dtu).locale('es').format('DD/MMM/YYYY'):''}}
+                                    </td>
+                                    <td class="td2">
+                                        <button type="button" @click="abrirModal('observaciones',lote)" class="btn btn-warning btn-sm" title="Observaciones">
+                                            <i class="fa fa-book">&nbsp;Observaciones</i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -167,117 +164,77 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de carga</label>
-                                    <div class="col-md-4">
-                                       <input type="date" v-model="fecha" class="form-control" >
-                                    </div>
-                                </div>
-
-                                 <div class="form-group row" v-if="tipoAccion == 2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa Verificadora</label>
-                                    <div class="col-md-5">
-                                       <select class="form-control" v-model="empresa">
-                                            <option value="">Seleccione Empresa</option>
-                                            <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.id" v-text="empresa.empresa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                 <div class="form-group row" v-if="tipoAccion == 3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de obtención</label>
-                                    <div class="col-md-4">
-                                       <input type="date" v-model="fecha" class="form-control" >
-                                    </div>
-                                </div>
-                              
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion == 1 && fecha != ''" class="btn btn-primary" @click="cargarInformacion()">Guardar</button>
-                            <button type="button" v-if="tipoAccion == 2 && empresa != ''" class="btn btn-primary" @click="asignarVerificador()">Guardar</button>
-                            <button type="button" v-if="tipoAccion == 3 && fecha != ''" class="btn btn-primary" @click="obtenerDTU()">Guardar</button>
+            <ModalComponent v-if="modal"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row" v-if="tipoAccion == 1">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de carga</label>
+                        <div class="col-md-4">
+                            <input type="date" v-model="fecha" class="form-control" >
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                        <div class="form-group row" v-if="tipoAccion == 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Empresa Verificadora</label>
+                        <div class="col-md-5">
+                            <select class="form-control" v-model="empresa">
+                                <option value="">Seleccione Empresa</option>
+                                <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.id" v-text="empresa.empresa"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                        <div class="form-group row" v-if="tipoAccion == 3">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de obtención</label>
+                        <div class="col-md-4">
+                            <input type="date" v-model="fecha" class="form-control" >
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion == 1 && fecha != ''" class="btn btn-primary" @click="cargarInformacion()">Guardar</button>
+                    <button type="button" v-if="tipoAccion == 2 && empresa != ''" class="btn btn-primary" @click="asignarVerificador()">Guardar</button>
+                    <button type="button" v-if="tipoAccion == 3 && fecha != ''" class="btn btn-primary" @click="obtenerDTU()">Guardar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal2"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                        <div class="col-md-6">
+                                <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                                    <div class="col-md-6">
-                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-
-                                    </div>
-                                </div>
-                                <!--//////////tabla de consulta de observaciones//////////////-->
-                                <table class="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Observacion</th>
-                                            <th>Fecha</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                            
-                                            <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.observacion" ></td>
-                                            <td v-text="observacion.created_at"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary" @click="agregarComentario()">Guardar</button>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <!--//////////tabla de consulta de observaciones//////////////-->
+                    <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.observacion" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal observaciones-->
 
             <!--Fin del modal-->
 
 
-                    
+
         </main>
 </template>
 
@@ -286,7 +243,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         props:{
             rolId:{type: String}
         },
@@ -308,7 +271,7 @@
                 tituloModal : '',
                 tipoAccion: 0,
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -316,7 +279,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 buscar2 : '',
                 b_etapa:'',
@@ -328,7 +291,7 @@
 
                 fecha:'',
                 empresa:'',
-                
+
             }
         },
         computed:{
@@ -362,14 +325,14 @@
 
         },
 
-        
+
         methods : {
 
             /**Metodo para mostrar los registros */
             listarRuvs(page){
                 let me = this;
-                var url = '/ruv/indexRuv?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana + 
-                '&b_lote=' + me.b_lote + '&b_paquete=' + me.b_paquete + '&empresa=' + me.b_empresa; 
+                var url = '/ruv/indexRuv?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana +
+                '&b_lote=' + me.b_lote + '&b_paquete=' + me.b_paquete + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;
@@ -379,7 +342,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             listarObservacion(buscar){
@@ -393,11 +356,11 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             agregarComentario(){
-                
+
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/ruv/storeComentarios',{
@@ -407,7 +370,7 @@
                     me.listarObservacion(me.id);
                     me.observacion = '';
                     //me.cerrarModal3(); //al guardar el registro se cierra el modal
-                    
+
                     const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -458,7 +421,7 @@
 
             selectEmpresaVerif(){
                 let me = this;
-               
+
                 me.arrayEmpresas=[];
                 var url = '/empresa/selectEmpresaVerificadora';
                 axios.get(url).then(function (response) {
@@ -471,7 +434,7 @@
             },
 
             cargarInformacion(){
-                if(this.rolId == 1 || this.rolId == 3){ 
+                if(this.rolId == 1 || this.rolId == 3){
                     let me = this;
                     //Con axios se llama el metodo update de FraccionaminetoController
                     axios.put('/ruv/cargaInfo',{
@@ -502,7 +465,7 @@
             },
 
             asignarVerificador(){
-                if(this.rolId == 1 || this.rolId == 3){ 
+                if(this.rolId == 1 || this.rolId == 3){
                     let me = this;
                     //Con axios se llama el metodo update de FraccionaminetoController
                     axios.put('/ruv/asignarVerificador',{
@@ -533,7 +496,7 @@
             },
 
             obtenerDTU(){
-                if(this.rolId == 1 || this.rolId == 5 || this.rolId == 8 ){  
+                if(this.rolId == 1 || this.rolId == 5 || this.rolId == 8 ){
                     let me = this;
                     //Con axios se llama el metodo update de FraccionaminetoController
                     axios.put('/ruv/dtu',{
@@ -564,7 +527,7 @@
             },
 
             obtenerCuv(id){
-                if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){ 
+                if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){
                     let me = this;
                     (async function getFruit () {
                         const {value: numero} = await Swal({
@@ -616,10 +579,10 @@
             },
 
             revDocumental(id){
-                if(this.rolId == 1 || this.rolId == 5){  
+                if(this.rolId == 1 || this.rolId == 5){
                     let me = this;
                     //Con axios se llama el metodo update de LoteController
-                    
+
                     Swal({
                         title: 'Estas seguro?',
                         animation: false,
@@ -630,16 +593,16 @@
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
                         cancelButtonText: 'Cancelar',
-                        
+
                         confirmButtonText: 'Si!'
                         }).then((result) => {
 
                         if (result.value) {
-                        
+
                             axios.put('/ruv/revDocumental',{
                                 'id':id
-                            }); 
-                            
+                            });
+
                             me.listarRuvs(me.pagination.current_page);
                             Swal({
                                 title: 'Hecho!',
@@ -658,7 +621,7 @@
                         text: 'No tiene permisos para realizar esta accion!',
                         })
                 }
-              
+
             },
 
             cambiarPagina(page){
@@ -681,10 +644,10 @@
             abrirModal(accion,data =[]){
                 this.selectEmpresaVerif();
                 switch(accion){
-                    
+
                     case 'cargaInfo':
                     {
-                        if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){  
+                        if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){
                             this.modal =1;
                             this.tituloModal='Carga de Informacion RUV';
                             this.fecha='';
@@ -702,7 +665,7 @@
                     }
                     case 'asignacion':
                     {
-                        if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){  
+                        if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){
                             this.modal =1;
                             this.tituloModal='Asignación de verificador';
                             this.fecha='';
@@ -721,7 +684,7 @@
                         break;
                     }
                     case 'dtu':{
-                        if(this.rolId == 1 || this.rolId == 5 ){  
+                        if(this.rolId == 1 || this.rolId == 5 ){
                             this.modal= 1;
                             this.tituloModal='Obtención de DTU';
                             this.fecha='';
@@ -746,10 +709,10 @@
                         break;
                     }
                 }
-            }       
+            }
         },
-        
-        
+
+
         mounted() {
             this.listarRuvs(1);
             this.selectFraccionamientos();
@@ -774,7 +737,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -811,11 +774,11 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
-    
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none; 
-    margin: 0;  
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
     }
 </style>

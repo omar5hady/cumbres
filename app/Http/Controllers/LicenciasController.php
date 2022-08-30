@@ -63,7 +63,7 @@ class LicenciasController extends Controller
                         if($b_manzana != '')//Manzana
                             $licencias = $licencias->where('lotes.manzana', '=', $b_manzana);
                         if($b_puente != '')//Crédito puente
-                            $licencias = $licencias->where('lotes.credito_puente', '=', $b_puente); 
+                            $licencias = $licencias->where('lotes.credito_puente', '=', $b_puente);
                         if($b_num_inicio != '')//Numero de inicio
                             $licencias = $licencias->where('lotes.num_inicio', '=', $b_num_inicio);
                         if($b_etapa != '')//Busqueda por etapa
@@ -178,7 +178,7 @@ class LicenciasController extends Controller
                 'lotes.credito_puente'
             )
             ->where('lotes.aviso','!=','0');
-                        
+
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{//Busqueda por proyecto
                         if($buscar != '')
@@ -218,7 +218,7 @@ class LicenciasController extends Controller
 
         return $lotes;
     }
-    //Función privada que retorna el identificador de contrato firmado para ventas directas, ligado a un lote 
+    //Función privada que retorna el identificador de contrato firmado para ventas directas, ligado a un lote
     private function getContrato($id){
         $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
                                         ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
@@ -282,9 +282,9 @@ class LicenciasController extends Controller
                 $lote->institucion = $creditos[0]->institucion;
             }
             if(sizeof($avaluo))//Si se obtiene resultado
-                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;//Se asigna el valor de la fecha de solicitud 
+                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;//Se asigna el valor de la fecha de solicitud
         }
-    
+
         return [
             'pagination' => [
                 'total'         => $lotes->total(),
@@ -321,7 +321,7 @@ class LicenciasController extends Controller
                 $lote->institucion = $creditos[0]->institucion;
             }
             if(sizeof($avaluo))//Si se obtiene resultado
-                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;//Se asigna el valor de la fecha de solicitud 
+                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;//Se asigna el valor de la fecha de solicitud
         }
         //Creación y retorno de los resultados obtenidos en Excel.
         return Excel::create(
@@ -330,7 +330,7 @@ class LicenciasController extends Controller
                 $excel->sheet('visita', function ($sheet) use ($lotes) {
 
                     $sheet->row(1, [
-                        'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Dirección', 
+                        'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Dirección',
                         '# Oficial', 'Planos obra','% Avance', 'Crédito Puente', 'Fecha termino', 'Paquete',
                         'Fecha de visita', 'Status'
                     ]);
@@ -487,7 +487,7 @@ class LicenciasController extends Controller
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $licencia = Licencia::findOrFail($request->id);
         $licencia->visita_avaluo = $request->visita_avaluo;
-        
+
         $licencia->save();
     }
 
@@ -554,7 +554,7 @@ class LicenciasController extends Controller
             ->groupBy('month')
             ->groupBy('acta')
             ->distinct()->get();
-         
+
         //Creación y retorno de los resultados obtenidos en Excel
         return Excel::create(
             'resumen_licencias',
@@ -880,7 +880,7 @@ class LicenciasController extends Controller
         return response()->file($pathtoFile);
     }
 
-    //Función para obtener los registros en excel de licencias para los lotes dados de alta 
+    //Función para obtener los registros en excel de licencias para los lotes dados de alta
     public function exportExcelLicencias(Request $request)
     {
         //Llamada a la funcion privada que retorla la query principal
@@ -984,7 +984,7 @@ class LicenciasController extends Controller
         )->download('xls');
     }
 
-    //Función para obtener los registros en excel de las actas de termino para los lotes dados de alta 
+    //Función para obtener los registros en excel de las actas de termino para los lotes dados de alta
     public function exportExcelActaTerminacion(Request $request)
     {
          //Llamada a la funcion privada que retorla la query principal
@@ -1088,11 +1088,11 @@ class LicenciasController extends Controller
                 break;
             }
             case 'licencias.fecha_acta':{//Busqueda actas de termino
-                $lotes = $query->where('licencias.foto_acta', '!=', NULL);//Fecha cargada
+                $lotes = $lotes->where('licencias.foto_acta', '!=', NULL);//Fecha cargada
                 break;
             }
             case 'licencias.fecha_predial':{//Busqueda prediales
-                $lotes = $query->where('licencias.foto_predial', '!=', NULL);//Fecha cargada
+                $lotes = $lotes->where('licencias.foto_predial', '!=', NULL);//Fecha cargada
                 break;
             }
         }
@@ -1109,7 +1109,7 @@ class LicenciasController extends Controller
             $lotes = $lotes->where('lotes.num_lote', '=', $lote);
         if($request->empresa != '')//Busqueda por empresa constructora
             $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
-        
+
         $lotes = $lotes->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('lotes.manzana','asc')
@@ -1123,7 +1123,7 @@ class LicenciasController extends Controller
         //Llamada a la función privada que retorna la query principal
         $lotes = $this->getDescargas($request);
         $lotes = $lotes->paginate(12);
-        
+
         return [
             'pagination' => [
                 'total'         => $lotes->total(),
@@ -1133,7 +1133,7 @@ class LicenciasController extends Controller
                 'from'          => $lotes->firstItem(),
                 'to'            => $lotes->lastItem(),
             ],
-            'lotes' => $lotes, 'criterio'=> $busqueda
+            'lotes' => $lotes, 'criterio'=> $request->busqueda
 
         ];
     }
@@ -1213,7 +1213,7 @@ class LicenciasController extends Controller
                         }
                         else
                             $direccion = $lote->calle.' #'. $lote->numero;
-                        
+
 
                         $sheet->row($index + 2, [
                             $lote->proyecto,

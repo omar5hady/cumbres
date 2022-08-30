@@ -31,7 +31,7 @@
                                         <option value="">Proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @keyup.enter="listarLotes(1)"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @keyup.enter="listarLotes(1)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -50,39 +50,36 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" @click="selectAll" v-model="allSelected"> Todos
-                                        </th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Modelo</th>
-                                        <th>Terreno mts&sup2;</th>
-                                        <th>Construcción mts&sup2;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayLotes" :key="lote.id">
-                                        <td style="width:8%; ">
-                                            <input type="checkbox" @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini">
-                                        </td>
-                                        
-                                        <td v-text="lote.proyecto"></td>
-                                        <td v-text="lote.num_etapa"></td>
-                                        <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
-                                        <td v-text="lote.modelo"></td>
-                                        <td v-text="lote.terreno"></td>
-                                        <td v-text="lote.construccion"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected"> Todos
+                                    </th>
+                                    <th>Fraccionamiento</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Modelo</th>
+                                    <th>Terreno mts&sup2;</th>
+                                    <th>Construcción mts&sup2;</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="lote in arrayLotes" :key="lote.id">
+                                    <td style="width:8%; ">
+                                        <input type="checkbox" @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini">
+                                    </td>
+                                    <td v-text="lote.proyecto"></td>
+                                    <td v-text="lote.num_etapa"></td>
+                                    <td v-text="lote.manzana"></td>
+                                    <td v-text="lote.num_lote"></td>
+                                    <td v-text="lote.modelo"></td>
+                                    <td v-text="lote.terreno"></td>
+                                    <td v-text="lote.construccion"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -114,7 +111,7 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @keyup.enter="listarHistorial(1)"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @keyup.enter="listarHistorial(1)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -131,35 +128,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Modelo</th>
-                                        <th>Terreno mts&sup2;</th>
-                                        <th>Construcción mts&sup2;</th>
-                                        <th>Fecha de solicitud</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayHistorial" :key="lote.id">
-                                        
-                                        <td v-text="lote.proyecto"></td>
-                                        <td v-text="lote.num_etapa"></td>
-                                        <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
-                                        <td v-text="lote.modelo"></td>
-                                        <td v-text="lote.terreno"></td>
-                                        <td v-text="lote.construccion"></td>
-                                        <td v-text="this.moment(lote.fecha_siembra).locale('es').format('DD/MMM/YYYY')"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="['Fraccionamiento','Etapa','Manzana','# Lote',
+                            'Modelo','Terreno mts&sup2;','Construcción mts&sup2;','Fecha de solicitud',
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="lote in arrayHistorial" :key="lote.id">
+                                    <td v-text="lote.proyecto"></td>
+                                    <td v-text="lote.num_etapa"></td>
+                                    <td v-text="lote.manzana"></td>
+                                    <td v-text="lote.num_lote"></td>
+                                    <td v-text="lote.modelo"></td>
+                                    <td v-text="lote.terreno"></td>
+                                    <td v-text="lote.construccion"></td>
+                                    <td v-text="this.moment(lote.fecha_siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -175,56 +159,36 @@
                             </ul>
                         </nav>
                     </div>
-
-
-
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal solicitud de RUV-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Paquete RUV</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="paquete" class="form-control" placeholder="PROYECTO00">
-                                    </div>
-                                </div>
-                               
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorLotes" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjLotes" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="solicitarRuv()">Enviar</button>
-                            
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Paquete RUV</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="paquete" class="form-control" placeholder="PROYECTO00">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                    <div v-show="errorLotes" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjLotes" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" class="btn btn-primary" @click="solicitarRuv()">Enviar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-            
+
 
         </main>
 </template>
@@ -234,7 +198,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         data(){
             return{
                 proceso:false,
@@ -247,12 +217,11 @@
                 arrayFraccionamientos:[],
                 modal : 0,
                 tituloModal : '',
-                tipoAccion: 0,
                 historial:0,
                 errorLotes : 0,
                 errorMostrarMsjLotes : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -260,7 +229,7 @@
                     'to' : 0,
                 },
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -268,7 +237,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 b_etapa:'',
                 b_manzana:'',
@@ -336,7 +305,7 @@
 
         },
         methods : {
-            
+
             selectAll: function() {
                 this.lotes_ini = [];
 
@@ -357,7 +326,7 @@
                 me.b_etapa=""
                 me.b_manzana=""
                 }
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -371,11 +340,11 @@
             selectEtapa(buscar){
                 let me = this;
                 if(me.modal == 0){
-                
+
                 me.b_etapa=""
                 me.b_manzana=""
                 }
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -418,7 +387,7 @@
             /**Metodo para mostrar los registros */
             listarHistorial(page){
                 let me = this;
-                var url = '/ruv/historialSolicitudes?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + 
+                var url = '/ruv/historialSolicitudes?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
                     '&b_manzana=' + me.b_manzana + '&fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2 + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -469,7 +438,7 @@
                     axios.post('/ruv/solicitar',{
                     'id': element,
                     'paquete' : this.paquete
-                    }); 
+                    });
                     i++;
                 });
                 Swal({
@@ -484,9 +453,9 @@
                 me.proceso=false;
                 me.cerrarModal();
                 me.listarLotes(1);
-                
+
             },
-            
+
             validarInicioObra(){
                 this.errorLotes=0;
                 this.errorMostrarMsjLotes=[];
@@ -526,9 +495,7 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Solicitar RUV';
-                                //this.f_ini = '';
                                 this.paquete ='';
-                                this.tipoAccion = 1;
                                 break;
                             }
                         }
