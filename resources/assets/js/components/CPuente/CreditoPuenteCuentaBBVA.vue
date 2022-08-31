@@ -15,7 +15,7 @@
                     </div>
                     <!-- Div Card Body para listar -->
                     <template v-if="vista == 0">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -39,50 +39,38 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Folio</th>
-                                            <th>Proyecto</th>
-                                            <th>Fecha de Firma</th>
-                                            <th>Número de Cuenta</th>
-                                            <th>Tasa de interes</th>
-                                            <th>Apertura</th>
-                                            <th>Crédito otorgado</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id">
-                                            <td>
-                                                <template v-if="creditosPuente.fecha_firma == null">
-                                                        {{creditosPuente.folio}}
-                                                </template>
-                                                <a v-else @dblclick="verEdoCuenta(creditosPuente)" href="#" v-text="creditosPuente.folio"></a>
-                                            </td>
-                                            <td class="td2" v-text="creditosPuente.proyecto"></td>
-                                            <td class="td2" v-if="creditosPuente.fecha_firma == null">
-                                                <button v-if="userName == 'cp.martin' || userName == 'shady'"
-                                                 type="button" @click="abrirModal('fecha_firma',creditosPuente.id)" class="btn btn-primary btn-sm" title="Num Cuenta">
-                                                    <i class="fa fa-calendar">&nbsp;Fecha de firma</i>
-                                                </button>
-                                            </td>
-                                            <td class="td2" v-else v-text="creditosPuente.fecha_firma"></td>
-                                            <td class="td2" v-text="creditosPuente.num_cuenta"></td>
-                                            <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
-                                            <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
-                                            <td class="td2"> ${{formatNumber(creditosPuente.credito_otorgado)}}</td>
-                                            
-                                            <td class="td2">
-                                                <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
-                                                    <i class="fa fa-book">&nbsp;Observaciones</i>
-                                                </button>
-                                            </td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                            </div>
+                            <TableComponent :cabecera="['Folio','Proyecto','Fecha de Firma',
+                                'Número de Cuenta','Tasa de interes','Apertura','Crédito otorgado','']"
+                            >
+                                <template v-slot:tbody>
+                                    <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id">
+                                        <td>
+                                            <template v-if="creditosPuente.fecha_firma == null">
+                                                    {{creditosPuente.folio}}
+                                            </template>
+                                            <a v-else @dblclick="verEdoCuenta(creditosPuente)" href="#" v-text="creditosPuente.folio"></a>
+                                        </td>
+                                        <td class="td2" v-text="creditosPuente.proyecto"></td>
+                                        <td class="td2" v-if="creditosPuente.fecha_firma == null">
+                                            <button v-if="userName == 'cp.martin' || userName == 'shady'"
+                                                type="button" @click="abrirModal('fecha_firma',creditosPuente.id)" class="btn btn-primary btn-sm" title="Num Cuenta">
+                                                <i class="fa fa-calendar">&nbsp;Fecha de firma</i>
+                                            </button>
+                                        </td>
+                                        <td class="td2" v-else v-text="creditosPuente.fecha_firma"></td>
+                                        <td class="td2" v-text="creditosPuente.num_cuenta"></td>
+                                        <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
+                                        <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
+                                        <td class="td2"> ${{formatNumber(creditosPuente.credito_otorgado)}}</td>
+
+                                        <td class="td2">
+                                            <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
+                                                <i class="fa fa-book">&nbsp;Observaciones</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -102,7 +90,7 @@
 
                     <!-- Div para ver estado de cuenta -->
                     <template v-if="vista == 1">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-xl-12">
                                     <div class="card">
@@ -121,17 +109,17 @@
                                         <div class="row" style="margin-left:0px;">
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
-                                                    <div class="text-uppercase font-weight-bold" 
+                                                    <div class="text-uppercase font-weight-bold"
                                                         v-text="'Folio: '">
                                                     </div>
-                                                    
-                                                    <div class="text-uppercase font-weight-bold" 
+
+                                                    <div class="text-uppercase font-weight-bold"
                                                         v-text="'Institucion de crédito: '">
                                                     </div>
-                                                    <div class="text-uppercase font-weight-bold" 
+                                                    <div class="text-uppercase font-weight-bold"
                                                         v-text="'Número de casas: '">
                                                     </div>
-                                                    <div class="text-uppercase font-weight-bold" 
+                                                    <div class="text-uppercase font-weight-bold"
                                                         v-text="'Ingresos a: '">
                                                     </div>
                                                 </div>
@@ -144,39 +132,39 @@
                                                             <i class="fa fa-check"></i>
                                                         </button>
                                                     </div>
-                                                    <div v-else class="text-uppercase" 
+                                                    <div v-else class="text-uppercase"
                                                         v-text="datosPuente.folio">
                                                     </div>
-                                                    <div class="text-uppercase" 
+                                                    <div class="text-uppercase"
                                                         v-text="datosPuente.banco">
                                                     </div>
-                                                    <div class="text-uppercase" 
+                                                    <div class="text-uppercase"
                                                         v-text="datosPuente.lotes">
                                                     </div>
-                                                    <div class="text-uppercase" 
+                                                    <div class="text-uppercase"
                                                         v-text="'CTA DE '+ datosPuente.banco+' '+datosPuente.num_cuenta">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
-                                                    <div class="text-muted text-uppercase font-weight-bold" 
+                                                    <div class="text-muted text-uppercase font-weight-bold"
                                                         v-text="'Comisión S/Apert.: '">
                                                     </div>
-                                                    <div class="text-muted text-uppercase font-weight-bold" 
+                                                    <div class="text-muted text-uppercase font-weight-bold"
                                                         v-text="'TASA: '">
                                                     </div>
-                                                    <div class="text-muted text-uppercase font-weight-bold" 
+                                                    <div class="text-muted text-uppercase font-weight-bold"
                                                         v-text="'Fecha de pago de intereses: '">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
-                                                    <div class="text-muted text-uppercase" 
+                                                    <div class="text-muted text-uppercase"
                                                         v-text=" formatNumber(datosPuente.apertura)+'%'">
                                                     </div>
-                                                    <div class="text-muted text-uppercase" 
+                                                    <div class="text-muted text-uppercase"
                                                         v-text="'TIIE ' + formatNumber(datosPuente.tiie_firma) + ' + ' + formatNumber(datosPuente.interes)">
                                                     </div>
                                                     <div class="text-muted text-uppercase">
@@ -197,7 +185,7 @@
                                             </div>
                                             <div class="card-body p-4 d-flex align-items-center">
                                                 <div>
-                                                    <div class="text-uppercase font-weight-bold text-primary" 
+                                                    <div class="text-uppercase font-weight-bold text-primary"
                                                         v-text="'Monto total del crédito:   $'+formatNumber(datosPuente.credito_otorgado)">
                                                     </div>
                                                 </div>
@@ -211,7 +199,7 @@
                                                 <button v-if="vista == 1 && datosPuente.diasInt >= 0" @click="abrirModal('intereses',datosPuente.id)" class="btn btn-success rounded">
                                                     <i class="fa fa-calendar-plus-o"></i>&nbsp;Pago de intereses
                                                 </button>
-                                                
+
                                             </div>
                                             <!-- Fin Botones para pagar intereses o registrar abono/cargo -->
                                         </div>
@@ -220,8 +208,8 @@
                                         <!-- Aqui se inicia el listado de movimientos Ingresos y abonos al credito -->
                                         <div>
                                             <div class="card-footer px-3 py-2 text-right">
-                                                <table v-if="vistaLotes == 0" class="table table-bordered table-striped table-sm">
-                                                    <thead>
+                                                <TableComponent v-if="vistaLotes == 0">
+                                                    <template v-slot:thead>
                                                         <tr>
                                                             <th>Fecha</th>
                                                             <th>Concepto</th>
@@ -230,90 +218,74 @@
                                                             <th>Saldo</th>
                                                             <th>Interes</th>
                                                             <th colspan="2">Comprobantes</th>
-                                                            <!-- <th>Sin IVA Comisiones</th>
-                                                            <th>Sin IVA Honorarios</th> -->
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <!--Comisiones Bancarias--->
-                                                            <tr v-for="pago in arrayPagos" :key="pago.id">
-                                                                <td class="td2" align="left" v-text="pago.fecha"></td>
-                                                                <td class="td2" v-text="pago.concepto"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.cargo)"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.abono)"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.saldo)"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.monto_interes)"></td>
-                                                                <!-- <td class="td2" v-text="'$'+formatNumber(pago.comisiones)"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.honorarios)"></td> -->
-                                                                <td v-if="pago.doc_pago == null">
-                                                                    <button title="Subir comprobante de pago" type="button" 
-                                                                        @click="abrirModal('archivo_pago',pago.id)" class="btn btn-default btn-sm">
-                                                                        <i class="icon-cloud-upload"></i>
-                                                                    </button>
-                                                                </td>
-                                                                <td v-else>
-                                                                    <a title="Descargar comprobante de pago" class="btn btn-success btn-sm" 
-                                                                        v-bind:href="'/cPuentes/pagos/1/'+pago.doc_pago">
-                                                                        <i class="icon-cloud-download"></i>
-                                                                    </a>
-                                                                    &nbsp;&nbsp;
-                                                                    <button title="Subir comprobante de pago" type="button" 
-                                                                        @click="abrirModal('archivo_pago',pago.id)" class="btn btn-default btn-sm">
-                                                                        <i class="icon-cloud-upload"></i>
-                                                                    </button>
-                                                                </td>
-                                                                <td v-if="pago.doc_interes == null">
-                                                                    <button title="Subir comprobante de pago" type="button" 
-                                                                        @click="abrirModal('archivo_interes',pago.id)" class="btn btn-default btn-sm">
-                                                                        <i class="icon-cloud-upload"></i>
-                                                                    </button>
-                                                                </td>
-                                                                <td v-else>
-                                                                    <a title="Descargar comprobante de pago de interes" class="btn btn-primary btn-sm" 
-                                                                        v-bind:href="'/cPuentes/pagos/2/'+pago.doc_interes">
-                                                                        <i class="icon-cloud-download"></i>
-                                                                    </a>
-                                                                    &nbsp;&nbsp;
-                                                                    <button title="Subir comprobante de pago de interes" type="button" 
-                                                                        @click="abrirModal('archivo_interes',pago.id)" class="btn btn-default btn-sm">
-                                                                        <i class="icon-cloud-upload"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                    </tbody>
-                                                </table>
+                                                    </template>
+                                                    <template v-slot:tbody>
+                                                        <tr v-for="pago in arrayPagos" :key="pago.id">
+                                                            <td class="td2" align="left" v-text="pago.fecha"></td>
+                                                            <td class="td2" v-text="pago.concepto"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(pago.cargo)"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(pago.abono)"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(pago.saldo)"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(pago.monto_interes)"></td>
+                                                            <!-- <td class="td2" v-text="'$'+formatNumber(pago.comisiones)"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(pago.honorarios)"></td> -->
+                                                            <td v-if="pago.doc_pago == null">
+                                                                <button title="Subir comprobante de pago" type="button"
+                                                                    @click="abrirModal('archivo_pago',pago.id)" class="btn btn-default btn-sm">
+                                                                    <i class="icon-cloud-upload"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-else>
+                                                                <a title="Descargar comprobante de pago" class="btn btn-success btn-sm"
+                                                                    v-bind:href="'/cPuentes/pagos/1/'+pago.doc_pago">
+                                                                    <i class="icon-cloud-download"></i>
+                                                                </a>
+                                                                &nbsp;&nbsp;
+                                                                <button title="Subir comprobante de pago" type="button"
+                                                                    @click="abrirModal('archivo_pago',pago.id)" class="btn btn-default btn-sm">
+                                                                    <i class="icon-cloud-upload"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-if="pago.doc_interes == null">
+                                                                <button title="Subir comprobante de pago" type="button"
+                                                                    @click="abrirModal('archivo_interes',pago.id)" class="btn btn-default btn-sm">
+                                                                    <i class="icon-cloud-upload"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td v-else>
+                                                                <a title="Descargar comprobante de pago de interes" class="btn btn-primary btn-sm"
+                                                                    v-bind:href="'/cPuentes/pagos/2/'+pago.doc_interes">
+                                                                    <i class="icon-cloud-download"></i>
+                                                                </a>
+                                                                &nbsp;&nbsp;
+                                                                <button title="Subir comprobante de pago de interes" type="button"
+                                                                    @click="abrirModal('archivo_interes',pago.id)" class="btn btn-default btn-sm">
+                                                                    <i class="icon-cloud-upload"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
 
-                                                <table v-if="vistaLotes == 1" class="table table-bordered table-striped table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th></th>
-                                                            <th>Lote</th>
-                                                            <th>Etapa</th>
-                                                            <th>Manzana</th>
-                                                            <th>Modelo</th>
-                                                            <th>Saldo</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                                                <TableComponent v-if="vistaLotes == 1"
+                                                :cabecera="['','Lote','Etapa','Manzana','Modelo','Saldo']">
+                                                    <template v-slot:tbody>
                                                         <!--Comisiones Bancarias--->
-                                                            <tr v-for="lote in arrayLotes" :key="lote.id">
-                                                                <td class="td2" style="width:5%">
-                                                                    <!-- <button v-if="lote.liberado == 0 && datosPuente.diasInt < 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
-                                                                        <i class="icon-pencil"></i>
-                                                                    </button> -->
-                                                                    <button v-if="lote.liberado == 0" title="Abonar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
-                                                                        <i class="icon-pencil"></i>
-                                                                    </button>
-                                                                </td>
-                                                                <td class="td2" v-text="lote.num_lote"></td>
-                                                                <td class="td2" v-text="lote.num_etapa"></td>
-                                                                <td class="td2" v-text="lote.manzana"></td>
-                                                                <td class="td2" v-text="lote.modelo"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(lote.saldo)"></td>
-                                                               
-                                                            </tr>
-                                                    </tbody>
-                                                </table>
+                                                        <tr v-for="lote in arrayLotes" :key="lote.id">
+                                                            <td class="td2" style="width:5%">
+                                                                <button v-if="lote.liberado == 0" title="Abonar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
+                                                                    <i class="icon-pencil"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td class="td2" v-text="lote.num_lote"></td>
+                                                            <td class="td2" v-text="lote.num_etapa"></td>
+                                                            <td class="td2" v-text="lote.manzana"></td>
+                                                            <td class="td2" v-text="lote.modelo"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(lote.saldo)"></td>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
                                             </div>
                                         </div>
                                         <!-- Fin Listado de movimientos -->
@@ -322,351 +294,273 @@
                             </div>
                         </div>
                     </template>
-                    
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
             <!--Inicio del modal obs-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" 
-                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal(0)" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-
-                                <div class="modal-body">
-                                    <template v-if="tipoAccion == 1">
-                                        
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" v-model="observacion" class="form-control">
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
-                                                </div>
-                                            </div>
-
-                                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                <table class="table table-bordered table-striped table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Usuario</th>
-                                                            <th>Observacion</th>
-                                                            <th>Fecha</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="observacion in arrayObs" :key="observacion.id">
-                                                            <td v-text="observacion.usuario" ></td>
-                                                            <td v-text="observacion.observacion" ></td>
-                                                            <td v-text="observacion.created_at"></td>
-                                                        </tr>                               
-                                                    </tbody>
-                                                </table>
-                                            </form>
-                                    </template>
-
-                                </div>
-                                <!-- Botones del modal -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(0)">Cerrar</button>
-                                </div>
-                            
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal==1" @closeModal="cerrarModal(0)"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="observacion" class="form-control">
                         </div>
-                        <!-- /.modal-content -->
+
+                        <div class="col-md-3">
+                            <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
+                        </div>
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
+
+                    <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
+                        <template v-slot:body>
+                            <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.observacion" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal Comprobantes de pagos-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 3}" 
-                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal(0)" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal==3"
+                @closeModal="cerrarModal(0)"
+            >
+                <template v-slot:body>
+                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"></label>
+                            <div class="col-md-6">
+                                <input type="file" class="form-control" v-on:change="onImageChange">
                             </div>
 
-                                <div class="modal-body">
-                                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input"></label>
-                                            <div class="col-md-6">
-                                                <input type="file" class="form-control" v-on:change="onImageChange">
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <button type="submit" class="btn btn-success">Guardar comprobante</button>
-                                            </div>                                               
-                                        </div>
-                                    </form>
-                                </div>
-                                <!-- Botones del modal -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(0)">Cerrar</button>
-                                </div>
-                            
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-success">Guardar comprobante</button>
+                            </div>
                         </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                    </form>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal nuevo movimiento-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" 
-                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal(1)" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal(1)"
+                v-if="modal == 2"
+            >
+                <template v-slot:body>
+                    <!-- Modal para registrar ingreso/abono -->
+                    <template v-if="tipoAccion == 1">
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                            <div class="col-md-4">
+                                <input type="date" v-model="fecha"  class="form-control">
                             </div>
-                                <div class="modal-body">
-                                    <!-- Modal para registrar ingreso/abono -->
-                                    <template v-if="tipoAccion == 1">
-                                        
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
-                                            <div class="col-md-4">
-                                                <input type="date" v-model="fecha"  class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
-                                            <div class="col-md-6">
-                                                <input type="text" name="concepto" list="conceptName" class="form-control" v-model="concepto">
-                                                <datalist id=conceptName>
-                                                    <option value="">Seleccione</option>
-                                                    <option value="Prepuente">Prepuente</option>
-                                                    <option value="Liquidación Prepuente">Liquidación Prepuente</option>
-                                                    <option value="Renovación Prepuente">Renovación Prepuente</option>
-                                                    <option value="Anticipo por Firma de Crédito">Anticipo por Firma de Crédito</option>
-                                                    <option value="Ministración">Ministración</option>
-                                                </datalist>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <select v-model="tipo" class="form-control" disabled @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
-                                                    <option value="">Tipo de movimiento</option>
-                                                    <option value="0">Cargo</option>
-                                                    <option value="1">Abono</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row" v-if="tipo != ''">
-                                            <label class="col-md-2 form-control-label" for="text-input">Monto</label>
-                                            <div class="col-md-4">
-                                                <input type="number" @change="validarMonto()" v-model="cantidad" class="form-control">
-                                            </div>
-                                            <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
-                                        </div>
-                                    </template>
-                                    <!-- Fin Modal para registrar ingreso/abono -->
-                                    <!-- Modal para pagar intereses -->
-                                    <template v-if="tipoAccion == 2">
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <table class="table table-bordered table-striped table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Fecha</th>
-                                                            <th>Saldo</th>
-                                                            <th>Tasa de Int</th>
-                                                            <th>Interes diario</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="inte in arrayIntereses" :key="inte.id">
-                                                            <td class="td2" v-text="inte.fecha"></td>
-                                                            <td class="td2" v-text="'$'+formatNumber(inte.saldo)"></td>
-                                                            <td class="td2" v-text="formatNumber(inte.interes)+'%'"></td>
-                                                            <td class="td2" v-text="'$'+formatNumber(inte.monto_interes)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td class="td2" colspan="3">
-                                                                <strong>Intereses generados</strong>
-                                                            </td>
-                                                            <td class="td2" v-text="'$'+formatNumber(interes)"></td>
-                                                        </tr>  
-                                                        <tr v-if="interesesPagados > 0">
-                                                            <td class="td2" colspan="3">
-                                                                <strong>Intereses pagados</strong>
-                                                            </td>
-                                                            <td class="td2" v-text="'$'+formatNumber(interesesPagados)"></td>
-                                                        </tr>   
-                                                        <tr>
-                                                            <td class="td2" colspan="4"></td>
-                                                        </tr>   
-                                                        <tr>
-                                                            <td class="td2" colspan="3">
-                                                                <strong>Intereses a cubrir</strong>
-                                                            </td>
-                                                            <td class="td2" v-text="'$'+formatNumber(interes - interesesPagados)"></td>
-                                                        </tr>     
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
-                                            <div class="col-md-4">
-                                                <input type="date" disabled v-model="fecha" @change="getTiie(fecha)" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
-                                            <div class="col-md-6">
-                                                <input type="text" class="form-control" v-model="concepto">
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <select disabled v-model="tipo" class="form-control">
-                                                    <option value="">Tipo de movimiento</option>
-                                                    <option value="0">Cargo</option>
-                                                    <option value="1">Abono</option>
-                                                    <option value="3">Pago de intereses</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row" v-if="tipo != ''">
-                                            <h6 class="col-md-2 form-control-label" for="text-input">Total a pagar</h6>
-                                            <h6 class="col-md-3 form-control-label" for="text-input">${{formatNumber(interes - interesesPagados)}}</h6>
-                                        </div>
-
-                                    </template>
-                                    <!--Fin Modal para pagar intereses -->
-                                    <!-- Modal para registrar abono a Lote-->
-                                    <template v-if="tipoAccion == 4">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
-                                            <div class="col-md-4">
-                                                <input type="date" v-model="fecha" @change="calcularInteres(fecha)" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
-                                            <div class="col-md-6">
-                                                <input type="text" disabled class="form-control" v-model="concepto">
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <select v-model="tipo" disabled class="form-control" @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
-                                                    <option value="">Tipo de movimiento</option>
-                                                    <option value="0">Cargo</option>
-                                                    <option value="1">Abono</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input"></label>
-                                            <h6 class="col-md-2 form-control-label" for="text-input">Saldo: </h6>
-                                            <h6 class="col-md-3 form-control-label" for="text-input">${{formatNumber(saldo)}}</h6>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Monto</label>
-                                            <div class="col-md-4">
-                                                <input type="number" @change="verificarSaldo()" v-model="cantidad" class="form-control">
-                                            </div>
-                                            <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
-                                        </div>
-
-                                        <div class="form-group row" v-if="tipo == 1">
-                                            <label class="col-md-2 form-control-label" for="text-input">Interes</label>
-                                            <div class="col-md-4">
-                                                <label class="form-control-label" for="text-input">${{formatNumber(interes-interesesPagados)}}</label>
-                                            </div>
-                                            
-                                        </div>
-
-                                        <div class="form-group row" v-if="tipo == 1">
-                                            <h6 class="col-md-2 form-control-label" for="text-input">Pago total</h6>
-                                            <div class="col-md-4">
-                                                <h6 class="form-control">${{formatNumber(total=totalPagar)}}</h6>
-                                            </div>
-                                        </div>
-
-                                    </template>
-                                    <!-- Fin Modal para registrar ingreso/abono -->
-                                </div>
-                                <!-- Botones del modal registrar abono o cargo -->
-                                <div class="modal-footer" v-if="tipoAccion == 1">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
-                                    <button type="button" v-if="tipo == 0 && cantidad > 0" class="btn btn-success" @click="registrarCargo()">Guardar</button>
-                                </div>
-                                <!-- Botones del modal pago de intereses -->
-                                <div class="modal-footer" v-if="tipoAccion == 2">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
-                                    <button type="button" class="btn btn-success" @click="registrarInteres()">Guardar</button>
-                                </div>
-                                <!-- Botones del modal pago de abono a lote -->
-                                <div class="modal-footer" v-if="tipoAccion == 4">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
-                                    <button type="button" v-if="cantidad > 0 && fecha != ''" class="btn btn-success" @click="registrarAbono(1)">Registrar pago</button>
-                                </div>
                         </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
+                            <div class="col-md-6">
+                                <input type="text" name="concepto" list="conceptName" class="form-control" v-model="concepto">
+                                <datalist id=conceptName>
+                                    <option value="">Seleccione</option>
+                                    <option value="Prepuente">Prepuente</option>
+                                    <option value="Liquidación Prepuente">Liquidación Prepuente</option>
+                                    <option value="Renovación Prepuente">Renovación Prepuente</option>
+                                    <option value="Anticipo por Firma de Crédito">Anticipo por Firma de Crédito</option>
+                                    <option value="Ministración">Ministración</option>
+                                </datalist>
+                            </div>
+
+                            <div class="col-md-4">
+                                <select v-model="tipo" class="form-control" disabled @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
+                                    <option value="">Tipo de movimiento</option>
+                                    <option value="0">Cargo</option>
+                                    <option value="1">Abono</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo != ''">
+                            <label class="col-md-2 form-control-label" for="text-input">Monto</label>
+                            <div class="col-md-4">
+                                <input type="number" @change="validarMonto()" v-model="cantidad" class="form-control">
+                            </div>
+                            <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
+                        </div>
+                    </template>
+                    <!-- Fin Modal para registrar ingreso/abono -->
+                    <!-- Modal para pagar intereses -->
+                    <template v-if="tipoAccion == 2">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Saldo</th>
+                                            <th>Tasa de Int</th>
+                                            <th>Interes diario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="inte in arrayIntereses" :key="inte.id">
+                                            <td class="td2" v-text="inte.fecha"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(inte.saldo)"></td>
+                                            <td class="td2" v-text="formatNumber(inte.interes)+'%'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(inte.monto_interes)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td2" colspan="3">
+                                                <strong>Intereses generados</strong>
+                                            </td>
+                                            <td class="td2" v-text="'$'+formatNumber(interes)"></td>
+                                        </tr>
+                                        <tr v-if="interesesPagados > 0">
+                                            <td class="td2" colspan="3">
+                                                <strong>Intereses pagados</strong>
+                                            </td>
+                                            <td class="td2" v-text="'$'+formatNumber(interesesPagados)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td2" colspan="4"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="td2" colspan="3">
+                                                <strong>Intereses a cubrir</strong>
+                                            </td>
+                                            <td class="td2" v-text="'$'+formatNumber(interes - interesesPagados)"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                            <div class="col-md-4">
+                                <input type="date" disabled v-model="fecha" @change="getTiie(fecha)" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" v-model="concepto">
+                            </div>
+
+                            <div class="col-md-4">
+                                <select disabled v-model="tipo" class="form-control">
+                                    <option value="">Tipo de movimiento</option>
+                                    <option value="0">Cargo</option>
+                                    <option value="1">Abono</option>
+                                    <option value="3">Pago de intereses</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo != ''">
+                            <h6 class="col-md-2 form-control-label" for="text-input">Total a pagar</h6>
+                            <h6 class="col-md-3 form-control-label" for="text-input">${{formatNumber(interes - interesesPagados)}}</h6>
+                        </div>
+
+                    </template>
+                    <!--Fin Modal para pagar intereses -->
+                    <!-- Modal para registrar abono a Lote-->
+                    <template v-if="tipoAccion == 4">
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                            <div class="col-md-4">
+                                <input type="date" v-model="fecha" @change="calcularInteres(fecha)" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
+                            <div class="col-md-6">
+                                <input type="text" disabled class="form-control" v-model="concepto">
+                            </div>
+
+                            <div class="col-md-4">
+                                <select v-model="tipo" disabled class="form-control" @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
+                                    <option value="">Tipo de movimiento</option>
+                                    <option value="0">Cargo</option>
+                                    <option value="1">Abono</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"></label>
+                            <h6 class="col-md-2 form-control-label" for="text-input">Saldo: </h6>
+                            <h6 class="col-md-3 form-control-label" for="text-input">${{formatNumber(saldo)}}</h6>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Monto</label>
+                            <div class="col-md-4">
+                                <input type="number" @change="verificarSaldo()" v-model="cantidad" class="form-control">
+                            </div>
+                            <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo == 1">
+                            <label class="col-md-2 form-control-label" for="text-input">Interes</label>
+                            <div class="col-md-4">
+                                <label class="form-control-label" for="text-input">${{formatNumber(interes-interesesPagados)}}</label>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row" v-if="tipo == 1">
+                            <h6 class="col-md-2 form-control-label" for="text-input">Pago total</h6>
+                            <div class="col-md-4">
+                                <h6 class="form-control">${{formatNumber(total=totalPagar)}}</h6>
+                            </div>
+                        </div>
+
+                    </template>
+                </template>
+                <template v-slot:buttons-footer>
+                    <!-- Boton del modal registrar abono o cargo -->
+                    <button type="button" v-if="tipoAccion == 1 && tipo == 0 && cantidad > 0" class="btn btn-success" @click="registrarCargo()">Guardar</button>
+                    <!-- Boton del modal pago de intereses -->
+                    <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="registrarInteres()">Guardar</button>
+                    <!-- Boton del modal pago de abono a lote -->
+                    <button type="button" v-if="tipoAccion == 4 && cantidad > 0 && fecha != ''" class="btn btn-success" @click="registrarAbono(1)">Registrar pago</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal SET fecha de firma-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 4}" 
-                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal(1)" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
+            <ModalComponent v-if="modal==4"
+                @closeModal="cerrarModal(1)"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                            <div class="col-md-4">
+                                <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
                             </div>
-                                <div class="modal-body">
-                                    <!-- Modal para registrar ingreso/abono -->
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
-                                            <div class="col-md-4">
-                                                <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
-                                            </div>
-                                            <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
-                                            <div v-if="tiie != 0" class="col-md-3">
-                                                <label disabled type="text" v-text="tiie" class="form-control"></label>
-                                            </div>
-                                        </div>
-                                    <!-- Fin Modal para registrar ingreso/abono -->
-                                </div>
-                                <!-- Botones del modal registarar abono o cargo -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
-                                    <button type="button" class="btn btn-success" @click="insertFechaFirma(id,fecha, tiie)">Guardar</button>
-                                </div>
+                            <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
+                            <div v-if="tiie != 0" class="col-md-3">
+                                <label disabled type="text" v-text="tiie" class="form-control"></label>
+                            </div>
                         </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" class="btn btn-success" @click="insertFechaFirma(id,fecha, tiie)">Guardar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -676,7 +570,13 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         props:{
             userName:{type: String}
         },
@@ -693,7 +593,7 @@
                 errorcreditosPuente : 0,
                 errorMostrarMsjcreditosPuente : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -765,8 +665,6 @@
                 dia:'',
             }
         },
-        components:{
-        },
         computed:{
             isActived: function(){
                 return this.pagination.current_page;
@@ -774,7 +672,7 @@
             totalPagar: function(){
                 let me = this;
                 var total_pago =0;
-                    total_pago =parseFloat(me.interes) + parseFloat(me.cantidad) - parseFloat(me.interesesPagados); 
+                    total_pago =parseFloat(me.interes) + parseFloat(me.cantidad) - parseFloat(me.interesesPagados);
                 return total_pago;
             },
             //Calcula los elementos de la paginación
@@ -807,7 +705,7 @@
             formSubmit(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
                 formData.append('archivo', this.archivo);
                 formData.append('id', this.pago_id);
@@ -823,7 +721,7 @@
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    
+
                     me.cerrarModal(1);
                     me.getEdoCuenta(me.datosPuente.id);
 
@@ -859,14 +757,14 @@
                 me.lotePuenteId = lote.id;
                 me.saldo = lote.saldo;
                 me.concepto = 'Pago Hipoteca M.' + lote.manzana + ' L.' + lote.num_lote;
-                
+
                 me.abrirModal('pagoLote',me.id);
-                
+
 
             },
             validarMonto(){
                 let creditoDisp = this.datosPuente.credito_otorgado - this.totalUtilizado;
-                if(this.cantidad > creditoDisp) 
+                if(this.cantidad > creditoDisp)
                     this.cantidad = creditoDisp;
             },
             getLotesPuente(id){
@@ -907,7 +805,7 @@
                 if(dia >= 21 && dia <31){
                     me.getInteresePeriodo(me.id, me.datosPuente.fecha_sig_int);
                 }
-                
+
             },
             getEdoCuenta(id){
                 let me = this;
@@ -978,7 +876,7 @@
                     'tipo' : me.tipo,
                     'interes' : me.datosPuente.interes,
                     'tiie' : me.datosPuente.tiie_firma,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -991,7 +889,7 @@
                         me.cerrarModal(0);
                         me.listarAvisos(1);
                         me.getEdoCuenta(me.datosPuente.id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1027,7 +925,7 @@
                 axios.post('/cPuentes/storeObs',{
                     'id': this.id,
                     'observacion': this.observacion,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1039,7 +937,7 @@
                         })
                         me.getObs(me.id);
                         me.observacion = '';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1130,7 +1028,7 @@
                     'tipo' : me.tipo,
                     'interes' : me.datosPuente.interes,
                     'tiie' : me.datosPuente.tiie_firma,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1142,7 +1040,7 @@
                         })
                         me.cerrarModal(1);
                         me.getEdoCuenta(me.datosPuente.id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1160,7 +1058,7 @@
                     'pagoLote' : pagoLote,
                     'lote_id' : me.lote_id,
                     'lotePuenteId' : me.lotePuenteId
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1172,7 +1070,7 @@
                         })
                         me.cerrarModal(1);
                         me.getEdoCuenta(me.datosPuente.id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1203,7 +1101,7 @@
                         })
                     me.cerrarModal(1);
                     me.getEdoCuenta(id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });

@@ -52,7 +52,7 @@ class CobrosController extends Controller
                 ->where('creditos.integracion_cobro','=',0) // Contrato sin integración de cobros
                 ->where('i.elegido','=',1) // Financiamiento elegido
                 ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%') // Busqueda por nombre del cliente
-                ->take(7)->get();// Retorno de los primeros 7 resultados.
+                ->take(10)->get();// Retorno de los primeros 7 resultados.
 
         if(sizeof($contratos))
             // Se recorren los contratos encontrados
@@ -62,7 +62,7 @@ class CobrosController extends Controller
                     ->select('depositos.cant_depo', 'depositos.banco','depositos.fecha_pago','depositos.id')
                     ->where('pagos_contratos.contrato_id','=',$contrato->id)
                     ->get();
-                
+
                 if(sizeof($contrato->depositos)){
                     // Por cada deposito se separa la institucion de financiamiento y el banco en campos diferentes para mostrar en pantalla.
                     foreach ($contrato->depositos as $key => $deposito){
@@ -143,18 +143,18 @@ class CobrosController extends Controller
                 }
 
         DB::commit();
- 
+
         } catch (Exception $e){
             DB::rollBack();
-        }         
-        
+        }
+
     }
 
     // Funcion para obtener los cobros de una integración.
     public function getCobros(Request $request){
         $cobros = Pago_cobro::where('integracion_id','=',$request->id)
         ->get();
-    
+
         if(sizeof($cobros)){
             foreach ($cobros as $key => $deposito){
                 $pos = strpos($deposito->banco, '-');
@@ -203,15 +203,15 @@ class CobrosController extends Controller
     // Función privada que retorna la integracion de cobros.
     private function queryIntegracion(Request $request){
         $integraciones = Int_cobro::join('creditos','int_cobros.contrato_id','=','creditos.id')
-        ->join('contratos','creditos.id','contratos.id')  
-        ->leftJoin('expedientes','contratos.id','=','expedientes.id')      
+        ->join('contratos','creditos.id','contratos.id')
+        ->leftJoin('expedientes','contratos.id','=','expedientes.id')
         ->join('inst_seleccionadas as i','creditos.id','=','i.credito_id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')
         ->join('lotes as l', 'creditos.lote_id', '=', 'l.id')
         ->join('etapas as e','l.etapa_id','=','e.id')
         ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
-        ->select('int_cobros.*', 
+        ->select('int_cobros.*',
             'l.emp_constructora', 'l.emp_terreno',
             'creditos.email_fisc','creditos.tel_fisc','creditos.col_fisc',
             'creditos.direccion_fisc','creditos.cp_fisc','creditos.rfc_fisc',
@@ -247,7 +247,7 @@ class CobrosController extends Controller
                     // Se obtienen los depositos asignados al contrato.
                     $integracion->depositos = Pago_cobro::where('integracion_id','=',$integracion->id)
                         ->get();
-                    
+
                     if(sizeof($integracion->depositos)){
                         // Por cada deposito se separa la institucion de financiamiento y el banco en campos diferentes para mostrar en pantalla.
                         foreach ($integracion->depositos as $key => $deposito){
@@ -301,8 +301,8 @@ class CobrosController extends Controller
 
             $integracion->totalCredito = $integracion->monto_credito + $integracion->segundo_credito;
             $integracion->totalCobrado = 0;
-            
-            
+
+
             if(sizeof($integracion->depositos)){
                 foreach ($integracion->depositos as $key => $deposito){
                     $pos = strpos($deposito->banco, '-');
@@ -314,11 +314,11 @@ class CobrosController extends Controller
             }
             $integracion->diferencia = $integracion->valor_escrituras - ($integracion->totalCredito + $integracion->totalCobrado);
 
-        
+
         // Creación y retorno del excel
         return Excel::create('Integracion de cobros', function($excel) use ($integracion){
             $excel->sheet(''.$integracion->contrato_id, function($sheet) use ($integracion){
-                
+
                 $sheet->mergeCells('A1:H1');
                 $sheet->mergeCells('A2:H2');
                 $sheet->mergeCells('A3:H3');
@@ -329,7 +329,7 @@ class CobrosController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->cells('A4:A9', function($cell) {
@@ -354,8 +354,8 @@ class CobrosController extends Controller
 
                 $sheet->mergeCells('B4:C4');
                 $sheet->row(4, [
-                    'Nombre del cliente', 
-                    $integracion->nombre_completo, 
+                    'Nombre del cliente',
+                    $integracion->nombre_completo,
                     '',
                     'MZ-'.$integracion->manzana,
                     'Lote',
@@ -446,7 +446,7 @@ class CobrosController extends Controller
                     // manipulate the cell
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->row(10, [
                     'Fecha',
@@ -460,14 +460,14 @@ class CobrosController extends Controller
                 ]);
 
                 $cont=11;
-                
+
                 //////////////////// VIVIENDAS ///////////////////////
                 if(sizeof($integracion->depositos))
                     foreach($integracion->depositos as $index => $deposito) {
 
                         $sheet->row($cont, [
-                            $deposito->fecha_pago, 
-                            $deposito->num_cheque, 
+                            $deposito->fecha_pago,
+                            $deposito->num_cheque,
                             $deposito->forma_pago,
                             $deposito->clave,
                             $deposito->institucion,
@@ -476,35 +476,35 @@ class CobrosController extends Controller
                             $deposito->cant_depo,
                         ]);
                         $cont++;
-                        
+
                     }
                     $cont++;
                     $sheet->mergeCells('A'.$cont.':G'.$cont);
-                    
+
                     $sheet->row($cont, [
-                        'Total', 
-                        '', 
+                        'Total',
+                        '',
                         '',
                         '',
                         '',
                         '',
                         '',
                         $integracion->totalCobrado,
-                    ]);	 
-                    
+                    ]);
+
                     $cont++;
                     $sheet->mergeCells('A'.$cont.':G'.$cont);
 
                     $sheet->row($cont, [
-                        'Diferencia', 
-                        '', 
+                        'Diferencia',
+                        '',
                         '',
                         '',
                         '',
                         '',
                         '',
                         $integracion->diferencia,
-                    ]);	
+                    ]);
 
 
                     $sheet->setBorder('A11:H'.$cont, 'thin');
@@ -523,33 +523,33 @@ class CobrosController extends Controller
                     });
 
                     $sheet->row($cont, [
-                        'Correo Eléctronico: ', 
+                        'Correo Eléctronico: ',
                         $integracion->email_fisc,
                     ]);
                     $sheet->row($cont+1, [
-                        'Teléfono: ', 
+                        'Teléfono: ',
                         $integracion->tel_fisc,
                     ]);
                     $sheet->row($cont+2, [
-                        'Nombre: ', 
+                        'Nombre: ',
                         $integracion->nombre_fisc,
                     ]);
                     $sheet->row($cont+3, [
-                        'Dirección: ', 
+                        'Dirección: ',
                         $integracion->direccion_fisc,
                         'Colonia',
                         $integracion->col_fisc,
                     ]);
                     $sheet->row($cont+4, [
-                        'CP: ', 
+                        'CP: ',
                         $integracion->cp_fisc,
                     ]);
                     $sheet->row($cont+4, [
-                        'RFC: ', 
+                        'RFC: ',
                         strtoupper($integracion->rfc_fisc),
                     ]);
                     $sheet->row($cont+5, [
-                        'Fecha de firma: ', 
+                        'Fecha de firma: ',
                         strtoupper($integracion->fecha_firma_esc),
                     ]);
             });
@@ -563,8 +563,8 @@ class CobrosController extends Controller
         setlocale(LC_TIME, 'es_MX.utf8');
 
         $contrato = Int_cobro::join('creditos','int_cobros.contrato_id','=','creditos.id')
-        ->join('contratos','creditos.id','contratos.id')  
-        ->leftJoin('expedientes','contratos.id','=','expedientes.id')      
+        ->join('contratos','creditos.id','contratos.id')
+        ->leftJoin('expedientes','contratos.id','=','expedientes.id')
         ->join('inst_seleccionadas as i','creditos.id','=','i.credito_id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')

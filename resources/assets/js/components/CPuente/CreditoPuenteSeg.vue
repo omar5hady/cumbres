@@ -9,11 +9,11 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Créditos Puente
-                        
+
                     </div>
                     <!-- Div Card Body para listar -->
                     <template v-if="listado == 1">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -40,74 +40,51 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Siembra</th>
-                                            <th>Folio</th>
-                                            <th>Proyecto</th>
-                                            <th>Tasa de interes</th>
-                                            <th>Apertura</th>
-                                            <th>Total</th>
-                                            <th>Status</th>
-                                            <th></th>
-                                            <!-- <th>Fecha solicitud</th>
-                                            <th>Status</th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
-                                            <td>
-                                                <button v-if="creditosPuente.base_p == 1" type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
-                                                    <i class="icon-pencil"></i>
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <a  v-if="creditosPuente.archivo_siembra != null" class="btn btn-danger btn-sm" @click="eliminarArchivo(creditosPuente.archivo_siembra, creditosPuente.id)">
-                                                    <i class="icon-trash"></i>
-                                                </a>
-                                                <a v-if="creditosPuente.archivo_siembra != null" class="btn btn-primary btn-sm" title="Descargar siembra"
-                                                v-bind:href="'/files/'+'siembraPuente/'+ creditosPuente.archivo_siembra + '/download'" ><i class="icon-eye"></i></a>
-                                               
-                                                &nbsp;&nbsp;
-                                                <button title="Subir archivo" type="button" 
-                                                    @click="abrirModal('siembra',creditosPuente.id)" class="btn btn-default btn-sm">
-                                                    <i class="icon-cloud-upload"></i>
-                                                </button>
-                                            </td>
-                                            <td v-on:dblclick="verDetalla(creditosPuente,2)">
-                                                <a href="#" v-text="creditosPuente.folio"></a>
-                                            </td>
-                                            <td class="td2" v-text="creditosPuente.proyecto"></td>
-                                            <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
-                                            <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
-                                            <td class="td2"> ${{formatNumber(creditosPuente.total)}}</td>
-                                            <td class="td2" v-if="creditosPuente.status == 0">
-                                                <span class="badge badge-info">Pendiente</span>
-                                            </td>
-                                            <td class="td2" v-if="creditosPuente.status == 1">
-                                                <span class="badge badge-warning">Expediente integrado: {{creditosPuente.fecha_integracion}}</span> 
-                                            </td>
-                                            <td class="td2" v-if="creditosPuente.status == 2">
-                                                <span class="badge badge-danger">Rechazado</span> 
-                                            </td>
-                                            <td class="td2" v-if="creditosPuente.status == 5">
-                                                <span class="badge badge-danger">Cancelado</span> 
-                                            </td>
-                                            <td class="td2" v-if="creditosPuente.status == 3">
-                                                <span class="badge badge-success">Aprobado</span> 
-                                            </td>
-                                            <td class="td2">
-                                                <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
-                                                    <i class="fa fa-book">&nbsp;Observaciones</i>
-                                                </button>
-                                            </td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                            </div>
+                            <TableComponent :cabecera="['Opciones','Siembra','Folio','Proyecto',
+                                'Tasa de interes','Apertura','Total','Status',''
+                            ]">
+                                <template v-slot:tbody>
+                                    <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
+                                        <td>
+                                            <button v-if="creditosPuente.base_p == 1" type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
+                                                <i class="icon-pencil"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <a  v-if="creditosPuente.archivo_siembra != null" class="btn btn-danger btn-sm" @click="eliminarArchivo(creditosPuente.archivo_siembra, creditosPuente.id)">
+                                                <i class="icon-trash"></i>
+                                            </a>
+                                            <a v-if="creditosPuente.archivo_siembra != null" class="btn btn-primary btn-sm" title="Descargar siembra"
+                                            v-bind:href="'/files/'+'siembraPuente/'+ creditosPuente.archivo_siembra + '/download'" ><i class="icon-eye"></i></a>
+
+                                            &nbsp;&nbsp;
+                                            <button title="Subir archivo" type="button"
+                                                @click="abrirModal('siembra',creditosPuente.id)" class="btn btn-default btn-sm">
+                                                <i class="icon-cloud-upload"></i>
+                                            </button>
+                                        </td>
+                                        <td v-on:dblclick="verDetalla(creditosPuente,2)">
+                                            <a href="#" v-text="creditosPuente.folio"></a>
+                                        </td>
+                                        <td class="td2" v-text="creditosPuente.proyecto"></td>
+                                        <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
+                                        <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
+                                        <td class="td2"> ${{formatNumber(creditosPuente.total)}}</td>
+                                        <td class="td2" >
+                                            <span v-if="creditosPuente.status == 0" class="badge badge-info">Pendiente</span>
+                                            <span v-if="creditosPuente.status == 1" class="badge badge-warning">Expediente integrado: {{creditosPuente.fecha_integracion}}</span>
+                                            <span v-if="creditosPuente.status == 2" class="badge badge-danger">Rechazado</span>
+                                            <span v-if="creditosPuente.status == 3" class="badge badge-success">Aprobado</span>
+                                            <span v-if="creditosPuente.status == 5" class="badge badge-danger">Cancelado</span>
+                                        </td>
+                                        <td class="td2">
+                                            <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
+                                                <i class="fa fa-book">&nbsp;Observaciones</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -126,7 +103,7 @@
                     </template>
                     <!-- Div Card Body para actualizar registros -->
                     <template v-else-if="listado == 3">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row border">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -178,7 +155,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div v-if="cabecera.status == 0" class="form-group">
-                                        <label>Lote</label> 
+                                        <label>Lote</label>
                                         <div class="form-inline">
                                             <select class="form-control" v-model="lote_id">
                                                 <option value="">Seleccione</option>
@@ -213,12 +190,12 @@
                                         <strong><label>{{modelo.modelo}}</label></strong>
                                         <div class="form-inline">
                                             <input :disabled="cabecera.status > 0" class="form-control" type="text" pattern="\d*"
-                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value,'precio')" :id="modelo.id" 
+                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value,'precio')" :id="modelo.id"
                                                 :value="modelo.precio|currency" step="1"  v-on:keypress="isNumber($event)"
                                             >
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                              <div class="form-group row border" v-if="cabecera.status == 3">
                                 <div class="col-md-12">
@@ -230,105 +207,86 @@
                                         <strong><label>{{modelo.modelo}}</label></strong>
                                         <div class="form-inline"  >
                                             <input class="form-control" type="text" pattern="\d*"
-                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value,'liberacion')" :id="modelo.id" 
+                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value,'liberacion')" :id="modelo.id"
                                                 :value="modelo.precio_c|currency" step="1"  v-on:keypress="isNumber($event)"
                                             >
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
                             <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Lote</th>
-                                                <th>Etapa de servicio</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Modelo</th>
-                                                <th>Precio</th>
-                                                <th></th>
-                                                <th>Modelo Ant</th>
-                                                <th>Precio ant</th>
-                                                <th></th>
-                                                <th>Modelo Ant</th>
-                                                <th>Precio ant</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayLotesPuente.length">
-                                            <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
-                                                <td>
-                                                    <button v-if="cabecera.status < 2" @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
-                                                        <i class="icon-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td v-text="detalle.num_lote"></td>
-                                                <td v-text="detalle.etapa_servicios"></td>
-                                                <td v-text="detalle.num_etapa"></td>
-                                                <td v-text="detalle.manzana"></td>
-                                                <td v-text="detalle.modelo"></td>
-                                                <td v-text="'$ '+formatNumber(detalle.precio_p)"></td>
-                                                <td></td>
-                                                <td v-text="detalle.modeloAnt1"></td>
-                                                <td v-text="'$ '+formatNumber(detalle.precio1)"></td>
-                                                <td></td>
-                                                <td v-text="detalle.modeloAnt2"></td>
-                                                <td v-text="'$ '+formatNumber(detalle.precio2)"></td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="5"></td>
-                                                <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
-                                                <td align="right" colspan="6"></td>
-                                            </tr>
-                                        </tbody>
+                                <div class="col-md-12">
+                                    <TableComponent :cabecera="[
+                                        '','Lote','Etapa de servicio','Etapa','Manzana','Modelo','Precio',
+                                        '','Modelo Ant','Precio ant','','Modelo Ant','Precio ant',
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <template v-if="arrayLotesPuente.length">
+                                                <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
+                                                    <td>
+                                                        <button v-if="cabecera.status < 2" @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
+                                                            <i class="icon-close"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td v-text="detalle.num_lote"></td>
+                                                    <td v-text="detalle.etapa_servicios"></td>
+                                                    <td v-text="detalle.num_etapa"></td>
+                                                    <td v-text="detalle.manzana"></td>
+                                                    <td v-text="detalle.modelo"></td>
+                                                    <td v-text="'$ '+formatNumber(detalle.precio_p)"></td>
+                                                    <td></td>
+                                                    <td v-text="detalle.modeloAnt1"></td>
+                                                    <td v-text="'$ '+formatNumber(detalle.precio1)"></td>
+                                                    <td></td>
+                                                    <td v-text="detalle.modeloAnt2"></td>
+                                                    <td v-text="'$ '+formatNumber(detalle.precio2)"></td>
+                                                </tr>
 
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="6">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                <tr style="background-color: #CEECF5;">
+                                                    <td v-if="cabecera.status < 2"></td>
+                                                    <td align="right" colspan="5"></td>
+                                                    <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
+                                                    <td align="right" colspan="6"></td>
+                                                </tr>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td colspan="6">
+                                                        No hay lotes seleccionados
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </TableComponent>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
-                                        <h5>Planos de urbanización</h5> 
+                                        <h5>Planos de urbanización</h5>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        
+
                                     </div>
                                     <br>
 
-                                    <div class="table-responsive col-md-12" v-if="arrayUrbanizacion.length">
-                                        <table class="table2 table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Archivo</th>
-                                                    <th>Fecha de subida</th>
-                                                    
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="urbanizacion in arrayUrbanizacion" :key="urbanizacion.id">
-                                                    <td>
-                                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
-                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                            <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ urbanizacion.archivo + '/download'" >Descargar plano</a>
-                                                        </div>
-                                                    </td>
-                                                    <td v-text="urbanizacion.descripcion"></td>
-                                                    <td v-text="urbanizacion.created_at"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+
+                                    <TableComponent v-if="arrayUrbanizacion.length"
+                                        :cabecera="['','Archivo','Fecha de subida']">
+                                        <template v-slot:tbody>
+                                            <tr v-for="urbanizacion in arrayUrbanizacion" :key="urbanizacion.id">
+                                                <td>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ urbanizacion.archivo + '/download'" >Descargar plano</a>
+                                                    </div>
+                                                </td>
+                                                <td v-text="urbanizacion.descripcion"></td>
+                                                <td v-text="urbanizacion.created_at"></td>
+                                            </tr>
+                                        </template>
+                                    </TableComponent>
+
                                 </div>
 
                                 <div class="form-group col-md-2">
@@ -336,34 +294,24 @@
 
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
-                                        <h5>Planos de edificación</h5> 
+                                        <h5>Planos de edificación</h5>
                                     </div>
                                     <br>
-
-                                    <div class="table-responsive col-md-12" v-if="arrayUrbanizacion.length">
-                                        <table class="table2 table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Archivo</th>
-                                                    <th>Fecha de subida</th>
-                                                    
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="edificacion in arrayEdificacion" :key="edificacion.id">
-                                                    <td>
-                                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
-                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                            <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ edificacion.archivo + '/download'" >Descargar plano</a>
-                                                        </div>
-                                                    </td>
-                                                    <td v-text="edificacion.descripcion"></td>
-                                                    <td v-text="edificacion.created_at"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <TableComponent v-if="arrayEdificacion.length"
+                                        :cabecera="['','Archivo','Fecha de subida']">
+                                        <template v-slot:tbody>
+                                            <tr v-for="edificacion in arrayEdificacion" :key="edificacion.id">
+                                                <td>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ edificacion.archivo + '/download'" >Descargar plano</a>
+                                                    </div>
+                                                </td>
+                                                <td v-text="edificacion.descripcion"></td>
+                                                <td v-text="edificacion.created_at"></td>
+                                            </tr>
+                                        </template>
+                                    </TableComponent>
                                 </div>
                             </div>
 
@@ -371,37 +319,32 @@
                                 <div class="col-md-12">
                                     <br><center>
                                         <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
-                                        <button v-if="verList == 0" type="button" title="Mostrar" 
+                                        <button v-if="verList == 0" type="button" title="Mostrar"
                                             class="btn btn-primary btn-sm rounded-circle" @click="verList=1">
                                             <i class="icon-eye"></i>
                                         </button>
-                                        <button v-if="verList == 1" type="button" title="Ocultar" 
+                                        <button v-if="verList == 1" type="button" title="Ocultar"
                                             class="btn btn-warning btn-sm rounded-circle" @click="verList=0">
                                             <i class="icon-close"></i>
                                         </button>
                                     </center><br>
                                 </div>
-                                <div class="table-responsive col-md-12" v-if="verList == 1">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Documento</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="checklist.length">
+                                <div class="col-md-12" v-if="verList==1">
+                                    <TableComponent
+                                        :cabecera="['','Documento','']"
+                                    >
+                                        <template v-slot:tbody v-if="checklist.length">
                                             <tr v-for="chk in checklist" :key="chk.id">
                                                 <td v-text="chk.categoria"></td>
                                                 <td><strong v-bind:class="{'entregado':chk.listo == 1}">{{chk.documento}}</strong></td>
                                                 <td><input disabled type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
                                                 </td>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                        </template>
+                                    </TableComponent>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group row">
                                 <div class="col-md-10">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -409,7 +352,7 @@
                                     <button v-if="cabecera.status == 0" type="button" class="btn btn-primary" @click="actualizarCredito()"> Actualizar </button>
                                 </div>
                                 <div class="col-md-2">
-                                    
+
                                     <button v-if="cabecera.status == 0" type="button" class="btn btn-danger" @click="cancelarCredito()"> Cancelar </button>
                                 </div>
                             </div>
@@ -417,7 +360,7 @@
                     </template>
                     <!--Div para ver detalle del aviso -->
                     <template v-else-if="listado == 2">
-                        <div class="card-body" v-if="bases == 0"> 
+                        <div class="card-body" v-if="bases == 0">
                             <div class="form-group row border">
                                 <div class="col-md-3">
                                     <label for="">Institución </label>
@@ -471,7 +414,7 @@
                                         </div>
                                     </div>
                                 </template>
-                                
+
 
                                 <div class="form-group row" v-if="cabecera.base_p == 1">
                                     <div class="col-md-1">
@@ -480,143 +423,110 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Lote</th>
-                                                <th>Etapa de servicio</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Modelo</th>
-                                                <th>Precio</th>
-                                                <th></th>
-                                                <th>Modelo Ant</th>
-                                                <th>Precio ant</th>
-                                                <th></th>
-                                                <th>Modelo Ant</th>
-                                                <th>Precio ant</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayLotesPuente.length">
-                                            <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
-                                                <td>
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Docs</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a v-if="detalle.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ detalle.foto_predial">Predial</a>
-                                                        <a v-if="detalle.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ detalle.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
-                                                        <a v-if="detalle.num_licencia" class="dropdown-item"  v-text="'Licencia: '+detalle.num_licencia" v-bind:href="'/downloadLicencias/'+detalle.foto_lic"></a>
-                                                    </div>
-                                                </td>
-                                                <td v-text="detalle.num_lote"></td>
-                                                <td v-text="detalle.etapa_servicios"></td>
-                                                <td v-text="detalle.num_etapa"></td>
-                                                <td v-text="detalle.manzana"></td>
-                                                <td v-text="detalle.modelo"></td>
-                                                <td v-text="'$ '+formatNumber(detalle.precio_p)"></td>
-                                                <td></td>
-                                                <td v-text="detalle.modeloAnt1"></td>
-                                                <td v-text="'$ '+formatNumber(detalle.precio1)"></td>
-                                                <td></td>
-                                                <td v-text="detalle.modeloAnt2"></td>
-                                                <td v-text="'$ '+formatNumber(detalle.precio2)"></td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="6"></td>
-                                                <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
-                                                <td align="right" colspan="6"></td>
-                                            </tr>
-                                        </tbody>
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="6">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="col-md-12">
+                                    <TableComponent :cabecera="['','Lote','Etapa de servicio','Etapa','Manzana','Modelo',
+                                        'Precio','','Modelo Ant','Precio ant','','Modelo Ant','Precio ant'
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <template v-if="arrayLotesPuente.length">
+                                                <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
+                                                    <td>
+                                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Docs</a>
+                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                            <a v-if="detalle.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ detalle.foto_predial">Predial</a>
+                                                            <a v-if="detalle.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ detalle.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                                            <a v-if="detalle.num_licencia" class="dropdown-item"  v-text="'Licencia: '+detalle.num_licencia" v-bind:href="'/downloadLicencias/'+detalle.foto_lic"></a>
+                                                        </div>
+                                                    </td>
+                                                    <td v-text="detalle.num_lote"></td>
+                                                    <td v-text="detalle.etapa_servicios"></td>
+                                                    <td v-text="detalle.num_etapa"></td>
+                                                    <td v-text="detalle.manzana"></td>
+                                                    <td v-text="detalle.modelo"></td>
+                                                    <td v-text="'$ '+formatNumber(detalle.precio_p)"></td>
+                                                    <td></td>
+                                                    <td v-text="detalle.modeloAnt1"></td>
+                                                    <td v-text="'$ '+formatNumber(detalle.precio1)"></td>
+                                                    <td></td>
+                                                    <td v-text="detalle.modeloAnt2"></td>
+                                                    <td v-text="'$ '+formatNumber(detalle.precio2)"></td>
+                                                </tr>
+
+                                                <tr style="background-color: #CEECF5;">
+                                                    <td align="right" colspan="6"></td>
+                                                    <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
+                                                    <td align="right" colspan="6"></td>
+                                                </tr>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td colspan="6">
+                                                        No hay lotes seleccionados
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </TableComponent>
                                 </div>
                             </div>
                             <div class="form-group row" v-if="cabecera.base_p == 1">
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
-                                        <h5>Planos de urbanización</h5> 
+                                        <h5>Planos de urbanización</h5>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <button v-if="cabecera.status == 0" type="button" title="Nuevo documento" class="btn btn-success btn-sm" @click="abrirModal('urbanizacion', id), clasificacion = 1">
                                             <i class="icon-plus"></i>
                                         </button>
                                     </div>
                                     <br>
-                                    <div class="table-responsive col-md-12" v-if="arrayUrbanizacion.length">
-                                        <table class="table2 table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Archivo</th>
-                                                    <th>Fecha de entrega</th>
-                                                    <th>Notas</th>
-                                                    <th>Fecha de confirmación</th>
+                                    <TableComponent v-if="arrayUrbanizacion.length" :cabecera="[
+                                        'Archivo','Fecha de entrega','Notas','Fecha de confirmación',
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <tr v-for="urbanizacion in arrayUrbanizacion" :key="urbanizacion.id">
+                                                <td v-text="urbanizacion.descripcion"></td>
+                                                <td v-text="urbanizacion.fecha_entrega"></td>
+                                                <td v-text="urbanizacion.notas"></td>
+                                                <td v-if="urbanizacion.fecha_confirm == null">
+                                                    <button type="button" class="btn btn-dark" @click="confirmarEntrega(urbanizacion.id)">Confirmar entrega</button>
+                                                </td>
+                                                <td v-else>
+                                                    Confirmado por: {{urbanizacion.user_confirm}} ( {{urbanizacion.fecha_confirm}} )
+                                                </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="urbanizacion in arrayUrbanizacion" :key="urbanizacion.id">
-                                                    
-                                                    <td v-text="urbanizacion.descripcion"></td>
-                                                    <td v-text="urbanizacion.fecha_entrega"></td>
-                                                    <td v-text="urbanizacion.notas"></td>
-                                                    <td v-if="urbanizacion.fecha_confirm == null">
-                                                        <button type="button" class="btn btn-dark" @click="confirmarEntrega(urbanizacion.id)">Confirmar entrega</button>
-                                                    </td>
-                                                    <td v-else>
-                                                        Confirmado por: {{urbanizacion.user_confirm}} ( {{urbanizacion.fecha_confirm}} )
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </template>
+                                    </TableComponent>
                                 </div>
 
-                                <div class="card-header form-group col-md-2 ">   
+                                <div class="card-header form-group col-md-2 ">
                                 </div>
 
                                 <div class="card-header form-group col-md-5 border" v-if="cabecera.base_p == 1">
                                     <div class="row">
-                                        <h5>Planos de edificación</h5> 
+                                        <h5>Planos de edificación</h5>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <button v-if="cabecera.status == 0" type="button" title="Nuevo documento" class="btn btn-success btn-sm" @click="abrirModal('edificacion', id), clasificacion = 2">
                                             <i class="icon-plus"></i>
                                         </button>
                                     </div>
                                     <br>
-                                    <div class="table-responsive col-md-12" v-if="arrayUrbanizacion.length">
-                                        <table class="table2 table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    
-                                                    <th>Archivo</th>
-                                                    <th>Fecha de entrega</th>
-                                                    <th>Notas</th>
-                                                    <th>Fecha de confirmación</th>
-                                                    
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="edificacion in arrayEdificacion" :key="edificacion.id">
-                                                    
-                                                    <td v-text="edificacion.descripcion"></td>
-                                                    <td v-text="edificacion.fecha_entrega"></td>
-                                                    <td v-text="edificacion.notas"></td>
-                                                    <td v-if="edificacion.fecha_confirm == null">
-                                                        <button type="button" class="btn btn-dark" @click="confirmarEntrega(edificacion.id)">Confirmar entrega</button>
-                                                    </td>
-                                                    <td v-else>
-                                                        Confirmado por: {{edificacion.user_confirm}} ( {{edificacion.fecha_confirm}} )
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <TableComponent v-if="arrayEdificacion.length" :cabecera="[
+                                        'Archivo','Fecha de entrega','Notas','Fecha de confirmación'
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <tr v-for="edificacion in arrayEdificacion" :key="edificacion.id">
+                                                <td v-text="edificacion.descripcion"></td>
+                                                <td v-text="edificacion.fecha_entrega"></td>
+                                                <td v-text="edificacion.notas"></td>
+                                                <td v-if="edificacion.fecha_confirm == null">
+                                                    <button type="button" class="btn btn-dark" @click="confirmarEntrega(edificacion.id)">Confirmar entrega</button>
+                                                </td>
+                                                <td v-else>
+                                                    Confirmado por: {{edificacion.user_confirm}} ( {{edificacion.fecha_confirm}} )
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </TableComponent>
                                 </div>
                             </div>
 
@@ -624,39 +534,39 @@
                                 <div class="col-md-12">
                                     <br><center>
                                         <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
-                                        <button v-if="verList == 0" type="button" title="Mostrar" 
+                                        <button v-if="verList == 0" type="button" title="Mostrar"
                                             class="btn btn-primary btn-sm rounded-circle" @click="verList=1">
                                             <i class="icon-eye"></i>
                                         </button>
-                                        <button v-if="verList == 1" type="button" title="Ocultar" 
+                                        <button v-if="verList == 1" type="button" title="Ocultar"
                                             class="btn btn-warning btn-sm rounded-circle" @click="verList=0">
                                             <i class="icon-close"></i>
                                         </button>
-                                        <button v-if="verList == 1 && cabecera.status == 0" type="button" title="Add" 
+                                        <button v-if="verList == 1 && cabecera.status == 0" type="button" title="Add"
                                             class="btn btn-success btn-sm rounded-circle" @click="abrirModal('checklist',id)">
                                             <i class="icon-plus"></i>
                                         </button>
                                     </center><br>
                                 </div>
-                                <div class="table-responsive col-md-12" v-if="verList == 1">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
+                                <div class="col-md-12">
+                                    <TableComponent v-if="verList == 1">
+                                        <template v-slot:thead>
                                             <tr>
                                                 <th></th>
                                                 <th></th>
                                                 <th>Documento</th>
                                                 <th v-if="cabecera.base_p == 1">
-                                                    <button v-if="cabecera.status == 0  && chk_listos != chk_total" type="button" title="Finalizar todos" 
+                                                    <button v-if="cabecera.status == 0  && chk_listos != chk_total" type="button" title="Finalizar todos"
                                                         class="btn btn-primary btn-sm rounded-circle" @click="finalizarChk(checklist)">
                                                         <i class="icon-check"></i>
                                                     </button>
                                                 </th>
                                             </tr>
-                                        </thead>
-                                        <tbody v-if="checklist.length">
+                                        </template>
+                                        <template v-slot:tbody v-if="checklist.length">
                                             <tr v-for="chk in checklist" :key="chk.id">
                                                 <td v-if="cabecera.base_p == 1">
-                                                    <button v-if="cabecera.status == 0" type="button" title="No aplica" 
+                                                    <button v-if="cabecera.status == 0" type="button" title="No aplica"
                                                     class="btn btn-danger btn-sm rounded-circle" @click="deleteChk(chk.id)">
                                                         <i class="icon-close"></i>
                                                     </button>
@@ -666,8 +576,8 @@
                                                 <td><input :disabled="cabecera.status > 0 || cabecera.base_p == 0" type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
                                                 </td>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                        </template>
+                                    </TableComponent>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -713,206 +623,204 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered table-striped table-sm">
-                                                    <tbody>
-                                                        <!--Comisiones Bancarias--->
-                                                            <!-- <tr><th colspan="2">Comisiones Bancarias</th></tr> -->
-                                                            <tr>
-                                                                <td colspan="2">Adquisición del terreno</td>
-                                                                <td v-text="'$'+formatNumber(base.adquisicion_terreno/base.cont)"></td>
-                                                                <strong>
-                                                                    <td v-text="'$'+formatNumber(base.adquisicion_terreno)"></td>
-                                                                </strong>
-                                                                
-                                                            </tr>
-                                                            <!------>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Intereses por pago del terreno</td>
-                                                                    <td v-text="'$'+formatNumber(base.int_pago_terreno*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber(base.int_pago_terreno*base.inc*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Valor del terreno</td>
-                                                                    <td v-text="'$'+formatNumber(base.valor_terreno*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber(base.valor_terreno*base.inc*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Escritura a GCC, Juicio y Acta de Lotif.</td>
-                                                                    <td v-text="'$'+formatNumber(base.escritura_gcc*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber(base.escritura_gcc*base.inc*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Cargos adicionales al terreno</td>
-                                                                    <td v-text="'$'+formatNumber(base.adicional_terreno*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber(base.adicional_terreno*base.inc*base.cont)"></td>
-                                                                </tr>
-                                                            <!------>
-                                                            <tr>
-                                                                <td colspan="2">Estudios y licencias (0.7)</td>
-                                                                <td v-text="'$'+formatNumber(base.estudios_lic/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.estudios_lic )"></td></strong>
-                                                            </tr>  
-                                                            <!------>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Permisos, Lic., Y Autolizaciones Municipales</td>
-                                                                    <td v-text="'$'+formatNumber(base.permisos*base.inc*0.7)"></td>
-                                                                        <td v-text="'$'+formatNumber((base.permisos*base.inc)*base.cont*0.7)"></td>
-                                                                </tr>
-                                                            <!------>
-                                                            <tr>
-                                                                <td colspan="2">Proyectos y diseños (0.3)</td>
-                                                                <td v-text="'$'+formatNumber(base.proyectos_disen/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.proyectos_disen )"></td></strong>
-                                                            </tr>  
-                                                            <!------>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Permisos, Lic., Y Autolizaciones Municipales</td>
-                                                                    <td v-text="'$'+formatNumber(base.permisos*base.inc*0.3)"></td>
-                                                                        <td v-text="'$'+formatNumber((base.permisos*base.inc*base.cont)*0.3)"></td>
-                                                                </tr>
-                                                            <!------>
-                                                            <tr>
-                                                                <td colspan="2">Edificación</td>
-                                                                <td v-text="'$'+formatNumber(base.edificacion/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.edificacion )"></td></strong>
-                                                            </tr>  
-                                                            <!------>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Presupuesto de edificación de vivienda</td>
-                                                                    <td v-text="'$'+formatNumber(base.presupuesto_edif*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber((base.presupuesto_edif*base.inc)*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Laboratorio</td>
-                                                                    <td v-text="'$'+formatNumber(base.laboratorio*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber((base.laboratorio*base.inc)*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Partida Inflacionaria y Obra extra</td>
-                                                                    <td v-text="'$'+formatNumber(base.partida_inflacionaria*base.inc)"></td>
-                                                                        <td v-text="'$'+formatNumber((base.partida_inflacionaria*base.inc)*base.cont)"></td>
-                                                                </tr>
-                                                            <!------>
-                                                            <tr>
-                                                                <td colspan="2">Urbanización e Infraestructura</td>
-                                                                <td v-text="'$'+formatNumber(base.urbanizacion_infra/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.urbanizacion_infra )"></td></strong>
-                                                            </tr>  
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Presupuesto de Urb. E Infraestructura</td>
-                                                                    <td v-text="'$'+formatNumber(base.presupuesto_urb*base.inc)"></td>
-                                                                    <td v-text="'$'+formatNumber((base.presupuesto_urb*base.inc)*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Equipamiento</td>
-                                                                    <td v-text="'$'+formatNumber(base.equipamiento*base.inc)"></td>
-                                                                    <td v-text="'$'+formatNumber((base.equipamiento*base.inc)*base.cont)"></td>
-                                                                </tr>
-                                                                <tr class="table-warning" v-if="detalle == 1">
-                                                                    <td></td>
-                                                                    <td>Fianzas (Cumplimiento Urbanización)</td>
-                                                                    <td v-text="'$'+formatNumber(base.fianzas*base.inc)"></td>
-                                                                    <td v-text="'$'+formatNumber((base.fianzas*base.inc)*base.cont)"></td>
-                                                                </tr>
-                                                            <tr>
-                                                                <td colspan="4">Supervisión de Obras</td>
-                                                            </tr>  
-                                                            <tr>
-                                                                <td colspan="2">Promoción y Publicidad</td>
-                                                                <td v-text="'$'+formatNumber(base.promocion_publi/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.promocion_publi )"></td></strong>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Gastos de comercialización</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_comerc*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.gastos_comerc*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="2">Gastos de venta</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_venta/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.gastos_venta )"></td></strong>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Comisión por ventas (2.5% + 16%IVA)</td>
-                                                                <td v-text="'$'+formatNumber(base.comicion_venta*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.comicion_venta*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="4">Pago Registro Infonavit</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="2">Gastos Administración</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_admin/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.gastos_admin )"></td></strong>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Gastos Ind. De Operación e Incentivos</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_ind_op*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.gastos_ind_op*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="2">Gastos Notariales</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_notariales/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.gastos_notariales )"></td></strong>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Gastos de escrituración del Crédito Puente</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_esc*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.gastos_esc*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="2">Gastos Financieros (Comisiones)</td>
-                                                                <td v-text="'$'+formatNumber(base.gastos_fin_com/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.gastos_fin_com )"></td></strong>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Comisión Integral Apertura C.Puente</td>
-                                                                <td v-text="'$'+formatNumber(base.comision_int*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.comision_int*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="2">Intereses del Crédito Puente y comisiones</td>
-                                                                <td v-text="'$'+formatNumber(base.int_cpuente_com/base.cont)"></td>
-                                                                <strong><td v-text="'$'+formatNumber(base.int_cpuente_com )"></td></strong>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Inscripción de Conjunto</td>
-                                                                <td v-text="'$'+formatNumber(base.insc_conjunto*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.insc_conjunto*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Intereses Nafin o por Desplazamiento Lento</td>
-                                                                <td v-text="'$'+formatNumber(base.int_nafin*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.int_nafin*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                            <tr class="table-warning" v-if="detalle == 1">
-                                                                <td></td>
-                                                                <td>Intereses Crédito Puente</td>
-                                                                <td v-text="'$'+formatNumber(base.int_cpuente*base.inc)"></td>
-                                                                <td v-text="'$'+formatNumber((base.int_cpuente*base.inc)*base.cont)"></td>
-                                                            </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                            <!-- Bases Presupuestales -->
+                                            <TableComponent>
+                                                <template v-slot:tbody>
+                                                    <!--Comisiones Bancarias--->
+                                                    <tr>
+                                                        <td colspan="2">Adquisición del terreno</td>
+                                                        <td v-text="'$'+formatNumber(base.adquisicion_terreno/base.cont)"></td>
+                                                        <strong>
+                                                            <td v-text="'$'+formatNumber(base.adquisicion_terreno)"></td>
+                                                        </strong>
+
+                                                    </tr>
+                                                    <!------>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Intereses por pago del terreno</td>
+                                                            <td v-text="'$'+formatNumber(base.int_pago_terreno*base.inc)"></td>
+                                                                <td v-text="'$'+formatNumber(base.int_pago_terreno*base.inc*base.cont)"></td>
+                                                        </tr>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Valor del terreno</td>
+                                                            <td v-text="'$'+formatNumber(base.valor_terreno*base.inc)"></td>
+                                                                <td v-text="'$'+formatNumber(base.valor_terreno*base.inc*base.cont)"></td>
+                                                        </tr>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Escritura a GCC, Juicio y Acta de Lotif.</td>
+                                                            <td v-text="'$'+formatNumber(base.escritura_gcc*base.inc)"></td>
+                                                                <td v-text="'$'+formatNumber(base.escritura_gcc*base.inc*base.cont)"></td>
+                                                        </tr>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Cargos adicionales al terreno</td>
+                                                            <td v-text="'$'+formatNumber(base.adicional_terreno*base.inc)"></td>
+                                                                <td v-text="'$'+formatNumber(base.adicional_terreno*base.inc*base.cont)"></td>
+                                                        </tr>
+                                                    <!------>
+                                                    <tr>
+                                                        <td colspan="2">Estudios y licencias (0.7)</td>
+                                                        <td v-text="'$'+formatNumber(base.estudios_lic/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.estudios_lic )"></td></strong>
+                                                    </tr>
+                                                    <!------>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Permisos, Lic., Y Autolizaciones Municipales</td>
+                                                            <td v-text="'$'+formatNumber(base.permisos*base.inc*0.7)"></td>
+                                                                <td v-text="'$'+formatNumber((base.permisos*base.inc)*base.cont*0.7)"></td>
+                                                        </tr>
+                                                    <!------>
+                                                    <tr>
+                                                        <td colspan="2">Proyectos y diseños (0.3)</td>
+                                                        <td v-text="'$'+formatNumber(base.proyectos_disen/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.proyectos_disen )"></td></strong>
+                                                    </tr>
+                                                    <!------>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Permisos, Lic., Y Autolizaciones Municipales</td>
+                                                            <td v-text="'$'+formatNumber(base.permisos*base.inc*0.3)"></td>
+                                                                <td v-text="'$'+formatNumber((base.permisos*base.inc*base.cont)*0.3)"></td>
+                                                        </tr>
+                                                    <!------>
+                                                    <tr>
+                                                        <td colspan="2">Edificación</td>
+                                                        <td v-text="'$'+formatNumber(base.edificacion/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.edificacion )"></td></strong>
+                                                    </tr>
+                                                    <!------>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Presupuesto de edificación de vivienda</td>
+                                                            <td v-text="'$'+formatNumber(base.presupuesto_edif*base.inc)"></td>
+                                                                <td v-text="'$'+formatNumber((base.presupuesto_edif*base.inc)*base.cont)"></td>
+                                                        </tr>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Laboratorio</td>
+                                                            <td v-text="'$'+formatNumber(base.laboratorio*base.inc)"></td>
+                                                                <td v-text="'$'+formatNumber((base.laboratorio*base.inc)*base.cont)"></td>
+                                                        </tr>
+                                                        <tr class="table-warning" v-if="detalle == 1">
+                                                            <td></td>
+                                                            <td>Partida Inflacionaria y Obra extra</td>
+                                                            <td v-text="'$'+formatNumber(base.partida_inflacionaria*base.inc)"></td>
+                                                            <td v-text="'$'+formatNumber((base.partida_inflacionaria*base.inc)*base.cont)"></td>
+                                                        </tr>
+                                                    <!------>
+                                                    <tr>
+                                                        <td colspan="2">Urbanización e Infraestructura</td>
+                                                        <td v-text="'$'+formatNumber(base.urbanizacion_infra/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.urbanizacion_infra )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Presupuesto de Urb. E Infraestructura</td>
+                                                        <td v-text="'$'+formatNumber(base.presupuesto_urb*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.presupuesto_urb*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Equipamiento</td>
+                                                        <td v-text="'$'+formatNumber(base.equipamiento*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.equipamiento*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Fianzas (Cumplimiento Urbanización)</td>
+                                                        <td v-text="'$'+formatNumber(base.fianzas*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.fianzas*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4">Supervisión de Obras</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Promoción y Publicidad</td>
+                                                        <td v-text="'$'+formatNumber(base.promocion_publi/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.promocion_publi )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Gastos de comercialización</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_comerc*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.gastos_comerc*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Gastos de venta</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_venta/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.gastos_venta )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Comisión por ventas (2.5% + 16%IVA)</td>
+                                                        <td v-text="'$'+formatNumber(base.comicion_venta*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.comicion_venta*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="4">Pago Registro Infonavit</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Gastos Administración</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_admin/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.gastos_admin )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Gastos Ind. De Operación e Incentivos</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_ind_op*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.gastos_ind_op*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Gastos Notariales</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_notariales/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.gastos_notariales )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Gastos de escrituración del Crédito Puente</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_esc*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.gastos_esc*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Gastos Financieros (Comisiones)</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_fin_com/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.gastos_fin_com )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Comisión Integral Apertura C.Puente</td>
+                                                        <td v-text="'$'+formatNumber(base.comision_int*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.comision_int*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">Intereses del Crédito Puente y comisiones</td>
+                                                        <td v-text="'$'+formatNumber(base.int_cpuente_com/base.cont)"></td>
+                                                        <strong><td v-text="'$'+formatNumber(base.int_cpuente_com )"></td></strong>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Inscripción de Conjunto</td>
+                                                        <td v-text="'$'+formatNumber(base.insc_conjunto*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.insc_conjunto*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Intereses Nafin o por Desplazamiento Lento</td>
+                                                        <td v-text="'$'+formatNumber(base.int_nafin*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.int_nafin*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                    <tr class="table-warning" v-if="detalle == 1">
+                                                        <td></td>
+                                                        <td>Intereses Crédito Puente</td>
+                                                        <td v-text="'$'+formatNumber(base.int_cpuente*base.inc)"></td>
+                                                        <td v-text="'$'+formatNumber((base.int_cpuente*base.inc)*base.cont)"></td>
+                                                    </tr>
+                                                </template>
+                                            </TableComponent>
                                         </div>
                                     </div>
                                 </div>
@@ -930,66 +838,64 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <div class="table-responsive">
-                                                <table class="table table-dark table-bordered table-striped table-sm">
-                                                    <tbody>
-                                                        <!--Comisiones Bancarias--->
-                                                            <!-- <tr><th colspan="2">Comisiones Bancarias</th></tr> -->
-                                                            <tr>
-                                                                <td>Adquisición del terreno</td>
-                                                                <strong>
-                                                                    <td v-text="'$'+formatNumber(t_adquisicion_terreno)"></td>
-                                                                </strong>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Estudios y licencias</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_estudios_lic)"></td></strong>
-                                                            </tr>  
-                                                            <tr>
-                                                                <td>Proyectos y diseños</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_proyectos_disen)"></td></strong>
-                                                            </tr>  
-                                                            <tr>
-                                                                <td>Edificación</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_edificacion)"></td></strong>
-                                                            </tr>  
-                                                            <tr>
-                                                                <td>Urbanización e Infraestructura</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_urbanizacion_infra)"></td></strong>
-                                                            </tr>  
-                                                            <tr>
-                                                                <td colspan="3">Supervisión de Obras</td>
-                                                            </tr>  
-                                                            <tr>
-                                                                <td>Promoción y Publicidad</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_promocion_publi)"></td></strong>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Gastos de venta</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_gastos_venta)"></td></strong>
-                                                            </tr>
-                                                            <tr>
-                                                                <td colspan="3">Pago Registro Infonavit</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Gastos Administración</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_gastos_admin)"></td></strong>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Gastos Notariales</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_gastos_notariales)"></td></strong>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Gastos Financieros (Comisiones)</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_gastos_fin_com)"></td></strong>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Intereses del Crédito Puente y comisiones</td>
-                                                                <strong><td v-text="'$'+formatNumber(t_int_cpuente_com)"></td></strong>
-                                                            </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                            <!--Totales Bases Presupuestales -->
+                                            <TableComponent>
+                                                <template v-slot:tbody>
+                                                    <!--Comisiones Bancarias--->
+                                                    <tr>
+                                                        <td>Adquisición del terreno</td>
+                                                        <strong>
+                                                            <td v-text="'$'+formatNumber(t_adquisicion_terreno)"></td>
+                                                        </strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Estudios y licencias</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_estudios_lic)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Proyectos y diseños</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_proyectos_disen)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Edificación</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_edificacion)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Urbanización e Infraestructura</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_urbanizacion_infra)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Supervisión de Obras</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Promoción y Publicidad</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_promocion_publi)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos de venta</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_gastos_venta)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Pago Registro Infonavit</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos Administración</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_gastos_admin)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos Notariales</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_gastos_notariales)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos Financieros (Comisiones)</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_gastos_fin_com)"></td></strong>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Intereses del Crédito Puente y comisiones</td>
+                                                        <strong><td v-text="'$'+formatNumber(t_int_cpuente_com)"></td></strong>
+                                                    </tr>
+                                                </template>
+                                            </TableComponent>
                                         </div>
                                     </div>
                                 </div>
@@ -1007,146 +913,87 @@
             </div>
 
             <!--Inicio del modal-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" 
-                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
+            <ModalComponent :titulo="tituloModal" v-if="modal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <template v-if="tipoAccion == 1">
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="observacion" class="form-control">
                             </div>
 
-                                <div class="modal-body">
-                                    <template v-if="tipoAccion == 1">
-                                        
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" v-model="observacion" class="form-control">
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
-                                                </div>
-                                            </div>
-
-                                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                <table class="table table-bordered table-striped table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Usuario</th>
-                                                            <th>Observacion</th>
-                                                            <th>Fecha</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="observacion in arrayObs" :key="observacion.id">
-                                                            <td v-text="observacion.usuario" ></td>
-                                                            <td v-text="observacion.observacion" ></td>
-                                                            <td v-text="observacion.created_at"></td>
-                                                        </tr>                               
-                                                    </tbody>
-                                                </table>
-                                                
-                                            </form>
-                                        
-                                        
-                                    </template>
-                                    
-                                    <!-- <template v-if="tipoAccion == 2">
-
-                                        <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" v-model="descripcion" class="form-control" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <div class="col-md-6">
-                                                    <input type="file" v-on:change="dropboxFile" name="file" >    
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <div class="col-md-6">
-                                                    <button class="btn btn-primary" type="submit">Guardar archivo</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        
-                                    </template> -->
-
-                                    <template v-if="tipoAccion == 2">
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" v-model="descripcion" class="form-control" required placeholder="Nob">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega</label>
-                                                <div class="col-md-6">
-                                                    <input type="date" v-model="fecha_entrega" class="form-control" required>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Notas</label>
-                                                <div class="col-md-6">
-                                                    <textarea class="form-control" v-model="notas" cols="30" rows="4"></textarea>
-                                                </div>
-                                            </div>
-                                        
-                                    </template>
-
-                                    <template v-if="tipoAccion == 3">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Documento</label>
-                                            <div class="col-md-6">
-                                                <select class="form-control" v-model="chk_new" >
-                                                    <option value="">Seleccione</option>
-                                                    <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </template>
-
-                                    <template v-if="tipoAccion == 4">
-
-                                        <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
-
-                                            <div class="form-group row">
-                                                <div class="col-md-6">
-                                                    <input type="file" v-on:change="dropboxFile" name="file" >    
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <div class="col-md-6">
-                                                    <button class="btn btn-primary" type="submit">Guardar archivo</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        
-                                    </template>
-                                </div>
-                                <!-- Botones del modal -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                    <button v-if="tipoAccion == 2" class="btn btn-primary" type="button" @click="guardarDoc()">Guardar</button>
-                                    <button v-if="tipoAccion == 3 && chk_new != ''" type="button" class="btn btn-primary" @click="addDocumento()">Añadir documento</button>
-                                </div>
-                            
+                            <div class="col-md-3">
+                                <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
+                            </div>
                         </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
+
+                        <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
+                            <template v-slot:tbody>
+                                <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                    <td v-text="observacion.usuario" ></td>
+                                    <td v-text="observacion.observacion" ></td>
+                                    <td v-text="observacion.created_at"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </template>
+
+                    <template v-if="tipoAccion == 2">
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="descripcion" class="form-control" required placeholder="Nob">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega</label>
+                            <div class="col-md-6">
+                                <input type="date" v-model="fecha_entrega" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Notas</label>
+                            <div class="col-md-6">
+                                <textarea class="form-control" v-model="notas" cols="30" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template v-if="tipoAccion == 3">
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Documento</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="chk_new" >
+                                    <option value="">Seleccione</option>
+                                    <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template v-if="tipoAccion == 4">
+                        <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <input type="file" v-on:change="dropboxFile" name="file" >
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary" type="submit">Guardar archivo</button>
+                                </div>
+                            </div>
+                        </form>
+                    </template>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button v-if="tipoAccion == 2" class="btn btn-primary" type="button" @click="guardarDoc()">Guardar</button>
+                    <button v-if="tipoAccion == 3 && chk_new != ''" type="button" class="btn btn-primary" @click="addDocumento()">Añadir documento</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -1157,6 +1004,8 @@
 
 <script>
     import vSelect from 'vue-select';
+    import TableComponent from '../Componentes/TableComponent.vue'
+    import ModalComponent from '../Componentes/ModalComponent.vue'
     export default {
         props:{
             userName:{type: String}
@@ -1172,7 +1021,7 @@
                 errorcreditosPuente : 0,
                 errorMostrarMsjcreditosPuente : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -1247,7 +1096,9 @@
             }
         },
         components:{
-            vSelect
+            vSelect,
+            ModalComponent,
+            TableComponent
         },
         computed:{
             isActived: function(){
@@ -1295,11 +1146,11 @@
 
                 let formData = new FormData();
                 let me = this;
-           
+
                 formData.append('file', me.file);
                 axios.post('/dropbox/files/'+me.id+'/siembraPuente', formData)
                 .then(function (response) {
-                   
+
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -1308,7 +1159,7 @@
                         timer: 2000
                         })
                     me.getPlanos(me.id);
-                    
+
                 })
 
                 .catch(function (error) {
@@ -1361,7 +1212,7 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar 
+                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar
                                     + '&folio=' + me.b_folio + '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1390,7 +1241,7 @@
                             title: 'Entrega de plano confirmada'
                         })
                     me.getPlanos(me.id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1422,7 +1273,7 @@
                             timer: 1500
                         })
                     me.getPlanos(me.id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1456,7 +1307,6 @@
             },
 
             resBanco(resultado){
-
                 Swal({
                     title: 'Estas seguro?',
                     animation: false,
@@ -1467,7 +1317,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, continuar!'
                     }).then((result) => {
 
@@ -1497,7 +1347,7 @@
                                             'id' : me.id,
                                             'resultado': resultado,
                                             'comentario': comentario
-                                            
+
                                         }).then(function (response){
                                             me.ocultarDetalle();
                                             swal({
@@ -1535,7 +1385,7 @@
                                             'id' : me.id,
                                             'resultado': resultado,
                                             'monto_aprob': monto_aprob
-                                            
+
                                         }).then(function (response){
                                             me.ocultarDetalle();
                                             swal({
@@ -1744,14 +1594,14 @@
                 me.getPlanos(me.id);
                 me.getChecklist(me.id);
                 //me.getBases();
-               
+
             },
             registrarLote(){
                 let me = this;
                 axios.post('/cPuentes/agregarLote',{
                     'solicitud_id': this.id,
                     'lote': this.lote_id,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1767,7 +1617,7 @@
                         me.etapa_id='';
                         me.lote_id='';
                         me.manzana='';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1777,7 +1627,7 @@
                 axios.post('/cPuentes/storeObs',{
                     'id': me.id,
                     'observacion': me.observacion,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1789,7 +1639,7 @@
                         })
                         me.getObs(me.id);
                         me.observacion = '';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1806,7 +1656,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, continuar!'
                     }).then((result) => {
 
@@ -1832,7 +1682,7 @@
                                     me.getObs(me.id);
                                     me.ocultarDetalle();
                                     me.observacion = '';
-                                
+
                             }).catch(function (error){
                                 console.log(error);
                             });
@@ -1845,7 +1695,7 @@
                 axios.post('/cPuentes/addDocChk',{
                     'id': me.id,
                     'documento': me.chk_new,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1857,7 +1707,7 @@
                         })
                         me.getChecklist(me.id);
                         me.cerrarModal();
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1868,7 +1718,7 @@
                     'lote': data.lote_id,
                     'lp': data.id,
                     'solicitud_id': me.id
-                   
+
                 }}).then(function (response){
                     //Obtener detalle
                         swal({
@@ -1884,7 +1734,7 @@
                         me.etapa_id='';
                         me.lote_id='';
                         me.manzana='';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1951,7 +1801,7 @@
                     'precio': precio,
                     'id': modelo_id,
                     'tipo':tipo
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         const toast = Swal.mixin({
@@ -1973,7 +1823,7 @@
                         me.etapa_id='';
                         me.lote_id='';
                         me.manzana='';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -2003,7 +1853,7 @@
                         me.etapa_id='';
                         me.lote_id='';
                         me.manzana='';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -2032,7 +1882,7 @@
                         me.etapa_id='';
                         me.lote_id='';
                         me.manzana='';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -2065,9 +1915,9 @@
                 });
             },
             abrirModal(opcion,id){
+                this.modal = 1;
                 switch(opcion){
                     case 'obs':{
-                        this.modal = 1;
                         this.tituloModal = 'Comentarios para el Crédito Puente';
                         this.arrayObs = [];
                         this.id = id;
@@ -2076,7 +1926,6 @@
                         break;
                     }
                     case 'urbanizacion':{
-                        this.modal = 1;
                         this.tituloModal = 'Nuevo plano de urbanización';
                         this.clasificacion = 1;
                         this.file = '';
@@ -2087,7 +1936,6 @@
                         break;
                     }
                     case 'edificacion':{
-                        this.modal = 1;
                         this.tituloModal = 'Nuevo plano de edificación';
                         this.clasificacion = 2;
                         this.file = '';
@@ -2099,20 +1947,18 @@
                     }
                     case 'checklist':{
                         this.getSinChk();
-                        this.modal = 1;
                         this.tituloModal = 'Checklist';
                         this.tipoAccion = 3;
                         break;
                     }
                     case 'siembra':{
-                        this.modal = 1;
                         this.file = '';
                         this.id = id;
                         this.tituloModal = 'Subir plano de siembra';
                         this.tipoAccion = 4;
                         break;
                     }
-                   
+
                 }
             },
             cerrarModal(){
@@ -2132,25 +1978,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
@@ -2168,7 +1995,7 @@
         margin-top: 2rem;
         }
     }
-    
+
     .entregado{
         color: green;
     }

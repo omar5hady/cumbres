@@ -13,7 +13,7 @@
                         <button type="button" class="btn btn-success" @click="abrirModal()" >
                             <i class="icon-pencil"></i>&nbsp;Solicitar Crédito Puente
                         </button>
-                        
+
                         <!---->
                     </div>
                     <div class="card-body">
@@ -25,7 +25,7 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control"  v-model="buscar2" @keyup.enter="listarLote(1)"> 
+                                    <select class="form-control"  v-model="buscar2" @keyup.enter="listarLote(1)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -61,64 +61,60 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <select class="form-control" v-model="b_puente"> 
+                                <select class="form-control" v-model="b_puente">
                                     <option value="">Credito Puente</option>
                                     <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                 </select>
                                 <div class="input-group">
                                     <button type="submit" @click="listarLote(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    
+
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
-                                        </th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa comercial</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Sublote</th>
-                                        <th>Modelo</th>
-                                        <th>Calle</th>
-                                        <th>Numero</th>
-                                        <th>Interior</th>
-                                        <th>Terreno mts&sup2;</th>
-                                        <th>Credito puente</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayLote" :key="lote.id">
-                                        <td class="td2">
-                                            <input v-if="lote.credito_puente == null || lote.credito_puente == 'NO TIENE CREDITO PUENTE' || lote.credito_puente == 'NO TIENE CREDITO PUENTE CM'" type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
-                                        </td>
+                        <TableComponent>
+                            <template v-slot:thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                    </th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa comercial</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                    <th>Modelo</th>
+                                    <th>Dirección Oficial</th>
+                                    <th>Terreno mts&sup2;</th>
+                                    <th>Credito puente</th>
+                                </tr>
+                            </template>
+                            <template v-slot:tbody>
+                                <tr v-for="lote in arrayLote" :key="lote.id">
+                                    <td class="td2">
+                                        <input v-if="lote.credito_puente == null || lote.credito_puente == 'NO TIENE CREDITO PUENTE' || lote.credito_puente == 'NO TIENE CREDITO PUENTE CM'" type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
+                                    </td>
 
-                                        <td class="td2" v-text="lote.proyecto"></td>
-                                        <td class="td2">
-                                            <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.num_etapa"></span>
-                                            <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
-                                        <td class="td2" v-text="lote.manzana"></td>
-                                        <td class="td2" v-text="lote.num_lote"></td>
-                                        <td class="td2" v-text="lote.sublote"></td>
-                                        <td class="td2">
-                                            <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
-                                            <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
-                                        <td class="td2" v-text="lote.calle"></td>
-                                        <td class="td2" v-text="lote.numero"></td>
-                                        <td class="td2" v-text="lote.interior"></td>
-                                        <td class="td2" v-text="lote.terreno"></td>
-                                        <td class="td2" v-text="lote.credito_puente"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table> 
-                        </div> 
+                                    <td class="td2" v-text="lote.proyecto"></td>
+                                    <td class="td2">
+                                        <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.num_etapa"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td>
+                                    <td class="td2" v-text="lote.manzana"></td>
+                                    <td class="td2" v-text="lote.num_lote">
+                                        {{(lote.sublote) ? lote.numlote + '-'+lote.sublote : lote.num_lote}}
+                                    </td>
+                                    <td class="td2">
+                                        <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td>
+                                    <td class="td2">
+                                        {{lote.calle}} No. {{lote.numero}} {{(lote.interior)?'Int. '+lote.interior:''}}
+                                    </td>
+                                    <td class="td2" v-text="lote.terreno"></td>
+                                    <td class="td2" v-text="lote.credito_puente"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -145,110 +141,88 @@
             </div>
 
             <!-- Modal para asignar modelo -->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div >
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Institución Bancaria</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="banco">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tasa de interés </label>
-                                    <div class="col-md-4">
-                                        TIEE + <input class="form-control" type="number" v-model="tasa_interes">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Comisión por apertura </label>
-                                    <div class="col-md-3">
-                                        <input class="form-control" type="number" v-model="apertura">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="border">
-                                 <div class="col-md-12">
-                                    <h6> <center>Modelos del proyecto</center> </h6>
-                                </div>
-                                <br>
-                                <div class="form-group row">
-                                    <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id">
-                                        <template v-if="modelo.ver > 0">
-                                           <label class="col-md form-control-label" for="text-input">{{modelo.nombre}} </label>
-                                            <div class="col-md">
-                                                <input class="form-control" type="number" v-model="modelo.precio" @change="setPrice(modelo.id,modelo.precio)">
-                                            </div>
-                                        </template>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-
-                            <div class="border">
-                                 <div class="col-md-12">
-                                    <h6> <center>Lotes seleccionados ({{cantidad}})</center> </h6>
-                                </div>
-                            </div>
-
-                            <div class="border">
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <table class="table2 table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Modelo</th>
-                                                    <th># Lote</th>
-                                                    <th>Precio</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(lote,index) in lotesSelec" :key="lote.id">
-                                                    <td class="td2">{{index+1}} </td>
-                                                    <td class="td2" v-text="lote.proyecto"></td>
-                                                    <td class="td2" v-text="lote.num_etapa"></td>
-                                                    <td class="td2" v-text="lote.manzana"></td>
-                                                    <td class="td2" v-text="lote.modelo"></td>
-                                                    <td class="td2" v-text="lote.num_lote"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(lote.precio)"></td>
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+            <ModalComponent :titulo="tituloModal2"
+                @closeModal="cerrarModal2()"
+                v-if="modal2"
+            >
+                <template v-slot:body>
+                    <template>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Institución Bancaria</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="banco">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
+                                </select>
                             </div>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <button type="button"  class="btn btn-primary" @click="solicitarCredito()">Solicitar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Tasa de interés </label>
+                            <div class="col-md-4">
+                                TIEE + <input class="form-control" type="number" v-model="tasa_interes">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Comisión por apertura </label>
+                            <div class="col-md-3">
+                                <input class="form-control" type="number" v-model="apertura">
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="border">
+                            <div class="col-md-12">
+                            <h6> <center>Modelos del proyecto</center> </h6>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id">
+                                <template v-if="modelo.ver > 0">
+                                    <label class="col-md form-control-label" for="text-input">{{modelo.nombre}} </label>
+                                    <div class="col-md">
+                                        <input class="form-control" type="number" v-model="modelo.precio" @change="setPrice(modelo.id,modelo.precio)">
+                                    </div>
+                                </template>
+                            </div>
+
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
 
+                    <div class="border">
+                            <div class="col-md-12">
+                            <h6> <center>Lotes seleccionados ({{cantidad}})</center> </h6>
+                        </div>
+                    </div>
+
+                    <div class="border">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    '','Proyecto','Etapa','Manzana','Modelo','# Lote','Precio',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="(lote,index) in lotesSelec" :key="lote.id">
+                                            <td class="td2">{{index+1}} </td>
+                                            <td class="td2" v-text="lote.proyecto"></td>
+                                            <td class="td2" v-text="lote.num_etapa"></td>
+                                            <td class="td2" v-text="lote.manzana"></td>
+                                            <td class="td2" v-text="lote.modelo"></td>
+                                            <td class="td2" v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.precio)"></td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button"  class="btn btn-primary" @click="solicitarCredito()">Solicitar</button>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->
         </main>
 </template>
 
@@ -258,7 +232,13 @@
 
 <script>
  import _ from 'lodash'
+ import ModalComponent from '../Componentes/ModalComponent.vue'
+ import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             userName:{type: String}
         },
@@ -276,7 +256,7 @@
                 tituloModal2: '',
                 contador: 0,
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -340,13 +320,13 @@
                 return pagesArray;
             },
 
-            arrayProyectos(){ 
+            arrayProyectos(){
                 return _.uniqBy(this.arrayLote, 'proyecto');
             }
 
         },
 
-        
+
         methods : {
             selectAll: function() {
                 this.lotes_ini = [];
@@ -395,12 +375,12 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, continuar!'
                     }).then((result) => {
 
                     if (result.value) {
-                        
+
                         //Con axios se llama el metodo store de DepartamentoController
                         axios.post('/cPuentes/storeSolicitud',{
                             'modelos': me.arrayPreciosModelo,
@@ -432,8 +412,8 @@
             /**Metodo para mostrar los registros */
             listarLote(page){
                 let me = this;
-                var url = '/c_puente/indexSinCredito?page=' + page + '&proyecto=' + me.buscar + '&etapa=' + me.buscar2 + 
-                    '&manzana=' + me.buscar3 + '&lote=' + me.b_lote + '&modelo=' + me.b_modelo + 
+                var url = '/c_puente/indexSinCredito?page=' + page + '&proyecto=' + me.buscar + '&etapa=' + me.buscar2 +
+                    '&manzana=' + me.buscar3 + '&lote=' + me.b_lote + '&modelo=' + me.b_modelo +
                     '&emp_constructora=' + me.b_empresa + '&emp_terreno=' + me.b_empresa2 + '&puente=' + me.b_puente;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -505,7 +485,7 @@
                         if(e.modelo == element.nombre){
                             element.ver ++;
                         }
-                        
+
                     })
                     })
                 })
@@ -572,13 +552,13 @@
 
             selectModelo(buscar){
                 let me = this;
-              
+
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.modelos;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -641,18 +621,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-        
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -660,15 +628,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
@@ -684,5 +643,5 @@
     }
     .td2:last-of-type, th:last-of-type {
         border-right: none;
-    } 
+    }
 </style>

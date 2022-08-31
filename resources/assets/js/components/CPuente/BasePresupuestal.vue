@@ -7,11 +7,11 @@
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
-                    
+
 
                 <!----------------- Listado Contratos ------------------------------>
                 <!-- Div Card Body para listar -->
-                    <div class="card-body"> 
+                    <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-7">
                                 <div class="input-group">
@@ -23,26 +23,24 @@
                                     &nbsp;&nbsp;&nbsp;
                                     <input type="date" v-model="fecha" class="form-control col-md-3">
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-7">
                                 <div class="input-group">
-                                    
+
                                     <button type="submit" @click="getBaseActiva()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <button v-if="nuevo == 0 && b_proyecto != ''" @click="nuevo=1" class="btn btn-success"><i class="icon-plus"></i> Nueva Base</button>
                                 </div>
-                                
+
                             </div>
                         </div>
 
                         <div class="card">
                             <div class="form-group row" v-if="nuevo == 1">
 
-                                
-                                    
                                 <div class="col-md-4">
                                     <br>
                                     <select v-model="credito" class="form-control">
@@ -50,20 +48,20 @@
                                         <option v-for="credito in arrayCreditos" :key="credito.id" :value="credito.id" v-text="credito.folio"></option>
                                     </select>
                                 </div>
-                                
 
-                                <div class="col-md-6">
+
+                                <div class="col-md-6" v-if="credito != ''">
                                     <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
                                         <!-- {{ csrf_field() }} -->
                                         Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
-                                        <input type="submit" value="Cargar" class="btn btn-primary btn">
+                                        <input v-if="file" type="submit" value="Cargar" class="btn btn-primary btn">
                                         <button v-if="nuevo == 1 && b_proyecto != ''" @click="nuevo=0" class="btn btn-danger"><i class="icon-close"></i> Cancelar</button>
                                     </form>
                                 </div>
                             </div>
 
                         </div>
-                        
+
 
                         <div class="form-group row">
                             <div class="col-xl-6 col-lg-5 col-md-6">
@@ -75,8 +73,8 @@
                         <div class="form-group row">
                             <div class="col-xl-6 col-lg-5 col-md-6">
                                 <div class="input-group" v-if="arrayBases.length > 0">
-                                    <div v-if="arrayBases[0].folio != null" 
-                                        class="text-muted text-uppercase font-weight-bold" 
+                                    <div v-if="arrayBases[0].folio != null"
+                                        class="text-muted text-uppercase font-weight-bold"
                                         v-text="'Credito puente asignado: '+arrayBases[0].folio">
                                     </div>
 
@@ -86,7 +84,6 @@
                         </div>
 
                         <div class="row">
-                            
                             <div v-for="base in arrayBases" :key="base.id" class="col-xl-4 col-lg-5 col-md-4">
                                 <div class="card">
                                     <div class="card-body p-3 d-flex align-items-center">
@@ -97,143 +94,131 @@
                                     </div>
                                     <div>
                                         <div class="card-footer px-3 py-2 text-right">
-                                            <table class="table table-bordered table-striped table-sm">
-                                                <tbody>
+                                            <TableComponent>
+                                                <template v-slot:tbody>
                                                     <!--Comisiones Bancarias--->
-                                                        <tr><th colspan="2">Comisiones Bancarias</th></tr>
-                                                        <tr>
-                                                            <td>Inscripción del conjunto</td>
-                                                            <td v-text="'$'+formatNumber(base.insc_conjunto)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Intereses Nafin o por desplazamiento lento</td>
-                                                            <td v-text="'$'+formatNumber(base.int_nafin)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Gastos de escrituración del Crédito Puente</td>
-                                                            <td v-text="'$'+formatNumber(base.gastos_esc)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Comisión Integral Apertura C. Puente</td>
-                                                            <td v-text="'$'+formatNumber(base.comision_int)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Intereses Crédito Puente</td>
-                                                            <td v-text="'$'+formatNumber(base.int_cpuente)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Intereses por pago del terreno</td>
-                                                            <td v-text="'$'+formatNumber(base.int_pago_terreno)"></td>
-                                                        </tr>  
-                                                    <!--Bases Presupuestales--->
-                                                        <tr><th colspan="2">Bases Presupuestales</th></tr>
-                                                        <tr>
-                                                            <td>Valor del terreno</td>
-                                                            <td v-text="'$'+formatNumber(base.valor_terreno)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Permisos, Lic. Y Autorizaciones Municipales</td>
-                                                            <td v-text="'$'+formatNumber(base.permisos)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Presupuesto de Urb. E Infraestructura externa</td>
-                                                            <td v-text="'$'+formatNumber(base.presupuesto_urb)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Presupuesto de Edificación de vivienda</td>
-                                                            <td v-text="'$'+formatNumber(base.presupuesto_edif)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Equipamiento</td>
-                                                            <td v-text="'$'+formatNumber(base.equipamiento)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Escritura a GCC, Juicio y Acta de Lotif.</td>
-                                                            <td v-text="'$'+formatNumber(base.escritura_gcc)"></td>
-                                                        </tr>    
-                                                        <tr>
-                                                            <td>Laboratorio</td>
-                                                            <td v-text="'$'+formatNumber(base.laboratorio)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Gastos Ind. De Operación</td>
-                                                            <td v-text="'$'+formatNumber(base.gastos_ind_op)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Gastos de comercialización</td>
-                                                            <td v-text="'$'+formatNumber(base.gastos_comerc)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Comision por ventas (2.5% + 16% IVA)</td>
-                                                            <td v-text="'$'+formatNumber(base.comicion_venta)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Fianzas (Cumplimiento urbanización)</td>
-                                                            <td v-text="'$'+formatNumber(base.fianzas)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Partida Inflacionaria y Obra extra</td>
-                                                            <td v-text="'$'+formatNumber(base.partida_inflacionaria)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Cargos adicionales al terreno</td>
-                                                            <td v-text="'$'+formatNumber(base.adicional_terreno)"></td>
-                                                        </tr>
+                                                    <tr><th colspan="2">Comisiones Bancarias</th></tr>
+                                                    <tr>
+                                                        <td>Inscripción del conjunto</td>
+                                                        <td v-text="'$'+formatNumber(base.insc_conjunto)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Intereses Nafin o por desplazamiento lento</td>
+                                                        <td v-text="'$'+formatNumber(base.int_nafin)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos de escrituración del Crédito Puente</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_esc)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Comisión Integral Apertura C. Puente</td>
+                                                        <td v-text="'$'+formatNumber(base.comision_int)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Intereses Crédito Puente</td>
+                                                        <td v-text="'$'+formatNumber(base.int_cpuente)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Intereses por pago del terreno</td>
+                                                        <td v-text="'$'+formatNumber(base.int_pago_terreno)"></td>
+                                                    </tr>
+                                                <!--Bases Presupuestales--->
+                                                    <tr><th colspan="2">Bases Presupuestales</th></tr>
+                                                    <tr>
+                                                        <td>Valor del terreno</td>
+                                                        <td v-text="'$'+formatNumber(base.valor_terreno)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Permisos, Lic. Y Autorizaciones Municipales</td>
+                                                        <td v-text="'$'+formatNumber(base.permisos)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Presupuesto de Urb. E Infraestructura externa</td>
+                                                        <td v-text="'$'+formatNumber(base.presupuesto_urb)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Presupuesto de Edificación de vivienda</td>
+                                                        <td v-text="'$'+formatNumber(base.presupuesto_edif)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Equipamiento</td>
+                                                        <td v-text="'$'+formatNumber(base.equipamiento)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Escritura a GCC, Juicio y Acta de Lotif.</td>
+                                                        <td v-text="'$'+formatNumber(base.escritura_gcc)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Laboratorio</td>
+                                                        <td v-text="'$'+formatNumber(base.laboratorio)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos Ind. De Operación</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_ind_op)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gastos de comercialización</td>
+                                                        <td v-text="'$'+formatNumber(base.gastos_comerc)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Comision por ventas (2.5% + 16% IVA)</td>
+                                                        <td v-text="'$'+formatNumber(base.comicion_venta)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Fianzas (Cumplimiento urbanización)</td>
+                                                        <td v-text="'$'+formatNumber(base.fianzas)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Partida Inflacionaria y Obra extra</td>
+                                                        <td v-text="'$'+formatNumber(base.partida_inflacionaria)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cargos adicionales al terreno</td>
+                                                        <td v-text="'$'+formatNumber(base.adicional_terreno)"></td>
+                                                    </tr>
 
-                                                    <!--Indices Presupuestales--->
-                                                        <tr><th colspan="2">Indices Presupuestales</th></tr>
-                                                        <tr>
-                                                            <td>Costo del Terreno urbanizado por m&sup2; vendible</td>
-                                                            <td v-text="'$'+formatNumber(base.ct_urbanizado)"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Costo del Terreno en Breña por m&sup2; vendible</td>
-                                                            <td v-text="'$'+formatNumber(base.ct_brena)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Costo de Pavimentación por m&sup2; vendible</td>
-                                                            <td v-text="'$'+formatNumber(base.c_pavimentacion)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Costo de Edificación por m&sup2; Const. C/Plataforma</td>
-                                                            <td v-text="'$'+formatNumber(base.c_edificacion1)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Costo de Edificación por m&sup2; Const. S/Plataforma</td>
-                                                            <td v-text="'$'+formatNumber(base.c_edificacion2)"></td>
-                                                        </tr>  
-                                                        <tr>
-                                                            <td>Precio de Venta por m&sup2; Construido</td>
-                                                            <td v-text="'$'+formatNumber(base.precio_venta_const)"></td>
-                                                        </tr>    
-                                                        <tr>
-                                                            <td>Costo de Adquisición por m&sup2; en Breña total</td>
-                                                            <td v-text="'$'+formatNumber(base.c_adquisicion_brena)"></td>
-                                                        </tr>
-
-                                                </tbody>
-                                            </table>
+                                                <!--Indices Presupuestales--->
+                                                    <tr><th colspan="2">Indices Presupuestales</th></tr>
+                                                    <tr>
+                                                        <td>Costo del Terreno urbanizado por m&sup2; vendible</td>
+                                                        <td v-text="'$'+formatNumber(base.ct_urbanizado)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Costo del Terreno en Breña por m&sup2; vendible</td>
+                                                        <td v-text="'$'+formatNumber(base.ct_brena)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Costo de Pavimentación por m&sup2; vendible</td>
+                                                        <td v-text="'$'+formatNumber(base.c_pavimentacion)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Costo de Edificación por m&sup2; Const. C/Plataforma</td>
+                                                        <td v-text="'$'+formatNumber(base.c_edificacion1)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Costo de Edificación por m&sup2; Const. S/Plataforma</td>
+                                                        <td v-text="'$'+formatNumber(base.c_edificacion2)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Precio de Venta por m&sup2; Construido</td>
+                                                        <td v-text="'$'+formatNumber(base.precio_venta_const)"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Costo de Adquisición por m&sup2; en Breña total</td>
+                                                        <td v-text="'$'+formatNumber(base.c_adquisicion_brena)"></td>
+                                                    </tr>
+                                                </template>
+                                            </TableComponent>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        
- 
-                        <nav>
-                            
-                        </nav>
                     </div>
 
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-
-            
-
-           
-
         </main>
 </template>
 
@@ -242,7 +227,11 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
+        components:{
+            TableComponent
+        },
         props:{
             rolId:{type: String}
         },
@@ -287,10 +276,10 @@
                 }
 
             },
-           
+
             formSubmit(e) {
                 e.preventDefault();
-               
+
                 let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento', this.b_proyecto);
@@ -354,11 +343,11 @@
                     console.log(error);
                 });
             },
-        
+
         },
-        mounted() {   
-            this.selectFraccionamientos();   
-            this.selectCreditosPuente();    
+        mounted() {
+            this.selectFraccionamientos();
+            this.selectCreditosPuente();
         }
     }
 </script>
@@ -367,7 +356,7 @@
     .modal-content{
         width: 100% !important;
         position: absolute !important;
-       
+
     }
     .modal-body{
         height: 350px;
@@ -419,7 +408,7 @@
 
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
     .badge2 {
         display: inline-block;
         padding: 0.25em 0.4em;
