@@ -505,10 +505,10 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal observaciones-->
-
-            <!-- Modal para la carga de foto de acta -->
+                    
+            <!-- Modal para la carga de los archivos-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
+                <div class="modal-dialog modal-primary modal-md" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" v-text="tituloModal4"></h4>
@@ -516,27 +516,48 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                        <!-- <div v-if="success != ''" class="alert alert-success" role="alert">
+                    <div class="modal-body">
+                        <div class="contenedor-modal">
 
-                          {{success}}
-                        </div> -->
-                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                <div class="form-sub">
+                                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                         <div class="form-opc"> 
 
-                                    <strong>Acta:</strong>
+                                                <strong style="color:black; font-size:15px; font-weight: bold; padding: 10px;">Acta:</strong>
+                                                <input disabled type="text" class="form-control" v-model="num_acta" >
+                                            <div class="form-archivo">
 
-                                    <input disabled type="text" class="form-control" v-model="num_acta" >
+                                                <input ref="imageSelectorActa" v-show="false" type="file"  v-on:change="onImageChange">
 
-                                    <strong>Sube aqui el acta de terminacion</strong>
+                                                                <label class="label-button"
+                                                                    @click="onSelectActa"
+                                                                    >
+                                                                    Sube aqui el acta de terminacion
+                                                                <i class="fa fa-upload"></i>
+                                                                </label>
+                                                    <div v-if="nom_archivo=='Seleccione Archivo'" class="text-file-hide"   v-text="nom_archivo" ></div>
+                                            
+                                                    <div v-else class="text-file"  v-text="nom_archivo"></div>
+                                            </div>
+                                                <div class="boton-modal">
+                                                    <button v-show="nom_archivo!='Seleccione Archivo'" type="submit" class="btn btn-success boton-modal">Subir Archivo</button>
+                                                </div>
+                                         </div>
 
-                                    <input type="file" class="form-control" v-on:change="onImageChange">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
+                                    </form>
 
+                                </div>
+                        
+                     
+                        
                         </div>
+
+                    
+                    </div>
+                    
                         <!-- Botones del modal -->
                         <div class="modal-footer">
+
                             <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
                          </div>
                     </div> 
@@ -545,6 +566,8 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+     
 
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
@@ -642,6 +665,7 @@
                 tituloModal4: '',
                 tipoAccion: 0,
                 errorActa : 0,
+                nom_archivo:'Seleccione Archivo',
                 errorMostrarMsjActa : [],
                 pagination : {
                     'total' : 0,         
@@ -762,13 +786,16 @@
               
             },
 
-        
+            onSelectActa(){
+                 this.$refs.imageSelectorActa.click()
+                },
 
             onImageChange(e){
 
                 console.log(e.target.files[0]);
 
                 this.foto_acta = e.target.files[0];
+                this.nom_archivo = e.target.files[0].name;
 
             },
 
@@ -1067,6 +1094,7 @@
                 this.foto_acta = '';
                 this.errorActa = 0;
                 this.errorMostrarMsjActa = [];
+                this.nom_archivo = 'Seleccione Archivo';
 
             },
 
@@ -1203,7 +1231,7 @@
         }
     }
 </script>
-<style>
+<style scoped>
     .form-control:disabled, .form-control[readonly] {
     background-color: rgba(0, 0, 0, 0.06);
     opacity: 1;
@@ -1221,6 +1249,92 @@
         background-color: #3c29297a !important;
          overflow-y: auto;
         
+    }
+            
+        .text-formfile{
+    
+        color: grey;
+        display:flex;
+        padding-top: 13px;
+    /*  background-color: aqua; */
+        justify-content: left;
+    
+    }
+    .contenedor-modal{
+        
+        display: block;
+        flex-direction: column;
+        
+        margin: auto;
+        overflow-x: auto;
+        width: fit-content;
+        max-width: 100%;
+    
+
+    }
+
+    .label-button{
+    border-style: solid;
+    cursor:pointer; 
+    color: #fff;
+    background-color: #00ADEF;
+    border-color: #00ADEF;
+    padding: 10px;
+    }
+
+    .label-button:hover {
+    color: #fff;
+    background-color: #1b8eb7;
+    border-color: #00b0bb;;
+      
+      }
+    .form-sub{
+        border: 1px solid #c2cfd6;
+        margin-top: 20px;
+        width: 90%;
+        
+    
+    }
+    .form-opc{
+        display: flex;
+        flex-direction: column;
+        
+    
+    }
+    .form-archivo{
+        display: flex;
+        flex-direction: row;
+    
+        width: 100%;
+    }
+    .text-file{
+    
+        color: rgb(39, 38, 38);
+        font-size:12px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+        
+        
+    
+    }
+    .text-file-hide{
+    
+        color: rgb(127, 130, 134);
+        font-size:13px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+        
+        
+    }
+    .boton-modal{
+        margin-top: 15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
     }
     .div-error{
         display:flex;

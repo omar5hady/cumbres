@@ -234,126 +234,70 @@
 
             </div>
 
-                <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-
-                        </div>
-                        <div class="modal-body">
-
+            <ModalComponent
+                v-if="modal == 1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
                                 <div class="form-group row">
                                     <label class="col-md-3"  for="text-input">Colaborador:
                                     </label>
-                                    <template  v-if="isRHCurrent && status_rh !=2">
+                                      <template  v-if="isRHCurrent && modalVista == '0'">
                                         <select class="col-md-6 form-control"  v-model="id_usuario"  name="" id="">
                                             <option  class=" form-control " v-for="user in arrayUsers" :key="user.id" :value="user.id" v-text="user.nombre + ' '+ user.apellidos" ></option>
                                         </select>
                                     </template>
                                     <template v-else>
-                                        <label v-if="modalVista == '0' " class="col-md-6 form-control" v-text="nom_colaborador"></label>
-                                        <label v-if="modalVista == '2' || modalVista == '1'" class="col-md-6 form-control" v-text="e_nombre"></label>
+                                        <label  class="col-md-6 form-control" v-text="e_nombre"></label>
                                     </template>
-
-
                                 </div>
 
                                 <div class="form-group row">
-
-                                            <label class="col-md-3" >Fecha de inicio de retencion:</label>
-
-                                            <template v-if="status_rh !=2" >
-                                            <template v-if="modalVista == '0' || modalVista == '2'">
-                                                <input class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
-                                            </template>
-
+                                 <label class="col-md-3" >Fecha de inicio de retencion:</label>
+                                    <template v-if="status_rh ==2 ||  modalVista == '1'" >
+                                        <input disabled class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
                                     </template>
-                                          <template v-else >
-                                            <template v-if="modalVista =='2'">
-                                                <input disabled class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
-
-                                            </template>
-
-                                        </template>
-
-                                        <template v-if="modalVista == '1'">
-                                             <input disabled class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
-                                        </template>
+                                    <template v-else >
+                                        <input class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
+                                    </template>
                                </div>
 
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label">Gerente a cargo:
                                     </label>
-                                    <template v-if="status_rh !=2" >
-                                            <template v-if="modalVista == '0' || modalVista == '2'">
-                                                <select  class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
-                                                        <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-
-                                                </select>
-
-                                            </template>
-
-                                    </template>
-                                          <template v-else >
-                                            <template v-if="modalVista =='2'">
-                                                <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
-                                                        <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-                                                </select>
-
-                                            </template>
-
-                                        </template>
-
-                                        <template v-if="modalVista == '1'">
+                                    <template  v-if="status_rh ==2 ||  modalVista == '1'">
                                             <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                                        <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                                                </select>
+                                    </template>
+                                    <template v-else >
+                                            <select class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
                                                     <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
                                             </select>
-
-                                        </template>
-
+                                    </template>
                                 </div>
 
-                                        <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" >Monto solicitado:
                                         <span style="color:red;" v-show="monto_solic == 0">*</span>
                                     </label>
-                                        <template v-if="status_rh !=2">
-                                            <template v-if="modalVista =='0' || modalVista == '2'">
+
+                                        <template   v-if="status_rh ==2 ||  modalVista == '1'">
+                                            <input disabled class="col-md-3  form-control"  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
+
+                                        </template>
+                                        <template v-else>
                                                 <a  v-if="editAjusteMonto ==0"
                                                     class="form-control col-md-3"
                                                     style="cursor: pointer; color:deepskyblue; text-decoration: underline; text-shadow: slategrey;"
                                                     title="Click para editar"
                                                     @click="editAjusteMonto=1" v-text="'$'+formatNumber(monto_solic)" >
                                                 </a>
-
-                                            </template>
-
-
-                                            <template v-if="modalVista == '0' || modalVista == '2'">
                                                 <input v-if="editAjusteMonto ==1"  aria-selected="true" class="form-control col-md-3" title="Enter para guardar.."  pattern="\d*" type="text"
                                                         @keyup.enter="editAjusteMonto=0"
                                                         v-on:keypress="isNumber($event)"  v-model="monto_solic">
-
-                                            </template>
-
                                         </template>
-                                        <template v-else>
-                                             <template   v-if="modalVista =='2'">
-                                            <input disabled class="col-md-3  form-control"  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
-
-                                            </template>
-                                        </template>
-
-                                        <template   v-if="modalVista =='1'">
-                                            <input disabled class="col-md-3  form-control"  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
-
-                                        </template>
-
-
-
-
                                 </div>
 
                                 <div class="form-group row">
@@ -361,37 +305,22 @@
                                         <span style="color:red;" v-show="desc_quin ==0">*</span>
                                     </label>
                                         <div class="form-group row col-md-9 ">
+                                                 <template v-if="status_rh ==2 ||  modalVista == '1'">
+                                                    <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
+                                                </template >
+                                                <template v-else>
 
-                                                <template v-if="status_rh !=2">
-                                                    <template v-if="modalVista == '0' || modalVista == '2'">
                                                         <a v-if="editAjusteQuin ==0"
                                                             class="form-control col-md-2"
                                                             style="cursor: pointer; color:deepskyblue; text-decoration: underline;"
                                                             title="Click para editar"
                                                             @click="editAjusteQuin=1" v-text="'$'+formatNumber(desc_quin)" >
                                                         </a>
-
-                                                    </template>
-                                                    <template v-if="modalVista =='0' || modalVista == '2'">
                                                         <input  v-if="editAjusteQuin ==1"  class="form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"
                                                         @keyup.enter="editAjusteQuin=0"
                                                         v-on:keypress="isNumber($event)"  v-model="desc_quin">
-
-                                                    </template>
-
+                                                       
                                                 </template>
-                                                <template v-else>
-                                                         <template v-if="modalVista == '2'">
-                                                            <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
-
-                                                        </template>
-                                                </template>
-
-                                                 <template v-if="modalVista == '1'">
-                                                    <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
-
-                                                </template >
-
                                                 <template v-if="(modalVista == '0' || modalVista == '2') && status_rh !=2">
                                                         <button class="form-control col-md-2 btn btn-info"
                                                                 type="button"
@@ -412,9 +341,6 @@
 
                                                 </template>
 
-
-
-
                                         </div>
 
                                 </div>
@@ -423,22 +349,13 @@
                                     <label class="col-md-3 form-control-label" >Motivo de prestamo.
                                         <span style="color:red;" v-show="motivo">*</span>
                                     </label>
-                                     <template v-if="status_rh !=2">
-                                        <template v-if="modalVista == '0' || modalVista == '2'">
-                                            <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
-                                        </template>
+                                       <template v-if="status_rh == 2 || modalVista == '1' ">
+                                         <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
 
                                      </template>
                                      <template v-else>
-                                             <template v-if="modalVista == '2'">
-                                                <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
-                                            </template>
+                                                <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
                                      </template>
-
-                                      <template v-if="modalVista == '1'">
-                                        <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
-                                     </template>
-
 
                                 </div>
                           
@@ -583,14 +500,14 @@
                                     </div>
                                 </div>
 
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                                <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud' && status_rh !=2">
+                </template>
+
+                <template v-slot:buttons-footer>
+                        <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud' && status_rh !=2">
                                     <button v-if="saldoFaltante <=0" type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
                                     <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar</button>
                                 </div>
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                           
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <div v-if="modalVista == '0'">
                                     <button type="button" class="btn btn-success"   @click="enviarSolicitud()">enviar</button>
@@ -602,33 +519,18 @@
                             <div v-if="modalVista == '2' && isRHCurrent  && status_rh ==2 ">
                                     <button type="button" class="btn btn-info"   @click="guardaTablaPagos_editada()">Guardar</button>
                             </div>
-
-
-
-
-
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
+                </template>
+                
+            </ModalComponent>
 
             <!-- inicio modal observaciones  -->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
+            <ModalComponent
+            v-if="modal == 2"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                         <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
                                     <div class="col-md-6">
                                          <textarea rows="3" cols="30" v-model="obs_prestamo" class="form-control" placeholder="Observacion"></textarea>
@@ -637,37 +539,25 @@
                                         <button type="button"  class="btn btn-primary" @click="guardaObs()">Guardar</button>
                                     </div>
                                 </div>
+                                <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
+                                    <template v-slot:tbody>
 
-
-                                <table class="table table-bordered table-striped table-sm" >
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Observacion</th>
-                                            <th>Fecha</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
                                         <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
-
                                             <td v-text="observacion.usuario" ></td>
                                             <td v-text="observacion.observacion" ></td>
                                             <td v-text="observacion.created_at"></td>
                                         </tr>
-                                    </tbody>
-                                </table>
+                                    </template>
 
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                                </TableComponent>
+                </template>
+                   <template v-slot:buttons-footer>
+                          
+                   </template>
+               </ModalComponent>
+        <!--FIN DE MODAL  -->
+
+
 
         </main>
 </template>
@@ -677,8 +567,15 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-import { formatDayString } from '@fullcalendar/common';
+
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             userName:{type: String},
             userId:{type: String},
@@ -1136,7 +1033,7 @@ import { formatDayString } from '@fullcalendar/common';
                     return;
                 }
                 let me = this;
-                if(this.isRHCurrent){
+                if(this.isRHCurrent && this.modalVista == '0'){
                     var user = me.id_usuario;
                 }else{
                     var user = me.userId; 
@@ -1411,18 +1308,6 @@ import { formatDayString } from '@fullcalendar/common';
                 }
 
             },
-
-            dataColaborador(){
-            let me = this;
-                var url = '/prestamos/getColaborador?id=' + this.userId;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                   me.nom_colaborador=respuesta.nombre + ' ' +respuesta.apellidos ;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             getUsers(){
             let me = this;
                 var url = '/prestamos/getUsers';
@@ -1500,6 +1385,7 @@ import { formatDayString } from '@fullcalendar/common';
                         const dia  = fecha.getDate();
                         this.modal=1;
                         this.modalVista='0';
+                        this.nom_col(this.userId);
                         this.tituloModal='Nueva Solicitud';
                         //this.fecha_solic=anio+'-'+mes+'-'+dia;
                         this.arrayPagosCap='';
@@ -1557,6 +1443,7 @@ import { formatDayString } from '@fullcalendar/common';
                     {
                         this.modal=2;
                         this.modalVista='1';
+                        this.tituloModal='Observaciones';
                         this.id_prestamo=data['id'];
                         this.getObservaciones(this.id_prestamo);
                         this.obs_prestamo=null;
@@ -1597,7 +1484,6 @@ import { formatDayString } from '@fullcalendar/common';
                 this.id_prestamo=null;
                 this.tituloModal=null;
                 this.modalVista='0';
-                this.tituloModal=null;
                 this.fecha_solic=null;
                 this.monto_solic=0;
                 this.idJefe=null;
@@ -1628,7 +1514,7 @@ import { formatDayString } from '@fullcalendar/common';
 
         },
         mounted() {
-            this.dataColaborador();
+            
             this.isGerenteCurrent_Id();
             this.isRHCurrent_Id();
             this.isDirecCurrent_Id();
