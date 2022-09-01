@@ -47,13 +47,13 @@
                                     <td class="td2" v-text="etapa.fraccionamiento"></td>
                                     <td class="td2" v-text="etapa.f_ini"></td>
                                     <td class="td2" v-text="etapa.f_fin"></td>
-                                    <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
+                                    <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
                                     <td class="td2" v-else></td>
                                     <td class="td2"  v-if="etapa.plantilla_carta_servicios || etapa.plantilla_carta_servicios2">
                                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Plantilla de servicio</a>
                                         <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                            <a v-if="etapa.plantilla_carta_servicios" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download"> Casa</i></a>
-                                            <a v-if="etapa.plantilla_carta_servicios2" class="btn btn-primary btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios2/'+etapa.plantilla_carta_servicios2"><i class="fa fa-download"> Lote</i></a>
+                                            <a target="_blank" v-if="etapa.plantilla_carta_servicios" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download"> Casa</i></a>
+                                            <a target="_blank" v-if="etapa.plantilla_carta_servicios2" class="btn btn-primary btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios2/'+etapa.plantilla_carta_servicios2"><i class="fa fa-download"> Lote</i></a>
                                         </div>
                                     </td>
                                     <td class="td2" v-else></td>
@@ -61,7 +61,7 @@
                                     <td class="td2" v-text="'$' + etapa.costo_mantenimiento2"></td>
                                     <td class="td2" v-text="etapa.empresas_telecom"></td>
                                     <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
-                                    <td class="td2" v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
+                                    <td class="td2" v-if = "etapa.plantilla_telecom"><a target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
                                     <td class="td2" v-else></td>
                                 </tr>  
                             </template>
@@ -85,63 +85,72 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <ModalComponent :titulo="tituloModal"
+            <ModalComponent 
+                :titulo="tituloModal"
+                :size="'modal-md'"
                 @closeModal="cerrarModal()"
                 v-if="modal"
+
             >
                 <template
                     v-slot:body>
                     <template  v-if="tipoAccion != 2">
                         <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
                             </div>
                         </div>
+                        <select class=" form-control " @click="limpiaInputArchivos()" v-model="formActive">
+                            <option class=" form-control " value="">Seleccione archivo a subir.</option>
+                            <option class=" form-control " value="casa">Plantilla para la carta de los servicios Casa. </option>
+                            <option class=" form-control " value="lote">Plantilla para la carta de los servicios Lote. </option>
+                            <option class=" form-control " value="telecom">Plantilla para los servicios de telecomunicacion. </option>
+                            <option class=" form-control " value="reglamento">Reglamento para esta etapa</option>
+                        </select>
 
-                        <div>
-                            <form  method="post" @submit="formSubmitServicios" enctype="multipart/form-data">
+                        <div v-if="formActive" >
+                            <div class="contenedor-modal">
 
-                                <strong>Sube aqui la plantilla para la carta de los servicios Casa <u>794 x 986</u></strong>
+                                <div class="form-sub">
+                                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                         <div class="form-opc"> 
+                                            <label v-if="formActive == 'casa'" class="tite-form">Sube aqui la plantilla para la carta de los servicios Casa  <u>794 x 986</u></label>
+                                            <label v-if="formActive == 'lote'" class="tite-form">Sube aqui la plantilla para la carta de los servicios Lote  <u>794 x 986</u></label>
+                                            <label v-if="formActive == 'telecom'" class="tite-form">Sube aqui la plantilla para los servicios de telecomunicacion</label>
+                                            <label v-if="formActive == 'reglamento'" class="tite-form">Sube aqui el reglamento para esta etapa</label>
+                                            <div class="form-archivo">
+                                                <input ref="imageSelectorArchivo" v-show="false" type="file"  v-on:change="onImageChange">
 
-                                <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServicios">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
+                                                                <label class="label-button"
+                                                                    @click="onSelectArchivo"
+                                                                    >
+                                                                    Sube aqui la plantilla 
+                                                                    <br>
+                                                                <i class="fa fa-upload" style=" justify-content: center; align-self: center;"></i>
+                                                                </label>
+                                                    <div v-if="nom_archivo=='Seleccione Archivo'" class="text-file-hide"   v-text="nom_archivo" ></div>
+                                            
+                                                    <div v-else class="text-file"  v-text="nom_archivo"></div>
+                                            </div>
+                                                <div class="boton-modal">
+                                                    <button v-show="nom_archivo!='Seleccione Archivo'" type="submit"  class="btn btn-success boton-modal">Subir Archivo</button>
+                                                </div>
+                                         </div>
 
-                            <br/>   
+                                    </form>
 
-                            <form  method="post" @submit="formSubmitServiciosL" enctype="multipart/form-data">
+                                </div>
+                        
+                     
+                        
+                            </div>
 
-                                <strong>Sube aqui la plantilla para la carta de los servicios Lote<u>794 x 986</u></strong>
-
-                                <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServiciosL">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-
-                            <br/>   
-
-                            <form  method="post" @submit="formSubmitTelecom" enctype="multipart/form-data">
-
-                                <strong>Sube aqui la plantilla para los servicios de telecomunicacion <u>794 x 986</u></strong>
-
-                                <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeTelecom">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-
+                    
                         </div>
-                        <br>
-                        <div>
-                            <form  method="post" @submit="formSubmitReglamento" enctype="multipart/form-data">
-                                <strong>Sube aqui el reglamento para esta etapa</strong>
+                            <br/> 
 
-                                <input type="file" class="form-control" v-on:change="onImageChangeReglamento">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                        </div>
+                 
                     </template>
                     <template v-if="tipoAccion == 2"
                     >
@@ -190,6 +199,7 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import vSelect from 'vue-select';
     export default {
         components:{
             ModalComponent,
@@ -200,17 +210,17 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 proceso : false,
                 id:0,
                 num_etapa : 0,
-                archivo_plantilla_servicio: '',
-                archivo_plantilla_servicio2: '',
-                archivo_reglamento: '',
+                archivo:'',
                 costo_mantenimiento: 0,
                 costo_mantenimiento2: 0,
                 empresas_telecom: '',
                 empresas_telecom_satelital: '',
-                archivo_plantilla_telecom: '',
                 arrayEtapa : [],
                 modal : 0,
                 tituloModal : '',
+               
+                formActive:'',
+                nom_archivo:'Seleccione Archivo',
                 tipoAccion: 0,
                 pagination : {
                     'total' : 0,         
@@ -258,19 +268,44 @@ import TableComponent from '../Componentes/TableComponent.vue'
         },
         methods : {
 
-            onImageChangeServicios(e){
-                console.log(e.target.files[0]);
-                this.archivo_plantilla_servicios = e.target.files[0];
+            onImageChange(e){
+                this.nom_archivo ='Seleccione Archivo'
+          
+                this.archivo = e.target.files[0];
+                this.nom_archivo = e.target.files[0].name;
             },
+            onSelectArchivo(){
+                 this.$refs.imageSelectorArchivo.click()
+                },
 
-            formSubmitServicios(e) {
+            formSubmit(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+                let nombre='';
+                let url='';
+
                 let formData = new FormData();
-                formData.append('plantilla_carta_servicios', this.archivo_plantilla_servicios);
+
+                if (this.formActive == 'casa' ) {
+                     nombre ='plantilla_carta_servicios'
+                     url ='/formSubmitCartaServicios/'
+                }
+                if (this.formActive == 'lote' ) {
+                     nombre ='plantilla_carta_servicios2'
+                     url ='/formSubmitCartaServicios2/'
+                }
+                if (this.formActive == 'telecom' ) {
+                     nombre ='plantilla_telecom'
+                     url ='/formSubmitTelecom/'
+                }
+                if (this.formActive == 'reglamento' ) {
+                     nombre ='archivo_reglamento'
+                     url ='/formSubmitReglamento/'
+                }
+
+                formData.append(nombre, this.archivo);
                 let me = this;
-                axios.post('/formSubmitCartaServicios/'+this.id, formData)
+                axios.post(url+this.id, formData)
                 .then(function (response) {
                     currentObj.success = response.data.success;
                     swal({
@@ -280,7 +315,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    me.cerrarModal4();
+                    me.cerrarModal();
                     me.listarEtapa(1,'','','fraccionamiento.nombre');
 
                 }).catch(function (error) {
@@ -290,98 +325,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             },
 
-            onImageChangeServiciosL(e){
-                console.log(e.target.files[0]);
-                this.archivo_plantilla_servicios2 = e.target.files[0];
-            },
-
-            formSubmitServiciosL(e) {
-                e.preventDefault();
-                let currentObj = this;
-            
-                let formData = new FormData();
-                formData.append('plantilla_carta_servicios2', this.archivo_plantilla_servicios2);
-                let me = this;
-                axios.post('/formSubmitCartaServicios2/'+this.id, formData)
-                .then(function (response) {
-                    currentObj.success = response.data.success;
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal4();
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
-
-                }).catch(function (error) {
-                    currentObj.output = error;
-
-                });
-
-            },
-
-            onImageChangeReglamento(e){
-                console.log(e.target.files[0]);
-                this.archivo_reglamento = e.target.files[0];
-            },
-
-            formSubmitReglamento(e) {
-                e.preventDefault();
-                let currentObj = this;
-                let formData = new FormData();
-                formData.append('archivo_reglamento', this.archivo_reglamento);
-                let me = this;
-                axios.post('/formSubmitReglamento/'+this.id, formData)
-                .then(function (response) {
-                    currentObj.success = response.data.success;
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal4();
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
-
-                }).catch(function (error) {
-                    currentObj.output = error;
-                });
-            },
-
-            onImageChangeTelecom(e){
-                console.log(e.target.files[0]);
-                this.archivo_plantilla_telecom = e.target.files[0];
-            },
-
-            formSubmitTelecom(e) {
-                e.preventDefault();
-                let currentObj = this;
-            
-                let formData = new FormData();
-                formData.append('plantilla_telecom', this.archivo_plantilla_telecom);
-                let me = this;
-                axios.post('/formSubmitTelecom/'+this.id, formData)
-                .then(function (response) {
-                    currentObj.success = response.data.success;
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal4();
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
-
-                }).catch(function (error) {
-                    currentObj.output = error;
-
-                });
-
-            },
+           
            
 
              registrarCostosMantenimiento(){
@@ -401,7 +345,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+                    me.listarEtapa(this.pagination.current_page,'','','fraccionamiento.nombre');
 
                     //Se muestra mensaje Success
                     swal({
@@ -453,10 +397,18 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 me.buscar= "";
                 me.buscar2="";
             },
+            limpiaInputArchivos(){
+                this.archivo='';
+                this.nom_archivo='Seleccione Archivo';
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
                 this.num_etapa = '';
+                this.archivo='';
+                this.nom_archivo='Seleccione Archivo';
+                this.formActive='';
+                
             },
 
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -501,7 +453,101 @@ import TableComponent from '../Componentes/TableComponent.vue'
         }
     }
 </script>
-<style>
+<style scoped>
+    .text-formfile{
+    
+        color: grey;
+        display:flex;
+        padding-top: 13px;
+        justify-content: left;
+    
+    }
+    .contenedor-modal{
+        
+        display: block;
+        flex-direction: column;
+        
+        margin: auto;
+        overflow-x: auto;
+        width: fit-content;
+        max-width: 100%;
+    
+
+    }
+    .tite-form{
+        background-color: lightgray;
+        color: black;
+        font-size: 14px;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+
+    }
+
+    .label-button{
+    border-style: solid;
+    cursor:pointer; 
+    color: #fff;
+    background-color: #00ADEF;
+    border-color: #00ADEF;
+    padding: 10px;
+    margin-left: 15px;
+    }
+
+    .label-button:hover {
+    color: #fff;
+    background-color: #1b8eb7;
+    border-color: #00b0bb;;
+      
+      }
+    .form-sub{
+        border: 1px solid #c2cfd6;
+        margin-top: 20px;
+        width: 100%;
+        
+        
+    
+    }
+    .form-opc{
+        display: flex;
+        flex-direction: column;
+        
+    
+    }
+    .form-archivo{
+        display: flex;
+        flex-direction: row;
+    
+        width: 100%;
+    }
+    .text-file{
+    
+        color: rgb(39, 38, 38);
+        font-size:12px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+        
+        
+    
+    }
+    .text-file-hide{
+    
+        color: rgb(127, 130, 134);
+        font-size:13px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+        
+        
+    }
+    .boton-modal{
+        margin-top: 15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
     .div-error{
         display:flex;
         justify-content: center;
