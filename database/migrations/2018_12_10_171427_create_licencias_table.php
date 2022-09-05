@@ -39,6 +39,7 @@ class CreateLicenciasTable extends Migration
             $table->string('archivo_esp')->nullable();
 
             $table->text('colindancias')->nullable();
+            $table->date('date_birth')->nullable();
 
             $table->foreign('id')->references('id')->on('lotes')->onDelete('cascade');
             $table->foreign('perito_dro')->references('id')->on('personal');

@@ -60,6 +60,7 @@
                                     <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
                                 </div>
                                 <div class="input-group">
+                                    <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Numero de lote">
                                     <input type="text" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Etapa de servicio">
                                 </div>
                             </div>
@@ -404,6 +405,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
+                b_lote:'',
                 buscar_fraccionamientoExcel: 0,
                 arrayFraccionamientos : [],
                 arrayFraccionamientosLote : [],
@@ -520,6 +522,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             listarLote(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
                 var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 +
+                        '&blote=' + me.b_lote +
                         '&criterio=' + criterio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2
                         + '&b_etapa=' + me.b_etapa;
                 axios.get(url).then(function (response) {
@@ -555,6 +558,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 me.buscar="";
                 me.buscar2="";
                 me.buscar3="";
+                me.b_lote='';
                 me.b_empresa = "";
                 me.b_empresa2 = "";
                 me.arrayFraccionamientos=[];

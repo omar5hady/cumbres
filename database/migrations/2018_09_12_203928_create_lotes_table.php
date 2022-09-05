@@ -19,7 +19,7 @@ class CreateLotesTable extends Migration
             $table->unsignedInteger('etapa_id');
             $table->string('manzana');
             $table->integer('num_lote');
-            $table->string('sublote')->nullable(); 
+            $table->string('sublote')->nullable();
             $table->unsignedInteger('modelo_id');
             $table->unsignedInteger('empresa_id')->default(1); //vendedor
             $table->string('calle'); /** ubicacion */
@@ -43,9 +43,9 @@ class CreateLotesTable extends Migration
             $table->date('fecha_fin')->nullable();
             $table->unsignedInteger('arquitecto_id')->nullable();
             $table->string('credito_puente',50)->nullable();
-            $table->date('siembra')->nullable();    
-            $table->date('ehl_solicitado')->nullable(); 
-            $table->string('aviso',11)->default(0);    
+            $table->date('siembra')->nullable();
+            $table->date('ehl_solicitado')->nullable();
+            $table->string('aviso',11)->default(0);
             $table->double('obra_extra')->default(0);
             $table->double('ajuste')->default(0);
             $table->date('fecha_termino_ventas')->nullable();
@@ -66,7 +66,7 @@ class CreateLotesTable extends Migration
             $table->integer('num_inicio')->default(0);
 
             $table->string('paq_ruv',50)->nullable();
-            
+
 
             ///////// Datos para precio //////////////////
             $table->double('precio_base')->default(0);
@@ -74,9 +74,10 @@ class CreateLotesTable extends Migration
             $table->double('sobreprecio')->default(0);
 
             $table->integer('puente_id')->nullable();
+            $table->string('condiciones',100)->default('Nueva');
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
-            $table->foreign('etapa_id')->references('id')->on('etapas'); 
+            $table->foreign('etapa_id')->references('id')->on('etapas');
             $table->foreign('modelo_id')->references('id')->on('modelos');
             $table->foreign('empresa_id')->references('id')->on('empresas');
             $table->foreign('arquitecto_id')->references('id')->on('personal');

@@ -362,6 +362,8 @@ class LoteController extends Controller
                 $lote->precio_renta = $request->precio_renta;
                 $lote->apartado = 1;
                 $lote->contrato = $this->searchContrato($lote->id,1);
+
+                $lote->condiciones = 'Usada: Renta';
             }
             else{
                 if($terrenoModelo[0]->nombre != "Terreno"){//Para lotes con construcción (Casas o departamento)
@@ -406,6 +408,10 @@ class LoteController extends Controller
             $lote->precio_base=0;
         }
         $lote->habilitado = $request->habilitado;
+
+        if($lote->casa_muestra == 1)
+            $lote->condiciones = 'Usada: Casa muestra';
+
 
         $lote->save();
     }

@@ -610,14 +610,14 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="NSS">
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                             </div>
                                         </div>
 
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">INE</label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="No. INE">
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="No. INE">
                                             </div>
                                         </div>
 
