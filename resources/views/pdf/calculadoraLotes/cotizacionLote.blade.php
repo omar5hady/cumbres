@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>COTIZACIÓN DE LOTE CON SERVICIOS</title>
     <!-- Styles -->
-    
+
 </head>
 
 <style>
@@ -96,9 +96,9 @@ body{
                 <td colspan="2">Valor de Venta: ${{$cotizacion->valor_venta}}</td>
                 <td>Mensualidades: {{round($cotizacion->mensualidades)}}</td>
                 <td>
-                   
+
                         {{$cotizacion->interes}}% de Interes de tasa anual
-                    
+
                 </td>
             </tr>
         </tbody>
@@ -110,10 +110,10 @@ body{
             <tr>
                 @if($cotizacion->valor_descuento == 0)
                     <th class="text-right">Saldo inicial: ${{$cotizacion->valor_venta}}</th>
-                @else 
+                @else
                     <th class="text-right">
                         Saldo inicial: ${{$cotizacion->valor_venta}}
-                        - Descuento: ${{$cotizacion->valor_descuento}} 
+                        - Descuento: ${{$cotizacion->valor_descuento}}
                         = Total a Pagar: ${{$cotizacion->total_pagar}}
                     </th>
                 @endif
@@ -127,7 +127,7 @@ body{
             <tr>
                 <th># Pago</th>
                 <th>Mensualidad</th>
-                
+
                 <th>Fecha</th>
                 <th>Dias</th>
                 <th>% Descuento</th>
@@ -154,6 +154,14 @@ body{
                 <td>${{$pago->saldo }}</td>
             </tr>
             @endforeach
+            <tr>
+                <th colspan="5"></th>
+                <th>${{$totalP2 }}</th>
+                <th>${{$totalP1 }}</th>
+                <th>${{$totalP3 }}</th>
+                <th>${{$totalP4 }}</th>
+                <th></th>
+            </tr>
         </tbody>
     </table>
 
@@ -196,6 +204,6 @@ body{
         Vendedor: {{mb_strtoupper($cotizacion->v_apellidos)}} {{mb_strtoupper($cotizacion->v_nombre)}}
     </p>
 </div>
-    
+
 </body>
 </html>

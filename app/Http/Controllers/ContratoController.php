@@ -78,7 +78,7 @@ class ContratoController extends Controller
 
         if($request->b_institucion != '')
             $contratos= $contratos->where('inst_seleccionadas.institucion', 'like', '%'.$request->b_institucion.'%');
-        
+
         if($buscar != '') {
             switch ($criterio) {
                 case 'personal.nombre': {
@@ -123,7 +123,7 @@ class ContratoController extends Controller
                     break;
                 }
                 case 'creditos.fraccionamiento': {
-                    
+
                     $contratos = $contratos->where('lotes.fraccionamiento_id', '=',  $buscar);
 
                         if($publicidad != '')
@@ -140,15 +140,15 @@ class ContratoController extends Controller
                             $contratos  = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
 
                     break;
-                }  
+                }
             }
-        } 
+        }
 
         $contratos = $contratos->orderBy('id', 'desc')->paginate(20);
-        
+
         if(sizeOf($contratos)){
             //Se recorren los resultados de contratos para verificar si la casa se ha individualizado.
-            foreach($contratos as $index => $contrato) 
+            foreach($contratos as $index => $contrato)
             {
                 if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
                     $contrato->status2 = 1;
@@ -166,7 +166,7 @@ class ContratoController extends Controller
                     $contrato->liquidado = $expediente[0]->liquidado;
                     $contrato->fecha_firma_esc = $expediente[0]->fecha_firma_esc;
                 }
-                
+
             }
         }
 
@@ -192,7 +192,7 @@ class ContratoController extends Controller
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('personal as v', 'creditos.vendedor_id', 'v.id')
-                
+
                 ->select(
                     'creditos.id',
                     'creditos.prospecto_id',
@@ -228,7 +228,7 @@ class ContratoController extends Controller
                     'creditos.precio_obra_extra',
                     'creditos.fraccionamiento as proyecto',
                     'creditos.lote_id',
-                    
+
                     'creditos.email_fisc',
                     'creditos.tel_fisc',
                     'creditos.nombre_fisc',
@@ -258,6 +258,8 @@ class ContratoController extends Controller
                     'personal.f_nacimiento',
                     'personal.rfc',
                     'personal.homoclave',
+                    'personal.num_ine',
+                    'personal.num_pasaporte',
                     'creditos.fraccionamiento',
                     'clientes.id as prospecto_id',
                     'clientes.edo_civil',
@@ -379,11 +381,11 @@ class ContratoController extends Controller
             ->where('creditos.status', '=', '2')
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('creditos.contrato', '=', '0');
-        
+
         if($buscar != '') {
             switch ($criterio) {
                 case 'personal.nombre': {
-                    $creditos = 
+                    $creditos =
                         $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
@@ -462,7 +464,7 @@ class ContratoController extends Controller
                 'clientes.empresa_coa', 'clientes.curp_coa', 'clientes.nss_coa',
                 'clientes.nacionalidad_coa',
                 'clientes.lugar_nacimiento',
-                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion',
                 'inst_seleccionadas.elegido'
             )
             ->where('inst_seleccionadas.elegido', '=', 1)
@@ -490,6 +492,8 @@ class ContratoController extends Controller
         $personal->clv_lada = $request->clv_lada;
         $personal->celular = $request->celular;
         $personal->email = $request->email;
+        $personal->num_ine = $request->num_ine;
+        $personal->num_pasaporte = $request->num_pasaporte;
 
         $cliente = Cliente::findOrFail($request->prospecto_id);
         $cliente->sexo = $request->sexo;
@@ -536,7 +540,7 @@ class ContratoController extends Controller
         $inst_sel = inst_seleccionada::select('id')
                     ->where('credito_id','=',$request->id)
                     ->where('elegido','=',1)->get();
-        
+
         $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
         $credito_sol->monto_credito = $request->credito_solic;
         $credito_sol->save();
@@ -567,7 +571,7 @@ class ContratoController extends Controller
                         $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
                     //Calculo del procentaje.
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
-                    
+
                 }
             //Guardar el costo del lote
             $credito->save();
@@ -587,7 +591,7 @@ class ContratoController extends Controller
         //Se obtiene el avance de construcción del lote.
         $lote = Licencia::select('avance')
             ->where('id', '=', $request->lote_id)->first();
-        
+
         try {
             DB::beginTransaction();
             $contrato = new Contrato();
@@ -633,15 +637,15 @@ class ContratoController extends Controller
 
             if($vendedor_aux)
                 $contrato->vendedor_aux = $vendedor_aux->nombre.' '.$vendedor_aux->apellidos;
-            
+
             $vendedor = Vendedor::findOrFail($credito->vendedor_id);
             $contrato->saldo = $request->precio_venta;
-            
+
             $credito->paquete =  $request->paquete;
             $credito->descripcion_paquete = $request->descripcion_paquete;
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
-            
+
             $loteId = $credito->lote_id;
             //Calcular porcentaje correspondiente de terreno y construcción
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
@@ -662,7 +666,7 @@ class ContratoController extends Controller
                         $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
                     //Calculo de porcentaje
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
-                    
+
                 }
             //Guardar el costo del lote
             $credito->save();
@@ -733,7 +737,7 @@ class ContratoController extends Controller
                 'fraccionamientos.tipo_proyecto',
 
                 'lotes.calle', 'lotes.numero', 'lotes.interior',
-                'lotes.terreno', 'lotes.construccion', 
+                'lotes.terreno', 'lotes.construccion',
                 'lotes.sublote',
                 'lotes.sobreprecio', 'lotes.fecha_termino_ventas',
                 'medios_publicitarios.nombre as medio_publicidad',
@@ -880,18 +884,18 @@ class ContratoController extends Controller
                     'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
                     'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
                     'cotizacion_lotes.mensualidades', 'cotizacion_lotes.interes',
-    
-                    'personal.apellidos', 'personal.nombre', 
-                    
+
+                    'personal.apellidos', 'personal.nombre',
+
                     'clientes.id as cliente_personal_id',
-    
+
                     'lotes.num_lote', 'lotes.sublote',
                     'lotes.terreno as terreno_m2',
                     'etapas.num_etapa',
                     'fraccionamientos.nombre as fraccionamiento'
                 )
                 ->where('cotizacion_lotes.num_contrato', '=', $id)
-                
+
             ->first();
 
             // Valor por m2
@@ -907,12 +911,12 @@ class ContratoController extends Controller
             $contratos[0]->valor_base2 = number_format((float)$cotizacion->valorVenta2, 2, '.', ',');
             $contratos[0]->valor_venta = number_format((float)$contratos[0]->valor_venta, 2, '.', ',');
             $contratos[0]->valor_descuento = number_format((float)$cotizacion->valor_descuento, 2, '.', ',');
-            
+
             $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
                 ->orderBy('folio')
             ->get();
-            
-    
+
+
             if(sizeof($pago)){
                 $totalDePagos = count($pago);
                 $pago[0]->numPagos= $totalDePagos;
@@ -927,17 +931,17 @@ class ContratoController extends Controller
                     $totalP2+= $p->descuento;
                     $totalP3+= $p->interes_monto;
                     $totalP4+= $p->total_a_pagar;
-                    
+
                     $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
                     $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
                     $p->interes_monto = number_format((float)$p->interes_monto, 2, '.', ',');
                     $p->total_a_pagar = number_format((float)$p->total_a_pagar, 2, '.', ',');
                     $p->saldo = number_format((float)$p->saldo, 2, '.', ',');
-                    
+
                     $fecha_pago = new Carbon($p->fecha);
                     $p->fecha = $fecha_pago->formatLocalized('%d/%m/%Y');
 
-                    
+
                 }
 
                 $totalP1 = number_format((float)$totalP1, 2, '.', ',');
@@ -945,12 +949,12 @@ class ContratoController extends Controller
                 $totalP3 = number_format((float)$totalP3, 2, '.', ',');
                 $totalP4 = number_format((float)$totalP4, 2, '.', ',');
             }
-            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVentaTerreno', ['contratos' => $contratos, 'pago' => $pago, 
+            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVentaTerreno', ['contratos' => $contratos, 'pago' => $pago,
                         'totalP1' => $totalP1,
                         'totalP2' => $totalP2,
                         'totalP3' => $totalP3,
                         'totalP4' => $totalP4,
-                        
+
             ]);
         }
         return $pdf->stream('ContratoCompraVenta.pdf');
@@ -1219,7 +1223,7 @@ class ContratoController extends Controller
         // if($contratoPromesa[0]->total_pagar <0)
         //     $contratoPromesa[0]->credito_neto=$contratoPromesa[0]->credito_neto - $contratoPromesa[0]->total_pagar;
 
-        
+
         $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos', true, 'Centavos');
         //$contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto, 2, '.', ',');
 
@@ -1240,7 +1244,7 @@ class ContratoController extends Controller
         if($contratoPromesa[0]->institucion == 'Gamu' && $contratoPromesa[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratoPromesa[0]->institucion == 'Crea Más' && $contratoPromesa[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
             $contratoPromesa[0]->institucion = 'INFONAVIT';
         }
-        
+
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 
@@ -1319,7 +1323,7 @@ class ContratoController extends Controller
 
         //Contrato para departamentos.
         if($contratoPromesa[0]->tipo == 2){
-            $pdf = \PDF::loadview('pdf.contratos.contratoCreditoDepartamento', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);   
+            $pdf = \PDF::loadview('pdf.contratos.contratoCreditoDepartamento', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         }
         //Contratos para viviendas
         else{
@@ -1329,7 +1333,7 @@ class ContratoController extends Controller
             else
                 $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         }
-            
+
         return //['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos];
         $pdf->stream('contrato_promesa_credito.pdf');
     }
@@ -1338,7 +1342,7 @@ class ContratoController extends Controller
     public function contratoLote(Request $request, $id)
     {
 
-        //Se obtiene la cotización 
+        //Se obtiene la cotización
         $cotizacion = Cotizacion_lotes::select('id','mensualidades','interes')->where('num_contrato','=',$id)->first();
         //Se obtienen los pagos de la cotización
         $p_lote = Pagos_lotes::where('cotizacion_lotes_id','=',$cotizacion->id)->orderBy('folio','asc')->get();
@@ -1349,14 +1353,14 @@ class ContratoController extends Controller
 
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
             ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
-        
+
         setlocale(LC_TIME, 'es_MX.utf8');
 
         $contratoPromesa[0]->mensualidades = $cotizacion->mensualidades;
         $contratoPromesa[0]->interes = $cotizacion->interes;
         $contratoPromesa[0]->porcentajeValor = ($p_lote[0]->total_a_pagar * 100)/$contratoPromesa[0]->precio_venta;
         $contratoPromesa[0]->porcentajeValor = round($contratoPromesa[0]->porcentajeValor,2);
-        
+
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->valorTerrenoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_terreno, 'Pesos', true, 'Centavos');
 
@@ -1365,13 +1369,13 @@ class ContratoController extends Controller
         $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
         $contratoPromesa[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
         $contratoPromesa[0]->fecha2 = $fechaContrato->formatLocalized('%d de %B de %Y');
-        
+
         $totalDePagos = count($p_lote);
         $p_lote[0]->numPagos= $totalDePagos;
         $p_lote[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 
         $enganche = $p_lote[0]->total_a_pagar;
-        
+
 
         for ($i = 0; $i < count($p_lote); $i++) {
             $tiempo = new Carbon($p_lote[$i]->fecha);
@@ -1386,7 +1390,7 @@ class ContratoController extends Controller
             $p_lote[$i]->cantidad = number_format((float)$p_lote[$i]->cantidad, 2, '.', ',');
         }
 
-       
+
         $pdf = \PDF::loadview('pdf.contratos.contratoLote', ['contratoPromesa' => $contratoPromesa, 'pagos' => $p_lote]);
         return //['contratoPromesa' => $contratoPromesa, 'pagos' => $p_lote];
         $pdf->stream('contrato_promesa_credito.pdf');
@@ -1416,7 +1420,7 @@ class ContratoController extends Controller
                 ->where('lotes.id','=',$id_lote)
                 ->where('solic_equipamientos.fin_instalacion','!=',NULL)
                 ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
-            
+
             $equipamientosInst = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
                 ->join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                 ->select('equipamientos.equipamiento','solic_equipamientos.id')
@@ -1430,7 +1434,7 @@ class ContratoController extends Controller
                 ->where('solic_equipamientos.fin_instalacion','=',NULL)
                 ->where('solic_equipamientos.fecha_anticipo','!=',NULL)
                 ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
-            
+
             //Equipamientos solicitados sin instalarse ni pago de anticipo
             $equipamientosCancel = Solic_equipamiento::select('id')
                 ->where('solic_equipamientos.lote_id','=',$id_lote)
@@ -1460,7 +1464,7 @@ class ContratoController extends Controller
                 else
                     $ajuste = 0;
             }
-           
+
             $contrato = Contrato::findOrFail($request->id);
             $contrato->status = $request->status;
             $contrato->motivo_cancel = $request->motivo_cancel;
@@ -1486,7 +1490,7 @@ class ContratoController extends Controller
                     //El lote se habilita para venta.
                     $lote->contrato = 0;
                     $lote->apartado = 0;
-                    // En caso de tener equipamiento instalado se ajusta el precio 
+                    // En caso de tener equipamiento instalado se ajusta el precio
                     $lote->ajuste += $ajuste;
                     // Se indica que el lote cuenta con equipamiento
                     if($ajuste != 0)
@@ -1501,7 +1505,7 @@ class ContratoController extends Controller
                             $cancel_equip->save();
                         }
                     }
-                    
+
                     //Se elimina el apartado asignado al lote.
                     $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
                     if(sizeof($apartado))
@@ -1540,7 +1544,7 @@ class ContratoController extends Controller
                         $lote->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
                         //Se calcula el precio de venta del lote.
                         $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra),2);
-                        
+
                     }
                     else{
                         $cotizadorLote = Cotizacion_lotes::select('id')->where('lotes_id','=',$id_lote)
@@ -1576,20 +1580,27 @@ class ContratoController extends Controller
                     $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
                     // Cliente clasificado como ventas
                     $cliente->clasificacion = 5;
+                    $cliente->advertising = $request->advertising;
+                    if($cliente->coacreditado == 1){
+                        $coa = Personal::select('id')->where('rfc','=',$cliente->rfc_coa)->first();
+                        $coacreditado = Cliente::findOrFail($coa->id);
+                        $coacreditado->advertising = $cliente->advertising;
+                        $coacreditado->save();
+                    }
                     $vendedorid = $cliente->vendedor_id;
                     $cliente->save();
 
                     // Actualización de datos fiscales
                     $credit_fisc = Credito::findOrFail($request->id);
                     $p_cliente = Personal::findOrFail($credit_fisc->prospecto_id);
-                    
+
                         if($datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 0 || $datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 1){
                             $credit_fisc->notif_fisc = 2;
                             $credit_fisc->fecha_rfc = Carbon::now();
                             //Se manda notificación sobre la venta.
                             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
                             $fecha = Carbon::now();
-                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. 
+                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa.
                             " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
                             " con RFC";
                             $arregloAceptado = [
@@ -1616,7 +1627,7 @@ class ContratoController extends Controller
                             //Se manda notificación sobre la venta.
                             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
                             $fecha = Carbon::now();
-                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa. 
+                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa.
                             " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
                             " sin RFC";
                             $arregloAceptado = [
@@ -1638,7 +1649,7 @@ class ContratoController extends Controller
                                 User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                             }
                         }
-                    
+
                     // Se capturan los datos fiscales del cliente.
                     $credit_fisc->email_fisc = $datosFiscales['email_fisc'];
                     $credit_fisc->tel_fisc = $datosFiscales['tel_fisc'];
@@ -1678,7 +1689,7 @@ class ContratoController extends Controller
                         Mail::to($correo)->send(new NotificationReceived($msj));
                         User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                     }
-                    
+
                 }
             }
 
@@ -1708,7 +1719,7 @@ class ContratoController extends Controller
                     User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
                     $persona = Personal::findOrFail($id);
                     Mail::to($persona->email)->send(new NotificationReceived($msj));
-                    
+
                 }
             }
 
@@ -1779,6 +1790,8 @@ class ContratoController extends Controller
                 $personal->clv_lada = $request->clv_lada;
                 $personal->celular = $request->celular;
                 $personal->email = $request->email;
+                $personal->num_pasaporte = $request->num_pasaporte;
+                $personal->num_ine = $request->num_ine;
 
             //Datos del cliente que se guardan en la tabla clientes
             $cliente = Cliente::findOrFail($request->prospecto_id);
@@ -1950,7 +1963,7 @@ class ContratoController extends Controller
                 if($sumaDepositoCredit[0]->suma == NULL){
                     $sumaDepositoCredit[0]->suma = 0;
                 }
-            
+
             $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma - $sumaDescuento[0]->suma;
             // Se almacena el saldo.
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
@@ -1976,7 +1989,7 @@ class ContratoController extends Controller
                     //Se calcula el valor de terreno para vivienda
                     else{
                         $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
-                        
+
                     //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
                     }
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
@@ -2066,7 +2079,7 @@ class ContratoController extends Controller
                     $depositoConc[0]->suma = 0;
                 }
         // Calcula el saldo.
-        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma + 
+        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma +
         $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
         $credito->save();
     }
@@ -2124,7 +2137,7 @@ class ContratoController extends Controller
             //         $borrarApartado = Apartado::findOrFail($ap->id);
             //         $borrarApartado->delete();
             //     }
-                
+
             DB::beginTransaction();
 
             //Nuevo lote
@@ -2152,7 +2165,7 @@ class ContratoController extends Controller
                 else {
                     $lote_new->excedente_terreno = 0;
                 }
-            
+
             $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
             $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
@@ -2162,12 +2175,12 @@ class ContratoController extends Controller
             ////////////////////////////////////////////////////////////////////////////////////////
             $credito = Credito::findOrFail($request->id);
             $contrato = Contrato::findOrFail($request->id);
-            
+
             //Se obtienen los datos sobre la institución de financiamiento actual.
             $institucion = inst_seleccionada::select('tipo_credito','institucion')
                         ->where('credito_id','=',$credito->id)
                         ->where('elegido','=',1)->first();
-            
+
             // Si se requiere registrar la reubicación
             if($request->reubicar == 1){
                 // Se crea el registro de reubicación.
@@ -2185,7 +2198,7 @@ class ContratoController extends Controller
                                 ''
                             );
             }
-            
+
 
             //Se actualizan los datos en el registro de credito y contrato.
             $contrato->avance_lote = $new_avance->avance;
@@ -2215,7 +2228,7 @@ class ContratoController extends Controller
             $contrato->save();
             $lote_new->save();
             DB::commit();
-        } catch (Exception $e) { 
+        } catch (Exception $e) {
             DB::rollBack();
         }
     }
@@ -2239,13 +2252,13 @@ class ContratoController extends Controller
                     $terrenoModelo = Modelo::select('terreno')
                     ->where('id','=',$lote_ant->modelo_id)
                     ->get();
-                            
+
                     // Se obtienen el precio de m2 por terreno excedente del lote actual
                     $precioBaseOld = Precio_modelo::select('precio_modelo')
                     ->where('modelo_id','=',$lote_ant->modelo_id)
                     ->where('precio_etapa_id', '=', $precioTerrenoOld[0]->id)
                     ->get();
-            
+
                     // Se obtienen los sobreprecios del lote actual
                     $sobrepreciosOld = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
                     ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
@@ -2276,7 +2289,7 @@ class ContratoController extends Controller
             //         $borrarApartado = Apartado::findOrFail($ap->id);
             //         $borrarApartado->delete();
             //     }
-                
+
             DB::beginTransaction();
 
             // Se accede al nuevo lote.
@@ -2334,7 +2347,7 @@ class ContratoController extends Controller
             $lote_new->save();
             DB::commit();
 
-            } catch (Exception $e) { 
+            } catch (Exception $e) {
                 DB::rollBack();
         }
     }
@@ -2418,7 +2431,7 @@ class ContratoController extends Controller
                             ->whereBetween($criterio, [$buscar,  $buscar3]);
                         break;
                     }
-                
+
                 case 'creditos.fraccionamiento': {
                         $contratos = $contratos;
                             if($buscar != '')
@@ -2440,7 +2453,7 @@ class ContratoController extends Controller
         // Retorno de resultado en excel.
         return Excel::create('contratos', function($excel) use ($contratos){
             $excel->sheet('contratos', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Contrato', 'Cliente', 'Telefono', 'Celular','Email', 'Empresa', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Modelo', 'Tipo de crédito', 'Institución','Fecha del contrato', 'Precio de Venta', 'Status', 'Publicidad'
@@ -2459,7 +2472,7 @@ class ContratoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-  
+
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
@@ -2494,7 +2507,7 @@ class ContratoController extends Controller
                     $contrato->fecha = $fecha1->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $contrato->contratoId, 
+                        $contrato->contratoId,
                         $contrato->nombre. ' ' . $contrato->apellidos,
                         $contrato->telefono,
                         $contrato->celular,
@@ -2513,13 +2526,13 @@ class ContratoController extends Controller
                         $status,
                         $contrato->publicidad,
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:R' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 
@@ -2597,7 +2610,7 @@ class ContratoController extends Controller
                             'expedientes.fecha_firma_esc',
                             'expedientes.liquidado',
                             'i.tipo_credito',
-                            'i.institucion', 
+                            'i.institucion',
                             DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor"),
                             'lotes.credito_puente',
                             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_asesor"),
@@ -2650,7 +2663,7 @@ class ContratoController extends Controller
 
             if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1)
                 $contrato->estado_casa = 'Individualizada';
-            
+
             if($contrato->tipo_credito != 'Crédito Directo' && $contrato->fecha_firma_esc != NULL)
                 $contrato->estado_casa = 'Individualizada';
 
@@ -2689,14 +2702,14 @@ class ContratoController extends Controller
         }
 
         return Excel::create('Modelo Caco', function($excel) use ($contratos,$lotesDisp){
-            
+
             $excel->sheet('Ventas', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '#Folio', 'Fracc.', 'Etapa', 'Mnza', 'Lote', 'Modelo', 'Calle', 'No. Oficial', 'Cliente',
                     'Fecha de venta', 'Fecha compromiso de termino', 'Estado de la casa', 'Crédito', 'Institución',
-                    'Gestor', 'Crédito Puente', 'Vigencia del Crédito', 'Responsable actual', 'Comentarios Eli', 
-                    'Status Avaluo', 'Fecha avaluo', 'Asesor', 'Tipo Asesor', 'Ultima fecha de enganche', 'Monto', 
+                    'Gestor', 'Crédito Puente', 'Vigencia del Crédito', 'Responsable actual', 'Comentarios Eli',
+                    'Status Avaluo', 'Fecha avaluo', 'Asesor', 'Tipo Asesor', 'Ultima fecha de enganche', 'Monto',
                     'Valor de venta', 'Valor a escriturar',
                 ]);
 
@@ -2713,7 +2726,7 @@ class ContratoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-  
+
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
@@ -2726,7 +2739,7 @@ class ContratoController extends Controller
                     $cont++;
 
                     $sheet->row($index+2, [
-                        $contrato->id, 
+                        $contrato->id,
                         $contrato->proyecto,
                         $contrato->etapa,
                         $contrato->manzana,
@@ -2753,19 +2766,19 @@ class ContratoController extends Controller
                         $contrato->pagare['monto_pago'],
                         $contrato->precio_venta,
                         $contrato->valor_escrituras,
-                    ]);	
+                    ]);
                 }
                 $num='A1:AA' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
 
             $excel->sheet('Lotes Disponibles', function($sheet) use ($lotesDisp){
-                
+
                 $sheet->row(1, [
                     '#Folio', 'Fracc.', 'Etapa', 'Mnza', 'Lote', 'Modelo', 'Calle', 'No. Oficial', 'Cliente',
                     'Fecha de venta', 'Fecha compromiso de termino', 'Estado de la casa', 'Crédito', 'Institución',
-                    'Gestor', 'Crédito Puente', 'Vigencia del Crédito', 'Responsable actual', 'Comentarios Eli', 
-                    'Status Avaluo', 'Fecha avaluo', 'Asesor', 'Tipo Asesor', 'Ultima fecha de enganche', 'Monto', 
+                    'Gestor', 'Crédito Puente', 'Vigencia del Crédito', 'Responsable actual', 'Comentarios Eli',
+                    'Status Avaluo', 'Fecha avaluo', 'Asesor', 'Tipo Asesor', 'Ultima fecha de enganche', 'Monto',
                     'Valor de venta', 'Valor a escriturar',          ]);
 
                 $sheet->cells('A1:AA1', function ($cells) {
@@ -2781,7 +2794,7 @@ class ContratoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-  
+
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
@@ -2821,13 +2834,13 @@ class ContratoController extends Controller
                         '',
                         $lote->precio_venta,
                         ''
-                    ]);	
+                    ]);
                 }
                 $num='A1:AA' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 
@@ -2842,7 +2855,7 @@ class ContratoController extends Controller
             $contrato->fecha_archivo = Carbon::now();
             $contrato->save(); //Insert
         }
-        
+
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
 
@@ -2861,7 +2874,7 @@ class ContratoController extends Controller
             $pathAnterior = public_path() . '/files/datosFisc/constancias/' . $contrato->constancia_fisc;
             File::delete($pathAnterior);
         }
-        
+
         $fileName = $request->archivo->getClientOriginalName();
         $moved =  $request->archivo->move(public_path('/files/datosFisc/constancias/'), $id.$fileName);
 
@@ -2875,7 +2888,7 @@ class ContratoController extends Controller
 
             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
             $fecha = Carbon::now();
-            $msj = "Se ha cargado la constancia de situacion fiscal para la venta del lote " . $credito->num_lote . " del proyecto " . $credito->fraccionamiento . " etapa " . $credito->etapa. 
+            $msj = "Se ha cargado la constancia de situacion fiscal para la venta del lote " . $credito->num_lote . " del proyecto " . $credito->fraccionamiento . " etapa " . $credito->etapa.
             " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos;
             $arregloAceptado = [
                 'notificacion' => [
@@ -2897,8 +2910,8 @@ class ContratoController extends Controller
             }
         }
 
-        
-        
+
+
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
 

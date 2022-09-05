@@ -21,7 +21,7 @@
                     </div>
                     <!-- Div Card Body para listar -->
                      <template v-if="listado == 1">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row">
                                 <div class="col-md-8" v-if="criterio =='clientes.created_at'">
                                     <div class="input-group">
@@ -39,7 +39,7 @@
                                             <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Desde" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar" class="form-control">
                                             <input v-if="criterio=='clientes.created_at' && rolId != 2" type="text" placeholder="Hasta" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar2" class="form-control">
                                         </template>
-                                        
+
                                     </div>
                                     <div class="input-group" v-if="criterio=='clientes.created_at'">
                                         <select class="form-control" v-if="criterio=='clientes.created_at' && rolId != 2" v-model="buscar3" >
@@ -48,7 +48,7 @@
                                         </select>
                                         <select class="form-control" v-model="b_publicidad">
                                             <option value="">Seleccione</option>
-                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                                         </select>
                                     </div>
                                     <div class="input-group">
@@ -59,8 +59,8 @@
                                             <option value="3">Tipo B</option>
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                            <option value="7">Coacreditado</option>  
+                                            <option value="6">Cancelado</option>
+                                            <option value="7">Coacreditado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -91,8 +91,8 @@
                                             <option value="3">Tipo B</option>
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                            <option value="7">Coacreditado</option>  
+                                            <option value="6">Cancelado</option>
+                                            <option value="7">Coacreditado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -127,95 +127,91 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Nombre</th>
-                                            <th v-if="rolId != 2"></th>
-                                            <th>Celular</th>
-                                            <th>Email</th>
-                                            <th>RFC</th>
-                                            <th>IMSS</th>
-                                            <th>CURP </th>
-                                            <th>Proyecto de interes</th>
-                                            <th>Clasificación</th>
-                                            <th>Fecha de alta</th>
-                                            <th>Observaciones</th>
-                                            <th v-if="rolId != 2">Vendedor</th>
-                                            <th v-if="rolId != 2 && b_aux == 1">Vendedor Auxiliar</th>
-                                            <th v-if="rolId != 2">Publicidad</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
-                                            <td class="td2">
-                                                <template v-if="prospecto.activo">
-                                                    <button title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-user-times"></i>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <button title="Activar cliente" type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
-                                                        <i class="icon-check"></i>
-                                                    </button>
-                                                </template>
-                                                <button  title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
-                                                    <i class="icon-pencil"></i>
-                                                </button>
-                                                <button v-if="rolId != 2" type="button" @click="abrirModalCambio(prospecto)" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-exchange"></i>
-                                                </button>
+                            <TableComponent>
+                                <template v-slot:thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Nombre</th>
+                                        <th v-if="rolId != 2"></th>
+                                        <th>Celular</th>
+                                        <th>Email</th>
+                                        <th>RFC</th>
+                                        <th>IMSS</th>
+                                        <th>CURP </th>
+                                        <th>Proyecto de interes</th>
+                                        <th>Clasificación</th>
+                                        <th>Fecha de alta</th>
+                                        <th>Observaciones</th>
+                                        <th v-if="rolId != 2">Vendedor</th>
+                                        <th v-if="rolId != 2">Vendedor Auxiliar</th>
+                                        <th v-if="rolId != 2">Publicidad</th>
+                                    </tr>
+                                </template>
+                                <template v-slot:tbody>
+                                    <tr v-for="prospecto in arrayProspectos" :key="prospecto.id"
+                                            :style="(prospecto.advertising==0) ? 'color:red;' : ''"
+                                        >
+                                        <td class="td2">
+                                            <button  v-if="prospecto.activo" title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-user-times"></i>
+                                            </button>
+                                            <button v-else title="Activar cliente" type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                            <button  title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
+                                                <i class="icon-pencil"></i>
+                                            </button>
+                                            <button v-if="rolId != 2" type="button" @click="abrirModalCambio(prospecto)" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-exchange"></i>
+                                            </button>
+                                        </td>
+                                        <template><!-- Nombre del cliente con el semaforo -->
+                                            <td v-if="prospecto.clasificacion == 1 || prospecto.clasificacion >= 5 || prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia < 7" class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos"></td>
+                                            <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia >= 7 && prospecto.diferencia <= 15  " class="td2">
+                                                <span class="badge2 badge-warning">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
                                             </td>
-                                            <template>
-                                                <td v-if="prospecto.clasificacion == 1 || prospecto.clasificacion >= 5 || prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia < 7" class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>                                                    
-                                                <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia >= 7 && prospecto.diferencia <= 15  " class="td2">
-                                                    <span class="badge2 badge-warning">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
-                                                </td>    
-                                                <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia > 15" class="td2">
-                                                    <span class="badge2 badge-danger">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
-                                                </td>                                                
-                                            </template>
-                                            <td v-if="rolId != 2">
-                                                <span class="badge2 badge-success" v-if="prospecto.diferenciaGer >= 0 && prospecto.diferenciaGer <= 7"><i class="fa fa-check"></i></span>
-                                                <span class="badge2 badge-warning" v-if="prospecto.diferenciaGer > 7 && prospecto.diferenciaGer <= 15"><i class="fa fa-exclamation-triangle"></i></span>
-                                                <span class="badge2 badge-danger" v-if="prospecto.diferenciaGer >15"><i class="fa fa-window-close-o"></i></span>
+                                            <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia > 15" class="td2">
+                                                <span class="badge2 badge-danger">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
                                             </td>
-                                            <td class="td2" >
-                                                 <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" 
-                                                        :href="'https://api.whatsapp.com/send?phone=+'+prospecto.clv_lada+prospecto.celular+'&text=Hola'">
-                                                        <i class="fa fa-whatsapp fa-lg"></i>
-                                                 </a>
-                                                 
-                                            </td>
-                                            <td class="td2" v-if="prospecto.email_institucional == null"> 
-                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-                                              <td class="td2" v-else> 
-                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.rfc.toUpperCase()"></td>
-                                            <td class="td2" v-text="prospecto.nss"></td>
-                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp"></td>
-                                            <td class="td2" v-text="prospecto.proyecto"></td>
-                                            <td class="td2" v-if="prospecto.clasificacion==1">No viable</td>
-                                            <td class="td2" v-if="prospecto.clasificacion==2">Tipo A</td>
-                                            <td class="td2" v-if="prospecto.clasificacion==3">Tipo B</td>
-                                            <td class="td2" v-if="prospecto.clasificacion==4">Tipo C</td>
-                                            <td class="td2" v-if="prospecto.clasificacion==5">Ventas</td>
-                                            <td class="td2" v-if="prospecto.clasificacion==6">Cancelado</td>
-                                            <td class="td2" v-if="prospecto.clasificacion==7">Coacreditado</td>
-                                            <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
-                                            <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
-                                            <td class="td2" v-if="rolId != 2" v-text="prospecto.vAux_completo"></td>
-                                            <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </template>
+                                        <td v-if="rolId != 2">
+                                            <span class="badge2 badge-success" v-if="prospecto.diferenciaGer >= 0 && prospecto.diferenciaGer <= 7"><i class="fa fa-check"></i></span>
+                                            <span class="badge2 badge-warning" v-if="prospecto.diferenciaGer > 7 && prospecto.diferenciaGer <= 15"><i class="fa fa-exclamation-triangle"></i></span>
+                                            <span class="badge2 badge-danger" v-if="prospecto.diferenciaGer >15"><i class="fa fa-window-close-o"></i></span>
+                                        </td>
+                                        <td class="td2" >
+                                            <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank"
+                                                :href="'https://api.whatsapp.com/send?phone=+'+prospecto.clv_lada+prospecto.celular+'&text=Hola'">
+                                                <i class="fa fa-whatsapp fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td class="td2">
+                                            <a  v-if="prospecto.email_institucional == null" title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            <a v-else title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                        </td>
+                                        <td class="td2" style="text-transform:uppercase" v-text="prospecto.rfc.toUpperCase()"></td>
+                                        <td class="td2" v-text="prospecto.nss"></td>
+                                        <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp"></td>
+                                        <td class="td2" v-text="prospecto.proyecto"></td>
+                                        <td class="td2">
+                                            {{ (prospecto.clasificacion==1) ? 'No viable'
+                                                : (prospecto.clasificacion==2) ? 'Tipo A'
+                                                : (prospecto.clasificacion==3) ? 'Tipo B'
+                                                : (prospecto.clasificacion==4)  ? 'Tipo C'
+                                                : (prospecto.clasificacion==5)  ? 'Ventas'
+                                                : (prospecto.clasificacion==6)  ? 'Cancelado'
+                                                : (prospecto.clasificacion==7)  ? 'Coacreditado' : ''
+                                            }}
+                                        </td>
+                                        <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                        <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
+                                        <td class="td2" v-if="rolId != 2" v-text="prospecto.vAux_completo"></td>
+                                        <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -230,26 +226,26 @@
                                     </li>
                                 </ul>
                             </nav>
-                            <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                            <button class="btn btn-sm btn-default" @click="modal=4">Manual</button>
                         </div>
                     </template>
-                    
+
      <!-- Div Card Body para nuevo registro -->
                     <template v-else-if="listado == 0">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row border">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                   <center> <h2>Prospecto</h2> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
                                     <input type="text" class="form-control" v-model="nombre" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
-                                </div> 
+                                </div>
 
 
                                 <div class="col-md-4">
@@ -307,7 +303,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                        <v-select 
+                                        <v-select
                                             :on-search="selectEmpresaVueselect"
                                             label="nombre"
                                             :options="arrayEmpresa"
@@ -318,7 +314,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
@@ -345,14 +341,14 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento==''">(*)</span></label>
                                         <input type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento">
                                         <datalist id="cityname3">
                                             <option value="">Seleccione</option>
-                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -381,7 +377,7 @@
                                         <input type="text" v-on:keypress="isSpace($event)" maxlength="10" style="text-transform:uppercase" class="form-control" @keyup="selectRFC(rfc)"  v-model="rfc" placeholder="RFC">
                                     </div>
                                 </div>
-                                       
+
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
                                     <label for="">Homoclave</label>
@@ -389,15 +385,31 @@
                                    </div>
                                 </div>
 
-                                 
+
                                 <div class="col-md-3">
-                                     <div class="form-group">
-                                    <label for="">NSS</label>
-                                    <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
-                                </div>
+                                    <div class="form-group">
+                                        <label for="">NSS</label>
+                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                    </div>
                                 </div>
 
-                                
+                                <div class="col-md-2"></div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">No. INE</label>
+                                        <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">No. Pasaporte</label>
+                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte" placeholder="Pasaporte">
+                                    </div>
+                                </div>
+
+
                             </div>
                   <!--  lugar de contacto , clasificacion y otros-->
                         <div class="form-group row border">
@@ -425,15 +437,15 @@
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
                                             <option value="6">Cancelado</option>
-                                            <option v-if="rolId!=2" value="7">Coacreditado</option>                                 
+                                            <option v-if="rolId!=2" value="7">Coacreditado</option>
                                     </select>
                                 </div>
                                 </div>
-                                 
+
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
-                                        <v-select 
+                                        <v-select
                                             :on-search="selectFraccionamientoVueselect"
                                             label="nombre"
                                             :options="arrayFraccionamientos"
@@ -451,14 +463,14 @@
                                     <select class="form-control" v-model="precio_rango" >
                                             <option value="0">Seleccione</option>
                                             <option value="1">$600,000.00 - $800,000.00</option>
-                                            <option value="2">$800,000.00 - $1,000,000.00</option>   
-                                            <option value="3">$1,200,000.00 - $1,400,000.00</option> 
-                                            <option value="4">$1,400,000.00 - $1,600,000.00</option>     
-                                            <option value="5">$1,600,000.00 - $1,800,000.00</option> 
+                                            <option value="2">$800,000.00 - $1,000,000.00</option>
+                                            <option value="3">$1,200,000.00 - $1,400,000.00</option>
+                                            <option value="4">$1,400,000.00 - $1,600,000.00</option>
+                                            <option value="5">$1,600,000.00 - $1,800,000.00</option>
                                             <option value="6">$1,800,000.00 - $2,000,000.00</option>
-                                            <option value="7">$2,000,000.00 - $2,200,000.00</option> 
-                                            <option value="8">$2,200,000.00 - $2,400,000.00</option> 
-                                            <option value="9">$2,400,000.00 - $2,600,000.00</option> 
+                                            <option value="7">$2,000,000.00 - $2,200,000.00</option>
+                                            <option value="8">$2,200,000.00 - $2,400,000.00</option>
+                                            <option value="9">$2,400,000.00 - $2,600,000.00</option>
                                     </select>
                                 </div>
                                 </div>
@@ -468,7 +480,7 @@
                                   <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
                                     <select class="form-control" v-model="publicidad_id" @change="nombre_recomendado=''" >
                                             <option value="0">Seleccione</option>
-                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                                     </select>
                                 </div>
                                 </div>
@@ -483,13 +495,13 @@
 
                         </div>
                   <!--  apartado  de datos vive en casa , edo civil, conyuge-->
-                           <div class="form-group row border" >    
-                                        
+                           <div class="form-group row border" >
+
                                 <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Vive en casa <span style="color:red;" v-show="tipo_casa==0">(*)</span></label>
                                         <select class="form-control" v-model="tipo_casa" >
-                                            <option value="0">Seleccione</option>  
+                                            <option value="0">Seleccione</option>
                                             <option value="De familiares">De familiares</option>
                                             <option value="Prestada">Prestada</option>
                                             <option value="Propia">Propia</option>
@@ -502,14 +514,14 @@
                                   <div class="form-group">
                                   <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
                                     <select class="form-control" v-model="e_civil" >
-                                        <option value="0">Seleccione</option> 
-                                        <option value="1">Casado - separacion de bienes</option> 
-                                        <option value="2">Casado - sociedad conyugal</option> 
-                                        <option value="3">Divorciado</option> 
-                                        <option value="4">Soltero</option> 
+                                        <option value="0">Seleccione</option>
+                                        <option value="1">Casado - separacion de bienes</option>
+                                        <option value="2">Casado - sociedad conyugal</option>
+                                        <option value="3">Divorciado</option>
+                                        <option value="4">Soltero</option>
                                         <option value="5">Union libre</option>
-                                        <option value="6">Viudo</option> 
-                                        <option value="7">Otro</option>    
+                                        <option value="6">Viudo</option>
+                                        <option value="7">Otro</option>
                                     </select>
                                   </div>
                                 </div>
@@ -524,14 +536,14 @@
 
                                 <div class="col-md-1"  v-if="coacreditado==true">
                                     <div class="form-group">
-                                        <button @click="abrirModal('coacreditado','registrar')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
+                                        <button @click="abrirModal('coacreditado')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3" v-if="coacreditado==true">
                                     <div class="form-group">
                                         <label for="">Buscar coacreditado... </label>
-                                        <v-select 
+                                        <v-select
                                             :on-search="selectCoacreditadoVueselect"
                                             label="n_completo"
                                             :options="arrayCoacreditados"
@@ -570,7 +582,7 @@
                                         <input v-if="makeReminder" v-model="makeRemember" type="date" class="form-control">
                                     </div>
                                 </div>
-                                 
+
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                     <div v-show="errorProspecto" class="form-group row div-error">
@@ -581,7 +593,7 @@
                                     </div>
                                 </div>
 
-                                    
+
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -589,31 +601,31 @@
                                 </div>
                             </div>
 
-                                
-                                
+
+
                             </div>
 
-                 
+
 
                         </div>
                     </template>
 
      <!-- Div Card Body para actualizar -->
                     <template v-else-if="listado == 3">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row border">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                   <center> <h2>Prospecto</h2> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
                                     <input :disabled="edit == 1" type="text" class="form-control" v-model="nombre" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
-                                </div> 
+                                </div>
 
 
                                 <div class="col-md-4">
@@ -676,7 +688,7 @@
                                 </div>
                                 </div>
 
-                                
+
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
@@ -710,7 +722,7 @@
                                         <input :disabled="edit == 1" type="text" name="city" list="cityname" class="form-control" v-model="lugar_nacimiento">
                                         <datalist :disabled="edit == 1" id="cityname">
                                             <option value="">Seleccione</option>
-                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
                                         </datalist>
                                     </div>
                                 </div>
@@ -731,7 +743,7 @@
                                         <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc)" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
-                                       
+
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
                                     <label for="">Homoclave</label>
@@ -739,15 +751,30 @@
                                    </div>
                                 </div>
 
-                                 
+
                                 <div class="col-md-3">
                                      <div class="form-group">
-                                    <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                    <input :disabled="edit == 1" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
-                                </div>
+                                        <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
+                                        <input :disabled="edit == 1" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                    </div>
                                 </div>
 
-                                
+                                <div class="col-md-2">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">No. INE</label>
+                                        <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">No. Pasaporte</label>
+                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte" placeholder="Pasaporte">
+                                    </div>
+                                </div>
                             </div>
                   <!--  lugar de contacto , clasificacion y otros-->
                         <div class="form-group row border">
@@ -774,12 +801,12 @@
                                             <option value="3">Tipo B</option>
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                            <option value="7">Coacreditado</option> 
+                                            <option value="6">Cancelado</option>
+                                            <option value="7">Coacreditado</option>
                                     </select>
                                 </div>
                                 </div>
-                                 
+
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
@@ -801,14 +828,14 @@
                                     <select :disabled="edit == 1" class="form-control" v-model="precio_rango" >
                                             <option value="0">Seleccione</option>
                                             <option value="1">$600,000.00 - $800,000.00</option>
-                                            <option value="2">$800,000.00 - $1,000,000.00</option>   
-                                            <option value="3">$1,200,000.00 - $1,400,000.00</option> 
-                                            <option value="4">$1,400,000.00 - $1,600,000.00</option>     
-                                            <option value="5">$1,600,000.00 - $1,800,000.00</option> 
+                                            <option value="2">$800,000.00 - $1,000,000.00</option>
+                                            <option value="3">$1,200,000.00 - $1,400,000.00</option>
+                                            <option value="4">$1,400,000.00 - $1,600,000.00</option>
+                                            <option value="5">$1,600,000.00 - $1,800,000.00</option>
                                             <option value="6">$1,800,000.00 - $2,000,000.00</option>
-                                            <option value="7">$2,000,000.00 - $2,200,000.00</option> 
-                                            <option value="8">$2,200,000.00 - $2,400,000.00</option> 
-                                            <option value="9">$2,400,000.00 - $2,600,000.00</option> 
+                                            <option value="7">$2,000,000.00 - $2,200,000.00</option>
+                                            <option value="8">$2,200,000.00 - $2,400,000.00</option>
+                                            <option value="9">$2,400,000.00 - $2,600,000.00</option>
                                     </select>
                                 </div>
                                 </div>
@@ -818,7 +845,7 @@
                                         <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
                                         <select disabled class="form-control" v-model="publicidad_id" >
                                                 <option value="0">Seleccione</option>
-                                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -828,7 +855,7 @@
                                         <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
                                         <select :disabled="edit == 1" class="form-control" v-model="publicidad_id" >
                                                 <option value="0">Seleccione</option>
-                                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -844,13 +871,13 @@
                         </div>
 
                   <!--  apartado  de datos vive en casa , edo civil, conyuge-->
-                        <div class="form-group row border" >    
-                                        
+                        <div class="form-group row border" >
+
                                 <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Vive en casa <span style="color:red;" v-show="tipo_casa==0">(*)</span></label>
                                         <select :disabled="edit == 1" class="form-control" v-model="tipo_casa" >
-                                            <option value="0">Seleccione</option>  
+                                            <option value="0">Seleccione</option>
                                             <option value="De familiares">De familiares</option>
                                             <option value="Prestada">Prestada</option>
                                             <option value="Propia">Propia</option>
@@ -863,14 +890,14 @@
                                   <div class="form-group">
                                   <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
                                     <select :disabled="edit == 1" class="form-control" v-model="e_civil" >
-                                        <option value="0">Seleccione</option> 
-                                        <option value="1">Casado - separacion de bienes</option> 
-                                        <option value="2">Casado - sociedad conyugal</option> 
-                                        <option value="3">Divorciado</option> 
-                                        <option value="4">Soltero</option> 
+                                        <option value="0">Seleccione</option>
+                                        <option value="1">Casado - separacion de bienes</option>
+                                        <option value="2">Casado - sociedad conyugal</option>
+                                        <option value="3">Divorciado</option>
+                                        <option value="4">Soltero</option>
                                         <option value="5">Union libre</option>
-                                        <option value="6">Viudo</option> 
-                                        <option value="7">Otro</option>    
+                                        <option value="6">Viudo</option>
+                                        <option value="7">Otro</option>
                                     </select>
                                   </div>
                                 </div>
@@ -885,7 +912,7 @@
 
                                 <div class="col-md-1"  v-if="coacreditado==true">
                                     <div class="form-group">
-                                        <button :disabled="edit == 1" @click="abrirModal('coacreditado','registrar')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
+                                        <button :disabled="edit == 1" @click="abrirModal('coacreditado')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
                                     </div>
                                 </div>
 
@@ -932,7 +959,7 @@
                                         <input v-if="makeReminder" v-model="makeRemember" type="date" class="form-control">
                                     </div>
                                 </div>
-                                
+
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                     <div v-show="errorProspecto" class="form-group row div-error">
@@ -943,7 +970,7 @@
                                     </div>
                                 </div>
 
-                                    
+
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -951,379 +978,309 @@
                                 </div>
                             </div>
 
-                                
-                                
+
+
                             </div>
 
-                 
+
 
                         </div>
                     </template>
-                   
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-           
-             <!--Inicio del modal agregar/actualizar coacreditado-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+
+            <!--Inicio del modal agregar/actualizar coacreditado-->
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal == 1"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Nombre </label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" v-model="nombre_coa" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                         </div>
-                        <div class="modal-body">
-                            <form  action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                           
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre </label>
-                                     <div class="col-md-6">
-                                    <input type="text" class="form-control" v-model="nombre_coa" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
-                                    </div>
-                                </div> 
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
-                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" v-model="apellidos_coa" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
-                                </div>
-                                </div>
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono </label>
-                                     <div class="col-md-3">
-                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
-                                </div>
-                                </div>
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Celular </label>
-                                    
-                                        <select  v-model="clv_lada_coa"  class="form-control col-md-3" >
-                                            <option value="">Clave lada</option>
-                                            <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
-                                        </select>
-                                        <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-4" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
-                                    
-                                 </div>
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email personal</label>
-                                     <div class="col-md-4">
-                                    <input type="text" class="form-control"  v-model="email_coa" placeholder="email">
-                                </div>
-                                 </div>
-
-                             
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email institucional </label>
-                                         <div class="col-md-4">
-                                    <input type="text" class="form-control" v-model="email_institucional_coa" placeholder="email institucional">
-                                </div>
-                                </div>
-
-                   
-                               <div class="form-group row">                                 
-                                    <label class="col-md-3 form-control-label" for="text-input">Sexo </label>
-                                     <div class="col-md-2">
-                                    <select class="form-control" v-model="sexo_coa" >
-                                            <option value="">Seleccione</option>
-                                            <option value="F">Femenino</option>
-                                            <option value="M">Masculino</option>
-                                    </select>
-                                </div>
-                                </div>
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                        <div class="col-md-3">
-                                    <input type="date" class="form-control"  v-model="fecha_nac_coa" >
-                                </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label  class="col-md-3 form-control-label" for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="city2" list="cityname2" class="form-control" v-model="lugar_nacimiento_coa">
-                                        <datalist id="cityname2">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">CURP</label>
-                                       <div class="col-md-4">
-                                    <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp_coa" placeholder="CURP">
-                                      </div>
-                                 </div>
-
-                            
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-3">
-                                        <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span>
-                                        <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc_coa)" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave_coa" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">NSS </label>
-                                     <div class="col-md-4">
-                                    <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
-                                    </div>
-                                 </div>
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Vive en casa </label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo_casa_coa" >
-                                            <option value="0">Seleccione</option>  
-                                            <option value="De familiares">De familiares</option>
-                                            <option value="Prestada">Prestada</option>
-                                            <option value="Propia">Propia</option>
-                                            <option value="Rentada">Rentada</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                               <div class="form-group row">
-                                  <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="e_civil_coa" >
-                                            <option value="0">Seleccione</option>
-                                            <option value="1">Casado - separacion de bienes</option> 
-                                            <option value="2">Casado - sociedad conyugal</option> 
-                                            <option value="3">Divorciado</option> 
-                                            <option value="4">Soltero</option> 
-                                            <option value="5">Union libre</option>
-                                            <option value="6">Viudo</option> 
-                                            <option value="7">Otro</option>    
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                                 
-                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorCoacreditado" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjCoacreditado" :key="error" v-text="error">
-                                            </div>
-                                        </div>
-                                    </div>
-                               
- 
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCoacreditado()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
+                        <label class="col-md-2 form-control-label" for="text-input">Apellidos</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" v-model="apellidos_coa" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Celular </label>
+                        <select  v-model="clv_lada_coa"  class="form-control col-md-3" >
+                            <option value="">Clave lada</option>
+                            <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                        </select>
+                        <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-4" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Telefono </label>
+                        <div class="col-md-3">
+                            <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Email personal</label>
+                        <div class="col-md-5">
+                            <input type="email" class="form-control"  v-model="email_coa" placeholder="email">
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Email Institucional</label>
+                        <div class="col-md-5">
+                            <input type="email" class="form-control" v-model="email_institucional_coa" placeholder="email institucional">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Sexo </label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="sexo_coa" >
+                                <option value="">Seleccione</option>
+                                <option value="F">Femenino</option>
+                                <option value="M">Masculino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                        <div class="col-md-3">
+                            <input type="date" class="form-control"  v-model="fecha_nac_coa" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label  class="col-md-3 form-control-label" for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
+                        <div class="col-md-6">
+                            <input type="text" name="city2" list="cityname2" class="form-control" v-model="lugar_nacimiento_coa">
+                            <datalist id="cityname2">
+                                <option value="">Seleccione</option>
+                                <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
+                            </datalist>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">CURP</label>
+                        <div class="col-md-4">
+                            <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp_coa" placeholder="CURP">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">NSS </label>
+                        <div class="col-md-3">
+                            <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">INE</label>
+                        <div class="col-md-4">
+                            <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  v-model="num_ine_coa" placeholder="No. INE">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Pasaporte </label>
+                        <div class="col-md-3">
+                            <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte_coa" placeholder="No. Passaporte">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                        <div class="col-md-3">
+                            <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span>
+                            <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc_coa)" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave_coa" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Vive en casa </label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="tipo_casa_coa" >
+                                <option value="0">Seleccione</option>
+                                <option value="De familiares">De familiares</option>
+                                <option value="Prestada">Prestada</option>
+                                <option value="Propia">Propia</option>
+                                <option value="Rentada">Rentada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="e_civil_coa" >
+                                <option value="0">Seleccione</option>
+                                <option value="1">Casado - separacion de bienes</option>
+                                <option value="2">Casado - sociedad conyugal</option>
+                                <option value="3">Divorciado</option>
+                                <option value="4">Soltero</option>
+                                <option value="5">Union libre</option>
+                                <option value="6">Viudo</option>
+                                <option value="7">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                    <div v-show="errorCoacreditado" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjCoacreditado" :key="error" v-text="error">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCoacreditado()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
+                </template>
+
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal asignar prospecto-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="'Reasignar cliente a: ' + tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                    <!--Criterios para el listado de busqueda -->
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="asesor_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">CLasificación</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="clasificacion" >
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observación</label>
-                                    <div class="col-md-9">
-                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
-                                    </div>
-                                </div>
-
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary" @click="asignarProspecto()">Reasignar </button>
+            <ModalComponent v-if="modal == 2"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="asesor_id" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">CLasificación</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="clasificacion" >
+                                <option value="1">No viable</option>
+                                <option value="2">Tipo A</option>
+                                <option value="3">Tipo B</option>
+                                <option value="4">Tipo C</option>
+                                <option value="5">Ventas</option>
+                                <option value="6">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Observación</label>
+                        <div class="col-md-9">
+                            <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" class="btn btn-primary" @click="asignarProspecto()">Reasignar </button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
-               <!--Inicio del modal observaciones-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal3"></h4>
-                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <!--Inicio del modal observaciones-->
+            <ModalComponent v-if="modal==3"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row" v-if="rolId != 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                        <div class="col-md-6">
+                                <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row" v-if="rolId != 2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                                    <div class="col-md-6">
-                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
-                                    </div>
-                                </div>
-
-                                
-                                <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Observacion</th>
-                                            <th>Fecha</th>
-                                            <th>Cita</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                            
-                                            <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.comentario" ></td>
-                                            <td v-text="observacion.created_at"></td>
-                                            <td v-text="observacion.prox_cita"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                        <div class="col-md-2">
+                            <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            
+
+                    <TableComponent v-if="tipoAccion==4"
+                        :cabecera="['Usuario','Observacion','Fecha','Cita']"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.comentario" ></td>
+                                <td v-text="observacion.created_at"></td>
+                                <td v-text="observacion.prox_cita"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
+
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+            <ModalComponent v-if="modal==4"
+                :titulo="'Manual'"
+                @closeModal="cerrarModal"
+            >
+                <template v-slot:body>
+                     <p>
+                        El modulo de mis prospectos permitirá llevar un registro ordenado de aquellos clientes que cada asesor registre o este atendiendo.
+                    </p>
+                    <p>
+                        Para agregar un nuevo prospecto o cliente solo debe dar clic sobre el botón de “Agregar” que se encuentra
+                        en la parte superior izquierda de la pantalla, posterior aparecerá una nueva ventana donde deberá llenar
+                        los campos según se requiera.
+                    </p>
+                    <p>
+                        Es importante saber que los registros de los prospectos o clientes debe ser único, además los clientes
+                        serán asignados al asesor que los registre y podrán ser reasignados solo por el coordinador de
+                        ventas del asesor.
+                    </p>
+                    <p>
+                        Los prospectos serán identificados mediante su RFC por lo que es importante que al realizar la
+                        captura se verifique que el RFC sea el correcto, en caso de que el prospecto fuese registrado
+                        con anterioridad el sistema arrojara un mensaje indicando el nombre del prospecto que actualmente
+                        se encuentre registrado con ese RFC.
+                    </p>
+                    <p>
+                        En la columna de “Nombre” podrá observar un color de fondo en el nombre del prospecto que indicara
+                        el estatus de la atención que el asesor esta prestando al prospecto, es decir, si el asesor no
+                        agrega nuevas observaciones relacionadas al seguimiento de la atención del prospecto el color
+                        podrá cambiar de entre los siguientes colores para indicar un estado. <br>
+                        Rojo = más de 15 días sin comentarios de seguimiento.<br>
+                        Naranja = más de 7 días sin comentarios de seguimiento.<br>
+                        Sin color = menos de 7 días sin comentarios de seguimiento.
+                    </p>
+                    <p>
+                        <strong>Cónyuge o coacreditado</strong>, en caso de que el prospecto cuente con un conyugue o coacreditado se debe
+                        registrar el conyugue o coacreditado (con la misma importancia que el prospecto ya que es un requisito
+                        para concretar la venta), dentro del campo “Buscar coacreditado...” debe escribir el nombre del coacreditado
+                        para asegurarse de que no se encuentre registrado en caso contrario puede realizar el registro de la misma
+                        manera como se registra un prospecto, solo debe seleccionar en el apartado de “Clasificación” la opción de
+                        “coacreditado”. También puede dar clic sobre el icono
+                        <button type="button" class="btn btn-success btn-sm">
+                            <i class="icon-plus"></i>
                         </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            El modulo de mis prospectos permitirá llevar un registro ordenado de aquellos clientes que cada asesor registre o este atendiendo.
-                        </p>
-                        <p>
-                            Para agregar un nuevo prospecto o cliente solo debe dar clic sobre el botón de “Agregar” que se encuentra 
-                            en la parte superior izquierda de la pantalla, posterior aparecerá una nueva ventana donde deberá llenar 
-                            los campos según se requiera.
-                        </p>
-                        <p>
-                            Es importante saber que los registros de los prospectos o clientes debe ser único, además los clientes 
-                            serán asignados al asesor que los registre y podrán ser reasignados solo por el coordinador de 
-                            ventas del asesor.
-                        </p>
-                        <p>
-                            Los prospectos serán identificados mediante su RFC por lo que es importante que al realizar la 
-                            captura se verifique que el RFC sea el correcto, en caso de que el prospecto fuese registrado 
-                            con anterioridad el sistema arrojara un mensaje indicando el nombre del prospecto que actualmente 
-                            se encuentre registrado con ese RFC.
-                        </p>
-                        <p>
-                            En la columna de “Nombre” podrá observar un color de fondo en el nombre del prospecto que indicara 
-                            el estatus de la atención que el asesor esta prestando al prospecto, es decir, si el asesor no 
-                            agrega nuevas observaciones relacionadas al seguimiento de la atención del prospecto el color 
-                            podrá cambiar de entre los siguientes colores para indicar un estado. <br>
-                            Rojo = más de 15 días sin comentarios de seguimiento.<br>
-                            Naranja = más de 7 días sin comentarios de seguimiento.<br>
-                            Sin color = menos de 7 días sin comentarios de seguimiento.
-                        </p>
-                        <p>
-                            <strong>Cónyuge o coacreditado</strong>, en caso de que el prospecto cuente con un conyugue o coacreditado se debe 
-                            registrar el conyugue o coacreditado (con la misma importancia que el prospecto ya que es un requisito 
-                            para concretar la venta), dentro del campo “Buscar coacreditado...” debe escribir el nombre del coacreditado 
-                            para asegurarse de que no se encuentre registrado en caso contrario puede realizar el registro de la misma 
-                            manera como se registra un prospecto, solo debe seleccionar en el apartado de “Clasificación” la opción de 
-                            “coacreditado”. También puede dar clic sobre el icono 
-                            <button type="button" class="btn btn-success btn-sm">
-                                <i class="icon-plus"></i>
-                            </button>
-                            y llenar los campos de la ventana que aparecerán.
-                        </p>
-                        <p v-if="rolId != 2">
-                            <strong>Reasignar un prospecto</strong>, para reasignar un prospecto solo debe dar clic sobre el icono  
-                            <button type="button" class="btn btn-primary btn-sm">
-                                <i class="fa fa-exchange"></i>
-                            </button>
-                            , en seguida aparecerá una ventana donde podrá seleccionar el nombre del asesor al que desea reasignar el prospecto 
-                            asignar una clasificación al prospecto y agregar un comentario, para finalizar solo debe dar clic 
-                            sobre el botón “Reasignar” para finalizar (podrá reasignar los asesores en el momento que usted desee).
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
+                        y llenar los campos de la ventana que aparecerán.
+                    </p>
+                    <p v-if="rolId != 2">
+                        <strong>Reasignar un prospecto</strong>, para reasignar un prospecto solo debe dar clic sobre el icono
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fa fa-exchange"></i>
+                        </button>
+                        , en seguida aparecerá una ventana donde podrá seleccionar el nombre del asesor al que desea reasignar el prospecto
+                        asignar una clasificación al prospecto y agregar un comentario, para finalizar solo debe dar clic
+                        sobre el botón “Reasignar” para finalizar (podrá reasignar los asesores en el momento que usted desee).
+                    </p>
+                </template>
+            </ModalComponent>
         </main>
 </template>
 
@@ -1332,6 +1289,8 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import ModalComponent from '../Componentes/ModalComponent.vue';
+    import TableComponent from '../Componentes/TableComponent.vue';
     import vSelect from 'vue-select';
     export default {
         props:{
@@ -1355,6 +1314,8 @@
                 fecha_nac: '',
                 curp:'',
                 rfc:'',
+                num_ine:'',
+                num_pasaporte:'',
                 homoclave: '',
                 e_civil: 0,
                 tipo_casa:0,
@@ -1390,6 +1351,8 @@
                 curp_coa:'',
                 rfc_coa:'',
                 homoclave_coa: '',
+                num_ine_coa:'',
+                num_pasaporte_coa:'',
                 e_civil_coa: 0,
                 lugar_nacimiento_coa:'',
                 tipo_casa_coa:0,
@@ -1403,19 +1366,15 @@
                 asesor_id:0,
 
                 modal : 0,
-                modal2 : 0,
-                modal3: 0,
                 listado:1,
                 tituloModal : '',
-                tituloModal2 : '',
-                tituloModal3 : '',
                 tipoAccion: 0,
                 errorProspecto : 0,
                 errorMostrarMsjProspecto : [],
                 errorCoacreditado : 0,
                 errorMostrarMsjCoacreditado : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -1423,7 +1382,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'personal.nombre', 
+                criterio : 'personal.nombre',
                 buscar : '',
                 buscar2: '',
                 buscar3:'2',
@@ -1450,7 +1409,9 @@
             }
         },
         components:{
-            vSelect
+            vSelect,
+            ModalComponent,
+            TableComponent
         },
         computed:{
             isActived: function(){
@@ -1481,12 +1442,12 @@
                 return pagesArray;
             },
         },
-       
+
         methods : {
             /**Metodo para mostrar los registros */
             listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + 
+                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 +
                     '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&seguimiento='+me.b_seguimiento +
                     '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio + '&b_aux=' + me.b_aux;
                 axios.get(url).then(function (response) {
@@ -1514,7 +1475,7 @@
                             animation: false,
                             customClass: 'animated tada'
                         })
-                    } 
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1532,7 +1493,7 @@
 
                 var special = ['!','"','#','$','%','&','(',')','*','+',',','-','.','/','^',
                                 '[',']','{','}','~',"'"];
-                var prepo = ["DA", "DAS", "DE", "DEL", "DER", "DI", "DIE", "DD", "EL", "LA", 
+                var prepo = ["DA", "DAS", "DE", "DEL", "DER", "DI", "DIE", "DD", "EL", "LA",
                             "LOS", "LAS", "LE", "LES", "MAC", "MC", "VAN", "VON", "Y"];
                 var i;
 
@@ -1554,7 +1515,7 @@
                     }
                     paterno = paterno1.split("");
                 }else{paterno = paterno2[0].split("");}
-                
+
                 for (i = 1; i < 100; i++) {
                     if (paterno[i] == "A") {
                         paternoL = paterno[i];
@@ -1587,7 +1548,7 @@
                 var materno;
                 materno = this.apellidos2.toUpperCase();
                 var materno2 = materno.split(" ");
-                
+
                 if(materno2.length > 1){
                     var materno1 = "";
                     if(prepo.indexOf(materno2[0]) >= 0){
@@ -1601,19 +1562,19 @@
                     }
                     materno = materno1.split("");
                 }else{materno = materno2[0].split("");}
-                
+
                 if(materno == ""){materno[0]="X"; }
                 if(materno[0] == "\u00d1"){materno[0]="X"; }//para la Ñ
                 if(special.indexOf(materno[0]) > 0){ materno[0] = "X";}
-                
+
                 //{{{{{{{{{{{{{{{{{{nombre}}}}}}}}}}}}}}}}}}
-                var names = ["MARIA","MA.","MA","JOSE","J","J.","DA","DAS", "DE", "DEL", "DER", 
-                            "DI", "DIE", "DD", "EL", "LA", "LOS", "LAS", "LE", "LES", "MAC", 
+                var names = ["MARIA","MA.","MA","JOSE","J","J.","DA","DAS", "DE", "DEL", "DER",
+                            "DI", "DIE", "DD", "EL", "LA", "LOS", "LAS", "LE", "LES", "MAC",
                             "MC", "VAN", "VON", "Y"];
                 var name;
                 name = this.nombre.toUpperCase();
                 var name2 = name.split(' ');
-                        
+
                 if(name2.length > 1){
                     var name1 = "";
                     if(names.indexOf(name2[0]) >= 0){
@@ -1627,10 +1588,10 @@
                     }
                     name = name1.split("");
                 }else{name = name2[0].split("");}
-                
+
                 if(name[0] == "\u00d1"){name[0]="X"; }//para la Ñ
                 if(special.indexOf(name[0]) > 0){ name[0] = "X";}
-                
+
                 //{{{{{{{{{{{{{{{{{{part 1}}}}}}}}}}}}}}}}}}
                 var ants = ["BACA","BAKA","BUEI","BUEY","CACA","CACO","CAGA","CAGO","CAKA",
                             "CAKO","COGE","COGI","COJA","COJE","COJI","COJO","COLA","CULO",
@@ -1643,7 +1604,7 @@
                             "TETA","VACA","VAGA","VAGO","VAKA","VUEI","VUEY","WUEI","WUEY"];
 
                 var p1 = paterno[0] + paternoL + materno[0] + name[0];
-                
+
                 if(ants.indexOf(p1) >= 0){
                     var x = p1.split("");
                     x[1] = "X";
@@ -1674,7 +1635,7 @@
                 var ef = ["AS","BC","BS","CC","CL","CM","CS","CH","DF","DG","GT","GR","HG",
                             "JC","MC","MN","MS","NT","NL","OC","PL","QT","QR","SP","SL","SR",
                             "TC","TS","TL","VZ","YN","ZS","NE"];
-                            
+
                 var stat = this.lugar_nacimiento;
                 var p4 ="";
                 p4= ef[estado.indexOf(stat)];
@@ -1710,7 +1671,7 @@
                         }
                     }
                 }
-                
+
                 if(abc.indexOf(c14)>=0){}else{
                     c14 = "X";
                 }
@@ -1741,7 +1702,7 @@
                         }
                     }
                 }
-                
+
                 if(abc.indexOf(c15)>=0){}else{
                     c15 = "X";
                 }
@@ -1785,12 +1746,12 @@
                         }
                     }
                 }
-                
+
                 if(abc.indexOf(c16)>=0){}else{
                     c16 = "X";
                 }
                 if(c16 == "\u00d1"){c16="X"; }//para la Ñ
-                
+
                 this.curp = p1 + p2 + p3 + p4 + c14 + c15 + c16;
                 this.rfc = p1 + p2;
 
@@ -1817,12 +1778,12 @@
             selectEstados(){
                 let me = this;
                 me.arrayEstados=[];
-                
+
                 var url = '/select_estados';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEstados = respuesta.estados;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1852,8 +1813,8 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            
-            },  
+
+            },
             selectMedioPublicidad(){
                 let me = this;
                 me.arrayMediosPublicidad=[];
@@ -1885,8 +1846,8 @@
                 let me = this;
                 me.loading = true;
                 me.empresa = val1.nombre;
-               
-            }, 
+
+            },
             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos2=[];
@@ -1957,7 +1918,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             getDatosCoacreditado(val1){
                 let me = this;
@@ -1992,7 +1953,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             cambiarPagina(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
@@ -2010,7 +1971,7 @@
                 }
 
                 this.proceso=true;
-                
+
                 let me = this;
                 //Con axios se llama el metodo store del controller
                 axios.post('/clientes/registrar',{
@@ -2039,6 +2000,8 @@
                     'observacion':this.observacion,
                     'lugar_contacto':this.lugar_contacto,
                     'lugar_nacimiento': this.lugar_nacimiento,
+                    'num_ine':this.num_ine,
+                    'num_pasaporte':this.num_pasaporte,
 
                     'nombre_coa':this.nombre_coa,
                     'parentesco_coa':this.parentesco_coa,
@@ -2086,7 +2049,7 @@
                     'observacion':this.observacion,
                 }).then(function (response){
                     me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
-                    me.cerrarModal3();
+                    me.cerrarModal();
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -2127,6 +2090,8 @@
                     'homoclave':this.homoclave_coa,
                     'edo_civil':this.e_civil_coa,
                     'tipo_casa':this.tipo_casa_coa,
+                    'num_ine':this.num_ine_coa,
+                    'num_pasaporte':this.num_pasaporte_coa,
                     'coacreditado':0,
                     'proyecto_interes_id':this.proyecto_interes_id,
                     'lugar_contacto':this.lugar_contacto,
@@ -2186,6 +2151,8 @@
                     'lugar_contacto':this.lugar_contacto,
                     'lugar_nacimiento': this.lugar_nacimiento,
                     'nombre_recomendado':this.nombre_recomendado,
+                    'num_ine':this.num_ine,
+                    'num_pasaporte':this.num_pasaporte,
 
                     'nombre_coa':this.nombre_coa,
                     'parentesco_coa':this.parentesco_coa,
@@ -2210,7 +2177,7 @@
                     me.makeRemember = "";
                     me.limpiarDatos();
                     me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
-                    
+
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -2254,15 +2221,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -2299,15 +2266,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
 
             reasignToAsesor(){
@@ -2341,45 +2308,45 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
 
             },
-            
+
             validarProspecto(){
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
 
-                if(this.nombre=='' || this.apellidos=='') 
+                if(this.nombre=='' || this.apellidos=='')
                     this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
-                if(this.sexo=='') 
+                if(this.sexo=='')
                     this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
-                if(this.celular=='') 
+                if(this.celular=='')
                     this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
-                if(this.email=='') 
+                if(this.email=='')
                     this.errorMostrarMsjProspecto.push("Ingresar email personal.");
-                if(this.empresa=='') 
+                if(this.empresa=='')
                     this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
-                if(this.fecha_nac=='') 
+                if(this.fecha_nac=='')
                     this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
-                if(this.rfc=='' || this.rfc.length < 10) 
+                if(this.rfc=='' || this.rfc.length < 10)
                     this.errorMostrarMsjProspecto.push("RFC no valido");
-                if(this.tipo_casa==0) 
+                if(this.tipo_casa==0)
                     this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
-                if(this.e_civil==0) 
+                if(this.e_civil==0)
                     this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
-                if(this.proyecto_interes_id==0) 
+                if(this.proyecto_interes_id==0)
                     this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
-                if(this.publicidad_id==0) 
+                if(this.publicidad_id==0)
                     this.errorMostrarMsjProspecto.push("Seleccionar medio de publicidad.");
-                if(this.observacion=='') 
+                if(this.observacion=='')
                     this.errorMostrarMsjProspecto.push("Escribir una observación.");
 
                 if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
@@ -2391,21 +2358,21 @@
                 this.errorCoacreditado=0;
                 this.errorMostrarMsjCoacreditado=[];
 
-                if(this.nombre_coa=='' || this.apellidos_coa=='') 
+                if(this.nombre_coa=='' || this.apellidos_coa=='')
                     this.errorMostrarMsjCoacreditado.push("El nombre del prospecto no puede ir vacio.");
-                if(this.sexo_coa=='') 
+                if(this.sexo_coa=='')
                     this.errorMostrarMsjCoacreditado.push("Seleccionar el sexo del prospecto.");
-                if(this.celular_coa=='') 
+                if(this.celular_coa=='')
                     this.errorMostrarMsjCoacreditado.push("Ingresar numero de celular.");
-                if(this.email_coa=='') 
+                if(this.email_coa=='')
                     this.errorMostrarMsjCoacreditado.push("Ingresar email personal.");
-                if(this.fecha_nac_coa=='') 
+                if(this.fecha_nac_coa=='')
                     this.errorMostrarMsjCoacreditado.push("Ingresar fecha de nacimiento.");
-                if(this.rfc_coa=='') 
+                if(this.rfc_coa=='')
                     this.errorMostrarMsjCoacreditado.push("Ingresar RFC.");
-                if(this.tipo_casa_coa==0) 
+                if(this.tipo_casa_coa==0)
                     this.errorMostrarMsjCoacreditado.push("Seleccionar tipo de casa.");
-                if(this.e_civil_coa==0) 
+                if(this.e_civil_coa==0)
                     this.errorMostrarMsjCoacreditado.push("Seleccionar estado civil.");
 
                 if(this.errorMostrarMsjCoacreditado.length)//Si el mensaje tiene almacenado algo en el array
@@ -2448,6 +2415,8 @@
                 this.observacion='';
                 this.lugar_contacto= 0;
                 this.lugar_nacimiento='';
+                this.num_ine = '';
+                this.num_pasaporte = '';
 
                 this.nombre_coa='';
                 this.parentesco_coa='';
@@ -2486,7 +2455,7 @@
                 me.encuentraRFC=0;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.encuentraRFC = respuesta.rfc1; 
+                    me.encuentraRFC = respuesta.rfc1;
 
                     if(me.encuentraRFC==1) {
                         var vendedorrfc = [];
@@ -2498,7 +2467,7 @@
                         animation: false,
                         customClass: 'animated tada'
                         })
-                    } 
+                    }
                     })
                 .catch(function (error) {
                     console.log(error);
@@ -2538,68 +2507,61 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
 
             actualizarProspectoBTN(data){
-              
+
                 let me= this;
                 this.listado=3;
-
-                    me.arrayDatosProspecto = data;
                     me.edit = 0;
-
-                    me.nombre= me.arrayDatosProspecto['nombre'];
-                    me.apellidos= me.arrayDatosProspecto['apellidos'];
-                    me.sexo= me.arrayDatosProspecto['sexo'];
-                    me.telefono= me.arrayDatosProspecto['telefono'];
-                    me.celular= me.arrayDatosProspecto['celular'];
-                    me.email_inst= me.arrayDatosProspecto['email_institucional'];
-                    me.email = me.arrayDatosProspecto['email'];
-                    me.empresa=me.arrayDatosProspecto['empresa'];
-                    me.precio_rango=me.arrayDatosProspecto['precio_rango'];
-                    me.ingreso=me.arrayDatosProspecto['ingreso'];
-                    me.fecha_nac=me.arrayDatosProspecto['f_nacimiento'];
-                    me.lugar_nacimiento =me.arrayDatosProspecto['lugar_nacimiento'];
-                    me.curp=me.arrayDatosProspecto['curp'];
-                    me.rfc=me.arrayDatosProspecto['rfc'];
-                    me.homoclave=me.arrayDatosProspecto['homoclave'];
-                    me.clv_lada = me.arrayDatosProspecto['clv_lada'];
-                    me.nss=me.arrayDatosProspecto['nss'];
-                    me.lugar_contacto=me.arrayDatosProspecto['lugar_contacto'];
-                    me.clasificacion=me.arrayDatosProspecto['clasificacion'];
-                    me.proyecto_interes_id=me.arrayDatosProspecto['proyecto_interes_id'];
-                    me.publicidad_id=me.arrayDatosProspecto['publicidad_id'];
-                    me.tipo_casa=me.arrayDatosProspecto['tipo_casa'];
-                    me.e_civil=me.arrayDatosProspecto['edo_civil'];
-                    me.parentesco_coa=me.arrayDatosProspecto['parentesco_coa'];
-                    me.coacreditado=me.arrayDatosProspecto['coacreditado'];
-                    me.conyugeNom = me.arrayDatosProspecto['n_completo_coa'];
-                    me.nombre_coa = me.arrayDatosProspecto['nombre_coa'];
-                    me.nombre_recomendado = me.arrayDatosProspecto['nombre_recomendado'];
-                    me.apellidos_coa = me.arrayDatosProspecto['apellidos_coa'];
-                    me.lugar_nacimiento_coa =me.arrayDatosProspecto['lugar_nacimiento_coa'];
-                    me.proyecto = me.arrayDatosProspecto['proyecto'];
-                    me.reasignar = me.arrayDatosProspecto['reasignar'];
+                    me.nombre= data['nombre'];
+                    me.apellidos= data['apellidos'];
+                    me.sexo= data['sexo'];
+                    me.telefono= data['telefono'];
+                    me.celular= data['celular'];
+                    me.email_inst= data['email_institucional'];
+                    me.email = data['email'];
+                    me.empresa=data['empresa'];
+                    me.precio_rango=data['precio_rango'];
+                    me.ingreso=data['ingreso'];
+                    me.fecha_nac=data['f_nacimiento'];
+                    me.lugar_nacimiento =data['lugar_nacimiento'];
+                    me.curp=data['curp'];
+                    me.rfc=data['rfc'];
+                    me.homoclave=data['homoclave'];
+                    me.clv_lada = data['clv_lada'];
+                    me.nss=data['nss'];
+                    me.lugar_contacto=data['lugar_contacto'];
+                    me.clasificacion=data['clasificacion'];
+                    me.proyecto_interes_id=data['proyecto_interes_id'];
+                    me.publicidad_id=data['publicidad_id'];
+                    me.tipo_casa=data['tipo_casa'];
+                    me.e_civil=data['edo_civil'];
+                    me.parentesco_coa=data['parentesco_coa'];
+                    me.coacreditado=data['coacreditado'];
+                    me.conyugeNom = data['n_completo_coa'];
+                    me.nombre_coa = data['nombre_coa'];
+                    me.nombre_recomendado = data['nombre_recomendado'];
+                    me.apellidos_coa = data['apellidos_coa'];
+                    me.lugar_nacimiento_coa =data['lugar_nacimiento_coa'];
+                    me.proyecto = data['proyecto'];
+                    me.reasignar = data['reasignar'];
+                    me.num_ine = data['num_ine'];
+                    me.num_pasaporte = data['num_pasaporte'];
 
                     if(data['vendedor_aux'] == me.usuario)
                         me.edit = 1;
-                    
 
-                    
-                    
                     me.id=data.id;
-               
-               
-
             },
 
             cerrarModal(){
@@ -2622,81 +2584,54 @@
                 this.errorCoacreditado=0;
                 this.errorMostrarMsjCoacreditado=[];
                 this.lugar_nacimiento_coa='';
-                this.modal2 = 0;
-                this.tituloModal2 = '';
             },
 
-             cerrarModal3(){
-                this.modal3 = 0;
-                this.tituloModal3 = '';
-              
-            },
-            
             abrirModalCambio(data=[]){
                 this.selectAsesores();
-                this.tituloModal2 = data['nombre'] + ' ' + data['apellidos'];
-                this.modal2=1;
+                this.tituloModal = data['nombre'] + ' ' + data['apellidos'];
+                this.modal=2;
                 this.id = data['id'];
                 this.asesor_id = data['vendedor_id'];
                 this.clasificacion = data['clasificacion'];
             },
-  
-             abrirModal3(prospectos,accion,nombre, apellidos){
-             switch(prospectos){
-                    case "prospecto":
-                    {
-                        switch(accion){
-                         
-                             case 'ver_todo':
-                            {
-                                this.modal3 =1;
-                                this.tituloModal3='Observaciones de: '+nombre+' '+apellidos;
-                                this.tipoAccion= 4;
-                                break;  
-                            }
-                            
-                        }
-                    }
-                 
-             }
-                
-         },
 
-         abrirModal(modelo, accion,data =[]){
-                switch(modelo){
-                    case "coacreditado":
+            abrirModal3(nombre, apellidos){
+                this.modal =3;
+                this.tituloModal='Observaciones de: '+nombre+' '+apellidos;
+                this.tipoAccion= 4;
+            },
+
+            abrirModal(accion, data =[]){
+                switch(accion){
+                    case 'coacreditado':
                     {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Conyuge o coacreditado';
-                                this.nombre_coa='';
-                                this.parentesco_coa='';
-                                this.apellidos_coa='';
-                                this.telefono_coa = '';
-                                this.celular_coa = '';
-                                this.email_coa='';
-                                this.email_institucional_coa='';
-                                this.nss_coa='';
-                                this.sexo_coa='';
-                                this.fecha_nac_coa= '';
-                                this.curp_coa='';
-                                this.rfc_coa='';
-                                this.homoclave_coa= '';
-                                this.e_civil_coa= 0;
-                                this.tipo_casa_coa=0;
-                                this.tipoAccion = 1;
-                                this.lugar_nacimiento_coa='';
-                                break;
-                            }
-                            
-                        }
+                        this.modal = 1;
+                        this.tituloModal = 'Registrar Conyuge o coacreditado';
+                        this.nombre_coa='';
+                        this.parentesco_coa='';
+                        this.apellidos_coa='';
+                        this.telefono_coa = '';
+                        this.celular_coa = '';
+                        this.num_ine_coa = '';
+                        this.num_pasaporte_coa = '';
+                        this.email_coa='';
+                        this.email_institucional_coa='';
+                        this.nss_coa='';
+                        this.sexo_coa='';
+                        this.fecha_nac_coa= '';
+                        this.curp_coa='';
+                        this.rfc_coa='';
+                        this.homoclave_coa= '';
+                        this.e_civil_coa= 0;
+                        this.tipo_casa_coa=0;
+                        this.tipoAccion = 1;
+                        this.lugar_nacimiento_coa='';
+                        break;
                     }
                 }
             }
 
-           
+
         },
         mounted() {
             this.listarProspectos(1,this.buscar,this.buscar2,this.buscar3,this.b_clasificacion,this.criterio);
@@ -2715,7 +2650,7 @@
     .modal-content{
         width: 100% !important;
         position: absolute !important;
-       
+
     }
     .badge2 {
     display: inline-block;
@@ -2766,6 +2701,6 @@
         margin-top: 2rem;
         }
     }
-   
+
 
 </style>

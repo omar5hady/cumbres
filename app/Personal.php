@@ -10,7 +10,7 @@ class Personal extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
         'departamento_id','apellidos','nombre','f_nacimiento','rfc','homoclave','direccion','colonia','cp'
-        ,'telefono','ext','celular','email','activo','clv_lada'
+        ,'telefono','ext','celular','email','activo','clv_lada','num_ine','num_pasaporte'
         ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function departamento(){

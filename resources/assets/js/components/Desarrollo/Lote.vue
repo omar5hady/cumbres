@@ -35,7 +35,7 @@
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="lotes.calle">Calle</option>
                                     </select>
-                                    
+
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapas(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
@@ -43,7 +43,7 @@
 
                                     <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
-                                                                        
+
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
 
                                 </div>
@@ -106,7 +106,7 @@
                                 </tr>
                             </template>
                             <template v-slot:tbody>
-                                <tr v-for="lote in arrayLote" :key="lote.id">   
+                                <tr v-for="lote in arrayLote" :key="lote.id">
                                     <td class="td2">
                                         <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="allLic" >
                                     </td>
@@ -132,12 +132,12 @@
                                     <td class="td2">
                                         <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
                                         <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td> 
+                                    </td>
                                     <td class="td2" v-text="lote.construccion"></td>
                                     <td class="td2" v-text="lote.emp_terreno"></td>
                                     <td class="td2" v-text="lote.emp_constructora"></td>
                                     <td class="td2" style="width:8%" v-text="lote.etapa_servicios"></td>
-                                </tr> 
+                                </tr>
                             </template>
                         </TableComponent>
                         <nav>
@@ -235,6 +235,16 @@
                             <input type="number"  v-model="indivisos" class="form-control" placeholder="Indivisos">
                         </div>
                     </div>
+
+                    <hr>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Colindancias</label>
+                        <div class="col-md-9" >
+                            <textarea class="form-control" v-model="colindancias" id="" cols="45" rows="5"></textarea>
+                        </div>
+                    </div>
+
 
                     <!-- Div para mostrar los errores que mande validerModelo -->
                     <div v-show="errorLote" class="form-group row div-error">
@@ -364,14 +374,15 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 empresa_id: 0,
                 calle: '',
                 numero: '',
+                colindancias:'',
                 interior: '',
                 terreno : 0,
                 construccion : 0,
                 casa_muestra: 0,
                 lote_comercial: 0,
                 comentarios: '',
-               
-                
+
+
                 file: '',
                 modelostc :'',
                 arrayLote : [],
@@ -381,7 +392,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -389,7 +400,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'modelos.nombre', 
+                criterio : 'modelos.nombre',
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
@@ -442,19 +453,19 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 return pagesArray;
             },
 
-            arrayProyectos(){ 
+            arrayProyectos(){
                 return _.uniqBy(this.arrayLote, 'proyecto');
             }
 
         },
 
-        
+
         methods : {
 
             selectAll: function() {
                 this.allLic = [];
                 if (!this.allSelected) {
-                    for (var lote in this.arrayLote) 
+                    for (var lote in this.arrayLote)
                         this.allLic.push(this.arrayLote[lote].id.toString());
                 }
             },
@@ -470,16 +481,16 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     return;
 
             },
-           
+
             formSubmit(e) {
 
                 if(this.proceso==true || this.file=='')
                     return;
-                
+
                 this.proceso=true;
 
                 e.preventDefault();
-               
+
                 let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento_id', this.fraccionamiento_id);
@@ -508,7 +519,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
-                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + 
+                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 +
                         '&criterio=' + criterio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2
                         + '&b_etapa=' + me.b_etapa;
                 axios.get(url).then(function (response) {
@@ -587,7 +598,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             selectModelo(buscar){
                 let me = this;
-              
+
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -602,7 +613,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             selectEtapas(buscar){
                 let me = this;
                 me.b_etapa="";
-                
+
                 me.arrayAllEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -616,7 +627,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             selectConsYTerreno(buscar){
                 let me = this;
-              
+
                 me.arrayModelosTC=[];
                 var url = '/select_construcc_terreno?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -633,7 +644,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            
+
             /**Metodo para registrar  */
             registrarLote(){
                 if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -642,7 +653,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/lote/registrar',{                 
+                axios.post('/lote/registrar',{
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'etapa_id': this.etapa_id,
                     'manzana': this.manzana,
@@ -659,7 +670,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'clv_catastral': this.clv_catastral,
                     'etapa_servicios':this.etapa_servicios,
                     'comentarios': this.comentarios,
-                    'indivisos': this.indivisos
+                    'indivisos': this.indivisos,
+                    'colindancias': this.colindancias
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -726,8 +738,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             'clv_catastral': me.clv_catastral,
                             'etapa_servicios': me.etapa_servicios,
                             'comentarios': me.comentarios,
-                            'indivisos': me.indivisos
-                            
+                            'indivisos': me.indivisos,
+                            'colindancias' : me.colindancias
+
                         }).then(function (response){
                             me.cerrarModal();
                             me.listarLote(1,'','','','lote');
@@ -762,7 +775,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/lote/eliminar', 
+                axios.delete('/lote/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -808,7 +821,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                
+
                  Swal({
                     title: 'Estas seguro?',
                     animation: false,
@@ -819,7 +832,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                     }).then((result) => {
 
@@ -829,7 +842,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 'id':element,
                                 'emp_constructora' : this.empresaConst,
                                 'emp_terreno' : this.empresaTerreno
-                            }); 
+                            });
                         })
                         me.proceso=false;
                         me.cerrarModal();
@@ -844,7 +857,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             customClass: 'animated bounceInRight'
                         })
                     }})
-              
+
             },
 
             cerrarModal(){
@@ -869,8 +882,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.comentarios= '';
                 this.modal = 0;
                 this.indivisos = 0;
+                this.colindancias = '';
                 this.buscar_fraccionamientoExcel = 0;
-                
+
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
 
@@ -902,6 +916,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.clv_catastral='';
                                 this.etapa_servicios='';
                                 this.tipoAccion = 1;
+                                this.colindancias = '';
                                 this.indivisos = 0;
                                 break;
                             }
@@ -929,6 +944,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.etapa_servicios=data['etapa_servicios'];
                                 this.comentarios=data['comentarios'];
                                 this.indivisos = data['indivisos'];
+                                this.colindancias = data['colindancias'];
                                 break;
                             }
                             case 'excel':
@@ -936,7 +952,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.modal = 2;
                                 this.tituloModal= 'Cargar desde Excel';
                                 this.tipoAccion=3;
-                                
+
                                 break;
                             }
                             case 'descargarExcel':
@@ -955,7 +971,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 break;
                             }
 
-                        
+
                         }
                     }
                 }
@@ -999,5 +1015,5 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

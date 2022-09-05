@@ -14,9 +14,9 @@ class Cliente extends Model
         'colonia_coa','cp_coa','telefono_coa','ext_coa','celular_coa','email_coa','parentesco_coa',
         'nacionalidad','nacionalidad_coa','puesto','lugar_nacimiento','precio_rango','ingreso','user_alta',
         'ultimo_vendedor','penultimo_vendedor','contador','vendedor_aux','seguimiento',
-        'app_alta'
+        'app_alta','advertising'
     ];
- 
+
     public function persona(){
         return $this->belongsTo('App\Persona');
     }

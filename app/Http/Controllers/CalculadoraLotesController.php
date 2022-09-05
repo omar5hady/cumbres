@@ -48,7 +48,7 @@ class CalculadoraLotesController extends Controller
     public function listarPrecios(){
         $lotes = lotes_individuales::join('etapas', 'lotes_individuales.etapa_id', '=', 'etapas.id')
         ->join('fraccionamientos', 'etapas.fraccionamiento_id', 'fraccionamientos.id')
-            ->select('lotes_individuales.id', 'lotes_individuales.etapa_id', 'lotes_individuales.costom2', 
+            ->select('lotes_individuales.id', 'lotes_individuales.etapa_id', 'lotes_individuales.costom2',
             'etapas.num_etapa', 'fraccionamientos.nombre')
         ->get();
         return $lotes;
@@ -101,7 +101,7 @@ class CalculadoraLotesController extends Controller
             ->select('lotes.id')->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.contrato','=',0)
             ->where('modelos.nombre','=','Terreno')->get();
-        
+
         if(sizeof($lotes)){
             foreach ($lotes as $index => $lot) {
                 $l= Lote::findOrFail($lot->id);
@@ -115,7 +115,7 @@ class CalculadoraLotesController extends Controller
     public function selectFraccionamientoLotes(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-        
+
         $fraccionamientos = lotes_individuales::join('etapas', 'lotes_individuales.etapa_id', '=', 'etapas.id')
             ->join('fraccionamientos', 'etapas.fraccionamiento_id', 'fraccionamientos.id')
             ->select('fraccionamientos.nombre','fraccionamientos.id')
@@ -139,11 +139,11 @@ class CalculadoraLotesController extends Controller
             ->where('etapas.fraccionamiento_id', '=', $buscar )
             ->groupBy('etapas.id')
         ->get();
-        
+
         return['etapas' => $etapas];
     }
 
-    /* 
+    /*
         Función para retornar los lotes con disponibilidad de venta de terrenos.
         Se toma como criterio los lotes habilitados para venta,
         Sin contrato y que no esten apartados.
@@ -171,11 +171,11 @@ class CalculadoraLotesController extends Controller
                         'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
                         'v.nombre as v_nombre', 'apartados.fecha_apartado','lotes.regimen_condom'
                     );
-                        
+
         $lotes = $query->where('modelos.nombre', '=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
             ->where('lotes.manzana','like','%'.$request->manzana.'%')
-            
+
             ->where('lotes.habilitado','=',1)
             ->where('lotes.contrato','=',0)
             ->where('lotes.apartado','=',0)
@@ -217,7 +217,7 @@ class CalculadoraLotesController extends Controller
         $cotizacion->mensualidades = $request->mensualidades;
         $cotizacion->interes = $request->interes;
         $cotizacion->save();
-        
+
         // Se rrecorre el arrego de pagos para almacenar cada uno de los registros.
         foreach($arrayPagos as $pago){
             if($pago['cantidad'] != 0){
@@ -258,8 +258,8 @@ class CalculadoraLotesController extends Controller
                 'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
                 'cotizacion_lotes.mensualidades','cotizacion_lotes.interes',
 
-                'personal.apellidos', 'personal.nombre', 
-                
+                'personal.apellidos', 'personal.nombre',
+
                 'clientes.id as cliente_personal_id',
 
                 'lotes.num_lote',
@@ -287,27 +287,39 @@ class CalculadoraLotesController extends Controller
         $cotizacion->valor_venta = number_format((float)$cotizacion->valor_venta, 2, '.', ',');
         $cotizacion->total_pagar = number_format((float)$cotizacion->total_pagar, 2, '.', ',');
         $cotizacion->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
-        
+
         $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
             ->orderBy('folio')
         ->get();
 
         if(sizeof($pago)){
+            $totalP1 = $totalP2 = $totalP3 = $totalP4 = 0;
             foreach ($pago as $index => $p) {
+                $totalP1+= $p->cantidad;
+                $totalP2+= $p->descuento;
+                $totalP3+= $p->interes_monto;
+                $totalP4+= $p->total_a_pagar;
+
                 $p->cantidad = $p->cantidad + $p->descuento;
                 $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
                 $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
                 $p->interes_monto = number_format((float)$p->interes_monto, 2, '.', ',');
                 $p->total_a_pagar = number_format((float)$p->total_a_pagar, 2, '.', ',');
                 $p->saldo = number_format((float)$p->saldo, 2, '.', ',');
-                
+
                 $fecha_pago = new Carbon($p->fecha);
                 $p->fecha = $fecha_pago->formatLocalized('%d/%m/%Y');
             }
+            $totalP1 = number_format((float)$totalP1, 2, '.', ',');
+            $totalP2 = number_format((float)$totalP2, 2, '.', ',');
+            $totalP3 = number_format((float)$totalP3, 2, '.', ',');
+            $totalP4 = number_format((float)$totalP4, 2, '.', ',');
         }
 
         //Retorno de la vista en pdf
-        $pdf = \PDF::loadview('pdf.calculadoraLotes.cotizacionLote', ['cotizacion' => $cotizacion, 'pago' => $pago]);
+        $pdf = \PDF::loadview('pdf.calculadoraLotes.cotizacionLote', ['cotizacion' => $cotizacion, 'pago' => $pago,
+            'totalP1' => $totalP1,'totalP2' => $totalP2,'totalP3' => $totalP3,'totalP4' => $totalP4,
+        ]);
         return $pdf->stream('cotizacion_lote_con_servicios.pdf');
     }
 
@@ -358,8 +370,8 @@ class CalculadoraLotesController extends Controller
                 'fraccionamientos.nombre as fraccionamiento'
             );
 
-    
-        
+
+
         //nombre
         if($request->b_cliente != '')
             $personas = $queryGen->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->b_cliente . '%');
@@ -372,7 +384,7 @@ class CalculadoraLotesController extends Controller
         //etapa
         if($request->r_etapa != '')
             $personas = $queryGen->where('etapas.id', '=', $request->r_etapa);
-        
+
         //manzana
         if($request->r_manzana != '')
             $personas = $queryGen->where('lotes.manzana', 'like', '%'.$request->r_manzana.'%');
@@ -400,7 +412,7 @@ class CalculadoraLotesController extends Controller
             ->orderBy('personal.apellidos', 'asc')
             //->groupBy('cotizacion_lotes.id')
         ->paginate(20);
-        
+
         return $personas;
     }
 
@@ -440,7 +452,7 @@ class CalculadoraLotesController extends Controller
         else{
             try {
                 DB::beginTransaction();
-    
+
                 // Se pone estatus de aprobado.
                 $cotizacion->estatus = 1;
                 $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -450,12 +462,12 @@ class CalculadoraLotesController extends Controller
                                         'etapas.num_etapa', 'lotes.precio_base', 'lotes.terreno',
                                         'fraccionamientos.nombre as proyecto')
                             ->where('lotes.id','=',$cotizacion->lotes_id)->get();
-                
+
                 $pagos = Pagos_lotes::where('cotizacion_lotes_id','=',$request->id)->get();
-                
+
                 $empresa = Empresa::where('id','=',$datos['empresa_id'])->get();
-                
-    
+
+
                 // Se actualizan los datos del Cliente segun lo capturado en la cotización.
                 // PERSONAL
                     $persona = Personal::findOrFail($datos['personalId']);
@@ -463,7 +475,7 @@ class CalculadoraLotesController extends Controller
                     $persona->colonia = $datos['colonia'];
                     $persona->cp = $datos['cp'];
                     $persona->save();
-    
+
                 //Cliente
                     $cliente = Cliente::findOrFail($datos['personalId']);
                     $cliente->curp = $datos['curp'];
@@ -485,9 +497,9 @@ class CalculadoraLotesController extends Controller
                         $cliente->ciudad_coa = $datos['ciudad_coa'];
                         $cliente->cp_coa = $datos['cp_coa'];
                     }
-                    
+
                     $cliente->save();
-                
+
                 //Se crea el registro del Credito
                     $credito = new Credito();
                     $credito->prospecto_id = $datos['personalId'];
@@ -519,7 +531,7 @@ class CalculadoraLotesController extends Controller
                     $credito->contrato = 1;
                     $credito->vendedor_id = $cliente->vendedor_id;
                     $credito->save();
-    
+
                 // Inst Seleccionada
                     $inst_seleccionada = new inst_seleccionada();
                     $inst_seleccionada->credito_id = $credito->id;
@@ -530,7 +542,7 @@ class CalculadoraLotesController extends Controller
                     $inst_seleccionada->plazo_credito = $credito->plazo;
                     $inst_seleccionada->elegido = 1;
                     $inst_seleccionada->save();
-    
+
                 // Se genera el registro en la tabla de Contratos
                     $contrato = new Contrato();
                     $contrato->id = $credito->id;
@@ -556,11 +568,11 @@ class CalculadoraLotesController extends Controller
                         $contrato->telefono_empresa_coa = $empresaCoa[0]->telefono;
                         $contrato->ext_empresa_coa = $empresaCoa[0]->ext;
                     }
-                    
+
                     $contrato->save();
-    
+
                     $cotizacion->num_contrato = $credito->id;
-                
+
                 //Generación de pagos
                 foreach ($pagos as $ep => $det) {
                     $pago = new Pago_contrato();
@@ -570,21 +582,21 @@ class CalculadoraLotesController extends Controller
                     $pago->restante = $det['total_a_pagar'];
                     $pago->fecha_pago = $det['fecha'];
                     $pago->save();
-    
+
                     //Al los pagos de la cotizacion se indica el pago del contrato que le corresponde.
                     $pagoLote = Pagos_lotes::findOrFail($det['id']);
                     $pagoLote->pagare_id = $pago->id;
                     $pagoLote->save();
                 }
-                
-    
+
+
                 // Deshabilita lote para venta
                     $lote = Lote::findOrFail($cotizacion->lotes_id);
                     $lote->contrato = 1;
                     $lote->save();
-    
+
                     $cotizacion->save();
-    
+
                 // En caso de existir mas cotizaciones del mismo lote se cancelan.
                 $this->cancelaOtros($cotizacion->id, $cotizacion->lotes_id);
                 DB::commit();
@@ -593,7 +605,7 @@ class CalculadoraLotesController extends Controller
             }
 
         }
-        
+
 
     }
 
@@ -630,8 +642,8 @@ class CalculadoraLotesController extends Controller
                 'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
                 'cotizacion_lotes.mensualidades',
 
-                'personal.apellidos', 'personal.nombre', 
-                
+                'personal.apellidos', 'personal.nombre',
+
                 'clientes.id as cliente_personal_id',
 
                 'lotes.num_lote',
@@ -643,7 +655,7 @@ class CalculadoraLotesController extends Controller
             )
             ->where('cotizacion_lotes.id', '=', $request->idCotizacion)
         ->first();
-        
+
         $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
             ->orderBy('folio')
         ->get();
@@ -670,12 +682,12 @@ class CalculadoraLotesController extends Controller
         $cotizacion->interes = $request->interes;
         //$cotizacion->mensualidades = $request->mensualidades;
         $cotizacion->save();
-        
+
         foreach($arrayPagos as $pago){
             $newPago = Pagos_lotes::findOrFail($pago['id']);
 
             //$newPago->cotizacion_lotes_id = $cotizacion->id;
-            
+
             $newPago->folio = $pago['folio'];
             $newPago->pago = $pago['pago'];
             $newPago->cantidad = $pago['cantidad'];
@@ -692,17 +704,17 @@ class CalculadoraLotesController extends Controller
             $fecha = $pago['fecha'];
             $folio = $pago['folio'];
 
-            
+
 
             if($idPago != NULL){
                 $p = Pago_contrato::select('id')->where('id','=',$idPago)->get();
                 if(sizeOf($p)){
                     $pContrato = Pago_contrato::findOrFail($idPago);
-                
+
                     if($totalPagar != 0){
                         $pContrato->restante = ($pContrato->monto_pago - $pContrato->restante) + $totalPagar;
                         $pContrato->monto_pago = $totalPagar;
-                        
+
                         $pContrato->fecha_pago = $fecha;
                         $pContrato->save();
                     }
@@ -716,16 +728,16 @@ class CalculadoraLotesController extends Controller
                          $pContrato = new Pago_contrato();
                          $pContrato->contrato_id = $cotizacion->num_contrato;
                          $pContrato->num_pago = $folio;
-                         $pContrato->monto_pago = $totalPagar;    
+                         $pContrato->monto_pago = $totalPagar;
                          $pContrato->fecha_pago = $fecha;
-                         $pContrato->restante = $totalPagar;    
+                         $pContrato->restante = $totalPagar;
                          $pContrato->save();
 
                          $newPago->pagare_id = $pContrato->id;
                      }
 
                  }
-                
+
             }
 
             $newPago->save();

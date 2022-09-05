@@ -260,6 +260,7 @@ class LoteController extends Controller
                 $licencia = new Licencia();
                 $licencia->id = $lote->id;
                 $licencia->perito_dro = $lote->arquitecto_id;
+                $licencia->colindancias = $request->colindancias;
                 $licencia->save();
 
                 DB::commit();
@@ -293,6 +294,10 @@ class LoteController extends Controller
         $lote->etapa_servicios = $request ->etapa_servicios;
         $lote->indivisos = $request->indivisos;
         $lote->save();
+
+        $licencia = Licencia::findOrFail($request->id);
+        $licencia->colindancias = $request->colindancias;
+        $licencia->save();
     }
 
     //Función para actualizar el registro del lote para el modulo Asignar modelo
