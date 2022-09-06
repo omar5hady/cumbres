@@ -46,7 +46,7 @@
                                 <template v-slot:tbody>
                                     <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
                                         <td>
-                                            <button v-if="creditosPuente.base_p == 1" type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
+                                            <button v-if="creditosPuente.base_p == 1 && (userName == 'cp.martin' || userName == 'shady' || userName == 'eli_hdz')" type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
                                                 <i class="icon-pencil"></i>
                                             </button>
                                         </td>
@@ -275,12 +275,12 @@
                                         :cabecera="['','Archivo','Fecha de subida']">
                                         <template v-slot:tbody>
                                             <tr v-for="urbanizacion in arrayUrbanizacion" :key="urbanizacion.id">
-                                                <td>
+                                                <!-- <td>
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ urbanizacion.archivo + '/download'" >Descargar plano</a>
                                                     </div>
-                                                </td>
+                                                </td> -->
                                                 <td v-text="urbanizacion.descripcion"></td>
                                                 <td v-text="urbanizacion.created_at"></td>
                                             </tr>
@@ -301,12 +301,12 @@
                                         :cabecera="['','Archivo','Fecha de subida']">
                                         <template v-slot:tbody>
                                             <tr v-for="edificacion in arrayEdificacion" :key="edificacion.id">
-                                                <td>
+                                                <!-- <td>
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ edificacion.archivo + '/download'" >Descargar plano</a>
                                                     </div>
-                                                </td>
+                                                </td> -->
                                                 <td v-text="edificacion.descripcion"></td>
                                                 <td v-text="edificacion.created_at"></td>
                                             </tr>
@@ -347,13 +347,13 @@
 
                             <div class="form-group row">
                                 <div class="col-md-10">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Regresar </button>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <button v-if="cabecera.status == 0" type="button" class="btn btn-primary" @click="actualizarCredito()"> Actualizar </button>
                                 </div>
                                 <div class="col-md-2">
 
-                                    <button v-if="cabecera.status == 0" type="button" class="btn btn-danger" @click="cancelarCredito()"> Cancelar </button>
+                                    <button v-if="cabecera.status == 0" type="button" class="btn btn-danger" @click="cancelarCredito()"> Cancelar crédito </button>
                                 </div>
                             </div>
                         </div>
@@ -582,7 +582,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-1">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Regresar </button>
                                 </div>
                                 <div class="col-md-1" v-if="cabecera.status == 0">
                                     <button type="button" class="btn btn-success" @click="enviarExp()"> Integrar expediente </button>
@@ -1863,30 +1863,46 @@
             cancelarCredito(){
                 let me = this;
 
-                axios.put('/cPuentes/cancelarCredito',{
-                    'id': this.id
-                }).then(function (response){
-                    //Obtener detalle
-                        swal({
-                            position: 'top-end',
-                            type: 'success',
-                            title: 'El credito puente ha sido cancelado',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        me.getLotesPuente(me.id);
-                        me.getPreciosModelo(me.id);
-                        me.ocultarDetalle();
-                        me.arrayManzanas=[];
-                        me.arrayLotes=[];
-                        me.etapa_id='';
-                        me.lote_id='';
-                        me.manzana='';
+                Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "El credito puente sera cancelado.",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
 
-                }).catch(function (error){
-                    console.log(error);
-                });
+                        confirmButtonText: 'Si, Cancelar!'
+                        }).then((result) => {
 
+                        if (result.value) {
+                             axios.put('/cPuentes/cancelarCredito',{
+                                'id': this.id
+                            }).then(function (response){
+                                //Obtener detalle
+                                    swal({
+                                        position: 'top-end',
+                                        type: 'success',
+                                        title: 'El credito puente ha sido cancelado',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                    me.getLotesPuente(me.id);
+                                    me.getPreciosModelo(me.id);
+                                    me.ocultarDetalle();
+                                    me.arrayManzanas=[];
+                                    me.arrayLotes=[];
+                                    me.etapa_id='';
+                                    me.lote_id='';
+                                    me.manzana='';
+
+                            }).catch(function (error){
+                                console.log(error);
+                            });
+                        }
+                    })
             },
 
             cambiarChk(id,valor){
