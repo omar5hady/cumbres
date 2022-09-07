@@ -41,6 +41,12 @@ class CreateLicenciasTable extends Migration
             $table->text('colindancias')->nullable();
             $table->date('date_birth')->nullable();
 
+            $table->text('num_escritura')->nullable();
+            $table->date('date_escritura')->nullable();
+            $table->text('num_notario')->nullable();
+            $table->text('distrito_notario')->nullable();
+            $table->text('folio_registro')->nullable();
+
             $table->foreign('id')->references('id')->on('lotes')->onDelete('cascade');
             $table->foreign('perito_dro')->references('id')->on('personal');
         });

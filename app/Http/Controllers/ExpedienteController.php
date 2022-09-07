@@ -55,7 +55,7 @@ class ExpedienteController extends Controller
                 else{
                     $contrato->pdf = '';
                 }
-                            
+
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
@@ -103,7 +103,7 @@ class ExpedienteController extends Controller
         $contratos = $this->getQueryIntegracion($request);
         $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
                                 ->orderBy('licencias.avance','desc')->get();
-        
+
         if(sizeof($contratos)){
             // Se recorren los registros para obtener fecha de pago del ultimo pagare y datos del avaluo.
             foreach($contratos as $index => $contrato){
@@ -120,7 +120,7 @@ class ExpedienteController extends Controller
                 else{
                     $contrato->pdf = '';
                 }
-                            
+
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
@@ -132,7 +132,7 @@ class ExpedienteController extends Controller
 
         // Retorno y creación del excel.
         return Excel::create('expediente', function($excel) use ($contratos){
-            $excel->sheet('contratos', function($sheet) use ($contratos){              
+            $excel->sheet('contratos', function($sheet) use ($contratos){
                 $sheet->row(1, [
                     '# Folio', 'Cliente' ,'Asesor', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Modelo',
                     '% Avance','Visita de avaluo' ,'Firma', 'Tipo de credito','Institucion Financiera','Solicitud de avaluo',
@@ -157,7 +157,7 @@ class ExpedienteController extends Controller
                 $cont=1;
                 foreach($contratos as $index => $contrato) {
 
-                    $cont++; 
+                    $cont++;
 
                     if($contrato->regimen_condom == 1){
                         $regimen = 'Si';
@@ -189,9 +189,9 @@ class ExpedienteController extends Controller
                     if($contrato->sublote != NULL){
                         $lote = $contrato->num_lote.' '.$contrato->sublote;
                     }
-                    
+
                     $sheet->row($index+2, [
-                        $contrato->folio, 
+                        $contrato->folio,
                         $contrato->nombre_cliente,
                         $contrato->nombre_vendedor,
                         $contrato->proyecto,
@@ -211,14 +211,14 @@ class ExpedienteController extends Controller
                         $contrato->credito_puente,
                         $regimen,
                         $contrato->nombre_conyuge
-                   
-                    ]);	
+
+                    ]);
                 }
                 $num='A1:S' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 
@@ -263,7 +263,7 @@ class ExpedienteController extends Controller
                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                 'clientes.coacreditado',
-                
+
                 'c.celular',
                 'clientes.email_institucional',
                 'c.email',
@@ -347,7 +347,7 @@ class ExpedienteController extends Controller
             $expediente->id = $request->folio;
             $expediente->fecha_integracion = $hoy;
             $expediente->gestor_id = $request->gestor_id;
-            $expediente->save(); 
+            $expediente->save();
         }
         // Se indica en la tabla contrato que ya se encuentra un registro en expedientes.
         $contrato = Contrato::findOrFail($request->folio);
@@ -381,8 +381,8 @@ class ExpedienteController extends Controller
                 'creditos.num_lote',
                 'contratos.fecha_status',
                 'i.tipo_credito',
-                'i.institucion', 
-                'expedientes.gestor_id',                
+                'i.institucion',
+                'expedientes.gestor_id',
                 'contratos.integracion',
                 'lotes.fraccionamiento_id',
                 'lotes.sublote',
@@ -409,18 +409,18 @@ class ExpedienteController extends Controller
                 }
                 case 'c.nombre':{
                     if($buscar != '')
-                        $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');  
+                        $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'g.nombre':{
                     if($buscar != '')
-                        $contratos = $contratos->where(DB::raw("CONCAT(g.nombre,' ',g.apellidos)"), 'like', '%'. $buscar . '%');  
+                        $contratos = $contratos->where(DB::raw("CONCAT(g.nombre,' ',g.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 default :{
                     if($buscar != '')
                         $contratos = $contratos->where($criterio, 'like', '%' . $buscar . '%');
-                }   
+                }
             }
         // Busqueda por empresa constructora
         if($request->b_empresa != ''){
@@ -457,19 +457,19 @@ class ExpedienteController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
-        $contador = 0; 
+        $contador = 0;
         $rolId = Auth::user()->rol_id;
         // Llamada a la funcion que retorna la query principal
         $query = $this->querySeguimiento($request);
 
-        // 
+        //
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             $contratos = $query
             ->where('expedientes.fecha_ingreso','=',NULL)
             ->where('i.elegido', '=', 1)
             ->where('contratos.status', '!=', 0)
             ->where('contratos.status', '!=', 2);
-  
+
         }else{
             $contratos = $query
             ->where('expedientes.fecha_ingreso','=',NULL)
@@ -520,7 +520,7 @@ class ExpedienteController extends Controller
                                             'id as avaluoId',
                                             'fecha_concluido',
                                             'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
-                
+
                 if(sizeof($avaluos)){
                     $contrato->resultado = $avaluos[0]->resultado;
                     $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
@@ -607,7 +607,7 @@ class ExpedienteController extends Controller
                 break;
             }
             case 'lotes.fraccionamiento_id':{
-                
+
                     if($buscar != '')
                         $contratos = $contratos->where($criterio, '=', $buscar);
                     if($b_etapa != '')
@@ -646,7 +646,7 @@ class ExpedienteController extends Controller
                 $contrato->fecha_concluido = '';
                 $contrato->pdf = '';
                 $contrato->ultimo_pagare = '';
-                
+
                 if(sizeof($avaluos)){
                     $contrato->resultado = $avaluos[0]->resultado;
                     $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
@@ -654,14 +654,14 @@ class ExpedienteController extends Controller
                     $contrato->fecha_concluido = $avaluos[0]->fecha_concluido;
                     $contrato->pdf = $avaluos[0]->pdf;
                 }
-                                
+
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
             }
         }
 
-        return [   
+        return [
             'contratos' => $contratos,
             'contador' => $contador
         ];
@@ -688,7 +688,7 @@ class ExpedienteController extends Controller
         $rolId = Auth::user()->rol_id;
         //Llamada a la funcion privada que retorna la query principal.
         $query = $this->querySeguimiento($request);
-        
+
         $query = $query->where('i.elegido', '=', 1)
         ->where('i.status','=',2)//Crédito bancario autorizado
         ->where('contratos.status', '!=', 0)//Diferente a Cancelado
@@ -711,7 +711,7 @@ class ExpedienteController extends Controller
                     $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                 break;
             }
-            
+
             case 'lotes.fraccionamiento_id':{
                 if($buscar != '')
                     $contratos = $contratos->where($criterio, '=', $buscar);
@@ -745,7 +745,7 @@ class ExpedienteController extends Controller
                                             'id as avaluoId',
                                             'fecha_concluido',
                                             'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
-                
+
                 if(sizeof($avaluos)){
                     $contrato->resultado = $avaluos[0]->resultado;
                     $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
@@ -760,7 +760,7 @@ class ExpedienteController extends Controller
                     $contrato->fecha_concluido = '';
                     $contrato->pdf = '';
                 }
-                
+
                 if(sizeof($lastPagare))
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 else
@@ -809,6 +809,18 @@ class ExpedienteController extends Controller
                                     ->where('pagos_contratos.contrato_id','=',$folio)
                                     ->first();
 
+        $pagos = Pago_contrato::join('pagos_lotes','pagos_contratos.id','=','pagos_lotes.pagare_id')
+                    ->select('pagos_lotes.interes_monto')
+                    ->where('pagos_contratos.contrato_id','=',$folio)->get();
+
+        $calculos[0]->interesGen = 0;
+
+        if(sizeof($pagos))
+        foreach ($pagos as $key => $pago) {
+            // Se suma el total de intereses por cada pagare.
+            $calculos[0]->interesGen += $pago->interes_monto;
+        }
+
         if($depositos->pagado == NULL)
             $depositos->pagado = 0;
         else
@@ -838,7 +850,7 @@ class ExpedienteController extends Controller
             $contrato->save();
             //No hay saldo pendiente por liquidar
             if(round($request->total_liquidar,2) <= 0){
-                $expediente->liquidado = 1; 
+                $expediente->liquidado = 1;
                 //Se obtienen los registros de los pagares que tienen saldo pendiente
                 $pagaresContrato = Pago_contrato::select('id','pagado','contrato_id')
                                             ->where('contrato_id','=',$request->folio)
@@ -911,10 +923,10 @@ class ExpedienteController extends Controller
             }
             $expediente->save();
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     // Funcion para crear los pagos para un nuevo financiamiento con interes
@@ -991,10 +1003,10 @@ class ExpedienteController extends Controller
             $contrato->saldo += round($intereses,2);
             $contrato->save();
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     // Funcion que retorna los registros de Expedientes pendientes por firma de escrituras
@@ -1020,7 +1032,7 @@ class ExpedienteController extends Controller
         ->where('expedientes.fecha_infonavit','!=',NULL)//Fecha de infonavit capturada
         ->where('expedientes.liquidado','=',1)//Expediente liquidado
         ->where('expedientes.postventa','!=',1);//
-       
+
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             $contratos = $query;
         }else{
@@ -1033,7 +1045,7 @@ class ExpedienteController extends Controller
                     $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                 break;
             }
-            
+
             case 'lotes.fraccionamiento_id':{
                     if($buscar != '')
                         $contratos = $contratos->where($criterio, '=', $buscar);
@@ -1067,14 +1079,14 @@ class ExpedienteController extends Controller
                                             'id as avaluoId',
                                             'fecha_concluido',
                                             'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
-                
+
                 $contrato->resultado = '';
                 $contrato->fecha_recibido = '';
                 $contrato->avaluoId = '';
                 $contrato->fecha_concluido = '';
                 $contrato->pdf = '';
                 $contrato->ultimo_pagare = '';
-                
+
                 if(sizeof($avaluos)){
                     $contrato->resultado = $avaluos[0]->resultado;
                     $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
@@ -1086,12 +1098,12 @@ class ExpedienteController extends Controller
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
-                
+
             }
         }
-       
+
         $contador = $contratos->count();
-        
+
         return [
             'contratos' => $contratos,
             'contador' => $contador
@@ -1121,7 +1133,7 @@ class ExpedienteController extends Controller
         ->where('expedientes.fecha_infonavit','!=',NULL)//Fecha de ingreso a infonavit capturado
         ->where('expedientes.liquidado','=',1)//Expediente liquidado
         ->where('expedientes.postventa','=',1);//Expediente enviado a postventa
-       
+
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701)
             $contratos = $query;
         else
@@ -1134,7 +1146,7 @@ class ExpedienteController extends Controller
                     $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                 break;
             }
-            
+
             case 'lotes.fraccionamiento_id':{
                 if($buscar != '')
                     $contrato = $contratos->where($criterio, '=', $buscar);
@@ -1189,7 +1201,7 @@ class ExpedienteController extends Controller
                 }
             }
         }
-       
+
         return [
             'contratos' => $contratos,
             'contador' => $contratos->total(),
@@ -1203,7 +1215,7 @@ class ExpedienteController extends Controller
             ],
         ];
     }
-   
+
     // Función que crea y retorna el PDF para la liquidación del contrato.
     public function liquidacionPDF($id){
         //Query para obtener los datos necesarios.
@@ -1288,9 +1300,8 @@ class ExpedienteController extends Controller
         ->where('contratos.id', '=', $id)
         ->orderBy('contratos.id','asc')
         ->get();
-        
-        //Precio base de la venta
-        $liquidacion[0]->precio_base = $liquidacion[0]->precio_base - $liquidacion[0]->descuento_promocion;
+
+
 
         $sumGastos = 0;
         //Se obtienen los gastos administrativos del contrato
@@ -1303,6 +1314,21 @@ class ExpedienteController extends Controller
             $sumGastos += $gastos[$i]->costo;
             $gastos[$i]->costo = number_format((float)$gastos[$i]->costo, 2, '.', ',');
         }
+
+        $pagosTerreno = Pago_contrato::join('pagos_lotes','pagos_contratos.id','=','pagos_lotes.pagare_id')
+                    ->select('pagos_lotes.interes_monto')
+                    ->where('pagos_contratos.contrato_id','=',$id)->get();
+
+        $interesGen = 0;
+
+        if(sizeof($pagosTerreno))
+        foreach ($pagosTerreno as $key => $pago) {
+            // Se suma el total de intereses por cada pagare.
+            $interesGen += $pago->interes_monto;
+        }
+        //Precio base de la venta
+        $liquidacion[0]->precio_base = $liquidacion[0]->precio_base - $liquidacion[0]->descuento_promocion + $interesGen;
+        $liquidacion[0]->precio_venta = $liquidacion[0]->precio_venta + $interesGen;
 
         //Pagares pendientes
        $pagares = Pago_contrato::select('fecha_pago','restante','num_pago')->where('pagado','<',2)->where('contrato_id','=',$id)->get();
@@ -1342,7 +1368,7 @@ class ExpedienteController extends Controller
        $liquidacion[0]->sumaParcial = $liquidacion[0]->credito_solic + $liquidacion[0]->fovissste + $liquidacion[0]->infonavit + $liquidacion[0]->sumaDepositos;
 
        //Calculo de monto restante a liquidar
-       $liquidacion[0]->totalRestante = 
+       $liquidacion[0]->totalRestante =
             $liquidacion[0]->precio_venta - $liquidacion[0]->credito_solic -
             $liquidacion[0]->fovissste - $liquidacion[0]->infonavit - $liquidacion[0]->sumaDepositos - $liquidacion[0]->descuento + $sumGastos;
 
@@ -1368,7 +1394,7 @@ class ExpedienteController extends Controller
             $fecha1 = new Carbon($liquidacion[0]->fecha_firma_esc);
             $liquidacion[0]->fecha_firma_esc = $fecha1->formatLocalized('%d de %B de %Y');
         }
-        
+
         $fecha2 = new Carbon($liquidacion[0]->fecha_liquidacion);
         $liquidacion[0]->fecha_liquidacion = $fecha2->formatLocalized('%d de %B de %Y');
         //Retorno del pdf
@@ -1391,10 +1417,10 @@ class ExpedienteController extends Controller
             $inst_seleccionada->monto_credito = $request->monto_credito;
             $inst_seleccionada->save();
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     //Funcion para generar la firma de escrituras de un expediente
@@ -1440,9 +1466,9 @@ class ExpedienteController extends Controller
                 $asignar->postventa = 1;
             }
             $asignar->save();
-            
+
             $typCredit = inst_seleccionada::where('credito_id', '=', $request->folio)->where('elegido', '=', 1)->get();
-            //Se envia notificacion de la firma 
+            //Se envia notificacion de la firma
             if($typCredit[0]->tipo_credito != "Crédito Directo"){
                 $toAlert = [24706, 24705];
                 $msj = 'Se ha realizado una nueva firma de credito escriturado';
@@ -1464,7 +1490,7 @@ class ExpedienteController extends Controller
                     $persona = Personal::findOrFail($id);
 
                     Mail::to($persona->email)->send(new NotificationReceived($msj));
-                    
+
                 }
             }
         DB::commit();
@@ -1490,10 +1516,10 @@ class ExpedienteController extends Controller
             $expediente = Expediente::findOrFail($folio);
             $expediente->delete();
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     //Función para exportar en excel los expedientes por ingresar
@@ -1508,13 +1534,13 @@ class ExpedienteController extends Controller
         // Llamada a la funcion que retorna la query principal
         $query = $this->querySeguimiento($request);
         $query = $query->where('expedientes.fecha_ingreso','=',NULL)//Expediente sin ingresar
-            ->where('i.elegido', '=', 1)//Financiamiento elegido 
+            ->where('i.elegido', '=', 1)//Financiamiento elegido
             ->where('contratos.status', '!=', 0)//Diferente a Cancelado
             ->where('contratos.status', '!=', 2);//Diferente a No Firmado
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             $contratos = $query;
-            
+
         }else{
             $contratos = $query
             ->where('expedientes.gestor_id','=',Auth::user()->id);
@@ -1553,7 +1579,7 @@ class ExpedienteController extends Controller
         //Creación y retorno del excel.
         return Excel::create('Expediente por Ingresar', function($excel) use ($contratos){
             $excel->sheet('Por Ingresar', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo','Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
@@ -1591,13 +1617,13 @@ class ExpedienteController extends Controller
                         $fecha2 = new Carbon($contrato->aviso_prev);
                         $contrato->aviso_prev = $fecha2->formatLocalized('%d de %B de %Y');
                     }
-                    
+
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($contrato->fecha_status);
                     $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $contrato->folio, 
+                        $contrato->folio,
                         $contrato->nombre_cliente,
                         $contrato->nombre_vendedor,
                         $contrato->proyecto,
@@ -1616,7 +1642,7 @@ class ExpedienteController extends Controller
                         $contrato->credito_puente,
                         $contrato->saldo,
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:Q' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -1634,7 +1660,7 @@ class ExpedienteController extends Controller
         $criterio = $request->criterio;
         $contador = 0;
         $rolId = Auth::user()->rol_id;
-        
+
         // Llamada a la funcion que retorna la query principal
         $query = $this->querySeguimiento($request);
         $query = $query->where('i.elegido', '=', 1)//Financiamiento elegido
@@ -1682,7 +1708,7 @@ class ExpedienteController extends Controller
 
         return Excel::create('Expediente', function($excel) use ($contratos){
             $excel->sheet('Autorizados', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo','Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
@@ -1725,13 +1751,13 @@ class ExpedienteController extends Controller
                         $fecha2 = new Carbon($contrato->aviso_prev);
                         $contrato->aviso_prev = $fecha2->formatLocalized('%d de %B de %Y');
                     }
-                    
+
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($contrato->fecha_status);
                     $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $contrato->folio, 
+                        $contrato->folio,
                         $contrato->nombre_cliente,
                         $contrato->nombre_vendedor,
                         $contrato->proyecto,
@@ -1752,7 +1778,7 @@ class ExpedienteController extends Controller
                         $contrato->valor_escrituras,
                         $contrato->credito_puente,
                         $contrato->saldo,
-                    ]);	
+                    ]);
                 }
                 $num='A1:T' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -1815,13 +1841,13 @@ class ExpedienteController extends Controller
         //Busqueda por empresa constructora
         if($request->b_empresa != '')
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
-        
+
         $contratos = $contratos->orderBy('contratos.id','asc')
                                 ->get();
         //Creación y retorno en excel
         return Excel::create('Expediente', function($excel) use ($contratos){
             $excel->sheet('Liquidacion', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo', 'Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
@@ -1874,12 +1900,12 @@ class ExpedienteController extends Controller
                         $fecha3 = new Carbon($contrato->fecha_infonavit);
                         $contrato->fecha_infonavit = $fecha3->formatLocalized('%d de %B de %Y');
                     }
-                    
+
                     $fecha1 = new Carbon($contrato->fecha_status);
                     $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
-                   
+
                     $sheet->row($index+2, [
-                        $contrato->folio, 
+                        $contrato->folio,
                         $contrato->nombre_cliente,
                         $contrato->nombre_vendedor,
                         $contrato->proyecto,
@@ -1901,7 +1927,7 @@ class ExpedienteController extends Controller
                         $contrato->credito_puente,
                         $contrato->saldo,
                         $contrato->fecha_infonavit,
-                    ]);	
+                    ]);
                 }
                 $num='A1:T' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -1931,7 +1957,7 @@ class ExpedienteController extends Controller
         ->where('expedientes.fecha_infonavit','!=',NULL)//Fecha de infonavit capturado
         ->where('expedientes.liquidado','=',1)//Liquidado
         ->where('expedientes.postventa','!=',1);
-       
+
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701)
             $contratos = $query;
         else
@@ -1963,12 +1989,12 @@ class ExpedienteController extends Controller
         //Busqueda por empresa constructora
         if($request->b_empresa != '')
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
-        
+
         $contratos = $contratos->orderBy('contratos.id','asc')->get();
         //Creación y retorno de excel.
         return Excel::create('Expediente', function($excel) use ($contratos){
             $excel->sheet('Programación de firma', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo','Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
@@ -2029,15 +2055,15 @@ class ExpedienteController extends Controller
                         $fecha5 = new Carbon($contrato->fecha_firma_esc);
                         $contrato->fecha_firma_esc = $fecha5->formatLocalized('%d de %B de %Y');
                     }
-                    
+
                     $fecha1 = new Carbon($contrato->fecha_status);
                     $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
 
                     $fecha4 = new Carbon($contrato->fecha_liquidacion);
                     $contrato->fecha_liquidacion = $fecha4->formatLocalized('%d de %B de %Y');
-                   
+
                     $sheet->row($index+2, [
-                        $contrato->folio, 
+                        $contrato->folio,
                         $contrato->nombre_cliente,
                         $contrato->nombre_vendedor,
                         $contrato->proyecto,
@@ -2061,14 +2087,14 @@ class ExpedienteController extends Controller
                         $contrato->fecha_infonavit,
                         $contrato->fecha_liquidacion,
                         $contrato->fecha_firma_esc,
-                    ]);	
+                    ]);
                 }
                 $num='A1:W' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             }
         )->download('xls');
-       
+
     }
 
     //Función para registrar el envio del expediente
@@ -2198,6 +2224,6 @@ class ExpedienteController extends Controller
 
         return $query;
     }
-    
+
 
 }

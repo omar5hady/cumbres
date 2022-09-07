@@ -205,7 +205,7 @@
                                             }}
                                         </td>
                                         <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                        <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3(prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.vAux_completo"></td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
@@ -943,7 +943,7 @@
                                         <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
                                         <textarea :disabled="edit == 1" rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
-                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', nombre, apellidos),listarObservacion(1,id)">Ver todos</button>
+                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3(nombre, apellidos),listarObservacion(1,id)">Ver todos</button>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">

@@ -261,6 +261,12 @@ class LoteController extends Controller
                 $licencia->id = $lote->id;
                 $licencia->perito_dro = $lote->arquitecto_id;
                 $licencia->colindancias = $request->colindancias;
+
+                $licencia->num_escritura = $request->num_escritura;
+                $licencia->date_escritura = $request->date_escritura;
+                $licencia->num_notario = $request->num_notario;
+                $licencia->distrito_notario = $request->distrito_notario;
+                $licencia->folio_registro = $request->folio_registro;
                 $licencia->save();
 
                 DB::commit();
@@ -297,6 +303,11 @@ class LoteController extends Controller
 
         $licencia = Licencia::findOrFail($request->id);
         $licencia->colindancias = $request->colindancias;
+        $licencia->num_escritura = $request->num_escritura;
+        $licencia->date_escritura = $request->date_escritura;
+        $licencia->num_notario = $request->num_notario;
+        $licencia->distrito_notario = $request->distrito_notario;
+        $licencia->folio_registro = $request->folio_registro;
         $licencia->save();
     }
 
@@ -2032,10 +2043,24 @@ class LoteController extends Controller
     public function asignarEmpresa(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
-        $lote = Lote::findOrFail($request->id);
-        $lote->emp_constructora = $request->emp_constructora;
-        $lote->emp_terreno = $request->emp_terreno;
-        $lote->save();
+
+        if($request->paso == 1){
+            $lote = Lote::findOrFail($request->id);
+            $lote->emp_constructora = $request->emp_constructora;
+            $lote->emp_terreno = $request->emp_terreno;
+            $lote->save();
+        }
+        else{
+            $datos = $request->datosEscritura;
+            $licencia = Licencia::findOrFail($request->id);
+            $licencia->num_escritura = $datos['num_escritura'];
+            $licencia->date_escritura = $datos['date_escritura'];
+            $licencia->num_notario = $datos['num_notario'];
+            $licencia->distrito_notario = $datos['distrito_notario'];
+            $licencia->folio_registro = $datos['folio_registro'];
+            $licencia->save();
+        }
+
     }
     //Función que retorna las empresas constructoras
     public function selectEmpresaConstructora(Request $request){

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Lote;
+use App\Modelo;
+use App\Fraccionamiento;
+use App\Etapa;
 
 class PreciosController extends Controller
 {
@@ -19,6 +22,7 @@ class PreciosController extends Controller
                                 'lotes.sobreprecio','m.construccion','m.terreno as terreno_m','lotes.ajuste'
                             )
                             ->where('lotes.habilitado','=',1)
+                            ->where('m.nombre','!=','Terreno')
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
                             ->where('lotes.casa_muestra','=',0)
@@ -27,16 +31,56 @@ class PreciosController extends Controller
                 if($request->modelo != '')
                     $inventario = $inventario->where('m.nombre','like','%'.$request->modelo.'%');
 
-                if($request->proyecto != '')
-                    $inventario = $inventario->where('p.nombre','like','%'.$request->proyecto.'%');
+                if($request->proyecto != '' &&  $request->privada != ''){
+                    $ids = $this->getIdsLotesDisp($request->proyecto, $request->privada);
+                    $inventario = $inventario->whereIn('lotes.id',$ids);
+                        //->where('p.nombre','like','%'.$request->proyecto.'%');
+                        //->where('lotes.excedente_terreno','=',0);
+                }
 
-                if($request->privada != '')
-                    $inventario = $inventario->where('e.num_etapa','like','%'.$request->privada.'%');
+
+                // if($request->privada != ''){
+                //     $inventario = $inventario->where('e.num_etapa','like','%'.$request->privada.'%');
+                //         //->where('lotes.excedente_terreno','=',0);
+                // }
+
 
         $inventario = $inventario->orderBy('m.nombre','asc')
-                            ->get();
+                            ->orderBy('lotes.excedente_terreno');
+
+                    if($request->modelo != '')
+                        $inventario = $inventario
+                            ->limit(8)->get();
+                    else
+                        $inventario = $inventario->distinct()->get();
 
         return $inventario;
+    }
+
+    private function getIdsLotesDisp($proyecto, $etapa){
+        $ids=[];
+        $i=0;
+        $fra = Fraccionamiento::select('id')->where('nombre','like','%'.$proyecto.'%')->get();
+        $et = Etapa::select('id')->where('num_etapa','like','%'.$etapa.'%')->whereIn('fraccionamiento_id',$fra)->first();
+        $modelos = Modelo::select('id')->whereIn('fraccionamiento_id',$fra)->get();
+
+        foreach($modelos as $modelo){
+            $lotes = Lote::select('id')->where('modelo_id','=',$modelo->id)
+                ->where('lotes.habilitado','=',1)
+                ->where('lotes.apartado','=',0)
+                ->where('lotes.contrato','=',0)
+                ->where('lotes.casa_muestra','=',0)
+                ->where('lotes.casa_renta','=',0)
+                ->whereIn('etapa_id',$et)->limit(2)->get();
+            if(sizeof($lotes)){
+                foreach($lotes as $lote){
+                    $ids[$i] = $lote->id;
+                    $i++;
+                }
+            }
+        }
+
+        return $ids;
     }
 
 }

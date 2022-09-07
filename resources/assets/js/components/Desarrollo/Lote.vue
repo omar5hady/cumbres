@@ -171,81 +171,123 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                        <div class="col-md-6">
-                            <select id="myselect" class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
-                                <option value="0">Seleccione</option>
-                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                            </select>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Datos generales</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Escritura</a></li>
+                    </ul>
+                    <template v-if="paso == 1">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                            <div class="col-md-6">
+                                <select id="myselect" class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
-                        <div class="col-md-5">
-                            <input type="text" pattern="\d*" maxlength="31" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
+                            <div class="col-md-5">
+                                <input type="text" pattern="\d*" maxlength="31" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
-                        <div class="col-md-4">
-                            <input type="text" pattern="\d*" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
+                            <div class="col-md-4">
+                                <input type="text" pattern="\d*" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                        <div class="col-md-5">
-                            <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                            <div class="col-md-5">
+                                <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
+                            </div>
+                            <label class="col-md-2 form-control-label" for="text-input">Sublote</label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="sublote" class="form-control" placeholder="Sublote">
+                            </div>
                         </div>
-                        <label class="col-md-2 form-control-label" for="text-input">Sublote</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="sublote" class="form-control" placeholder="Sublote">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" v-model="numero" class="form-control" placeholder="Numero">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" v-model="interior" class="form-control" placeholder="Interior">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
-                        <div class="col-md-4">
-                            <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
+                            <div class="col-md-2" >
+                                <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
+                            </div>
+                            <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
+                            <div class="col-md-2">
+                                <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <input type="text" v-model="numero" class="form-control" placeholder="Numero">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">% Indiviso</label>
+                            <div class="col-md-2" >
+                                <input type="number"  v-model="indivisos" class="form-control" placeholder="Indivisos">
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <input type="text" v-model="interior" class="form-control" placeholder="Interior">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
-                        <div class="col-md-2" >
-                            <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
-                        </div>
-                        <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
-                        <div class="col-md-2">
-                            <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">% Indiviso</label>
-                        <div class="col-md-2" >
-                            <input type="number"  v-model="indivisos" class="form-control" placeholder="Indivisos">
-                        </div>
-                    </div>
 
-                    <hr>
+                        <hr>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Colindancias</label>
-                        <div class="col-md-9" >
-                            <textarea class="form-control" v-model="colindancias" id="" cols="45" rows="5"></textarea>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Colindancias</label>
+                            <div class="col-md-9" >
+                                <textarea class="form-control" v-model="colindancias" id="" cols="45" rows="5"></textarea>
+                            </div>
                         </div>
-                    </div>
 
+                    </template>
+                    <template v-if="paso == 2">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Escritura pública</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.num_escritura" class="form-control" placeholder="Número Escritura Publica">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Num. Notario pública</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.num_notario" class="form-control" placeholder="Número Notario Publico">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Fecha de escritura</label>
+                            <div class="col-md-6">
+                                <input type="date" v-model="datosEscritura.date_escritura" class="form-control" placeholder="Fecha de escritura Publica">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Distrito de notario</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.distrito_notario" class="form-control" placeholder="Distrito Notario Publico">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Folio Real.</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.folio_registro" class="form-control" placeholder="Número de Folio">
+                            </div>
+                        </div>
+                    </template>
 
                     <!-- Div para mostrar los errores que mande validerModelo -->
                     <div v-show="errorLote" class="form-group row div-error">
@@ -319,7 +361,12 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Empresas</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Escritura</a></li>
+                    </ul>
+                    <template v-if="paso == 1">
+                        <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Empresa dueña del terreno</label>
                         <div class="col-md-6">
                             <select class="form-control" v-model="empresaTerreno" >
@@ -337,9 +384,48 @@
                             </select>
                         </div>
                     </div>
+
+                    </template>
+                    <template v-if="paso == 2">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Escritura pública</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.num_escritura" class="form-control" placeholder="Número Escritura Publica">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Num. Notario pública</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.num_notario" class="form-control" placeholder="Número Notario Publico">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Fecha de escritura</label>
+                            <div class="col-md-6">
+                                <input type="date" v-model="datosEscritura.date_escritura" class="form-control" placeholder="Fecha de escritura Publica">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Distrito de notario</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.distrito_notario" class="form-control" placeholder="Distrito Notario Publico">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Folio Real.</label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="datosEscritura.folio_registro" class="form-control" placeholder="Número de Folio">
+                            </div>
+                        </div>
+                    </template>
+
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" class="btn btn-primary" @click="guardarEmpresa()">Guardar cambios</button>
+                    <button type="button" class="btn btn-primary" @click="guardarEmpresa(paso)">Guardar cambios</button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -382,12 +468,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 casa_muestra: 0,
                 lote_comercial: 0,
                 comentarios: '',
-
+                datosEscritura:{},
 
                 file: '',
                 modelostc :'',
                 arrayLote : [],
                 modal : 0,
+                paso: 1,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorLote : 0,
@@ -475,7 +562,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.allSelected = false;
             },
             onImageChange(e){
-                console.log(e.target.files[0]);
 
                 this.file = e.target.files[0];
 
@@ -512,7 +598,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 })
 
                 .catch(function (error) {
-                  console.log(error);
                   me.proceso=false;
                 });
 
@@ -531,7 +616,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -568,7 +652,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -581,7 +664,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.empresas = respuesta.data.empresas;
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -596,7 +678,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.arrayEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -610,7 +691,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.arrayModelos = respuesta.modelos;
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -625,7 +705,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.arrayAllEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -645,7 +724,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                 })
                 .catch(function (error) {
-                    console.log(error);
                 });
             },
 
@@ -675,7 +753,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'etapa_servicios':this.etapa_servicios,
                     'comentarios': this.comentarios,
                     'indivisos': this.indivisos,
-                    'colindancias': this.colindancias
+                    'colindancias': this.colindancias,
+                    'num_escritura' : this.datosEscritura.num_escritura,
+                    'date_escritura' : this.datosEscritura.date_escritura,
+                    'num_notario' : this.datosEscritura.num_notario,
+                    'distrito_notario' : this.datosEscritura.distrito_notario,
+                    'folio_registro' : this.datosEscritura.folio_registro,
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -689,7 +772,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         timer: 1500
                         })
                 }).catch(function (error){
-                    console.log(error);
                 });
             },
 
@@ -743,7 +825,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             'etapa_servicios': me.etapa_servicios,
                             'comentarios': me.comentarios,
                             'indivisos': me.indivisos,
-                            'colindancias' : me.colindancias
+                            'colindancias' : me.colindancias,
+                            'num_escritura' : me.datosEscritura.num_escritura,
+                            'date_escritura' : me.datosEscritura.date_escritura,
+                            'num_notario' : me.datosEscritura.num_notario,
+                            'distrito_notario' : me.datosEscritura.distrito_notario,
+                            'folio_registro' : me.datosEscritura.folio_registro,
 
                         }).then(function (response){
                             me.cerrarModal();
@@ -757,7 +844,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 timer: 1500
                                 })
                         }).catch(function (error){
-                            console.log(error);
                         });
                     }
 
@@ -789,7 +875,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         me.listarLote(1,'','','','lote');
                     }).catch(function (error){
                         window.alert("Este lote ya cuenta con alguna promocion o paquete.")
-                        console.log(error);
                     });
                 }
                 })
@@ -844,8 +929,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         me.allLic.forEach(element => {
                             axios.put('/lotes/masa/empresa',{
                                 'id':element,
+                                'paso':this.paso,
                                 'emp_constructora' : this.empresaConst,
-                                'emp_terreno' : this.empresaTerreno
+                                'emp_terreno' : this.empresaTerreno,
+                                'datosEscritura' : this.datosEscritura
                             });
                         })
                         me.proceso=false;
@@ -922,6 +1009,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.tipoAccion = 1;
                                 this.colindancias = '';
                                 this.indivisos = 0;
+                                this.paso = 1;
+                                this.datosEscritura = {};
                                 break;
                             }
                             case 'actualizar':
@@ -949,6 +1038,15 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.comentarios=data['comentarios'];
                                 this.indivisos = data['indivisos'];
                                 this.colindancias = data['colindancias'];
+
+                                this.datosEscritura={
+                                    num_escritura: data['num_escritura'],
+                                    date_escritura: data['date_escritura'],
+                                    num_notario: data['num_notario'],
+                                    distrito_notario: data['distrito_notario'],
+                                    folio_registro: data['folio_registro']
+                                }
+                                this.paso = 1;
                                 break;
                             }
                             case 'excel':
@@ -972,6 +1070,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.tituloModal = "Asignar empresas"
                                 this.empresaConst = '';
                                 this.empresaTerreno = '';
+                                this.paso = 1;
+                                this.datosEscritura = {};
                                 break;
                             }
 
