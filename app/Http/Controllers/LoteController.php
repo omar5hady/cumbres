@@ -12,6 +12,7 @@ use App\Lote;
 use App\Lote_promocion;
 use App\Modelo;
 use App\Etapa;
+use App\Fraccionamiento;
 use App\Licencia;
 use App\Partida;
 use App\Avance;
@@ -575,24 +576,27 @@ class LoteController extends Controller
         if($request->hasFile('file')){
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
-                //Se obtiene el id de la etapa Sin asignar para el fraccionamiento elegido
-                $etapa= Etapa::select('id')
-                ->where('num_etapa','=', 'Sin Asignar')
-                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
-                ->get();
-                //Se obtiene el id del modelo Por asignar para el fraccionamiento elegido
-                $modelo= Modelo::select('id','construccion')
-                ->where('nombre','=', 'Por Asignar')
-                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
-                ->get();
-                //Se calcula el id para la licencia
-                if(Licencia::count() > 0){
-                    $lotes =Licencia::select('id')->get();
-                    $id = $lotes->last()->id + 1;
+                if($request->paso == 1){
+                    //Se obtiene el id de la etapa Sin asignar para el fraccionamiento elegido
+                    $etapa= Etapa::select('id')
+                    ->where('num_etapa','=', 'Sin Asignar')
+                    ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                    ->get();
+                    //Se obtiene el id del modelo Por asignar para el fraccionamiento elegido
+                    $modelo= Modelo::select('id','construccion')
+                    ->where('nombre','=', 'Por Asignar')
+                    ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                    ->get();
+                    //Se calcula el id para la licencia
+                    if(Licencia::count() > 0){
+                        $lotes =Licencia::select('id')->get();
+                        $id = $lotes->last()->id + 1;
+                    }
+                    else{
+                        $id = 1;
+                    }
                 }
-                else{
-                    $id = 1;
-                }
+
 
                 $path = $request->file->getRealPath();
                 //Se obtiene la información del archivo.
@@ -600,59 +604,83 @@ class LoteController extends Controller
                 })->get();
 
                 if(!empty($data) && $data->count()){
-                    //Se reocrren los registros encontrados
-                    foreach ($data as $key => $value) {
-                        //Se inicializan las variables para las empresas
-                        $emp_terreno = 'Grupo Constructor Cumbres';
-                        $emp_constructora = 'Grupo Constructor Cumbres';
+                    if($request->paso == 1){
+                        //Se reocrren los registros encontrados
+                        foreach ($data as $key => $value) {
+                            //Se inicializan las variables para las empresas
+                            $emp_terreno = 'Grupo Constructor Cumbres';
+                            $emp_constructora = 'Grupo Constructor Cumbres';
 
-                        if($value->empresa_terreno == 2)
-                            $emp_terreno = 'CONCRETANIA';
-                        if($value->empresa_constructora == 2)
-                            $emp_constructora = 'CONCRETANIA';
-                        //Si el numero de lote en el archivo no esta vacio
-                        if($value->num_lote != '' || $value->num_lote != 0)
-                        {   //Se inserta el registro en un arreglo.
-                            $insert[] = [
-                                'id' => $id,
-                                'fraccionamiento_id' => $request->fraccionamiento_id,
-                                'etapa_id' => $etapa[0]->id,
-                                'manzana' => $value->manzana,
-                                'num_lote' => $value->num_lote,
-                                'sublote' => $value->duplex,
-                                'modelo_id' => $modelo[0]->id,
-                                'empresa_id' => 1,
-                                'calle' => $value->calle,
-                                'numero' => $value->numero_oficial,
-                                'interior' => $value->interior,
-                                'terreno' => $value->superficie_terreno,
-                                'construccion' => $modelo[0]->construccion,
-                                'clv_catastral' =>$value->clave_catastral,
-                                'etapa_servicios' =>$value->etapa_servicios,
-                                'arquitecto_id' => 1,
-                                'emp_constructora' =>$emp_constructora,
-                                'emp_terreno' =>$emp_terreno,
-                                'indivisos' => $value->indivisos
-                            ];
-                            //Y se crea otro arreglo para las licencias
-                            $insert2[]  = [
-                                'id' => $id++,
-                                'perito_dro' => 1
-                            ];
+                            if($value->empresa_terreno == 2)
+                                $emp_terreno = 'CONCRETANIA';
+                            if($value->empresa_constructora == 2)
+                                $emp_constructora = 'CONCRETANIA';
+                            //Si el numero de lote en el archivo no esta vacio
+                            if($value->num_lote != '' || $value->num_lote != 0)
+                            {   //Se inserta el registro en un arreglo.
+                                $insert[] = [
+                                    'id' => $id,
+                                    'fraccionamiento_id' => $request->fraccionamiento_id,
+                                    'etapa_id' => $etapa[0]->id,
+                                    'manzana' => $value->manzana,
+                                    'num_lote' => $value->num_lote,
+                                    'sublote' => $value->duplex,
+                                    'modelo_id' => $modelo[0]->id,
+                                    'empresa_id' => 1,
+                                    'calle' => $value->calle,
+                                    'numero' => $value->numero_oficial,
+                                    'interior' => $value->interior,
+                                    'terreno' => $value->superficie_terreno,
+                                    'construccion' => $modelo[0]->construccion,
+                                    'clv_catastral' =>$value->clave_catastral,
+                                    'etapa_servicios' =>$value->etapa_servicios,
+                                    'arquitecto_id' => 1,
+                                    'emp_constructora' =>$emp_constructora,
+                                    'emp_terreno' =>$emp_terreno,
+                                    'indivisos' => $value->indivisos
+                                ];
+                                //Y se crea otro arreglo para las licencias
+                                $insert2[]  = [
+                                    'id' => $id++,
+                                    'perito_dro' => 1
+                                ];
+                            }
+                        }
+                        // Si arreglo se lleno correctamente
+                        if(!empty($insert)){
+                            //Se insertan los registros en las tablas de lotes y licencias.
+                            $insertData = DB::table('lotes')->insert($insert);
+                            $insertData2 = DB::table('licencias')->insert($insert2);
+                            if ($insertData) {
+                                Session::flash('success', 'Your Data has successfully imported');
+                            }else {
+                                Session::flash('error', 'Error inserting the data..');
+                                return back();
+                            }
                         }
                     }
-                    // Si arreglo se lleno correctamente
-                    if(!empty($insert)){
-                        //Se insertan los registros en las tablas de lotes y licencias.
-                        $insertData = DB::table('lotes')->insert($insert);
-                        $insertData2 = DB::table('licencias')->insert($insert2);
-                        if ($insertData) {
-                            Session::flash('success', 'Your Data has successfully imported');
-                        }else {
-                            Session::flash('error', 'Error inserting the data..');
-                            return back();
+                    if($request->paso == 2){
+
+                        foreach ($data as $key => $value) {
+                            $proyecto = Fraccionamiento::select('id')->where('nombre','=',$value->proyecto)->first();
+                            $etapa = Etapa::select('id')->where('num_etapa','=',$value->etapa)->first();
+                            $lote = Lote::select('id')
+                                ->where('fraccionamiento_id','=',$proyecto->id)
+                                ->where('etapa_id','=',$etapa->id)
+                                ->where('manzana','=',$value->manzana)
+                                ->where('num_lote','=',$value->lote);
+                                if($value->sublote != 'NULL')
+                                    $lote = $lote->where('sublote','=',$value->sublote);
+                                $lote = $lote->first();
+
+                            if($lote){
+                                $lt = Licencia::findOrFail($lote->id);
+                                $lt->folio_registro = $value->folio;
+                                $lt->save();
+                            }
                         }
                     }
+
                 }
                 return back();
             }else {

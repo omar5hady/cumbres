@@ -11,8 +11,11 @@ use File;
 use App\Contrato;
 use App\Sobreprecio;
 use App\Modelo;
+use App\Amenitie;
 use Excel;
 use Auth;
+
+use App\Http\Resources\AmenitieResource;
 
 class EtapaController extends Controller
 {
@@ -25,6 +28,12 @@ class EtapaController extends Controller
         $etapas = $this->getEtapasQuery($request);
         $etapas = $etapas->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')->paginate(8);
+
+        if(sizeOf($etapas)){
+            foreach($etapas as $etapa){
+                $etapa->amenidades = AmenitieResource::collection(Amenitie::where('etapa_id','=',$etapa->id)->get());
+            }
+        }
 
         return [
             'pagination' => [
@@ -49,7 +58,7 @@ class EtapaController extends Controller
         // Creación y retorno del resultado en excel.
         return Excel::create('Etapas', function($excel) use ($etapas){
             $excel->sheet('Etapas', function($sheet) use ($etapas){
-                
+
                 $sheet->row(1, [
                     'Fraccionamiento','Etapa','Fecha de inicio','Fecha de termino','Encargado'
                 ]);
@@ -75,16 +84,16 @@ class EtapaController extends Controller
                     if($etapa->tipo_etapa == 1) $etapa->tipo_etapa = 'Lotificación';
                     elseif($etapa->tipo_etapa == 2) $etapa->tipo_etapa = 'Departamento';
                     else $etapa->tipo_etapa = 'Terreno';
-                         
+
 
                     $sheet->row($index+2, [
-                        $etapa->fraccionamiento, 
+                        $etapa->fraccionamiento,
                         $etapa->num_etapa,
                         $etapa->f_ini,
                         $etapa->f_fin,
                         $etapa->name
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:E' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -110,7 +119,7 @@ class EtapaController extends Controller
                 'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
                 'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
                 ->where('etapas.num_etapa','!=','Sin Asignar');
-        
+
         if($buscar!=''){
             if($criterio == 'f_ini' || $criterio == 'f_fin') // Busqueda por fecha
                 $etapas = $etapas->whereBetween($criterio, [$buscar,$buscar2]);
@@ -154,12 +163,12 @@ class EtapaController extends Controller
             }
             DB::commit();
 
-            } catch (Exception $e) { 
+            } catch (Exception $e) {
                 DB::rollBack();
         }
     }
 
-    
+
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -227,7 +236,7 @@ class EtapaController extends Controller
         return['etapas' => $etapas];
     }
 
-    /* Funcion que retorna las etapas filtrando por proyecto 
+    /* Funcion que retorna las etapas filtrando por proyecto
         sin tomar en cuenta la etapa Sin asignar. */
     public function selectEtapa(Request $request){
         if(!$request->ajax())return redirect('/');
@@ -238,7 +247,7 @@ class EtapaController extends Controller
                     ->where('fraccionamientos.nombre','=',$buscar)
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('etapas.num_etapa','asc')->get();
-            
+
             return['etapas' => $etapas];
     }
 
@@ -252,7 +261,7 @@ class EtapaController extends Controller
         if($ultimoReglamento->isEmpty()==1){
             $fileName = uniqid().'.'.$request->archivo_reglamento->getClientOriginalExtension();
             $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
-    
+
             if($moved){
                 if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $reglamentoEtapa = Etapa::findOrFail($request->id);
@@ -266,14 +275,14 @@ class EtapaController extends Controller
             File::delete($pathAnterior);
             $fileName = uniqid().'.'.$request->archivo_reglamento->getClientOriginalExtension();
             $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
-    
+
             if($moved){
                 if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $reglamentoEtapa = Etapa::findOrFail($request->id);
                 $reglamentoEtapa->archivo_reglamento = $fileName;
                 $reglamentoEtapa->id = $id;
                 $reglamentoEtapa->save(); //Insert
-        
+
                 }
             return back();
         }
@@ -321,7 +330,7 @@ class EtapaController extends Controller
             // Se guarda el archivo en el servidor
             $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
             $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
-    
+
         }else{
             // si ya se cuenta con un archivo guardado se elimina el archivo anterior
             $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios2;
@@ -329,7 +338,7 @@ class EtapaController extends Controller
             // Se guarda el archivo nuevo en el servidor.
             $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
             $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
-    
+
         }
         // Se verifica que se guardo correctamente el servidor.
         if($moved){
@@ -374,7 +383,7 @@ class EtapaController extends Controller
     // Función para registrar el costo por cuota de mantenimiento
     public function registrarCostoMantenimiento(Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        
+
         $costoMantenimiento = Etapa::findOrFail($request->id);
         $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
         $costoMantenimiento->costo_mantenimiento2 = $request->costo_mantenimiento2;
@@ -399,7 +408,7 @@ class EtapaController extends Controller
         else{
             // Si ya se encuentra registrado un archivo, se elimina el anterior.
             $pathAnterior = public_path().'/files/etapas/plantillasTelecom/'.$plantillaAnterior[0]->plantilla_telecom;
-            File::delete($pathAnterior); 
+            File::delete($pathAnterior);
             // Se guarda el archivo nuevo en el servidor
             $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
             $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
@@ -471,7 +480,7 @@ class EtapaController extends Controller
     // Función para descargar carta de bienvenida
     public function downloadCartaBienvenida ($fileName){
         $pathtoFile = public_path().'/files/etapas/cartasBienvenida/'.$fileName;
-        
+
         return response()->file($pathtoFile);
     }
 

@@ -311,22 +311,45 @@
                 v-if="modal == 2"
             >
                 <template v-slot:body>
-                    <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+                     <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Nuevos Lotes</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Actualizar</a></li>
+                    </ul>
+                    <template v-if="paso == 1">
+                        <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
 
-                        <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                            <div class="col-md-6">
-                                <select class="form-control" v-model="fraccionamiento_id" >
-                                    <option value="0">Seleccione</option>
-                                    <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                </select>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                <div class="col-md-6">
+                                    <select class="form-control" v-model="fraccionamiento_id" >
+                                        <option value="0">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <!-- {{ csrf_field() }} -->
-                        Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
+                            <!-- {{ csrf_field() }} -->
+                            Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
 
-                        <input v-if="proceso==false" type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
-                    </form>
+                            <input v-if="proceso==false" type="submit" value="Añadir nuevos lotes" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                        </form>
+                    </template>
+                    <template v-if="paso == 2">
+                        <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+                            <br>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Archivo (Excel)</label>
+                                <div class="col-md-6">
+                                    <!-- {{ csrf_field() }} -->
+                                    <input type="file" v-on:change="onImageChange" class="form-control">
+                                </div>
+                            </div>
+
+
+                            <input v-if="proceso==false" type="submit" value="Actualizar lotes" class="btn btn-success" style="margin-top: 3%">
+                        </form>
+                    </template>
+
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -582,6 +605,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento_id', this.fraccionamiento_id);
+                formData.append('paso', this.paso);
                 let me = this;
                 axios.post('/import',formData)
                 .then(function (response) {
@@ -1054,6 +1078,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.modal = 2;
                                 this.tituloModal= 'Cargar desde Excel';
                                 this.tipoAccion=3;
+                                this.paso = 1;
 
                                 break;
                             }

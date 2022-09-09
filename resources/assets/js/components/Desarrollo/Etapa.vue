@@ -49,10 +49,13 @@
                                 <tr v-for="etapa in arrayEtapa" :key="etapa.id">
                                     <td class="td2">
                                         <button type="button" @click="abrirModal('etapa','actualizar',etapa)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
+                                            <i class="icon-pencil"></i>
                                         </button> &nbsp;
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarEtapa(etapa)">
-                                        <i class="icon-trash"></i>
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal('etapa','amenidades',etapa)" title="amenidades">
+                                            <i class="fa fa-tree"></i>
                                         </button>
                                     </td>
                                     <td class="td2" v-text="etapa.fraccionamiento"></td>
@@ -153,18 +156,69 @@
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
-            
+
+            <!-- Modal para amenidades -->
+            <ModalComponent v-if="modal == 3"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="amenidades">
+                        <div class=" tab-content table-responsive">
+                            <table  class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Amenidades</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr v-for="(amenidad, index) in arrayListAmenidades" :key="amenidad.amenidad">
+                                        <td class="btn-info table-pointer" v-if="amenidad.activo == 1"
+                                            @click="setAmenidad(amenidad.amenidad,index)"
+                                        >
+                                            {{amenidad.amenidad}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-center">
+
+                        </div>
+                        <div class=" tab-content table-responsive">
+                            <table  class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Amenidades en la privada</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr v-for="amenidad in amenidadesEtapa" :key="amenidad.amenidad">
+                                        <td class="btn-success table-pointer"
+                                            @click="unsetAmenidad(amenidad)"
+                                        >
+                                            {{amenidad.amenidad}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
+            <!--fin amenidades-->
+
             <!-- Manual -->
             <ModalComponent v-if="modal == 2"
                 :titulo="'Manual'"
                 @closeModal="modal=0">
                 <template v-slot:body>
                     <p>
-                        Para crear una nueva etapa solo debe dar clic sobre el botón de “Nuevo” y seleccionar el 
+                        Para crear una nueva etapa solo debe dar clic sobre el botón de “Nuevo” y seleccionar el
                         fraccionamiento o proyecto al cual pertenecerá la nueva etapa.
                     </p>
                     <p>
-                        Un proyecto puede constar de más de una etapa y usted puede agregar cuantas etapas considere 
+                        Un proyecto puede constar de más de una etapa y usted puede agregar cuantas etapas considere
                         sean necesarias para su proyecto, es recomendable que lleve el orden de sus etapas con el número de etapa.
                     </p>
                 </template>
@@ -207,7 +261,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorEtapa : 0,
                 errorMostrarMsjEtapa : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -215,11 +269,94 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
+                criterio : 'fraccionamientos.nombre',
                 buscar : '',
                 buscar2: '',
                 arrayFraccionamientos : [],
-                arrayDirectores : []
+                arrayDirectores : [],
+                arrayListAmenidades : [
+                    {
+                        amenidad: 'Control de acceso',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Caseta de vigilancia',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Barda perimetral',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Cerco eléctrico perimetral',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Circuito cerrado de vigilancia',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Casa Club',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Terraza',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Asador',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Areas verdes',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Alberca',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Servicios sanitarios',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Vapor hombres y mujeres',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Gimnasio',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Cancha de usos multiples',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Juegos infantiles',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Estacionamiento de visitas',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Rampa en pavimento para discapacitados',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Doggy Park',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Lago Koi',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Jardín contemplativo',
+                        activo: 1
+                    },
+                ],
+                amenidadesEtapa:[]
             }
         },
         computed:{
@@ -344,7 +481,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-             limpiarBusqueda(){
+
+            limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
                 me.buscar2="";
@@ -407,7 +545,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/etapa/eliminar', 
+                axios.delete('/etapa/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -428,7 +566,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if(!this.num_etapa) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjEtapa.push("El numero de etapa no puede ir vacio.");
 
-                
+
 
                 if(this.errorMostrarMsjEtapa.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorEtapa = 1;
@@ -436,15 +574,63 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 return this.errorEtapa;
             },
 
-            // isNumber: function(evt) {
-            //     evt = (evt) ? evt : window.event;
-            //     var charCode = (evt.which) ? evt.which : evt.keyCode;
-            //     if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-            //         evt.preventDefault();;
-            //     } else {
-            //         return true;
-            //     }
-            // },
+            setAmenidad(amenidad,index){
+                this.arrayListAmenidades[index].activo = 0;
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/amenities',{
+                    'etapa_id': me.id,
+                    'amenidad': amenidad,
+                }).then(function (response){
+                    me.amenidadesEtapa.push(
+                        {
+                            id: response.data,
+                            amenidad: amenidad,
+                            etapa_id: me.id,
+                            index: index
+                        }
+                    )
+                    me.listarEtapa(me.pagination.current_page,me.buscar,me.buscar2,'etapa');
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Amenidad asignada'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+            unsetAmenidad(amenidad){
+                let me = this;
+                axios.delete(`/amenities/${amenidad.id}`, {
+                    params: {'id': amenidad.id}
+                }).then(function (response){
+                    const index = me.arrayListAmenidades.map( e => e.amenidad ).indexOf( amenidad.amenidad )
+                    me.amenidadesEtapa = me.amenidadesEtapa.filter( a => a.amenidad !== amenidad.amenidad)
+                    me.arrayListAmenidades[index].activo = 1;
+                    me.listarEtapa(me.pagination.current_page,me.buscar,me.buscar2,'etapa');
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Amenidad removida'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
             cerrarModal(){
                 this.modal = 0;
@@ -458,6 +644,88 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.errorMostrarMsjEtapa = [];
                 this.contador=0;
                 this.terreno_m2=0;
+                this.arrayListAmenidades = [
+                    {
+                        amenidad: 'Control de acceso',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Caseta de vigilancia',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Barda perimetral',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Cerco eléctrico perimetral',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Circuito cerrado de vigilancia',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Casa Club',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Terraza',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Asador',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Areas verdes',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Alberca',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Servicios sanitarios',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Vapor hombres y mujeres',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Gimnasio',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Cancha de usos multiples',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Juegos infantiles',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Estacionamiento de visitas',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Rampa en pavimento para discapacitados',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Doggy Park',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Lago Koi',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Jardín contemplativo',
+                        activo: 1
+                    },
+                ]
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -495,6 +763,21 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.terreno_m2 = data['terreno_m2'];
                                 break;
                             }
+                            case 'amenidades':
+                            {
+                                //console.log(data);
+                                this.modal = 3;
+                                this.tituloModal='Amenidades';
+                                this.id=data['id'];
+                                this.amenidadesEtapa=data['amenidades'];
+
+                                this.amenidadesEtapa.forEach(element => {
+                                    let index = this.arrayListAmenidades.map( e => e.amenidad ).indexOf( element.amenidad )
+                                    console.log(index + element);
+                                    this.arrayListAmenidades[index].activo = 0;
+                                });
+                                break;
+                            }
                         }
                     }
                 }
@@ -530,5 +813,19 @@ import TableComponent from '../Componentes/TableComponent.vue'
     }
     .td2:last-of-type, th:last-of-type {
        border-right: none;
+    }
+    .amenidades{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .modal-center{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .table-pointer{
+        cursor: pointer;
     }
 </style>

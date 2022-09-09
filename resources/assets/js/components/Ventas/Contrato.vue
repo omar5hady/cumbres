@@ -1854,16 +1854,16 @@
             <template v-slot:body>
                 <template  v-if="tipoAccion==1">
                     <template v-if="status == 3">
-                        <hr>
+                        <!-- <hr>
                         <div class="form-group row">
                             <div class="col-md-4"></div>
                             <div class="col-md-4">
                                 <center><h6>Datos Fiscales</h6></center>
                             </div>
                             <div class="col-md-4"></div>
-                        </div>
+                        </div> -->
 
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
                             <div class="col-md-4">
                                 <input type="email" v-model="datosFiscales.email_fisc" class="form-control" placeholder="Email">
@@ -1971,7 +1971,7 @@
                                 <input type="text"
                                 v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
                             </div>
-                        </div>
+                        </div> -->
 
                         <hr>
 
@@ -2062,13 +2062,7 @@
                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                     <button type="button" v-if="tipoAccion==1 && status != 3" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
                     <button type="button"
-                        v-if="tipoAccion==1 && status == 3 && datosFiscales.archivo_fisc != null
-                            && datosFiscales.email_fisc != '' && datosFiscales.email_fisc != null
-                            && datosFiscales.tel_fisc != '' && datosFiscales.tel_fisc != null
-                            && datosFiscales.nombre_fisc != '' && datosFiscales.nombre_fisc != null
-                            && datosFiscales.direccion_fisc != '' && datosFiscales.direccion_fisc != null
-                            && datosFiscales.regimen_fisc != '' && datosFiscales.cfi_fisc != null
-                            && datosFiscales.cp_fisc != '' && datosFiscales.cp_fisc != null"
+                        v-if="tipoAccion==1 && status == 3"
                         class="btn btn-success" @click="registrarFechaStatus()"
                     >Guardar</button>
                     <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="mostrarDatosLote(sel_lote)">reasignar</button>
