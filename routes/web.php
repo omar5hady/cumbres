@@ -1232,6 +1232,9 @@ Route::group(['middleware' => ['auth']],function(){
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
 
+        /////////////////////// Rutas Specification
+        Route::resource('/specification', Modelo\EspecificacionController::class);
+
     });
 
 

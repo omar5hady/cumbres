@@ -773,7 +773,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                                 this.amenidadesEtapa.forEach(element => {
                                     let index = this.arrayListAmenidades.map( e => e.amenidad ).indexOf( element.amenidad )
-                                    console.log(index + element);
                                     this.arrayListAmenidades[index].activo = 0;
                                 });
                                 break;

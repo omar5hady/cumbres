@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PartidaController;
 use App\Modelo;
+use App\Specification;
 use DB;
 use App\Contrato;
 use Auth;
 use App\Version_modelo;
+
+use App\Http\Resources\SpecificationResource;
 
 //Controlador para el modelo Modelo.
 class ModeloController extends Controller
@@ -30,7 +33,19 @@ class ModeloController extends Controller
                 $modelos = $modelos->where($criterio, 'like', '%'. $buscar . '%');
         $modelos = $modelos->orderBy('fraccionamientos.nombre','asc')
                 ->orderBy('modelos.nombre','asc')->paginate(8);
-        
+
+        if(sizeOf($modelos)){
+            foreach($modelos as $modelo){
+                $modelo->especificaciones = Specification::select('general')->where('modelo_id','=',$modelo->id)->distinct()->get();
+                if(sizeof($modelo->especificaciones)){
+                    foreach($modelo->especificaciones as $generales){
+                        $generales->detalle = SpecificationResource::collection(
+                            Specification::where('modelo_id','=',$modelo->id)->where('general','=',$generales->general)->get());
+                    }
+                }
+            }
+        }
+
         return [
             'pagination' => [
                 'total'         => $modelos->total(),
@@ -256,7 +271,7 @@ class ModeloController extends Controller
                     $nombre='Limpieza extra fina en vivienda al entregar la vivienda';
                     $partida->store($modelo->id, $nombre);
                     break;
-            }              
+            }
         }
     }
 
@@ -293,7 +308,7 @@ class ModeloController extends Controller
             $modelo->archivo = $fileName;
             $modelo->id = $id;
             $modelo->save(); //Insert
-    
+
             }
     	return response()->json(['success'=>'You have successfully upload file.']);
     }

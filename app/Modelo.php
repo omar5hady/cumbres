@@ -25,4 +25,8 @@ class Modelo extends Model
     public function precio_modelo(){
         return $this->belongsTo('App\precio_modelo');
     }
+
+    public function especificacion(){
+        return $this->hasMany('App\Specification');
+    }
 }

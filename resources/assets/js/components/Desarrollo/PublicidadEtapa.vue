@@ -26,7 +26,7 @@
                                 </div>
                             </div>
                         </div>
-                        <TableComponent 
+                        <TableComponent
                             :cabecera="['','Etapa','Fraccionamiento','Fecha de inicio ','Fecha de termino',
                             'Reglamento','Plantilla para carta de servicios','Costo de mantenimiento Casa',
                             'Costo de mantenimiento Lote','Empresa(s) de telecomunicacion',
@@ -63,7 +63,7 @@
                                     <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
                                     <td class="td2" v-if = "etapa.plantilla_telecom"><a target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
                                     <td class="td2" v-else></td>
-                                </tr>  
+                                </tr>
                             </template>
                         </TableComponent>
                         <nav>
@@ -85,7 +85,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <ModalComponent 
+            <ModalComponent
                 :titulo="tituloModal"
                 :size="'modal-md'"
                 @closeModal="cerrarModal()"
@@ -114,7 +114,7 @@
 
                                 <div class="form-sub">
                                     <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-                                         <div class="form-opc"> 
+                                         <div class="form-opc">
                                             <label v-if="formActive == 'casa'" class="tite-form">Sube aqui la plantilla para la carta de los servicios Casa  <u>794 x 986</u></label>
                                             <label v-if="formActive == 'lote'" class="tite-form">Sube aqui la plantilla para la carta de los servicios Lote  <u>794 x 986</u></label>
                                             <label v-if="formActive == 'telecom'" class="tite-form">Sube aqui la plantilla para los servicios de telecomunicacion</label>
@@ -125,12 +125,12 @@
                                                                 <label class="label-button"
                                                                     @click="onSelectArchivo"
                                                                     >
-                                                                    Sube aqui la plantilla 
+                                                                    Sube aqui la plantilla
                                                                     <br>
                                                                 <i class="fa fa-upload" style=" justify-content: center; align-self: center;"></i>
                                                                 </label>
                                                     <div v-if="nom_archivo=='Seleccione Archivo'" class="text-file-hide"   v-text="nom_archivo" ></div>
-                                            
+
                                                     <div v-else class="text-file"  v-text="nom_archivo"></div>
                                             </div>
                                                 <div class="boton-modal">
@@ -141,16 +141,16 @@
                                     </form>
 
                                 </div>
-                        
-                     
-                        
+
+
+
                             </div>
 
-                    
-                        </div>
-                            <br/> 
 
-                 
+                        </div>
+                            <br/>
+
+
                     </template>
                     <template v-if="tipoAccion == 2"
                     >
@@ -183,7 +183,7 @@
                         </div>
                     </template>
                 </template>
-                
+
                 <template v-if="tipoAccion==2" v-slot:buttons-footer>
                     <button type="button" class="btn btn-info" @click="registrarCostosMantenimiento()">Guardar</button>
                 </template>
@@ -218,12 +218,12 @@ import vSelect from 'vue-select';
                 arrayEtapa : [],
                 modal : 0,
                 tituloModal : '',
-               
+
                 formActive:'',
                 nom_archivo:'Seleccione Archivo',
                 tipoAccion: 0,
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -231,7 +231,7 @@ import vSelect from 'vue-select';
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
+                criterio : 'fraccionamientos.nombre',
                 buscar : '',
                 buscar2: '',
                 arrayFraccionamientos : [],
@@ -270,7 +270,7 @@ import vSelect from 'vue-select';
 
             onImageChange(e){
                 this.nom_archivo ='Seleccione Archivo'
-          
+
                 this.archivo = e.target.files[0];
                 this.nom_archivo = e.target.files[0].name;
             },
@@ -325,14 +325,14 @@ import vSelect from 'vue-select';
 
             },
 
-           
-           
+
+
 
              registrarCostosMantenimiento(){
                 if(this.proceso==true){
                     return;
                 }
-             
+
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -375,7 +375,7 @@ import vSelect from 'vue-select';
                     console.log(error);
                 });
             },
-           
+
             cambiarPagina(page, buscar, buscar2, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -408,7 +408,7 @@ import vSelect from 'vue-select';
                 this.archivo='';
                 this.nom_archivo='Seleccione Archivo';
                 this.formActive='';
-                
+
             },
 
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -442,7 +442,7 @@ import vSelect from 'vue-select';
                                 this.tipoAccion = 2;
                                 break;
                             }
-                           
+
                         }
                     }
                 }
@@ -455,23 +455,23 @@ import vSelect from 'vue-select';
 </script>
 <style scoped>
     .text-formfile{
-    
+
         color: grey;
         display:flex;
         padding-top: 13px;
         justify-content: left;
-    
+
     }
     .contenedor-modal{
-        
+
         display: block;
         flex-direction: column;
-        
+
         margin: auto;
         overflow-x: auto;
         width: fit-content;
         max-width: 100%;
-    
+
 
     }
     .tite-form{
@@ -485,7 +485,7 @@ import vSelect from 'vue-select';
 
     .label-button{
     border-style: solid;
-    cursor:pointer; 
+    cursor:pointer;
     color: #fff;
     background-color: #00ADEF;
     border-color: #00ADEF;
@@ -497,50 +497,50 @@ import vSelect from 'vue-select';
     color: #fff;
     background-color: #1b8eb7;
     border-color: #00b0bb;;
-      
+
       }
     .form-sub{
         border: 1px solid #c2cfd6;
         margin-top: 20px;
         width: 100%;
-        
-        
-    
+
+
+
     }
     .form-opc{
         display: flex;
         flex-direction: column;
-        
-    
+
+
     }
     .form-archivo{
         display: flex;
         flex-direction: row;
-    
+
         width: 100%;
     }
     .text-file{
-    
+
         color: rgb(39, 38, 38);
         font-size:12px;
         word-break: break-all;
         font-weight: bold;
         width: 300px;
         padding: 15px;
-        
-        
-    
+
+
+
     }
     .text-file-hide{
-    
+
         color: rgb(127, 130, 134);
         font-size:13px;
         word-break: break-all;
         font-weight: bold;
         width: 300px;
         padding: 15px;
-        
-        
+
+
     }
     .boton-modal{
         margin-top: 15px;
@@ -574,5 +574,5 @@ import vSelect from 'vue-select';
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>
