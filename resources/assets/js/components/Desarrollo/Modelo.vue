@@ -459,21 +459,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            // preciosViviendas(){
-            //     let me = this;
-
-            //     var url = 'https://siicumbres.com/api/precios/lista?proyecto=Catara&privada=Varese';
-            //     axios.get(url, {
-            //     'mode': 'no-cors',
-            //     'headers': {
-            //         'Access-Control-Allow-Origin': '*',
-            //     }}).then(function (response) {
-            //        console.log(response.data)
-            //     })
-            //     .catch(function (error) {
-            //         console.log(error);
-            //     });
-            // },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -748,7 +733,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
         },
         mounted() {
             this.listarModelo(1,this.buscar,this.criterio);
-            // this.preciosViviendas();
         }
     }
 </script>

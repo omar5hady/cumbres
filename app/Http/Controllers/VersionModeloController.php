@@ -6,13 +6,16 @@ use Illuminate\Http\Request;
 use App\Version_modelo;
 use App\Lote;
 use App\Modelo;
+use App\SpecificationLote;
 use Auth;
+
+use App\Http\Resources\SpecificationLoteResource;
 
 class VersionModeloController extends Controller
 {
     //Funcion para subir imagen de los modelos de casas
     public function formSubmit(Request $request,$id,$version)
-    { 
+    {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $fileName = time().'.'.$request->archivo->getClientOriginalExtension(); // genera el nombre del archivo con su linea te tiempo
@@ -25,13 +28,13 @@ class VersionModeloController extends Controller
             $archivo->archivo = $fileName;
             $archivo->version = $request->version;
             $archivo->save(); //Insert
-    
+
             }
-        
+
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
 
-    // elimina archivo de modelo 
+    // elimina archivo de modelo
     public function delete(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -42,7 +45,7 @@ class VersionModeloController extends Controller
 
     }
 
-    // obtiene las veriones del archivo seleccionado 
+    // obtiene las veriones del archivo seleccionado
     public function getVersiones(Request $request){
         if(!$request->ajax())return redirect('/');
 
@@ -61,65 +64,44 @@ class VersionModeloController extends Controller
         $manzana = $request->manzana;
         $lote = $request->lote;
 
-        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
-                    'lotes.manzana','lotes.num_lote','lotes.sublote',
-                    'modelos.nombre as modelo', 'modelos.archivo', 'lotes.nombre_archivo',
-                    'lotes.habilitado','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id',
-                    'lotes.credito_puente','lotes.fecha_termino_ventas');
+        $lotes = Lote::join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+            ->join('etapas as e','lotes.etapa_id','=','e.id')
+            ->join('modelos as m','lotes.modelo_id','=','m.id')
+            ->select('lotes.*','f.nombre as proyecto','e.num_etapa as etapa','m.nombre as modelo')
+            ->where('lotes.habilitado','=',1)
+            ->where('m.nombre','!=','Por asignar')
+            ->where('m.nombre','!=','Terreno');
 
-        // busqueda por criterio
-        if($manzana == '' && $lote == ''){
-            $lotes = $query
-            ->where('lotes.habilitado','=',1)
-            // ->where('lotes.contrato','=',0)
-            ->where('lotes.fraccionamiento_id','=',$proyecto)
-            ->where('lotes.etapa_id','=',$etapa)
-            ->where('lotes.modelo_id','=',$modelo);
-        }
-        elseif($manzana != '' && $lote == ''){
-            $lotes = $query
-            ->where('lotes.habilitado','=',1)
-            // ->where('lotes.contrato','=',0)
-            ->where('lotes.fraccionamiento_id','=',$proyecto)
-            ->where('lotes.etapa_id','=',$etapa)
-            ->where('lotes.modelo_id','=',$modelo)
-            ->where('lotes.manzana', 'like', '%'. $manzana . '%');
-        }
-        elseif($manzana != '' && $lote != ''){
-            $lotes = $query
-            ->where('lotes.habilitado','=',1)
-            // ->where('lotes.contrato','=',0)
-            ->where('lotes.fraccionamiento_id','=',$proyecto)
-            ->where('lotes.etapa_id','=',$etapa)
-            ->where('lotes.modelo_id','=',$modelo)
-            ->where('lotes.manzana', 'like', '%'. $manzana . '%')
-            ->where('lotes.num_lote', '=', $lote);
-        }
-        elseif($manzana == '' && $lote != ''){
-            $lotes = $query
-            ->where('lotes.habilitado','=',1)
-            // ->where('lotes.contrato','=',0)
-            ->where('lotes.fraccionamiento_id','=',$proyecto)
-            ->where('lotes.etapa_id','=',$etapa)
-            ->where('lotes.modelo_id','=',$modelo)
-            ->where('lotes.num_lote', '=', $lote);
-        }
+        if($proyecto != '')
+            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$proyecto);
 
-        $lotes = $lotes->orderBy('fraccionamientos.nombre','ASC')
-                        ->orderBy('etapas.num_etapa','ASC')
+        if($etapa != '')
+            $lotes = $lotes->where('lotes.etapa_id','=',$etapa);
+
+        if($manzana != '')
+            $lotes = $lotes->where('lotes.manzana','=',$manzana);
+
+        if($lote != '')
+            $lotes = $lotes->where('lotes.num_lote','=',$lote);
+
+        if($modelo != '')
+            $lotes = $lotes->where('lotes.modelo_id','=',$modelo);
+
+        $lotes = $lotes->orderBy('f.nombre','ASC')
+                        ->orderBy('e.num_etapa','ASC')
                         ->orderBy('lotes.manzana','ASC')
                         ->orderBy('lotes.num_lote','ASC')->paginate(15);
 
-        // recorre todos los datos optenidos 
-        // obtiene el nombre del archivo 
+        // recorre todos los datos optenidos
+        // obtiene el nombre del archivo
         foreach($lotes as $index => $lote) {
-            $archivo = Version_modelo::select('archivo')->where('modelo_id','=',$lote->modelo_id)->where('version','=',$lote->nombre_archivo)->get();
-            if(sizeof($archivo)) 
-                $lote->archivo = $archivo[0]->archivo;
+            $lote->especificaciones = SpecificationLote::select('general')->where('lote_id','=',$lote->id)->distinct()->get();
+                if(sizeof($lote->especificaciones)){
+                    foreach($lote->especificaciones as $generales){
+                        $generales->detalle = SpecificationLoteResource::collection(
+                            SpecificationLote::where('lote_id','=',$lote->id)->where('general','=',$generales->general)->get());
+                    }
+                }
         }
 
         return [
@@ -133,10 +115,10 @@ class VersionModeloController extends Controller
             ],
             'lotes' => $lotes
         ];
-        
+
     }
 
-    // 
+    //
     public function updateVersionLote(Request $request){
 
         $lote = Lote::findOrFail($request->id);
@@ -146,7 +128,57 @@ class VersionModeloController extends Controller
         else{
             $lote->nombre_archivo = $request->nombre_archivo;
         }
-        
+
         $lote->save();
+    }
+
+    public function updateEspecificacion(Request $request){
+        $esp = SpecificationLote::findOrFail($request->id);
+        $esp->subconcepto = $request->subconcepto;
+        $esp->descripcion = $request->descripcion;
+        $esp->lote_id = $request->lote_id;
+        $esp->save();
+    }
+
+    public function deleteEspecificacion(Request $request){
+        $esp = SpecificationLote::findOrFail($request->id);
+        $esp->delete();
+    }
+
+    public function storeEspecificacion(Request $request){
+        $esp = new SpecificationLote();
+        $esp->general = $request->general;
+        $esp->subconcepto = $request->subconcepto;
+        $esp->descripcion = $request->descripcion;
+        $esp->lote_id = $request->lote_id;
+        $esp->save();
+
+        return($esp);
+    }
+
+    public function setEspecifiacionesMasa(Request $request){
+        $lotes = $request->lotes;
+        $especificaciones = $request->especifiaciones;
+
+        $espLt = SpecificationLote::select('id')->whereIn('lote_id',$lotes)->get();
+        if(sizeof($espLt))
+            foreach($espLt as $lt){
+                $e = SpecificationLote::findOrFail($lt->id);
+                $e->delete();
+            }
+
+        foreach($lotes as $l){
+            foreach($especificaciones as $general){
+                foreach($general['detalle'] as $detalle){
+                    $especificacion = new SpecificationLote();
+                    $especificacion->lote_id = $l;
+                    $especificacion->general = $detalle['general'];
+                    $especificacion->subconcepto = $detalle['subconcepto'];
+                    $especificacion->descripcion = $detalle['descripcion'];
+                    $especificacion->save();
+                }
+            }
+        }
+
     }
 }

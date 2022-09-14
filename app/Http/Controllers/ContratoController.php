@@ -960,6 +960,8 @@ class ContratoController extends Controller
         return $pdf->stream('ContratoCompraVenta.pdf');
     }
 
+
+
     // Función para imprimir los pagares
     public function pagareContratopdf(Request $request, $id)
     {

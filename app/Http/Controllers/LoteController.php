@@ -29,6 +29,8 @@ use App\Credito_puente;
 use App\Lote_puente;
 use App\Precio_puente;
 use Carbon\Carbon;
+use App\Specification;
+use App\SpecificationLote;
 use Session;
 use Excel;
 use File;
@@ -79,8 +81,10 @@ class LoteController extends Controller
                     'lotes.*','licencias.*','modelos.nombre as modelo','empresas.nombre as empresa'
                   );
 
-                if($buscar != '')//Busqueda principal por criterio
+                if($buscar != '' && $criterio!= 'lotes.fraccionamiento_id')//Busqueda principal por criterio
                     $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                elseif($buscar != '' && $criterio == 'lotes.fraccionamiento_id')
+                    $lotes = $lotes->where($criterio, '=', $buscar);
                 if($b_puente != '')//Busqueda por crédito puente
                     $lotes = $lotes->where('lotes.credito_puente','=',$b_puente);
                 if($b_modelo != '')//Busqueda por modelo
@@ -369,6 +373,7 @@ class LoteController extends Controller
         $lote->extra_ext = $request->extra_ext;
         //Si se habilita el lote para venta
         if($request->habilitado == 1){
+            $this->setEspecificaciones($lote->id,$lote->modelo_id);
             if($request->casa_renta == 1){//En caso de ser lote para renta
                 $lote->casa_renta = $request->casa_renta;
                 $lote->precio_renta = $request->precio_renta;
@@ -453,6 +458,27 @@ class LoteController extends Controller
             $creditoPuente = Credito_puente::findOrFail($auxLotePuente->solicitud_id);
             $creditoPuente->total = $creditoPuente->total - $auxLotePuente->precio1 + $auxLotePuente->precio_p;
             $creditoPuente->save();
+        }
+    }
+
+    private function setEspecificaciones($lote, $modelo){
+        $anterior = SpecificationLote::select('id')->where('lote_id','=',$lote)->get();
+        if(sizeof($anterior))
+            foreach($anterior as $e){
+                $spe = SpecificationLote::findOrFail($e->id);
+                $spe->delete();
+            }
+
+        $baseEspecificaciones = Specification::where('modelo_id','=',$modelo)->get();
+        if(sizeof($baseEspecificaciones)){
+            foreach($baseEspecificaciones as $base){
+                $es = new SpecificationLote();
+                $es->lote_id = $lote;
+                $es->general = $base->general;
+                $es->subconcepto = $base->subconcepto;
+                $es->descripcion = $base->descripcion;
+                $es->save();
+            }
         }
     }
 

@@ -187,8 +187,10 @@
                     y explicados a <strong>“EL PROMITENTE COMPRADOR” </strong>
                     y se encuentran nuevamente a su disposición para consulta en el domicilio de <strong>“LOS PROMITENTENTES VENDEDORES”.</strong></li>
                      <br><br>
-                 <li><template class="cuadrado">&nbsp;&nbsp; </template> NO cuenta con ellos, sin embargo, cuenta con el Dictamen de las Condiciones Estructurales, mismo que le ha sido exhibido
-                     y explicado a “EL PROMITENTE COMPRADOR” y se encuentra nuevamente a su disposición para consulta en el domicilio de “LOS PROMITENTENTES VENDEDORES”. </li>
+                 <li><template class="cuadrado">&nbsp;&nbsp; </template> NO cuenta con ellos, sin embargo, cuenta con el Dictamen de las Condiciones
+                    Estructurales, mismo que le ha sido exhibido
+                    y explicado a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentra nuevamente a su disposición para consulta en
+                    el domicilio de <strong>“LOS PROMITENTENTES VENDEDORES”.</strong> </li>
                      <br><br>
                  <li><template class="cuadrado">&nbsp;&nbsp;</template> NO cuenta con ellos ni con el dictamen de las condiciones estructurales, en razón de que
                      , sin embargo, dicha documentación estará puesta a su disposición a partir del	. </li>
@@ -196,7 +198,49 @@
              </ul>
         </p>
 
+        <p>
+            e)	Que cuenta con las autorizaciones, licencias y permisos expedidos por las autoridades competentes para la construcción,
+            seguridad, uso de suelo, y demás relativas al Inmueble y demás documentos que se indican en el “Anexo B”,
+            los cuales le han sido exhibidos y explicados a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentran nuevamente a su disposición
+            para consulta en el domicilio de <strong>“LOS PROMITENTES VENDEDORES”.</strong>
+        </p>
 
+        <p>
+            f)	Que al momento de la escrituración que formalice el contrato de compraventa del inmueble destinado a vivienda,
+            dicho inmueble debe estar libre de todo gravamen que afecte la propiedad de <strong>“EL PROMITENTE COMPRADOR”</strong> sobre el mismo.
+        </p>
+
+        <p>IV.- Declara conjuntamente <strong>“EL PROMITENTE COMPRADOR”:</strong></p>
+
+        <p>
+            a) Ser una persona física de nacionalidad <u>{{$contrato->nacionalidad}}</u> Que se identifica con cualquiera de los
+            siguientes documentos, INE <u>{{$contrato->num_ine}}</u> o  Pasaporte No. <u>{{$contrato->num_pasaporte}}</u>,
+            llamada como ha quedado escrito, haber nacido en <u>{{$contrato->lugar_nac}}</u>, el <u>{{$contrato->fecha_nac}},</u>
+            estado civil <u>{{$contrato->edo_civil}}</u>, de ocupación <u>{{$contrato->puesto}},</u> con domicilio en
+            <u>{{$contrato->direccion_cliente}}</u>	, con Registro Federal de Contribuyentes <u>{{$contrato->rfc}}-{{$contrato->homoclave}}</u>
+            y con capacidad legal y económica para celebrar este contrato.
+        </p>
+
+        <p>
+            b)	Que es derechohabiente del:
+        </p>
+
+        <p>
+            <li><template class="cuadrado">
+                &nbsp;
+                    @if($contrato->info == 1)<strong>X</strong>
+                &nbsp;</template> Instituto del Fondo Nacional de la Vivienda para los Trabajadores <strong>(INFONAVIT)</strong>. </li>
+                 <br><br>
+             <li><template class="cuadrado">
+                &nbsp;
+                    @if($contrato->isste == 1)<strong>X</strong>
+                &nbsp; </template> Instituto de Seguridad y Servicios Sociales para los Trabajadores del Estado.</li>
+                <br><br>
+             <li><template class="cuadrado">
+                &nbsp;
+
+                &nbsp;</template>Otro _________________________________ </li>
+        </p>
 
 
 

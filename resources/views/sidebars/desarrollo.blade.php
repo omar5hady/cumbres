@@ -16,7 +16,7 @@
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Fraccionamiento</a>
             </li>
         @endif
-    
+
         @if(Auth::user()->p_etapa == 1)
             <li @click="menu=111" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Documentos anexos</a>
@@ -37,7 +37,7 @@
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Asignar Modelo</a>
             </li>
         @endif
-        @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 12)
+        @if(Auth::user()->rol_id == 1 || Auth::user()->usuario == '	david.hh' || Auth::user()->usuario == 'Herlindo' || Auth::user()->usuario == 'eli_hdz')
             <li @click="menu=230" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Especificaciones de modelo</a>
             </li>
@@ -67,6 +67,6 @@
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Seguimiento de RUV</a>
             </li>
         @endif
-        
+
     </ul>
 </li>

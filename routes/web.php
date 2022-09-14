@@ -1104,6 +1104,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/modelos/archivos/updateVersionLote','VersionModeloController@updateVersionLote');
         Route::delete('/modelos/archivos/delete', 'VersionModeloController@delete');
 
+        Route::put('/modelos/updateEspecificacion','VersionModeloController@updateEspecificacion');
+        Route::delete('/modelos/deleteEspecificacion','VersionModeloController@deleteEspecificacion');
+        Route::post('/modelos/storeEspecificacion','VersionModeloController@storeEspecificacion');
+        Route::post('/modelos/setEspecifiacionesMasa','VersionModeloController@setEspecifiacionesMasa');
+
 
         //////////////////// RUTAS PARA LEADS ////////////////////////
         Route::get('/campanias/index','CampaniaController@indexCampanias');

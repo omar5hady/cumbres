@@ -11,13 +11,17 @@
                         <i class="fa fa-align-justify"></i>Especificaciones de Modelo
                         &nbsp;&nbsp;
                         <!--   Boton   -->
-                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal()" >
+                        <button type="button" class="btn btn-success btn-sm" @click="verEspecificaciones('masa')" v-if="vista==0 && b_modelo != ''">
                             <i class="icon-pencil"></i>&nbsp;Asignar especificaciones
                         </button>
-                        
+
+                        <button type="button" v-if="vista == 1" class="btn btn-primary btn-sm" @click="vista = 0">
+                            <i class="fa fa-mail-reply"></i>&nbsp;Regresar a listado
+                        </button>
+
                         <!---->
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" v-if="vista == 0">
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -27,23 +31,23 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1)"> 
+                                    <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </div>
                                 <div class="input-group">
-                                    <select class="form-control" v-model="b_modelo" @keyup.enter="listarLote(1)">
+                                    <select class="form-control" v-model="b_modelo" @change="listarLote(1)">
                                             <option value="">Modelo</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>                       
-                                    
+                                        </select>
+
                                 </div>
                                 <div class="input-group">
                                     <input type="text" v-model="buscar3" @keyup.enter="listarLote(1)" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-model="b_lote" @keyup.enter="listarLote(1)" class="form-control" placeholder="Lote a buscar">
                                 </div>
-                                
+
                                 <div class="input-group">
                                     <button type="submit" @click="listarLote(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -69,19 +73,21 @@
                                         <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
                                     </td>
                                     <td class="td2" v-text="lote.proyecto"></td>
-                                    <td class="td2" v-text="lote.etapas"></td> 
+                                    <td class="td2" v-text="lote.etapa"></td>
                                     <td class="td2" v-text="lote.manzana"></td>
                                     <td class="td2" v-text="lote.num_lote"></td>
                                     <td class="td2" v-text="lote.modelo"></td>
-                                    <td class="td2" v-if="lote.nombre_archivo == null">
-                                        <a v-bind:href="'/downloadModelo/'+lote.archivo">Versión 1</a>
-                                    </td> 
-                                    <td class="td2" v-else>
-                                        <a v-bind:href="'/downloadModelo/'+lote.archivo">{{lote.nombre_archivo}}</a>
-                                    </td> 
+                                    <td>
+                                        <button v-if="lote.especificaciones.length"
+                                            title="Ver especificaciones" type="button"
+                                            @click="verEspecificaciones('especificaciones',lote)" class="btn btn-scarlet btn-sm">
+                                            <i class="fa fa-cogs"></i>
+                                        </button>
+                                    </td>
+
                                 </tr>
                             </template>
-                        </TableComponent> 
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -103,31 +109,87 @@
                             </ul>
                         </nav>
                     </div>
+
+                    <div class="card-body" v-if="vista >= 1">
+
+                        <div id="accordion" role="tablist">
+                            <div class="card mb-0" v-for="especificacion in especificaciones" :key="especificacion.general">
+                                <div class="card-header" id="headingOne" role="tab">
+                                    <h5 class="mb-0">
+                                        <a href="#" @click="tab=especificacion.general" class="collapsed">{{especificacion.general}}</a>&nbsp;
+                                         <button type="button" v-if="tab == especificacion.general"
+                                            @click="addRegistro(especificacion.general, id)" class="btn btn-sm btn-success" title="Nuevo">
+                                            <i class="icon-plus"></i>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div v-if="tab == especificacion.general" style="">
+                                <!--Datos Prospecto-->
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
+                                        <div class="col-md-12"><br></div>
+                                        <template v-if="nuevo == 1">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" v-model="nuevoDet.subconcepto" placeholder="Subconcepto">
+                                                <textarea v-model="nuevoDet.descripcion" rows="4" class="form-control"></textarea>
+                                                <div class="form-group">
+                                                    <button v-if="vista == 1"
+                                                        type="button" @click="guardarNuevo(nuevoDet)" class="btn btn-success">
+                                                        <i class="icon-check"></i>&nbsp;Guardar nuevo registro
+                                                    </button>
+                                                    <button v-if="vista == 2"
+                                                        type="button" @click="addNuevo(nuevoDet)" class="btn btn-success">
+                                                        <i class="icon-check"></i>&nbsp;Agregar a plantilla
+                                                    </button>
+                                                    <button type="button" @click="nuevo=0" class="btn btn-scarlet">
+                                                        <i class="icon-close"></i>&nbsp;Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2"></div>
+                                        </template>
+
+
+                                        <div class="col-md-6" v-for="det in especificacion.detalle" :key="det.id">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" v-model="det.subconcepto" placeholder="Subconcepto">
+                                                <textarea v-model="det.descripcion" rows="5" class="form-control"></textarea>
+                                                <div class="form-group" v-if="vista == 1">
+                                                    <button type="button" @click="guardarCambios(det)" class="btn btn-success">
+                                                        <i class="icon-check"></i>&nbsp;Guardar cambios
+                                                    </button>
+                                                    <button type="button" @click="eliminar(det)" class="btn btn-scarlet">
+                                                        <i class="icon-trash"></i>&nbsp;Eliminar
+                                                    </button>
+                                                </div>
+                                                <div class="form-group" v-if="vista == 2">
+                                                    <button type="button" @click="unset(det)" class="btn btn-scarlet">
+                                                        <i class="icon-trash"></i>&nbsp;Eliminar
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                <!-- Fin datos prospecto-->
+                                </div>
+                            </div>
+
+                            <div class="col-md-12" v-if="vista == 2">
+                                <div class="form-group">
+                                    <button
+                                        type="button" @click="setEspecifiacionesMasa(nuevoDet)" class="btn btn-success">
+                                        <i class="icon-check"></i>&nbsp;Guardar plantilla para los lotes seleccionados
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-
-            <!-- Modal para asignar modelo -->
-            <ModalComponent v-if="modal"
-                :titulo="tituloModal"
-                @closeModal="cerrarModal()"
-            >
-                <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Version de especificaciones</label>
-                        <div class="col-md-6">
-                            <select class="form-control" v-model="version">
-                                <option value=''>Version 1</option>
-                                <option v-for="version in arrayVersiones" :key="version.id" :value="version.version" v-text="version.version"></option>
-                            </select>
-                        </div>
-                    </div>
-                </template>
-                <template v-slot:buttons-footer>
-                    <button type="button"  class="btn btn-primary" @click="actualizarVersion()">Actualizar</button>
-                </template>
-            </ModalComponent>
-            <!--Fin del modal-->           
         </main>
 </template>
 
@@ -136,13 +198,11 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
 
 import _ from 'lodash'
     export default {
         components:{
-            ModalComponent,
             TableComponent
         },
         data(){
@@ -150,18 +210,13 @@ import _ from 'lodash'
                 proceso:false,
                 allSelected: false,
                 lotes_ini : [],
-                arrayVersiones : [],
                 id: 0,
                 b_modelo: '',
                 b_habilitado: 1,
                 b_lote: '',
-                version:'',
-                
                 arrayLote : [],
-                modal : 0,
-                tituloModal : '',
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -176,6 +231,11 @@ import _ from 'lodash'
                 arrayEtapas : [],
                 arrayModelos : [],
                 arrayManzanas: [],
+                especificaciones:{},
+                vista:0,
+                tab:'',
+                nuevoDet:{},
+                nuevo:0,
             }
         },
         computed:{
@@ -209,7 +269,7 @@ import _ from 'lodash'
 
         },
 
-        
+
         methods : {
             selectAll: function() {
             this.lotes_ini = [];
@@ -229,7 +289,7 @@ import _ from 'lodash'
             /**Metodo para mostrar los registros */
             listarLote(page){
                 let me = this;
-                var url = '/lote/dispEspecificaciones?page=' + page + '&proyecto=' + this.buscar + '&etapa=' + this.buscar2 
+                var url = '/lote/dispEspecificaciones?page=' + page + '&proyecto=' + this.buscar + '&etapa=' + this.buscar2
                             + '&manzana=' + this.buscar3  + '&modelo=' + this.b_modelo + '&lote=' + this.b_lote;
 
                 axios.get(url).then(function (response) {
@@ -240,6 +300,174 @@ import _ from 'lodash'
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            getEspecificaciones(modelo_id){
+                let me = this;
+                var url = 'specification?modelo_id=' + modelo_id;
+
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.especificaciones = respuesta
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            guardarCambios(especificacion){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/modelos/updateEspecificacion',{
+                    'id': especificacion.id,
+                    'subconcepto': especificacion.subconcepto,
+                    'descripcion' : especificacion.descripcion,
+                    'lote_id' : especificacion.lote_id
+                }).then(function (response){
+                    me.listarLote(me.pagination.current_page)
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Cambio guardado'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
+            addNuevo(especificacion){
+                let me = this;
+                const index = me.especificaciones.map( e => e.general ).indexOf( especificacion.general )
+                me.especificaciones[index].detalle.push(
+                    especificacion
+                )
+                me.nuevoDet={};
+                me.nuevo = 0;
+            },
+
+            guardarNuevo(especificacion){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/modelos/storeEspecificacion',{
+                    'lote_id': especificacion.lote_id,
+                    'general': especificacion.general,
+                    'subconcepto': especificacion.subconcepto,
+                    'descripcion': especificacion.descripcion,
+                }).then(function (response){
+                    const index = me.especificaciones.map( e => e.general ).indexOf( especificacion.general )
+                    me.especificaciones[index].detalle.push(
+                       response.data
+                    )
+                    me.nuevoDet={};
+                    me.nuevo = 0;
+                    me.listarLote(me.pagination.current_page)
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Especifiación registrada'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            setEspecifiacionesMasa(){
+                let me = this;
+                swal({
+                    title: '¿Desea asignar la plantilla?',
+                    text: "Esta acción no se puede revertir!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Si, asignar!'
+                }).then((result) => {
+                if (result.value) {
+                    //Con axios se llama el metodo store de FraccionaminetoController
+                    axios.post('/modelos/setEspecifiacionesMasa',{
+                        'lotes': me.lotes_ini,
+                        'especifiaciones': me.especificaciones
+                    }).then(function (response){
+                        me.vista = 0;
+                        me.especificaciones = {};
+                        me.listarLote(me.pagination.current_page);
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Especifiaciones asignadas correctamente'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }})
+
+
+            },
+
+            unset(especificacion){
+                let me = this;
+                const index = me.especificaciones.map( e => e.general ).indexOf( especificacion.general )
+                me.especificaciones[index].detalle = me.especificaciones[index].detalle.filter( a => a.id !== especificacion.id)
+            },
+
+            eliminar(especificacion){
+                let me = this;
+
+                swal({
+                    title: '¿Desea eliminar?',
+                    text: "Esta acción no se puede revertir!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+
+                    axios.delete('/modelos/deleteEspecificacion', {
+                        params: {'id': especificacion.id}
+                    }).then(function (response){
+                        const index = me.especificaciones.map( e => e.general ).indexOf( especificacion.general )
+                        me.especificaciones[index].detalle = me.especificaciones[index].detalle.filter( a => a.id !== especificacion.id)
+                        me.listarLote(me.pagination.current_page);
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Especificacion eliminada'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+
+                }})
+
             },
 
             cambiarPagina(page){
@@ -257,7 +485,7 @@ import _ from 'lodash'
                 me.buscar2=""
                 me.buscar3=""
                 }
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -271,11 +499,11 @@ import _ from 'lodash'
             selectEtapa(buscar){
                 let me = this;
                 if(me.modal == 0){
-                
+
                 me.buscar2=""
                 me.buscar3=""
                 }
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -287,63 +515,9 @@ import _ from 'lodash'
                 });
             },
 
-            getVersiones(modelo){
-                let me = this;
-                
-                me.arrayVersiones=[];
-                var url = '/modelos/archivos/versiones?modelo=' + modelo;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayVersiones = respuesta.versiones;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            actualizarVersion(){
-                let me = this;
-                //Con axios se llama el metodo update de DepartamentoController
-
-               Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Las especificaciones se asignaran a los lotes seleccionados",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, asignar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                        
-                        me.lotes_ini.forEach(element => {
-                            
-                            axios.put('/modelos/archivos/updateVersionLote',{
-                            'id': element,
-                            'nombre_archivo' : this.version
-                            }); 
-                        });
-                   // me.listarLote(1,'','','','','','','lote');   
-                    me.listarLote(me.pagination.current_page);
-                    me.cerrarModal();
-                    Swal({
-                        title: 'Hecho!',
-                        text: 'Las especificaciones se han asignado',
-                        type: 'success',
-                        animation: false,
-                        customClass: 'animated bounceInRight'
-                    })
-                    }})
-            },
-
             selectModelo(buscar){
                 let me = this;
-              
+
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -353,33 +527,48 @@ import _ from 'lodash'
                 .catch(function (error) {
                     console.log(error);
                 });
-            },    
-
-            cerrarModal(){
-                this.modal = 0;
-                this.tituloModal = '';
-                this.lotes_ini=[];
-                this.allSelected = false;
             },
-            /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(){
-                if(this.lotes_ini.length<1){
-                    Swal({
-                        title: 'No se ha seleccionado ningun lote',
-                        animation: false,
-                        customClass: 'animated tada'
-                    })
-                    return;
+            addRegistro(general,id){
+                this.nuevo = 1;
+                this.nuevoDet = {
+                    'general' : general,
+                    'subconcepto' : 'Subconcepto',
+                    'descripcion' : 'Descripcion',
+                    'lote_id' : id
                 }
-                this.getVersiones(this.b_modelo);
-                this.proceso=false;
-                this.modal =1;
-                this.tituloModal= 'Asignar Modelo';
-                this.version = '';
+            },
+
+
+            /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
+            verEspecificaciones(opcion, data=[]){
+
+                switch(opcion){
+                    case 'especificaciones':{
+                        this.vista = 1;
+                        this.especificaciones = data['especificaciones'];
+                        this.id = data['id'];
+                        break;
+                    }
+                    case 'masa':{
+                        if(this.lotes_ini.length<1){
+                            Swal({
+                                title: 'No se ha seleccionado ningun lote',
+                                animation: false,
+                                customClass: 'animated tada'
+                            })
+                            return;
+                        }
+                        this.vista = 2;
+                        this.getEspecificaciones(this.b_modelo);
+                        break;
+                    }
+                }
+
             }
         },
         mounted() {
             this.selectFraccionamientos();
+            this.listarLote(1);
         }
     }
 </script>
@@ -405,10 +594,18 @@ import _ from 'lodash'
     }
 
     .td2:first-of-type, th:first-of-type {
-    border-left: none;
+        border-left: none;
     }
 
     .td2:last-of-type, th:last-of-type {
-    border-right: none;
-    } 
+        border-right: none;
+    }
+    .pointer{
+        cursor: pointer;
+    }
+    .pointer:hover{
+        color: #fff;
+        background-color: #1b8eb7;
+        border-color: #00b0bb;;
+    }
 </style>

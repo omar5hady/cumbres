@@ -300,7 +300,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         activo: 1
                     },
                     {
-                        amenidad: 'Terraza',
+                        amenidad: 'Terraza Club',
                         activo: 1
                     },
                     {
@@ -353,6 +353,14 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     },
                     {
                         amenidad: 'Jardín contemplativo',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Banca piedra',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Banca metálica',
                         activo: 1
                     },
                 ],
@@ -670,7 +678,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         activo: 1
                     },
                     {
-                        amenidad: 'Terraza',
+                        amenidad: 'Terraza Club',
                         activo: 1
                     },
                     {
@@ -725,8 +733,15 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         amenidad: 'Jardín contemplativo',
                         activo: 1
                     },
-                ]
-
+                    {
+                        amenidad: 'Banca piedra',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Banca metálica',
+                        activo: 1
+                    },
+                ];
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
