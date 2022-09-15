@@ -11,6 +11,8 @@ use App\Etapa;
 use App\Modelo;
 use App\Lote;
 use App\User;
+use App\Urban_equipment;
+use App\Http\Resources\UrbanEquipmentResource;
 use Carbon\Carbon;
 use Excel;
 use File;
@@ -41,7 +43,7 @@ class FraccionamientoController extends Controller
         $fraccionamientos = $fraccionamientos->orderBy('fraccionamientos.id','desc');
 
         return $fraccionamientos;
-        
+
     }
 
     //Función que retorna los Proyectos registrados
@@ -52,6 +54,12 @@ class FraccionamientoController extends Controller
         //Llamada a la función privada que retorna la query principal
         $fraccionamientos = $this->getQuery($request);
         $fraccionamientos = $fraccionamientos->paginate(8);
+
+        if(sizeOf($fraccionamientos)){
+            foreach($fraccionamientos as $proyecto){
+                $proyecto->equipamiento_urbano = UrbanEquipmentResource::collection(Urban_equipment::where('fraccionamiento_id','=',$proyecto->id)->get());
+            }
+        }
 
         return [
             'pagination' => [
@@ -65,18 +73,18 @@ class FraccionamientoController extends Controller
             'fraccionamientos' => $fraccionamientos
         ];
     }
-    
+
     //Función que retorna los Proyectos registrados en excel
     public function excelIndex(Request $request)
     {
         //Llamada a la funcion privada que retorna la query principal
         $fraccionamientos = $this->getQuery($request);
         $fraccionamientos = $fraccionamientos->get();
-        
+
         //Creación y retorno del resultado en Excel
         return Excel::create('Fraccionamientos', function($excel) use ($fraccionamientos){
             $excel->sheet('Fraccionamientos', function($sheet) use ($fraccionamientos){
-                
+
                 $sheet->row(1, [
                     'Fraccionamiento','Tipo de proyecto','Direccion','Colonia','Estado','Delegación'
                 ]);
@@ -102,17 +110,17 @@ class FraccionamientoController extends Controller
                     if($proyecto->tipo_proyecto == 1) $proyecto->tipo_proyecto = 'Lotificación';
                     elseif($proyecto->tipo_proyecto == 2) $proyecto->tipo_proyecto = 'Departamento';
                     else $proyecto->tipo_proyecto = 'Terreno';
-                         
+
 
                     $sheet->row($index+2, [
-                        $proyecto->nombre, 
+                        $proyecto->nombre,
                         $proyecto->tipo_proyecto,
                         $proyecto->calle,
                         $proyecto->colonia,
                         $proyecto->estado,
                         $proyecto->delegacion
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:F' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -120,7 +128,7 @@ class FraccionamientoController extends Controller
             }
         )->download('xls');
     }
-   
+
     //funcion para insertar un nuevo registro en la tabla
     public function store(Request $request)
     {
@@ -184,7 +192,7 @@ class FraccionamientoController extends Controller
                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
             }
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
         }
@@ -245,7 +253,7 @@ class FraccionamientoController extends Controller
         //Se contabilizan los modelos y etapas ligados al Fraccionamiento
         $contadorModelo=Modelo::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
         $contadorEtapa=Etapa::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
-        
+
         if($contadorEtapa == 1 && $contadorModelo == 1){
             $modelo=Modelo::select('id')
                 ->where('nombre','=','Por Asignar')
@@ -261,8 +269,8 @@ class FraccionamientoController extends Controller
         }
 
         $fraccionamiento->delete();
-           
-  
+
+
     }
 
     //Función que retorna los Fraccionamientos
@@ -292,7 +300,7 @@ class FraccionamientoController extends Controller
                     //Filtro por tipo de proyecto
                     if($request->tipo_proyecto != '')
                         $fraccionamientos = $fraccionamientos->where('fraccionamientos.tipo_proyecto','=',$request->tipo_proyecto);
-                    
+
                     $fraccionamientos = $fraccionamientos->orderBy('nombre','asc')
                     ->distinct()
                     ->get();
@@ -353,12 +361,12 @@ class FraccionamientoController extends Controller
                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
             }
         }
-        
+
         return response()->json(['success'=>'You have successfully upload file.']);
     }
- 
+
     //funciones para descarga de planos
-    public function downloadFilePlanos($fileName){       
+    public function downloadFilePlanos($fileName){
         $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
         return response()->file($pathtoFile);
     }
@@ -401,9 +409,9 @@ class FraccionamientoController extends Controller
         }
         return response()->json(['success'=>'You have successfully upload file.']);
     }
-  
+
     public function downloadFileEscrituras($fileName){
-        
+
         $pathtoFile = public_path().'/files/fraccionamientos/escrituras/'.$fileName;
         return response()->file($pathtoFile);
     }
@@ -412,7 +420,7 @@ class FraccionamientoController extends Controller
     public function formSubmitLogoFraccionamiento(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
- 
+
         $fileName = time().'.'.$request->archivo_logo->getClientOriginalExtension();
         $moved =  $request->archivo_logo->move(public_path('/img/logosFraccionamientos/'), $fileName);
 
@@ -422,15 +430,15 @@ class FraccionamientoController extends Controller
             $logo->logo_fracc = $fileName;
             $logo->id = $id;
             $logo->save(); //Insert
-    
+
             }
     }
     public function downloadFileLogoFraccionamiento($fileName){
-        
+
         $pathtoFile = public_path().'/img/logosFraccionamientos/'.$fileName;
         return response()->file($pathtoFile);
     }
-   
+
     // Funcion privada para guardar los planos del fraccionamiento para el historial de versiones
     private function almacenarPlano(Request $request, $filename){
         $plano = new Historial_plano();

@@ -1240,6 +1240,9 @@ Route::group(['middleware' => ['auth']],function(){
         /////////////////////// Rutas Specification
         Route::resource('/specification', Modelo\EspecificacionController::class);
 
+        /////////////////////// Rutas EquipamientoUrbano
+        Route::resource('/urban-equipment', Privada\UrbanEquipmentController::class);
+
     });
 
 

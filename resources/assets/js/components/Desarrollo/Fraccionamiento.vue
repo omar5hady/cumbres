@@ -25,14 +25,14 @@
                                       <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                       <option value="fraccionamientos.tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
-                                    
+
                                     <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
                                         <option value="3">Terreno</option>
                                     </select>
                                     <input type="text" v-else v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    
+
                                 </div>
                                 <div class="input-group">
                                     <button type="submit" @click="listarFraccionamiento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -105,140 +105,213 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                        <!--Criterios para el listado de busqueda -->
-                        <div class="col-md-3">
-                            <select class="form-control" v-model="tipo_proyecto">
-                                <option value="0">Seleccione</option>
-                                <option value="1">Lotificación</option>
-                                <option value="2">Departamento</option>
-                                <option value="3">Terreno</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Calle</label>
-                        <div class="col-md-4">
-                            <input type="text" v-model="calle" class="form-control" placeholder="Calle">
-                        </div>
-                        <label class="col-md-2 form-control-label" for="text-input">Num. </label>
-                        <div class="col-md-3">
-                            <input type="number" min="0" v-model="numero" class="form-control" placeholder="Numero">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
-                                <option value="San Luis Potosí">San Luis Potosí</option>
-                                <option value="Baja California">Baja California</option>
-                                <option value="Baja California Sur">Baja California Sur</option>
-                                <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
-                                <option value="Colima">Colima</option>
-                                <option value="Chiapas">Chiapas</option>
-                                <option value="Chihuahua">Chihuahua</option>
-                                <option value="Ciudad de México">Ciudad de México</option>
-                                <option value="Durango">Durango</option>
-                                <option value="Guanajuato">Guanajuato</option>
-                                <option value="Guerrero">Guerrero</option>
-                                <option value="Hidalgo">Hidalgo</option>
-                                <option value="Jalisco">Jalisco</option>
-                                <option value="México">México</option>
-                                <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
-                                <option value="Morelos">Morelos</option>
-                                <option value="Nayarit">Nayarit</option>
-                                <option value="Nuevo León">Nuevo León</option>
-                                <option value="Oaxaca">Oaxaca</option>
-                                <option value="Puebla">Puebla</option>
-                                <option value="Querétaro">Querétaro</option>
-                                <option value="Quintana Roo">Quintana Roo</option>
-                                <option value="Sinaloa">Sinaloa</option>
-                                <option value="Sonora">Sonora</option>
-                                <option value="Tabasco">Tabasco</option>
-                                <option value="Tamaulipas">Tamaulipas</option>
-                                <option value="Tlaxcala">Tlaxcala</option>
-                                <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
-                                <option value="Yucatán">Yucatán</option>
-                                <option value="Zacatecas">Zacatecas</option>
-                            </select>
-                            <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="ciudad">
-                                <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                            </select>
-                        </div>
-                    </div>
+                    <ul class="nav nav-tabs" v-if="tipoAccion == 2">
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Generales</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Equipamiento Urbano</a></li>
+                    </ul>
+                    <br>
+                    <template v-if="paso == 1">
                         <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Delegacion</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="delegacion" class="form-control" placeholder="Delegacion">
-                        </div>
-                    </div>
-                        <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Codigo postal</label>
-                        <div class="col-md-9">
-                            <input type="text" maxlength="5" v-model="cp" class="form-control" placeholder="Codigo postal">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="rolId != 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
-                        <div class="col-md-6">
-                            <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
-                        <label class="col-md-3 form-control-label" for="text-input">Gerente del proyecto</label>
-                        <!--Criterios para el listado de busqueda -->
-                        <div class="col-md-5">
-                            <select class="form-control" v-model="gerente_id">
-                                <option value="">Seleccione</option>
-                                <option v-for="gerente in arrayGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre + ' ' + gerente.apellidos"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
-                        <label class="col-md-3 form-control-label" for="text-input">Arquitecto del proyecto</label>
-                        <!--Criterios para el listado de busqueda -->
-                        <div class="col-md-5">
-                            <select class="form-control" v-model="arquitecto_id">
-                                <option value="">Seleccione</option>
-                                <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                    <div v-show="errorFraccionamiento" class="form-group row div-error">
-                        <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjFraccionamiento" :key="error" v-text="error">
-
+                            <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-3">
+                                <select class="form-control" v-model="tipo_proyecto">
+                                    <option value="0">Seleccione</option>
+                                    <option value="1">Lotificación</option>
+                                    <option value="2">Departamento</option>
+                                    <option value="3">Terreno</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Calle</label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                            </div>
+                            <label class="col-md-2 form-control-label" for="text-input">Num. </label>
+                            <div class="col-md-3">
+                                <input type="number" min="0" v-model="numero" class="form-control" placeholder="Numero">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                            <div class="col-md-9">
+                                <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
+                                    <option value="San Luis Potosí">San Luis Potosí</option>
+                                    <option value="Baja California">Baja California</option>
+                                    <option value="Baja California Sur">Baja California Sur</option>
+                                    <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                                    <option value="Colima">Colima</option>
+                                    <option value="Chiapas">Chiapas</option>
+                                    <option value="Chihuahua">Chihuahua</option>
+                                    <option value="Ciudad de México">Ciudad de México</option>
+                                    <option value="Durango">Durango</option>
+                                    <option value="Guanajuato">Guanajuato</option>
+                                    <option value="Guerrero">Guerrero</option>
+                                    <option value="Hidalgo">Hidalgo</option>
+                                    <option value="Jalisco">Jalisco</option>
+                                    <option value="México">México</option>
+                                    <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                                    <option value="Morelos">Morelos</option>
+                                    <option value="Nayarit">Nayarit</option>
+                                    <option value="Nuevo León">Nuevo León</option>
+                                    <option value="Oaxaca">Oaxaca</option>
+                                    <option value="Puebla">Puebla</option>
+                                    <option value="Querétaro">Querétaro</option>
+                                    <option value="Quintana Roo">Quintana Roo</option>
+                                    <option value="Sinaloa">Sinaloa</option>
+                                    <option value="Sonora">Sonora</option>
+                                    <option value="Tabasco">Tabasco</option>
+                                    <option value="Tamaulipas">Tamaulipas</option>
+                                    <option value="Tlaxcala">Tlaxcala</option>
+                                    <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                                    <option value="Yucatán">Yucatán</option>
+                                    <option value="Zacatecas">Zacatecas</option>
+                                </select>
+                                <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                            <div class="col-md-9">
+                                <select class="form-control" v-model="ciudad">
+                                    <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Delegacion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="delegacion" class="form-control" placeholder="Delegacion">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Codigo postal</label>
+                            <div class="col-md-9">
+                                <input type="text" maxlength="5" v-model="cp" class="form-control" placeholder="Codigo postal">
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="rolId != 3">
+                            <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
+                            <div class="col-md-6">
+                                <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                            <label class="col-md-3 form-control-label" for="text-input">Gerente del proyecto</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="gerente_id">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="gerente in arrayGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre + ' ' + gerente.apellidos"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                            <label class="col-md-3 form-control-label" for="text-input">Arquitecto del proyecto</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="arquitecto_id">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                        <div v-show="errorFraccionamiento" class="form-group row div-error">
+                            <div class="text-center text-error">
+                                <div v-for="error in errorMostrarMsjFraccionamiento" :key="error" v-text="error">
+
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-if="paso == 2">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-4">
+                                <input type="text" name="categoria" list="categoria" class="form-control" v-model="nEquipamiento.categoria" placeholder="Categoria">
+                                <datalist id="categoria">
+                                    <option value="">Seleccione</option>
+                                    <option value="Parques">Parques</option>
+                                    <option value="Estancias">Estancias</option>
+                                    <option value="Escuelas">Escuelas</option>
+                                    <option value="Hospitales">Hospitales</option>
+                                    <option value="Transportes">Transportes</option>
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" v-if="nEquipamiento.categoria != 'Transportes'" for="text-input">Lugar</label>
+                            <label class="col-md-3 form-control-label" v-else for="text-input">Tipo de transporte</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-5">
+                                <input type="text" class="form-control"  v-if="nEquipamiento.categoria != 'Transportes'" v-model="nEquipamiento.nombre" placeholder="Nombre del lugar">
+                                <input type="text" class="form-control" v-else v-model="nEquipamiento.nombre" placeholder="Publico/Privado">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-6">
+                                <textarea v-model="nEquipamiento.descripcion" cols="40" rows="3" class="form-control" placeholder="Descripción"></textarea>
+                            </div>
+                            <div class="col-md-3" v-if="nEquipamiento.categoria != '' && nEquipamiento.nombre != ''">
+                                <button title="Agregar nuevo" type="button" @click="addEquipment(nEquipamiento)" class="btn btn-success btn-sm">
+                                    <i class="icon-check"></i>&nbsp;Añadir Equipamiento
+                                </button>
+                            </div>
+                        </div>
+                        <hr>
+                        <TableComponent v-if="equipamientos.length" :cabecera="['',
+                            'Categoria','Nombre','Descripción'
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="eq in equipamientos" :key="eq.id">
+                                    <td class="td2">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEquipamiento(eq)">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                        <button title="Guardar cambios" type="button" @click="actualizarEq(eq)" class="btn btn-success btn-sm">
+                                            <i class="icon-check"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2">
+                                        <input type="text" class="form-control" v-model="eq.categoria">
+                                    </td>
+                                    <td class="td2">
+                                        <input type="text" class="form-control" v-model="eq.nombre">
+                                    </td>
+                                    <td class="td2">
+                                        <textarea class="form-control" v-model="eq.descripcion"></textarea>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </template>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFraccionamiento()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarFraccionamiento()">Actualizar</button>
+                    <template v-if="paso == 1">
+                        <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFraccionamiento()">Guardar</button>
+                        <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarFraccionamiento()">Actualizar</button>
+                    </template>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
-            
+
             <!-- Modal para la carga de los archivos-->
             <ModalComponent v-if="modal4"
                 :titulo="tituloModal4"
@@ -263,7 +336,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-success">Cargar Planos</button>
-                                </div>   
+                                </div>
                             </div>
                         </form>
                         <br>
@@ -310,7 +383,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-success">Cargar Escrituras</button>
-                                </div>   
+                                </div>
                             </div>
                         </form>
                         <br>
@@ -395,7 +468,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -403,9 +476,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
+                criterio : 'fraccionamientos.nombre',
                 buscar : '',
-                arrayCiudades : []
+                arrayCiudades : [],
+                equipamientos: [],
+                nEquipamiento: {},
+                paso: 1
             }
         },
         computed:{
@@ -438,7 +514,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
         },
         methods : {
 
-            //funciones para carga de los planos del fraccionamiento 
+            //funciones para carga de los planos del fraccionamiento
 
             onImageChangePlanos(e){
                 console.log(e.target.files[0]);
@@ -448,7 +524,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             formSubmitPlanos(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
                 formData.append('archivo_planos', this.archivo_planos);
                 formData.append('version', this.nombre_plano);
@@ -613,10 +689,105 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
+            actualizarEq(equipamiento){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/urban-equipment/'+equipamiento.id,{
+                    'id' : equipamiento.id,
+                    'fraccionamiento_id': equipamiento.fraccionamiento_id,
+                    'categoria': equipamiento.categoria,
+                    'nombre': equipamiento.nombre,
+                    'descripcion': equipamiento.descripcion,
+                }).then(function (response){
+                    me.listarFraccionamiento(me.pagination.current_page,me.buscar,'fraccionamiento');
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Equipamiento actualizado'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            addEquipment(equipamiento){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/urban-equipment',{
+                    'fraccionamiento_id': equipamiento.fraccionamiento_id,
+                    'categoria': equipamiento.categoria,
+                    'nombre': equipamiento.nombre,
+                    'descripcion': equipamiento.descripcion,
+                }).then(function (response){
+                    me.equipamientos.push(
+                       response.data
+                    )
+                    me.nEquipamiento={};
+                    me.listarFraccionamiento(me.pagination.current_page,me.buscar,'fraccionamiento');
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Equipamiento registrado'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            eliminarEquipamiento(equipamiento){
+                let me = this;
+
+                swal({
+                    title: '¿Desea eliminar?',
+                    text: "Esta acción no se puede revertir!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+
+                    axios.delete('/urban-equipment/'+equipamiento.id, {
+                        params: {'id': equipamiento.id}
+                    }).then(function (response){
+                        me.equipamientos = me.equipamientos.filter( a => a.id !== equipamiento.id)
+                        me.listarFraccionamiento(me.pagination.current_page,me.buscar,'fraccionamiento');
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Equipamiento eliminado'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+
+                }})
+
+            },
             actualizarFraccionamiento(){
                 if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                     return;
-               
+
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/fraccionamiento/actualizar',{
@@ -634,7 +805,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'arquitecto_id' : this.arquitecto_id,
                     'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
-                    
+
                     me.cerrarModal();
                     me.listarFraccionamiento(1,'','fraccionamiento');
                     //window.alert("Cambios guardados correctamente");
@@ -666,7 +837,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/fraccionamiento/eliminar', 
+                axios.delete('/fraccionamiento/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -696,7 +867,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-                    axios.delete('/fraccionamiento/deleteEscrituras', 
+                    axios.delete('/fraccionamiento/deleteEscrituras',
                         {params: {
                             'id': folio,
                             'archivo' : archivo
@@ -730,7 +901,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-                    axios.delete('/fraccionamiento/deletePlanos', 
+                    axios.delete('/fraccionamiento/deletePlanos',
                         {params: {
                             'id': folio,
                             'archivo' : archivo
@@ -774,6 +945,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.user_alta = '';
                 this.errorFraccionamiento = 0;
                 this.errorMostrarMsjFraccionamiento = [];
+                this.nEquipamiento = {};
+                this.equipamientos = [];
 
             },
             cerrarModal4(){
@@ -806,6 +979,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.cp = 0;
                                 this.numero = 0;
                                 this.tipoAccion = 1;
+                                this.paso = 1;
                                 break;
                             }
                             case 'actualizar':
@@ -829,10 +1003,18 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                     this.arquitecto_id = '';
                                 this.numero = data['numero'];
                                 this.selectCiudades(this.estado);
+                                this.nEquipamiento = {
+                                    fraccionamiento_id : this.id,
+                                    categoria : '',
+                                    nombre : '',
+                                    descripcion : '',
+                                };
+                                this.equipamientos = data['equipamiento_urbano'];
+                                this.paso = 1;
                                 break;
                             }
 
-                            
+
                             case 'subirArchivo':
                             {
                                 this.modal4 =1;
