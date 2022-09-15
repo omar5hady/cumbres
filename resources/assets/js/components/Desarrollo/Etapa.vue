@@ -363,6 +363,14 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         amenidad: 'Banca metálica',
                         activo: 1
                     },
+                    {
+                        amenidad: 'Cancha de Padel',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Ciclovia',
+                        activo: 1
+                    },
                 ],
                 amenidadesEtapa:[]
             }
@@ -739,6 +747,14 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     },
                     {
                         amenidad: 'Banca metálica',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Cancha de Padel',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Ciclovia',
                         activo: 1
                     },
                 ];

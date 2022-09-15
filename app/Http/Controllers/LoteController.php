@@ -686,10 +686,11 @@ class LoteController extends Controller
                         }
                     }
                     if($request->paso == 2){
-
+                        // return $data;
                         foreach ($data as $key => $value) {
+
                             $proyecto = Fraccionamiento::select('id')->where('nombre','=',$value->proyecto)->first();
-                            $etapa = Etapa::select('id')->where('num_etapa','=',$value->etapa)->first();
+                            $etapa = Etapa::select('id')->where('fraccionamiento_id','=',$proyecto->id)->where('num_etapa','=',$value->etapa)->first();
                             $lote = Lote::select('id')
                                 ->where('fraccionamiento_id','=',$proyecto->id)
                                 ->where('etapa_id','=',$etapa->id)
@@ -697,6 +698,9 @@ class LoteController extends Controller
                                 ->where('num_lote','=',$value->lote);
                                 if($value->sublote != 'NULL')
                                     $lote = $lote->where('sublote','=',$value->sublote);
+                                else{
+                                    $lote = $lote->where('sublote','=',NULL);
+                                }
                                 $lote = $lote->first();
 
                             if($lote){

@@ -8,15 +8,19 @@
     <title>Servicios de telecomunicaciones</title>
 </head>
 <style type="text/css">
+
     @font-face {
-        font-family: 'Gotham-Book';
-        font-size: 12;
-        font-style: Book;
-        src: url("GothamBook.ttf") format('truetype');
+        font-family: 'AvenirNextLTPro';
+        src: url('/storage/Fonts/AvenirNextLTPro-It.otf') format('opentype');
+    }
+    @font-face {
+        font-family: 'AvenirNextLTPro';
+        src: url('/storage/Fonts/AvenirNextLTPro-Bold.otf') format('opentype');
+        font-weight: bold;
     }
 
     body {
-        font-family: Gotham-Book, sans-serif;
+        font-family: 'AvenirNextLTPro';
     }
 
 </style>
@@ -32,7 +36,7 @@
         @endif
 
 
-        <h4 align="left">Estimado cliente: </h4>
+        <p align="left" font>ESTIMADO CLIENTE: </p>
 
         <p align="justify">Agradecemos la confianza depositada en nuestra empresa en tan importante decisión de compra.
         </p>

@@ -37,7 +37,7 @@
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Asignar Modelo</a>
             </li>
         @endif
-        @if(Auth::user()->rol_id == 1 || Auth::user()->usuario == '	david.hh' || Auth::user()->usuario == 'Herlindo' || Auth::user()->usuario == 'eli_hdz')
+        @if(Auth::user()->rol_id == 1 || Auth::user()->usuario == 'david.hh' || Auth::user()->usuario == 'Herlindo' || Auth::user()->usuario == 'eli_hdz')
             <li @click="menu=230" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Especificaciones de modelo</a>
             </li>

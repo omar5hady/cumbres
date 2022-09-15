@@ -55,7 +55,7 @@
                     Atentamente.
                 </p>
 
-                
+
 
                 <br>
                 <br>
@@ -63,28 +63,28 @@
                 <br>
 
                 <div class="table3">
-                   
-                    
+
+
                     <div class="table-row">
                         <div colspan="2" class="table-cell3">_________________________________</div>
                         <div style="width: 8%;" class="table-cell3"></div>
                         <div colspan="2" class="table-cell3">_________________________________</div>
                     </div>
                     <div class="table-row">
-                        
+
                         <div colspan="2" class="table-cell3">
                             Departamento de Post-Venta
                             <br>Grupo Constructor Cumbres S.A. de C.V.</div>
-                        
+
                         <div style="width: 8%;" class="table-cell3"></div>
                         <div colspan="2" class="table-cell3">
                             {{mb_strtoupper($alarma[0]->nombre_cliente)}}
                             <br>(Quedo enterado de que he recibido)
                         </div>
                     </div>
-                    
+
                 </div>
-                
+
             </div>
 
         </div>

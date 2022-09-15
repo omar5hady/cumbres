@@ -83,4 +83,10 @@
   'simple-line-icons' => array(
     'normal' => $fontDir . '\3f8dec3d1a7141322eaa5b1897236f07',
   ),
+  'AvenirNextLTPro' => array(
+    'normal' => $fontDir . '\AvenirNextLTPro-Regular',
+  ),
+  'avenirnextltpro' => array(
+    'normal' => $fontDir . '/avenirnextltpro-normal_bf11512877ef2223afd06e89358ef2fc',
+  ),
 ) ?>
