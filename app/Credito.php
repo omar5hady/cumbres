@@ -19,13 +19,14 @@ class Credito extends Model
                             'costo_protecciones', 'costo_cuota_mant', 'costo_alarma',
                             'descuento_terreno', 'costo_descuento', 'valor_terreno', 'porcentaje_terreno',
                             'email_fisc', 'tel_fisc', 'nombre_fisc',
+                            'desc_eq_promo', 'desc_eq_paquete',
                             'direccion_fisc', 'col_fisc', 'cp_fisc', 'rfc_fisc',
                             'cfi_fisc', 'regimen_fisc',
                             'banco_fisc', 'num_cuenta_fisc',
                             'clabe_fisc', 'notif_fisc', 'archivo_fisc', 'fecha_archivo',
                             'integracion_cobro',
                             'contrato','fraccionamiento','bono', 'saldo_terreno'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
-    
+
 
     public function prospecto(){
         return $this->belongsTo('App/Cliente');

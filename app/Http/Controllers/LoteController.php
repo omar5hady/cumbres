@@ -705,8 +705,11 @@ class LoteController extends Controller
 
                             if($lote){
                                 $lt = Licencia::findOrFail($lote->id);
+                                $lot = Lote::findOrFail($lote->id);
                                 $lt->folio_registro = $value->folio;
+                                $lot->clv_catastral = $value->predial;
                                 $lt->save();
+                                $lot->save();
                             }
                         }
                     }
@@ -1265,8 +1268,8 @@ class LoteController extends Controller
             $promocion=[];
             //Se busca promoción activa
             $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-                ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id',
-                        'promociones.descuento','promociones.descripcion')
+                ->select('promociones.*','promociones.v_ini','promociones.v_fin','promociones.id',
+                        'promociones.descuento','promociones.descripcion','promociones.desc_equipamiento')
                 ->where('lotes_promocion.lote_id','=',$lote->id)
                 ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
             if(sizeof($promocion) > 0){
@@ -1275,11 +1278,13 @@ class LoteController extends Controller
                 $lote->promocion = $promocion[0]->nombre;
                 $lote->descripcionPromo = $promocion[0]->descripcion;
                 $lote->descuentoPromo = $promocion[0]->descuento;
+                $lote->desc_equipamiento = $promocion[0]->desc_equipamiento;
             }
             else{
                 $lote->promocion = 'Sin Promoción';
-                $lote->descripcionPromo = '';
+                $lote->descripcionPromo = NULL;
                 $lote->descuentoPromo = 0;
+                $lote->desc_equipamiento = NULL;
                 }
             //Se calcula tamaño de terreno excedente.
             $lote->terreno_tam_excedente = $lote->terreno - $lote->terreno_modelo;

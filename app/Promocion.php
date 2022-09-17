@@ -9,9 +9,9 @@ class Promocion extends Model
     protected $table = 'promociones'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['fraccionamiento_id','etapa_id','nombre',
-        'v_ini','v_fin','descuento','descripcion'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
-    
-                           
+        'v_ini','v_fin','descuento','descripcion','desc_equipamiento'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+
+
     public function fraccionamiento(){
         return $this->belongsTo('App\Fraccionamiento');
     }

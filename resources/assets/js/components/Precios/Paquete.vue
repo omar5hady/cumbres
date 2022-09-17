@@ -29,11 +29,11 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    
+
                                     <input v-else type="text" v-model="buscar" @keyup.enter="listarPaquetes(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                                 <div class="input-group">
-                                    <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)"> 
+                                    <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -79,7 +79,7 @@
                                         <td class="td2" v-if="paquete.is_active == '0'">
                                             <span class="badge badge-danger">Desactivado</span>
                                         </td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -167,6 +167,13 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Equipamiento incluido</label>
+                                    <div class="col-md-6">
+                                        <textarea rows="4" cols="30" v-model="desc_equipamiento" class="form-control" placeholder="Descripcion del equipamiento incluido"></textarea>
+                                    </div>
+                                </div>
+
 
                                 <!-- Div para mostrar los errores que mande validerPaquete -->
                                 <div v-show="errorPaquete" class="form-group row div-error">
@@ -191,7 +198,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
-            
+
 
         </main>
 </template>
@@ -213,6 +220,7 @@
                 v_fin : '',
                 costo : '',
                 descripcion : '',
+                desc_equipamiento : '',
                 arrayPaquete : [],
                 arrayFraccionamientos: [],
                 arrayEtapas: [],
@@ -222,7 +230,7 @@
                 errorPaquete : 0,
                 errorMostrarMsjPaquete : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -230,9 +238,9 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'paquetes.nombre', 
+                criterio : 'paquetes.nombre',
                 buscar : '',
-                buscar2: ''
+                buscar2: '',
             }
         },
         computed:{
@@ -301,6 +309,7 @@
                     'v_ini': this.v_ini,
                     'v_fin': this.v_fin,
                     'costo': this.costo,
+                    'desc_equipamiento' : this.desc_equipamiento,
                     'descripcion': this.descripcion
                 }).then(function (response){
                     me.proceso=false;
@@ -340,6 +349,7 @@
                     'v_fin': this.v_fin,
                     'costo': this.costo,
                     'descripcion': this.descripcion,
+                    'desc_equipamiento' : this.desc_equipamiento,
                     'id': this.id
                 }).then(function (response){
                     me.proceso=false;
@@ -380,7 +390,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/paquete/eliminar', 
+                axios.delete('/paquete/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -410,7 +420,7 @@
             },
              selectEtapa(buscar){
                 let me = this;
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -436,7 +446,7 @@
 
                 if(!this.costo) //Si la variable departamento esta vacia
                     this.errorMostrarMsjPaquete.push("El costo del paquete no puede ir vacio.");
-                
+
                 if(!this.descripcion) //Si la variable departamento esta vacia
                     this.errorMostrarMsjPaquete.push("La descripción del paquete no puede ir vacia.");
 
@@ -478,6 +488,7 @@
                                 this.costo = 0;
                                 this.descripcion = '';
                                 this.tipoAccion = 1;
+                                this.desc_equipamiento = '';
                                 break;
                             }
                             case 'actualizar':
@@ -494,6 +505,7 @@
                                 this.v_fin=data['v_fin'];
                                 this.costo=data['costo'];
                                 this.descripcion=data['descripcion'];
+                                this.desc_equipamiento = data['desc_equipamiento'];
                                 break;
                             }
                         }
@@ -520,6 +532,7 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+        overflow-y: auto;
     }
     .div-error{
         display:flex;
@@ -557,5 +570,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

@@ -29,19 +29,20 @@
                             </div>
                         </div>
 
-                        <TableComponent :cabecera="['Opciones','Crédito','Institucíon Financiera']">
+                        <TableComponent :cabecera="['Opciones','Crédito','Institucíon Financiera','Dias para firma']">
                             <template v-slot:thead>
                                 <tr v-for="credito in arrayCreditos" :key="credito.id">
                                     <td class="td2" style="width:15%">
                                         <button title="Editar" type="button" @click="abrirModal('credito','actualizar',credito)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
-                                        </button>  
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarCredito(credito)">
                                             <i class="icon-trash"></i>
-                                        </button>                                       
+                                        </button>
                                     </td>
                                     <td class="td2" v-text="credito.nombre"></td>
                                     <td class="td2" v-text="credito.institucion_fin"></td>
+                                    <td class="td2">{{credito.dias_nat}} días naturales</td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -85,7 +86,14 @@
                             </select>
                         </div>
                     </div>
-                    
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Tiempo para firma</label>
+                        <div class="col-md-4">
+                            <input type="number" v-model="dias_nat" class="form-control" placeholder="Dias naturales">
+                        </div>
+                    </div>
+
                     <div v-show="errorCredito" class="form-group row div-error">
                         <div class="text-center text-error">
                             <div v-for="error in errorMostrarMsjCredito" :key="error" v-text="error">
@@ -119,6 +127,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 id: 0,
                 nombre : '',
                 institucion_fin : '',
+                dias_nat:0,
                 arrayCreditos : [],
                 arrayInstituciones : [],
                 modal : 0,
@@ -148,23 +157,23 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if(!this.pagination.to) {
                     return [];
                 }
-                
-                var from = this.pagination.current_page - this.offset; 
+
+                var from = this.pagination.current_page - this.offset;
                 if(from < 1) {
                     from = 1;
                 }
 
-                var to = from + (this.offset * 2); 
+                var to = from + (this.offset * 2);
                 if(to >= this.pagination.last_page){
                     to = this.pagination.last_page;
-                }  
+                }
 
                 var pagesArray = [];
                 while(from <= to) {
                     pagesArray.push(from);
                     from++;
                 }
-                return pagesArray;             
+                return pagesArray;
 
             }
         },
@@ -199,7 +208,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             /**Metodo para registrar  */
             registrarCredito(){
@@ -213,7 +222,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/tipo_credito/registrar',{
                     'nombre': this.nombre,
-                    'institucion_fin' : this.institucion_fin
+                    'institucion_fin' : this.institucion_fin,
+                    'dias_nat' : this.dias_nat
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -243,6 +253,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 axios.put('/tipo_credito/actualizar',{
                     'nombre': this.nombre,
                     'institucion_fin':this.institucion_fin,
+                    'dias_nat' : this.dias_nat,
                     'id' : this.id
                 }).then(function (response){
                     me.proceso=false;
@@ -276,7 +287,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/tipo_credito/eliminar', 
+                axios.delete('/tipo_credito/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -326,6 +337,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.tituloModal = 'Registrar Credito';
                                 this.nombre ='';
                                 this.institucion_fin='';
+                                this.dias_nat = 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -338,6 +350,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
                                 this.institucion_fin = data['institucion_fin'];
+                                this.dias_nat = data['dias_nat'];
                                 break;
                             }
                         }
@@ -350,7 +363,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
         }
     }
 </script>
-<style>    
+<style>
     .div-error{
         display: flex;
         justify-content: center;

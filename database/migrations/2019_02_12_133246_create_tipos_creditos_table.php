@@ -17,6 +17,7 @@ class CreateTiposCreditosTable extends Migration
             $table->increments('id');
             $table->string('nombre',80);
             $table->string('institucion_fin',80);
+            $table->integer('dias_nat')->default(0);
             $table->timestamps();
         });
     }

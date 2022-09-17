@@ -30,9 +30,11 @@ class FraccionamientoController extends Controller
         //Query principal
         $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
                             ->leftJoin('personal as p','fraccionamientos.arquitecto_id','=','p.id')
+                            ->leftJoin('personal as post','fraccionamientos.postventa_id','=','post.id')
                             ->select('fraccionamientos.*',
                                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"),
-                                        DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto")
+                                        DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto"),
+                                        DB::raw("CONCAT(post.nombre,' ',post.apellidos) as postventa")
                                     )
                             //Diferente de proyectos Anteriores '
                             ->where('fraccionamientos.id','!=','1');
@@ -223,6 +225,9 @@ class FraccionamientoController extends Controller
         }
         if($request->arquitecto_id != ''){
             $fraccionamiento->arquitecto_id = $request->arquitecto_id;
+        }
+        if($request->postventa_id != ''){
+            $fraccionamiento->postventa_id = $request->postventa_id;
         }
         $fraccionamiento->save();
         // Creación de notificación indicando el cambio.

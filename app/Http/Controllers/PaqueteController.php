@@ -12,8 +12,8 @@ use Auth;
 class PaqueteController extends Controller
 {
 
-    // Funcion para consulta de datos  de la tabla Paquete donde hace busqueda por la relacion con las tablas 
-    // Fraccionamientos y Etapas,  
+    // Funcion para consulta de datos  de la tabla Paquete donde hace busqueda por la relacion con las tablas
+    // Fraccionamientos y Etapas,
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -28,11 +28,11 @@ class PaqueteController extends Controller
                 ->join('etapas','paquetes.etapa_id','=','etapas.id')
                 ->select('etapas.num_etapa as etapa','fraccionamientos.nombre as fraccionamiento','paquetes.id',
                     'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini','paquetes.v_fin',
-                    'paquetes.costo','paquetes.descripcion',
-                    DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active')); 
-                    // condicion para seleccionar solo los paquetes que esten activos con fecha mayor o gual a la actual 
-                                                                                                        
-        
+                    'paquetes.costo','paquetes.descripcion', 'paquetes.desc_equipamiento',
+                    DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
+                    // condicion para seleccionar solo los paquetes que esten activos con fecha mayor o gual a la actual
+
+
         if($buscar==''){
             $paquetes = $query;
         }
@@ -45,7 +45,7 @@ class PaqueteController extends Controller
                 $paquetes = $query
                     ->where($criterio, '=', $buscar);
             }
-            
+
         }
         else{
             $paquetes = $query
@@ -85,6 +85,7 @@ class PaqueteController extends Controller
         $paquetes->v_fin = $request->v_fin;
         $paquetes->costo = $request->costo;
         $paquetes->descripcion = $request->descripcion;
+        $paquetes->desc_equipamiento = $request->desc_equipamiento;
         $paquetes->save();
     }
 
@@ -101,7 +102,8 @@ class PaqueteController extends Controller
         $paquetes->v_fin = $request->v_fin;
         $paquetes->costo = $request->costo;
         $paquetes->descripcion = $request->descripcion;
-    
+        $paquetes->desc_equipamiento = $request->desc_equipamiento;
+
         $paquetes->save();
     }
 
@@ -113,7 +115,7 @@ class PaqueteController extends Controller
         $paquetes->delete();
     }
 
-    // Funcion para seleccionar el paquete por los criterios seleccionados 
+    // Funcion para seleccionar el paquete por los criterios seleccionados
     public function select_paquetes(Request $request){
         if(!$request->ajax())return redirect('/');
         $current = Carbon::now()->toDateString();
@@ -126,9 +128,10 @@ class PaqueteController extends Controller
                             ->where('fraccionamientos.nombre','=',$proyecto)
                             ->where('etapas.num_etapa','=',$buscar)->get();
 
-        // se filtran los "paquetes" por las fechas de vencimiento 
+        // se filtran los "paquetes" por las fechas de vencimiento
         $paquetes = Paquete::join('etapas','paquetes.etapa_id','=','etapas.id')
-                            ->select('paquetes.id','paquetes.nombre','paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin')
+                            ->select('paquetes.id','paquetes.nombre','paquetes.descripcion','paquetes.costo',
+                                'paquetes.v_ini','paquetes.v_fin' ,'paquetes.desc_equipamiento')
                             ->where('etapas.id','=',$fraccionamiento[0]->id)
                             ->whereDate('paquetes.v_fin','>=',$current)
                             ->whereDate('paquetes.v_ini','<=',$current)
@@ -137,14 +140,15 @@ class PaqueteController extends Controller
         return['paquetes' => $paquetes];
     }
 
-    // Funcion para la consulta de datos del "paquete" seleccionado 
-    // filtrado por el paquete id 
+    // Funcion para la consulta de datos del "paquete" seleccionado
+    // filtrado por el paquete id
     public function select_datos_paquetes(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
-        $datos_paquetes = Paquete::select('paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin','paquetes.nombre')
-                          ->where('paquetes.id','=',$buscar)
-                          ->get();
+        $datos_paquetes = Paquete::select('paquetes.descripcion','paquetes.costo','paquetes.v_ini',
+                            'paquetes.v_fin','paquetes.nombre','paquetes.desc_equipamiento')
+                ->where('paquetes.id','=',$buscar)
+                ->get();
 
         return['datos_paquetes' => $datos_paquetes];
 

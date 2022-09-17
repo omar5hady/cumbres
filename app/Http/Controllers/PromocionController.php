@@ -11,7 +11,7 @@ use Auth;
 
 class PromocionController extends Controller
 {
-    // Funcion de consulta de las promociones  
+    // Funcion de consulta de las promociones
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -27,20 +27,21 @@ class PromocionController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
                     'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
                     'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
+                    'promociones.desc_equipamiento',
                     DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
-                
+
             if($buscar != '')
-                $promociones = $promociones->where($criterio, '=', $buscar); // se filtra por el criterio seleccionado 
+                $promociones = $promociones->where($criterio, '=', $buscar); // se filtra por el criterio seleccionado
             if($buscar2 != '')
-                $promociones = $promociones->where('etapas.id', '=', $buscar2); // se filtra por las etapas 
+                $promociones = $promociones->where('etapas.id', '=', $buscar2); // se filtra por las etapas
 
         $promociones = $promociones->orderBy('is_active', 'desc')
                                     ->orderBy('promociones.v_ini','desc')
                                     ->orderBy('fraccionamientos.nombre', 'asc')
                                     ->orderBy('etapas.num_etapa', 'asc')
                                     ->paginate(20);
-        
-        
+
+
         if(sizeOf($promociones)){ // verifica que almenos tenga un registro
             foreach($promociones as $index => $promo){
                 $lotes_promocion = Lote_promocion::join('lotes','lotes_promocion.lote_id','=','lotes.id')
@@ -51,16 +52,16 @@ class PromocionController extends Controller
                 ->orderBy('lotes.manzana', 'asc')
                 ->orderBy('lotes.num_lote', 'asc')->get();
 
-                $promo->lote = '';   // agrega un nuevo campo y los inicializa 
+                $promo->lote = '';   // agrega un nuevo campo y los inicializa
                 $promo->mostrar = 0;
                 if(sizeof($lotes_promocion)){
-                    foreach($lotes_promocion as $ind => $lote){  // al nuevo campo le añade informacion de lote y manzana 
+                    foreach($lotes_promocion as $ind => $lote){  // al nuevo campo le añade informacion de lote y manzana
                         $promo->lote = $promo->lote. ' Lote ' .$lote->lote.' (Manzana '.$lote->manzana.'),';
                     }
                 }
             }
         }
-            
+
         return [
             'pagination' => [
                 'total'         => $promociones->total(),
@@ -86,6 +87,7 @@ class PromocionController extends Controller
         $promocion->v_fin = $request->v_fin;
         $promocion->descuento = $request->descuento;
         $promocion->descripcion = $request->descripcion;
+        $promocion->desc_equipamiento = $request->desc_equipamiento;
 
         $promocion->save();
     }
@@ -103,10 +105,11 @@ class PromocionController extends Controller
         $promocion->v_fin = $request->v_fin;
         $promocion->descuento = $request->descuento;
         $promocion->descripcion = $request->descripcion;
+        $promocion->desc_equipamiento = $request->desc_equipamiento;
 
         $promocion->save();
     }
-    // elimina  un registro en la tabla de promocion 
+    // elimina  un registro en la tabla de promocion
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -114,10 +117,10 @@ class PromocionController extends Controller
         $promocion->delete();
     }
 
-    // selecciona un registro de la tabla filtrada por el id de lote y retorna la informacion 
+    // selecciona un registro de la tabla filtrada por el id de lote y retorna la informacion
     public function selectPromocion(Request $request){
         $promociones = Promocion::join('lotes_promocion','promociones.id','=','lotes_promocion.promocion_id')
-                            ->select('promociones.id','promociones.descripcion','promociones.nombre','promociones.v_ini')
+                            ->select('promociones.id','promociones.descripcion','promociones.nombre','promociones.v_ini' ,'promociones.desc_equipamiento')
                             ->where('lotes_promocion.lote_id','=',$request->lote)
                             ->get();
 

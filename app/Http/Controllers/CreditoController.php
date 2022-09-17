@@ -74,7 +74,7 @@ class CreditoController extends Controller
                     )
                     ->where('inst_seleccionadas.elegido','=',1)
                     ->where('creditos.prospecto_id','=',$request->prospecto_id)->get();
-        
+
         return['creditos' => $creditos];
     }
 
@@ -86,7 +86,7 @@ class CreditoController extends Controller
            $personal = Personal::findOrFail($request->id);
            $personal->direccion = $request->direccion;
            $personal->cp = $request->cp;
-           $personal->colonia = $request->colonia; 
+           $personal->colonia = $request->colonia;
 
            // Datos del cliente que se guardan en la tabla clientes
            $cliente = Cliente::findOrFail($request->id);
@@ -104,7 +104,7 @@ class CreditoController extends Controller
            $cliente->nss = $request->nss;
            $cliente->curp = $request->curp;
            $cliente->empresa = $request->empresa;
-           
+
            $personal->save();
            $cliente->save();
 
@@ -151,6 +151,8 @@ class CreditoController extends Controller
             $credito->lote_id = $request->lote_id;
             $credito->fraccionamiento = $request->fraccionamiento;
             $credito->vendedor_id = $asesor->vendedor_id;
+            $credito->desc_eq_paquete = $request->desc_eq_paquete;
+            $credito->desc_eq_promo = $request->desc_eq_promo;
             $credito->save();
 
             // Se crea el registro con los Datos extra.
@@ -200,12 +202,12 @@ class CreditoController extends Controller
             foreach($users as $notificar){
                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
             }
-            
-            DB::commit();  
-    
+
+            DB::commit();
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
 
     }
 
@@ -280,11 +282,11 @@ class CreditoController extends Controller
             $observacion->comentario = $request->observacion;
             $observacion->usuario = Auth::user()->usuario;
             $observacion->save();
-                
+
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     // Función para elegir el financiamiento para la simulación de crédito.
@@ -370,7 +372,7 @@ class CreditoController extends Controller
             User::findOrFail($cliente[0]->vendedor_id)->notify(new NotifyAdmin($arregloAceptado));
     }
 
-    /* Función para retornar las manzanas (Distintas) correspondientes a las simulaciones 
+    /* Función para retornar las manzanas (Distintas) correspondientes a las simulaciones
         de crédito creadas.
     */
     public function selectManzana(Request $request){
@@ -382,7 +384,7 @@ class CreditoController extends Controller
                     ->where('fraccionamiento','=',$buscar)
                     ->where('etapa','=',$buscar2)
                     ->distinct()->orderBy('manzana','asc')->get();
-            
+
         return['manzanas' => $manzanas];
     }
 
@@ -398,7 +400,7 @@ class CreditoController extends Controller
 
         //Llamada a la funcion privada que retorna la query
         $creditos = $this->getHIstCreditos();
-        
+
             // Filtros de busqueda
             if($buscar != ''){
                 switch($criterio){
@@ -458,7 +460,7 @@ class CreditoController extends Controller
             ],'creditos' => $creditos, 'contadorHistSim' => $creditos->total() ];
     }
 
-    // Función para retornar todas las simulaciones de crédito hechas, 
+    // Función para retornar todas las simulaciones de crédito hechas,
     // para una vista rapido y aprobar o rechazar.
     public function HistorialDeCreditos (Request $request){
         if(!$request->ajax())return redirect('/');
@@ -472,11 +474,11 @@ class CreditoController extends Controller
         if($buscar2 != ''){ // Filtro por estatus del crédito.
                 $Historialcreditos = $Historialcreditos
                     ->where('inst_seleccionadas.status','=',$buscar2);
-        } 
+        }
         if($buscar != ''){
             switch($criterio){
                 case 'personal.nombre':{ //Filtro por nombre del cliente.
-                    $Historialcreditos = $Historialcreditos 
+                    $Historialcreditos = $Historialcreditos
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
@@ -494,7 +496,7 @@ class CreditoController extends Controller
             }
         }
         $Historialcreditos = $Historialcreditos->orderBy('id','desc')->paginate(8);
-        
+
         return[
             'pagination' => [
                 'total'         => $Historialcreditos->total(),
@@ -534,10 +536,10 @@ class CreditoController extends Controller
         $creditos = $creditos->where('creditos.status','!=','1')
             ->where('inst_seleccionadas.elegido','=','1')
             ->orderBy('id','desc')->get();
-        
+
         return Excel::create('Historial de simulaciones', function($excel) use ($creditos){
             $excel->sheet('creditos', function($sheet) use ($creditos){
-                
+
                 $sheet->row(1, [
                     '# Folio', 'Cliente', 'Vendedor', 'Proyecto', 'Etapa', 'Manazana',
                     '# Lote', 'Modelo', 'Precio venta','Credito solicitado','Plazo',
@@ -559,15 +561,15 @@ class CreditoController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
-                
+
                 $sheet->setColumnFormat(array(
                     'J' => '$#,##0.00',
                     'I' => '$#,##0.00',
                 ));
 
-                
+
 
                 foreach($creditos as $index => $credito) {
                     if($credito->status == 2){
@@ -575,9 +577,9 @@ class CreditoController extends Controller
                     } else {
                         $status = 'Rechazado';
                     }
-                    
+
                     $cont++;
-                    
+
                     $sheet->row($index+2, [
                         $credito->id,
                         $credito->nombre.' '.$credito->apellidos,
@@ -593,8 +595,8 @@ class CreditoController extends Controller
                         $credito->institucion,
                         $credito->tipo_credito,
                         $status,
-                        
-                    ]);	
+
+                    ]);
                 }
 
 
@@ -602,7 +604,7 @@ class CreditoController extends Controller
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 
@@ -625,7 +627,7 @@ class CreditoController extends Controller
                                  'clientes.nacionalidad_coa','clientes.parentesco_coa','clientes.estado','clientes.ciudad','clientes.curp',
                                  'clientes.email_institucional','clientes.tipo_casa','clientes.edo_civil','clientes.nacionalidad',
                                  'clientes.nss','clientes.publicidad_id','clientes.nombre_recomendado',
- 
+
                                  'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc','personal.homoclave',
                                  'personal.direccion','personal.colonia','personal.colonia','personal.cp','personal.telefono',
                                  'personal.celular','personal.email')
@@ -633,11 +635,11 @@ class CreditoController extends Controller
 
         try{
             DB::beginTransaction();
- 
+
             // La clasificación del Titular anterior se cambia a coacreditado
             $newClienteCoa = Cliente::findOrFail($titular_id);
             $newClienteCoa->clasificacion = 7;
-            
+
 
             // Los datos que estaban como coacreditado se actualizan para el nuevo titular
             // Datos tabla personal
@@ -716,7 +718,7 @@ class CreditoController extends Controller
                                 'Se cambia de titular por '.$newTitularP->nombre.' '.$newTitularP->apellidos,
                                 ''
                             );
-            
+
             $credito->prospecto_id = $id_coa;
 
             // Se agrega comentario al nuevo coacreditado
@@ -737,7 +739,7 @@ class CreditoController extends Controller
             $observacion2->save();
 
             DB::commit();
- 
+
         } catch (Exception $e){
             DB::rollBack();
         }
@@ -751,7 +753,7 @@ class CreditoController extends Controller
                 ->where('credito_id','=',$request->folio)
                 ->where('elegido','=',1)
                 ->get();
-        
+
         $instSel = inst_seleccionada::findOrFail($inst[0]->id);
         $instSel->fecha_vigencia = $request->fecha_vigencia;
         $instSel->save();
@@ -809,7 +811,7 @@ class CreditoController extends Controller
                             ->where('depositos.monto_terreno','!=',0)
                             ->where('depositos.fecha_ingreso_concretania','=',NULL)
                             ->where('pagos_contratos.contrato_id','=',$contrato->id)->get();
-                
+
                 $dep_creditos = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                             //->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                             ->select('dep_creditos.id')
@@ -849,7 +851,7 @@ class CreditoController extends Controller
                             'expedientes.valor_escrituras','contratos.saldo','creditos.lote_id',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
-        if($request->buscar != '')                            
+        if($request->buscar != '')
             switch($request->criterio){
                 case 'cliente':{
                     $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
@@ -896,7 +898,7 @@ class CreditoController extends Controller
                             'expedientes.liquidado','expedientes.fecha_firma_esc',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
-        if($request->buscar != '')                            
+        if($request->buscar != '')
             switch($request->criterio){
                 case 'cliente':{
                     $cancelados = $cancelados->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
@@ -913,7 +915,7 @@ class CreditoController extends Controller
                     break;
                 }
             }
-        
+
         $cancelados = $cancelados->where('lotes.emp_constructora','=','CONCRETANIA')
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('contratos.status','=',0)
@@ -923,8 +925,8 @@ class CreditoController extends Controller
                     ->orderBy('contratos.id')->get();
 
         if(sizeof($cancelados)){
-            foreach ($cancelados as $key => $cancelado) {  
-                $cancelado->devuelto = 0; 
+            foreach ($cancelados as $key => $cancelado) {
+                $cancelado->devuelto = 0;
                 $cancelado->devueltoVirtual = 0;
                 $cancelado->transferido = 0;
 
@@ -946,7 +948,7 @@ class CreditoController extends Controller
                 ->where('depositos.lote_id','=',$cancelado->lote_id)
                 ->get();
 
-                
+
                 $depositoGCC = Deposito_gcc::select('id','fecha as fecha_ingreso_concretania',
                         'cuenta','monto as monto_terreno','cheque as num_recibo')
                     ->where('depositos_gcc.contrato_id','=',$cancelado->id)
@@ -1005,8 +1007,8 @@ class CreditoController extends Controller
                     if(sizeof($depositoConcTransf)){
                         $cancelado->depositoConcTransf = $depositoConcTransf;
                     }
-                    
-                
+
+
 
                     $cancelado->gcc = $depositoGCC[0]->suma;
                     $cancelado->transferido =  $cancelado->transferido +  $cancelado->gcc;
@@ -1014,7 +1016,7 @@ class CreditoController extends Controller
                     $cancelado->conc =  $depositoConc[0]->suma;
                 }
 
-                
+
         }
 
         return $cancelados;
@@ -1035,7 +1037,7 @@ class CreditoController extends Controller
                             'creditos.lote_id',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
-        if($request->buscar != '')                            
+        if($request->buscar != '')
             switch($request->criterio){
                 case 'cliente':{
                     $liquidados = $liquidados->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
@@ -1066,7 +1068,7 @@ class CreditoController extends Controller
             $cuentas = $this->getCuentas();
             foreach ($liquidados as $key => $liquidado) {
                 $liquidado->devuelto = 0;
-                if($liquidado->tipo_credito == 'Crédito Directo' && $liquidado->liquidado == 1 || 
+                if($liquidado->tipo_credito == 'Crédito Directo' && $liquidado->liquidado == 1 ||
                     $liquidado->tipo_credito != 'Crédito Directo' && $liquidado->fecha_firma_esc != NULL
                 )
                     $liquidado->status = 4;
@@ -1074,16 +1076,16 @@ class CreditoController extends Controller
 
                     $liquidado->devueltoVirtual = 0;
                     $liquidado->transferido = 0;
-    
+
                     //Se obtienen las devoluciones que salieron por cuenta de cumbres
                     $devoluciones = Devolucion::whereIn('devoluciones.cuenta',$cuentas)
                                     ->where('devoluciones.contrato_id','=',$liquidado->id)
                                     ->get();
-    
+
                     // Se obtienen las devoluciones virtuales para ese contrato
                     $dev_virtuales = Dev_virtual::where('contrato_id','=',$liquidado->id)
                                     ->get();
-    
+
                     // Depositos transferidos a cumbres.
                     $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
                     ->select('depositos.id','depositos.fecha_ingreso_concretania','depositos.cuenta',
@@ -1093,14 +1095,14 @@ class CreditoController extends Controller
                     ->where('depositos.monto_terreno','>',0)
                     ->where('depositos.lote_id','=',$liquidado->lote_id)
                     ->get();
-    
-                    
+
+
                     $depositoGCC = Deposito_gcc::select('id','fecha as fecha_ingreso_concretania',
                             'cuenta','monto as monto_terreno','cheque as num_recibo')
                         ->where('depositos_gcc.contrato_id','=',$liquidado->id)
                         ->where('depositos_gcc.lote_id','=',$liquidado->lote_id)
                         ->get();
-    
+
                     // Se realiza la sumatoria de los resultados
                     if(sizeof($dev_virtuales)){
                         $liquidado->dev_virtuales = $dev_virtuales;
@@ -1108,21 +1110,21 @@ class CreditoController extends Controller
                             $liquidado->devueltoVirtual += $dev->monto;
                         }
                     }
-    
+
                     if(sizeof($devoluciones)){
                         $liquidado->devoluciones = $devoluciones;
                         foreach ($devoluciones as $key => $dev) {
                             $liquidado->devuelto += $dev->devolver;
                         }
                     }
-    
+
                     if(sizeof($depositos_pagado)){
                             $liquidado->depositos_transferidos = collect($depositos_pagado)->merge(collect($depositoGCC));
                         foreach($depositos_pagado as $key => $deposito) {
                             $liquidado->transferido += $deposito->monto_terreno;
                         }
                     }
-    
+
                     // // Depositos reubicados a cumbres
                     // $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
                     //     ->where('depositos_gcc.contrato_id','=',$liquidado->id)
@@ -1131,7 +1133,7 @@ class CreditoController extends Controller
                     //     if($depositoGCC[0]->suma == NULL){
                     //         $depositoGCC[0]->suma = 0;
                     //     }
-    
+
                     // Depositos reubicados a concretania para sumatoria
                     $depositoConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as suma"))
                         ->where('depositos_conc.contrato_id','=',$liquidado->id)
@@ -1141,7 +1143,7 @@ class CreditoController extends Controller
                         if($depositoConc[0]->suma == NULL){
                             $depositoConc[0]->suma = 0;
                         }
-    
+
                     // Depositos reubicados a concretania
                     $depositoConcTransf = Deposito_conc::select('id','fecha',
                                 'cuenta','monto','cheque')
@@ -1149,21 +1151,21 @@ class CreditoController extends Controller
                         ->where('depositos_conc.lote_id','=',$liquidado->lote_id)
                         ->where('depositos_conc.devolucion','=',1)
                         ->get();
-    
+
                         if(sizeof($depositoConcTransf)){
                             $liquidado->depositoConcTransf = $depositoConcTransf;
                         }
-                        
-                    
-    
+
+
+
                         //$liquidado->gcc = $depositoGCC[0]->suma;
                         //$liquidado->transferido =  $liquidado->transferido +  $liquidado->gcc;
-    
+
                         $liquidado->conc =  $depositoConc[0]->suma;
-                    
+
             }
 
-            
+
         }
 
         return $liquidados;
@@ -1175,10 +1177,10 @@ class CreditoController extends Controller
         $contratos = $this->edoCuentaActivos($request);
 
         $contratos = $contratos->get();
-                    
+
         return Excel::create('Relación de los ingresos de Concretania', function($excel) use ($contratos){
             $excel->sheet('Estado de cuenta', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     'Fraccionamiento', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Valor de venta', 'Valor de escrituracion',
                     'Valor de terreno', 'Total pagado', 'Por pagar', 'Estatus'
@@ -1197,9 +1199,9 @@ class CreditoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-                
+
                 $cont=1;
-                
+
                 $sheet->setColumnFormat(array(
                     'F' => '$#,##0.00',
                     'G' => '$#,##0.00',
@@ -1216,9 +1218,9 @@ class CreditoController extends Controller
                         $contrato->status = "Firmado";
                     else
                         $contrato->status = "";
-                   
+
                     $cont++;
-                    
+
                     $sheet->row($index+2, [
                         $contrato->fraccionamiento,
                         $contrato->etapa,
@@ -1231,7 +1233,7 @@ class CreditoController extends Controller
                         $contrato->saldo_terreno,
                         $contrato->monto_terreno-$contrato->saldo_terreno,
                         $contrato->status,
-                    ]);	
+                    ]);
                 }
                 $num='A1:K' . $cont;
                 $sheet->setBorder($num, 'thin');

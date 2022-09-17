@@ -39,6 +39,8 @@ class CreateCreditosTable extends Migration
             $table->double('descuento_promocion')->nullable();
             $table->string('paquete')->nullable();
             $table->text('descripcion_paquete')->nullable();
+            $table->text('desc_eq_paquete')->nullable();
+            $table->text('desc_eq_promo')->nullable();
             $table->double('costo_paquete')->nullable();
             $table->double('precio_venta')->nullable();
             $table->integer('plazo')->nullable();
@@ -56,7 +58,7 @@ class CreateCreditosTable extends Migration
             $table->double('costo_protecciones')->default(0);
 
             $table->timestamps();
-            
+
             $table->foreign('prospecto_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
             $table->foreign('vendedor_id')->references('id')->on('vendedores')->onDelete('cascade');

@@ -2315,6 +2315,8 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     promocion: '',
                     descripcionPromo: '',
                     descuentoPromo: 0,
+                    desc_eq_paquete: '',
+                    desc_eq_promo: '',
                     paquete_id: 0,
                     descripcionPaquete: '',
                     costoPaquete: 0,
@@ -2937,6 +2939,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.promocion = me.arrayDatosLotes[0]['promocion'];
                     me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                     me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+                    me.desc_eq_promo = me.arrayDatosLotes[0]['desc_equipamiento'];
                     me.terreno_tam_excedente= Math.round( me.arrayDatosLotes[0]['terreno_tam_excedente']*100)/100;
                     me.lote = me.arrayDatosLotes[0]['num_lote'];
                     me.sublote = me.arrayDatosLotes[0]['sublote'];
@@ -2950,6 +2953,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.precioVenta = me.precioVenta - me.descuentoPromo;
                     me.descripcion_paquete = "";
                     me.costoPaquete = 0;
+                    me.desc_eq_paquete = '';
                     me.paquete = "";
                 })
                 .catch(function (error) {
@@ -3119,6 +3123,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                         me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
                         me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
                         me.paquete = me.arrayDatosPaquetes[0]['nombre'];
+                        me.desc_eq_paquete = me.arrayDatosPaquetes[0]['desc_equipamiento'];
 
                         me.precioVenta = me.precioVenta + me.costoPaquete;
                     })
@@ -3129,6 +3134,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 else{
                     me.descripcionPaquete='';
                     me.costoPaquete=0;
+                    me.desc_eq_paquete = '';
                 }
             },
 
@@ -3215,9 +3221,11 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.promocion = data['promocion'];
                 this.descripcionPromo = data['descripcion_promocion'];
                 this.descuentoPromo = data['descuento_promocion'];
+                this.desc_eq_promo = data['desc_eq_promo'];
                 this.paquete = data['paquete'];
                 this.descripcionPaquete = data['descripcion_paquete'];
                 this.costoPaquete = data['costo_paquete'];
+                this.desc_eq_paquete = data['desc_eq_paquete'];
                 this.tipo_credito = data['tipo_credito'];
                 this.inst_financiera = data['institucion'];
                 this.plazo_credito =data['plazo'];
@@ -3344,6 +3352,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,
                     'costo_paquete' : this.costoPaquete,
+                    'desc_eq_paquete' : this.desc_eq_paquete,
                     'precio_venta' : this.precioVenta
 
                 }).then(function (response){
@@ -3513,9 +3522,11 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.promocion = data['promocion'];
                 this.descripcionPromo = data['descripcion_promocion'];
                 this.descuentoPromo = data['descuento_promocion'];
+                this.desc_eq_promo = data['desc_eq_promo'];
                 this.paquete = data['paquete'];
                 this.descripcionPaquete = data['descripcion_paquete'];
                 this.costoPaquete = data['costo_paquete'];
+                this.desc_eq_paquete = data['desc_eq_paquete'];
                 this.tipo_credito = data['tipo_credito'];
                 this.inst_financiera = data['institucion'];
                 this.plazo_credito =data['plazo'];
@@ -3867,6 +3878,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,
                     'costo_paquete' : this.costoPaquete,
+                    'desc_eq_paquete' : this.desc_eq_paquete,
                     'precio_venta' : this.precioVenta,
 
                     'data':this.arrayPagos,
@@ -4068,6 +4080,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.promocion= '';
                     me.descripcionPromo= '';
                     me.descuentoPromo= 0;
+                    me.desc_eq_promo = '';
                     me.paquete_id= 0;
                     me.descripcionPaquete= '';
                     me.costoPaquete= 0;
@@ -4179,6 +4192,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                    'promocion':data['promocion'],
                    'descripcion_promocion':data['descripcionPromo'],
                    'descuento_promocion':data['descuentoPromo'],
+                   'desc_eq_promo':data['desc_eq_promo'],
                    'precio_venta':data['precio_venta'] - data['descuentoPromo'],
                    'reubicar': me.reubicacion,
                    'observacion' : me.observacion_r
@@ -4219,6 +4233,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                    'promocion':data['promocion'],
                    'descripcion_promocion':data['descripcionPromo'],
                    'descuento_promocion':data['descuentoPromo'],
+                   'desc_eq_promo' : data['desc_eq_promo'],
                    'precio_venta':data['precio_venta'] - data['descuentoPromo'],
 
                 }).then(function (response){

@@ -31,14 +31,14 @@
                                     <input type="text" v-else v-model="buscar" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                                 <div class="input-group">
-                                    <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)"> 
+                                    <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                     <button type="submit" @click="listarPromociones(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
@@ -96,7 +96,7 @@
                                             <br>
                                             {{promocion.lote}}
                                         </td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -184,6 +184,13 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Equipamiento incluido</label>
+                                    <div class="col-md-6">
+                                        <textarea rows="4" cols="30" v-model="desc_equipamiento" class="form-control" placeholder="Descripcion del equipamiento incluido"></textarea>
+                                    </div>
+                                </div>
+
 
                                 <!-- Div para mostrar los errores que mande validerPaquete -->
                                 <div v-show="errorPromocion" class="form-group row div-error">
@@ -202,7 +209,7 @@
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPromociones()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPromociones()">Actualizar</button>
                         </div>
-                        
+
                     </div>
                     <!-- /.modal-content -->
                 </div>
@@ -264,7 +271,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <!-- Div para mostrar los errores que mande validerPaquete -->
                                 <div v-show="errorLotePromocion" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -302,7 +309,7 @@
                                             </td>
                                             <td v-text="lotePromocion.manzana" ></td>
                                             <td v-text="lotePromocion.lote" ></td>
-                                        </tr>                               
+                                        </tr>
                                     </tbody>
                                 </table>
                                 <nav>
@@ -320,10 +327,10 @@
                                     </ul>
                                 </nav>
                             </div>
-                            
+
                         </div>
                     <!-- /.modal-content -->
-                
+
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
@@ -350,6 +357,7 @@
                 v_ini : new Date().toISOString().substr(0, 10),
                 v_fin : '',
                 descuento : '',
+                'desc_equipamiento' : '',
                 descripcion : '',
                 arrayPromocion : [],
                 arrayLotePromocion : [],
@@ -369,7 +377,7 @@
                 errorMostrarMsjPromocion : [],
                 errorMostrarMsjLotePromocion : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -377,7 +385,7 @@
                     'to' : 0,
                 },
                  pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -385,7 +393,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'promociones.nombre', 
+                criterio : 'promociones.nombre',
                 buscar : '',
                 buscar2 : '',
             }
@@ -518,6 +526,7 @@
                     'v_ini': this.v_ini,
                     'v_fin': this.v_fin,
                     'descuento': this.descuento,
+                    'desc_equipamiento' : this.desc_equipamiento,
                     'descripcion': this.descripcion
                 }).then(function (response){
                     me.proceso=false;
@@ -554,7 +563,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                     }).then((result) => {
 
@@ -563,9 +572,9 @@
                         axios.post('/lote_promocion/registrar',{
                             'promocion_id': this.id,
                             'lote_id': element
-                            }); 
+                            });
                         });
-                   // me.listarLote(1,'','','','','','','lote');   
+                   // me.listarLote(1,'','','','','','','lote');
                     me.proceso=false;
                     me.cerrarModal2(); //al guardar el registro se cierra el modal
                     me.listarPromociones(me.pagination.current_page,me.buscar,me.buscar2,me.criterio); //se enlistan nuevamente los registros
@@ -578,7 +587,7 @@
                         })
                     }})
             },
-            
+
             actualizarPromociones(){
                 if(this.validarPromociones() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -597,6 +606,7 @@
                     'v_fin': this.v_fin,
                     'descuento': this.descuento,
                     'descripcion': this.descripcion,
+                    'desc_equipamiento' : this.desc_equipamiento,
                     'id': this.id
                 }).then(function (response){
                     me.proceso=false;
@@ -637,7 +647,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/promocion/eliminar', 
+                axios.delete('/promocion/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -669,7 +679,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/lote_promocion/eliminar', 
+                axios.delete('/lote_promocion/eliminar',
                         {params: {'id': this.lote_promocion_id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -713,7 +723,7 @@
             },
              selectEtapa(buscar){
                 let me = this;
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -743,7 +753,7 @@
 
                 if(!this.nombre) //Si la variable departamento esta vacia
                     this.errorMostrarMsjPromocion.push("El nombre de la promoción no puede ir vacio.");
-                
+
                 if(this.fraccionamiento_id==0) //Si la variable departamento esta vacia
                     this.errorMostrarMsjPromocion.push("Debe seleccionar algun fraccionamiento.");
 
@@ -764,7 +774,7 @@
 
                 if(!this.lotes_promo) //Si la variable departamento esta vacia
                     this.errorMostrarMsjLotePromocion.push("Selecciona el lote que tendra la promoción.");
-                
+
                 if(this.errorMostrarMsjLotePromocion.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorLotePromocion = 1;
 
@@ -817,6 +827,7 @@
                                 this.descuento = 0;
                                 this.descripcion = '';
                                 this.tipoAccion = 1;
+                                this.desc_equipamiento = '';
                                 break;
                             }
                             case 'actualizar':
@@ -833,6 +844,7 @@
                                 this.v_fin=data['v_fin'];
                                 this.descuento=data['descuento'];
                                 this.descripcion=data['descripcion'];
+                                this.desc_equipamiento = data['desc_equipamiento'];
                                 break;
                             }
                         }
@@ -892,7 +904,7 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }    
+    }
     .btn-success2 {
         color: #fff;
         background-color: #2c309e;
@@ -939,5 +951,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

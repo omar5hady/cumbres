@@ -8,7 +8,7 @@ use Auth;
 
 class TipoCreditoController extends Controller
 {
-    //regresa el nombre de el tipo de credito 
+    //regresa el nombre de el tipo de credito
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -16,7 +16,7 @@ class TipoCreditoController extends Controller
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
-        
+
         if($buscar==''){
             $Tipos_creditos = Tipo_credito::orderBy('nombre','asc')->paginate(8);
         }
@@ -44,10 +44,11 @@ class TipoCreditoController extends Controller
         $Tipo_credito = new Tipo_credito();
         $Tipo_credito->nombre = $request->nombre;
         $Tipo_credito->institucion_fin = $request->institucion_fin;
+        $Tipo_credito->dias_nat = $request->dias_nat;
         $Tipo_credito->save();
     }
 
-    //funcion para actualizar los datos 
+    //funcion para actualizar los datos
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -55,11 +56,12 @@ class TipoCreditoController extends Controller
         $Tipo_credito = Tipo_credito::findOrFail($request->id);
         $Tipo_credito->nombre = $request->nombre;
         $Tipo_credito->institucion_fin = $request->institucion_fin;
+        $Tipo_credito->dias_nat = $request->dias_nat;
         $Tipo_credito->save();
     }
 
     // elimina un registro de la tabla de tipo de credito
-    public function destroy(Request $request) 
+    public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $Tipo_credito = Tipo_credito::findOrFail($request->id);

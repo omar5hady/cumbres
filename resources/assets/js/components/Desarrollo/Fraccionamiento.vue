@@ -52,6 +52,7 @@
                                     <th v-if="rolId != 3">Fecha de inicio de ventas</th>
                                     <th v-if="rolId != 3">Gerente</th>
                                     <th>Arquitecto</th>
+                                    <th>Postventa</th>
                                 </tr>
                             </template>
                             <template v-slot:tbody>
@@ -78,6 +79,7 @@
                                     <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
                                     <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.gerente"></td>
                                     <td class="td2" v-text="fraccionamiento.arquitecto"></td>
+                                    <td class="td2" v-text="fraccionamiento.postventa"></td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -226,6 +228,16 @@
                                 <select class="form-control" v-model="arquitecto_id">
                                     <option value="">Seleccione</option>
                                     <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                            <label class="col-md-3 form-control-label" for="text-input">Encargado de postventa</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="postventa_id">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="postventa in arrayPostVenta" :key="postventa.id" :value="postventa.id" v-text="postventa.name"></option>
                                 </select>
                             </div>
                         </div>
@@ -456,6 +468,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 arrayFraccionamiento : [],
                 arrayGerentes : [],
                 arrayArquitectos :[],
+                arrayPostVenta :[],
                 arrayEscrituras : [],
                 arrayPlanos : [],
                 modal : 0,
@@ -464,6 +477,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 tituloModal4: '',
                 gerente_id : '',
                 arquitecto_id :'',
+                postventa_id:'',
                 tipoAccion: 0,
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
@@ -629,6 +643,18 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayArquitectos = respuesta.personal;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectPostventa(){
+                let me = this;
+                me.arrayPostVenta=[];
+                var url = '/select_personal?departamento_id=4';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPostVenta = respuesta.personal;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -803,6 +829,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'numero' : this.numero,
                     'gerente_id' : this.gerente_id,
                     'arquitecto_id' : this.arquitecto_id,
+                    'postventa_id' : this.postventa_id,
                     'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
 
@@ -1001,6 +1028,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.arquitecto_id=data['arquitecto_id'];
                                 if(this.arquitecto_id == null)
                                     this.arquitecto_id = '';
+                                if(this.postventa_id == null)
+                                    this.postventa_id = '';
                                 this.numero = data['numero'];
                                 this.selectCiudades(this.estado);
                                 this.nEquipamiento = {
@@ -1037,6 +1066,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             this.listarFraccionamiento(1,this.buscar,this.criterio);
             this.selectGerentesVentas();
             this.selectArquitectos();
+            this.selectPostventa();
         }
     }
 </script>

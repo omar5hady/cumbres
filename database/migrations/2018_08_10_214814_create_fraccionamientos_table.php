@@ -31,6 +31,7 @@ class CreateFraccionamientosTable extends Migration
             $table->date('fecha_ini_venta')->nullable();
             $table->integer('gerente_id')->nullable();
             $table->integer('arquitecto_id')->nullable();
+            $table->integer('postventa_id')->nullable();
 
             $table->timestamps();
         });

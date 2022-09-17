@@ -22,6 +22,7 @@ class CreatePromocionesTable extends Migration
             $table->date('v_fin')->nullable();
             $table->double('descuento')->default(0);
             $table->text('descripcion');
+            $table->text('desc_equipamiento')->nullable();
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

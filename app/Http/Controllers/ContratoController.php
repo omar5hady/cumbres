@@ -223,6 +223,8 @@ class ContratoController extends Controller
                     'creditos.plazo',
                     'creditos.credito_solic',
                     'creditos.costo_paquete',
+                    'creditos.desc_eq_promo',
+                    'creditos.desc_eq_paquete',
                     'inst_seleccionadas.tipo_credito',
                     'inst_seleccionadas.id as inst_credito',
                     'creditos.precio_obra_extra',
@@ -643,6 +645,7 @@ class ContratoController extends Controller
 
             $credito->paquete =  $request->paquete;
             $credito->descripcion_paquete = $request->descripcion_paquete;
+            $credito->desc_eq_paquete = $request->desc_eq_paquete;
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
 
@@ -1848,6 +1851,7 @@ class ContratoController extends Controller
                 $credito->precio_venta = $request->precio_venta;
                 $credito->credito_solic = $request->credito_solic;
                 $credito->plazo = $request->plazo_credito;
+                $credito->desc_eq_paquete = $request->desc_eq_paquete;
                 $credito->contrato = 1;
 
             // Se obtiene la institución de financiamiento actual del contrato
@@ -2223,6 +2227,8 @@ class ContratoController extends Controller
             $credito->descuento_promocion = $request->descuento_promocion;
             $credito->paquete = '';
             $credito->descripcion_paquete = '';
+            $credito->desc_eq_promo = $request->desc_eq_promo;
+            $credito->desc_eq_paquete = '';
             $credito->costo_paquete = 0;
             $credito->precio_venta = round($precio_venta - $request->descuento_promocion,2);
             $credito->lote_id = $loteNuevo_id;
@@ -2343,6 +2349,8 @@ class ContratoController extends Controller
             $credito->paquete = '';
             $credito->descripcion_paquete = '';
             $credito->costo_paquete = 0;
+            $credito->desc_eq_promo = $request->desc_eq_promo;
+            $credito->desc_eq_paquete = '';
             $credito->precio_venta = round($precio_venta - $request->descuento_promocion,2);
             $credito->lote_id = $loteNuevo_id;
             $credito->save();
