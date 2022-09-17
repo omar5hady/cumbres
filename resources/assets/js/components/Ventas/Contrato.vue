@@ -291,6 +291,8 @@
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                 <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
                                                 <a class="dropdown-item" @click="abrirModal('archivoFisc',contrato)">Archivo Fiscal</a>
+                                                <a v-if="contrato.foto_predial" title="Ver Predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contrato.foto_predial">Predial</a>
+                                                <a v-if="contrato.num_licencia" title="Ver licencia" class="dropdown-item"  v-text="'Licencia: '+contrato.num_licencia" v-bind:href="'/downloadLicencias/'+contrato.foto_lic"></a>
                                             </div>
                                         </td>
                                         <td class="td2">

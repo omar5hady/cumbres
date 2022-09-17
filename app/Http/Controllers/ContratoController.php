@@ -189,6 +189,7 @@ class ContratoController extends Controller
                 ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('licencias', 'creditos.lote_id', '=', 'licencias.id')
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('personal as v', 'creditos.vendedor_id', 'v.id')
@@ -209,6 +210,9 @@ class ContratoController extends Controller
                     'creditos.num_lote',
                     'creditos.valor_terreno',
                     'lotes.sobreprecio',
+                    'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.num_licencia',
                     'creditos.modelo',
                     'creditos.precio_base',
                     'creditos.superficie',
