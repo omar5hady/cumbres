@@ -1310,6 +1310,15 @@
 
                                                 <div class="col-md-12" >
                                                     <h6></h6>
+                                                     <div class="form-group" v-if="totalEco > 0">
+                                                        <label style="color:#2271b3;" for=""><strong> Total Ecotecnologias </strong></label>
+                                                        <p v-text="'$'+formatNumber(totalEco)"></p>
+                                                    </div>
+                                                    <div class="form-group"  v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                        <button class="btn btn-success" @click="abrirModal('ecotecnologias')">
+                                                            <i class="fa fa-tree"></i>&nbsp;Añadir ecotecnologias
+                                                        </button>
+                                                    </div>
                                                 </div>
 
                                                 <div class="col-md-3" v-if="listado==3 || listado==4 && btn_actualizar==1">
@@ -2159,6 +2168,53 @@
             </template>
         </ModalComponent>
         <!--Fin del modal-->
+
+        <!-- Modal Ecotecnologias -->
+        <ModalComponent v-if="modal== 3"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                 <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Ecotecnologias disponibles</label>
+                    <div class="col-md-5">
+                        <select class="form-control" v-model="ecoSeleccionada">
+                            <option :value={}> Seleccione </option>
+                            <option v-for="eco in arrayEcotecnologias" :key="eco.id" :value="eco" v-text="eco.ecotecnologia"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-success" @click="agregarEcotecnologia(ecoSeleccionada)">Añadir</button>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <h6 class="center" v-if="ecotecnologasAsignadas.length == 0">
+                                Sin ecotecnologias
+                        </h6>
+                        <TableComponent v-else
+                            :cabecera="['','Ecotecnologia','Precio']"
+                        >
+                            <template v-slot:tbody>
+                                <tr v-for="eco in ecotecnologasAsignadas" :key="eco.id">
+                                    <td class="td2" @click="eliminarEco(eco)">
+                                        <button class="btn btn-danger" title="Eliminar ecotecnologia"><i class="icon-trash"></i></button>
+                                    </td>
+                                    <td class="td2">{{eco.ecotecnologia}}</td>
+                                    <td class="td2">{{eco.precio}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Total:</td>
+                                    <td class="td2">${{formatNumber(totalEco)}}</td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
+
+                </div>
+            </template>
+        </ModalComponent>
     </main>
 </template>
 
@@ -2419,7 +2475,12 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 clv_lada:52,
                 arrayClaves:[],
                 tipo_proyecto:'',
-                observacion_r :''
+                observacion_r :'',
+                arrayEcotecnologias:[],
+                ecotecnologasAsignadas:[],
+                totalEco:0,
+                ecoSeleccionada:{
+                }
             }
         },
         computed:{
@@ -2952,7 +3013,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.lote_id = lote;
                     me.sobreprecio = me.arrayDatosLotes[0]['sobreprecio'];
 
-                    me.precioVenta = me.precioVenta - me.descuentoPromo;
+                    me.precioVenta = me.precioVenta - me.descuentoPromo + me.totalEco;
                     me.descripcion_paquete = "";
                     me.costoPaquete = 0;
                     me.desc_eq_paquete = '';
@@ -3041,6 +3102,80 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 });
             },
 
+            getEcotecnologiasAsignadas(contrato){
+                let me = this;
+                me.ecotecnologasAsignadas = [];
+                me.totalEco = 0;
+                const url = '/ecotecnologias/contrato?credito_id=' + contrato;
+                    axios.get(url).then(function (response) {
+                        const respuesta = response.data;
+                        me.ecotecnologasAsignadas = respuesta.ecotecnologias;
+                        me.totalEco = respuesta.total;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            agregarEcotecnologia(ecotecnologia){
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/ecotecnologias/contrato',{
+                    'credito_id': me.id,
+                    'ecotecnologia': ecotecnologia.ecotecnologia,
+                    'precio': ecotecnologia.precio
+                }).then(function (response){
+                    me.ecotecnologasAsignadas.push(response.data)
+                    me.totalEco+=response.data.precio
+                    me.precioVenta+=response.data.precio
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Ecotecnologia asignada'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            eliminarEco(eco){
+                let me = this;
+                axios.delete(`/ecotecnologias/contrato/${eco.id}`, {
+                    params: {'id': eco.id}
+                }).then(function (response){
+                    me.ecotecnologasAsignadas = me.ecotecnologasAsignadas.filter( e => e.id !== e.id)
+                    me.totalEco-=eco.precio
+                    me.precioVenta-=eco.precio
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Ecotecnologia removida'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            selectEcotecnologias(){
+                let me = this;
+                var url = '/ecotecnologia?'+'&buscar=' + this.buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEcotecnologias = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectNombreArchivoModelo(){
                 let me = this;
                 me.nombre_archivo_modelo='';
@@ -3411,6 +3546,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
             verContrato(data = []){
                 this.getDatosProyecto(data['fraccionamiento_id']);
+                this.getEcotecnologiasAsignadas(data['id']);
 
                 this.datosFiscales.email_fisc = data['email_fisc'];
                 this.datosFiscales.tel_fisc = data['tel_fisc'];
@@ -4092,6 +4228,8 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.inst_financiera='';
                     me.plazo_credito='';
                     me.monto_credito='';
+                    me.ecotecnologasAsignadas = [];
+                    me.totalEco = 0;
 
                     /// Credito datos extra //
                         me.comision_apertura='0';
@@ -4168,6 +4306,12 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                         this.archivo2 = undefined;
                         this.archivoFisc = data['archivo_fisc'];
                         this.archivoConstancia = data['constancia_fisc'];
+                        break;
+                    }
+                    case 'ecotecnologias':{
+                        this.modal = 3;
+                        this.tituloModal = 'Agregar ecotecnologias';
+                        this.ecoSeleccionada = {};
                         break;
                     }
                 }
@@ -4267,6 +4411,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
         },
         created(){
             this.listarContratos(1,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+            this.selectEcotecnologias();
         },
         mounted() {
             this.$root.selectFraccionamientos();

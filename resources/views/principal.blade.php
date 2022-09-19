@@ -55,7 +55,7 @@
 
                     <form  id="logout-form" action="{{route('logout')}}" method="POST" style="display: none;">
                     {{csrf_field()}}
-                    
+
                     </form>
                 </div>
             </li>
@@ -83,7 +83,7 @@
                             </li>
                         @endif
                         <li class="nav-title">
-                        <strong>Menu</strong> 
+                        <strong>Menu</strong>
                         </li>
                 <!-- Administración -->
                         @if(Auth::user()->administracion == 1)
@@ -91,17 +91,17 @@
                         @endif
 
                 <!-- RH -->
-                       
+
                             @include('sidebars.rh')
-                      
-                       
-                        
+
+
+
 
                 <!-- Oficina -->
                         @if(Auth::user()->inventarios == 1 || Auth::user()->prov_inventarios == 1)
                             @include('sidebars.oficina')
                         @endif
-                        
+
                 <!-- Modulo para proveedor ---->
                         @if(Auth::user()->rol_id == 10 || Auth::user()->rol_id == 1 || Auth::user()->usuario == 'david.hh')
                             @include('sidebars.proveedor')
@@ -161,8 +161,8 @@
                             @include('sidebars.pagosinternos')
                         @endif
                 <!-- Fin pago internos -->
-                
-                <!-- Modulo Comisiones ---->   
+
+                <!-- Modulo Comisiones ---->
                         @if(Auth::user()->comisiones == 1)
                             @include('sidebars.comisiones')
                         @endif
@@ -181,7 +181,7 @@
                         <li class="nav-item nav-dropdown">
                                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
                                 <ul class="nav-dropdown-items">
-                                    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13 || Auth::user()->id == 25694)
+                                    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13 || Auth::user()->rol_id == 12)
                                         <li @click="menu=217" class="nav-item">
                                             <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
                                         </li>
@@ -222,8 +222,8 @@
     </div>
     </div>
 
- 
-    
+
+
          <!-- /Div para iconos de redes sociales
          <div class="app-footer">
         <a class="btn" href="https://www.facebook.com/CasasCumbresSLP/">
@@ -233,12 +233,12 @@
         </a>
     </div>-->
 
-   
+
 
     <footer class="app-footer">
-        
+
         <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo Constructor Cumbres</a> &copy; 2022</span>
-        
+
         <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Grupo Cumbres</a></span>
     </footer>
 

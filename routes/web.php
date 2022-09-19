@@ -1239,6 +1239,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////////////////// Rutas Ecotenologias
         Route::resource('/ecotecnologia', EcotecnologiaController::class);
+        Route::resource('/ecotecnologias/contrato', Contrato\EcotecnologiasController::class);
 
         /////////////////////// Rutas Specification
         Route::resource('/specification', Modelo\EspecificacionController::class);
