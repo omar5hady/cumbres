@@ -2355,7 +2355,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 fecha_contrato:'',
                 arrayEstados: [],
                 arrayCiudadesCoa: [],
-                arrayCiudades:[],
+                arrayCiudades: [],
                 arrayColoniasCoa: [],
                 arrayColonias: [],
                 arrayPaquetes: [],
@@ -2363,7 +2363,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 arrayAsesores: [],
                 arrayCreditos: [],
                 arrayInstituciones: [],
-                arrayMediosPublicidad:[],
+                arrayMediosPublicidad: [],
                 btn_actualizar: 0,
 
                 loteEnContrato: 0,

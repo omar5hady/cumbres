@@ -1237,6 +1237,9 @@ Route::group(['middleware' => ['auth']],function(){
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
 
+        /////////////////////// Rutas Ecotenologias
+        Route::resource('/ecotecnologia', EcotecnologiaController::class);
+
         /////////////////////// Rutas Specification
         Route::resource('/specification', Modelo\EspecificacionController::class);
 
