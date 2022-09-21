@@ -78,15 +78,22 @@
     'normal' => $rootDir . '\lib\fonts\DejaVuSerif',
   ),
   'fontawesome' => array(
-    'normal' => $fontDir . '\6da1e715db61194e49a6e4e914c01fe6',
+    'normal' => $fontDir . '/fontawesome-normal_fff0282e681cb3a5e7ccf270db5eb01d',
   ),
   'simple-line-icons' => array(
-    'normal' => $fontDir . '\3f8dec3d1a7141322eaa5b1897236f07',
+    'normal' => $fontDir . '/simple-line-icons-normal_4ba5be934fd16a532899a5508124290c',
   ),
   'AvenirNextLTPro' => array(
     'normal' => $fontDir . '\AvenirNextLTPro-Regular',
   ),
   'avenirnextltpro' => array(
     'normal' => $fontDir . '/avenirnextltpro-normal_bf11512877ef2223afd06e89358ef2fc',
+  ),
+  'line awesome brands' => array(
+    'normal' => $fontDir . '/line-awesome-brands-normal_f905f0dcb962dd842eea02bb4f9eee69',
+  ),
+  'line awesome free' => array(
+    'normal' => $fontDir . '/line-awesome-free-normal_967a0922d505961af7c5cdf6c50fd81e',
+    '900' => $fontDir . '/line-awesome-free-900_03518a78e82e89adf0bdd3560d8fbb29',
   ),
 ) ?>

@@ -754,7 +754,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.equipamientos.push(
                        response.data
                     )
-                    me.nEquipamiento={};
+                    me.nEquipamiento={fraccionamiento_id : me.id};
                     me.listarFraccionamiento(me.pagination.current_page,me.buscar,'fraccionamiento');
                     //Se muestra mensaje Success
                     const toast = Swal.mixin({

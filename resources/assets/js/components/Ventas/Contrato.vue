@@ -1831,6 +1831,8 @@
                                             <a class="btn btn-scarlet btn-sm" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
                                             <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
                                         </div>
+
+
                                     </div>
 
                                 </div>
@@ -1845,6 +1847,11 @@
                                             <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
                                             <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
                                             <a class="btn btn-danger btn-sm" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div style="text-align: right;" v-if="rolId!=2">
+                                            <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
                                         </div>
                                     </div>
                                 </div>
