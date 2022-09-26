@@ -61,7 +61,7 @@ class PreciosController extends Controller
         $ids=[];
         $i=0;
         $fra = Fraccionamiento::select('id')->where('nombre','like','%'.$proyecto.'%')->get();
-        $et = Etapa::select('id')->where('num_etapa','like','%'.$etapa.'%')->whereIn('fraccionamiento_id',$fra)->first();
+        $et = Etapa::select('id')->where('num_etapa','like','%'.$etapa.'%')->whereIn('fraccionamiento_id',$fra)->get();
         $modelos = Modelo::select('id')->whereIn('fraccionamiento_id',$fra)->get();
 
         foreach($modelos as $modelo){

@@ -681,6 +681,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/contratos/storeObsExpEntregado','ExpedienteController@storeObsExpEntregado');
 
         Route::get('/contrato/printContratoCredito/{id}','Contrato\ContratosVentaController@printContratoCredito')->name('contrato_venta_credito.pdf');
+        Route::get('/contrato/printAvisoPrivacidad','Contrato\ContratosVentaController@printAvisoPrivacidad')->name('Aviso_Privacidad.pdf');
 
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');

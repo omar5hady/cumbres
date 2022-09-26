@@ -10,7 +10,7 @@
 
 <style>
     body {
-        font-size: 9.5pt;
+        font-size: 9.2pt;
         text-align: justify;
         font-family: Verdana, Tahoma, sans-serif;
     }
@@ -35,12 +35,12 @@
         table-layout: fixed;
     }
     .small{
-        font-size: 9.5pt;
+        font-size: 9pt;
     }
 
     .table2 { display: table; width:100%;  border: ridge #0B173B 1px; color:black;}
     .table-cell2 {
-        display: table-cell; padding: 0.1em; font-size: 9pt;
+        display: table-cell; padding: 0.1em; font-size: 9.2pt;
         border: ridge; border-width:0.5px; #0B173B 1px; color:black;
     }
 
@@ -400,33 +400,6 @@
             y con capacidad legal y económica para celebrar este contrato.
         </p>
 
-        <p>
-            b)	Que es derechohabiente del:
-        </p>
-
-        <p>
-            <ul class="ul-custom">
-                <li><template class="cuadrado">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
-                    </template> Instituto del Fondo Nacional de la Vivienda para los Trabajadores <strong>(INFONAVIT)</strong>. </li>
-                     <br><br>
-                 <li><template class="cuadrado">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
-                    </template> Instituto de Seguridad y Servicios Sociales para los Trabajadores del Estado.</li>
-                    <br><br>
-                 <li><template class="cuadrado">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
-                    </template>Otro _________________________________ </li>
-            </ul>
-        </p>
-
-        <p>
-            c)	Que gestionará y obtendrá un crédito hipotecario con cualesquiera de las instituciones de crédito autorizadas en el País,
-            para ejercerlo con o sin cofinanciamiento con otra institución de crédito, según convenga a sus intereses.
-        </p>
-
-        <p>Habiendo declarado lo anterior, las partes se obligan en los términos de las siguientes:</p>
-
 
         <p align="center"><strong>C L Á U S U L A S</strong></p>
 
@@ -439,104 +412,16 @@
 
         <p>
             <strong>SEGUNDA.- CONDICIÓN A QUE SE SUJETA EL CONTRATO DE PROMESA DE COMPRAVENTA. </strong>
-            Las partes establecen que la celebración del Contrato de Compraventa estará condicionada al hecho de
-            que a “EL PROMITENTE COMPRADOR” le sea aprobado y otorgado el crédito por parte de
-            @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
-                && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
-                {{ mb_strtoupper($contrato->institucion) }}
-            @else
-                @if($contrato->tipo_credito == 'INFONAVIT-FOVISSSTE' )
-                    INFONAVIT y FOVISSTE
-                @else
-                    {{mb_strtoupper($contrato->institucion)}} e INFONAVIT
-                @endif
-            @endif
-            con el que hará el pago del precio del inmueble.
-        </p>
-
-        <p>
-            Para la gestión y trámite del crédito hipotecario, “EL PROMITENTE COMPRADOR”:
-        </p>
-
-        <p>
-            <ul class="ul-custom">
-                <li><template class="cuadrado"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg=="></template>
-                    Solicita a <strong>“EL PROMITENTE VENDEDOR”</strong> realice la gestión correspondiente ante
-                    @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
-                        && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
-                        {{ mb_strtoupper($contrato->institucion) }}
-                    @else
-                        @if($contrato->tipo_credito == 'INFONAVIT-FOVISSSTE' )
-                            INFONAVIT y FOVISSTE
-                        @else
-                            {{mb_strtoupper($contrato->institucion)}} e INFONAVIT
-                        @endif
-                    @endif, para la tramitación de su crédito
-                    para adquisición de vivienda, en el entendido que ello no implica que <strong>“EL PROMITENTE VENDEDOR”</strong> asuma la obligación
-                    o compromiso de que dicho crédito le sea autorizado a <strong>“EL PROMITENTE COMPRADOR”,</strong> y solo se limita a realizar la gestión
-                    y trámite directamente ante
-                    @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
-                        && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
-                        {{ mb_strtoupper($contrato->institucion) }}
-                    @else
-                        @if($contrato->tipo_credito == 'INFONAVIT-FOVISSSTE' )
-                            INFONAVIT y FOVISSTE
-                        @else
-                            {{mb_strtoupper($contrato->institucion)}} e INFONAVIT
-                        @endif
-                    @endif, por cuenta y orden de
-                    <strong>“EL PROMITENTE COMPRADOR”</strong>. Para tales efectos <strong>“EL PROMITENTE COMPRADOR”</strong>
-                    se obliga a entregar a <strong>“EL PROMITENTE VENDEDOR”</strong>, dentro del plazo de 5 días hábiles siguientes a
-                    la firma de este contrato, toda la documentación que le sea requerida y que sea necesaria para
-                    realizar dicho trámite, así como a cubrir los montos que ________________________requiera para tal efecto, los cuales
-                    no formarán parte del precio. <strong>“EL PROMITENTE COMPRADOR”</strong> podrá solicitar, en cualquier momento,
-                    la cancelación de los servicios de gestión.
-                    <br><br>
-
-                    Por la prestación de los servicios de gestión solicitados, <strong>“EL PROMITENTE COMPRADOR”</strong> se
-                    obliga a pagar, por concepto de contraprestación, la cantidad de $ 0.00 (Cero pesos 00/100 M.N.), más el correspondiente
-                    Impuesto al Valor Agregado, el cual deberá realizarse una vez que se obtenga el resultado respectivo, en una sola exhibición,
-                    mediante depósito o transferencia electrónica a la cuenta bancaria que para tal efecto le sea proporcionada a
-                    <strong>“EL PROMITENTE COMPRADOR”</strong>. En dicho importe no estarán comprendidos los gastos y demás erogaciones que
-                    deba cubrir <strong>“EL PROMITENTE COMPRADOR”</strong> tales como comisiones por apertura, avalúo y/o cualquier otro concepto.
-                    <strong>“EL PROMITENTE COMPRADOR”</strong> deberá realizar el pago de tales gastos y erogaciones directamente a
-                    los interesados. <strong>“EL PROMITENTE VENDEDOR”</strong> deberá entregar a favor de <strong>“EL PROMITENTE COMPRADOR”</strong> el
-                    Comprobante Fiscal Digital por Internet correspondiente.
-                </li><br><br>
-                <li><template class="cuadrado"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg=="></template>
-                    Llevará a cabo por cuenta propia la tramitación de su crédito para adquisición de vivienda, por lo que
-                    <strong>“EL PROMITENTE COMPRADOR”</strong> se obliga a realizar todas las gestiones y entregar a
-                    @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
-                        && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
-                        {{ mb_strtoupper($contrato->institucion) }}
-                    @else
-                        @if($contrato->tipo_credito == 'INFONAVIT-FOVISSSTE' )
-                            INFONAVIT y FOVISSTE
-                        @else
-                            {{mb_strtoupper($contrato->institucion)}} e INFONAVIT
-                        @endif
-                    @endif
-                    toda la documentación, así como a cubrir todos los gastos que este último le requiera, para llevar a cabo el
-                    trámite de autorización y/o aprobación de su crédito.
-                </li>
-            </ul>
-        </p>
-
-        <p>
-            Las partes establecen un plazo de 3 días para que <strong>“EL PROMITENTE COMPRADOR”</strong> obtenga y mantenga vigente la autorización o aprobación de su crédito,
-            por lo que, si llegado el término del mismo sin que se haya obtenido dicha autorización o aprobación, cualquiera que sea la causa,
-            o bien, se obtiene una resolución no favorable, el presente contrato se  dará por terminado de pleno derecho sin necesidad de resolución
-            judicial previa alguna. No obstante, lo anterior, si las partes lo estiman conveniente a sus respectivos intereses, podrán pactar
-            prórrogas para obtener la resolución relativa al crédito de vivienda de <strong>“EL PROMITENTE COMPRADOR”.</strong>
+            Las partes establecen que la celebración del Contrato de Compraventa definitivo  estará condicionado al hecho de que a
+            <strong>“EL PROMITENTE COMPRADOR”</strong> realice en los términos establecidos en este contrato el  pago total del precio del inmueble.
         </p>
 
         <p>
             En caso de terminación de este contrato, todos los pagos que <strong>“EL PROMITENTE COMPRADOR”</strong> haya realizado por concepto de gastos
-            operativos tales como el avalúo, comisiones por apertura y/o cualquier otro que se haya realizado para iniciar el trámite
-            de obtención de su crédito y/o durante el mismo, no serán considerados como parte del precio y deberán ser debidamente
-            comprobados a <strong>“EL PROMITENTE COMPRADOR”,</strong> de lo contrario,
-            <strong>“EL PROMITENTE VENDEDOR”</strong> deberá devolver a <strong>“EL PROMITENTE COMPRADOR” </strong>
-            aquellas cantidades que por concepto de gastos operativos haya pagado.
+            operativos tales como el avalúo, y/o cualquier otro que se haya realizado para iniciar el trámite y/o durante el mismo,
+            no serán considerados como parte del precio y deberán ser debidamente comprobados a <strong>“EL PROMITENTE COMPRADOR”,</strong> de lo contrario,
+            <strong>“EL PROMITENTE VENDEDOR”</strong> deberá devolver a <strong>“EL PROMITENTE COMPRADOR”</strong> aquellas cantidades que por
+            concepto de gastos operativos haya pagado.
         </p>
 
         <p>
@@ -553,7 +438,7 @@
                 @endif
             </strong> según sea el caso,
             que le fue aprobado y otorgado el crédito a <strong>“EL PROMITENTE COMPRADOR”.</strong> Las partes podrán convenir las prórrogas
-            que estimen convenientes para la firma del contrato de_  compraventa respectivo.
+            que estimen convenientes para la firma del contrato de compraventa respectivo.
         </p>
 
         <p>
@@ -818,14 +703,12 @@
         <p>
             <div class="table">
                 <div class="table-row">
-                    <div colspan="2" class="table-cell"></div>
-                    <div colspan="3" class="table-cell"><br><br>_____________________________________________</div>
+                    <div colspan="3" class="table-cell"></div>
+                    <div colspan="2" class="table-cell"><br><br>_____________________________________</div>
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell"></div>
-                    <div colspan="3" class="table-cell">
-                        <center>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
-                            <strong>“EL PROMITENTE COMPRADOR”</strong></center></div>
+                    <div colspan="3" class="table-cell"></div>
+                    <div colspan="2" class="table-cell">Firma o rúbrica de <strong>“EL PROMITENTE COMPRADOR”</strong></div>
                 </div>
             </div>
         </p>
@@ -900,28 +783,8 @@
                 </strong> respecto del  inmueble que será objeto del contrato de compraventa.
             </li><br>
             <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;Estar informado sobre el estado que guarde su trámite para el otorgamiento de su crédito, esto cuando haya optado porque sean
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> los que realicen la gestión respectiva.
+                b)	&nbsp;Una vez pagado el precio total pactado, celebrar el contrato de compraventa en escritura pública.
             </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                c)	&nbsp;En su caso, que se le informe oportunamente sobre el resultado de la gestión que hayan realizado
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> respecto de su crédito de vivienda.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                d)	&nbsp;Una vez aprobado su crédito, celebrar el contrato de compraventa en escritura pública.
-            </li><br><br>
         </p>
 
         <p>
@@ -929,43 +792,12 @@
                 <strong>Obligaciones:</strong>
             </li><br>
             <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;Obtener la aprobación de su crédito hipotecario y mantener vigente la aprobación durante el tiempo necesario para cumplir las obligaciones de este contrato.
+                a)	&nbsp;Realizar el pago de los gastos operativos relativos al contrato de compraventa definitivo;
+                Como avalúo, honorarios notariales, impuestos de traslado de dominio, derechos de inscripción en el Registro Público de la Propiedad.
             </li><br>
             <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;En su caso, entregar a
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong>, a más tardar dentro de los 5 días hábiles posteriores a la firma de este contrato, toda la documentación que sea necesaria
-                para iniciar y realizar el trámite de su crédito.
+                b)	&nbsp;Acudir a la notaría pública correspondiente para celebrar el contrato de compraventa respectivo.
             </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                c)	&nbsp;Realizar el pago de los gastos operativos relativos a avalúo, comisiones por apertura y/o cualquier otro que sea
-                necesario para realizar el trámite de su crédito de vivienda.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                d)	&nbsp;Realizar oportuna y cumplidamente, cualquier aclaración o rectificación de sus datos e información que le sea requerida por la
-                institución acreditante, para continuar con su trámite para la obtención de su crédito.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                e)	&nbsp;Una vez aprobado su crédito, acudir a la notaría pública correspondiente para celebrar el contrato de compraventa respectivo.
-            </li><br>
-        </p>
-
-        <p>
-            Si dentro de los 5 (cinco) días hábiles posteriores a la firma de este contrato <strong>“EL PROMITENTE COMPRADOR”</strong> no hace entrega de la
-            documentación e información completa que se requiere para que
-            <strong>
-                @if($contrato->emp_terreno != $contrato->emp_constructora)
-                    “LOS PROMITENTES VENDEDORES”
-                @else
-                    “EL PROMITENTE VENDEDOR”
-                @endif
-            </strong> inicien la gestión para el otorgamiento de su crédito, el presente contrato se tendrá por rescindido de  pleno derecho sin necesidad
-            de resolución judicial o administrativa previa.
         </p>
 
         <p>
@@ -988,14 +820,9 @@
             </li><br>
 
             <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;En caso de aplicar, solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> toda la documentación que sea necesaria para iniciar
-                y realizar el trámite para la gestión de su crédito para vivienda.
+                a)	&nbsp;Solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> toda la documentación que sea necesaria para iniciar
+                y realizar el trámite para celebrar el contrato definitivo de compraventa.
             </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;Solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> que realice cualquier aclaración o rectificación de sus datos
-                e información que le sea requerida para continuar con su trámite para la obtención y en su caso, renovación de su crédito,
-                en caso de que haya optado por que sea <strong>“EL PROMITENTE COMPRADOR”</strong> el que realice dicha gestión
-            </li><br><br>
         </p>
 
         <p>
@@ -1004,35 +831,11 @@
             </li><br>
 
             <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;Presentar ante la institución acreditante toda la documentación que le haya sido entregada por <strong>“EL PROMITENTE COMPRADOR”</strong>
-                y llevar de manera diligente la gestión en busca de la aprobación u otorgamiento de su crédito (solo en el caso de que
-                <strong>“EL PROMITENTE COMPRADOR”</strong> haya elegido dicha opción).
+                a)	&nbsp;Brindar a “EL PROMITENTE COMPRADOR” la información detallada y puntual respecto del inmueble que será objeto del contrato de compraventa.
             </li><br>
             <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;No cobrar cantidad alguna por concepto de contraprestación u honorarios por la gestión y trámite del
-                crédito hipotecario a favor de <strong>“EL PROMITENTE COMPRADOR”.</strong> Los gastos relativos a avalúo,
-                comisiones por apertura y/o cualquier otro que requiera la institución acreditante, son gastos operativos necesarios
-                para realizar dicho trámite y no constituyen contraprestación alguna a favor de <strong>“LOS PROMITENTES VENDEDORES”.</strong>
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                c)	&nbsp;Brindar a <strong>“EL PROMITENTE COMPRADOR”</strong> la información detallada y puntual respecto del inmueble que será objeto
-                del contrato de compraventa, así como del estado que guarde su trámite para el otorgamiento de su crédito y la resolución del mismo,
-                esto último cuando haya optado porque sean
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> los que realicen dicho trámite
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                d)	&nbsp;Informar a <strong>“EL PROMITENTE COMPRADOR”</strong> sobre alguna aclaración que este deba realizar o documentación
-                adicional que deba presentar, para continuar con la gestión de su crédito, en caso de ser aplicable.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                e)	&nbsp;Acudir a la notaría pública correspondiente para suscribir el contrato de compraventa respectivo, una vez que le haya sido otorgado a
-                <strong>“EL PROMITENTE COMPRADOR”</strong> su crédito.
+                b)	&nbsp;Acudir a la notaría pública correspondiente para suscribir el contrato de compraventa respectivo, una vez que
+                <strong>“EL PROMITENTE COMPRADOR”</strong> haya cumplido con el pago total de EL INMUEBLE.
             </li><br>
         </p>
 
@@ -1049,7 +852,7 @@
             opciones, de acuerdo a la legislación aplicable:
         </p>
 
-        <p><strong>a)</strong>	Por metro cuadrado de superficie de construcción, o</p>
+        <p><strong>a)</strong>	Por metro cuadrado de superficie de construcción, o </p>
 
         <p><strong>b)</strong>	Por porcentaje de indiviso, o</p>
 

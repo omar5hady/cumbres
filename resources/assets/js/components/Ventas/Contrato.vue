@@ -1852,6 +1852,7 @@
                                     <div class="col-md-12">
                                         <div style="text-align: right;" v-if="rolId!=2">
                                             <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
+                                            <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
                                         </div>
                                     </div>
                                 </div>

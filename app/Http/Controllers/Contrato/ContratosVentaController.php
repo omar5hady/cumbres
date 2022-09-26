@@ -154,11 +154,6 @@ class ContratosVentaController extends Controller
         $contrato->fecha_contrato = $contrato->fecha_contrato->formatLocalized('%d días del mes de %B del año %Y');
 
 
-
-
-
-
-
         switch($contrato->edo_civil){
             case 1:{
                 $contrato->edo_civil = "Casado - Separación de bienes";
@@ -195,9 +190,20 @@ class ContratosVentaController extends Controller
         $contrato->date_escritura = $contrato->date_escritura->formatLocalized('%d de %B de %Y');
         $contrato->f_nacimiento = new Carbon($contrato->f_nacimiento);
         $contrato->f_nacimiento = $contrato->f_nacimiento->formatLocalized('%d de %B de %Y');
-        $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito', ['contrato' => $contrato]);
 
-        return
-        $pdf->stream('contrato_venta_credito.pdf');
+        if($contrato->tipo_credito == 'Crédito Directo'){
+            $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_contado', ['contrato' => $contrato]);
+            return $pdf->stream('contrato_venta_contado.pdf');
+        }
+        else{
+            $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito', ['contrato' => $contrato]);
+            return $pdf->stream('contrato_venta_credito.pdf');
+        }
+
+    }
+
+    public function printAvisoPrivacidad(){
+        $pathtoFile = public_path().'/pdf/AvisoPrivacidadCarta.pdf';
+        return response()->file($pathtoFile);
     }
 }
