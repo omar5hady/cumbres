@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 
 use App\Credito;
 use App\Contrato;
+use App\Pago_contrato;
 use App\Lote;
 use App\Tipo_credito;
-use App\Pago_contrato;
 use App\Licencia;
 use App\Amenitie;
 use App\SpecificationLote;
@@ -145,6 +145,26 @@ class ContratosVentaController extends Controller
         $contrato->date_birth = new Carbon($contrato->date_birth);
         $contrato->date_birth = $contrato->date_birth->diff(new Carbon($contrato->fecha_contrato))->format('%y años, %m meses');
 
+        if($contrato->modelo == 'Terreno'){
+            $contrato->pagos = Pago_contrato::select('num_pago','monto_pago','fecha_pago','tipo_pagare')
+            ->where('tipo_pagare','=',0)
+            ->where('contrato_id','=',$contrato->id)
+            ->orderBy('fecha_pago','asc')->get();
+
+            $n = sizeof($contrato->pagos);
+            if($n>0){
+                $contrato->finPago = $contrato->pagos[$n-1]->monto_pago;
+                $contrato->restoPago = $contrato->precio_venta - $contrato->pagos[0]->monto_pago - $contrato->finPago;
+                $contrato->restoPago = NumerosEnLetras::convertir($contrato->restoPago, 'Pesos', true, 'Centavos');
+                $contrato->finPago = NumerosEnLetras::convertir($contrato->finPago, 'Pesos', true, 'Centavos');
+                foreach($contrato->pagos as $pago){
+                    $pago->monto_pago = NumerosEnLetras::convertir($pago->monto_pago, 'Pesos', true, 'Centavos');
+                    $pago->fecha_pago = new Carbon($pago->fecha_pago);
+                    $pago->fecha_pago = $pago->fecha_pago->formatLocalized('%d %B del %Y');
+                }
+            }
+        }
+
         $contrato->valor_const = $contrato->precio_venta - $contrato->valor_terreno;
         $contrato->valor_const = NumerosEnLetras::convertir($contrato->valor_const, 'Pesos', true, 'Centavos');
         $contrato->precio_venta = NumerosEnLetras::convertir($contrato->precio_venta, 'Pesos', true, 'Centavos');
@@ -191,14 +211,18 @@ class ContratosVentaController extends Controller
         $contrato->f_nacimiento = new Carbon($contrato->f_nacimiento);
         $contrato->f_nacimiento = $contrato->f_nacimiento->formatLocalized('%d de %B de %Y');
 
-        if($contrato->tipo_credito == 'Crédito Directo'){
-            $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_contado', ['contrato' => $contrato]);
-            return $pdf->stream('contrato_venta_contado.pdf');
+        if($contrato->modelo != 'Terreno'){
+            if($contrato->tipo_credito == 'Crédito Directo')
+                $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_contado', ['contrato' => $contrato]);
+            else
+                $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito', ['contrato' => $contrato]);
         }
         else{
-            $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito', ['contrato' => $contrato]);
-            return $pdf->stream('contrato_venta_credito.pdf');
+
+            $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_terreno', ['contrato' => $contrato]);
         }
+
+        return $pdf->stream('contrato_venta.pdf');
 
     }
 

@@ -201,17 +201,17 @@
                                 <li class="page-item active" >
                                     <a class="page-link" href="#" v-text="arrPaginacion.current_page"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arrPaginacion.current_page+1 <= arrPaginacion.last_page">
-                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+1)" 
+                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+1)"
                                     v-text="arrPaginacion.current_page+1"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arrPaginacion.current_page+2 <= arrPaginacion.last_page">
                                     <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+2)"
                                      v-text="arrPaginacion.current_page+2"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arrPaginacion.current_page+3 <= arrPaginacion.last_page">
                                     <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+3)"
                                     v-text="arrPaginacion.current_page+3"></a>
@@ -319,7 +319,7 @@
                                                         <input  v-if="editAjusteQuin ==1"  class="form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"
                                                         @keyup.enter="editAjusteQuin=0"
                                                         v-on:keypress="isNumber($event)"  v-model="desc_quin">
-                                                       
+
                                                 </template>
                                                 <template v-if="(modalVista == '0' || modalVista == '2') && status_rh !=2">
                                                         <button class="form-control col-md-2 btn btn-info"
@@ -358,7 +358,7 @@
                                      </template>
 
                                 </div>
-                          
+
 
                                    <template v-if="generar_tab == 1" >
 
@@ -379,7 +379,7 @@
                                                 <tbody>
 
                                                      <tr  v-for="(pago ) in arrayPagosCap" :key="pago.id">
-                                                           
+
                                                             <td   v-text="pago.id +'.- '+ pago.f_quincena"></td>
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
                                                             <template>
@@ -400,7 +400,7 @@
 
 
                                                         <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id" v-show="pago.pago !=0">
-                                                            
+
                                                             <td   v-text="pago.id +'.- '+ pago.f_quincena"></td>
                                                             <td v-text="'$'+formatNumber(pago.pago)"></td>
                                                             <template v-if="(modalVista == '0' || modalVista == '2' )  && pago.status != 1 &&id_prestamo !=null">
@@ -505,22 +505,22 @@
                 <template v-slot:buttons-footer>
                         <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud' && status_rh !=2">
                                     <button v-if="saldoFaltante <=0" type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
-                                    <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar</button>
+                                    <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar solicitud</button>
                                 </div>
-                           
+
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <div v-if="modalVista == '0'">
-                                    <button type="button" class="btn btn-success"   @click="enviarSolicitud()">enviar</button>
+                                    <button type="button" class="btn btn-success"   @click="enviarSolicitud()">Enviar</button>
                             </div>
                             <div v-if="modalVista == '2' && status_rh !=2">
-                                    <button type="button" class="btn btn-success"   @click="editarSolicitud(0)">Guardar</button>
+                                    <button type="button" class="btn btn-success"   @click="editarSolicitud(0)">Guardar cambios</button>
                             </div>
 
                             <div v-if="modalVista == '2' && isRHCurrent  && status_rh ==2 ">
                                     <button type="button" class="btn btn-info"   @click="guardaTablaPagos_editada()">Guardar</button>
                             </div>
                 </template>
-                
+
             </ModalComponent>
 
             <!-- inicio modal observaciones  -->
@@ -552,7 +552,7 @@
                                 </TableComponent>
                 </template>
                    <template v-slot:buttons-footer>
-                          
+
                    </template>
                </ModalComponent>
         <!--FIN DE MODAL  -->
@@ -592,7 +592,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 ],
 
                  arrayIdRH:[
-                    '31298','2'
+                    '31298','2','3'
                 ],
                  arrayIdDir:[
                     ,'26310','26546','3'
@@ -931,12 +931,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             actualiTabla(index,band){
                     var n_e_arr =Object.keys(this.arrayPagos).length; //  devuelve el numero de elementos de un objeto
-                    
+
                     console.log(n_e_arr);
                 if(index >=  n_e_arr){
                     return
                 }else{
-                        for ( index ; index < n_e_arr; index++) { /// NOTA verificar el <= 
+                        for ( index ; index < n_e_arr; index++) { /// NOTA verificar el <=
 
                            let saldoAnt = this.arrayPagos[index-1].saldo
                             console.log('Actuali saldo ante',saldoAnt);
@@ -1036,7 +1036,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if(this.isRHCurrent && this.modalVista == '0'){
                     var user = me.id_usuario;
                 }else{
-                    var user = me.userId; 
+                    var user = me.userId;
                 }
                 var url = '/prestamos/registrarPrestamo?id=' + user +
                                                         '&monto='+ this.monto_solic +
@@ -1191,7 +1191,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         showConfirmButton: false,
                         timer: 1500
                         })
-                  
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1204,7 +1204,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'arrPagos' : me.arrayPagos,
                 }).then(function (response){
                    me.getTablaPagos(me.id_prestamo)
-                  
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -1217,7 +1217,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     var respuesta = response.data;
                      me.arrayPagos=respuesta[0];
                      me.arrayPagosCap=respuesta[1];
-                      console.log(me.arrayPagos.length); ///// NOTAAAA 
+                      console.log(me.arrayPagos.length); ///// NOTAAAA
                      if(me.arrayPagosCap.length >= 0){
 
                          me.arrayPagosCap.forEach((element,index )=> {
@@ -1229,12 +1229,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             me.generaFechaTabla(0,me.arrayPagosCap.length);
                             me.generaFechaTabla(me.arrayPagosCap.length,24);
                      }else{
-                        
+
                          me.generaFechaTabla(0,24);
 
                             var array = me.arrayPagos ;
                             me.arrayPagos =[];
-                        
+
                         for(var i=0 ; i<  me.arrayPagos.length ; i++){
                             me.arrayPagos.id = array[i].id;
                             me.arrayPagos.id_pago = array[i].pago_id;
@@ -1246,8 +1246,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             if(array[i].saldo ==0)
                             break;
                         }
-                       
-                    
+
+
                      }
 
                      me.calculaTotales();
@@ -1514,7 +1514,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
         },
         mounted() {
-            
+
             this.isGerenteCurrent_Id();
             this.isRHCurrent_Id();
             this.isDirecCurrent_Id();

@@ -60,7 +60,7 @@
                         </div>
                         <TableComponent :cabecera="['',
                             'Vehiculo','Solicitante','Servicio','Importe total','Aportación compañero',
-                            'Monto retenido','Saldo','Fecha de solic.','Status','','Jefe inmediato','RH','Dirección',
+                            'Monto retenido','Saldo','Fecha de solic.','Status','',
                             ''
                         ]">
                             <template v-slot:tbody>
@@ -81,9 +81,9 @@
                                     <td class="td2" v-text="'$' + formatNumber(vehiculo.totalRetenido)"></td>
                                     <td class="td2">
                                         <strong style="color:red"
-                                        v-if="(vehiculo.monto_comp - vehiculo.totalRetenido) > 0" 
+                                        v-if="(vehiculo.monto_comp - vehiculo.totalRetenido) > 0"
                                         v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
-                                        <strong style="color:green" v-else 
+                                        <strong style="color:green" v-else
                                         v-text="'$' + formatNumber(vehiculo.monto_comp - vehiculo.totalRetenido)"></strong>
                                     </td>
                                     <td class="td2" v-text="this.moment(vehiculo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
@@ -95,7 +95,7 @@
                                         <span v-if="vehiculo.status == 3" class="badge badge-success">Liquidado</span>
                                     </td>
                                     <td></td>
-                                    <template v-if="adminMant == '1'">
+                                    <!-- <template v-if="adminMant == '1'">
                                         <td class="td2" v-if="vehiculo.recep_jefe == null">
                                             <button v-if="userId != vehiculo.responsable_id" type="button" @click="firmaJefe(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Jefe inmediato">
                                                 <i class="icon-check"></i>
@@ -105,7 +105,7 @@
                                         <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_jefe"></td>
 
                                         <td class="td2" v-if="vehiculo.recep_rh == null">
-                                            <button v-if="userName == 'marce.gaytan'" type="button" @click="firmaRH(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado RH">
+                                            <button v-if="userName == 'marce.gaytan' || userName == 'shady'" type="button" @click="firmaRH(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado RH">
                                                 <i class="icon-check"></i>
                                             </button>
                                             <label v-else>Sin Firma</label>
@@ -113,15 +113,15 @@
                                         <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_rh"></td>
 
                                         <td class="td2" v-if="vehiculo.recep_direccion == null">
-                                            <button v-if="userName=='karen.viramontes' || userName=='uriel.al'" type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
+                                            <button v-if="userName=='karen.viramontes' || userName=='uriel.al' || userName == 'shady'" type="button" @click="firmaDireccion(vehiculo.id)" class="btn btn-dark btn-sm" title="Firma de enterado Dirección">
                                                 <i class="icon-check"></i>
                                             </button>
                                             <label v-else>Sin Firma</label>
                                         </td>
                                         <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
-                                    </template>
+                                    </template> -->
 
-                                    <template v-if="adminMant == '0'">
+                                    <!-- <template v-if="adminMant == '0'">
                                         <td class="td2" v-if="vehiculo.recep_jefe == null">
                                             Sin Firma de Jefe
                                         </td>
@@ -134,12 +134,12 @@
                                             Sin Firma de Dirección
                                         </td>
                                         <td class="td2" v-else v-text="'Firmado el dia: '+vehiculo.recep_direccion"></td>
-                                    </template>
+                                    </template> -->
                                     <td>
-                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                        <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                     @click="abrirModal('observaciones',vehiculo)">Observaciones</button>
                                     </td>
-                                </tr> 
+                                </tr>
                             </template>
                         </TableComponent>
                         <nav>
@@ -168,17 +168,17 @@
                                 <li class="page-item active" >
                                     <a class="page-link" href="#" v-text="arraySolicitudes.current_page"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arraySolicitudes.current_page+1 <= arraySolicitudes.last_page">
-                                    <a class="page-link" href="#" @click="listarSolicitudes(arraySolicitudes.current_page+1)" 
+                                    <a class="page-link" href="#" @click="listarSolicitudes(arraySolicitudes.current_page+1)"
                                     v-text="arraySolicitudes.current_page+1"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arraySolicitudes.current_page+2 <= arraySolicitudes.last_page">
                                     <a class="page-link" href="#" @click="listarSolicitudes(arraySolicitudes.current_page+2)"
                                      v-text="arraySolicitudes.current_page+2"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arraySolicitudes.current_page+3 <= arraySolicitudes.last_page">
                                     <a class="page-link" href="#" @click="listarSolicitudes(arraySolicitudes.current_page+3)"
                                     v-text="arraySolicitudes.current_page+3"></a>
@@ -209,7 +209,7 @@
                         <div class="col-md-9">
                             <select :disabled="tipoAccion==2" class="form-control" v-model="vehiculo" >
                                 <option value="">Seleccione vehiculo</option>
-                                <option v-for="vehiculo in arrayVehiculos" :key="vehiculo.id" :value="vehiculo.id" 
+                                <option v-for="vehiculo in arrayVehiculos" :key="vehiculo.id" :value="vehiculo.id"
                                     v-text="vehiculo.marca + ' ' + vehiculo.vehiculo + ' - ' + vehiculo.nombre + ' '+vehiculo.apellidos"></option>
                             </select>
                         </div>
@@ -277,7 +277,7 @@
                         <div class="col-md-4" v-if="tipoAccion == 3">
                             <input type="number" v-on:change="monto_gcc = importe_total - monto_comp" v-model="monto_comp" maxlength="12" class="form-control" placeholder="Importe total">
                         </div>
-                        
+
                         <div class="col-md-3">
                             <strong v-text="'$'+formatNumber(monto_comp)"></strong>
                         </div>
@@ -285,7 +285,7 @@
 
                     <div class="form-group row" v-if="importe_total != 0 && importe_total != ''">
                         <label class="col-md-3 form-control-label" for="text-input">Aportación GCC</label>
-                        
+
                         <div class="col-md-3">
                             <label v-text="'$'+formatNumber(monto_gcc)"></label>
                         </div>
@@ -297,7 +297,7 @@
                             <button type="button" v-if="vistaRetener == 0" @click="vistaRetener = 1" class="btn btn-success btn-sm" title="Retener pago">
                                 <i class="icon-plus"></i>
                             </button>
-                            
+
                             <button type="button" v-if="vistaRetener == 1" @click="getRetenciones()" class="btn btn-warning btn-sm" title="Retener pago">
                                 <i class="icon-close">&nbsp;Cancelar</i>
                             </button>
@@ -370,7 +370,7 @@
                                                 Pago retenido el dia: {{retencion.fecha_real }}
                                             </td>
                                         </template>
-                                    </tr>     
+                                    </tr>
                                     <tr>
                                         <td v-if="adminMant == 1  && userName=='marce.gaytan' || userName == 'shady'"></td>
                                         <td></td>
@@ -382,7 +382,7 @@
                             </TableComponent>
                         </div>
                     </div>
-                    
+
                     <!-- Div para mostrar los errores que mande validerNotaria -->
                     <div v-show="errorVehiculo" class="form-group row div-error">
                         <div class="text-center text-error">
@@ -396,10 +396,10 @@
                     <button type="button" v-if="tipoAccion==1 && importe_total > 0" class="btn btn-primary" @click="registrar()">Guardar</button>
                     <button type="button" v-if="tipoAccion==3" class="btn btn-success" @click="actualizar()">Actualizar</button>
 
-                    <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
-                    <button type="button" v-if="userName== 'jorge.diaz' && status_rev==1 && revisado == 1 && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
+                    <button type="button" v-if="(userName== 'jorge.diaz' || userName== 'shady') && adminMant == 1" class="btn btn-success" @click="changeStatus(2)">Aprobar</button>
+                    <button type="button" v-if="(userName== 'jorge.diaz' || userName== 'shady') && adminMant == 1" class="btn btn-danger" @click="changeStatus(0)">Rechazar</button>
                 </template>
-            </ModalComponent>    
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
@@ -423,7 +423,7 @@
                                 <td v-text="observacion.usuario" ></td>
                                 <td v-text="observacion.observacion" ></td>
                                 <td v-text="observacion.created_at"></td>
-                            </tr>  
+                            </tr>
                         </template>
                     </TableComponent>
                 </template>
@@ -508,7 +508,7 @@
             /**Metodo para mostrar los registros */
             listarSolicitudes(page){
                 let me = this;
-                var url = '/vehiculos/getSolicitudes?page=' + page 
+                var url = '/vehiculos/getSolicitudes?page=' + page
                     + '&b_fecha1=' + me.b_fecha1
                     + '&b_fecha2=' + me.b_fecha2
                     + '&b_status=' + me.b_status
@@ -575,7 +575,7 @@
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/vehiculos/storeSolicitud',{
-                    
+
                     'vehiculo' : this.vehiculo,
                     'reparacion' : this.reparacion,
                     'descripcion' : this.descripcion,
@@ -586,7 +586,7 @@
                     'monto_gcc' : this.monto_gcc,
 
                     'retenciones' : this.arrayRetenciones,
-                   
+
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarSolicitudes(1); //se enlistan nuevamente los registros
@@ -616,7 +616,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/vehiculos/eliminarRetencion', 
+                axios.delete('/vehiculos/eliminarRetencion',
                         {params: {'id': id}}).then(function (response){
                         swal(
                         'Eliminado!',
@@ -649,7 +649,7 @@
                     'importe_total' : this.importe_total,
                     'monto_comp' : this.monto_comp,
                     'monto_gcc' : this.monto_gcc
-                   
+
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarSolicitudes(1); //se enlistan nuevamente los registros
@@ -715,7 +715,7 @@
                         });
                     }
                 });
-               
+
             },
             firmaRH(id){
                 let me = this;
@@ -747,7 +747,7 @@
                         });
                     }
                 });
-               
+
             },
             firmaControl(id){
                 let me = this;
@@ -779,7 +779,7 @@
                         });
                     }
                 });
-               
+
             },
             firmaDireccion(id){
                 let me = this;
@@ -811,7 +811,7 @@
                         });
                     }
                 });
-               
+
             },
             retenerPago(id){
                 let me = this;
@@ -844,7 +844,7 @@
                         });
                     }
                 });
-               
+
             },
             guardarPago(){
                 let me = this;
@@ -880,7 +880,7 @@
                         });
                     }
                 });
-               
+
             },
             changeStatus(status){
                 let me = this;
@@ -919,7 +919,7 @@
                         });
                     }
                 });
-               
+
             },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
@@ -998,7 +998,7 @@
                     {
                         this.modal = 1;
                         this.tituloModal = 'Nueva Solicitud de Mantenimiento Vehicular';
-                        
+
                         this.tipoAccion = 1;
                         this.vehiculo = '';
                         this.importe_total = 0;
@@ -1027,7 +1027,7 @@
                         this.revisado = 0;
                         this.modal = 1;
                         this.tituloModal = 'Solicitud de Mantenimiento Vehicular #'+ data['id'];
-                        
+
                         this.tipoAccion = 2;
                         this.id = data['id'];
                         this.vehiculo = data['vehiculo'];
@@ -1046,8 +1046,8 @@
                         if(
                             data['recep_rh'] != null && data['recep_direccion'] != null || this.monto_comp == 0 && data['recep_rh'] != null
                         )   this.revisado = 1;
-                        
-                        
+
+
                         break;
                     }
                     case 'editar':
@@ -1055,7 +1055,7 @@
                         this.revisado = 0;
                         this.modal = 1;
                         this.tituloModal = 'Solicitud de Mantenimiento Vehicular #'+ data['id'];
-                        
+
                         this.tipoAccion = 3;
                         this.id = data['id'];
                         this.vehiculo = data['vehiculo'];
@@ -1072,7 +1072,7 @@
                         this.status_rev = data['status'];
 
                         this.revisado = 0;
-                        
+
                         break;
                     }
                     case 'observaciones':
@@ -1118,5 +1118,5 @@
 
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
 </style>
