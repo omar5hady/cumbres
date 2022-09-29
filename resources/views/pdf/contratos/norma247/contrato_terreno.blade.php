@@ -839,7 +839,7 @@
     </div>
     <div>
         <p>
-            <strong>INFORMACIÓN Y DOCUMENTACIÓN DEL INMUEBLE QUE SE PONE A DISPOSICIÓN DE “EL PROMITENTE COMPRADOR”</strong>
+            <strong>INFORMACIÓN Y DOCUMENTACIÓN DEL TERRENO QUE SE PONE A DISPOSICIÓN DEL COMPRADOR</strong>
         </p>
 
         <p>
@@ -851,170 +851,195 @@
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le exhibieron el proyecto ejecutivo de construcción completo?
-                        (planos del terreno, planos de terracerías o topografías, planos de ubicación y localización, planos de
-                        fachadas, cortes y alzados, planos de detalles arquitectónicos, planos de cimentación, columnas, trabes y
-                        losas; planos de instalaciones hidrosanitarias, eléctricas, planos de acabados, planos de urbanización,
-                        planta de conjunto como: zonas exteriores, aceras, jardines y sus instalaciones; descripción del sistema
-                        constructivo y acabados con los que se entregará la vivienda).
+                        ¿Le pusieron a disposición el documento que acredite la propiedad del Terreno?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le exhibieron el documento que acredite la propiedad del Inmueble?
+                        ¿Le informaron sobre la existencia de gravámenes que afecten la propiedad del terreno?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le exhibieron la casa muestra o maqueta física o digital?
+                        ¿Le pusieron a disposición los documentos que acrediten la personalidad de la vendedora y la autorización
+                        del proveedor para promover la venta del Terreno?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron sobre la existencia de gravámenes que afecten la propiedad del Inmueble?
+                        ¿Le informaron que el TERRENO NO se encuentra bajo el régimen ejidal o comunal?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le exhibieron los documentos que acrediten la personalidad de “EL VENDEDOR” y la autorización del proveedor para promover la venta del Inmueble?
+                        ¿Le informaron sobre las condiciones en que se encuentra el pago de contribuciones del Terreno?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron sobre las condiciones en que se encuentra el pago de contribuciones y servicios públicos del Inmueble?
+                        ¿Le pusieron a disposición el proyecto ejecutivo y ventas del fraccionamiento?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le exhibieron las autorizaciones, licencias o permisos expedidos por las autoridades correspondientes para la construcción del Inmueble?
+                        ¿Le pusieron a disposición las autorizaciones, licencias o permisos expedidos por las
+                        autoridades correspondientes del Terreno?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le exhibieron los planos estructurales, arquitectónicos y de instalaciones o un dictamen de las condiciones estructurales del Inmueble aceptado por el Director Responsable de Obra?
+                        ¿Le proporcionaron la información sobre las medidas y colindancias del Terreno y su precio?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le proporcionaron la información sobre las características del Inmueble?
+                        ¿Le brindaron información adicional sobre los beneficios ofrecidos por el
+                        vendedor, en caso de concretar la operación?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le brindaron información adicional sobre los beneficios ofrecidos por “EL VENDEDOR”, en caso de concretar la operación, tales como acabados especiales,
-                        encortinados, azulejos y cocina integral, ¿Entre otros?
+                        ¿Le brindaron información adicional sobre las características, y uso y mantenimiento de las instalaciones
+                        especiales (discapacitados) del terreno / del Fraccionamiento? (Cuando aplique)
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le brindaron información sobre las características, uso y mantenimiento de las instalaciones especiales
-                        (discapacitados y/o ecotecnologías) de la vivienda / del Conjunto Habitacional? (cuando aplique)
+                        ¿Le informaron respecto de las opciones de pago que puede elegir y sobre el monto total a pagar en cada
+                        una de ellas, así como el precio del inmueble en operaciones de contado y el precio total que
+                        determinará en función de los montos variables de conceptos de crédito y notariales?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron respecto de las opciones de pago que puede elegir y sobre el monto total a pagar en cada una de ellas?
+                        ¿De ser el caso, le informaron de los mecanismos para la modificación o renegociación de las opciones de
+                        pago, las condiciones bajo las cuales se realizaría y las implicaciones económicas, tanto para
+                        el vendedor como para el comprador?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿En caso de que la operación sea a crédito, le informaron sobre el tipo de crédito de que se trata?
+                        ¿Le informaron de las condiciones bajo las cuales se llevará a cabo el proceso de escrituración,
+                        así como las erogaciones distintas del precio de la venta que deba realizar?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿De ser el caso, le informaron de los mecanismos para la modificación o renegociación de las opciones de pago,
-                        las condiciones bajo las cuales se realizaría y las implicaciones económicas, tanto para “EL VENDEDOR” como para “EL COMPRADOR”?
+                        ¿Le informaron de las condiciones bajo las cuales puede cancelar la operación?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron de las condiciones bajo las cuales se llevará a cabo el proceso de escrituración, así como las erogaciones distintas del precio de la venta que deba realizar?
+                        ¿Le informaron si sobre el terreno existe y se ha constituido garantía hipotecaria, fiduciaria o de cualquier
+                        otro tipo, así como su instrumentación?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron si sobre el Inmueble existe y se ha constituido garantía hipotecaria, fiduciaria o de cualquier otro tipo, así como su instrumentación?
+                        ¿Le informaron si el modelo de contrato que va a firmar esta previamente registrado ante la Procuraduría
+                        Federal del Consumidor?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron si el modelo de contrato que va a firmar está previamente registrado ante la Procuraduría Federal del Consumidor?
+                        ¿Le pusieron a disposición el Programa de Protección Civil del fraccionamiento?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron que el Inmueble cuenta con una póliza de garantía y la forma de hacerla efectiva?
+                        ¿Le informaron acerca de los canales y mecanismos de atención a quejas, así como los horarios de atención
+                        con la que cuenta “EL VENDEDOR”?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le informaron que en caso de que usted no esté de acuerdo con el servicio prestado puede presentar su reclamación en el
-                        siguiente correo postventa@grupocumbres.com y que debe cumplir con los lineamientos marcados en la garantía emitida a su favor?
+                        ¿Le pusieron a su disposición el Reglamento de Condominio (si aplica) y del Fraccionamiento?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le pusieron a su disposición el proyecto ejecutivo de construcción? (planos de ubicación, localización, planos estructurales, planos de acabados, etc.)
+                        ¿Le pusieron a su disposición el Reglamento de Construcción?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le pusieron a su disposición el programa interno de protección civil?
+                        ¿Le pusieron a su disposición el equipamiento urbano existente en la localidad donde se encuentra el Fraccionamiento?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le pusieron a su disposición el equipamiento urbano existente en la localidad?
+                        ¿Le pusieron a su disposición el plan de desarrollo urbano?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                 </div>
                 <div class="table-row">
                     <div colspan="10" class="table-cell2">
-                        ¿Le pusieron a su disposición la carta de derechos del consumidor?
+                        ¿Le pusieron a su disposición la Licencia de uso de suelo?
+                    </div>
+                    <div class="table-cell2"></div>
+                    <div class="table-cell2"></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="10" class="table-cell2">
+                        ¿Le pusieron a su disposición la factibilidad de agua?
+                    </div>
+                    <div class="table-cell2"></div>
+                    <div class="table-cell2"></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="10" class="table-cell2">
+                        ¿Le informaron si existe alguna restricción para la construcción en virtud de una restricción ambiental o por
+                        colindar con alguna zona ecológica, reserva forestal o federal?
+                    </div>
+                    <div class="table-cell2"></div>
+                    <div class="table-cell2"></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="10" class="table-cell2">
+                        ¿Le informaron acerca de la manera de consultar al aviso de privacidad?
                     </div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
@@ -1030,69 +1055,35 @@
             Se le hace del conocimiento a <strong>“EL PROMINENTE COMPRADOR”:</strong> que contamos con canales de atención de quejas y solicitudes gratuitos y accesibles,
             para cualquier queja o sugerencia, los cuales pueden hacerlos llegar vía correo electrónico al correo: postventa@grupocumbres.com y/o atencion@grupocumbres.com o
             vía telefónica al número de atención: 444 8334683, 84 al 85,  con  un horario de lunes a viernes de 9:00 horas a 17:00 horas y sábados de 9:00 horas a 13:00 horas.
-            Y el plazo de respuesta de
-            <strong>
-            @if($contrato->emp_terreno != $contrato->emp_constructora)
-                “LOS PROMITENTES VENDEDORES”
-            @else
-                “EL PROMITENTE VENDEDOR”
-            @endif</strong>
-            es de: 8 días hábiles
+            Y el plazo de respuesta de <strong>“EL PROMITENTE VENDEDOR”</strong> es de: 8 días hábiles
         </p>
 
         <p class="small">
             <strong>
                 <u>IMPORTANTE PARA “EL PROMINENTE COMPRADOR”: </u>Antes de que firme como constancia de que tuvo a su disposición la información y documentación
-                relativa al Inmueble, cerciórese de que la misma coincida con la que efectivamente le hayan mostrado y/o proporcionado
-                @if($contrato->emp_terreno != $contrato->emp_constructora)
-                    “LOS PROMITENTES VENDEDORES”
-                @else
-                    “EL PROMITENTE VENDEDOR”
-                @endif.
+                relativa al Terreno, cerciórese de que la misma coincida con la que efectivamente le hayan mostrado y/o proporcionado “EL VENDEDOR”.
             </strong>
         </p>
 
-        <p align="center">
-            @if($contrato->emp_terreno != $contrato->emp_constructora)
-                “LOS PROMITENTES VENDEDORES”:
-            @else
-                “EL PROMITENTE VENDEDOR”:
-            @endif
-        </p>
+        <p align="center">“EL VENDEDOR”:</p>
 
         <p  align="center">
-            @if($contrato->emp_terreno == $contrato->emp_constructora)
-                <div class="table">
-                    <div class="table-row">
-                        <div class="table-cell"></div>
-                        <div colspan="6" class="table-cell"><br><br><center>_____________________________________</center></div>
-                        <div class="table-cell"></div>
-                    </div>
-                    <div class="table-row">
-                        <div class="table-cell"></div>
-                        <div colspan="6" class="table-cell"><center>{{$contrato->emp_constructora}} S.A. DE C.V.</center></div>
-                        <div class="table-cell"></div>
-                    </div>
+            <div class="table">
+                <div class="table-row">
+                    <div class="table-cell"></div>
+                    <div colspan="6" class="table-cell"><br><br><center>_____________________________________</center></div>
+                    <div class="table-cell"></div>
                 </div>
-            @else
-                <div class="table">
-                    <div class="table-row">
-                        <div colspan="5" class="table-cell"><br><br><center>___________________________________</center></div>
-                        <div colspan="" class="table-cell"><center></center></div>
-                        <div colspan="5" class="table-cell"><br><br><center>___________________________________</center></div>
-                    </div>
-                    <div class="table-row">
-                        <div colspan="5" class="table-cell"><center>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</center></div>
-                        <div class="table-cell"></div>
-                        <div colspan="5" class="table-cell"><center>CONCRETANIA S.A DE C.V.</center></div>
-                    </div>
+                <div class="table-row">
+                    <div class="table-cell"></div>
+                    <div colspan="6" class="table-cell"><center>{{$contrato->emp_constructora}} S.A. DE C.V.</center></div>
+                    <div class="table-cell"></div>
                 </div>
-
-            @endif
+            </div>
         </p>
 
         <p align="center"><br><br><br><br>
-            “EL PROMITENTE COMPRADOR”
+            “EL COMPRADOR”
         </p>
 
         <p  align="center">
@@ -1134,7 +1125,7 @@
     <div style="page-break-after:always;"></div>
 
     <div>
-        <h5 align="center">ANEXO C</h5>
+        <h5 align="center">ANEXO D</h5>
     </div>
 
     <div>
@@ -1143,11 +1134,14 @@
         </p>
 
         <p>
-            En este acto se le hace del conocimiento del PROMITENTE COMPRADOR en base a lo que establece la Ley Federal de Protección al Consumidor (en adelante LFPC), su Reglamento y la NOM 247-SE-2021, los siguientes derechos:
+            <strong>
+                En este acto se le hace del conocimiento de EL CONSUMIDOR en base a lo que establece Ley Federal de Protección al Consumidor
+                (en adelante LFPC), su Reglamento y la NOM 247-SE-2021, los siguientes derechos:
+            </strong>
         </p>
 
         <p>
-            <strong>1.  </strong>Recibir, respecto de los bienes inmuebles ofertados, información y publicidad veraz, clara y actualizada, sin importar el medio por el que se comunique, incluyendo los medios digitales, de forma tal que le permita al consumidor tomar la mejor decisión de compra conociendo de manera veraz las características del inmueble que está adquiriendo, conforme a lo dispuesto por la LFPC. <br>
+            <strong>1.  </strong>Recibir, respecto de los bienes inmuebles ofertados, información y publicidad veraz, clara y actualizada, sin importar el medio por el que se comunique, incluyendo los medios digitales, de forma tal que le permita al consumidor tomar la mejor decisión de compra conociendo de manera veraz las características del inmueble que está adquiriendo, conforme a lo dispuesto por la LFPC.<br>
             <strong>2.	</strong>Conocer la información sobre las características del inmueble, entre éstas: la extensión del terreno, superficie construida, tipo de estructura, instalaciones, acabados, accesorios, lugar de estacionamiento, áreas de uso común, servicios con que cuenta y estado general físico del inmueble. <br>
             <strong>3.	</strong>Elegir libremente el inmueble que mejor satisfaga sus necesidades y se ajuste a su capacidad de compra. <br>
             <strong>4.	</strong>No realizar pago alguno hasta que conste por escrito la relación contractual, exceptuando los referentes a anticipos y gastos operativos, en los términos previstos por la LFPC. <br>
