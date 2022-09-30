@@ -110,6 +110,7 @@
                     <ul class="nav nav-tabs" v-if="tipoAccion == 2">
                         <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Generales</a></li>
                         <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Equipamiento Urbano</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Restricciones en Construcción</a></li>
                     </ul>
                     <br>
                     <template v-if="paso == 1">
@@ -314,11 +315,37 @@
                             </template>
                         </TableComponent>
                     </template>
+                    <template v-if="paso == 3">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Ambientales</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-8">
+                                <textarea v-model="rest_ambientales" cols="40" rows="4" class="form-control" placeholder="Restricciones Ambientales"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Colindancias ecológicas</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-8">
+                                <textarea v-model="rest_federales" cols="40" rows="4" class="form-control" placeholder="Colindancias con zonas ecológicas, reservas forestales y reservas federales"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Otras</label>
+                            <!--Criterios para el listado de busqueda -->
+                            <div class="col-md-8">
+                                <textarea v-model="rest_otras" cols="40" rows="4" class="form-control" placeholder="Cualquier otra limitación decretada por autoridades competentes y/o previstas en la legislación aplicable"></textarea>
+                            </div>
+                        </div>
+                    </template>
                 </template>
                 <template v-slot:buttons-footer>
                     <template v-if="paso == 1">
                         <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFraccionamiento()">Guardar</button>
                         <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarFraccionamiento()">Actualizar</button>
+                    </template>
+                    <template v-if="paso == 3">
+                        <button type="button" class="btn btn-success" @click="updateRestricciones()">Actualizar Restricciones</button>
                     </template>
                 </template>
             </ModalComponent>
@@ -495,7 +522,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 arrayCiudades : [],
                 equipamientos: [],
                 nEquipamiento: {},
-                paso: 1
+                paso: 1,
+                rest_ambientales:'',
+                rest_federales:'',
+                rest_otras:''
             }
         },
         computed:{
@@ -848,6 +878,31 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
 
+            updateRestricciones(){
+                let me = this;
+                //Con axios se llama el metodo update de FraccionaminetoController
+                axios.put('/fraccionamiento/updateRestricciones',{
+                    'id' : this.id,
+                    'rest_ambientales' : this.rest_ambientales,
+                    'rest_federales' : this.rest_federales,
+                    'rest_otras' : this.rest_otras,
+                }).then(function (response){
+
+                    me.cerrarModal();
+                    me.listarFraccionamiento(1,'','fraccionamiento');
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             eliminarFraccionamiento(data =[]){
                 this.id=data['id'];
                 //console.log(this.fraccionamiento_id);
@@ -1039,6 +1094,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                     descripcion : '',
                                 };
                                 this.equipamientos = data['equipamiento_urbano'];
+
+                                this.rest_ambientales = data['rest_ambientales'];
+                                this.rest_federales = data['rest_federales'];
+                                this.rest_otras = data['rest_otras'];
                                 this.paso = 1;
                                 break;
                             }

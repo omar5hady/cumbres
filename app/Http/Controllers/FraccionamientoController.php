@@ -249,6 +249,18 @@ class FraccionamientoController extends Controller
         }
     }
 
+    //Función para actualizar los datos de un registro
+    public function updateRestricciones(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        //FindOrFail se utiliza para buscar el registro en la tabla de fraccionamientos
+        $fraccionamiento = Fraccionamiento::findOrFail($request->id);
+        $fraccionamiento->rest_ambientales = $request->rest_ambientales;
+        $fraccionamiento->rest_federales = $request->rest_federales;
+        $fraccionamiento->rest_otras = $request->rest_otras;
+        $fraccionamiento->save();
+    }
+
     //Función para eliminar un fraccionamiento de la base de datos.
     public function destroy(Request $request)
     {

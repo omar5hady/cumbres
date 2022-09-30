@@ -296,9 +296,9 @@
                                             </div>
                                         </td>
                                         <td class="td2">
-                                            <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></a>
+                                            <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase()"></a>
                                         </td>
-                                        <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
+                                        <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos"></td>
                                         <td class="td2" v-text="contrato.fraccionamiento"></td>
                                         <td class="td2" v-text="contrato.etapa"></td>
                                         <td class="td2" v-text="contrato.manzana"></td>
@@ -1849,10 +1849,14 @@
                                             <a class="btn btn-danger btn-sm" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="form-group">
                                     <div class="col-md-12">
                                         <div style="text-align: right;" v-if="rolId!=2">
-                                            <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
-                                            <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
+                                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
+                                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
+                                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAnexoE/'+id">Anexo E</a>
                                         </div>
                                     </div>
                                 </div>

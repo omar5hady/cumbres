@@ -33,6 +33,10 @@ class CreateFraccionamientosTable extends Migration
             $table->integer('arquitecto_id')->nullable();
             $table->integer('postventa_id')->nullable();
 
+            $table->text('rest_ambientales')->nullable();
+            $table->text('rest_federales')->nullable();
+            $table->text('rest_otras')->nullable();
+
             $table->timestamps();
         });
     }

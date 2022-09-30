@@ -961,23 +961,96 @@ class DigitalLeadController extends Controller
 
     }
 
+    public function reporteAsesoresClasificacion(Request $request){
+        return $this->getAsesoresClasif(0);
+    }
+
+    /**
+     * It gets the list of salespeople, then for each salesperson it gets the list of clients of each type
+     *
+     * @param tipo 1 = Internos, 0 = Externos
+     *
+     * @return the list of salesmen, and the number of clients of each type (A, B, C, NV)
+     */
+    private function getAsesoresClasif($tipo){
+        $vendedores = $this->getAsesores($tipo);
+
+        foreach($vendedores as $asesor){
+            $asesor->tipoA = Cliente::join('personal as p','clientes.id','=','p.id')
+                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                        ->select('p.nombre','p.apellidos','fraccionamientos.nombre as proyecto','p.id')
+                        ->where('clientes.clasificacion', '=', 2)
+                        ->where('clientes.vendedor_id','=',$asesor->id)
+                        ->get();
+
+                if(sizeof($asesor->tipoA))
+                    foreach($asesor->tipoA as $a)
+                        $a->obs = Cliente_observacion::where('cliente_id','=',$a->id)->get();
+
+            $asesor->a = $asesor->tipoA->count();
+
+            $asesor->tipoB = Cliente::join('personal as p','clientes.id','=','p.id')
+                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                        ->select('p.nombre','p.apellidos','fraccionamientos.nombre as proyecto','p.id')
+                        ->where('clientes.clasificacion', '=', 3)
+                        ->where('clientes.vendedor_id','=',$asesor->id)
+                        ->get();
+
+                if(sizeof($asesor->tipoB))
+                    foreach($asesor->tipoB as $a)
+                        $a->obs = Cliente_observacion::where('cliente_id','=',$a->id)->get();
+
+            $asesor->b = $asesor->tipoB->count();
+
+            $asesor->tipoC = Cliente::join('personal as p','clientes.id','=','p.id')
+                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                        ->select('p.nombre','p.apellidos','fraccionamientos.nombre as proyecto','p.id')
+                        ->where('clientes.clasificacion', '=', 4)
+                        ->where('clientes.vendedor_id','=',$asesor->id)
+                        ->get();
+
+                if(sizeof($asesor->tipoC))
+                    foreach($asesor->tipoC as $a)
+                        $a->obs = Cliente_observacion::where('cliente_id','=',$a->id)->get();
+
+            $asesor->c = $asesor->tipoC->count();
+
+            $asesor->tipoNV = Cliente::join('personal as p','clientes.id','=','p.id')
+                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                        ->select('p.nombre','p.apellidos','fraccionamientos.nombre as proyecto','p.id')
+                        ->where('clientes.clasificacion', '=', 1)
+                        ->where('clientes.vendedor_id','=',$asesor->id)
+                        ->get();
+
+                if(sizeof($asesor->tipoNV))
+                    foreach($asesor->tipoNV as $a)
+                        $a->obs = Cliente_observacion::where('cliente_id','=',$a->id)->get();
+
+            $asesor->nv = $asesor->tipoNV->count();
+        }
+        return $vendedores;
+    }
+
+    private function getAsesores($tipo){
+        return User::join('personal','users.id','=','personal.id')
+        ->join('vendedores','personal.id','vendedores.id')
+        ->join('personal as gerente','vendedores.supervisor_id','=','gerente.id')
+        ->select('personal.id',
+                DB::raw("CONCAT(gerente.nombre,' ',gerente.apellidos) AS gerente"),
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+        ->where('vendedores.tipo','=',$tipo)
+        ->where('users.condicion','=',1)
+        ->whereNotIn('users.usuario',['mayra_jaz','yasmin_ventas','e_preciado'])
+        ->where('users.usuario','!=','descartado')
+        ->where('users.usuario','!=','oficina')
+        ->orderBy('vendedores.supervisor_id','asc')
+        ->orderBy('vendedores.cont_leads','asc')
+        ->orderBy('vendedor','asc')->get();
+    }
 
     private function getreportesProspectos($tipo){
             // Se obtienen todos los asesores internos registrados en el sistema
-            $vendedores = User::join('personal','users.id','=','personal.id')
-                ->join('vendedores','personal.id','vendedores.id')
-                ->join('personal as gerente','vendedores.supervisor_id','=','gerente.id')
-                ->select('personal.id',
-                        DB::raw("CONCAT(gerente.nombre,' ',gerente.apellidos) AS gerente"),
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
-                ->where('vendedores.tipo','=',$tipo)
-                ->where('users.condicion','=',1)
-                ->whereNotIn('users.usuario',['mayra_jaz','yasmin_ventas','e_preciado'])
-                ->where('users.usuario','!=','descartado')
-                ->where('users.usuario','!=','oficina')
-                ->orderBy('vendedores.supervisor_id','asc')
-                ->orderBy('vendedores.cont_leads','asc')
-                ->orderBy('vendedor','asc')->get();
+            $vendedores = $this->getAsesores($tipo);
                 $varGerente = '';
                 foreach ($vendedores as $index => $vendedor) {
 
@@ -1110,7 +1183,7 @@ class DigitalLeadController extends Controller
                     foreach($vendedores as $index => $asesor) {
                         $cont++;
 
-                        $sheet->row($index+$row, [
+                        $sheet->row($cont, [
                             $asesor->vendedor,
                             $asesor->reg,
                             $asesor->dif7,

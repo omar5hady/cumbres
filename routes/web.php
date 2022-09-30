@@ -178,6 +178,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/fraccionamiento/excel','FraccionamientoController@excelIndex');
         Route::post('/fraccionamiento/registrar','FraccionamientoController@store');
         Route::put('/fraccionamiento/actualizar','FraccionamientoController@update');
+        Route::put('/fraccionamiento/updateRestricciones','FraccionamientoController@updateRestricciones');
         Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
         Route::post('/formSubmitPlanos/{id}','FraccionamientoController@formSubmitPlanos'); //carga de planos
         Route::get('/downloadPlanos/{fileName}' , 'FraccionamientoController@downloadFilePlanos'); //descarga de planos
@@ -682,6 +683,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/contrato/printContratoCredito/{id}','Contrato\ContratosVentaController@printContratoCredito')->name('contrato_venta_credito.pdf');
         Route::get('/contrato/printAvisoPrivacidad','Contrato\ContratosVentaController@printAvisoPrivacidad')->name('Aviso_Privacidad.pdf');
+        Route::get('/contrato/printAnexoE/{id}','Contrato\ContratosVentaController@printAnexoE')->name('Anexo_E.pdf');
 
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');
@@ -764,6 +766,7 @@ Route::group(['middleware' => ['auth']],function(){
 
             Route::get('/reportes/digitalLeads','DigitalLeadController@reporteLeads');
             Route::get('/reportes/prospectos','DigitalLeadController@reportesProspectos');
+            Route::get('/reportes/reporteAsesoresClasificacion','DigitalLeadController@reporteAsesoresClasificacion');
             Route::get('/excel/reportes/prospectos','DigitalLeadController@excelReportesProspectos');
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////

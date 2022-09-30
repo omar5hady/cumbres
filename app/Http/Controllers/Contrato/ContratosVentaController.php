@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\Credito;
 use App\Contrato;
+use App\Gasto_admin;
 use App\Pago_contrato;
 use App\Lote;
 use App\Tipo_credito;
@@ -14,6 +15,7 @@ use App\Licencia;
 use App\Amenitie;
 use App\SpecificationLote;
 use App\Urban_equipment;
+use App\Solic_equipamiento;
 use Carbon\Carbon;
 use NumerosEnLetras;
 use DB;
@@ -224,6 +226,30 @@ class ContratosVentaController extends Controller
 
         return $pdf->stream('contrato_venta.pdf');
 
+    }
+
+    private function getGastos($id){
+        return Gasto_admin::where('contrato_id','=',$id)->get();
+    }
+
+    private function getEquipamiento($id){
+        return Solic_equipamiento::join('equipamientos as e','solic_equipamientos.equipamiento_id','=','e.id')
+                ->select('e.equipamiento', 'solic_equipamientos.costo')
+                ->where('solic_equipamientos.contrato_id','=',$id)->get();
+    }
+
+    public function printAnexoE(Request $request, $id){
+        //Llamada a la función privada que obtiene los datos del contrato.
+        $contrato = $this->getDatosContrato($id);
+        $gastos = $this->getGastos($id);
+        $equipamientos = $this->getEquipamiento($id);
+        $pdf = \PDF::loadview('pdf.contratos.norma247.anexo_e', [
+            'contrato' => $contrato,
+            'gastos' => $gastos,
+            'equipamientos' => $equipamientos,
+        ]);
+
+        return $pdf->stream('anexo_e.pdf');
     }
 
     public function printAvisoPrivacidad(){
