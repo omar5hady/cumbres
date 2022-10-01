@@ -9,9 +9,9 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte Digital Leads  &nbsp;&nbsp;
-                        <a :href="'/reportes/digitalLeads?fecha1=' +b_fecha1 + '&fecha2=' + b_fecha2 + 
+                        <a :href="'/reportes/digitalLeads?fecha1=' +b_fecha1 + '&fecha2=' + b_fecha2 +
                                 '&proyecto=' + b_proyecto + '&excel=1'"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
-                       
+
                     </div>
                     <div class="card-body">
                         <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
@@ -34,7 +34,7 @@
                                     <div class="input-group">
                                         <select class="form-control" v-model="b_proyecto">
                                             <option value="">Seleccione</option>
-                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
                                                 :value="proyecto.id" v-text="proyecto.nombre">
                                             </option>
                                             <option value="0">Otro...</option>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
 
                         <div class="form-group row">
                             <!-- Listado por ingresos -->
@@ -62,7 +62,7 @@
                                                 <th> Descartados sin canalizar</th>
                                                 <th> Canalizados a asesor</th>
                                                 <th> Descartados por asesor</th>
-                                                
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -72,11 +72,11 @@
                                                 <td v-text="cont_desc"></td>
                                                 <td v-text="asesor_org"></td>
                                                 <td v-text="desc_ase"></td>
-                                            </tr>  
+                                            </tr>
                                             <tr v-for="leads in arrayLeads" :key="leads.id">
                                                 <template  v-if="leads.conteo > 0">
                                                     <td class="td2" v-text="leads.nombre_campania+' ('+leads.medio_digital+')'"></td>
-                                                    <td class="td2" 
+                                                    <td class="td2"
                                                             v-text="this.moment(leads.fecha_ini).locale('es').format('DD/MMM/YYYY')
                                                             +' al '+this.moment(leads.fecha_fin).locale('es').format('DD/MMM/YYYY')">
                                                     </td>
@@ -85,29 +85,31 @@
                                                     <td class="td2" v-text="leads.asesor"></td>
                                                     <td class="td2" v-text="leads.descAsesor"></td>
                                                 </template>
-                                            </tr>     
-                                                                  
+                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-               
+
                         </div>
 
                         <div class="form-group row">
                             <!-- Listado por ingresos -->
-                                
+
                             <div class="col-md-8">
                                 <div class="table-responsive">
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="3" class="text-center">REPORTE POR ASESOR</th>
+                                                <th colspan="6" class="text-center">REPORTE POR ASESOR</th>
                                             </tr>
                                             <tr>
                                                 <th> Asesor</th>
                                                 <th> # Leads asignados</th>
                                                 <th> Descartados</th>
+                                                <th></th>
+                                                <th colspan="2"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -115,8 +117,15 @@
                                                 <td class="td2" v-text="asesor.nombre+' '+asesor.apellidos"></td>
                                                 <td class="td2" v-text="asesor.conteo"></td>
                                                 <td class="td2" v-text="asesor.descartados"></td>
-                                            </tr>     
-                                                                  
+                                                <td></td>
+                                                <td class="table-success">
+                                                    <a @click="verLeads(asesor.amarillo,'Verde')" href="#">{{asesor.nAmarillo}}</a>
+                                                </td>
+                                                <td class="table-danger">
+                                                    <a @click="verLeads(asesor.rojo, 'Rojo')" href="#">{{asesor.nRojo}}</a>
+                                                </td>
+                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -124,20 +133,41 @@
 
                             <div class="col-md-2">
                             </div>
-                            
+
                         </div>
 
                         <div class="tab-content" id="myTab1Content">
                             <!-- Listado por ingresos -->
                             <div class="tab-pane fade active show" id="ingresos" role="tabpanel" aria-labelledby="ingresos-tab">
 
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
-            </div>          
+            </div>
+
+            <ModalComponent v-if="modal"
+                @closeModal="modal=0"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <TableComponent :cabecera="['Lead','Campaña','Proyecto']">
+                                <template v-slot:tbody>
+                                    <tr v-for="c in leads" :key="c.id">
+                                        <td class="td2" v-text="c.nombre+' '+c.apellidos"></td>
+                                        <td>{{(c.nombre_campania) ? c.nombre_campania : 'Organico'}}</td>
+                                        <td class="td2" v-text="c.proyecto"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
 
         </main>
 </template>
@@ -147,10 +177,16 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import ModalComponent from '../Componentes/ModalComponent.vue';
+    import TableComponent from '../Componentes/TableComponent.vue';
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
-               
+
                 arrayLeads : [],
                 arrayFraccionamientos : [],
                 arrayAsesores : [],
@@ -162,7 +198,11 @@
                 b_fecha1:'',
                 b_fecha2:'',
                 b_proyecto:'',
-                emp_constructora:''
+                emp_constructora:'',
+                modal: 0,
+                tituloModal: '',
+                leads:[],
+
             }
         },
         computed:{
@@ -172,7 +212,7 @@
             listarReporte(){
                 let me = this;
                 me.arrayLeads = [];
-                var url = '/reportes/digitalLeads?fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + 
+                var url = '/reportes/digitalLeads?fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 +
                     '&proyecto=' + me.b_proyecto + '&excel=0';
 
                 axios.get(url).then(function (response) {
@@ -207,12 +247,18 @@
                 });
             },
 
-            
+            verLeads(data,tipo){
+                this.modal = 1;
+                this.tituloModal = 'Leads en '+tipo;
+                this.leads = data;
+            },
+
+
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-        
+
         },
         mounted() {
 
@@ -267,5 +313,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

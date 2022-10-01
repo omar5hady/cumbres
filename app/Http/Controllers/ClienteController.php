@@ -1282,6 +1282,8 @@ class ClienteController extends Controller
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
             ->where('vendedores.tipo','=',0)
             ->where('users.condicion','=',1)
+            ->where('users.usuario','!=','descartado')
+            ->where('users.usuario','!=','oficina')
             //Que no se encuentren en el calendario de eventos.
             ->whereNotIn('users.id',$cal)
             ->whereNotIn('users.usuario',[
@@ -1289,8 +1291,7 @@ class ClienteController extends Controller
                 'Guadalupe', 'ALEJANDROT',
                 'yasmin_ventas', 'ivan.mtz'
             ])
-            ->where('users.usuario','!=','descartado')
-            ->where('users.usuario','!=','oficina')
+
             ->orderBy('vendedores.cont_leads','asc')
             ->orderBy('vendedor','asc')->get();
         }
@@ -1314,15 +1315,16 @@ class ClienteController extends Controller
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
                     ->where('vendedores.tipo','=',0)
                     ->where('users.condicion','=',1)
+                    ->where('users.usuario','!=','descartado')
+                    ->where('users.usuario','!=','oficina')
+                    ->whereIn('users.id',$as)
                     ->whereNotIn('users.id',$cal)
                     ->whereNotIn('users.usuario',[
                         'mayra_jaz', 'vero', 'e_preciado',
                         'ALEJANDROT',
                         'yasmin_ventas', 'ivan.mtz'
                     ])
-                    ->whereIn('users.id',$as)
-                    ->where('users.usuario','!=','descartado')
-                    ->where('users.usuario','!=','oficina')
+
                     ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();
             }
@@ -1335,14 +1337,14 @@ class ClienteController extends Controller
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
                     ->where('vendedores.tipo','=',0)
                     ->where('users.condicion','=',1)
+                    ->where('users.usuario','!=','descartado')
+                    ->where('users.usuario','!=','oficina')
                     ->whereNotIn('users.id',$cal)
                     ->whereNotIn('users.usuario',[
                         'mayra_jaz', 'vero', 'e_preciado',
                         'Guadalupe', 'ALEJANDROT',
                         'yasmin_ventas','lisseth_rios', 'ivan.mtz'
                     ])
-                    ->where('users.usuario','!=','descartado')
-                    ->where('users.usuario','!=','oficina')
                     ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();
 

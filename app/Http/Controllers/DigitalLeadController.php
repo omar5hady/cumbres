@@ -715,16 +715,12 @@ class DigitalLeadController extends Controller
         return ['cliente'=>$cliente];
     }
 
-    // Función para generar reporte de Digital Leads.
-    public function reporteLeads(Request $request){
+    private function getDataCampania(Request $request){
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
         $proyecto = $request->proyecto;
         // Se obtienen Campañas digitales.
-        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id')
-        ->get();
-        $cont_org = 0;
-        $asesor_org = 0;
+        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id')->get();
 
         foreach ($campanias as $campania) {
             //TOTAL LEADS POR CAMPAÑA
@@ -765,6 +761,93 @@ class DigitalLeadController extends Controller
                             $campania->descAsesor = $campania->descAsesor->where('proyecto_interes', '=',$proyecto);
                 $campania->descAsesor = $campania->descAsesor->count();
         }
+
+        return $campanias;
+    }
+
+    private function getDataAsesor(Request $request){
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $proyecto = $request->proyecto;
+
+        $today = Carbon::now()->subDays(3)->format('Y-m-d');
+        // Se obtienen los asesores que tienen por lo menos un lead asignado.
+        $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
+                ->select('personal.id','personal.nombre','personal.apellidos')
+                ->where('vendedor_asign','!=',NULL)
+                ->where('motivo','=',1)
+                ->groupBy('personal.id')
+                ->get();
+
+        foreach ($asesores as $asesor) {
+            // Conteo de leads por asesor
+
+            $asesor->conteo = Digital_lead::select('vendedor_asign')
+                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                ->where('status','!=',0);
+                if($fecha1 != '') // Fecha de registro
+                    $asesor->conteo = $asesor->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
+                if($proyecto != '')  // Proyecto de interes
+                    $asesor->conteo = $asesor->conteo->where('proyecto_interes', '=',$proyecto);
+            $asesor->conteo = $asesor->conteo->count();
+
+            // Conteo de leads descartados por asesor
+            $asesor->descartados = Digital_lead::select('vendedor_asign')
+                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                ->where('status','=',0);
+                if($fecha1 != '') // Fecha de Registro
+                    $asesor->descartados = $asesor->descartados->whereBetween('created_at', [$fecha1, $fecha2]);
+                if($proyecto != '') // Proyecto de interes
+                    $asesor->descartados = $asesor->descartados->where('proyecto_interes', '=',$proyecto);
+            $asesor->descartados = $asesor->descartados->count();
+            $asesor->sinAtender = 0;
+
+            $asesor->amarillo = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->select(
+                                'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.apellidos')
+                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                ->where('fecha_update','>',$today)
+                ->where('status','!=',0);
+                if($fecha1 != '') // Fecha de registro
+                    $asesor->amarillo = $asesor->amarillo->whereBetween('created_at', [$fecha1, $fecha2]);
+                if($proyecto != '')  // Proyecto de interes
+                    $asesor->amarillo = $asesor->amarillo->where('proyecto_interes', '=',$proyecto);
+                $asesor->amarillo = $asesor->amarillo->get();
+
+            $asesor->nAmarillo = $asesor->amarillo->count();
+
+            $asesor->rojo = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->select(
+                                'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.apellidos')
+                    ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                    ->where('fecha_update','<=',$today)
+                    ->where('status','!=',0);
+                    if($fecha1 != '') // Fecha de registro
+                        $asesor->rojo = $asesor->rojo->whereBetween('created_at', [$fecha1, $fecha2]);
+                    if($proyecto != '')  // Proyecto de interes
+                        $asesor->rojo = $asesor->rojo->where('proyecto_interes', '=',$proyecto);
+                    $asesor->rojo = $asesor->rojo->get();
+
+            $asesor->nRojo = $asesor->rojo->count();
+
+        }
+
+        return $asesores;
+    }
+
+    // Función para generar reporte de Digital Leads.
+    public function reporteLeads(Request $request){
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $proyecto = $request->proyecto;
+        // Se obtienen Campañas digitales.
+        $campanias = $this->getDataCampania($request);
+        $cont_org = 0;
+        $asesor_org = 0;
 
         /// CONTEOS PARA TRAFICO ORGANICO
             $cont_org = Digital_lead::select('campania_id')
@@ -809,36 +892,7 @@ class DigitalLeadController extends Controller
 
         /// REPORTE POR ASESOR
             // Se obtienen los asesores que tienen por lo menos un lead asignado.
-            $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
-                                    ->select('personal.id','personal.nombre','personal.apellidos')
-                                    ->where('vendedor_asign','!=',NULL)
-                                    ->where('motivo','=',1)
-                                    ->groupBy('personal.id')
-                                    ->get();
-            foreach ($asesores as $asesor) {
-                // Conteo de leads por asesor
-
-                $asesor->conteo = Digital_lead::select('vendedor_asign')
-                                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
-                                ->where('status','!=',0);
-                                if($fecha1 != '') // Fecha de registro
-                                    $asesor->conteo = $asesor->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
-                                if($proyecto != '')  // Proyecto de interes
-                                    $asesor->conteo = $asesor->conteo->where('proyecto_interes', '=',$proyecto);
-                    $asesor->conteo = $asesor->conteo->count();
-                // Conteo de leads descartados por asesor
-                $asesor->descartados = Digital_lead::select('vendedor_asign')
-                                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
-                                ->where('status','=',0);
-                                if($fecha1 != '') // Fecha de Registro
-                                    $asesor->descartados = $asesor->descartados->whereBetween('created_at', [$fecha1, $fecha2]);
-                                if($proyecto != '') // Proyecto de interes
-                                    $asesor->descartados = $asesor->descartados->where('proyecto_interes', '=',$proyecto);
-                    $asesor->descartados = $asesor->descartados->count();
-                $asesor->sinAtender = 0;
-            }
-
-
+            $asesores = $this->getDataAsesor($request);
 
         if($request->excel == 0) // Retorno de resultados en formato Json
             return [
