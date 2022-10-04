@@ -1400,6 +1400,9 @@
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAfklEQVRIie3QOwrCQBRA0SP+9qGuwlKIe3AZbsrGT7AI4n5sxNpOwSIKKUIEJ2nknWoYHpeZRwh/b4xp00A/MX7ABOeETq0Rjthh0DT47Qdr9HCp3A2xxRMrPH5+JjJcMa/E98jf51ZkuGGBDU7K/bdqiTuKLuIfsy7jIYQELy0QD0bA3JEyAAAAAElFTkSuQmCC">
                 </template>
                 Instalación para gas l.p. y preparación para gas estacionario.
+                @if($contrato->gas_nat)
+                    La vivienda cuenta con preparación para gas natural
+                @endif
             </li>
         </p>
 

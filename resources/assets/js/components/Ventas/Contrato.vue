@@ -1804,7 +1804,7 @@
                                         <button type="button" v-if="listado==4 && btn_actualizar==1" class="btn btn-success" @click="actualizarContrato()"> Actualizar </button>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <div class="col-md-12" v-if="listado==4 && btn_actualizar==0">
                                         <div style="text-align: right;" v-if="rolId!=2">
                                             <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
@@ -1849,14 +1849,46 @@
                                             <a class="btn btn-danger btn-sm" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
                                         </div>
                                     </div>
+                                </div> -->
+
+                                <div class="form-group card-body" v-if="listado==4 && btn_actualizar==0">
+                                    <div style="text-align: right" class="capsule col-md-12">
+                                        <h6>Imprimir</h6>
+                                        <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
+                                                <template v-if="norma247">
+                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
+                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
+                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAnexoE/'+id">Anexo E</a>
+                                                </template>
+                                                <template v-else>
+                                                    <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                                        <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                    </template>
+                                                    <template v-else>
+                                                        <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
+                                                    </template>
+                                                    <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
+                                                    <a class="btn btn-info btn-sm" v-if="tipo_proyecto == 2" v-bind:href="'/contrato/anexoA/'+id">Anexo A</a>
+                                                </template>
+                                        </div>
+                                        <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
+                                            <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                            <a class="btn btn-scarlet btn-sm" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                            <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                            <a class="btn btn-dark btn-sm" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                            <a class="btn btn-danger btn-sm" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="col-md-12">
+                                <div class="form-group card-body" v-if="listado==4 && btn_actualizar==0">
+                                    <div style="text-align: right" class="capsule col-md-12">
+                                        <h6>Solo consulta</h6>
                                         <div style="text-align: right;" v-if="rolId!=2">
-                                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
-                                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
-                                            <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAnexoE/'+id">Anexo E</a>
+                                            <a v-if="foto_predial" title="Ver Predial" class="btn btn-primary btn-sm" v-bind:href="'/downloadPredial/'+ foto_predial">Predial</a>
+                                            <a v-if="num_licencia" title="Ver licencia" class="btn btn-primary btn-sm"  v-text="'Licencia: '+num_licencia" v-bind:href="'/downloadLicencias/'+foto_lic"></a>
+                                            <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contrato/printProcGarantia'">Procedimiento de Garantia</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2492,7 +2524,12 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 ecotecnologasAsignadas:[],
                 totalEco:0,
                 ecoSeleccionada:{
-                }
+                },
+
+                norma247:0,
+                num_licencia:'',
+                foto_predial: '',
+                foto_lic: ''
             }
         },
         computed:{
@@ -3620,6 +3657,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
 
+                this.foto_predial = data['foto_predial'];
+                this.num_licencia = data['num_licencia'];
+                this.foto_lic = data['foto_lic'];
+
                 this.nombre_referencia1 = data['nombre_primera_ref'];
                 this.telefono_referencia1 = data['telefono_primera_ref'];
                 this.celular_referencia1 = data['celular_primera_ref'];
@@ -3699,6 +3740,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.sobreprecio = data['sobreprecio'];
 
                 this.id_contrato = data['contratoId'];
+
+                const a = moment('2022-09-18');
+                const b = moment(this.fecha_contrato);
+                this.norma247 = a < b;
 
 
                 this.listarPagos(this.id);
@@ -4439,6 +4484,15 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
     .div-error{
         display:flex;
         justify-content: center;
+    }
+
+    .capsule{
+        border-style: solid;
+        cursor:pointer;
+        color: #29363d;
+        border-color: #00ADEF;
+        padding: 10px;
+        margin: 15px;
     }
     .text-error{
         color: red !important;

@@ -45,6 +45,7 @@ class ContratosVentaController extends Controller
                 'lotes.calle as calle_lote', 'lotes.numero as num_oficial', 'lotes.interior',
                 'lotes.clv_catastral', 'lotes.fin_obra', 'lotes.condiciones as estado_inmueble',
                 'lotes.indivisos', 'lotes.etapa_id', 'lotes.fraccionamiento_id',
+                'lotes.gas_nat',
                 'l.avance','l.colindancias', 'l.num_escritura', 'l.num_notario',
                 'l.distrito_notario','l.folio_registro', 'l.date_escritura', 'l.date_birth',
                 'modelos.nombre as modelo', 'modelos.tipo as tipo_modelo',
@@ -254,6 +255,11 @@ class ContratosVentaController extends Controller
 
     public function printAvisoPrivacidad(){
         $pathtoFile = public_path().'/pdf/AvisoPrivacidadCarta.pdf';
+        return response()->file($pathtoFile);
+    }
+
+    public function printProcGarantia(){
+        $pathtoFile = public_path().'/pdf/ProcedimientoGarantia.pdf';
         return response()->file($pathtoFile);
     }
 }
