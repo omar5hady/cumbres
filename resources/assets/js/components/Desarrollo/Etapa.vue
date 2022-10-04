@@ -371,6 +371,18 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         amenidad: 'Ciclovia',
                         activo: 1
                     },
+                    {
+                        amenidad: 'Parque lineal sobre Av. Del Parque con Juego Infantil',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Area Verde con Juego Infantil y Cancha de Usos Multiples sobre calle Zapote',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Ciclovia sobre Av. Del Prado',
+                        activo: 1
+                    },
                 ],
                 amenidadesEtapa:[]
             }
@@ -755,6 +767,18 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     },
                     {
                         amenidad: 'Ciclovia',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Parque lineal sobre Av. Del Parque con Juego Infantil',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Area Verde con Juego Infantil y Cancha de Usos Multiples sobre calle Zapote',
+                        activo: 1
+                    },
+                    {
+                        amenidad: 'Ciclovia sobre Av. Del Prado',
                         activo: 1
                     },
                 ];

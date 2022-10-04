@@ -530,5 +530,8 @@
             >
             </fondo-pension>
         </template>
+        <template v-if="menu == 287">
+            <planos-proyectos></planos-proyectos>
+        </template>
     @endif
 @endsection

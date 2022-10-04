@@ -1253,6 +1253,9 @@ Route::group(['middleware' => ['auth']],function(){
         /////////////////////// Rutas EquipamientoUrbano
         Route::resource('/urban-equipment', Privada\UrbanEquipmentController::class);
 
+        ////////////////////// Rutas Planos Proyectos
+        Route::resource('/planos-proyectos', Lotes\PlanosController::class);
+
     });
 
 

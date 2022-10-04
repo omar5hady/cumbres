@@ -65,6 +65,10 @@ Vue.component('publicidad-fraccionamiento', require('./components/Desarrollo/Pub
 
 Vue.component('prediales-descarga', require('./components/Desarrollo/DescargaActas.vue'));
 
+    // Proyectos
+    Vue.component('planos-proyectos', require('./components/Desarrollo/Proyectos/Planos.vue'));
+
+
 //Componentes Precios
 Vue.component('precios-vivienda', require('./components/Precios/PreciosVivienda.vue'));
 Vue.component('agregar-sobreprecios', require('./components/Precios/SobrepreciosAdd.vue'));
@@ -227,7 +231,9 @@ const app = new Vue({
     data: {
         menu: 100,
         notifications: [],
-        proyectos : []
+        proyectos : [],
+        modelos : [],
+        etapas: []
     },
 
     methods:{
@@ -265,6 +271,33 @@ const app = new Vue({
             })
             .catch(function (error) {
                 console.log(error);
+            });
+        },
+
+        /* A function that is called when the user selects a project from the dropdown menu. It is used
+        to populate the second dropdown menu with the stages of the selected project. */
+        selectEtapa(proyecto){
+            let me = this;
+            me.etapas=[];
+            var url = '/select_etapa_proyecto?buscar=' + proyecto;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.etapas = respuesta.etapas;
+            })
+            .catch(function (error) {
+            });
+        },
+
+        selectModelo(proyecto){
+            let me = this;
+
+            me.modelos=[];
+            var url = '/select_modelo_proyecto?buscar=' + proyecto;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.modelos = respuesta.modelos;
+            })
+            .catch(function (error) {
             });
         },
         /* Formatting the number to have commas in the thousands place. */

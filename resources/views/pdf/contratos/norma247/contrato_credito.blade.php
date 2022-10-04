@@ -488,7 +488,18 @@
                     <strong>“EL PROMITENTE COMPRADOR”</strong>. Para tales efectos <strong>“EL PROMITENTE COMPRADOR”</strong>
                     se obliga a entregar a <strong>“EL PROMITENTE VENDEDOR”</strong>, dentro del plazo de 5 días hábiles siguientes a
                     la firma de este contrato, toda la documentación que le sea requerida y que sea necesaria para
-                    realizar dicho trámite, así como a cubrir los montos que ________________________requiera para tal efecto, los cuales
+                    realizar dicho trámite, así como a cubrir los montos que
+                    @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
+                        && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
+                        {{ mb_strtoupper($contrato->institucion) }}
+                    @else
+                        @if($contrato->tipo_credito == 'INFONAVIT-FOVISSSTE' )
+                            INFONAVIT y FOVISSTE
+                        @else
+                            {{mb_strtoupper($contrato->institucion)}} e INFONAVIT
+                        @endif
+                    @endif
+                    requiera para tal efecto, los cuales
                     no formarán parte del precio. <strong>“EL PROMITENTE COMPRADOR”</strong> podrá solicitar, en cualquier momento,
                     la cancelación de los servicios de gestión.
                     <br><br>
@@ -1388,7 +1399,7 @@
                 <template class="cuadrado">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAfklEQVRIie3QOwrCQBRA0SP+9qGuwlKIe3AZbsrGT7AI4n5sxNpOwSIKKUIEJ2nknWoYHpeZRwh/b4xp00A/MX7ABOeETq0Rjthh0DT47Qdr9HCp3A2xxRMrPH5+JjJcMa/E98jf51ZkuGGBDU7K/bdqiTuKLuIfsy7jIYQELy0QD0bA3JEyAAAAAElFTkSuQmCC">
                 </template>
-                Sistema para calentar agua y cocinar alimentos (gas l.p. / gas natural / eléctrico / otros combustibles)
+                Instalación para gas l.p. y preparación para gas estacionario.
             </li>
         </p>
 
