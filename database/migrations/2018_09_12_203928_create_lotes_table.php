@@ -68,6 +68,7 @@ class CreateLotesTable extends Migration
             $table->string('paq_ruv',50)->nullable();
 
             $table->boolean('gas_nat')->default(0);
+            $table->boolean('cambio_esp')->default(0);
 
 
             ///////// Datos para precio //////////////////

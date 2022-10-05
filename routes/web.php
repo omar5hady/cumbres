@@ -271,6 +271,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/lotes/masa/empresa','LoteController@asignarEmpresa');
         Route::get('/lotes/empresa/select','LoteController@selectEmpresaConstructora');
 
+        Route::put('/lote/enteradoEsp','LoteController@enteradoEsp');
+
         Route::post('/lote/subirColindancias','LoteController@formSubmitColindancias');
         Route::get('/lote/colindancias/{fileName}' , 'LoteController@downloadFile');
 

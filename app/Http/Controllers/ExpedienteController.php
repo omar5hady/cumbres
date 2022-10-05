@@ -24,11 +24,21 @@ use App\Http\Controllers\BonoRecomendadoController;
 use App\Mail\NotificationReceived;
 use Illuminate\Support\Facades\Mail;
 use App\Personal;
+use App\Tipo_credito;
 use App\Notifications\NotifyAdmin;
 use App\User;
 
 class ExpedienteController extends Controller
 {
+    private function calcularDiasHabiles($ini, $fin){
+        $dt = Carbon::parse($ini);
+        $dt2 = Carbon::parse($fin);
+        return $daysForExtraCoding = $dt->diffInDaysFiltered(function(Carbon $date) {
+            return !$date->isWeekend();
+        }, $dt2);
+
+    }
+
     // Funcion que retorna los contratos para la integración de expedientes.
     public function indexContratos(Request $request)
     {
@@ -42,6 +52,19 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             // Se recorren los registros para obtener fecha de pago del ultimo pagare y datos del avaluo.
             foreach($contratos as $index => $contrato){
+
+                $credito_sel = Tipo_credito::where('nombre','=',$contrato->tipo_credito)->where('institucion_fin','=',$contrato->institucion)->first();
+
+                $contrato->diasTramites = $credito_sel->dias_nat;
+
+                if($contrato->avance_contrato < 95)
+                    $contrato->diasTramites += $this->calcularDiasHabiles($contrato->fecha_contrato, $contrato->fin_obra);
+
+                $contrato->diasTramites += (($contrato->diasTramites/7)*2);
+
+                $contrato->fechaGest = new Carbon($contrato->fecha_contrato);
+                $contrato->fechaGest = $contrato->fechaGest->addDays($contrato->diasTramites)->format('Y-m-d');
+
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
 
                 $avaluos = Avaluo::select('resultado','fecha_recibido',
@@ -241,6 +264,8 @@ class ExpedienteController extends Controller
             //->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
             ->select(
                 'contratos.id as folio',
+                'contratos.avance_lote as avance_contrato',
+                'contratos.fecha as fecha_contrato',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',
@@ -260,6 +285,7 @@ class ExpedienteController extends Controller
                 'contratos.aviso_prev',
                 'contratos.aviso_prev_venc',
                 'lotes.regimen_condom',
+                'lotes.fin_obra',
                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                 'clientes.coacreditado',

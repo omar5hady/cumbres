@@ -33,7 +33,7 @@
                                         <option value="contratos.id"># Folio</option>
                                     </select>
 
-                                    
+
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
@@ -41,7 +41,7 @@
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                                 <div class="input-group">
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -60,7 +60,7 @@
                                     <button v-if="btn_status == 1" @click="btn_status=2" type="button" class="btn btn-secondary btn-warning">Detenidos</button>
 
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa +
                                         '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + btn_status+
                                         '&b_empresa='+b_empresa">
                                         <i class="icon-pencil"></i>&nbsp;Excel
@@ -71,7 +71,7 @@
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
                                         <th># Ref</th>
                                         <th>Celular</th>
@@ -84,6 +84,7 @@
                                         <th>Lote</th>
                                         <th>Modelo</th>
                                         <th>Avance</th>
+                                        <th>Fecha Limite para firma</th>
                                         <th>Fecha de visita para avaluo</th>
                                         <th>Firma</th>
                                         <th>Tipo de credito</th>
@@ -126,10 +127,10 @@
                                             <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
                                             <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td>
-                                        <td class="td2" v-if="contratos.email_institucional == null"> 
+                                        <td class="td2" v-if="contratos.email_institucional == null">
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td>
-                                        <td class="td2" v-else> 
+                                        <td class="td2" v-else>
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email+ ';'+contratos.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td>
                                         <td class="td2" v-bind:style="{ color : contratos.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="contratos.nombre_cliente"></td>
@@ -149,7 +150,12 @@
                                         </td>
                                         <td class="td2" v-text="contratos.modelo"></td>
                                         <td class="td2" v-text="contratos.avance_lote+'%'"></td>
-                                        
+                                        <table class="td2">
+                                            <span class="badge badge-warning"
+                                                v-text="this.moment(contratos.fechaGest).locale('es').format('DD/MMM/YYYY')"
+                                            ></span>
+                                        </table>
+
                                         <td class="td2" v-if="contratos.visita_avaluo" v-text="this.moment(contratos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-else v-text="'Sin fecha'"></td>
                                         <td class="td2" v-text="this.moment(contratos.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
@@ -171,7 +177,7 @@
                                             <td class="td2" v-else >
                                                 DETENIDO
                                             </td>
-                                        </template> 
+                                        </template>
                                         <td v-text="'$'+formatNumber(contratos.totPagare - contratos.totRest)"></td>
                                         <td class="td2" v-text="this.moment(contratos.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                          <template v-if="contratos.aviso_prev">
@@ -180,16 +186,16 @@
                                             </td>
 
                                             <td  @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && contratos.aviso_prev_venc" class="td2" title="Doble click">
-                                                
-                                                <span v-if = "contratos.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+
+                                                <span v-if = "contratos.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
                                                 + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                <span v-if = "contratos.diferencia < 0 && contratos.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                <span v-if = "contratos.diferencia < 0 && contratos.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
                                                 + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                <span v-if = "contratos.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                <span v-if = "contratos.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
                                                 + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-                                                
+
                                             </td>
 
                                             <td v-if="contratos.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
@@ -223,13 +229,13 @@
                                             <label v-else>DETENIDO </label>
                                         </td>
                                         <td class="td2">
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                 @click="abrirModal3(contratos.folio)">Ver Observaciones</button>
                                         </td>
 
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -256,7 +262,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
 
             <!--Inicio del modal avaluo-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
@@ -278,7 +284,7 @@
                                         <input type="date"  v-model="fecha_solicitud" class="form-control" >
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Monto</label>
                                     <div class="col-md-4">
@@ -289,7 +295,7 @@
                                         <h6 v-text="'$'+formatNumber(valor_requerido)"></h6>
                                     </div>
                                 </div>
-                                
+
                             </form>
                             <!-- fin del form solicitud de avaluo -->
 
@@ -302,7 +308,7 @@
                                         <input type="date"  v-model="fecha_aviso" class="form-control" >
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-4">
@@ -358,7 +364,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                
+
                             </form>
                             <!-- fin del form aviso preventivo -->
 
@@ -371,8 +377,8 @@
                                         <input type="date"  v-model="fecha_recibido" class="form-control" >
                                     </div>
                                 </div>
-                                
-                                
+
+
                             </form>
                             <!-- fin del form para captura de fecha recibido -->
 
@@ -431,7 +437,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <table class="table table-bordered table-striped table-sm" >
                                     <thead>
                                         <tr>
@@ -442,14 +448,14 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                            
+
                                             <td v-text="observacion.usuario" ></td>
                                             <td v-text="observacion.observacion" ></td>
                                             <td v-text="observacion.created_at"></td>
-                                        </tr>                               
+                                        </tr>
                                     </tbody>
                                 </table>
-                                
+
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -462,7 +468,7 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            
+
             <!-- Modal solicitar entrega -->
             <div class="modal fade" id="modalEntrega" role="dialog" aria-labelledby="modalEntregaLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -504,7 +510,7 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            <strong>Solicitud de avaluó</strong>, puede asignar una fecha de solicitud de avaluó o indicar que un lote no 
+                            <strong>Solicitud de avaluó</strong>, puede asignar una fecha de solicitud de avaluó o indicar que un lote no
                             aplica para solicitud de avaluó, puede dar clic sobre los iconos
                             <button type="button" class="btn btn-warning btn-sm" title="Solicitar avaluo">
                                 <i class="fa fa-file-text-o"></i>
@@ -515,19 +521,19 @@
                             para indicar la opción deseada.
                         </p>
                         <p>
-                            <strong>Aviso preventivo</strong>, puede asignar una fecha de aviso preventivo o indicar que un lote no aplica 
-                            para aviso preventivo, puede dar clic sobre los iconos 
+                            <strong>Aviso preventivo</strong>, puede asignar una fecha de aviso preventivo o indicar que un lote no aplica
+                            para aviso preventivo, puede dar clic sobre los iconos
                             <button type="button" class="btn btn-warning btn-sm" title="Solicitar avaluo">
                                 <i class="fa fa-file-text-o"></i>
                             </button>
                             <button type="button" class="btn btn-danger btn-sm" title="No aplica">
                                 <i class="fa fa-times-circle"></i>
-                            </button> 
+                            </button>
                             para indicar la opción deseada.
                         </p>
                         <p>
-                            <strong>Integración de expediente</strong>, para enviar un lote a integración de expediente debe dar clic 
-                            sobre el botón de “Integrar” asigne un gestor al lote y confirmar la integración, 
+                            <strong>Integración de expediente</strong>, para enviar un lote a integración de expediente debe dar clic
+                            sobre el botón de “Integrar” asigne un gestor al lote y confirmar la integración,
                             el lote será enviado a seguimiento de tramite (vea modulo <strong>“Desarrollo -> Seguimiento de trámite”</strong>).
                         </p>
                     </div>
@@ -551,11 +557,11 @@
                 btnObs:'',
                 proceso:false,
                 id: 0,
-                
+
                 fecha_comentario:'',
                 observacion:'',
                 usuario: '',
-               
+
                 fecha_solicitud: '',
                 valor_requerido: '',
                 fecha_vencimiento:'',
@@ -575,19 +581,19 @@
 
                 modal : 0,
                 modal3 : 0,
-              
+
                 estado : 'San Luis Potosí',
                 ciudad: 'San Luis Potosí',
-                
+
                 tituloModal : '',
                 tituloModal3: '',
                 nombre_archivo_modelo:'',
-           
+
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -595,7 +601,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
@@ -648,13 +654,13 @@
 
         },
 
-        
+
         methods : {
 
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
+                var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' +
                     b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + me.btn_status +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -664,7 +670,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             selectNombreArchivoModelo(id){
@@ -691,13 +697,13 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -712,7 +718,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2=""
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -790,12 +796,12 @@
                 }
                 this.proceso=true;
                 let me = this;
-                 
+
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/expediente/fechaRecibido',{
                     'folio':this.id,
                     'fecha_recibido' : this.fecha_recibido,
-                    'fecha_vencimiento' : moment(this.fecha_recibido).add(60,'day').format('YYYY-MM-DD'), 
+                    'fecha_vencimiento' : moment(this.fecha_recibido).add(60,'day').format('YYYY-MM-DD'),
 
                 }).then(function (response){
                     me.proceso=false;
@@ -816,9 +822,9 @@
             },
 
             detenerContrato(id,detenido){
-               
+
                 let me = this;
-                 
+
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/contrato/cambiarProceso',{
                     'id':id,
@@ -841,9 +847,9 @@
             },
 
             continuarContrato(id,detenido){
-               
+
                 let me = this;
-                 
+
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/contrato/cambiarProceso',{
                     'id':id,
@@ -881,7 +887,7 @@
                     me.listarObservacion(me.id);
                     me.observacion = '';
                     //me.cerrarModal3(); //al guardar el registro se cierra el modal
-                    
+
                     const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -898,7 +904,7 @@
                 });
             },
 
-       
+
             solicitudAvaluo(){
                 if(this.proceso==true){
                     return;
@@ -910,8 +916,8 @@
                     'folio':this.id,
                     'fecha_solicitud' : this.fecha_solicitud,
                     'valor_requerido' : this.valor_requerido,
-                    
-                    
+
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -960,15 +966,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
 
             avisoPreventivo(){
@@ -982,8 +988,8 @@
                     'folio':this.id,
                     'fecha_solicitud' : this.fecha_aviso,
                     'notaria_id' : this.notaria,
-                    
-                    
+
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1032,15 +1038,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
 
             integrar(){
@@ -1060,13 +1066,13 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                
+
             },
 
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                
+
             },
             cerrarModal3(){
                 this.modal3 = 0;
@@ -1074,8 +1080,8 @@
                 this.usuario = '';
                 this.observacion = '';
             },
-         
-      
+
+
             abrirModal3(folio){
                 this.modal3 =1;
                 this.tituloModal3='Observaciones';
@@ -1085,11 +1091,11 @@
                 this.listarObservacion(folio);
             },
 
-      
+
             abrirModal(accion,data =[]){
-               
+
                         switch(accion){
-                           
+
                             case 'avaluo':
                             {
                                 this.modal =1;
@@ -1100,7 +1106,7 @@
                                 break;
                             }
 
-                            case 'aviso_preventivo': 
+                            case 'aviso_preventivo':
                             {
                                 this.modal = 1;
                                 this.tituloModal='Aviso preventivo';
@@ -1110,27 +1116,27 @@
                                 break;
                             }
 
-                            case 'fecha_recibido': 
+                            case 'fecha_recibido':
                             {
                                 this.modal = 1;
                                 this.tituloModal='Fecha recibido';
                                 this.tipoAccion = 3;
                                 this.fecha_recibido = data['aviso_prev_venc'];
                                 this.id = data['folio'];
-                                
+
                                 break;
                             }
 
-                            case 'integrar': 
+                            case 'integrar':
                             {
                                 this.modal = 1;
                                 this.tituloModal='Asigna un gestor';
                                 this.tipoAccion = 4;
                                 this.id = data['folio'];
-                                this.selectGestores();    
+                                this.selectGestores();
                                 break;
                             }
-                            
+
                 }
                 this.selectCiudades(this.estado);
                 this.selectNotarias(this.estado,this.ciudad);
@@ -1163,9 +1169,9 @@
                     console.log(error);
                 });
             },
-        
+
         },
-       
+
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
@@ -1190,7 +1196,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -1249,5 +1255,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

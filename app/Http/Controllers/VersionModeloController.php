@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Version_modelo;
 use App\Lote;
+use App\Contrato;
 use App\Modelo;
 use App\SpecificationLote;
 use Auth;
 
 use App\Http\Resources\SpecificationLoteResource;
+use App\Http\Controllers\NotificacionesAvisosController;
 
 class VersionModeloController extends Controller
 {
@@ -138,6 +140,8 @@ class VersionModeloController extends Controller
         $esp->descripcion = $request->descripcion;
         $esp->lote_id = $request->lote_id;
         $esp->save();
+
+        $this->setNotification($request->lote_id);
     }
 
     public function deleteEspecificacion(Request $request){
@@ -154,6 +158,33 @@ class VersionModeloController extends Controller
         $esp->save();
 
         return($esp);
+    }
+
+    private function setNotification($lote_id) {
+        //Buscar si el lote pertenece a un contrato firmado
+        $contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                    ->select('contratos.id','expedientes.liquidado',
+                        'creditos.fraccionamiento', 'creditos.manzana',
+                        'creditos.etapa','creditos.num_lote'
+                    )
+                    ->whereIn('contratos.status',[1,3])
+                    ->where('creditos.lote_id','=',$lote_id)
+                    ->get();
+
+        if(sizeof($contrato)){
+            if($contrato[0]->liquidado === NULL || $contrato[0]->liquidado !== 1){
+                $msj = 'Se han modificado las especificaciones del lote '.$contrato[0]->num_lote.
+                    ' del fraccionamiento '.$contrato[0]->fraccionamiento.' Etapa '.$contrato[0]->etapa.' Manzana '.$contrato[0]->manzana;
+                $aviso = new NotificacionesAvisosController();
+                $aviso->store(12,$msj);
+                $aviso->store(3,$msj);
+
+                $lote = Lote::findOrFail($lote_id);
+                $lote->cambio_esp = 1;
+                $lote->save();
+            }
+        }
     }
 
     public function setEspecifiacionesMasa(Request $request){
@@ -178,6 +209,8 @@ class VersionModeloController extends Controller
                     $especificacion->save();
                 }
             }
+
+            $this->setNotification($l);
         }
 
     }

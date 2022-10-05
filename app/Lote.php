@@ -14,7 +14,7 @@ class lote extends Model
                             'lote_comercial','ini_obra','clv_catastral','etapa_servicios','credito_puente',
                             'siembra','fecha_ini','fecha_fin','arquitecto_id','ehl_solicitado','sobreprecio',
                             'aviso','obra_extra', 'habilitado','apartado','contrato','excedente_terreno',
-                            'indivisos', 'fin_obra', 'condiciones',
+                            'indivisos', 'fin_obra', 'condiciones','cambio_esp', 'gas_nat',
                             'precio_base', 'regimen_condom','ajuste','fecha_termino_ventas','paquete', 'num_inicio',
                             'fecha_entrega_obra','firmado','extra','extra_ext','nombre_archivo','paq_ruv'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 

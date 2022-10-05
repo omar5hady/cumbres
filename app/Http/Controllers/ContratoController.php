@@ -35,15 +35,23 @@ use App\Modelo;
 use App\Cuenta;
 use App\Avaluo;
 use App\User;
+use App\PlanoProyecto;
 use NumerosEnLetras;
 use DB;
 use Auth;
 use Excel;
 use File;
 
+use App\Http\Resources\PlanoResource;
+
 // Controlador para contratos.
 class ContratoController extends Controller
 {
+
+    private function getPlanos($lote_id){
+        return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
+    }
+
     // Función para retornar los contratos registrados.
     public function indexContrato(Request $request)
     {
@@ -150,6 +158,7 @@ class ContratoController extends Controller
             //Se recorren los resultados de contratos para verificar si la casa se ha individualizado.
             foreach($contratos as $index => $contrato)
             {
+                $contrato->planos = $this->getPlanos($contrato->lote_id);
                 if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
                     $contrato->status2 = 1;
                 }
@@ -234,6 +243,7 @@ class ContratoController extends Controller
                     'creditos.precio_obra_extra',
                     'creditos.fraccionamiento as proyecto',
                     'creditos.lote_id',
+                    'lotes.cambio_esp',
 
                     'creditos.email_fisc',
                     'creditos.tel_fisc',

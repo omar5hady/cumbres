@@ -125,6 +125,12 @@ class LoteController extends Controller
         return $rentas;
     }
 
+    public function enteradoEsp(Request $request){
+        $lote = Lote::findOrFail($request->id);
+        $lote->cambio_esp = 0;
+        $lote->save();
+    }
+
     public function index(Request $request) //Index para modulo asignar modelo
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu

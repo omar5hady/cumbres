@@ -260,6 +260,7 @@
                             <template v-slot:thead>
                                 <tr>
                                     <th># Contrato</th>
+                                    <th></th>
                                     <th>Cliente</th>
                                     <th>Vendedor</th>
                                     <th>Proyecto</th>
@@ -294,6 +295,14 @@
                                                 <a v-if="contrato.foto_predial" title="Ver Predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contrato.foto_predial">Predial</a>
                                                 <a v-if="contrato.num_licencia" title="Ver licencia" class="dropdown-item"  v-text="'Licencia: '+contrato.num_licencia" v-bind:href="'/downloadLicencias/'+contrato.foto_lic"></a>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger" v-if="contrato.cambio_esp"
+                                                title="Enterado"
+                                                @click="enteradoEsp(contrato.lote_id)"
+                                            >
+                                                Cambio de especificaciones
+                                            </button>
                                         </td>
                                         <td class="td2">
                                             <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase()"></a>
@@ -397,9 +406,9 @@
                                 v-on:dblclick="obtenerDatosCredito(prospecto.id), nuevo = 1" title="Doble click">
                                     <td class="td2" v-text="prospecto.id"></td>
                                     <td class="td2">
-                                        <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></a>
+                                        <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase()"></a>
                                     </td>
-                                    <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
+                                    <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos"></td>
                                     <td class="td2" v-text="prospecto.proyecto"></td>
                                     <td class="td2" v-text="prospecto.etapa"></td>
                                     <td class="td2" v-text="prospecto.manzana"></td>
@@ -1856,7 +1865,7 @@
                                         <h6>Imprimir</h6>
                                         <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
                                                 <template v-if="norma247">
-                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato norma 247</a>
+                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato</a>
                                                     <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
                                                     <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAnexoE/'+id">Anexo E</a>
                                                 </template>
@@ -1866,7 +1875,7 @@
                                                         <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                     </template>
                                                     <template v-else>
-                                                        <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Contrato</a>
                                                     </template>
                                                     <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
                                                     <a class="btn btn-info btn-sm" v-if="tipo_proyecto == 2" v-bind:href="'/contrato/anexoA/'+id">Anexo A</a>
@@ -1885,13 +1894,21 @@
                                 <div class="form-group card-body" v-if="listado==4 && btn_actualizar==0">
                                     <div style="text-align: right" class="capsule col-md-12">
                                         <h6>Solo consulta</h6>
-                                        <div style="text-align: right;" v-if="rolId!=2">
+                                        <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
                                             <a v-if="foto_predial" title="Ver Predial" class="btn btn-primary btn-sm" v-bind:href="'/downloadPredial/'+ foto_predial">Predial</a>
                                             <a v-if="num_licencia" title="Ver licencia" class="btn btn-primary btn-sm"  v-text="'Licencia: '+num_licencia" v-bind:href="'/downloadLicencias/'+foto_lic"></a>
                                             <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contrato/printProcGarantia'">Procedimiento de Garantia</a>
                                         </div>
+                                        <template v-if="planos.length">
+                                            <h6>Planos</h6>
+                                            <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
+                                                <a v-for="plano in planos" :key="plano.id"
+                                                    :href="plano.file.public_url" class="btn btn-danger btn-sm">Plano de {{plano.tipo}}</a>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -1909,125 +1926,6 @@
             <template v-slot:body>
                 <template  v-if="tipoAccion==1">
                     <template v-if="status == 3">
-                        <!-- <hr>
-                        <div class="form-group row">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-4">
-                                <center><h6>Datos Fiscales</h6></center>
-                            </div>
-                            <div class="col-md-4"></div>
-                        </div> -->
-
-                        <!-- <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
-                            <div class="col-md-4">
-                                <input type="email" v-model="datosFiscales.email_fisc" class="form-control" placeholder="Email">
-                            </div>
-                            <label class="col-md-2 form-control-label" for="text-input">Teléfono</label>
-                            <div class="col-md-3">
-                                <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.tel_fisc" class="form-control" maxlength="10" placeholder="Telefono">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
-                            <div class="col-md-6">
-                                <input type="text" v-model="datosFiscales.nombre_fisc" class="form-control" placeholder="Nombre completo">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
-                            <div class="col-md-6">
-                                <input type="text" v-model="datosFiscales.direccion_fisc" class="form-control" placeholder="Dirección">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
-                            <div class="col-md-3">
-                                <input type="text" v-model="datosFiscales.col_fisc" class="form-control" placeholder="Colonia">
-                            </div>
-                            <label class="col-md-2 form-control-label" for="text-input">C.P.</label>
-                            <div class="col-md-3">
-                                <input type="text" v-on:keypress="isNumber($event)" pattern="\d*" v-model="datosFiscales.cp_fisc" class="form-control" placeholder="Código Postal">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">RFC</label>
-                            <div class="col-md-3">
-                                <input type="text" maxlength="13"  style="text-transform:uppercase"
-                                v-model="datosFiscales.rfc_fisc" class="form-control" placeholder="RFC">
-                            </div>
-                            <label class="col-md-2 form-control-label" for="text-input">Uso del C.F.D.I.</label>
-                            <div class="col-md-4">
-                                <select class="form-control" v-model="datosFiscales.cfi_fisc">
-                                    <option value="Por definir">Por definir</option>
-                                    <option value="Suspendido">Suspendido</option>
-                                    <option value="Adquisición de mercancias">Adquisición de mercancias</option>
-                                    <option value="Devoluciones, Descuentos o bonificaciones">Devoluciones, Descuentos o bonificaciones</option>
-                                    <option value="Gastos en general">Gastos en general</option>
-                                    <option value="Construcciones">Construcciones</option>
-                                    <option value="Mobiliario y equipo de oficina por inversiones">Mobiliario y equipo de oficina por inversiones</option>
-                                    <option value="Equipo de transporte">Equipo de transporte</option>
-                                    <option value="Equipo de computo y accesorios">Equipo de computo y accesorios</option>
-                                    <option value="Dados, troqueles, moldes, matrices y herramental">Dados, troqueles, moldes, matrices y herramental</option>
-                                    <option value="Comunicaciones telefónicas">Comunicaciones telefónicas</option>
-                                    <option value="Comunicaciones satelitales">Comunicaciones satelitales</option>
-                                    <option value="Otra maquinaria y equipo">Otra maquinaria y equipo</option>
-                                    <option value="Honorarios médicos, dentales y gastos hospitalarios">Honorarios médicos, dentales y gastos hospitalarios</option>
-                                    <option value="Gastos médicos por incapacidad o discapacidad">Gastos médicos por incapacidad o discapacidad</option>
-                                    <option value="Gastos funerales">Gastos funerales</option>
-                                    <option value="Donativos">Donativos</option>
-                                    <option value="Intereses reales efectivamente pagados por créditos hipotecarios">Intereses reales efectivamente pagados por créditos hipotecarios</option>
-                                    <option value="Aportaciones voluntarias al SAR">Aportaciones voluntarias al SAR</option>
-                                    <option value="Primas por seguros de gastos médicos">Primas por seguros de gastos médicos</option>
-                                    <option value="Gastos de transportación escolar obligatoria">Gastos de transportación escolar obligatoria</option>
-                                    <option value="Depósitos en cuentas para el ahorro">Depósitos en cuentas para el ahorro</option>
-                                    <option value="Pagos por servicios educativos (colegiaturas)">Pagos por servicios educativos (colegiaturas)</option>
-                                    <option value="Sin efectos fiscales">Sin efectos fiscales</option>
-                                    <option value="Pagos">Pagos</option>
-                                    <option value="Nómina">Nómina</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
-                            <div class="col-md-4">
-                                <select class="form-control" v-model="datosFiscales.regimen_fisc">
-                                    <option value="Sueldos y Salarios e Ingresos Asimilados a Salarios">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
-                                    <option value="Arrendamiento">Arrendamiento</option>
-                                    <option value="Régimen e Enajenación o Adquisición de Bienes">Régimen e Enajenación o Adquisición de Bienes</option>
-                                    <option value="Demás ingresos">Demás ingresos</option>
-                                    <option value="Residentes en el Extranjero sin Establecimiento Permanente en México">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
-                                    <option value="Ingresos por Dividendos (socios y accionistas)">Ingresos por Dividendos (socios y accionistas)</option>
-                                    <option value="Personas Físicas con Actividades Empresariales y Profesionales">Personas Físicas con Actividades Empresariales y Profesionales</option>
-                                    <option value="Ingresos por intereses">Ingresos por intereses</option>
-                                    <option value="Régimen de los ingresos por obtención de premios">Régimen de los ingresos por obtención de premios</option>
-                                    <option value="Sin obligaciones fiscales">Sin obligaciones fiscales</option>
-                                    <option value="Incorporación Fiscal">Incorporación Fiscal</option>
-                                    <option value="Régimen de las Actividades Empresariales con ingresos a través de Plataforma">Régimen de las Actividades Empresariales con ingresos a través de Plataforma</option>
-                                    <option value="Régimen Simplificado de Confianza">Régimen Simplificado de Confianza</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">Banco</label>
-                            <div class="col-md-4">
-                                <input type="text"
-                                v-model="datosFiscales.banco_fisc" class="form-control" placeholder="Banco">
-                            </div>
-                            <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
-                            <div class="col-md-4">
-                                <input type="text" v-on:keypress="isNumber($event)" pattern="\d*"
-                                v-model="datosFiscales.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
-                            <div class="col-md-4">
-                                <input type="text"
-                                v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
-                            </div>
-                        </div> -->
-
                         <hr>
 
                         <div class="form-group row">
@@ -2529,7 +2427,8 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 norma247:0,
                 num_licencia:'',
                 foto_predial: '',
-                foto_lic: ''
+                foto_lic: '',
+                planos : []
             }
         },
         computed:{
@@ -3435,6 +3334,25 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.getDatosProyecto(data['fraccionamiento_id']);
             },
 
+            enteradoEsp(id){
+                let me = this;
+                axios.put('/lote/enteradoEsp',{
+                   'id' : id,
+                }).then(function (response){
+                     me.listado = 0;
+                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    Swal({
+                            title: 'Hecho!',
+                            text: '',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             actualizarContrato(){
                let me = this;
 
@@ -3596,6 +3514,8 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
             verContrato(data = []){
                 this.getDatosProyecto(data['fraccionamiento_id']);
                 this.getEcotecnologiasAsignadas(data['id']);
+
+                this.planos = data['planos'];
 
                 this.datosFiscales.email_fisc = data['email_fisc'];
                 this.datosFiscales.tel_fisc = data['tel_fisc'];
@@ -4488,6 +4408,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
     .capsule{
         border-style: solid;
+        border-width: 1px;
         cursor:pointer;
         color: #29363d;
         border-color: #00ADEF;
