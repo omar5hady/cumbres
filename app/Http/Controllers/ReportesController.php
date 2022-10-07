@@ -44,7 +44,7 @@ class ReportesController extends Controller
 
         //Query para obtener las etapas y fraccionamientos
         $proyectos = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto','etapas.id','etapas.fraccionamiento_id');        
+            ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto','etapas.id','etapas.fraccionamiento_id');
         if($proyecto != '') // filtra por proyecto
             $proyectos = $proyectos->where('etapas.fraccionamiento_id','=',$proyecto);
         if($etapa != '')  // filtra por etapa
@@ -53,7 +53,7 @@ class ReportesController extends Controller
         $proyectos = $proyectos->orderBy('fraccionamientos.nombre','asc')
                                 ->orderBy('etapas.num_etapa','asc')->get();
 
-        foreach($proyectos as $index => $proyecto){ // para cada proyecto 
+        foreach($proyectos as $index => $proyecto){ // para cada proyecto
             //Se obtiene el total de lotes dentro del proyecto y la etapa.
             $proyecto->totalLotes = Lote::where('fraccionamiento_id','=',$proyecto->fraccionamiento_id)
                     ->where('etapa_id','=',$proyecto->id);
@@ -80,7 +80,7 @@ class ReportesController extends Controller
                     $firmadasAct = $firmadasAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                 $firmadasAct = $firmadasAct->distinct()->count(); //
 
-            //Query para obtener las ventas con escrituras firmadas antes de las fechas seleccionadas. 
+            //Query para obtener las ventas con escrituras firmadas antes de las fechas seleccionadas.
             $firmadasAnt = Expediente::join('contratos','expedientes.id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -90,7 +90,7 @@ class ReportesController extends Controller
                     ->where('inst_seleccionadas.elegido','=',1)
                     ->where('contratos.fecha','<',$fecha1)
                     ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                    ->where('lotes.etapa_id','=',$proyecto->id);// cuenta los lotes vendidos antes de la fecha1 
+                    ->where('lotes.etapa_id','=',$proyecto->id);// cuenta los lotes vendidos antes de la fecha1
                 if($empresa_terreno != '')//Filtro por empresa de terreno
                     $firmadasAnt = $firmadasAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
                 if($empresa_const != '')//Filtro para empresa constructora
@@ -111,7 +111,7 @@ class ReportesController extends Controller
                 if($empresa_const != '')//Filtro para empresa constructora
                     $contadoAct = $contadoAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                 $contadoAct = $contadoAct->distinct()->count(); // cuenta los lotes con contrato en status firmado entre la fecha1 y fecha2
-            //Query para obtener las ventas con credito directo liquidadas antes de las fechas seleccionadas. 
+            //Query para obtener las ventas con credito directo liquidadas antes de las fechas seleccionadas.
             $contadoAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                     ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
@@ -125,8 +125,8 @@ class ReportesController extends Controller
                     $contadoAnt = $contadoAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
                 if($empresa_terreno != '')//Filtro para empresa constructora
                     $contadoAnt = $contadoAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
-                    $contadoAnt = $contadoAnt->distinct()->count(); //cuenta los lotes con contrato en status firmado antes de la fecha1 
-            
+                    $contadoAnt = $contadoAnt->distinct()->count(); //cuenta los lotes con contrato en status firmado antes de la fecha1
+
             $proyecto->descAnt = $firmadasAnt + $contadoAnt; // Sumatoria individualizadas anteriormente.
             $proyecto->descAct = $firmadasAct + $contadoAct; // Sumatoria individualizadas actualmente.
             $proyecto->totalDescarga = $proyecto->descAnt + $proyecto->descAct; //Sumatoria total individualizadas
@@ -152,7 +152,7 @@ class ReportesController extends Controller
                     ->get();
 
         //Se verifica que si se envia busqueda por fecha para determinar la información a mostrar.
-        if($fecha1 != '') $mostrar = 1; 
+        if($fecha1 != '') $mostrar = 1;
         else $mostrar = 0;
             //Se recorre el arreglo de vendedores
             foreach($vendedores as $index => $vendedor){
@@ -217,7 +217,7 @@ class ReportesController extends Controller
                                 if($fecha1 != '')//Filtro para fecha en que se descarto.
                                     $vendedor->nv = $vendedor->nv->whereBetween('created_at', [$fecha1,$fecha2]);
                             $vendedor->nv = $vendedor->nv->count();
-                
+
                 if($vendedor->clientes != 0)
                     $vendedor->por_venta=(($vendedor->ventas + $vendedor->ventas30 + $vendedor->ventas60 + $vendedor->ventas90)/$vendedor->clientes)*100;
                 if($vendedor->ventas != 0)
@@ -228,7 +228,7 @@ class ReportesController extends Controller
 
         return ['vendedores' => $vendedores,'mostrar' => $mostrar];
     }
-    //Función privada que retorna el numero de contratos generados, 
+    //Función privada que retorna el numero de contratos generados,
     //Recibe como parametro el id del vendedor a buscar, proyecto en el que compro y el rango de fechas
     private function getNumContratos($vendedorId, $fecha1, $fecha2, $fecha3, $fecha4, $proyecto){
         $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -245,7 +245,7 @@ class ReportesController extends Controller
                     $contratos = $contratos->count();
         return $contratos;
     }
-    // Función para retorna los datos para generar el Reporte de Inicio, Termino, Ventas y Cobranza 
+    // Función para retorna los datos para generar el Reporte de Inicio, Termino, Ventas y Cobranza
     public function reporteLotesVentas(Request $request){
         //if(!$request->ajax())return redirect('/');
         $empresa = $request->emp_constructora;
@@ -264,7 +264,7 @@ class ReportesController extends Controller
             if($empresa != '')//Filtro por empresa constructora.
                 $lote->lotes = $lote->lotes->where('lotes.emp_constructora','=', $empresa);
             $lote->lotes = $lote->lotes->count();
-        
+
         /// CONSULTAS PARA TODAS LAS DISPONIBLES (lotes.contrato = 0)
             $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->where('licencias.avance','>',97)
@@ -351,7 +351,7 @@ class ReportesController extends Controller
                     $procVenNoCobrada1 = $procVenNoCobrada1->where('lotes.emp_constructora','=', $empresa);
             $procVenNoCobrada1 = $procVenNoCobrada1->distinct('contratos.id')->count('contratos.id');
 
-        //Contratos con financiamiento bancario con lotes en Proceso vendidas no cobradas          
+        //Contratos con financiamiento bancario con lotes en Proceso vendidas no cobradas
             $procVenNoCobrada2 = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                                         ->join('creditos','contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -437,7 +437,7 @@ class ReportesController extends Controller
                 if($empresa != '')//Filtro para empresa constructora
                     $termVendidaNoCobrada2 = $termVendidaNoCobrada2->where('lotes.emp_constructora','=', $empresa);
             $termVendidaNoCobrada2 = $termVendidaNoCobrada2->distinct('contratos.id')->count('contratos.id');
-            
+
             //Contratos con estatus Pendiente (Sin firma de contrato de compra venta) y sin integrar expediente con lotes terminados
             $termVendidaNoCobrada3 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
                                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -464,7 +464,7 @@ class ReportesController extends Controller
                 if($empresa != '')//Filtro para empresa constructora
                     $termVendidaNoCobrada4 = $termVendidaNoCobrada4->where('lotes.emp_constructora','=', $empresa);
             $termVendidaNoCobrada4 = $termVendidaNoCobrada4->count('contratos.id');
-            
+
             //Casas muestras finalizadas
             $lote->muestraTerminada = Lote::join('licencias','lotes.id','=','licencias.id')
                                         ->where('licencias.avance','>',97)//Avance mayor al 97%
@@ -472,9 +472,9 @@ class ReportesController extends Controller
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId);
                 if($empresa != '')//Filtro por empresa constructora
-                    $lote->muestraTerminada = $lote->muestraTerminada->where('lotes.emp_constructora','=', $empresa);      
+                    $lote->muestraTerminada = $lote->muestraTerminada->where('lotes.emp_constructora','=', $empresa);
             $lote->muestraTerminada = $lote->muestraTerminada->count();
-        
+
             //Casas muestra en proceso de construcción
             $lote->muestraProceso = Lote::join('licencias','lotes.id','=','licencias.id')
                                         ->whereBetween('licencias.avance', [0, 97])//Avance menor al 97%
@@ -507,7 +507,7 @@ class ReportesController extends Controller
         }
 
         return ['lotes'=>$lotes,
-                'total1'=>$total1,        
+                'total1'=>$total1,
                 'total2'=>$total2,
                 'total3'=>$total3,
                 'total4'=>$total4,
@@ -557,7 +557,7 @@ class ReportesController extends Controller
                     'Casa muestra terminada',
                     'Casa muestra en proceso'
                 ]);
-                
+
                 //Formato a encabezado
                 $sheet->cells('A1:K1', function ($cells) {
                     // Set font family
@@ -580,7 +580,7 @@ class ReportesController extends Controller
                     if($lote->lotes != 0){
                         //Llenado del renglon
                         $sheet->row($renglon, [
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->num_etapa,
                             $lote->lotes,
                             $lote->cobradas,
@@ -593,7 +593,7 @@ class ReportesController extends Controller
                             $lote->sinAvanceDisponible,
                             $lote->muestraTerminada,
                             $lote->muestraProceso
-                        ]);	
+                        ]);
                         $renglon ++;
                     }
                 }
@@ -612,7 +612,7 @@ class ReportesController extends Controller
                     $total9,
                     $total10,
                     $total11,
-                    
+
                 ]);
 
                 $renglon = $renglon + 2;
@@ -621,10 +621,10 @@ class ReportesController extends Controller
                 $sheet->cells('A'.$renglon.':'.'M'.$renglon, function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
-    
+
                     // Set font size
                     $cells->setFontSize(11);
-    
+
                     // Set font weight to bold
                     $cells->setFontWeight('bold');
                 });
@@ -703,7 +703,7 @@ class ReportesController extends Controller
                     )
                     ->where('ins.elegido','=',1)
                     ->where('contratos.id','=',$reubicacion->contrato_id)->first();
-            
+
         }
         return $reubicaciones;
     }
@@ -732,7 +732,7 @@ class ReportesController extends Controller
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)//Estatus cancelado
-                        //Busqueda por rango de fechas 
+                        //Busqueda por rango de fechas
                         ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2]);
                         if($empresa != '')//Filtro para empresa constructora
                             $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
@@ -821,7 +821,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A2', function($cell) {
 
@@ -831,7 +831,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->cell('B4', function($cell) {
@@ -840,7 +840,7 @@ class ReportesController extends Controller
                     $cell->setFontFamily('Arial Narrow');
                     $cell->setFontSize(12);
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->row(4,[
@@ -858,7 +858,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    
+
                     'N' => '$#,##0.00',
                     'O' => '$#,##0.00',
                     'P' => '$#,##0.00',
@@ -894,29 +894,29 @@ class ReportesController extends Controller
                         'Cuota de mantenimiento',
                         'Protecciones'
                     ]);
-                    
-    
+
+
                     $sheet->cells('A8:U8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(12);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $cont=9;
-    
-                    
-    
+
+
+
                     foreach($ventas as $index => $lote) {
                         $cont++;
-    
+
                         $paquete = '';
-    
+
                         $status='';
                         if($lote->status == 0)
                             $status = 'Cancelado';
@@ -924,19 +924,19 @@ class ReportesController extends Controller
                             $status = 'Vendida';
                         elseif($lote->status == 3 && $lote->firmado == 1)
                             $status = 'Individualizada';
-    
-                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null)
                             $paquete = '';
                         elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
                             $paquete = 'Promo: '.$lote->descripcion_promocion;
                         elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
                             $paquete = 'Paquete: '.$lote->descripcion_paquete;
-                        else 
+                        else
                             $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
-    
+
                         $sheet->row($index+9, [
                             $index+1,
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->modelo,
@@ -957,9 +957,9 @@ class ReportesController extends Controller
                             $lote->costo_cuota_mant,
                             $lote->costo_protecciones,
                             $status,
-                        ]);	
+                        ]);
                     }
-                
+
                     $num='A8:T' . $cont;
                     $sheet->setBorder($num, 'thin');
 
@@ -980,36 +980,36 @@ class ReportesController extends Controller
                         'Medio Publicitario',
                         'Promoción / Paquete',
                         'Valor de escrituración',
-                        
+
                         'Descuento precio de casa o equipamiento',
                         'Descuento en el terreno',
                         'Costo de Alarma',
                         'Cuota de mantenimiento',
                         'Protecciones'
                     ]);
-                    
-    
+
+
                     $sheet->cells('A8:U8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(12);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $cont=9;
-    
-                    
-    
+
+
+
                     foreach($ventas as $index => $lote) {
                         $cont++;
-    
+
                         $paquete = '';
-    
+
                         $status='';
                         if($lote->status == 0)
                             $status = 'Cancelado';
@@ -1017,19 +1017,19 @@ class ReportesController extends Controller
                             $status = 'Vendida';
                         elseif($lote->status == 3 && $lote->firmado == 1)
                             $status = 'Individualizada';
-    
-                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null)
                             $paquete = '';
                         elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
                             $paquete = 'Promo: '.$lote->descripcion_promocion;
                         elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
                             $paquete = 'Paquete: '.$lote->descripcion_paquete;
-                        else 
+                        else
                             $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
-    
+
                         $sheet->row($index+9, [
                             $index+1,
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->modelo,
@@ -1048,16 +1048,16 @@ class ReportesController extends Controller
                             $lote->costo_cuota_mant,
                             $lote->costo_protecciones,
                             $status,
-                        ]);	
+                        ]);
                     }
-                
+
                     $num='A8:U' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
 
-                
 
-                
+
+
             });
 
             $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo, $empresa){
@@ -1074,7 +1074,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A2', function($cell) {
 
@@ -1084,7 +1084,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->cell('B4', function($cell) {
@@ -1093,7 +1093,7 @@ class ReportesController extends Controller
                     $cell->setFontFamily('Arial Narrow');
                     $cell->setFontSize(12);
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->row(4,[
@@ -1137,41 +1137,41 @@ class ReportesController extends Controller
                         'Valor de terreno',
                         'Valor de construccion'
                     ]);
-                    
-    
+
+
                     $sheet->cells('A8:M8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(12);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $cont=9;
-    
-                    
-    
+
+
+
                     foreach($cancelaciones as $index => $lote) {
                         $cont++;
-    
+
                         $paquete = '';
-                        
-                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null)
                             $paquete = '';
                         elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
                             $paquete = 'Promo: '.$lote->descripcion_promocion;
                         elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
                             $paquete = 'Paquete: '.$lote->descripcion_paquete;
-                        else 
+                        else
                             $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
-    
+
                         $sheet->row($index+9, [
                             $index+1,
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->modelo,
@@ -1187,9 +1187,9 @@ class ReportesController extends Controller
                             $lote->precio_venta,
                             $lote->valor_terreno,
                             $lote->precio_venta - $lote->valor_terreno
-                        ]);	
+                        ]);
                     }
-                
+
                     $num='A8:O' . $cont;
                     $sheet->setBorder($num, 'thin');
 
@@ -1211,43 +1211,43 @@ class ReportesController extends Controller
                         'Medio Publicitario',
                         'Promoción / Paquete',
                         'Valor de escrituración',
-                        
+
                     ]);
-                    
-    
+
+
                     $sheet->cells('A8:M8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(12);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $cont=9;
-    
-                    
-    
+
+
+
                     foreach($cancelaciones as $index => $lote) {
                         $cont++;
-    
+
                         $paquete = '';
-                        
-                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null)
                             $paquete = '';
                         elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
                             $paquete = 'Promo: '.$lote->descripcion_promocion;
                         elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
                             $paquete = 'Paquete: '.$lote->descripcion_paquete;
-                        else 
+                        else
                             $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
-    
+
                         $sheet->row($index+9, [
                             $index+1,
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->modelo,
@@ -1261,15 +1261,15 @@ class ReportesController extends Controller
                             $lote->publicidad,
                             $paquete,
                             $lote->precio_venta,
-                           
-                        ]);	
+
+                        ]);
                     }
-                
+
                     $num='A8:P' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
 
-                
+
             });
 
             $excel->sheet('Reubicaciones', function($sheet) use ($reubicaciones,$periodo, $empresa){
@@ -1286,7 +1286,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A2', function($cell) {
 
@@ -1296,7 +1296,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->cell('B4', function($cell) {
@@ -1305,7 +1305,7 @@ class ReportesController extends Controller
                     $cell->setFontFamily('Arial Narrow');
                     $cell->setFontSize(12);
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->row(4,[
@@ -1323,7 +1323,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    
+
                     'I' => '$#,##0.00'
                 ));
 
@@ -1345,30 +1345,30 @@ class ReportesController extends Controller
                         'Emp Terreno',
                         'Observación'
                     ]);
-                    
-    
+
+
                     $sheet->cells('A8:O8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(12);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $cont=9;
-    
-                    
-    
+
+
+
                     foreach($reubicaciones as $index => $lote) {
-    
+
                         $sheet->row($index+$cont, [
                             $lote->fecha_reubicacion,
                             $lote->contrato_id,
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->etapa,
                             $lote->manzana,
                             $lote->num_lote,
@@ -1381,11 +1381,11 @@ class ReportesController extends Controller
                             $lote->emp_constructora,
                             $lote->emp_terreno,
                             $lote->observacion
-                        ]);	
+                        ]);
                         $sheet->row($index+$cont+1, [
                             $lote->venta->fecha,
                             $lote->venta->id,
-                            $lote->venta->proyecto, 
+                            $lote->venta->proyecto,
                             $lote->venta->etapa,
                             $lote->venta->manzana,
                             $lote->venta->num_lote,
@@ -1398,12 +1398,11 @@ class ReportesController extends Controller
                             $lote->venta->emp_constructora,
                             $lote->venta->emp_terreno,
                             '',
-                        ]);	
+                        ]);
 
                         $sheet->row($index+$cont+2, [
                             '',
                             '',
-                            '', 
                             '',
                             '',
                             '',
@@ -1416,26 +1415,27 @@ class ReportesController extends Controller
                             '',
                             '',
                             '',
-                        ]);	
+                            '',
+                        ]);
 
                         $cont+=2;
                     }
-                
+
                     $num='A8:O' . $cont;
                     $sheet->setBorder($num, 'thin');
 
 
-                
+
             });
-            
+
         }
-        
+
         )->download('xls');
     }
-    //Función para retornar los datos de reporte acumulado 
+    //Función para retornar los datos de reporte acumulado
     //Expedientes, Escrituras e Ingresos de Créditos
     public function reporteAcumulado(Request $request){
-        $opcion = $request->opcion; 
+        $opcion = $request->opcion;
         $mes = $request->mes;
         $anio = $request->anio;
         $fecha1 = $request->fecha1;
@@ -1453,7 +1453,7 @@ class ReportesController extends Controller
                 return ['expCreditos'=>$expCreditos,
                     'expContado'=>$expContado,
                     'pendientes'=>$sinEntregar
-                   
+
                 ];
                 break;
             }
@@ -1534,26 +1534,26 @@ class ReportesController extends Controller
                 ]);
 
                 $cont = 7;
-              
+
                 foreach($expCreditos as $index => $lote) {
                     if($lote->flag == 1 && $lote->mes == 1){
                         $cont++;
 
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->nombre.' '.$lote->apellidos,
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->num_lote,
                             $lote->tipo_credito,
                             $lote->emp_constructora
-                        ]);	
+                        ]);
                     }
                 }
                 $num='A5:H' . $cont;
                 $sheet->setBorder($num, 'thin');
-                
+
             });
 
             $excel->sheet('Expedientes de contado', function($sheet) use ($expContado){
@@ -1569,7 +1569,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(13);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A5', function($cell) {
                     // manipulate the cell
@@ -1578,7 +1578,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(12);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->cell('C6', function($cell) {
@@ -1587,7 +1587,7 @@ class ReportesController extends Controller
                     $cell->setFontSize(11);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
                 $sheet->cells('A7:H7', function ($cells) {
@@ -1606,21 +1606,21 @@ class ReportesController extends Controller
                     '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Emp. Const.'
                 ]);
                 $cont = 7;
-               
+
                 foreach($expContado as $index => $lote) {
                         $cont++;
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->nombre.' '.$lote->apellidos,
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->num_lote,
                             $lote->tipo_credito,
                             $lote->emp_constructora
-                        ]);	
+                        ]);
                 }
-            
+
                 $num='A5:H' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
@@ -1672,22 +1672,22 @@ class ReportesController extends Controller
                     '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Emp. Const.'
                 ]);
                 $cont = 7;
-               
+
                 foreach($sinEntregar as $index => $lote) {
                         $cont++;
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->nombre.' '.$lote->apellidos,
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->num_lote,
                             $lote->tipo_credito,
                             $lote->emp_constructora
-                        ]);	
-              
+                        ]);
+
                 }
-            
+
                 $num='A5:H' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
@@ -1744,20 +1744,20 @@ class ReportesController extends Controller
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $sheet->setColumnFormat(array('G' => '$#,##0.00'));
 
                     $sheet->row(7,[
-                        '', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 
+                        '', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote',
                         'Monto Crédito Neto', 'Fecha', 'Banco','Empresa const', 'Firma de escrituras'
                     ]);
-    
+
                     $cont = 7;
                     foreach($ingresosCobranza as $index => $lote) {
                         $cont++;
                         $sheet->row($cont, [
                             $index+1,
-                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->nombre.' '.$lote->apellidos,
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
@@ -1767,7 +1767,7 @@ class ReportesController extends Controller
                             $lote->banco,
                             $lote->emp_constructora,
                             $lote->escrituras
-                        ]);	
+                        ]);
                     }
 
                     $num='A5:K' . $cont;
@@ -1843,7 +1843,7 @@ class ReportesController extends Controller
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-    
+
                     $sheet->setColumnFormat(array(
                         'H' => '$#,##0.00',
                         'I' => '$#,##0.00',
@@ -1853,14 +1853,14 @@ class ReportesController extends Controller
                     $sheet->row(7,[
                         '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Valor de terreno', 'Valor de casa', 'Fecha de firma de escrituras', 'Valor de escrituración', 'Notaria'
                     ]);
-    
+
                     $cont = 7;
-                  
+
                     foreach($escrituras as $index => $lote) {
                         $cont++;
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->nombre.' '.$lote->apellidos,
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
@@ -1881,13 +1881,13 @@ class ReportesController extends Controller
                     $sheet->row(7,[
                         '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Fecha de firma de escrituras', 'Valor de escrituración', 'Notaria'
                     ]);
-    
+
                     $cont = 7;
                     foreach($escrituras as $index => $lote) {
                         $cont++;
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->nombre.' '.$lote->apellidos,
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
@@ -1896,14 +1896,14 @@ class ReportesController extends Controller
                             $lote->fecha_firma_esc,
                             $lote->valor_escrituras,
                             $lote->notaria
-                        ]);	
+                        ]);
                     }
                     $num='A5:J' . $cont;
                 }
                 $sheet->setBorder($num, 'thin');
             });
 
-            $excel->sheet('Pendientes de escriturar', 
+            $excel->sheet('Pendientes de escriturar',
                 function($sheet) use ($contadoSinEscrituras){
 
                 $sheet->mergeCells('A1:I4');
@@ -1949,17 +1949,17 @@ class ReportesController extends Controller
                 });
 
                 $sheet->row(7,[
-                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa',
                     'Manzana', 'Lote', 'Crédito', 'Fecha de venta', 'Responsable'
                 ]);
 
                 $cont = 7;
-                
+
                 foreach($contadoSinEscrituras as $index => $lote) {
                     $cont++;
                     $sheet->row($cont, [
                         $lote->id,
-                        $lote->nombre.' '.$lote->apellidos, 
+                        $lote->nombre.' '.$lote->apellidos,
                         $lote->proyecto,
                         $lote->num_etapa,
                         $lote->manzana,
@@ -1967,14 +1967,14 @@ class ReportesController extends Controller
                         $lote->tipo_credito.' ('.$lote->institucion.')',
                         $lote->fecha,
                         $lote->nombre_gestor
-                    ]);	
+                    ]);
                 }
-            
+
                 $num='A5:I' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
     //Función privada que retorna los Depositos de Crédito ingresados en el periodo seleccionado
@@ -2084,7 +2084,7 @@ class ReportesController extends Controller
     }
     //Función privada que retorna los Contratos de Crédito Directo con firmas de escrituras en el periodo
     private function getRepExpContado($mes, $anio, $empresa){
-        //Query principal 
+        //Query principal
         $expContado = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -2154,7 +2154,7 @@ class ReportesController extends Controller
             if($empresa != '')//Filtro por empresa constructora
                     $contadoSinEscrituras = $contadoSinEscrituras->where('lotes.emp_constructora','=',$empresa);
             $contadoSinEscrituras = $contadoSinEscrituras->orderBy('contratos.fecha')->get();
-    
+
         return $contadoSinEscrituras;
     }
     //Función privada que obtiene los Ingresos institucionales realizados en el periodo seleccionado.
@@ -2192,7 +2192,7 @@ class ReportesController extends Controller
         $suma3=0;
         //Llamada a la funcion privada que retorna la query que obtiene los lotes necesarios para el reporte
         $lotes = $this->getLotesRecProp($request);
-                  
+
         $lotes2 = $lotes->get();//En otra variable se añaden todos los resultados
         //En la variable principal se almacenan los resultados con paginacion
         $lotes = $lotes->orderBy('proyecto','asc')
@@ -2241,7 +2241,7 @@ class ReportesController extends Controller
     }
     //Función privada para calcular los montos de venta, status y montos cobrados de un lote para el reporte de recursos propios
     private function retornarMontosRP($lote){
-        //Se asigna el valor de venta del lote 
+        //Se asigna el valor de venta del lote
         $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
                                 $lote->obra_extra - $lote->ajuste;
         $lote->porCobrar = 0;
@@ -2265,7 +2265,7 @@ class ReportesController extends Controller
             $lote->status = 1;//se asigna status 1 al lote para indicar la venta
             //Se accede a los pagares para obtener el monto cobrado y lo pendiente por cobrar
             $pagos = Pago_contrato::select(
-                DB::raw("SUM(monto_pago) as sumMontoPago"), 
+                DB::raw("SUM(monto_pago) as sumMontoPago"),
                 DB::raw("SUM(restante) as sumRestante"))
                         ->where('contrato_id','=',$contratos[0]->id)
                         ->get();
@@ -2424,7 +2424,7 @@ class ReportesController extends Controller
 
                         $sheet->row($renglon, [
                             $i,
-                            $lote->proyecto, 
+                            $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
                             $lote->num_lote,
@@ -2435,10 +2435,10 @@ class ReportesController extends Controller
                             $lote->porCobrar,
                             $lote->credito_puente,
 
-                        ]);	
+                        ]);
                         $renglon ++;
                         $i++;
-                    
+
                 }
                 $sheet->row($renglon+1,[
                     '',
@@ -2452,27 +2452,27 @@ class ReportesController extends Controller
                     $suma2,
                     $suma3,
                    ''
-                    
+
                 ]);
 
                 $renglon = $renglon + 1;
-            
+
                 $num='A1:K' . $renglon;
                 $sheet->setBorder($num, 'thin');
 
                 $sheet->cells('A'.$renglon.':'.'K'.$renglon, function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
-    
+
                     // Set font size
                     $cells->setFontSize(11);
-    
+
                     // Set font weight to bold
                     $cells->setFontWeight('bold');
                 });
             });
         }
-        
+
         )->download('xls');
     }
     //Función para generar el reporte de lotes construidos con Credito puente con saldo pendiente
@@ -2544,7 +2544,7 @@ class ReportesController extends Controller
         $lotes = $lotes->orderBy('proyecto','asc')
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('etapas.num_etapa','asc')->get();
-       
+
         //Si hay resultados en la busqueda
         if(sizeOf($lotes)){
             //Se recorren los resultados obtenidos
@@ -2610,7 +2610,7 @@ class ReportesController extends Controller
                         $status = 'Vendida';
                     $sheet->row($renglon, [
                         $i,
-                        $lote->proyecto, 
+                        $lote->proyecto,
                         $lote->num_etapa,
                         $lote->manzana,
                         $lote->num_lote,
@@ -2621,7 +2621,7 @@ class ReportesController extends Controller
                         $lote->porCobrar,
                         $lote->credito_puente,
 
-                    ]);	
+                    ]);
                     $renglon ++;
                     $i++;
                 }
@@ -2646,10 +2646,10 @@ class ReportesController extends Controller
                 $sheet->cells('A'.$renglon.':'.'K'.$renglon, function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
-    
+
                     // Set font size
                     $cells->setFontSize(11);
-    
+
                     // Set font weight to bold
                     $cells->setFontWeight('bold');
                 });
@@ -2689,8 +2689,8 @@ class ReportesController extends Controller
             foreach($indivContado as $index => $individual){
                 array_push($indiv,$individual->id);
             }
-                                        
-        
+
+
         $lotes = Lote::join('fraccionamientos','fraccionamientos.id','=','lotes.fraccionamiento_id')
                         ->join('etapas','etapas.id','=','lotes.etapa_id')
                         ->join('licencias','licencias.id','=','lotes.id')
@@ -2722,7 +2722,7 @@ class ReportesController extends Controller
         if($fraccionamiento != '')//Busqueda por proyecto
            $modelos =  $modelos->where('fraccionamiento_id','=',$fraccionamiento);
         $modelos = $modelos->orderBy('nombre','asc')->distinct()->get();
-        //Query para obtener la fecha de la ultima venta 
+        //Query para obtener la fecha de la ultima venta
         $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
                     ->join('lotes','creditos.lote_id','=','lotes.id')
                     ->select('contratos.fecha')
@@ -2805,7 +2805,7 @@ class ReportesController extends Controller
             }
             $lotesTerm = $lotesTerm->count();
             $lotesProc = $lotesProc->count();
-            
+
             $modelo->total = $lotesProc + $lotesTerm;//Se asigna el total de lotes por modelo
             $modelo->lotesTerm = $lotesTerm;//Se asigna el total de lotes terminados por modelo
             $modelo->lotesProc = $lotesProc;//Se asigna el total de lotes habilitados por modelo
@@ -2817,7 +2817,7 @@ class ReportesController extends Controller
                             ->where('contratos.status','=',3)
                             ->where('modelos.nombre','=',$modelo->nombre);
                             if($fraccionamiento != '')//Filtro por proyecto
-                                $contratosPeriodo=$contratosPeriodo->where('lotes.fraccionamiento_id','=',$fraccionamiento); 
+                                $contratosPeriodo=$contratosPeriodo->where('lotes.fraccionamiento_id','=',$fraccionamiento);
                             if($etapa != '')//Filtro por etapa
                                 $contratosPeriodo=$contratosPeriodo->where('lotes.etapa_id','=',$etapa);
                             if($fechaIni != '' && $fechaFin != '')//Filtro para fecha de venta
@@ -2939,7 +2939,7 @@ class ReportesController extends Controller
         }
 
         return [
-            'modelos'=>$modelos, 
+            'modelos'=>$modelos,
             'diferencia'=>$diff_in_months,
             ];
 
@@ -2957,7 +2957,7 @@ class ReportesController extends Controller
                     $sheet->row(1, [
                         'Modelo', 'Total', 'Individualizadas',
                         'Vendidas proceso', 'Vendidas terminadas',
-                        'Vendidas', 'Total vendidas', 'Disponible proceso', 
+                        'Vendidas', 'Total vendidas', 'Disponible proceso',
                         'Disponible terminadas', 'Disponibles', 'Inventario',
                         'Promedio mensual'
                     ]);
@@ -2996,7 +2996,7 @@ class ReportesController extends Controller
                             $modelo->disponible + $modelo->vendida,
                             $prom
 
-                        ]);	
+                        ]);
                     }
                     $num='A1:L' . $cont;
                     $sheet->setBorder($num, 'thin');
@@ -3060,7 +3060,7 @@ class ReportesController extends Controller
                 $contratista->cont=0;//Se inicializa en 0 el contador por contratista
                 foreach($resumen1 as $index => $detalle){//Se recorren los resultados de las solicitudes de detalles
                     if($detalle->contratista_id == $contratista->id)
-                        //Se aumenta el valor si el detalle coincide con el contratista 
+                        //Se aumenta el valor si el detalle coincide con el contratista
                         $contratista->cont++;
                 }
             }
@@ -3071,12 +3071,12 @@ class ReportesController extends Controller
                 $detalle->cont=0;//Se inicializa en 0 el contador del detalle
                 foreach($resumen1 as $index => $res){
                     if($res->detalles == $detalle->detalles)
-                        //Se aumenta el valor si el detalle de la solicitud coincide con el catalogo 
+                        //Se aumenta el valor si el detalle de la solicitud coincide con el catalogo
                         $detalle->cont++;
                 }
             }
-            
-        
+
+
         return ['contratistas'=>$contratistas,
                 'resumen'=>$resumen,
                 'pagination' => [
@@ -3095,8 +3095,8 @@ class ReportesController extends Controller
         //Query para obtener todos los contratistas registrados
         $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();
         //Llamada a la funcion privada que retorna la query principal para la obtencion de solicitudes
-        $resumen = $this->getResumenDetalles($request);     
-        //En la variable se almacenan todas las solicitudes    
+        $resumen = $this->getResumenDetalles($request);
+        //En la variable se almacenan todas las solicitudes
         $resumen = $resumen->orderBy('solic_detalles.status','desc')->get();
         //llamada a la funcion privada que retorna todo el catalogo de detalles (general/subconcepto)
         $detalles = $this->getCatalogoDetalles();
@@ -3107,7 +3107,7 @@ class ReportesController extends Controller
                 $contratista->cont=0;//Se inicializa en 0 el contador por contratista
                 foreach($resumen as $index => $detalle){//Se recorren los resultados de las solicitudes de detalles
                     if($detalle->contratista_id == $contratista->id)
-                        //Se aumenta el valor si el detalle coincide con el contratista 
+                        //Se aumenta el valor si el detalle coincide con el contratista
                         $contratista->cont++;
                 }
             }
@@ -3118,7 +3118,7 @@ class ReportesController extends Controller
                 $detalle->cont=0;//Se inicializa en 0 el contador del detalle
                 foreach($resumen as $index => $res){
                     if($res->detalles == $detalle->detalles)
-                        //Se aumenta el valor si el detalle de la solicitud coincide con el catalogo 
+                        //Se aumenta el valor si el detalle de la solicitud coincide con el catalogo
                         $detalle->cont++;
                 }
             }
@@ -3174,7 +3174,7 @@ class ReportesController extends Controller
                     'Contratista',
                     'Status'
                 ]);
-                
+
 
                 $sheet->cells('A5:J5', function ($cells) {
                     // Set font family
@@ -3202,7 +3202,7 @@ class ReportesController extends Controller
 
                     $sheet->row($index+6, [
                         $index+1,
-                        $lote->proyecto, 
+                        $lote->proyecto,
                         $lote->num_etapa,
                         $lote->manzana,
                         $lote->num_lote,
@@ -3211,9 +3211,9 @@ class ReportesController extends Controller
                         $lote->detalles.'/ '.$lote->detalle,
                         $lote->nombre,
                         $status,
-                    ]);	
+                    ]);
                 }
-            
+
                 $num='A5:J' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
@@ -3226,7 +3226,7 @@ class ReportesController extends Controller
                     'Contratista',
                     ''
                 ]);
-                
+
                 $sheet->cells('A1:E1', function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
@@ -3240,16 +3240,16 @@ class ReportesController extends Controller
                 $cont=2;
                 $cont1=2;
 
-                foreach($detalles as $index => $lote) {    
+                foreach($detalles as $index => $lote) {
                     if($lote->cont!=0){
                         $sheet->row($cont, [
-                            $lote->detalles, 
+                            $lote->detalles,
                             $lote->cont,
-                        ]);	
+                        ]);
                         $cont++;
                     }
                 }
-            
+
                 $num='A1:B' . $cont;
                 $sheet->setBorder($num, 'thin');
 
@@ -3263,11 +3263,11 @@ class ReportesController extends Controller
                         $cont1++;
                     }
                 }
-            
+
                 $num='D1:E' . $cont1;
                 $sheet->setBorder($num, 'thin');
             });
-        })->download('xls');    
+        })->download('xls');
     }
     //Funcion para subir el archivo de escrituras para el expediente del cotnrato
     public function formSubmitEscrituras(Request $request, $id)
@@ -3362,7 +3362,7 @@ class ReportesController extends Controller
                 $entrega = $entrega->where('lotes.fraccionamiento_id','=',$request->proyecto);
             if($request->etapa != '')
                 $entrega = $entrega->where('lotes.etapa_id','=',$request->etapa);
-            
+
         return $entrega;
     }
     //Funcion privada que retorna la query con todas las ventas escrituradas sin entregar
@@ -3491,7 +3491,7 @@ class ReportesController extends Controller
                         array_push($cabecera1, $proyecto->proyecto);
                         array_push($cabecera2, $etapa->num_etapa);
                     }
-                
+
                 $ancho = 'B';
                 switch($num){
                     case 1:{
@@ -3612,7 +3612,7 @@ class ReportesController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-    
+
                     $cont = 3;
 
                     foreach($empresas as $index => $empresa) {
@@ -3622,8 +3622,8 @@ class ReportesController extends Controller
                             foreach($proyecto->etapas as $index => $etapa)
                                 array_push($datos, $empresa[$etapa->num_etapa.'-'.$proyecto->proyecto]);
 
-                        $sheet->row($cont, $datos);	
-                        
+                        $sheet->row($cont, $datos);
+
                     }
 
                 $num='A1:'.$ancho . $cont;
@@ -3663,9 +3663,9 @@ class ReportesController extends Controller
                 $cabecera1 = ['Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Modelo',
                     'Fecha de compra', 'Empresa', 'Direccion'
                 ];
-                
+
                 $ancho = 'J';
-                
+
                 $sheet->row(1,$cabecera1);
 
                 //$sheet->mergeCells('A1:'.$ancho.'1');
@@ -3681,12 +3681,12 @@ class ReportesController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-    
+
                 $cont = 2;
 
-                foreach($ventasEmp as $index => $venta) {    
+                foreach($ventasEmp as $index => $venta) {
                     $sheet->row($cont, [
-                        $venta->nombre.' '.$venta->apellidos, 
+                        $venta->nombre.' '.$venta->apellidos,
                         $venta->fraccionamiento,
                         $venta->etapa,
                         $venta->manzana,
@@ -3695,16 +3695,140 @@ class ReportesController extends Controller
                         $venta->fecha_status,
                         $venta->empresa,
                         $venta->direccion_empresa.' Col.'.$venta->colonia_empresa,
-                    ]);	
+                    ]);
                     $cont++;
                 }
-                
+
                 $num='A1:'.$ancho . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
         )->download('xls');
-        
+
     }
-    
+
+    public function repVentasInventarios(Request $request){
+        $inventarios = array(
+                'proceso' => $this->getLotesDisponibles($request->emp_constructora,90,0),
+                'terminadas' => $this->getLotesDisponibles($request->emp_constructora,95,0),
+                'muestra' => $this->getLotesDisponibles($request->emp_constructora,0,1,1),
+        );
+
+        $noCobradas = array(
+            'proceso' => $this->getVendidasSinCobrar(90,$request->emp_constructora),
+            'terminadas' => $this->getVendidasSinCobrar(95,$request->emp_constructora),
+        );
+
+        $dispVentas = array(
+            'proceso' => $this->getLotesDisponibles($request->emp_constructora,90,0,1),
+            'terminadas' => $this->getLotesDisponibles($request->emp_constructora,95,0,1),
+        );
+
+        return[
+            'inventarios' => $inventarios,
+            'noCobradas' => $noCobradas,
+            'dispVentas' => $dispVentas,
+        ];
+
+    }
+
+
+    private function getLotesDisponibles($empresa,$avance,$muestra,$habilitado=0){
+        $lotes = Lote::join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                ->join('etapas as e','lotes.etapa_id','=','e.id')
+                ->join('modelos as m','lotes.modelo_id','=','m.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->select('f.nombre as proyecto','e.num_etapa as etapa','m.nombre as modelo',
+                    'lotes.manzana','lotes.num_lote','lotes.sublote','lotes.casa_muestra', 'licencias.avance',
+                    'lotes.id'
+                )
+                ->where('lotes.contrato','=',0)
+                ->where('lotes.habilitado','=',$habilitado)
+                ->where('lotes.casa_muestra','=',$muestra);
+
+            if($muestra == 0){
+                if($avance == 95)
+                    $lotes = $lotes->where('licencias.avance','>',97);
+                else
+                    $lotes = $lotes->where('licencias.avance','<',97);
+            }
+
+            if($empresa != '')//Filtro para empresa constructora
+                $lotes = $lotes->where('lotes.emp_constructora','=', $empresa);
+
+            $lotes = $lotes->paginate(20);
+
+            return $lotes;
+
+    }
+
+    private function getVendidasSinCobrar($avance,$empresa){
+
+        $lotes = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+            ->join('etapas as e','lotes.etapa_id','=','e.id')
+            ->join('modelos as m','lotes.modelo_id','=','m.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->select('f.nombre as proyecto','e.num_etapa as etapa','m.nombre as modelo',
+                'lotes.manzana','lotes.num_lote','lotes.sublote','lotes.casa_muestra', 'licencias.avance',
+                'lotes.id'
+            )
+            ->whereIn('contratos.status',[1,3])
+            ->where('inst_seleccionadas.elegido', '=', '1')
+            ->whereNotIn('lotes.id',$this->getContadoIndividualizados($empresa))
+            ->whereNotIn('lotes.id',$this->getCreditoIndividualizados($empresa));
+
+            if($empresa != '')//Filtro para empresa constructora
+                $lotes = $lotes->where('lotes.emp_constructora','=', $empresa);
+
+            if($avance == 95)
+                $lotes = $lotes->where('licencias.avance','>',97);
+            else
+                $lotes = $lotes->where('licencias.avance','<',97);
+
+            return $lotes->paginate(20);
+
+    }
+
+    private function getContadoIndividualizados($empresa){
+        // CONSULTAS PARA LOS CONTRATOS COBRADOS (Créditos Directos individualizados)
+        $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                ->join('creditos','contratos.id', '=', 'creditos.id')
+                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->select('lotes.id')
+                ->where('contratos.status','=',3)
+                ->where('expedientes.liquidado','=',1)
+                ->where('inst_seleccionadas.elegido', '=', '1')
+                ->where('lotes.casa_muestra','=',0)
+                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo');
+        if($empresa != '')//Filtro para empresa constructora
+        $indivContado = $indivContado->where('lotes.emp_constructora','=', $empresa);
+        $indivContado = $indivContado->distinct('contratos.id')->get();
+
+        return $indivContado;
+    }
+
+    private function getCreditoIndividualizados($empresa){
+         // CONSULTAS PARA LOS CONTRATOS INDIVIDUALIZADOs (Ventas por financiamiento bancario)
+         $indivCredito = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                ->join('creditos','contratos.id', '=', 'creditos.id')
+                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->select('lotes.id')
+                ->where('contratos.status','=',3)
+                ->where('expedientes.fecha_firma_esc','!=',NULL)
+                ->where('inst_seleccionadas.elegido', '=', '1')
+                ->where('lotes.casa_muestra','=',0)
+                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+        if($empresa != '')//Filtro para empresa constructora
+        $indivCredito = $indivCredito->where('lotes.emp_constructora','=', $empresa);
+        $indivCredito = $indivCredito->distinct('contratos.id')->get();
+
+        return $indivCredito;
+    }
+
+
 }

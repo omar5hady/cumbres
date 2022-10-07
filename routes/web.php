@@ -753,6 +753,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reprotes/excelEscrituras','ReportesController@excelEscrituras');
             Route::get('/reprotes/excelIngresos','ReportesController@excelIngresos');
 
+            Route::get('/reportes/ventas/repVentasInventarios','ReportesController@repVentasInventarios');
+
             Route::get('/reprotes/reporteRecursosPropios','ReportesController@reporteRecursosPropios');
             Route::get('/reprotes/excelReporteRecursosPropios','ReportesController@excelRecursosPropios');
 
@@ -771,6 +773,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/prospectos','DigitalLeadController@reportesProspectos');
             Route::get('/reportes/reporteAsesoresClasificacion','DigitalLeadController@reporteAsesoresClasificacion');
             Route::get('/excel/reportes/prospectos','DigitalLeadController@excelReportesProspectos');
+
+            Route::get('/leads/obsPrueba','DigitalLeadController@pruebaObs');
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');

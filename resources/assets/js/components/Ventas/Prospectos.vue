@@ -398,7 +398,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">No. INE</label>
-                                        <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
+                                        <input type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
                                     </div>
                                 </div>
 
@@ -765,7 +765,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">No. INE</label>
-                                        <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
+                                        <input type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
                                     </div>
                                 </div>
 
@@ -1084,7 +1084,7 @@
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">INE</label>
                         <div class="col-md-4">
-                            <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  v-model="num_ine_coa" placeholder="No. INE">
+                            <input type="text" maxlength="13" style="text-transform:uppercase" class="form-control"  v-model="num_ine_coa" placeholder="No. INE">
                         </div>
                         <label class="col-md-2 form-control-label" for="text-input">Pasaporte </label>
                         <div class="col-md-3">

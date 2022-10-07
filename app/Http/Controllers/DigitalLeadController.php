@@ -1090,37 +1090,34 @@ class DigitalLeadController extends Controller
         ->join('vendedores','personal.id','vendedores.id')
         ->join('personal as gerente','vendedores.supervisor_id','=','gerente.id')
         ->select('personal.id',
-                DB::raw("CONCAT(gerente.nombre,' ',gerente.apellidos) AS gerente"),
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+        DB::raw("CONCAT(gerente.nombre,' ',gerente.apellidos) AS gerente"),
+        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
         ->where('vendedores.tipo','=',$tipo)
         ->where('users.condicion','=',1)
-        ->whereNotIn('users.usuario',['mayra_jaz','yasmin_ventas','e_preciado'])
-        ->where('users.usuario','!=','descartado')
-        ->where('users.usuario','!=','oficina')
+        ->whereNotIn('users.usuario',['mayra_jaz','yasmin_ventas','e_preciado','descartado', 'oficina'])
         ->orderBy('vendedores.supervisor_id','asc')
         ->orderBy('vendedores.cont_leads','asc')
         ->orderBy('vendedor','asc')->get();
     }
 
     private function getreportesProspectos($tipo){
-            // Se obtienen todos los asesores internos registrados en el sistema
-            $vendedores = $this->getAsesores($tipo);
-                $varGerente = '';
-                foreach ($vendedores as $index => $vendedor) {
+        // Se obtienen todos los asesores internos registrados en el sistema
+        $vendedores = $this->getAsesores($tipo);
+        $varGerente = '';
+        foreach ($vendedores as $index => $vendedor) {
+            if(strcmp($vendedor->gerente, $varGerente) === 0){
+                $vendedor->gerente = '';
+            }
+            else{
+                $varGerente = $vendedor->gerente;
+            }
 
-                    if($varGerente != $vendedor->gerente ){
-                        $varGerente = $vendedor->gerente;
-                    }
-                    else{
-                        $vendedor->gerente = '';
-                    }
-
-                    $vendedor->total = 0; // Total de prospectos por asesor.
-                    $vendedor->reg = 0; // Prospectos con atención regular.
-                    $vendedor->bd7 = 0; // Prospectos con mas de 7 dias sin atencion y mens de 15 dias.
-                    $vendedor->bd15 = 0; // Prospectos con mas de 15 dias de atención.
-                    $vendedor->dif = 0;
-                    $vendedor->dif7 = 0;
+            $vendedor->total = 0; // Total de prospectos por asesor.
+            $vendedor->reg = 0; // Prospectos con atención regular.
+            $vendedor->bd7 = 0; // Prospectos con mas de 7 dias sin atencion y mens de 15 dias.
+            $vendedor->bd15 = 0; // Prospectos con mas de 15 dias de atención.
+            $vendedor->dif = 0;
+            $vendedor->dif7 = 0;
                     $vendedor->dif15 = 0;
                     $vendedor->ger = 0;
                     $vendedor->ger7 = 0;
@@ -1172,7 +1169,9 @@ class DigitalLeadController extends Controller
 
                     if($vendedor->total == 0){
                         unset($vendedores[$index]);
+                        $varGerente='';
                     }
+
                 }
 
 
@@ -1251,6 +1250,23 @@ class DigitalLeadController extends Controller
             }
             )->download('xls');
 
+    }
+
+    public function pruebaObs(Request $request){
+        $obs = Obs_lead::join('digital_leads','obs_leads.lead_id','digital_leads.id')
+            ->select('obs_leads.lead_id','obs_leads.created_at')
+            ->where('comentario','like', '%Aviso!, se le ha asignado un nuevo lead%')
+            ->where('digital_leads.vendedor_asign','!=',NULL)->get();
+
+        foreach($obs as $ob){
+            $ob->vendedor = User::join('digital_leads','users.id','=','digital_leads.vendedor_asign')
+                        ->select('usuario')->where('digital_leads.id','=',$ob->lead_id)
+                        ->first();
+
+            $ob->atencion = Obs_lead::select('created_at')->where('usuario','=',$ob->vendedor->usuario)->first();
+        }
+
+        return $obs;
     }
 
 
