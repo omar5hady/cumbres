@@ -346,7 +346,7 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',97);//avance menor al 97%
+                                         ->whereBetween('licencias.avance', [1, 97]);//avance menor al 97%
                 if($empresa != '')//Filtro para empresa constructora
                     $procVenNoCobrada1 = $procVenNoCobrada1->where('lotes.emp_constructora','=', $empresa);
             $procVenNoCobrada1 = $procVenNoCobrada1->distinct('contratos.id')->count('contratos.id');
@@ -365,7 +365,7 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',97);//avance menor al 97%
+                                         ->whereBetween('licencias.avance', [1, 97]);//avance menor al 97%
                 if($empresa != '')//Filtro para empresa constructora
                     $procVenNoCobrada2 = $procVenNoCobrada2->where('lotes.emp_constructora','=', $empresa);
             $procVenNoCobrada2 = $procVenNoCobrada2->distinct('contratos.id')->count('contratos.id');
@@ -378,7 +378,7 @@ class ReportesController extends Controller
                                         ->where('lotes.casa_muestra','=',0)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',97);//avance menor al 97%
+                                         ->whereBetween('licencias.avance', [1, 97]);//avance menor al 97%
                 if($empresa != '')//Filtro para empresa constructora
                     $procVenNoCobrada3 = $procVenNoCobrada3->where('lotes.emp_constructora','=', $empresa);
             $procVenNoCobrada3 = $procVenNoCobrada3->count('contratos.id');
@@ -392,7 +392,7 @@ class ReportesController extends Controller
                                         ->where('lotes.casa_muestra','=',0)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',97);//Avance menor al 97%
+                                         ->whereBetween('licencias.avance', [1, 97]);//Avance menor al 97%
                 if($empresa != '')//Filtro para empresa constructora
                     $procVenNoCobrada4 = $procVenNoCobrada4->where('lotes.emp_constructora','=', $empresa);
             $procVenNoCobrada4 = $procVenNoCobrada4->count('contratos.id');
@@ -401,7 +401,7 @@ class ReportesController extends Controller
             $lote->procVendidaNoCobrada = $procVenNoCobrada2 + $procVenNoCobrada1  + $procVenNoCobrada3 + $procVenNoCobrada4;
 
             //Contratos por venta Directa con lotes terminados vendidas no cobradas
-            $termVendidaNoCobrada1 = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+            $termVendidaNoCobrada1 = Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                         ->join('creditos','contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -420,7 +420,7 @@ class ReportesController extends Controller
             $termVendidaNoCobrada1 = $termVendidaNoCobrada1->distinct('contratos.id')->count('contratos.id');
 
             //Contratos por venta con financiamiento bancario con lotes terminados vendidas no cobradas
-            $termVendidaNoCobrada2 = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+            $termVendidaNoCobrada2 = Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                         ->join('creditos','contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -446,6 +446,7 @@ class ReportesController extends Controller
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
                                         ->where('licencias.avance','>',97)//Avance mayor al 97%
                                         ->where('lotes.casa_muestra','=',0)
+                                        ->where('contratos.integracion','=',0)
                                         ->where('contratos.status','=',1);//Estatus pendiente
                 if($empresa != '')//Filtro para empresa consturctora
                     $termVendidaNoCobrada3 = $termVendidaNoCobrada3->where('lotes.emp_constructora','=', $empresa);
@@ -3750,7 +3751,7 @@ class ReportesController extends Controller
                 if($avance == 95)
                     $lotes = $lotes->where('licencias.avance','>',97);
                 else
-                    $lotes = $lotes->where('licencias.avance','<',97);
+                    $lotes = $lotes->whereBetween('licencias.avance', [1, 97]);
             }
 
             if($empresa != '')//Filtro para empresa constructora
@@ -3786,7 +3787,7 @@ class ReportesController extends Controller
             if($avance == 95)
                 $lotes = $lotes->where('licencias.avance','>',97);
             else
-                $lotes = $lotes->where('licencias.avance','<',97);
+                $lotes = $lotes->whereBetween('licencias.avance', [1, 97]);
 
             return $lotes->paginate(20);
 

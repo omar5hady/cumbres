@@ -7,12 +7,15 @@ use App\Modelo;
 use App\Etapa;
 use App\Contrato;
 use App\Licencia;
+use App\DocProyecto;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Excel;
 use File;
 use Auth;
+
+use App\Http\Resources\DocProyectoResource;
 
 class LicenciasController extends Controller
 {
@@ -108,6 +111,10 @@ class LicenciasController extends Controller
        //Llamada a la funcion privada que retorla la query principal
        $licencias = $this->getLicencias($request);
        $licencias = $licencias->paginate(16);
+
+       foreach($licencias as $licencia){
+            $licencia->archivos = DocProyectoResource::collection(DocProyecto::where('lote_id','=',$licencia->id)->get());
+       }
 
         return [
             'pagination' => [
@@ -731,47 +738,29 @@ class LicenciasController extends Controller
     }
 
     //funciones para carga y descarga de la licencia
-    public function formSubmit(Request $request, $id)
+    public function formSubmit(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $ids = explode(",", $request->ids);
         $fecha = Carbon::now();
-        $licenciaAnterior = Licencia::select('foto_lic', 'id')
-            ->where('id', '=', $id)
-            ->get();
 
-        if ($licenciaAnterior->isEmpty() == 1) {
-            $fileName = uniqid() . '.' . $request->foto_lic->getClientOriginalExtension();
-            $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
+        $fileName = uniqid() . '.' . $request->foto_lic->getClientOriginalExtension();
+        $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
 
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $licencias = Licencia::findOrFail($request->id);
+        if ($moved) {
+            foreach($ids as $id){
+                $licencias = Licencia::findOrFail($id);
+                if($licencias->foto_lic != NULL){
+                    $pathAnterior = public_path() . '/files/licencias/' . $licencias->foto_lic;
+                    File::delete($pathAnterior);
+                }
                 $licencias->foto_lic = $fileName;
-                $licencias->id = $id;
                 $licencias->fecha_licencia = $fecha;
                 $licencias->save(); //Insert
-
             }
-            return back();
-        } else {
-            $pathAnterior = public_path() . '/files/licencias/' . $licenciaAnterior[0]->foto_lic;
-            File::delete($pathAnterior);
-
-            $fileName = uniqid() . '.' . $request->foto_lic->getClientOriginalExtension();
-            $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
-
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $licencias = Licencia::findOrFail($request->id);
-                $licencias->foto_lic = $fileName;
-                $licencias->id = $id;
-                $licencias->fecha_licencia = $fecha;
-                $licencias->save(); //Insert
-
-            }
-            return back();
         }
     }
+
     public function downloadFile($fileName)
     {
 
@@ -830,48 +819,28 @@ class LicenciasController extends Controller
     }
 
     //funciones para carga y descarga de predial
-    public function formSubmitPredial(Request $request, $id)
+    public function formSubmitPredial(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $ids = explode(",", $request->ids);
         $fecha = Carbon::now();
 
-        $predialAnterior = Licencia::select('foto_predial', 'id')
-            ->where('id', '=', $id)
-            ->get();
-        if ($predialAnterior->isEmpty() == 1) {
-            $fileName = uniqid() . time() . '.' . $request->foto_predial->getClientOriginalExtension();
-            $moved =  $request->foto_predial->move(public_path('/files/prediales'), $fileName);
+        $fileName = uniqid() . time() . '.' . $request->foto_predial->getClientOriginalExtension();
+        $moved =  $request->foto_predial->move(public_path('/files/prediales'), $fileName);
 
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $predial = Licencia::findOrFail($request->id);
+        if ($moved) {
+            foreach($ids as $id){
+                $predial = Licencia::findOrFail($id);
+                if($predial->foto_predial != NULL){
+                    $pathAnterior = public_path() . '/files/prediales/' . $predial->foto_predial;
+                    File::delete($pathAnterior);
+                }
                 $predial->foto_predial = $fileName;
-                $predial->id = $id;
                 $predial->fecha_predial = $fecha;
                 $predial->save(); //Insert
-
             }
-
-            return back();
-        } else {
-            $pathAnterior = public_path() . '/files/prediales/' . $predialAnterior[0]->foto_predial;
-            File::delete($pathAnterior);
-
-            $fileName = uniqid() . time() . '.' . $request->foto_predial->getClientOriginalExtension();
-            $moved =  $request->foto_predial->move(public_path('/files/prediales'), $fileName);
-
-            if ($moved) {
-                if (!$request->ajax()) return redirect('/');
-                $predial = Licencia::findOrFail($request->id);
-                $predial->foto_predial = $fileName;
-                $predial->id = $id;
-                $predial->fecha_predial = $fecha;
-                $predial->save(); //Insert
-
-            }
-
-            return back();
         }
+
     }
     public function downloadFilePredial($fileName)
     {

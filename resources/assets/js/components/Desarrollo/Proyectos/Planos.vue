@@ -241,7 +241,14 @@
                                                 <div class="form-group row">
                                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de plano</label>
                                                     <div class="col-md-9">
-                                                        <input type="text" v-model="newArchivo.tipo" class="form-control" placeholder="OBRA EXTRA / PLANO DE LICENCIA / ETC.">
+                                                        <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Plano">
+                                                        <datalist id="categoria">
+                                                            <option value="OBRA EXTRA">OBRA EXTRA</option>
+                                                            <option value="LICENCIA">LICENCIA</option>
+                                                            <option value="TERRENO">TERRENO</option>
+                                                            <option value="LOCALIZACIÓN Y UBICACION">LOCALIZACIÓN Y UBICACION</option>
+                                                            <option value="URBANIZACIÓN">URBANIZACIÓN</option>
+                                                        </datalist>
                                                     </div>
                                                 </div>
 
@@ -274,7 +281,7 @@
                 >
                     <template v-slot:body>
                         <div class="col-md-12">
-                            <TableComponent :cabecera="['Archivo','Tipo','Descripcion','']">
+                            <TableComponent :cabecera="['Tipo','Descripcion','']">
                                 <template v-slot:tbody>
                                     <tr v-for="p in planos" :key="p.id">
                                         <td class="td2" v-text="p.tipo"></td>

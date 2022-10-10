@@ -15,13 +15,16 @@
                         <i class="icon-pencil"></i>&nbsp;Descargar resumen
                     </a>
                     <!---->
-                    <button class="btn btn-info btn-sm" @click="abrirModal('asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
-                        <i class="icon-pencil"></i>&nbsp;Asignar en masa
-                    </button>
+                    <template v-if="allLic.length > 0 && rolId != '5'">
+                        <button class="btn btn-info btn-sm" @click="abrirModal('asignarMasa')">
+                            <i class="icon-pencil"></i>&nbsp;Asignar en masa
+                        </button>
 
-                    <button class="btn btn-dark btn-sm" @click="abrirModal('asignarLicencias')"  v-if="allLic.length > 0 && rolId != '5'" >
-                        <i class="fa fa-drivers-license-o "></i>&nbsp;Asignar licencias
-                    </button>
+                        <button title="Carga de archivos" type="button" @click="abrirModal('subirArchivo')"
+                            class="btn btn-default btn-sm">
+                            <i class="icon-cloud-upload"></i>Carga de archivos
+                        </button>
+                    </template>
 
 
                 </div>
@@ -161,15 +164,12 @@
 
                                 <td v-if="rolId != '5'" class="td2" >
                                     <button title="Editar" type="button" @click="abrirModal('actualizar',licencias)" class="btn btn-warning btn-sm">
-                                    <i class="icon-pencil"></i>
+                                        <i class="icon-pencil"></i>
                                     </button>
-                                    <button title="Subir foto y predial" type="button" @click="abrirModal('subirArchivo',licencias)" class="btn btn-default btn-sm">
-                                    <i class="icon-cloud-upload"></i>
+                                    <button title="Ver archivos" v-if="licencias.archivos.length > 0 || licencias.foto_predial"
+                                        type="button" @click="abrirModal('verFiles',licencias)" class="btn btn-primary btn-sm">
+                                        <i class="icon-eye"></i>
                                     </button>
-                                    <a title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
-                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                    </a>
-
                                 </td>
                                 <td class="td2">
                                     <a href="#" v-text="licencias.proyecto"></a>
@@ -350,49 +350,85 @@
             @closeModal="cerrarModal()"
         >
             <template v-slot:body>
-                <div class="form-group row" v-if="tipoAccion == 1">
-                    <label class="col-md-3 form-control-label" for="text-input">DRO</label>
-                    <div class="col-md-6">
-                        <select class="form-control" v-model="perito_dro">
-                            <option value="0">Seleccione</option>
-                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
-                            <option value="23679">Raúl Palos López</option>
-                            <option value="29836">Juan Antonio De La Torre</option>
-                        </select>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==1 }" @click="tipoAccion = 1">DRO</a></li>
+                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==2 }" @click="tipoAccion = 2">Licencias</a></li>
+                </ul>
+                <template v-if="tipoAccion == 1">
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">DRO</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="perito_dro">
+                                <option value="0">Seleccione</option>
+                                <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                                <option value="23679">Raúl Palos López</option>
+                                <option value="29836">Juan Antonio De La Torre</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <br><br>
-                <div class="form-group row" v-if="tipoAccion == 1">
-                    <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
-                    <div class="col-md-6">
-                        <input type="date" v-model="f_planos_obra" class="form-control" >
+                    <br><br>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="f_planos_obra" class="form-control" >
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row" v-if="tipoAccion == 2">
-                    <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
-                    <div class="col-md-6">
-                        <input type="date" v-model="f_ingreso" class="form-control" >
+                </template>
+                <template v-if="tipoAccion == 2">
+                    <div class="form-group row" v-if="tipoAccion == 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="f_ingreso" class="form-control" >
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row" v-if="tipoAccion == 2">
-                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
-                    <div class="col-md-6">
-                        <input type="date" v-model="f_salida" class="form-control" >
+                    <div class="form-group row" v-if="tipoAccion == 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                        <div class="col-md-6">
+                            <input type="date" v-model="f_salida" class="form-control" >
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row" v-if="tipoAccion == 2">
-                    <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
-                    <div class="col-md-6">
-                        <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
+                    <div class="form-group row" v-if="tipoAccion == 2">
+                        <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
+                        <div class="col-md-6">
+                            <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
+                        </div>
                     </div>
-                </div>
+                </template>
             </template>
             <template v-slot:buttons-footer>
-                <button type="button"  class="btn btn-primary" @click="actualizarMasa()" v-if="tipoAccion == 1">Actualizar</button>
-                <button type="button"  class="btn btn-primary" @click="updateMasaLicencias()" v-if="tipoAccion == 2">Actualizar</button>
+                <button type="button"  class="btn btn-primary" @click="actualizarMasa()" v-if="tipoAccion == 1">Actualizar DRO</button>
+                <button type="button"  class="btn btn-primary" @click="updateMasaLicencias()" v-if="tipoAccion == 2">Actualizar Licencias</button>
             </template>
         </ModalComponent>
         <!--Fin del modal-->
+
+        <ModalComponent v-if="modal == 6"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal"
+        >
+            <template v-slot:body>
+                <div class="col-md-12">
+                    <TableComponent :cabecera="['Tipo','']">
+                        <template v-slot:tbody>
+                            <tr v-for="p in archivos" :key="p.id">
+                                <td class="td2" v-text="p.tipo"></td>
+                                <td class="td2">
+                                    <a :href="p.file.public_url" target="_blank" class="btn btn-success">Ver Archivo</a>
+                                </td>
+                            </tr>
+                            <tr v-if="foto_predial">
+                                <td class="td2">Predial</td>
+                                <td class="td2">
+                                    <a title="Descargar predial" target="_blank" class="btn btn-success" v-bind:href="'/downloadPredial/'+ foto_predial">
+                                        Ver Archivo
+                                    </a>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </div>
+            </template>
+        </ModalComponent>
 
         <!--Inicio del modal consulta-->
         <ModalComponent v-if="modal == 2"
@@ -591,29 +627,125 @@
             @closeModal="cerrarModal()"
         >
             <template v-slot:body>
-                <div style="float:left;">
-                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-                        <strong>Licencia:</strong>
+                 <ul class="nav nav-tabs">
+                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==1 }" @click="tipoAccion = 1">Licencias</a></li>
+                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==2 }" @click="tipoAccion = 2">Predial</a></li>
+                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==3 }" @click="tipoAccion = 3">Otro archivo</a></li>
+                </ul>
 
-                        <input disabled type="text" class="form-control" v-model="num_licencia" >
+                <template v-if="tipoAccion == 1">
+                    <div class="contenedor-modal">
+                        <div class="form-sub">
+                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                <div class="form-opc">
+                                    <div class="form-archivo">
+                                        <input ref="licSelector"
+                                            v-show="false"
+                                            type="file"
+                                            v-on:change="onImageChange"
+                                        />
+                                        <label class="label-button" @click="onSelectLicencia">
+                                            Elige la licencia a cargar
+                                            <i class="fa fa-upload"></i>
+                                        </label>
+                                        <div :class="(nomLicencia == 'Seleccione Archivo')
+                                            ? 'text-file-hide' : 'text-file'"
+                                            v-text="nomLicencia"
+                                        ></div>
+                                    </div>
+                                    <div class="boton-modal">
+                                        <button v-show="nomLicencia !='Seleccione Archivo'"
+                                            type="submit" class="btn btn-success boton-modal"
+                                        >
+                                            Subir Licencia
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-                        <strong>Sube aqui foto de licencia</strong>
+                </template>
 
-                        <input type="file" class="form-control" v-on:change="onImageChange">
-                        <br/>
-                        <button type="submit" class="btn btn-success">Cargar</button>
-                    </form>
-                </div>
+                <template v-if="tipoAccion == 2">
+                    <div class="contenedor-modal">
+                        <div class="form-sub">
+                            <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
+                                <div class="form-opc">
+                                    <div class="form-archivo">
+                                        <input ref="predSelector"
+                                            v-show="false"
+                                            type="file"
+                                            v-on:change="onImageChangePredial"
+                                        />
+                                        <label class="label-button" @click="onSelectPredial">
+                                            Elige el predial a cargar
+                                            <i class="fa fa-upload"></i>
+                                        </label>
+                                        <div :class="(nomPredial == 'Seleccione Archivo')
+                                            ? 'text-file-hide' : 'text-file'"
+                                            v-text="nomPredial"
+                                        ></div>
+                                    </div>
+                                    <div class="boton-modal">
+                                        <button v-show="nomPredial !='Seleccione Archivo'"
+                                            type="submit" class="btn btn-success boton-modal"
+                                        >
+                                            Subir Predial
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </template>
 
-                <div style="float:right;">
-                    <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
-                        <strong>Sube aqui foto del predial</strong>
-
-                        <input type="file" class="form-control" v-on:change="onImageChangePredial">
-                        <br/>
-                        <button type="submit" class="btn btn-success">Cargar</button>
-                    </form>
-                </div>
+                <template v-if="tipoAccion == 3">
+                    <div class="contenedor-modal">
+                        <div class="form-sub">
+                            <form method="post" @submit="formSubmitFile"
+                                enctype="multipart/form-data"
+                            >
+                                <div class="form-opc">
+                                    <div class="form-archivo">
+                                        <input ref="fileSelector"
+                                            v-show="false"
+                                            type="file" accept="application/pdf"
+                                            v-on:change="onChangeFile"
+                                        />
+                                        <label class="label-button" @click="onSelectFile">
+                                            Elige el archivo a cargar
+                                            <i class="fa fa-upload"></i>
+                                        </label>
+                                        <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
+                                            ? 'text-file-hide' : 'text-file'"
+                                            v-text="newArchivo.nom_archivo"
+                                        ></div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-3 form-control-label" for="text-input">Tipo de archivo</label>
+                                            <div class="col-md-9">
+                                                <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Archivo">
+                                                <datalist id="categoria">
+                                                    <option value="RECIBO">RECIBO</option>
+                                                    <option value="USO DE SUELO">USO DE SUELO</option>
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="boton-modal">
+                                        <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
+                                            type="submit" class="btn btn-scarlet boton-modal"
+                                        >
+                                            Subir Archivo
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </template>
             </template>
         </ModalComponent>
         <!--Fin del modal-->
@@ -725,7 +857,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 b_empresa2:'',
                 b_etapa:'',
                 b_ruv:'',
-                arrayAllEtapas:[]
+                arrayAllEtapas:[],
+                nomLicencia : 'Seleccione Archivo',
+                nomPredial : 'Seleccione Archivo',
+                newArchivo: {},
+                archivos:[],
             }
         },
         computed:{
@@ -772,42 +908,74 @@ import TableComponent from '../Componentes/TableComponent.vue'
             select: function() {
                 this.allSelected =   false;
             },
+            onChangeFile(e){
+                this.newArchivo.file = e.target.files[0];
+                this.newArchivo.nom_archivo = e.target.files[0].name;
+            },
+
+            onSelectFile(){
+                this.$refs.fileSelector.click()
+            },
+
+            formSubmitFile(e) {
+                e.preventDefault();
+
+                let formData = new FormData();
+                formData.append('file', this.newArchivo.file);
+                formData.append('ids', this.allLic);
+                formData.append('carpeta', 'Licencias');
+                formData.append('tipo', this.newArchivo.tipo);
+                let me = this;
+                axios.post('/licencias/formSubmitFile', formData)
+                .then(function (response) {
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Licencia cargada correctamente'
+                    })
+                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
+
+                }).catch(function (error) {
+                });
+            },
+            onSelectLicencia(){
+                this.$refs.licSelector.click()
+            },
+            onSelectPredial(){
+                this.$refs.predSelector.click()
+            },
             onImageChangePredial(e){
-
-                console.log(e.target.files[0]);
-
                 this.foto_predial = e.target.files[0];
-
+                this.nomPredial = e.target.files[0].name;
             },
 
             formSubmitPredial(e) {
-
                 e.preventDefault();
-
-                let currentObj = this;
-
+                let me = this;
                 let formData = new FormData();
 
                 formData.append('foto_predial', this.foto_predial);
-                axios.post('/formSubmitPredial/'+this.id, formData)
+                formData.append('ids', this.allLic);
+                axios.post('/formSubmitPredial', formData)
                 .then(function (response) {
-
-                    currentObj.success = response.data.success;
-                    swal({
+                    const toast = Swal.mixin({
+                        toast: true,
                         position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
                         showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal();
-                   me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
-
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Predial agregado correctamente'
+                    })
+                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
                 })
-
                 .catch(function (error) {
-
-                    currentObj.output = error;
 
                 });
 
@@ -815,38 +983,32 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             //funciones para carga de las licencias
             onImageChange(e){
-
-                console.log(e.target.files[0]);
-
                 this.foto_lic = e.target.files[0];
-
+                this.nomLicencia = e.target.files[0].name;
             },
 
             formSubmit(e) {
                 e.preventDefault();
-
-                let currentObj = this;
-
                 let formData = new FormData();
 
                 formData.append('foto_lic', this.foto_lic);
+                formData.append('ids', this.allLic);
                 let me = this;
-                axios.post('/formSubmitLicencias/'+this.id, formData)
+                axios.post('/formSubmitLicencias', formData)
                 .then(function (response) {
-                    currentObj.success = response.data.success;
-                    swal({
+                    const toast = Swal.mixin({
+                        toast: true,
                         position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
                         showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal();
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Licencia cargada correctamente'
+                    })
                     me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
                 })
-
                 .catch(function (error) {
-                    currentObj.output = error;
                 });
 
             },
@@ -862,7 +1024,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     var respuesta = response.data;
                     me.arrayLicencias = respuesta.licencias.data;
                     me.pagination = respuesta.pagination;
-                    console.log(url);
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1196,6 +1357,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.foto_lic = '';
                 this.foto_predial = '';
                 this.perito_dro = 0;
+                this.newArchivo={};
 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
@@ -1231,11 +1393,24 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     {
                         this.modal =4;
                         this.tituloModal='Subir Archivo';
-                        this.tipoAccion=5;
-                        this.id=data['id'];
-                        this.num_licencia=data['num_licencia'];
-                        this.foto_lic=data['foto_lic'];
-                        this.foto_predial=data['foto_predial'];
+                        this.tipoAccion=1;
+                        this.foto_lic='';
+                        this.foto_predial='';
+                        this.nomLicencia = 'Seleccione Archivo';
+                        this.nomPredial = 'Seleccione Archivo';
+                        this.newArchivo = {
+                            tipo: "",
+                            file: "",
+                            nom_archivo: 'Seleccione Archivo'
+                        };
+                        break;
+                    }
+
+                    case 'verFiles':{
+                        this.modal = 6;
+                        this.tituloModal = 'Archivos cargados';
+                        this.archivos = data['archivos'];
+                        this.foto_predial = data['foto_predial'];
                         break;
                     }
 
@@ -1245,17 +1420,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.tituloModal='Asignación en masa';
                         this.perito_dro = '';
                         this.f_planos_obra='';
-                        this.tipoAccion = 1;
-                        break;
-                    }
-                    case 'asignarLicencias':
-                    {
-                        this.modal = 5;
-                        this.tituloModal='Asignación de licencias';
                         this.f_ingreso = '';
                         this.f_salida='';
                         this.num_licencia = '';
-                        this.tipoAccion = 2;
+                        this.tipoAccion = 1;
                         break;
                     }
 
@@ -1363,5 +1531,77 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
+    }
+    .contenedor-modal{
+
+        display: block;
+        flex-direction: column;
+
+        margin: auto;
+        overflow-x: auto;
+        width: fit-content;
+        max-width: 100%;
+
+
+    }
+
+    .label-button{
+    border-style: solid;
+    cursor:pointer;
+    color: #fff;
+    background-color: #00ADEF;
+    border-color: #00ADEF;
+    padding: 10px;
+    margin: 15px;
+    }
+
+    .label-button:hover {
+    color: #fff;
+    background-color: #1b8eb7;
+    border-color: #00b0bb;
+
+
+      }
+    .form-sub{
+        border: 1px solid #c2cfd6;
+        margin-top: 20px;
+        width: 100%;
+
+
+    }
+    .form-opc{
+        display: flex;
+        flex-direction: column;
+
+
+    }
+    .form-archivo{
+        display: flex;
+        flex-direction: row;
+
+        width: 100%;
+    }
+    .text-file{
+
+        color: rgb(39, 38, 38);
+        font-size:12px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+
+
+
+    }
+    .text-file-hide{
+
+        color: rgb(127, 130, 134);
+        font-size:13px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+
+
     }
 </style>
