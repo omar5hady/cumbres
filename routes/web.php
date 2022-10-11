@@ -325,7 +325,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitLicencias','LicenciasController@formSubmit'); //carga de licencias
         Route::get('/downloadLicencias/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias
         Route::get('/licencias/excel','LicenciasController@exportExcelLicencias'); //excel de las licencias
-        Route::post('/licencias/formSubmitFile','Lotes\DocsController@store'); //carga de licencias
 
         Route::get('/licencias/indexDescargas','LicenciasController@indexDescargas');
         Route::get('/licencias/excelDescargas','LicenciasController@excelDescargas');
@@ -1263,6 +1262,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/planos-proyectos', Lotes\PlanosController::class);
+
+        ////////////////////// Rutas Planos Proyectos
+        Route::resource('/docs-proyectos', Lotes\DocsController::class);
 
     });
 

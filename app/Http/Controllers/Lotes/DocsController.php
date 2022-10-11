@@ -83,6 +83,24 @@ class DocsController extends Controller
         }
     }
 
+    public function destroy(Request $request){
+        $doc = DocProyecto::findOrFail($request->id);
+
+        $docs = DocProyecto::select('id')->where('file_id','=',$doc->file_id)->get();
+        if(sizeof($docs) == 1){
+            $this->deleteDropBoxFile($doc->carpeta,$doc->file_id);
+            return sizeof($docs);
+        }
+        $doc->delete();
+    }
+
+    private function deleteDropBoxFile($carpeta,$id){
+        // Eliminamos el registro de nuestra tabla.
+        $del = DropboxFiles::findOrFail($id);
+        $this->dropbox->delete('Proyectos/'.$carpeta.'/'.$del->name);
+        $del->delete();
+    }
+
     private function storeFile(Request $request){
 
         $carpeta = 'Proyectos/'.$request->carpeta.'/';

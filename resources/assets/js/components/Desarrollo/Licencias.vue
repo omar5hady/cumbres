@@ -408,15 +408,21 @@
         >
             <template v-slot:body>
                 <div class="col-md-12">
-                    <TableComponent :cabecera="['Tipo','']">
+                    <TableComponent :cabecera="['','Tipo','']">
                         <template v-slot:tbody>
                             <tr v-for="p in archivos" :key="p.id">
+                                <td class="td2">
+                                    <button title="Eliminar archivo" type="button" @click="deleteFile(p.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-trash"></i>
+                                    </button>
+                                </td>
                                 <td class="td2" v-text="p.tipo"></td>
                                 <td class="td2">
                                     <a :href="p.file.public_url" target="_blank" class="btn btn-success">Ver Archivo</a>
                                 </td>
                             </tr>
-                            <tr v-if="foto_predial">
+                            <tr v-if="foto_predial" key="foto">
+                                <td></td>
                                 <td class="td2">Predial</td>
                                 <td class="td2">
                                     <a title="Descargar predial" target="_blank" class="btn btn-success" v-bind:href="'/downloadPredial/'+ foto_predial">
@@ -926,7 +932,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 formData.append('carpeta', 'Licencias');
                 formData.append('tipo', this.newArchivo.tipo);
                 let me = this;
-                axios.post('/licencias/formSubmitFile', formData)
+                axios.post('/docs-proyectos', formData)
                 .then(function (response) {
                     const toast = Swal.mixin({
                         toast: true,
@@ -1012,7 +1018,28 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
 
             },
-
+            deleteFile(id){
+                let me = this;
+                axios.delete(`/docs-proyectos/${id}`, {
+                    params: {'id': id}
+                }).then(function (response){
+                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
+                    me.archivos = me.archivos.filter( e => e.id !== id)
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Archivo eliminado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
             /**Metodo para mostrar los registros */
             listarLicencias(page, buscar,b_manzana,b_lote,b_modelo,b_arquitecto, criterio,buscar2){
                 let me = this;

@@ -28,14 +28,14 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <input type="date"  v-model="desde" class="form-control" placeholder="Fecha inicial">
                                     <input type="date"  v-model="hasta" @keyup.enter="listarResumen(1)" class="form-control" placeholder="Fecha final">
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -49,200 +49,270 @@
                                     </select>
                                 </div>
                             </div>
-                           
+
                             <div class="col-md-2">
                                 <div class="input-group">
                                     <button type="submit" @click="listarResumen(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row" v-if="mostrar == 1">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                   <table class="table table-bordered table-striped table-sm">
-                                       <tr v-for="detalle in arrayDetalles" :key="detalle.id">
-                                           <template v-if="detalle.cont != 0">
-                                                <th v-text="detalle.detalles"></th>
-                                                <th v-text="detalle.cont"></th>
-                                           </template>
-                                       </tr>
-                                       
-                                   </table>
-                                </div>
-                            </div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                   <table class="table table-bordered table-striped table-sm">
-                                       <tr v-for="contratista in arrayContratistaDet" :key="contratista.id">
-                                           <template v-if="contratista.cont != 0">
-                                                <th v-text="contratista.nombre"></th>
-                                                <th v-text="contratista.cont"></th>
-                                           </template>
-                                           
-                                       </tr>
-                                   </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row" v-if="mostrar == 1">
-                            <div class="col-md-3">
-                                <a class="btn btn-success" v-bind:href="'/reportes/reporteDetallesExcel?proyecto='+ b_proyecto + '&etapa='+ b_etapa + '&contratista='+ b_contratista  + '&desde='+ desde + '&hasta='+ hasta">
-                                    <i class="fa fa-file-text"></i>&nbsp; Descargar excel
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a @click="b_contratista='', b_status = '', listarResumen(1), tab=1" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }">
+                                    Resumen
+                                    <span v-if="tab ==1" style="font-size: 1em; text-align:center;" class="badge badge-light"></span>
                                 </a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="tab=2" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }">
+                                    Solicitudes ({{arrayResProyecto.total}})
+                                    <span v-if="tab ==2" style="font-size: 1em; text-align:center;" class="badge badge-light"></span>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <template v-if="tab == 1">
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <tr>
+                                            <th colspan="2">Solicitudes por contratista</th>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>Total</td>
+                                            <td>Concluidos</td>
+                                            <td>Pendientes</td>
+                                            <td>Proceso</td>
+                                            <td>Cancelados</td>
+                                        </tr>
+                                        <tr v-for="contratista in arrayContratistaDet" :key="contratista.id">
+                                            <template v-if="contratista.conteo != 0">
+                                                    <th v-text="contratista.nombre"></th>
+                                                    <td>
+                                                        <a class="btn btn-primary"
+                                                            @click="verSolicitudes(contratista.id,'')"
+                                                            href="#" title="Ver Solicitudes">
+                                                            {{contratista.conteo}}
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-success" href="#"
+                                                            @click="verSolicitudes(contratista.id,2)"
+                                                            title="Ver Solicitudes">{{contratista.num_concluidos}}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-warning" href="#"
+                                                            @click="verSolicitudes(contratista.id,0)"
+                                                            title="Ver Solicitudes">{{contratista.num_pendientes}}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-info" href="#"
+                                                            @click="verSolicitudes(contratista.id,1)"
+                                                            title="Ver Solicitudes">{{contratista.num_proceso}}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-danger" href="#"
+                                                            @click="verSolicitudes(contratista.id,3)"
+                                                            title="Ver Solicitudes">{{contratista.num_cancelados}}</a>
+                                                    </td>
+                                            </template>
+
+                                        </tr>
+                                    </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1"></div>
+
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <tr>
+                                            <th colspan="2">Conteo de Detalles </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr v-for="detalle in arrayDetalles" :key="detalle.id">
+                                            <template v-if="detalle.conteo != 0">
+                                                    <th v-text="detalle.detalles"></th>
+                                                    <td>
+                                                        <a class="btn btn-light" href="#"
+                                                            title="Ver Solicitudes">{{detalle.conteo}}</a>
+                                                    </td>
+                                            </template>
+                                        </tr>
+
+                                    </table>
+                                    </div>
+                                </div>
+
+
                             </div>
-                        </div>
-                        <div class="table-responsive" v-if="mostrar == 1">
-                        <table class="table2 table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Cliente</th>
-                                    <th>Fecha de solicitud</th>
-                                    <th>Descripción del detalle</th>
-                                    <th>Contratista</th>
-                                   
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="contrato in arrayResProyecto" :key="contrato.id">
-                                    <td class="td2" v-text="contrato.proyecto"></td>
-                                    <td class="td2" v-text="contrato.num_etapa"></td>
-                                    <td class="td2" v-text="contrato.manzana"></td>
-                                    <td class="td2" v-text="contrato.num_lote"></td>
-                                    <td class="td2" v-text="contrato.cliente"></td>
-                                    <td class="td2" v-text="this.moment(contrato.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <td class="td2" v-text="contrato.detalles + '/ '+ contrato.detalle"></td>
-                                    <td class="td2" v-text="contrato.nombre"></td>
-                                    
-                                </tr>                                
-                            </tbody>
-                        </table>
-                        </div>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+
+                            <!-- <div class="form-group row">
+                                <div class="col-md-3">
+                                    <a class="btn btn-success" v-bind:href="'/reportes/reporteDetallesExcel?proyecto='+ b_proyecto + '&etapa='+ b_etapa + '&contratista='+ b_contratista  + '&desde='+ desde + '&hasta='+ hasta">
+                                        <i class="fa fa-file-text"></i>&nbsp; Descargar excel
+                                    </a>
+                                </div>
+                            </div> -->
+                        </template>
+
+                        <template v-if="tab == 2">
+                            <TableComponent
+                                :cabecera="[
+                                    '','Proyecto','Etapa','Manzana','# Lote','Cliente',
+                                    'Fecha de solicitud','Status','Contratista'
+                                ]"
+                            >
+                                <template v-slot:tbody>
+                                    <tr v-for="contrato in arrayResProyecto.data" :key="contrato.id">
+                                        <td>
+                                            <button @click="verDetalle(contrato)" class="btn btn-dark" title="Ver Detalle">
+                                                <i class="icon-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td class="td2" v-text="contrato.proyecto"></td>
+                                        <td class="td2" v-text="contrato.num_etapa"></td>
+                                        <td class="td2" v-text="contrato.manzana"></td>
+                                        <td class="td2">
+                                            {{(contrato.sublote) ? `${contrato.num_lote}-${contrato.sublote}` : contrato.num_lote}}
+                                        </td>
+                                        <td class="td2" v-text="contrato.cliente"></td>
+                                        <td class="td2" v-text="this.moment(contrato.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2">
+                                            <span class="badge badge-warning" v-if="contrato.status == 0">Solicitud Creada</span>
+                                            <span class="badge badge-info" v-if="contrato.status == 1">En Proceso</span>
+                                            <span class="badge badge-success" v-if="contrato.status == 2">Concluido</span>
+                                            <span class="badge badge-danger" v-if="contrato.status == 3">Cancelado</span>
+                                        </td>
+                                        <td class="td2" v-text="contrato.nombre"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </template>
+
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-
-            
-
-           
-
-
+            <ModalComponent v-if="modal==1"
+                :titulo="'Descripción de detalles'"
+                @closeModal="modal=0"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Cliente</label>
+                        <div class="col-md-6">
+                            <input type="text" disabled v-model="descripcion.cliente" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Pryecto</label>
+                        <div class="col-md-4">
+                            <input type="text" disabled v-model="descripcion.proyecto" class="form-control">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Etapa</label>
+                        <div class="col-md-4">
+                            <input type="text" disabled v-model="descripcion.etapa" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Manzana</label>
+                        <div class="col-md-4">
+                            <input type="text" disabled v-model="descripcion.manzana" class="form-control">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Lote</label>
+                        <div class="col-md-4">
+                            <input type="text" disabled v-model="descripcion.lote" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Contratista</label>
+                        <div class="col-md-6">
+                            <input type="text" disabled v-model="descripcion.contratista" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <TableComponent :cabecera="[
+                               'Detalle', 'Descripcion', 'Fecha concluido'
+                            ]">
+                                <template v-slot:tbody>
+                                    <tr v-for="det in descripcion.data" :key="det.id">
+                                        <td class="td2" v-text="det.detalle"></td>
+                                        <td class="td2" v-text="det.observacion"></td>
+                                        <td class="td2" v-if="det.fecha_concluido"
+                                            v-text="this.moment(det.fecha_concluido).locale('es').format('DD/MMM/YYYY')">
+                                        </td>
+                                        <td class="td2" v-else>
+                                            Detalle sin concluir
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
         </main>
 </template>
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue';
+import ModalComponent from '../Componentes/ModalComponent.vue';
+
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         props:{
             rolId:{type: String}
         },
         data (){
             return {
                 proceso:false,
-                arrayResProyecto : [],
+                arrayResProyecto : {},
                 arrayFraccionamientos: [],
                 arrayAllEtapas:[],
+                arrayContratistas:[],
+
                 arrayDetalles:[],
                 arrayContratistaDet:[],
-                arrayContratistas:[],
-                pagination : {
-                    'total' : 0,
-                    'current_page' : 0,
-                    'per_page' : 0,
-                    'last_page' : 0,
-                    'from' : 0,
-                    'to' : 0,
-                },
-                offset : 3,
+
+                descripcion:{},
+
                 b_proyecto : '',
                 b_etapa : '',
                 b_contratista:'',
-                precio_venta:0,
-                enganche:0,
-                directo:0,
-                credito:0,
+                b_status:'',
                 desde:'',
                 hasta:'',
-                saldo:0,
-                monto_cobrado:0,
-                lotes:0,
-                disponibles:0,
-                vendidas:0,
-                individualizadas:0,
-                habilitados:0,
-                mostrar : 0,
-                fecha_inicio:'',
-                excedente:0,
-                modal:0,
-                comentario:'',
-                id:'',
-                tipoAccion : 0,
-                titulo : '',
-                bAudit: 0,
+                tab:1,
+                modal:0
             }
         },
         computed:{
-            isActived: function(){
-                return this.pagination.current_page;
-            },
-            //Calcula los elementos de la paginación
-            pagesNumber: function() {
-                if(!this.pagination.to) {
-                    return [];
-                }
-                
-                var from = this.pagination.current_page - this.offset; 
-                if(from < 1) {
-                    from = 1;
-                }
-
-                var to = from + (this.offset * 2); 
-                if(to >= this.pagination.last_page){
-                    to = this.pagination.last_page;
-                }  
-
-                var pagesArray = [];
-                while(from <= to) {
-                    pagesArray.push(from);
-                    from++;
-                }
-                return pagesArray;             
-
-            }
         },
         methods : {
             listarResumen (page){
                 let me=this;
                 var url= '/reportes/reporteDetalles?page=' + page + '&proyecto='+ me.b_proyecto + '&etapa='+ me.b_etapa +
-                        '&contratista='+this.b_contratista + '&desde='+ me.desde + '&hasta='+ me.hasta;
+                        '&contratista='+this.b_contratista + '&desde='+ me.desde + '&hasta='+ me.hasta + '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
-                    me.arrayResProyecto = respuesta.resumen.data;
                     me.arrayDetalles = respuesta.detalles;
                     me.arrayContratistaDet = respuesta.contratistas;
-                    me.pagination= respuesta.pagination;
+
+                    me.arrayResProyecto = respuesta.solicitudes;
 
                     me.arrayDetalles.sort((b, a) => a.cont - b.cont);
                     me.arrayContratistaDet.sort((b, a) => a.cont - b.cont);
-                   
-                    me.mostrar = 1;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -276,36 +346,9 @@
                     console.log(error);
                 });
             },
-
-            agregarComentario(){
-                let me = this;
-                //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/auditar/registrarObservacion',{
-                    'id': this.id,
-                    'comentario': this.comentario
-                }).then(function (response){
-                    me.listarObservacion(me.id);
-                    me.observacion = '';
-                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
-                    
-                    const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                    });
-
-                    toast({
-                    type: 'success',
-                    title: 'Observación Agregada Correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
             selectEtapas(buscar){
                 let me = this;
-                
+
                 me.arrayAllEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -316,22 +359,37 @@
                     console.log(error);
                 });
             },
-           
-            cambiarPagina(page){
-                let me = this;
-                //Actualiza la página actual
-                me.pagination.current_page = page;
-                //Envia la petición para visualizar la data de esa página
-                me.listarResumen(page);
+            verSolicitudes(contratista,status){
+                this.b_status = status;
+                this.b_contratista = contratista;
+                this.listarResumen(1);
+                this.tab = 2;
+            },
+            verDetalle(detalle){
+                let lote = detalle.num_lote;
+                if(detalle.sublote != null)
+                    lote = detalle.num_lote+'-'+detalle.sublote;
+                this.descripcion = {
+                    'data' : detalle.descripcion,
+                    'cliente': detalle.cliente,
+                    'proyecto': detalle.proyecto,
+                    'etapa' : detalle.num_etapa,
+                    'manzana' : detalle.manzana,
+                    'lote' : lote,
+                    'contratista' : detalle.nombre
+                }
+                this.modal = 1;
             }
         },
+
         mounted() {
             this.selectFraccionamientos();
             this.selectContratistas();
+            this.listarResumen(1);
         }
     }
 </script>
-<style>    
+<style>
     .modal-content{
         width: 100% !important;
         position: absolute !important;
@@ -377,5 +435,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

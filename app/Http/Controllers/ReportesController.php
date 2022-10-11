@@ -29,6 +29,7 @@ use App\Vendedor;
 use App\Detalle_previo;
 use App\Revision_previa;
 use App\Reubicacion;
+use App\Descripcion_detalle;
 
 class ReportesController extends Controller
 {
@@ -3043,54 +3044,129 @@ class ReportesController extends Controller
 
         return $resumen;
     }
+
+    private function getReporteDetalle(Request $request){
+        $detalles = $this->getCatalogoDetalles();
+
+        foreach($detalles as $det){
+            $det->solic = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                            ->join('descripcion_detalles as det','solic_detalles.id','=','det.solicitud_id')
+                            ->join('contratistas as c','solic_detalles.contratista_id','=','c.id')
+                            ->join('creditos as cr','contratos.id','=','cr.id')
+                            ->join('lotes','cr.lote_id','=','lotes.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('solic_detalles.cliente','solic_detalles.status','lotes.num_lote',
+                                    'fraccionamientos.nombre as proyecto','det.id', 'solic_detalles.created_at',
+                                    'etapas.num_etapa','lotes.manzana', 'solic_detalles.status',
+                                    'det.detalle', 'det.subconcepto','det.general',
+                                    'c.nombre','solic_detalles.contratista_id')
+                            //->where('det.detalle','=',$det->detalles)
+                            ->where('det.general','=',$det->general)
+                            ->where('det.subconcepto','=',$det->subconcepto);
+                if($request->contratista != '')//Filtro por contratista
+                    $det->solic = $det->solic->where('c.id','=',$request->contratista);
+                if($request->proyecto != '')//Filtro por proyecto
+                    $det->solic = $det->solic->where('fraccionamientos.id','=',$request->proyecto);
+                if($request->etapa != '')//Filtro por etapa
+                    $det->solic = $det->solic->where('etapas.id','=',$request->etapa);
+                if($request->desde != '' && $request->hasta != '')//Filtro por fecha de solicitud
+                    $det->solic = $det->solic->whereBetween('solic_detalles.created_at', [$request->desde.' 00:00:00', $request->hasta.' 23:59:59']);
+
+                $det->solic = $det->solic->get();
+                $det->conteo = $det->solic->count();
+        }
+
+        return $detalles;
+    }
+
+    private function getReporteContratista(Request $request){
+        $contratistas = Contratista::select('id', 'nombre');
+        if($request->contratista)
+            $contratistas = $contratistas->where('id','=',$request->contratista);
+        $contratistas = $contratistas->orderBy('nombre','asc')->get();
+
+        foreach($contratistas as $c){
+            $c->solic = $c->solic = $this->getQuerySolicitudes(
+                $c->id,$request->proyecto, $request->etapa, $request->desde, $request->hasta
+            );
+            $c->pendientes = $c->pendientes = $this->getQuerySolicitudes(
+                $c->id,$request->proyecto, $request->etapa, $request->desde, $request->hasta, '0'
+            );
+            $c->proceso = $c->proceso = $this->getQuerySolicitudes(
+                $c->id,$request->proyecto, $request->etapa, $request->desde, $request->hasta, '1'
+            );
+            $c->concluidos = $c->concluidos = $this->getQuerySolicitudes(
+                $c->id,$request->proyecto, $request->etapa, $request->desde, $request->hasta, '2'
+            );
+            $c->cancelados = $c->cancelados = $this->getQuerySolicitudes(
+                $c->id,$request->proyecto, $request->etapa, $request->desde, $request->hasta, '3'
+            );
+            $c->solic = $c->solic->get();
+            $c->pendientes = $c->pendientes->get();
+            $c->proceso = $c->proceso->get();
+            $c->concluidos = $c->concluidos->get();
+            $c->cancelados = $c->cancelados->get();
+            $c->conteo = $c->solic->count();
+
+            $c->num_proceso = $c->proceso->count();
+            $c->num_concluidos = $c->concluidos->count();
+            $c->num_cancelados = $c->cancelados->count();
+            $c->num_pendientes = $c->pendientes->count();
+        }
+
+        return $contratistas;
+    }
+
     //Función para generar el reporte de desperfectos en casas vendidas
     public function reporteDetalles(Request $request){
-        //Query para obtener todos los contratistas registrados
-        $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();
-        //Llamada a la funcion privada que retorna la query principal para la obtencion de solicitudes
-        $resumen = $this->getResumenDetalles($request);
-        //En la variable se almacenan todas las solicitudes
-        $resumen1 = $resumen->orderBy('solic_detalles.status','desc')->get();
-        //En la variable resumen se almacenan las solicitudes con paginacion
-        $resumen = $resumen->orderBy('solic_detalles.status','desc')->paginate(15);
-        //llamada a la funcion privada que retorna todo el catalogo de detalles (general/subconcepto)
-        $detalles = $this->getCatalogoDetalles();
-        if(sizeOf($resumen1))
-            //Se recorren todos los resultados de contratistas obtenidos
-            foreach($contratistas as $det => $contratista){
-                $contratista->cont=0;//Se inicializa en 0 el contador por contratista
-                foreach($resumen1 as $index => $detalle){//Se recorren los resultados de las solicitudes de detalles
-                    if($detalle->contratista_id == $contratista->id)
-                        //Se aumenta el valor si el detalle coincide con el contratista
-                        $contratista->cont++;
-                }
-            }
+        $reporteDetalles = $this->getReporteDetalle($request);
+        $reporteContratista = $this->getReporteContratista($request);
 
-        if(sizeOf($resumen1))
-            //Se recorren todos los resultados del catalogo de detalles obtenidos
-            foreach($detalles as $det => $detalle){
-                $detalle->cont=0;//Se inicializa en 0 el contador del detalle
-                foreach($resumen1 as $index => $res){
-                    if($res->detalles == $detalle->detalles)
-                        //Se aumenta el valor si el detalle de la solicitud coincide con el catalogo
-                        $detalle->cont++;
-                }
-            }
+        $solicitudes = $this->getQuerySolicitudes(
+            $request->contratista,$request->proyecto, $request->etapa, $request->desde, $request->hasta,$request->status
+        );
+        $solicitudes = $solicitudes->paginate(15);
+        foreach($solicitudes as $solicitud){
+            $solicitud->descripcion = $this->getDescripcionDetalles($solicitud->id);
+        }
 
-
-        return ['contratistas'=>$contratistas,
-                'resumen'=>$resumen,
-                'pagination' => [
-                    'total'         => $resumen->total(),
-                    'current_page'  => $resumen->currentPage(),
-                    'per_page'      => $resumen->perPage(),
-                    'last_page'     => $resumen->lastPage(),
-                    'from'          => $resumen->firstItem(),
-                    'to'            => $resumen->lastItem(),
-                ],
-                'detalles'=>$detalles];
-
+        return [
+            'detalles' => $reporteDetalles,
+            'contratistas' => $reporteContratista,
+            'solicitudes' => $solicitudes
+        ];
     }
+
+    private function getQuerySolicitudes($contratista, $proyecto, $etapa, $desde, $hasta,$status=''){
+        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                        ->join('contratistas as c','solic_detalles.contratista_id','=','c.id')
+                        ->join('creditos as cr','contratos.id','=','cr.id')
+                        ->join('lotes','cr.lote_id','=','lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->select('solic_detalles.cliente','solic_detalles.status','lotes.num_lote', 'lotes.sublote',
+                                'fraccionamientos.nombre as proyecto', 'solic_detalles.created_at',
+                                'etapas.num_etapa','lotes.manzana', 'solic_detalles.status',
+                                'c.nombre','solic_detalles.contratista_id','solic_detalles.id');
+            if($contratista != '')//Filtro por contratista
+                $solicitudes = $solicitudes->where('c.id','=',$contratista);
+            if($proyecto != '')//Filtro por proyecto
+                $solicitudes = $solicitudes->where('fraccionamientos.id','=',$proyecto);
+            if($etapa != '')//Filtro por etapa
+                $solicitudes = $solicitudes->where('etapas.id','=',$etapa);
+            if($desde != '' && $hasta != '')//Filtro por fecha de solicitud
+                $solicitudes = $solicitudes->whereBetween('solic_detalles.created_at', [$desde.' 00:00:00', $hasta.' 23:59:59']);
+            if($status != '')//Filtro por etapa
+                $solicitudes = $solicitudes->where('solic_detalles.status','=',$status);
+
+            return $solicitudes;
+    }
+
+    private function getDescripcionDetalles($solicitud_id){
+        return Descripcion_detalle::where('solicitud_id','=',$solicitud_id)->get();
+    }
+
     //Función para generar el reporte de desperfectos en casas vendidas en excel.
     public function reporteDetallesExcel(Request $request){
         //Query para obtener todos los contratistas registrados
