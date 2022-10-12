@@ -36,6 +36,7 @@ use App\Cuenta;
 use App\Avaluo;
 use App\User;
 use App\PlanoProyecto;
+use App\DocProyecto;
 use NumerosEnLetras;
 use DB;
 use Auth;
@@ -43,6 +44,7 @@ use Excel;
 use File;
 
 use App\Http\Resources\PlanoResource;
+use App\Http\Resources\DocProyectoResource;
 
 // Controlador para contratos.
 class ContratoController extends Controller
@@ -50,6 +52,12 @@ class ContratoController extends Controller
 
     private function getPlanos($lote_id){
         return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
+    }
+
+    private function getDocs($lote_id, $carpeta){
+        return DocProyectoResource::collection(
+            DocProyecto::where('lote_id','=',$lote_id) ->where('carpeta','=',$carpeta)->get()
+        );
     }
 
     // Función para retornar los contratos registrados.
@@ -159,6 +167,11 @@ class ContratoController extends Controller
             foreach($contratos as $index => $contrato)
             {
                 $contrato->planos = $this->getPlanos($contrato->lote_id);
+
+                $contrato->licencias = $this->getDocs($contrato->lote_id, 'Licencias');
+                $contrato->docs_acreditar = $this->getDocs($contrato->lote_id, 'DocsAcreditar');
+                $contrato->proteccion_civil = $this->getDocs($contrato->lote_id, 'ProgramaProteccion');
+
                 if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
                     $contrato->status2 = 1;
                 }

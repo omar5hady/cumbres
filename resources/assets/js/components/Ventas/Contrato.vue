@@ -1906,6 +1906,29 @@
                                                     :href="plano.file.public_url" class="btn btn-danger btn-sm">Plano de {{plano.tipo}}</a>
                                             </div>
                                         </template>
+
+                                        <template v-if="licencias.length">
+                                            <h6>Licencias, Permisos y Autorizaciones</h6>
+                                            <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
+                                                <a v-for="doc in licencias" :key="doc.id"
+                                                    :href="doc.file.public_url" class="btn btn-danger btn-sm">{{doc.tipo}}</a>
+                                            </div>
+                                        </template>
+
+                                        <template v-if="docs_acreditar.length">
+                                            <h6>Documentos Validados para Acreditar</h6>
+                                            <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
+                                                <a v-for="doc in docs_acreditar" :key="doc.id"
+                                                    :href="doc.file.public_url" class="btn btn-danger btn-sm">{{doc.tipo}}</a>
+                                            </div>
+                                        </template>
+
+                                        <template v-if="proteccion_civil.length">
+                                            <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
+                                                <a v-for="plano in planos" :key="plano.id"
+                                                    :href="plano.file.public_url" class="btn btn-danger btn-sm">{{plano.tipo}}</a>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
 
@@ -2428,7 +2451,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 num_licencia:'',
                 foto_predial: '',
                 foto_lic: '',
-                planos : []
+                planos : [],
+                licencias : [],
+                docs_acreditar : [],
+                proteccion_civil : []
             }
         },
         computed:{
@@ -2545,7 +2571,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
         },
 
-        methods : {
+        methods:{
             onSelectConstancia(){
                 this.$refs.constanciaSelector.click()
             },
@@ -3516,6 +3542,9 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.getEcotecnologiasAsignadas(data['id']);
 
                 this.planos = data['planos'];
+                this.licencias = data['licencias'];
+                this.docs_acreditar = data['docs_acreditar'];
+                this.proteccion_civil = data['proteccion_civil'];
 
                 this.datosFiscales.email_fisc = data['email_fisc'];
                 this.datosFiscales.tel_fisc = data['tel_fisc'];

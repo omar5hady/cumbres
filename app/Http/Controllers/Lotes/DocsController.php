@@ -89,7 +89,6 @@ class DocsController extends Controller
         $docs = DocProyecto::select('id')->where('file_id','=',$doc->file_id)->get();
         if(sizeof($docs) == 1){
             $this->deleteDropBoxFile($doc->carpeta,$doc->file_id);
-            return sizeof($docs);
         }
         $doc->delete();
     }

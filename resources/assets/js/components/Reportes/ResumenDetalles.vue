@@ -194,6 +194,113 @@
                                     </tr>
                                 </template>
                             </TableComponent>
+                            <nav>
+                                <ul class="pagination">
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page > 5"
+                                        @click="listarResumen(1)"
+                                    >
+                                        <a class="page-link" href="#">Inicio</a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.prev_page_url"
+                                        @click="listarResumen(arrayResProyecto.current_page - 1)"
+                                    >
+                                        <a class="page-link" href="#">Ant</a>
+                                    </li>
+
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page - 3 >= 1"
+                                        @click="listarResumen(arrayResProyecto.current_page - 3)"
+                                    >
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            v-text="arrayResProyecto.current_page - 3"
+                                        ></a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page - 2 >= 1"
+                                        @click="listarResumen(arrayResProyecto.current_page - 2)"
+                                    >
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            v-text="arrayResProyecto.current_page - 2"
+                                        ></a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page - 1 >= 1"
+                                        @click="listarResumen(arrayResProyecto.current_page - 1)"
+                                    >
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            v-text="arrayResProyecto.current_page - 1"
+                                        ></a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            v-text="arrayResProyecto.current_page"
+                                        ></a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page + 1 <= arrayResProyecto.last_page"
+                                    >
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            @click="listarResumen(arrayResProyecto.current_page + 1)"
+                                            v-text="arrayResProyecto.current_page + 1"
+                                        ></a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page + 2 <= arrayResProyecto.last_page"
+                                    >
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            @click="listarResumen(arrayResProyecto.current_page + 2)"
+                                            v-text="arrayResProyecto.current_page + 2"
+                                        ></a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page + 3 <= arrayResProyecto.last_page"
+                                    >
+                                        <a
+                                            class="page-link"
+                                            href="#"
+                                            @click="listarResumen(arrayResProyecto.current_page + 3)"
+                                            v-text="arrayResProyecto.current_page + 3"
+                                        ></a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.next_page_url"
+                                        @click="listarResumen(arrayResProyecto.current_page + 1)"
+                                    >
+                                        <a class="page-link" href="#">Sig</a>
+                                    </li>
+                                    <li
+                                        class="page-item"
+                                        v-if="arrayResProyecto.current_page < 5 &&
+                                                arrayResProyecto.last_page > 5"
+                                        @click="listarResumen(arrayResProyecto.last_page)"
+                                    >
+                                        <a class="page-link" href="#">Ultimo</a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </template>
 
                     </div>

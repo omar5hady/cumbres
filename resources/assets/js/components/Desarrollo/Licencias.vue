@@ -730,12 +730,32 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group row">
+                                            <label class="col-md-3 form-control-label" for="text-input">Categoria</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control" v-model="newArchivo.carpeta" @change="newArchivo.tipo = ''">
+                                                    <option value="Licencias">Licencias, Permisos y Autorizaciones</option>
+                                                    <option value="DocsAcreditar">Documentos para acreditar</option>
+                                                    <option value="ProgramaProteccion">Programa Interno de Protección Civil</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
                                             <label class="col-md-3 form-control-label" for="text-input">Tipo de archivo</label>
                                             <div class="col-md-9">
                                                 <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Archivo">
-                                                <datalist id="categoria">
+                                                <datalist id="categoria" v-if="newArchivo.carpeta == 'Licencias'">
                                                     <option value="RECIBO">RECIBO</option>
                                                     <option value="USO DE SUELO">USO DE SUELO</option>
+                                                </datalist>
+                                                <datalist id="categoria" v-if="newArchivo.carpeta == 'DocsAcreditar'">
+                                                    <option value="ESCRITURAS DE PROPIEDAD">ESCRITURAS DE PROPIEDAD</option>
+                                                    <option value="ACTA CONSTITUTIVA">ACTA CONSTITUTIVA</option>
+                                                    <option value="PODER">PODER</option>
+                                                </datalist>
+                                                <datalist id="categoria" v-if="newArchivo.carpeta == 'ProgramaProteccion'">
+                                                    <option value="PROGRAMA INTERNO DE PROTECCIÓN CIVIL">PROGRAMA INTERNO DE PROTECCIÓN CIVIL</option>
                                                 </datalist>
                                             </div>
                                         </div>
@@ -929,7 +949,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 let formData = new FormData();
                 formData.append('file', this.newArchivo.file);
                 formData.append('ids', this.allLic);
-                formData.append('carpeta', 'Licencias');
+                formData.append('carpeta', this.newArchivo.carpeta);
                 formData.append('tipo', this.newArchivo.tipo);
                 let me = this;
                 axios.post('/docs-proyectos', formData)
@@ -1428,6 +1448,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.newArchivo = {
                             tipo: "",
                             file: "",
+                            carperta:"Licencias",
                             nom_archivo: 'Seleccione Archivo'
                         };
                         break;
