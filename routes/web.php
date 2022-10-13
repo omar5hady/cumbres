@@ -1266,6 +1266,8 @@ Route::group(['middleware' => ['auth']],function(){
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/docs-proyectos', Lotes\DocsController::class);
 
+        Route::get('/docs/entregaInterapas', 'Contrato\DocumentosController@printEntregaInterapas');
+
     });
 
 

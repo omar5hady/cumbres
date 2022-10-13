@@ -88,9 +88,9 @@
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                 <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
-                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ contratos.folio">Carta de mantenimiento</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ contratos.folio">Carta de alarma</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/docs/entregaInterapas?id='+ contratos.folio">Carta de Notificacion a Interapas</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
                                             </div>

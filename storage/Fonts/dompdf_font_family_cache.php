@@ -85,9 +85,10 @@
   ),
   'AvenirNextLTPro' => array(
     'normal' => $fontDir . '\AvenirNextLTPro-Regular',
+    'bold' => $fontDir . '\AvenirNextLTPro-Bold',
   ),
   'avenirnextltpro' => array(
-    'normal' => $fontDir . '/avenirnextltpro-normal_bf11512877ef2223afd06e89358ef2fc',
+    'normal' => $rootDir . '\lib\fonts\avenirnextltpro-normal_bf11512877ef2223afd06e89358ef2fc',
   ),
   'line awesome brands' => array(
     'normal' => $fontDir . '/line-awesome-brands-normal_f905f0dcb962dd842eea02bb4f9eee69',
@@ -95,5 +96,8 @@
   'line awesome free' => array(
     'normal' => $fontDir . '/line-awesome-free-normal_967a0922d505961af7c5cdf6c50fd81e',
     '900' => $fontDir . '/line-awesome-free-900_03518a78e82e89adf0bdd3560d8fbb29',
+  ),
+  'muli' => array(
+    'normal' => $rootDir . '\lib\fonts\muli-normal_13573c3d941bc4a4ee58dd648314ca54',
   ),
 ) ?>

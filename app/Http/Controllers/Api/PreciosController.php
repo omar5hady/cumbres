@@ -19,6 +19,7 @@ class PreciosController extends Controller
                             ->select('p.nombre as proyecto','e.num_etapa as etapa','m.nombre as prototipo',
                                 'lotes.manzana', 'lotes.num_lote', 'lotes.sublote','lotes.calle','lotes.numero',
                                 'lotes.interior','lotes.terreno','lotes.precio_base','lotes.excedente_terreno',
+                                'lotes.obra_extra',
                                 'lotes.sobreprecio','m.construccion','m.terreno as terreno_m','lotes.ajuste'
                             )
                             ->where('lotes.habilitado','=',1)

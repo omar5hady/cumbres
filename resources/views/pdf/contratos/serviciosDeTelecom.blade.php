@@ -9,18 +9,8 @@
 </head>
 <style type="text/css">
 
-    @font-face {
-        font-family: 'AvenirNextLTPro';
-        src: url('/storage/Fonts/AvenirNextLTPro-It.otf') format('opentype');
-    }
-    @font-face {
-        font-family: 'AvenirNextLTPro';
-        src: url('/storage/Fonts/AvenirNextLTPro-Bold.otf') format('opentype');
-        font-weight: bold;
-    }
-
     body {
-        font-family: 'AvenirNextLTPro';
+        font-family: 'AvenirNextLTPro', Arial, Helvetica, sans-serif
     }
 
 </style>

@@ -21,17 +21,17 @@ class LicenciasController extends Controller
 {
     //Función privada que retorna la query con las licencias registradas
     private function getLicencias(Request $request){
-        $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $b_arquitecto = $request->b_arquitecto;
-        $b_lote = $request->b_lote;
-        $b_manzana = $request->b_manzana;
-        $b_modelo = $request->b_modelo;
-        $criterio = $request->criterio;
-        $b_puente = $request->b_puente;
-        $b_num_inicio = $request->b_num_inicio;
-        $b_ruv = $request->b_ruv;
-        $b_etapa = $request->b_etapa;
+        $buscar         = $request->buscar;
+        $buscar2        = $request->buscar2;
+        $b_arquitecto   = $request->b_arquitecto;
+        $b_lote         = $request->b_lote;
+        $b_manzana      = $request->b_manzana;
+        $b_modelo       = $request->b_modelo;
+        $criterio       = $request->criterio;
+        $b_puente       = $request->b_puente;
+        $b_num_inicio   = $request->b_num_inicio;
+        $b_ruv          = $request->b_ruv;
+        $b_etapa        = $request->b_etapa;
         //Query
         $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -58,9 +58,11 @@ class LicenciasController extends Controller
                 //Busqueda por proyecto
                 case 'lotes.fraccionamiento_id':{
                     $licencias = $licencias
-                        ->where('lotes.fraccionamiento_id', '=',  $buscar)//Proyecto
-                        ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')//Modelo
-                        ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');//Arquitecto
+                        ->where('lotes.fraccionamiento_id', '=',  $buscar);//Proyecto
+                        if($b_modelo != '')
+                            $licencias = $licencias->where('modelos.nombre', 'like', '%' . $b_modelo . '%');//Modelo
+                        if($b_arquitecto != '')
+                            $licencias = $licencias->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');//Arquitecto
                         if($b_lote != '')//Busqueda por numero de lote
                             $licencias = $licencias->where('lotes.num_lote', '=', $b_lote);
                         if($b_manzana != '')//Manzana
