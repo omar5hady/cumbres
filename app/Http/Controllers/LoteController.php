@@ -587,6 +587,15 @@ class LoteController extends Controller
         $lote = Lote::findOrFail($request->id);
         $lote->num_inicio = $request->num_inicio;
         $lote->save();
+
+        $partidas = Partida::select('id','partida')
+            ->where('modelo_id','=',$lote->modelo_id)->get();
+            foreach($partidas as $index => $partida) {
+                $avance = Avance::select('id')->where('lote_id','=',$lote->id)
+                    ->where('partida_id','=',$partida->id)->get();
+                if(sizeof($avance) == 0)
+                    $n_avance->store($lote->id, $partida->id);
+            }
     }
 
     //Función para eliminar el registro de un lote.
