@@ -248,6 +248,8 @@
                                                             <option value="TERRENO">TERRENO</option>
                                                             <option value="LOCALIZACIÓN Y UBICACION">LOCALIZACIÓN Y UBICACION</option>
                                                             <option value="URBANIZACIÓN">URBANIZACIÓN</option>
+                                                            <option value="AUTORIZACIÓN">AUTORIZACION</option>
+                                                            <option value="LOTIFICACIÓN, EQUIPAMIENTO BASICO">LOTIFICACIÓN, EQUIPAMIENTO BÁSICO Y DE CONSUMO</option>
                                                         </datalist>
                                                     </div>
                                                 </div>

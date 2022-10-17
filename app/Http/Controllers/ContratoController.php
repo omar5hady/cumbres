@@ -50,13 +50,16 @@ use App\Http\Resources\DocProyectoResource;
 class ContratoController extends Controller
 {
 
-    private function getPlanos($lote_id){
-        return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
+    private function getPlanos($lote_id, $tipo){
+        return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->where('tipo','=',$tipo)->get());
     }
 
-    private function getDocs($lote_id, $carpeta){
+    private function getDocs($lote_id, $carpeta, $tipo){
         return DocProyectoResource::collection(
-            DocProyecto::where('lote_id','=',$lote_id) ->where('carpeta','=',$carpeta)->get()
+            DocProyecto::where('lote_id','=',$lote_id)
+                ->where('carpeta','=',$carpeta)
+                ->where('tipo','=',$tipo)
+                ->get()
         );
     }
 
@@ -166,11 +169,24 @@ class ContratoController extends Controller
             //Se recorren los resultados de contratos para verificar si la casa se ha individualizado.
             foreach($contratos as $index => $contrato)
             {
-                $contrato->planos = $this->getPlanos($contrato->lote_id);
+                //PLANOS
+                $contrato->planoLicencia = $this->getPlanos($contrato->lote_id,'LICENCIA');
+                $contrato->planoObraExtra = $this->getPlanos($contrato->lote_id,'OBRA EXTRA');
+                $contrato->planoTerreno = $this->getPlanos($contrato->lote_id,'TERRENO');
+                $contrato->planoLocalizacion = $this->getPlanos($contrato->lote_id,'LOCALIZACIÓN Y UBICACION');
+                $contrato->planoUrbanizacion = $this->getPlanos($contrato->lote_id,'URBANIZACIÓN');
+                $contrato->planoAutor = $this->getPlanos($contrato->lote_id,'AUTORIZACIÓN');
+                $contrato->planoLotificacion = $this->getPlanos($contrato->lote_id,'LOTIFICACIÓN, EQUIPAMIENTO BASICO');
+                //DOCUMENTOS LICENCIAS
+                $contrato->licRecibo = $this->getDocs($contrato->lote_id, 'Licencias','RECIBO');
+                $contrato->licUsoSuelo = $this->getDocs($contrato->lote_id, 'Licencias','USO DE SUELO');
+                //Documentos para acreditar
+                $contrato->acreditarEscritura = $this->getDocs($contrato->lote_id, 'DocsAcreditar', 'ESCRITURAS DE PROPIEDAD');
+                $contrato->acreditarActa= $this->getDocs($contrato->lote_id, 'DocsAcreditar', 'ACTA CONSTITUTIVA');
+                $contrato->acreditarPoderes = $this->getDocs($contrato->lote_id, 'DocsAcreditar', 'PODER');
+                $contrato->acreditarIdentificacion = $this->getDocs($contrato->lote_id, 'DocsAcreditar', 'IDENTIFICACION');
 
-                $contrato->licencias = $this->getDocs($contrato->lote_id, 'Licencias');
-                $contrato->docs_acreditar = $this->getDocs($contrato->lote_id, 'DocsAcreditar');
-                $contrato->proteccion_civil = $this->getDocs($contrato->lote_id, 'ProgramaProteccion');
+                $contrato->proteccion_civil = $this->getDocs($contrato->lote_id, 'ProgramaProteccion','PROGRAMA INTERNO DE PROTECCIÓN CIVIL');
 
                 if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
                     $contrato->status2 = 1;

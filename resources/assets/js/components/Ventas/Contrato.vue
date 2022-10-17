@@ -1895,38 +1895,83 @@
                                     <div style="text-align: right" class="capsule col-md-12">
                                         <h6>Solo consulta</h6>
                                         <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
-                                            <a v-if="foto_predial" title="Ver Predial" class="btn btn-primary btn-sm" v-bind:href="'/downloadPredial/'+ foto_predial">Predial</a>
-                                            <a v-if="num_licencia" title="Ver licencia" class="btn btn-primary btn-sm"  v-text="'Licencia: '+num_licencia" v-bind:href="'/downloadLicencias/'+foto_lic"></a>
                                             <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contrato/printProcGarantia'">Procedimiento de Garantia</a>
                                         </div>
-                                        <template v-if="planos.length">
+
+                                        <template>
                                             <h6>Planos</h6>
                                             <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
-                                                <a v-for="plano in planos" :key="plano.id"
-                                                    :href="plano.file.public_url" class="btn btn-danger btn-sm">Plano de {{plano.tipo}}</a>
+                                                <a v-if="planos.planoLicencia[0]"
+                                                    :href="planos.planoLicencia[0].file.public_url" class="btn btn-danger btn-sm">Plano de Licencia</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Licencia</button>
+
+                                                <a v-if="planos.planoObraExtra[0]"
+                                                    :href="planos.planoObraExtra[0].file.public_url" class="btn btn-danger btn-sm">Plano de Obra Extra</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Obra Extra</button>
+
+                                                <a v-if="planos.planoTerreno[0]"
+                                                    :href="planos.planoTerreno[0].file.public_url" class="btn btn-danger btn-sm">Plano de Terreno</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Terreno</button>
+
+                                                <a v-if="planos.planoLocalizacion[0]"
+                                                    :href="planos.planoLocalizacion[0].file.public_url" class="btn btn-danger btn-sm">Plano de Localización y ubicación</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Localización y ubicación</button>
+
+                                                <a v-if="planos.planoUrbanizacion[0]"
+                                                    :href="planos.planoUrbanizacion[0].file.public_url" class="btn btn-danger btn-sm">Plano de Urbanización</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Urbanización</button>
+
+                                                <a v-if="planos.planoAutor[0]"
+                                                    :href="planos.planoAutor[0].file.public_url" class="btn btn-danger btn-sm">Plano de Autorización</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Autorización</button>
+
+                                                <a v-if="planos.planoLotificacion[0]"
+                                                    :href="planos.planoLotificacion[0].file.public_url" class="btn btn-danger btn-sm">Plano de Lotificación y Equip. Basico</a>
+                                                <button v-else disabled class="btn btn-light">Plano de Lotificación y Equip. Basico</button>
                                             </div>
                                         </template>
 
-                                        <template v-if="licencias.length">
+                                        <template>
                                             <h6>Licencias, Permisos y Autorizaciones</h6>
                                             <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
-                                                <a v-for="doc in licencias" :key="doc.id"
-                                                    :href="doc.file.public_url" class="btn btn-danger btn-sm">{{doc.tipo}}</a>
+                                                <!-- LICENCIA -->
+                                                <a v-if="num_licencia" title="Ver licencia" class="btn btn-primary btn-sm"  v-text="'Licencia: '+num_licencia" v-bind:href="'/downloadLicencias/'+foto_lic"></a>
+                                                <button v-else disabled class="btn btn-light">Licencia</button>
+                                                <a v-if="licencias.licRecibo[0]"
+                                                    :href="licencias.licRecibo[0].file.public_url" class="btn btn-danger btn-sm">Recibo de Licencia</a>
+                                                <button v-else disabled class="btn btn-light">Recibo de Licencia</button>
+                                                <a v-if="licencias.licUsoSuelo[0]"
+                                                    :href="licencias.licUsoSuelo[0].file.public_url" class="btn btn-danger btn-sm">Recibo de Licencia</a>
+                                                <button v-else disabled class="btn btn-light">Lic. De Uso de Suelo</button>
                                             </div>
                                         </template>
 
-                                        <template v-if="docs_acreditar.length">
+                                        <template>
                                             <h6>Documentos Validados para Acreditar</h6>
                                             <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
-                                                <a v-for="doc in docs_acreditar" :key="doc.id"
-                                                    :href="doc.file.public_url" class="btn btn-danger btn-sm">{{doc.tipo}}</a>
+                                                <!-- PREDIAL -->
+                                                <a v-if="foto_predial" title="Ver Predial" class="btn btn-primary btn-sm" v-bind:href="'/downloadPredial/'+ foto_predial">Predial</a>
+                                                <button v-else disabled class="btn btn-light">Predial</button>
+                                                <a v-if="docs_acreditar.acreditarEscritura[0]"
+                                                    :href="docs_acreditar.acreditarEscritura[0].file.public_url" class="btn btn-danger btn-sm">Escrituras de Propiedad</a>
+                                                <button v-else disabled class="btn btn-light">Escrituras de Propiedad</button>
+                                                <a v-if="docs_acreditar.acreditarActa[0]"
+                                                    :href="docs_acreditar.acreditarActa[0].file.public_url" class="btn btn-danger btn-sm">Acta Constitutiva</a>
+                                                <button v-else disabled class="btn btn-light">Acta Constitutiva</button>
+                                                <a v-if="docs_acreditar.acreditarPoderes[0]"
+                                                    :href="docs_acreditar.acreditarPoderes[0].file.public_url" class="btn btn-danger btn-sm">Poderes</a>
+                                                <button v-else disabled class="btn btn-light">Poderes</button>
+                                                <a v-if="docs_acreditar.acreditarIdentificacion[0]"
+                                                    :href="docs_acreditar.acreditarIdentificacion[0].file.public_url" class="btn btn-danger btn-sm">Identificación de Apoderado</a>
+                                                <button v-else disabled class="btn btn-light">Identificación de Apoderado</button>
                                             </div>
                                         </template>
 
-                                        <template v-if="proteccion_civil.length">
+                                        <template>
                                             <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
-                                                <a v-for="plano in planos" :key="plano.id"
-                                                    :href="plano.file.public_url" class="btn btn-danger btn-sm">{{plano.tipo}}</a>
+                                                <a v-if="proteccion_civil[0]"
+                                                    :href="proteccion_civil[0].file.public_url" class="btn btn-danger btn-sm">Programa de Protección Civil</a>
+                                                <button v-else disabled class="btn btn-light">Programa de Protección Civil</button>
                                             </div>
                                         </template>
                                     </div>
@@ -2451,9 +2496,9 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 num_licencia:'',
                 foto_predial: '',
                 foto_lic: '',
-                planos : [],
-                licencias : [],
-                docs_acreditar : [],
+                planos : {},
+                licencias : {},
+                docs_acreditar : {},
                 proteccion_civil : []
             }
         },
@@ -3541,9 +3586,25 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.getDatosProyecto(data['fraccionamiento_id']);
                 this.getEcotecnologiasAsignadas(data['id']);
 
-                this.planos = data['planos'];
-                this.licencias = data['licencias'];
-                this.docs_acreditar = data['docs_acreditar'];
+                this.planos = {
+                    'planoLicencia' : data['planoLicencia'],
+                    'planoObraExtra' : data['planoObraExtra'],
+                    'planoTerreno' : data['planoTerreno'],
+                    'planoLocalizacion' : data['planoLocalizacion'],
+                    'planoUrbanizacion' : data['planoUrbanizacion'],
+                    'planoAutor' : data['planoAutor'],
+                    'planoLotificacion' : data['planoLotificacion']
+                };
+                this.licencias = {
+                    'licRecibo' : data['licRecibo'],
+                    'licUsoSuelo' : data['licUsoSuelo']
+                };
+                this.docs_acreditar ={
+                    'acreditarEscritura' : data['acreditarEscritura'],
+                    'acreditarActa' : data['acreditarActa'],
+                    'acreditarPoderes' : data['acreditarPoderes'],
+                    'acreditarIdentificacion' : data['acreditarIdentificacion']
+                };
                 this.proteccion_civil = data['proteccion_civil'];
 
                 this.datosFiscales.email_fisc = data['email_fisc'];

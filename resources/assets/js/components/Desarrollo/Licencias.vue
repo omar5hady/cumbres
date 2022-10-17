@@ -753,6 +753,7 @@
                                                     <option value="ESCRITURAS DE PROPIEDAD">ESCRITURAS DE PROPIEDAD</option>
                                                     <option value="ACTA CONSTITUTIVA">ACTA CONSTITUTIVA</option>
                                                     <option value="PODER">PODER</option>
+                                                    <option value="IDENTIFICACION">IDENTIFICACION DE APODERADO</option>
                                                 </datalist>
                                                 <datalist id="categoria" v-if="newArchivo.carpeta == 'ProgramaProteccion'">
                                                     <option value="PROGRAMA INTERNO DE PROTECCIÓN CIVIL">PROGRAMA INTERNO DE PROTECCIÓN CIVIL</option>
