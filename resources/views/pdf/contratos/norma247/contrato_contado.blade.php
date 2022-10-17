@@ -427,18 +427,7 @@
         <p>
             <strong>TERCERA.- PLAZO PARA CELEBRAR EL CONTRATO DE COMPRAVENTA.</strong>
             Las partes pactan que la firma del Contrato de Compraventa en escritura pública se llevará a cabo dentro del plazo de
-            {{$contrato->diasTramites}} días hábiles
-            posteriores a la  fecha en que la institución o en su caso instituciones acreditantes
-            hayan notificado ya sea a <strong>“EL PROMITENTE COMPRADOR”</strong> o a
-            <strong>
-                @if($contrato->emp_terreno != $contrato->emp_constructora)
-                    “LOS PROMITENTES VENDEDORES”,
-                @else
-                    “EL PROMITENTE VENDEDOR”,
-                @endif
-            </strong> según sea el caso,
-            que le fue aprobado y otorgado el crédito a <strong>“EL PROMITENTE COMPRADOR”.</strong> Las partes podrán convenir las prórrogas
-            que estimen convenientes para la firma del contrato de compraventa respectivo.
+            {{$contrato->diasTramites}} días hábiles posteriores a la liquidación del inmueble.
         </p>
 
         <p>
@@ -465,9 +454,6 @@
                 @endif
             </strong>
             no podrán incrementar injustificadamente el precio por fenómenos naturales, meteorológicos, o contingencias sanitarias.
-            En caso de que el importe del crédito no sea suficiente para pagar el precio total,
-            <strong>“EL PROMITENTE COMPRADOR”</strong> pagará la diferencia a <strong>“EL PROMITENTE VENDEDOR”</strong> al momento de la
-            firma de la escritura pública respectiva.
         </p>
 
         <p>

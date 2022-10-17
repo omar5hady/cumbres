@@ -26,6 +26,23 @@ class PlanosController extends Controller
         $this->dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
     }
 
+    public function destroy(Request $request){
+        $doc = PlanoProyecto::findOrFail($request->id);
+
+        $docs = PlanoProyecto::select('id')->where('file_id','=',$doc->file_id)->get();
+        if(sizeof($docs) == 1){
+            $this->deleteDropBoxFile($doc->file_id);
+        }
+        $doc->delete();
+    }
+
+    private function deleteDropBoxFile($carpeta,$id){
+        // Eliminamos el registro de nuestra tabla.
+        $del = DropboxFiles::findOrFail($id);
+        $this->dropbox->delete('Proyectos/'.$del->name);
+        $del->delete();
+    }
+
     private function getLotes(Request $request){
         $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')

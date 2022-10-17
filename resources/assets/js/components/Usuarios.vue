@@ -10,11 +10,14 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Usuarios
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-secondary" v-if="privilegios==0">
+                        <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary" v-if="privilegios==0">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
-                        <button type="button" @click="abrirModal('Personal','Asignar')" class="btn btn-warning" v-if="privilegios==0">
+                        <button type="button" @click="abrirModal('Asignar')" class="btn btn-warning" v-if="privilegios==0">
                             <i class="fa fa-user-plus"></i>&nbsp;Asignar rol
+                        </button>
+                        <button type="button" @click="abrirModal('Importar')" class="btn btn-dark" v-if="privilegios==0">
+                            <i class="fa fa-user-plus"></i>&nbsp;Importar contactos
                         </button>
                         <button type="button" @click="cerrarPrivilegios()" class="btn btn-success" v-if="privilegios==1">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
@@ -43,54 +46,41 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Nombre</th>
-                                            <th>Usuario</th>
-                                            <th>Rol</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="Personal in arrayPersonal" :key="Personal.id" v-on:dblclick="getPrivilegios(Personal.id)" title="Ver privilegios">
-                                            <td class="td2" width="25%">
-                                                <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
+                            <TableComponent :cabecera="['Opciones','Nombre','Usuario','Rol','Status']">
+                                <template v-slot:tbody>
+                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id" v-on:dblclick="getPrivilegios(Personal.id)" title="Ver privilegios">
+                                        <td class="td2" width="25%">
+                                            <button type="button" @click="abrirModal('actualizar',Personal)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <template v-if="Personal.condicion">
+                                                <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-user-times"></i>
                                                 </button>
-                                                <template v-if="Personal.condicion">
-                                                    <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-user-times"></i>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
-                                                        <i class="icon-check"></i>
-                                                    </button>
-                                                </template>
-                                                 <button v-if="Personal.rol_id == 2" title="Asignar asesor a un gerente" type="button" @click="abrirModal('Personal','asignarGerente',Personal)" class="btn btn-dark btn-sm">
-                                                <i class="icon-share"></i>
+                                            </template>
+                                            <template v-else>
+                                                <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
+                                                    <i class="icon-check"></i>
                                                 </button>
+                                            </template>
+                                                <button v-if="Personal.rol_id == 2" title="Asignar asesor a un gerente" type="button" @click="abrirModal('asignarGerente',Personal)" class="btn btn-dark btn-sm">
+                                            <i class="icon-share"></i>
+                                            </button>
 
-                                            </td>
-                                            <td class="td2" width="60%">
-                                                <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
-                                            </td>
+                                        </td>
+                                        <td class="td2" width="60%">
+                                            <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                        </td>
 
-                                            <td class="td2" v-text="Personal.usuario"></td>
-                                            <td class="td2" v-text="Personal.rol"></td>
-                                            <td class="td2">
-                                                <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
-                                                <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
-                                            </td>
-
-
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                        <td class="td2" v-text="Personal.usuario"></td>
+                                        <td class="td2" v-text="Personal.rol"></td>
+                                        <td class="td2">
+                                            <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
+                                            <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -617,235 +607,242 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal == 1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="modal-body">
+                        <!--Criterios para el listado de busqueda -->
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" >
+                            </div>
                         </div>
-                        <div class="modal-body">
-
-
-                                    <!--Criterios para el listado de busqueda -->
-                                  <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" >
-                                    </div>
-                                </div>
-                                   <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-9">
-                                        <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" >
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" >
-                                    </div>
-                                </div>
-                                     <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-4">
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" >
-                                    </div>
-                                    <div class="col-md-4" >
-                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="colonia" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Direccion" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
-                                    <div class="col-md-6">
-                                          <select class="form-control" v-model="departamento_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Extension</label>
-                                    <div class="col-md-3">
-                                        <input type="text" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Correo electronico</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="email" class="form-control" placeholder="Correo electronico" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Personal</label>
-                                    <div class="col-md-6">
-                                          <select class="form-control" v-model="id_persona">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="personal in arrayPersonas" :key="personal.personalId" :value="personal.personalId" v-text="personal.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row" v-if="tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="usuario" class="form-control" placeholder="Usuario" >
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row" v-if="tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
-                                    <div class="col-md-9">
-                                        <input type="password" v-model="password" autocomplete="off" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Rol</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="rol_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="roles in arrayRoles" :key="roles.id" :value="roles.id" v-text="roles.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="rol_id==2 && tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="tipo_vendedor" >
-                                            <option value="0">Interno</option>
-                                            <option value="1">Externo</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Inmobiliaria</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="inmobiliaria" class="form-control" placeholder="Inmobiliaria" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control" v-model="esquema" >
-                                            <option value=2>2%</option>
-                                            <option value=3>3%</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Retencion</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control" v-model="retencion" >
-                                            <option value=0>No</option>
-                                            <option value=1>Si</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">ISR</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control" v-model="isr" >
-                                            <option value=0>No</option>
-                                            <option value=1>Si</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="activo" >
-                                            <option value="1">Activo</option>
-                                            <option value="0"> Inactivo</option>
-                                        </select>
-                                        <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
-                                    </div>
-                                </div>
-
-                                 <div v-if="tipoAccion == 4" class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Gerentes</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="supervisor_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="gerentes in arrayGerentes" :key="gerentes.id" :value="gerentes.id" v-text="gerentes.nombre+' '+gerentes.apellidos"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerPersonal -->
-                                <div v-show="errorPersonal" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjPersonal" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                            <div class="col-md-9">
+                                <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" >
+                            </div>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPersonal()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersonal()">Actualizar</button>
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="asignarUsuario()">Asignar</button>
-                            <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="asignarGerente()">Asignar</button>
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                            <div class="col-md-6">
+                                <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" >
+                            </div>
                         </div>
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                            <div class="col-md-4">
+                                <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" >
+                            </div>
+                            <div class="col-md-4" >
+                                <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
+                            <div class="col-md-4">
+                                <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="colonia" >
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="direccion" class="form-control" placeholder="Direccion" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
+                            <div class="col-md-6">
+                                    <select class="form-control" v-model="departamento_id" >
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                            <div class="col-md-5">
+                                <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Extension</label>
+                            <div class="col-md-3">
+                                <input type="text" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Celular</label>
+                            <div class="col-md-5">
+                                <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Correo electronico</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="email" class="form-control" placeholder="Correo electronico" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion == 1">
+                            <label class="col-md-3 form-control-label" for="text-input">Personal</label>
+                            <div class="col-md-6">
+                                    <select class="form-control" v-model="id_persona">
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="personal in arrayPersonas" :key="personal.personalId" :value="personal.personalId" v-text="personal.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row" v-if="tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="usuario" class="form-control" placeholder="Usuario" >
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row" v-if="tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
+                            <div class="col-md-9">
+                                <input type="password" v-model="password" autocomplete="off" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Rol</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="rol_id" >
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="roles in arrayRoles" :key="roles.id" :value="roles.id" v-text="roles.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="rol_id==2 && tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="tipo_vendedor" >
+                                    <option value="0">Interno</option>
+                                    <option value="1">Externo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Inmobiliaria</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="inmobiliaria" class="form-control" placeholder="Inmobiliaria" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="esquema" >
+                                    <option value=2>2%</option>
+                                    <option value=3>3%</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Retencion</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="retencion" >
+                                    <option value=0>No</option>
+                                    <option value=1>Si</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                            <label class="col-md-3 form-control-label" for="text-input">ISR</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="isr" >
+                                    <option value=0>No</option>
+                                    <option value=1>Si</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
+                            <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="activo" >
+                                    <option value="1">Activo</option>
+                                    <option value="0"> Inactivo</option>
+                                </select>
+                                <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
+                            </div>
+                        </div>
+
+                            <div v-if="tipoAccion == 4" class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Gerentes</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="supervisor_id" >
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="gerentes in arrayGerentes" :key="gerentes.id" :value="gerentes.id" v-text="gerentes.nombre+' '+gerentes.apellidos"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Div para mostrar los errores que mande validerPersonal -->
+                        <div v-show="errorPersonal" class="form-group row div-error">
+                            <div class="text-center text-error">
+                                <div v-for="error in errorMostrarMsjPersonal" :key="error" v-text="error">
+
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPersonal()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersonal()">Actualizar</button>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="asignarUsuario()">Asignar</button>
+                    <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="asignarGerente()">Asignar</button>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->
+
+            <!-- Modal para el archivo excel -->
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal == 2"
+            >
+                <template v-slot:body>
+                    <template>
+                        <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+
+                            <!-- {{ csrf_field() }} -->
+                            Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
+
+                            <input type="submit" value="Importar Usuarios" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                        </form>
+                    </template>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
         </main>
@@ -856,9 +853,16 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from './Componentes/ModalComponent.vue';
+import TableComponent from './Componentes/TableComponent.vue';
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
+                file:'',
                 privilegios:0,
                 proceso:false,
                 id:0,
@@ -1097,6 +1101,34 @@
             }
         },
         methods : {
+            onImageChange(e){
+                this.file = e.target.files[0];
+                if(this.file=='')
+                    return;
+            },
+            formSubmit(e) {
+                e.preventDefault();
+                let formData = new FormData();
+                formData.append('file', this.file);
+                let me = this;
+                axios.post('/import/users',formData)
+                .then(function (response) {
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo cargado correctamente',
+                        showConfirmButton: false,
+                        timer: 2500
+                        })
+                    me.cerrarModal();
+                    me.listarPersonal(1,'','Personal'); //se enlistan nuevamente los registros
+                })
+
+                .catch(function (error) {
+                  me.proceso=false;
+                });
+
+            },
             /**Metodo para mostrar los registros */
             listarPersonal(page, buscar, criterio){
                 let me = this;
@@ -1308,7 +1340,6 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-
             },
             getPrivilegios(id){
                 let me = this;
@@ -2101,9 +2132,7 @@
                 me.rep_proy = 0;
                 me.rep_publi = 0;
                 me.rep_vent_modelos =0;
-
                 me.rol_id =0;
-
                 me.privilegios=0;
             },
             cerrarModal(){
@@ -2129,119 +2158,109 @@
                 this.errorPersonal = 0;
                 this.errorMostrarMsjPersonal = [];
                 this.inmobiliaria='',
-                this.tipo_vendedor=0
-
-
+                this.tipo_vendedor=0;
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(modelo, accion,data =[]){
-                switch(modelo){
-                    case "Personal":
+            abrirModal(accion,data =[]){
+                this.modal = 1;
+                switch(accion){
+                    case 'registrar':
                     {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Personal';
-                                this.departamento_id = '0',
-                                this.empresa_id = 1,
-                                this.nombre='';
-                                this.apellidos='';
-                                this.f_nacimiento='';
-                                this.rfc='';
-                                this.homoclave='';
-                                this.colonia='0';
-                                this.direccion='';
-                                this.cp='';
-                                this.telefono='';
-                                this.ext='';
-                                this.celular='';
-                                this.email='';
-                                this.usuario='';
-                                this.password='';
-                                this.condicion=1;
-                                this.rol_id=0;
-                                this.inmobiliaria='';
-                                this.tipo_vendedor=0;
-                                this.esquema=2;
-                                this.retencion =0;
-                                this.isr = 0;
+                        this.tituloModal = 'Registrar Personal';
+                        this.departamento_id = '0',
+                        this.empresa_id = 1,
+                        this.nombre='';
+                        this.apellidos='';
+                        this.f_nacimiento='';
+                        this.rfc='';
+                        this.homoclave='';
+                        this.colonia='0';
+                        this.direccion='';
+                        this.cp='';
+                        this.telefono='';
+                        this.ext='';
+                        this.celular='';
+                        this.email='';
+                        this.usuario='';
+                        this.password='';
+                        this.condicion=1;
+                        this.rol_id=0;
+                        this.inmobiliaria='';
+                        this.tipo_vendedor=0;
+                        this.esquema=2;
+                        this.retencion =0;
+                        this.isr = 0;
 
-                                this.activo='1';
-                                this.tipoAccion = 3;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar Personal';
-                                this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.departamento_id=data['departamento_id'];
-                                this.empresa_id=data['empresa_id'];
-                                this.nombre=data['nombre'];
-                                this.apellidos=data['apellidos'];
-                                this.f_nacimiento=data['f_nacimiento'];
-                                this.rfc=data['rfc'];
-                                this.homoclave=data['homoclave'];
-                                this.colonia=data['colonia'];
-                                this.direccion=data['direccion'];
-                                this.cp=data['cp'];
-                                this.telefono=data['telefono'];
-                                this.ext=data['ext'];
-                                this.celular=data['celular'];
-                                this.email=data['email'];
-                                this.activo=data['activo'];
-                                this.usuario=data['usuario'];
-                                this.rol_id=data['rol_id'];
-                                this.password=data['password'];
-                                this.condicion=data['condicion'];
-                                this.tipoAccion = 2;
-                                this.inmobiliaria=data['inmobiliaria'];
-                                this.tipo_vendedor=data['tipo'];
-                                this.esquema = data['esquema'];
-                                this.retencion = data['retencion'];
-                                this.isr = data['isr'];
-                                break;
-                            }
-                            case 'Asignar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Asignar rol';
-                                this.id_persona = 0;
-                                this.usuario='';
-                                this.password='';
-                                this.condicion=1;
-                                this.rol_id=0;
-                                this.tipoAccion = 1;
-                                break;
-                            }
+                        this.activo='1';
+                        this.tipoAccion = 3;
+                        break;
+                    }
+                    case 'Importar':{
+                        this.modal = 2;
+                        this.file = '';
+                    }
+                    case 'actualizar':
+                    {
+                        this.tituloModal='Actualizar Personal';
+                        this.tipoAccion=2;
+                        this.id=data['id'];
+                        this.departamento_id=data['departamento_id'];
+                        this.empresa_id=data['empresa_id'];
+                        this.nombre=data['nombre'];
+                        this.apellidos=data['apellidos'];
+                        this.f_nacimiento=data['f_nacimiento'];
+                        this.rfc=data['rfc'];
+                        this.homoclave=data['homoclave'];
+                        this.colonia=data['colonia'];
+                        this.direccion=data['direccion'];
+                        this.cp=data['cp'];
+                        this.telefono=data['telefono'];
+                        this.ext=data['ext'];
+                        this.celular=data['celular'];
+                        this.email=data['email'];
+                        this.activo=data['activo'];
+                        this.usuario=data['usuario'];
+                        this.rol_id=data['rol_id'];
+                        this.password=data['password'];
+                        this.condicion=data['condicion'];
+                        this.tipoAccion = 2;
+                        this.inmobiliaria=data['inmobiliaria'];
+                        this.tipo_vendedor=data['tipo'];
+                        this.esquema = data['esquema'];
+                        this.retencion = data['retencion'];
+                        this.isr = data['isr'];
 
-                             case 'asignarGerente':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Asignar asesor a gerente';
-                                this.id=data['id'];
-                                this.tipoAccion = 4;
-                                break;
-                            }
-                        }
+                        this.selectColonias(this.cp);
+                        break;
+                    }
+                    case 'Asignar':
+                    {
+                        this.tituloModal='Asignar rol';
+                        this.id_persona = 0;
+                        this.usuario='';
+                        this.password='';
+                        this.condicion=1;
+                        this.rol_id=0;
+                        this.tipoAccion = 1;
+                        break;
+                    }
+                    case 'asignarGerente':
+                    {
+                        this.tituloModal='Asignar asesor a gerente';
+                        this.id=data['id'];
+                        this.tipoAccion = 4;
+                        break;
                     }
                 }
-                this.selectDepartamento();
-                this.selectEmpresa();
-                this.selectColonias(this.cp);
-
-                this.selectPersonas();
-                this.selectGerentes();
             }
         },
         mounted() {
             this.listarPersonal(1,this.buscar,this.criterio);
             this.selectRoles();
+            this.selectDepartamento();
+            this.selectEmpresa();
+            this.selectPersonas();
+            this.selectGerentes();
         }
     }
 </script>
@@ -2253,18 +2272,6 @@
         font-size: 0.85rem;
         color: #27417b;
     }
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -2272,15 +2279,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {

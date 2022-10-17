@@ -17,6 +17,57 @@ Use App\Asign_proyecto;
 
 class UserController extends Controller
 {
+
+    public function importUsers(Request $request){
+        //validate the xls file
+        $this->validate($request, array(
+            'file'      => 'required'
+        ));
+
+        if($request->hasFile('file')){
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
+                $path = $request->file->getRealPath();
+                //Se obtiene la información del archivo.
+                $data = Excel::load($path, function($reader) {})->get();
+
+                if(!empty($data) && $data->count()){
+                    foreach ($data as $key => $value) {
+                        $persona = new Personal();
+                        $persona->departamento_id = 12;
+                        $persona->nombre = $value->nombre;
+                        $persona->apellidos = $value->apellidos;
+                        $persona->f_nacimiento = '2022-10-17';
+                        $persona->rfc = $value->rfc;
+                        $persona->direccion = '#';
+                        $persona->colonia = 'San Luis Potosí Centro';
+                        $persona->cp = 78000;
+                        $persona->celular = '44444444';
+                        $persona->email = 'correo@correo.com';
+                        $persona->empresa_id = 1;
+                        $persona->save();
+
+                        // se crea el usuario
+                        $user = new User();
+                        $user->usuario = $value->usuario;
+                        $user->password = bcrypt('123456');
+                        $user->condicion = '1';
+                        $user->rol_id = 16;
+                        $user->id = $persona->id;
+                        $user->fondo_ahorro = 1;
+                        $user->fondo_pension = 1;
+                        $user->prestamos_personales = 1;
+                        $user->save();
+                    }
+                }
+                return back();
+            }else {
+                Session::flash('error', 'File is a '.$extension.' file.!! Please upload a valid xls/csv file..!!');
+                return back();
+            }
+        }
+    }
+
     //Se consulta la informacion relacionanda a los usuarios que tienen acceso al sistema
     public function index(Request $request)
     {

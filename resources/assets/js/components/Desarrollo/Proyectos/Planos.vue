@@ -283,9 +283,14 @@
                 >
                     <template v-slot:body>
                         <div class="col-md-12">
-                            <TableComponent :cabecera="['Tipo','Descripcion','']">
+                            <TableComponent :cabecera="['','Tipo','Descripcion','']">
                                 <template v-slot:tbody>
                                     <tr v-for="p in planos" :key="p.id">
+                                        <td>
+                                            <button title="Eliminar archivo" type="button" @click="deleteFile(p.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
                                         <td class="td2" v-text="p.tipo"></td>
                                         <td class="td2" v-text="p.description"></td>
                                         <td class="td2">
@@ -385,6 +390,29 @@ export default {
 
             }).catch(function (error) {
                 currentObj.output = error;
+            });
+        },
+
+        deleteFile(id){
+            let me = this;
+            axios.delete(`/planos-proyectos/${id}`, {
+                params: {'id': id}
+            }).then(function (response){
+                me.indexLotes(me.pagination.current_page);
+                me.planos = me.planos.filter( e => e.id !== id)
+                //Se muestra mensaje Success
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+                    toast({
+                    type: 'success',
+                    title: 'Archivo eliminado correctamente'
+                })
+            }).catch(function (error){
+                console.log(error);
             });
         },
 

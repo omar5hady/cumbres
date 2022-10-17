@@ -100,6 +100,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/usuarios/act_privilegios','UserController@updatePrivilegios');
         Route::put('/usuarios/asignar/gerente','UserController@asignarGerentes');
 
+        Route::post('/import/users','UserController@importUsers');
+
 
     ////////////////// VENDEDORES //////////////////////////////////////////
         Route::get('/asesores','UserController@indexAsesores');
