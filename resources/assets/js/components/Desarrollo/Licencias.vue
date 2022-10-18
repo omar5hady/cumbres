@@ -25,6 +25,11 @@
                             <i class="icon-cloud-upload"></i>Carga de archivos
                         </button>
                     </template>
+                    <button v-if="criterio=='lotes.fraccionamiento_id' && buscar != ''"
+                        title="Carga de archivos" type="button" @click="abrirModal('subirArchivoProyecto')"
+                        class="btn btn-scarlet btn-sm">
+                        <i class="icon-cloud-upload"></i>Archivos por proyecto
+                    </button>
 
 
                 </div>
@@ -634,8 +639,10 @@
         >
             <template v-slot:body>
                  <ul class="nav nav-tabs">
-                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==1 }" @click="tipoAccion = 1">Licencias</a></li>
-                    <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==2 }" @click="tipoAccion = 2">Predial</a></li>
+                    <template v-if="proyectoSel==''">
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==1 }" @click="tipoAccion = 1">Licencias</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==2 }" @click="tipoAccion = 2">Predial</a></li>
+                    </template>
                     <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': tipoAccion==3 }" @click="tipoAccion = 3">Otro archivo</a></li>
                 </ul>
 
@@ -733,9 +740,12 @@
                                             <label class="col-md-3 form-control-label" for="text-input">Categoria</label>
                                             <div class="col-md-9">
                                                 <select class="form-control" v-model="newArchivo.carpeta" @change="newArchivo.tipo = ''">
-                                                    <option value="Licencias">Licencias, Permisos y Autorizaciones</option>
-                                                    <option value="DocsAcreditar">Documentos para acreditar</option>
-                                                    <option value="ProgramaProteccion">Programa Interno de Protección Civil</option>
+                                                    <template v-if="proyectoSel!=''">
+                                                        <option value="Licencias">Licencias, Permisos y Autorizaciones</option>
+                                                        <option value="DocsAcreditar">Documentos para acreditar</option>
+                                                        <option value="ProgramaProteccion">Programa Interno de Protección Civil</option>
+                                                    </template>
+                                                    <option v-else value="LicenciaLote">Por Lote</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -746,7 +756,7 @@
                                             <div class="col-md-9">
                                                 <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Archivo">
                                                 <datalist id="categoria" v-if="newArchivo.carpeta == 'Licencias'">
-                                                    <option value="RECIBO">RECIBO</option>
+                                                    <option value="Licencia Fraccionamiento">Licencia del Fraccionamiento</option>
                                                     <option value="USO DE SUELO">USO DE SUELO</option>
                                                 </datalist>
                                                 <datalist id="categoria" v-if="newArchivo.carpeta == 'DocsAcreditar'">
@@ -757,6 +767,11 @@
                                                 </datalist>
                                                 <datalist id="categoria" v-if="newArchivo.carpeta == 'ProgramaProteccion'">
                                                     <option value="PROGRAMA INTERNO DE PROTECCIÓN CIVIL">PROGRAMA INTERNO DE PROTECCIÓN CIVIL</option>
+                                                </datalist>
+                                                <datalist id="categoria" v-if="newArchivo.carpeta == 'LicenciaLote'">
+                                                    <option value="RECIBO">RECIBO</option>
+                                                    <option value="ALINEAMIENTO">ALINEAMIENTO</option>
+                                                    <option value="USO DE SUELO">USO DE SUELO</option>
                                                 </datalist>
                                             </div>
                                         </div>
@@ -889,6 +904,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 nomPredial : 'Seleccione Archivo',
                 newArchivo: {},
                 archivos:[],
+                proyectoSel:'',
+                etapaSel:'',
             }
         },
         computed:{
@@ -950,6 +967,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 let formData = new FormData();
                 formData.append('file', this.newArchivo.file);
                 formData.append('ids', this.allLic);
+                formData.append('proyecto', this.proyectoSel);
+                formData.append('etapa', this.etapaSel);
                 formData.append('carpeta', this.newArchivo.carpeta);
                 formData.append('tipo', this.newArchivo.tipo);
                 let me = this;
@@ -1409,6 +1428,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
+                this.proyectoSel = '';
 
             },
             cerrarObs(){
@@ -1434,6 +1454,21 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.arquitecto_id=data['arquitecto_id'];
                         this.perito_dro=data['perito_dro'];
                         this.id=data['id'];
+                        break;
+                    }
+
+                    case 'subirArchivoProyecto':{
+                        this.modal = 4;
+                        this.tituloModal='Subir Archivo por Proyecto';
+                        this.tipoAccion=3;
+                        this.newArchivo = {
+                            tipo: "",
+                            file: "",
+                            carperta:"Licencias",
+                            nom_archivo: 'Seleccione Archivo'
+                        };
+                        this.proyectoSel = this.buscar;
+                        this.etapaSel = this.b_etapa;
                         break;
                     }
 

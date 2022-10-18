@@ -36,7 +36,7 @@ class PlanosController extends Controller
         $doc->delete();
     }
 
-    private function deleteDropBoxFile($carpeta,$id){
+    private function deleteDropBoxFile($id){
         // Eliminamos el registro de nuestra tabla.
         $del = DropboxFiles::findOrFail($id);
         $this->dropbox->delete('Proyectos/'.$del->name);
@@ -85,16 +85,31 @@ class PlanosController extends Controller
     }
 
     public function store(Request $request){
-        $ids = explode(",", $request->ids);
         $fileID = $this->storeFile($request);
-
-        foreach($ids as $id){
-            $plano = new PlanoProyecto();
-            $plano->lote_id = $id;
-            $plano->file_id = $fileID;
-            $plano->tipo = $request->tipo;
-            $plano->description = $request->description;
-            $plano->save();
+        if($request->proyecto != ''){
+            $lotes = Lote::select('id')->where('fraccionamiento_id','=',$request->proyecto);
+                if($request->etapa != '')
+                    $lotes = $lotes->where('etapa_id','=',$request->etapa);
+            $lotes = $lotes->get();
+            foreach($lotes as $lote){
+                $plano = new PlanoProyecto();
+                $plano->lote_id = $lote->id;
+                $plano->file_id = $fileID;
+                $plano->tipo = $request->tipo;
+                $plano->description = $request->description;
+                $plano->save();
+            }
+        }
+        else{
+            $ids = explode(",", $request->ids);
+            foreach($ids as $id){
+                $plano = new PlanoProyecto();
+                $plano->lote_id = $id;
+                $plano->file_id = $fileID;
+                $plano->tipo = $request->tipo;
+                $plano->description = $request->description;
+                $plano->save();
+            }
         }
     }
 

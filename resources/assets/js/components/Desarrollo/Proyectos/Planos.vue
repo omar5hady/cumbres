@@ -16,6 +16,11 @@
                     >
                         <i class="icon-plus"></i>&nbsp;Añadir planos
                     </button>
+                    <button v-if="b_proyecto != ''" class="btn btn-scarlet"
+                        @click="abrirModal('planos_fracc')"
+                    >
+                        <i class="icon-plus"></i>&nbsp;Añadir planos por Proyecto
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
@@ -242,9 +247,12 @@
                                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de plano</label>
                                                     <div class="col-md-9">
                                                         <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Plano">
-                                                        <datalist id="categoria">
+                                                        <datalist id="categoria" v-if="tipoAccion == 1">
                                                             <option value="OBRA EXTRA">OBRA EXTRA</option>
                                                             <option value="LICENCIA">LICENCIA</option>
+                                                            <option value="AUTORIZACIÓN">AUTORIZACION</option>
+                                                        </datalist>
+                                                        <datalist id="categoria" v-if="tipoAccion == 2">
                                                             <option value="TERRENO">TERRENO</option>
                                                             <option value="LOCALIZACIÓN Y UBICACION">LOCALIZACIÓN Y UBICACION</option>
                                                             <option value="URBANIZACIÓN">URBANIZACIÓN</option>
@@ -338,7 +346,10 @@ export default {
 
             modal: 0,
             tituloModal: "",
-            newArchivo:{}
+            newArchivo:{},
+            proyectoSel:'',
+            etapaSel:'',
+            tipoAccion:1,
         };
     },
     computed: {},
@@ -376,6 +387,8 @@ export default {
             formData.append('ids', this.lotes_ini);
             formData.append('description', this.newArchivo.description);
             formData.append('tipo', this.newArchivo.tipo);
+            formData.append('proyecto', this.proyectoSel);
+            formData.append('etapa', this.etapaSel);
             let me = this;
             axios.post('/planos-proyectos', formData)
             .then(function (response) {
@@ -398,8 +411,8 @@ export default {
             axios.delete(`/planos-proyectos/${id}`, {
                 params: {'id': id}
             }).then(function (response){
-                me.indexLotes(me.pagination.current_page);
                 me.planos = me.planos.filter( e => e.id !== id)
+                me.indexLotes(me.pagination.current_page);
                 //Se muestra mensaje Success
                 const toast = Swal.mixin({
                     toast: true,
@@ -448,6 +461,8 @@ export default {
             this.planos = [];
             this.newArchivo = {};
             this.lotes_ini = [];
+            this.proyectoSel = '';
+            this.etapaSel = '';
             this.indexLotes(this.arrayLotes.current_page)
         },
 
@@ -464,6 +479,7 @@ export default {
                         file: "",
                         nom_archivo: 'Seleccione Archivo'
                     };
+                    this.tipoAccion = 1;
                     break;
                 }
 
@@ -472,6 +488,21 @@ export default {
                     this.modal = 2;
                     this.tituloModal = 'Planos del lote: ' + data['num_lote'];
                     break;
+                }
+
+                case 'planos_fracc':{
+                    this.modal = 1;
+                    this.tituloModal = "Nuevo plano por Proyecto";
+
+                    this.newArchivo = {
+                        description: "",
+                        tipo: "",
+                        file: "",
+                        nom_archivo: 'Seleccione Archivo'
+                    };
+                    this.tipoAccion = 2;
+                    this.proyectoSel = this.b_proyecto;
+                    this.etapaSel = this.b_etapa;
                 }
             }
         }
