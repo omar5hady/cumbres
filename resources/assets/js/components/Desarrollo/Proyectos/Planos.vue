@@ -270,7 +270,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="boton-modal">
+                                            <div class="boton-modal" v-if="cargando==0">
                                                 <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
                                                     type="submit" class="btn btn-success boton-modal"
                                                 >
@@ -350,6 +350,7 @@ export default {
             proyectoSel:'',
             etapaSel:'',
             tipoAccion:1,
+            cargando:0
         };
     },
     computed: {},
@@ -381,6 +382,7 @@ export default {
         formSubmitPlano(e) {
             e.preventDefault();
             let currentObj = this;
+            this.cargando = 1;
 
             let formData = new FormData();
             formData.append('file', this.newArchivo.file);
@@ -392,6 +394,7 @@ export default {
             let me = this;
             axios.post('/planos-proyectos', formData)
             .then(function (response) {
+                me.cargando = 0;
                 swal({
                     position: 'top-end',
                     type: 'success',
@@ -403,6 +406,7 @@ export default {
 
             }).catch(function (error) {
                 currentObj.output = error;
+                this.cargando = 0;
             });
         },
 
@@ -464,6 +468,7 @@ export default {
             this.proyectoSel = '';
             this.etapaSel = '';
             this.indexLotes(this.arrayLotes.current_page)
+            this.cargando = 0;
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */

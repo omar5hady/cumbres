@@ -776,7 +776,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="boton-modal">
+                                    <div class="boton-modal" v-if="cargando == 0">
                                         <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
                                             type="submit" class="btn btn-scarlet boton-modal"
                                         >
@@ -906,6 +906,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 archivos:[],
                 proyectoSel:'',
                 etapaSel:'',
+                cargando:0,
             }
         },
         computed:{
@@ -963,6 +964,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             formSubmitFile(e) {
                 e.preventDefault();
+                this.cargando = 1;
 
                 let formData = new FormData();
                 formData.append('file', this.newArchivo.file);
@@ -974,6 +976,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 let me = this;
                 axios.post('/docs-proyectos', formData)
                 .then(function (response) {
+                    me.cargando = 0;
                     const toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
@@ -987,6 +990,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
 
                 }).catch(function (error) {
+                    me.cargando = 0;
                 });
             },
             onSelectLicencia(){
@@ -1429,6 +1433,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
                 this.proyectoSel = '';
+                this.cargando = 0;
 
             },
             cerrarObs(){
