@@ -43,58 +43,45 @@ class PrestamosController extends Controller
 
         // query donde se hace la peticion de la informacion de la tabla de prestamos
         $query=Prestamos_personales::join('personal','prestamos_personales.user_id','=','personal.id')
-                                    ->select(
-                                    'prestamos_personales.id',
-                                    'prestamos_personales.created_at',
-                                    'user_id',
-                                    'jefe_id',
-                                    'monto_solicitado',
-                                    'fecha_ini',
-                                    'motivo',
-                                    'rh_band',
-                                    'jefe_band',
-                                    'dir_band',
-                                    'status',
-                                    'saldo',
-                                    'desc_quin',
-                                    'personal.nombre',
-                                    'personal.apellidos',
-                                    'status_rh',
-                                    'fecha_status_rh');
+            ->select('prestamos_personales.id','prestamos_personales.created_at','user_id','jefe_id','monto_solicitado',
+            'fecha_ini','motivo','rh_band','jefe_band','dir_band','status','saldo','desc_quin',
+            'personal.nombre','personal.apellidos','status_rh','fecha_status_rh'
+        );
 
-                                // En las siguientes condicionales se verifica que datos corresponden para la solicitud del usuario logueado
+        // En las siguientes condicionales se verifica que datos corresponden para la solicitud del usuario logueado
 
-                                    if($isGerenteCurrent == 'true'){
-                                        $query=$query->where('jefe_id','=',$id_user)->orWhere('user_id','=',$id_user);
+            if($isGerenteCurrent == 'true'){
+                $query=$query->where('jefe_id','=',$id_user)->orWhere('user_id','=',$id_user);
+            }elseif($isRHCurrent == 'true' || $isDireccionCurrent == 'true'){
+                $query=$query;
+            }else{
+                $query=$query->where('user_id','=',$id_user);
+            }
+            if($b_colaborador !='' ){
+                $query=$query->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $b_colaborador . '%');
+            }
+            // condicionales de busqueda.
+            if($b_fecha1 !='' && $b_fecha2 !='' ){
+                $query = $query->whereBetween('fecha_ini', [$b_fecha1, $b_fecha2]);
+            }
 
-                                    }elseif($isRHCurrent == 'true' || $isDireccionCurrent == 'true'){
-                                        $query=$query;
-                                    }else{
-                                        $query=$query->where('user_id','=',$id_user);
-                                    }
+        else{
+            if ($b_fecha2 !='') {
+                $query = $query->where('fecha_ini','=', $b_fecha2);
+            }
+            if ($b_fecha1 !='') {
+                $query = $query->where('fecha_ini','=', $b_fecha1);
+            }
 
-                                    if($b_colaborador !='' ){
-                                        $query=$query->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $b_colaborador . '%');
-                                    }
+        }
+        if($b_status !=''){
+            $query = $query->where('status','=',$b_status);
+        }
+        $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','asc')->paginate(8);
 
-                                    // condicionales de busqueda.
-                                    if($b_fecha1 !='' && $b_fecha2 !='' ){
-                                        $query = $query->whereBetween('fecha_ini', [$b_fecha1, $b_fecha2]);
-                                    }
-
-                                else{
-                                    if ($b_fecha2 !='') {
-                                        $query = $query->where('fecha_ini','=', $b_fecha2);
-                                    }
-                                    if ($b_fecha1 !='') {
-                                        $query = $query->where('fecha_ini','=', $b_fecha1);
-                                    }
-
-                                }
-                                if($b_status !=''){
-                                    $query = $query->where('status','=',$b_status);
-                                }
-                                $query = $query->orderBy('personal.nombre','asc')->orderBy('prestamos_personales.id','asc')->paginate(8);
+        foreach($query as $solicitud){
+            $solicitud->pagos = Pagos_prestamos::where('solic_id','=',$solicitud->id)->orderBy('fecha_quincena','asc')->get();
+        }
 
         return $query;
     }
@@ -123,8 +110,6 @@ class PrestamosController extends Controller
         $prestamo->save();
 
         return $prestamo->id; // retorna el id del prestamo creado , para posteriormente crear la tabla de pagos con ese Id
-
-
     }
 
     // crea un registro en la tabla de observaciones
@@ -141,7 +126,43 @@ class PrestamosController extends Controller
         $obs->observacion = $observacion;
         $obs->usuario = Auth::user()->usuario;
         $obs->save();
+    }
 
+    public function storeNewPago(Request $request){
+        $prestamo=Prestamos_personales::findOrFail($request->id);
+
+        $pago = new Pagos_prestamos();
+        $pago->monto_pago = 0;
+        $pago->monto_pago_extra = $request->monto_pago_extra;
+        $pago->solic_id = $request->id;
+        $pago->fecha_pago = $request->fecha_pago;
+        $pago->fecha_quincena = $pago->fecha_pago;
+        $pago->saldo = $prestamo->saldo - $pago->monto_pago_extra;
+        $pago->status = 1;
+        $pago->save();
+
+        $prestamo->saldo = $pago->saldo;
+        if($prestamo->saldo == 0)
+            $prestamo->status= 3;
+        $prestamo->save();
+
+        $this->updateTabla($request->id, $prestamo->saldo, $prestamo->desc_quin);
+    }
+
+    private function updateTabla($solic_id, $saldo, $desc_quin){
+        $pagos = Pagos_prestamos::select('id')
+            ->where('status','=',0)->where('solic_id','=',$solic_id)->orderBy('fecha_quincena')->get();
+        foreach($pagos as $p){
+            $pago = Pagos_prestamos::findOrFail($p->id);
+            if($saldo > $desc_quin)
+                $pago->monto_pago = $desc_quin;
+            else
+                $pago->monto_pago = $saldo;
+            $pago->monto_pago_extra = 0;
+            $pago->saldo = $saldo - $pago->monto_pago;
+            $saldo = $pago->saldo;
+            $pago->save();
+        }
     }
 
 
@@ -149,28 +170,29 @@ class PrestamosController extends Controller
     public function  capturar_pago(Request $request){
         if (!$request->ajax()) return redirect('/');
 
+        $pagos = $request->pagos;
+        $solicitud_id = $request->solic_id;
 
-        $pago_id=$request->pago_id;
-        $solicitud_id=$request->solic_id;
+        $monto_retenido = 0;
+        foreach($pagos as $monto){
+            $pago = Pagos_prestamos::findOrFail($monto['id']);
+            $pago->monto_pago= $monto['monto_pago'];
+            $pago->monto_pago_extra = $monto['monto_pago_extra'];
+            $pago->saldo = $monto['saldo'];
+            $pago->fecha_pago = $monto['fecha_pago'];
+            if($pago->fecha_pago != NULL){
+                $pago->status = 1;
+                $monto_retenido += $pago->monto_pago + $pago->monto_pago_extra;
+            }
+            $pago->save();
 
-             $p=Pagos_prestamos::findOrFail($pago_id);
-             $p->fecha_pago=$request->fecha_pago;
-             $p->status=1;
-             $p->save();
+        }
 
-             // Del pago capturado se busca por su id y se extrae  el saldo para
-             $saldo=Pagos_prestamos::select('saldo')->where('id','=', $pago_id)->first();
-
-
-                 $prestamo=Prestamos_personales::findOrFail($solicitud_id);
-                 $prestamo->saldo=$saldo['saldo'];
-                 if($saldo->saldo == 0){
-                    $prestamo->status= 3;
-                 }
-                 $prestamo->save();
-
-
-
+        $prestamo=Prestamos_personales::findOrFail($solicitud_id);
+        $prestamo->saldo = $prestamo->monto_solicitado - $monto_retenido;
+        if($prestamo->saldo == 0)
+            $prestamo->status= 3;
+        $prestamo->save();
     }
 
     public function getObservaciones(Request $request){
@@ -219,72 +241,38 @@ class PrestamosController extends Controller
         $desc_quin=$request->desc_quin;
 
     //     $index=key($tablaPagos); // obtiene el index del primer elemento del arreglo
-         $prestamo=Prestamos_personales::findOrFail($solicitud_id);
+        $prestamo=Prestamos_personales::findOrFail($solicitud_id);
         $prestamo->motivo=$motivo;
         $prestamo->fecha_ini= $fecha_inicio_retencion;
         $prestamo->jefe_id= $idJefe;
         $prestamo->monto_solicitado= $monto;
         $prestamo->saldo= $monto;
         $prestamo->desc_quin= $desc_quin;
-       
-    //    if($index > 0){ // verifica si el index del arreglo recibido , es nuevo o ya tiene pagos capturados en base al index recibido si es cero es nueva tabla de pago, si es diferente es un arreglo para editar
-    //         foreach ($tablaPagos as $key => $value) {
-    //                 if($value['saldo']==0){
-    //                     if($key == $index  ) // pendientee
-    //                     $prestamo->saldo =$value['saldo'];
-    //                     else
-    //                      $prestamo->saldo =$tablaPagos[$key-1]['saldo'];
-    //                     break;   // rompe el ciclo , para quedarse con el ultimo registro de saldo en el arreglo
-    //                 }
-    //         }
-    //     }else{
-    //         if($tablaPagos[0]['pagoExtra'] != null ){
-    //             $prestamo->saldo =$tablaPagos[0]['saldo'];
-    //         }else{
-    //             $prestamo->saldo =$monto;
-    //         }
-    //     }
 
         $prestamo->save();
-
-
-
-        
-
-
-
     }
     public function guardaTablaPagos(Request $request){
-            
+
         $tablaPagos=$request->arrPagos;
         $solicitud_id=$request->id;
-        $arrayPagos=[];
 
-        $index=key($tablaPagos);
-
-        foreach ($tablaPagos as $key => $value) {
-
-            $arrayPagos[$key]['solic_id']=$solicitud_id;
-            $arrayPagos[$key]['monto_pago']=$value['pago'];
-            //$arrayPagos[$key]['fecha_pago']=$value['solicitud_id'];
-           // $arrayPagos[$key]['concepto']=$value['solicitud_id'];  ///PENDIENTE DE REVISAR
-            $arrayPagos[$key]['status']=0;
-            $arrayPagos[$key]['monto_pago_extra']=$value['pagoExtra'];
-            $arrayPagos[$key]['saldo']=$value['saldo'];
-
+        $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
+        if(sizeof($pagos)){
+            foreach($pagos as $pago){
+                $pago::findOrFail($pago->id);
+                $pago->delete();
+            }
         }
 
-       
-
-       $pagos=Pagos_prestamos::where('solic_id','=', $solicitud_id)->select('id')->get();
-
-        for($index ;$index < sizeof($pagos) ; $index++ ){
-            $p=Pagos_prestamos::findOrFail($pagos[$index]->id);
-            $p->monto_pago=$arrayPagos[$index]['monto_pago'];
-            $p->status =$arrayPagos[$index]['status'];
-            $p->monto_pago_extra =$arrayPagos[$index]['monto_pago_extra'];
-            $p->saldo =$arrayPagos[$index]['saldo'];
-            $p->save();
+        foreach ($tablaPagos as $key => $monto) {
+            $pago=new Pagos_prestamos;
+            $pago->solic_id=$solicitud_id;
+            $pago->monto_pago=$monto['monto_pago'];
+            $pago->status = 0;
+            $pago->monto_pago_extra = $monto['monto_pago_extra'];
+            $pago->saldo = $monto['saldo'];
+            $pago->fecha_quincena = $monto['fecha_quincena'];
+            $pago->save();
         }
     }
 
@@ -298,63 +286,22 @@ class PrestamosController extends Controller
             $pagos=$request->arrPagos;
 
             foreach ($pagos as $key => $monto) {
-
                 $pago=new Pagos_prestamos;
                 $pago->solic_id=$solicitud_id;
-                $pago->monto_pago=$monto['pago'];
+                $pago->monto_pago=$monto['monto_pago'];
                 $pago->status =0;
-                $pago->monto_pago_extra =$monto['pagoExtra'];
-                $pago->saldo =$monto['saldo'];
+                $pago->monto_pago_extra =$monto['monto_pago_extra'];
+                $pago->saldo = $monto['saldo'];
+                $pago->fecha_quincena = $monto['fecha_quincena'];
                 $pago->save();
-                # code...
             }
-
-
-
     }
     public function getTablaPagos(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
         $solicitud_id=$request->id;
 
-        $pagos = Pagos_prestamos::where('solic_id','=',$solicitud_id)->get();
-        //$pagos_cap = Pagos_prestamos::where('solic_id','=',$solicitud_id)->where('status','=','1')->get();
-        if(sizeof($pagos)>0 ){
-            $tabla_p=[];
-            $tabla=[];
-
-            foreach ($pagos as $key => $pago) {
-                if($pago->status == 0){
-                    $tabla[$key]['id']=$key+1;
-                    $tabla[$key]['id_pago']=$pago->id;
-                    $tabla[$key]['status']=$pago->status;
-                    $tabla[$key]['fecha_pago']=$pago->fecha_pago;
-                    $tabla[$key]['pago']=$pago->monto_pago;
-                    $tabla[$key]['pagoExtra']=$pago->monto_pago_extra;
-                    $tabla[$key]['saldo']=$pago->saldo;
-                }else{
-                    $tabla_p[$key]['id']=$key+1;
-                    $tabla_p[$key]['id_pago']=$pago->id;
-                    $tabla_p[$key]['status']=$pago->status;
-                    $tabla_p[$key]['fecha_pago']=$pago->fecha_pago;
-                    $tabla_p[$key]['pago']=$pago->monto_pago;
-                    $tabla_p[$key]['pagoExtra']=$pago->monto_pago_extra;
-                    $tabla_p[$key]['saldo']=$pago->saldo;
-                }
-            }
-
-            return [$tabla,$tabla_p];
-
-        }else [$tabla_p=[],$tabla=[]];
-
-
-
-
-
-
-
-
-
+        return Pagos_prestamos::where('solic_id','=',$solicitud_id)->orderBy('fecha_quincena','asc')->get();
     }
 
 

@@ -19,6 +19,7 @@ class CreatePagosPrestamosTable extends Migration
             $table->unsignedInteger('solic_id');
             $table->float('monto_pago',10,2);
             $table->date('fecha_pago')->nullable();
+            $table->date('fecha_quincena')->nullable();
             $table->string('concepto',30)->nullable();
             $table->boolean('status');
             $table->float('monto_pago_extra',10,2)->default(0);

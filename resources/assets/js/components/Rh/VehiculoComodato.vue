@@ -223,6 +223,7 @@
                             <select class="form-control" @change="calcularMontos()" :disabled="tipoAccion==2" v-model="reparacion">
                                 <option value="">Seleccione servicio</option>
                                 <option value="Mantenimiento Preventivo">Mantenimiento Preventivo</option>
+                                <option value="Mantenimiento y Reparaciones">Mantenimiento y Reparaciones</option>
                                 <option value="Seguro Cobertura Amplia">Seguro Cobertura Amplia</option>
                                 <option value="Reparaciones mecánicas">Reparaciones mecánicas</option>
                                 <option value="Llantas">Llantas</option>
@@ -957,6 +958,11 @@
                     case 'Mantenimiento Preventivo':{
                         me.monto_gcc = me.importe_total;
                         me.monto_comp = 0;
+                        break;
+                    }
+                    case 'Mantenimiento y Reparaciones':{
+                        me.monto_gcc = me.importe_total*.5;
+                        me.monto_comp = me.importe_total*.5;
                         break;
                     }
                     case "Seguro Cobertura Amplia":{

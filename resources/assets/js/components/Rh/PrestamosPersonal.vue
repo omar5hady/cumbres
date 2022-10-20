@@ -1,565 +1,499 @@
 <template>
     <main class="main">
-            <!-- Breadcrumb -->
-            <ol class="breadcrumb">
-               <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
-            </ol>
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
+        </ol>
 
-            <div class="container-fluid">
-                <div class="card scroll-box">
-                    <div class="card-header flex-md-column" >
-
-                           <i class="fa fa-align-justify"></i>Prestamos Personales
-                    </div>
-                    <div class="card-body">
-
-                        <div class="form-group flex-column">
-                            <button class="btn btn-info" @click="abrirModal('registrar')"> <i class="fa fa-plus-circle"></i> Nueva Solicitud.</button>
-                        </div>
-
-                           <div class="form-group row">
-
-                            <div class="col-md-8" v-if="isRHCurrent">
-                                <div class="input-group">
-                                    <input type="text"  class="form-control col-md-3" disabled placeholder="Colaborador:">
-                                    <input type="text"  v-model="b_colaborador" @keyup.enter="dataPrestamos(1)" class="form-control" placeholder="Nombre a buscar">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-10">
-                                <div class="input-group">
-                                    <input type="text"  class="form-control col-md-3" disabled placeholder="Fecha:">
-                                    <input type="date"  v-model="b_fecha1" @keyup.enter="dataPrestamos(1)" class="form-control">
-                                    <input type="date"  v-model="b_fecha2" @keyup.enter="dataPrestamos(1)" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                     <select class="form-control" v-model="b_status" >
-                                        <option value="">Estatus</option>
-                                        <option value="0">Rechazado</option>
-                                        <option value="1">Pendiente</option>
-                                        <option value="2">Aprobado</option>
-                                        <option value="3">Liquidado</option>
-                                    </select>
-                                    <button type="submit" @click="dataPrestamos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                            <div class="card-body">
-
-                <!-- inicio de tabla -->
-                    <div v-if="vista_tabla ==1"  class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Colaborador </th>
-                                        <th>Monto solicitado</th>
-                                        <th>Fecha de solic.</th>
-                                        <th>Inicio de Retenciones</th>
-                                        <th>Saldo</th>
-                                        <th>Status</th>
-                                        <th>Jefe inmediato</th>
-                                        <th>RH</th>
-                                        <th>Dirección</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="prestamo in arrayDataPrestamos" :key="prestamo.id">
-
-                                        <td class="td2">
-
-                                            <template v-if="isRHCurrent && prestamo.status_rh !=2 " >
-                                                <button type="button"
-                                                        @click="eliminaSolicitud(prestamo.id)"
-                                                        class="btn btn-danger btn-sm">
-                                                        <i class="icon-trash"></i>
-                                                </button>
-                                            </template>
-
-                                            <button type="button"
-                                                    @click="abrirModal('ver',prestamo)"
-                                                    class="btn btn-dark btn-sm">
-                                                    <i class="icon-eye"></i>
-                                            </button>
-
-                                            <template v-if="isRHCurrent" >
-                                                <button type="button"
-                                                        @click="abrirModal('editar',prestamo)"
-                                                        class="btn btn-warning btn-sm">
-                                                       <i class="icon-pencil"></i>
-                                                </button>
-                                            </template>
-                                        </td>
-
-
-                                        <td class="td2" v-text="prestamo.nombre + ' ' +prestamo.apellidos"></td>
-                                        <td class="td2" v-text="'$' + formatNumber(prestamo.monto_solicitado)"></td>
-                                        <td class="td2" v-text="this.moment(prestamo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-text="this.moment(prestamo.fecha_ini).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-text="'$' + formatNumber(prestamo.saldo)"></td>
-                                        <td class="td2">
-                                            <!-- 0 Cancelado, 1 Pendiente, 2 Aprobado, 3 Liquidado -->
-                                            <span v-if="prestamo.status == 0" class="badge badge-danger">Rechazado</span>
-                                            <span v-if="prestamo.status == 1" class="badge badge-warning">Pendiente</span>
-                                            <span v-if="prestamo.status == 2" class="badge badge-primary">Aprobado</span>
-                                            <span v-if="prestamo.status == 3" class="badge badge-success">Liquidado</span>
-                                        </td>
-                                          <template v-if="isGerenteCurrent || isRHCurrent || isDireccionCurrent">
-
-                                            <td class="td2" v-if="prestamo.jefe_band == 0">
-                                                <button v-if="isGerenteCurrent"  class="btn btn-dark btn-sm"  type="button" @click="firmar('jefe',prestamo.id)"  >
-                                                    <i class="icon-check"></i>
-                                                </button>
-
-                                            </td>
-                                            <td class="td2" v-else >Firmado</td>
-
-                                             <td class="td2" v-if="prestamo.rh_band == 0">
-                                                <button v-if="isRHCurrent" class="btn btn-dark btn-sm"  type="button" @click="firmar('rh',prestamo.id)"  >
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                            </td>
-                                            <td class="td2" v-else >Firmado</td>
-
-
-                                             <td class="td2" v-if="prestamo.dir_band == 0">
-                                                <button v-if="isDireccionCurrent" class="btn btn-dark btn-sm"   type="button" @click="firmar('dir',prestamo.id)" >
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                            </td>
-                                            <td class="td2" v-else >Firmado</td>
-
-
-                                        </template>
-
-                                        <template v-else >
-                                            <td class="td2" v-if="prestamo.jefe_band == 0">
-                                                Sin Firma de Jefe
-                                            </td>
-                                            <td class="td2" v-else > Firmado</td>
-
-
-                                            <td class="td2" v-if="prestamo.rh_band == 0">
-                                                Sin Firma de RH
-                                            </td>
-                                            <td class="td2" v-else > Firmado</td>
-
-
-                                            <td class="td2" v-if="prestamo.dir_band == 0">
-                                                Sin Firma de Dirección
-                                            </td>
-                                             <td class="td2" v-else > Firmado</td>
-
-                                        </template>
-
-
-                                        <td>
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                        @click="abrirModal('observaciones',prestamo)">Observaciones</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- fin de tabla -->
-
-                            </div>
-
-                        <nav>
-                           <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="arrPaginacion.current_page > 5" @click="dataPrestamos(1)">
-                                    <a class="page-link" href="#" >Inicio</a>
-                                </li>
-                                <li class="page-item" v-if="arrPaginacion.current_page > 1"
-                                    @click="dataPrestamos(arrPaginacion.current_page-1)">
-                                    <a class="page-link" href="#" >Ant</a>
-                                </li>
-
-                                <li class="page-item" v-if="arrPaginacion.current_page-3 >= 1"
-                                    @click="dataPrestamos(arrPaginacion.current_page-3)">
-                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page-3"></a>
-                                </li>
-                                <li class="page-item" v-if="arrPaginacion.current_page-2 >= 1"
-                                    @click="dataPrestamos(arrPaginacion.current_page-2)">
-                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page-2"></a>
-                                </li>
-                                <li class="page-item" v-if="arrPaginacion.current_page-1 >= 1"
-                                    @click="dataPrestamos(arrPaginacion.current_page-1)">
-                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page-1"></a>
-                                </li>
-                                <li class="page-item active" >
-                                    <a class="page-link" href="#" v-text="arrPaginacion.current_page"></a>
-                                </li>
-                                <li class="page-item"
-                                    v-if="arrPaginacion.current_page+1 <= arrPaginacion.last_page">
-                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+1)"
-                                    v-text="arrPaginacion.current_page+1"></a>
-                                </li>
-                                <li class="page-item"
-                                    v-if="arrPaginacion.current_page+2 <= arrPaginacion.last_page">
-                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+2)"
-                                     v-text="arrPaginacion.current_page+2"></a>
-                                </li>
-                                <li class="page-item"
-                                    v-if="arrPaginacion.current_page+3 <= arrPaginacion.last_page">
-                                    <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+3)"
-                                    v-text="arrPaginacion.current_page+3"></a>
-                                </li>
-
-                                <li class="page-item" v-if="arrPaginacion.current_page < arrPaginacion.last_page"
-                                    @click="dataPrestamos(arrPaginacion.current_page+1)">
-                                    <a class="page-link" href="#" >Sig</a>
-                                </li>
-                                <li class="page-item" v-if="arrPaginacion.current_page < 5 && arrPaginacion.last_page > 5" @click="dataPrestamos(arrayDataPrestamos.last_page)">
-                                    <a class="page-link" href="#" >Ultimo</a>
-                                </li>
-                            </ul>
-                        </nav>
-
-                    </div>
-
-
+        <div class="container-fluid">
+            <div class="card scroll-box">
+                <div class="card-header flex-md-column" >
+                    <i class="fa fa-align-justify"></i>Prestamos Personales
                 </div>
-
-            </div>
-
-            <ModalComponent
-                v-if="modal == 1"
-                :titulo="tituloModal"
-                @closeModal="cerrarModal()"
-            >
-                <template v-slot:body>
-                                <div class="form-group row">
-                                    <label class="col-md-3"  for="text-input">Colaborador:
-                                    </label>
-                                      <template  v-if="isRHCurrent && modalVista == '0'">
-                                        <select class="col-md-6 form-control"  v-model="id_usuario"  name="" id="">
-                                            <option  class=" form-control " v-for="user in arrayUsers" :key="user.id" :value="user.id" v-text="user.nombre + ' '+ user.apellidos" ></option>
-                                        </select>
+                <div class="card-body">
+                    <div class="form-group flex-column">
+                        <button class="btn btn-info" @click="abrirModal('registrar')"> <i class="fa fa-plus-circle"></i> Nueva Solicitud.</button>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-8" v-if="isRHCurrent">
+                            <div class="input-group">
+                                <input type="text"  class="form-control col-md-3" disabled placeholder="Colaborador:">
+                                <input type="text"  v-model="b_colaborador" @keyup.enter="dataPrestamos(1)" class="form-control" placeholder="Nombre a buscar">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <input type="text"  class="form-control col-md-3" disabled placeholder="Fecha:">
+                                <input type="date"  v-model="b_fecha1" @keyup.enter="dataPrestamos(1)" class="form-control">
+                                <input type="date"  v-model="b_fecha2" @keyup.enter="dataPrestamos(1)" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                    <select class="form-control" v-model="b_status" >
+                                    <option value="">Estatus</option>
+                                    <option value="0">Rechazado</option>
+                                    <option value="1">Pendiente</option>
+                                    <option value="2">Aprobado</option>
+                                    <option value="3">Liquidado</option>
+                                </select>
+                                <button type="submit" @click="dataPrestamos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- inicio de tabla -->
+                    <TableComponent v-if="vista_tabla == 1"
+                        :cabecera="[
+                            '','Colaborador','Monto solicitado','Fecha de solic.',
+                            'Inicio de Retenciones','Saldo','Status','Jefe inmediato',
+                            'RH','Dirección',' '
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="prestamo in arrayDataPrestamos" :key="prestamo.id">
+                                <td class="td2">
+                                    <template v-if="isRHCurrent && prestamo.status_rh !=2" >
+                                        <button type="button"
+                                                @click="eliminaSolicitud(prestamo.id)"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="icon-trash"></i>
+                                        </button>
                                     </template>
-                                    <template v-else>
-                                        <label  class="col-md-6 form-control" v-text="e_nombre"></label>
+                                    <button type="button"
+                                            @click="abrirModal('ver',prestamo)"
+                                            class="btn btn-dark btn-sm">
+                                            <i class="icon-eye"></i>
+                                    </button>
+                                    <template v-if="isRHCurrent" >
+                                        <button type="button"
+                                                @click="abrirModal('editar',prestamo)"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
+                                        </button>
                                     </template>
-                                </div>
-
-                                <div class="form-group row">
-                                 <label class="col-md-3" >Fecha de inicio de retencion:</label>
-                                    <template v-if="status_rh ==2 ||  modalVista == '1'" >
-                                        <input disabled class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
-                                    </template>
-                                    <template v-else >
-                                        <input class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
-                                    </template>
-                               </div>
-
-                                  <div class="form-group row">
-                                    <label class="col-md-3 form-control-label">Gerente a cargo:
-                                    </label>
-                                    <template  v-if="status_rh ==2 ||  modalVista == '1'">
-                                            <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
-                                                        <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-                                                </select>
-                                    </template>
-                                    <template v-else >
-                                            <select class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
-                                                    <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
-                                            </select>
-                                    </template>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" >Monto solicitado:
-                                        <span style="color:red;" v-show="monto_solic == 0">*</span>
-                                    </label>
-
-                                        <template   v-if="status_rh ==2 ||  modalVista == '1'">
-                                            <input disabled class="col-md-3  form-control"  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
-
-                                        </template>
-                                        <template v-else>
-                                                <a  v-if="editAjusteMonto ==0"
-                                                    class="form-control col-md-3"
-                                                    style="cursor: pointer; color:deepskyblue; text-decoration: underline; text-shadow: slategrey;"
-                                                    title="Click para editar"
-                                                    @click="editAjusteMonto=1" v-text="'$'+formatNumber(monto_solic)" >
-                                                </a>
-                                                <input v-if="editAjusteMonto ==1"  aria-selected="true" class="form-control col-md-3" title="Enter para guardar.."  pattern="\d*" type="text"
-                                                        @keyup.enter="editAjusteMonto=0"
-                                                        v-on:keypress="isNumber($event)"  v-model="monto_solic">
-                                        </template>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-descuento">Descuento por quincena.
-                                        <span style="color:red;" v-show="desc_quin ==0">*</span>
-                                    </label>
-                                        <div class="form-group row col-md-9 ">
-                                                 <template v-if="status_rh ==2 ||  modalVista == '1'">
-                                                    <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
-                                                </template >
-                                                <template v-else>
-
-                                                        <a v-if="editAjusteQuin ==0"
-                                                            class="form-control col-md-2"
-                                                            style="cursor: pointer; color:deepskyblue; text-decoration: underline;"
-                                                            title="Click para editar"
-                                                            @click="editAjusteQuin=1" v-text="'$'+formatNumber(desc_quin)" >
-                                                        </a>
-                                                        <input  v-if="editAjusteQuin ==1"  class="form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"
-                                                        @keyup.enter="editAjusteQuin=0"
-                                                        v-on:keypress="isNumber($event)"  v-model="desc_quin">
-
-                                                </template>
-                                                <template v-if="(modalVista == '0' || modalVista == '2') && status_rh !=2">
-                                                        <button class="form-control col-md-2 btn btn-info"
-                                                                type="button"
-                                                                v-show="desc_quin"
-                                                                @click="generar_tab = 1 ,
-                                                                editAjuste=0,
-                                                                generarTablaPagos()">
-                                                                Generar
-                                                        </button>
-
-                                                        <button class="form-control col-md-2 btn btn-warning"
-                                                                type="button"
-                                                                v-show="desc_quin"
-                                                                @click="generar_tab = 1 ,
-                                                                borrarTabla()">
-                                                                Borrar
-                                                        </button>
-
-                                                </template>
-
-                                        </div>
-
-                                </div>
-
-                                  <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" >Motivo de prestamo.
-                                        <span style="color:red;" v-show="motivo">*</span>
-                                    </label>
-                                       <template v-if="status_rh == 2 || modalVista == '1' ">
-                                         <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
-
-                                     </template>
-                                     <template v-else>
-                                                <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
-                                     </template>
-
-                                </div>
+                                </td>
 
 
-                                   <template v-if="generar_tab == 1" >
+                                <td class="td2" v-text="prestamo.nombre + ' ' +prestamo.apellidos"></td>
+                                <td class="td2" v-text="'$' + formatNumber(prestamo.monto_solicitado)"></td>
+                                <td class="td2" v-text="this.moment(prestamo.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2" v-text="this.moment(prestamo.fecha_ini).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2" v-text="'$' + formatNumber(prestamo.saldo)"></td>
+                                <td class="td2">
+                                    <!-- 0 Cancelado, 1 Pendiente, 2 Aprobado, 3 Liquidado -->
+                                    <span v-if="prestamo.status == 0" class="badge badge-danger">Rechazado</span>
+                                    <span v-if="prestamo.status == 1" class="badge badge-warning">Pendiente</span>
+                                    <span v-if="prestamo.status == 2" class="badge badge-primary">Aprobado</span>
+                                    <span v-if="prestamo.status == 3" class="badge badge-success">Liquidado</span>
+                                </td>
+                                    <template v-if="isGerenteCurrent || isRHCurrent || isDireccionCurrent">
 
-                                    <div class="form-group row">
-                                        <div class="col-md-12">
-                                            <div class="table-responsive">
-                                            <table class="table table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
+                                    <td class="td2" v-if="prestamo.jefe_band == 0">
+                                        <button v-if="isGerenteCurrent"  class="btn btn-dark btn-sm"  type="button" @click="firmar('jefe',prestamo.id)"  >
+                                            <i class="icon-check"></i>
+                                        </button>
 
-                                                        <th >No. quincena</th>
-                                                        <th>Pago Nomina</th>
-                                                        <th>Pago Extraordinario</th>
-                                                        <th>Saldo</th>
-                                                        <th v-if="(modalVista == '1' || modalVista == '2' )&& status_rh == 2">Status pago</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
+                                    </td>
+                                    <td class="td2" v-else >Firmado</td>
 
-                                                     <tr  v-for="(pago ) in arrayPagosCap" :key="pago.id">
-
-                                                            <td   v-text="pago.id +'.- '+ pago.f_quincena"></td>
-                                                            <td v-text="'$'+formatNumber(pago.pago)"></td>
-                                                            <template>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
-
-                                                            </template>
-                                                            <td v-text="'$'+formatNumber(pago.saldo)"></td>
-
-                                                            <template  >
-                                                                <template v-if="status_rh == 2 ">
-                                                                    <td v-if="pago.status == 1 " class="py-sm-0 justify-content-center">
-                                                                        <span class="badge badge-success">Fecha de retencion de pago: </span>&nbsp;{{pago.fecha_pago}}
-                                                                    </td>
-                                                                    <td v-else class="py-sm-0 justify-content-center"><span class="badge badge-warning">Pendiente</span></td>
-                                                                </template>
-                                                            </template>
-                                                        </tr>
+                                        <td class="td2" v-if="prestamo.rh_band == 0">
+                                        <button v-if="isRHCurrent" class="btn btn-dark btn-sm"  type="button" @click="firmar('rh',prestamo.id)"  >
+                                            <i class="icon-check"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-else >Firmado</td>
 
 
-                                                        <tr  v-for="(pago, index ) in arrayPagos" :key="pago.id" v-show="pago.pago !=0">
-
-                                                            <td   v-text="pago.id +'.- '+ pago.f_quincena"></td>
-                                                            <td v-text="'$'+formatNumber(pago.pago)"></td>
-                                                            <template v-if="(modalVista == '0' || modalVista == '2' )  && pago.status != 1 &&id_prestamo !=null">
-                                                                <td class="td2" v-if="editAjuste ==0">
-                                                                    <a title="Click para editar" href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.pagoExtra)" ></a>
-                                                                </td>
-                                                                <td class="td2"   v-if="editAjuste ==1">
-                                                                <input title="Enter para guardar.." class="form-control2" pattern="\d*" type="text"
-                                                                        @keyup.enter="validarMonto(pago.pago,index,$event.target.value),editAjuste=0" step="1"
-                                                                        v-on:keypress="isNumber($event)"  v-model="pago.pagoExtra">
-                                                                </td>
-                                                            </template   >
-                                                            <template v-else>
-                                                                <td class="td2" v-text="'$'+formatNumber(pago.pagoExtra)"></td>
-
-                                                            </template>
-
-                                                            <td v-text="'$'+formatNumber(pago.saldo)"></td>
-
-                                                            <template v-if="modalVista == '2'"  >
-                                                                <template v-if="status_rh == 2">
-                                                                    <td v-if="pago.status == 0" class="form-group-sm" >
-
-                                                                                    <button v-show="pago.fecha_captura_pago" v-if="editAjuste ==0 && pago.pago !=0"
-                                                                                            class="bg-success py-sm-1 px-sm-1 btn row"
-                                                                                            style=" margin:1px"
-                                                                                            @click="capturarPago(pago)"
-                                                                                    >
-                                                                                        <i class="fa small fa-2x icon-check">
-
-                                                                                        </i>
-                                                                                        Retener Pago
-                                                                                    </button>
-
-                                                                                    <input
-                                                                                        class="form-control"
-                                                                                        style="cursor: pointer;"
-                                                                                        name="fecha"
-                                                                                        placeholder="Capturar fecha de retencion"
-                                                                                        type="text"
-                                                                                        onfocus="(this.type='date')"
-                                                                                        v-model="pago.fecha_captura_pago"
-                                                                                    >
+                                        <td class="td2" v-if="prestamo.dir_band == 0">
+                                        <button v-if="isDireccionCurrent" class="btn btn-dark btn-sm"   type="button" @click="firmar('dir',prestamo.id)" >
+                                            <i class="icon-check"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-else >Firmado</td>
 
 
-                                                                    </td>
-                                                                <td v-else class="py-sm-0 justify-content-center"  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" > </td>
-                                                                </template>
-                                                            </template>
-                                                            <template v-else >
-                                                                <template v-if="status_rh == 2">
-                                                                    <td v-if="pago.status == 1" class="py-sm-0 justify-content-center">
-                                                                        <span class="badge badge-success">Fecha de retencion de pago: </span>&nbsp;{{pago.fecha_pago}}
-                                                                    </td>
-                                                                    <td v-else class="py-sm-0 justify-content-center">
-                                                                        <span class="badge badge-warning">Pendiente</span>
-                                                                    </td>
-                                                                </template>
-                                                            </template>
-                                                        </tr>
+                                </template>
+
+                                <template v-else >
+                                    <td class="td2" v-if="prestamo.jefe_band == 0">
+                                        Sin Firma de Jefe
+                                    </td>
+                                    <td class="td2" v-else > Firmado</td>
 
 
-                                                        <tr v-if="status_rh !=2" >
-                                                            <td></td>
+                                    <td class="td2" v-if="prestamo.rh_band == 0">
+                                        Sin Firma de RH
+                                    </td>
+                                    <td class="td2" v-else > Firmado</td>
 
-                                                            <td class="font-1xl bg-info" v-text="'$'+formatNumber(total)"></td>
-                                                            <td class="font-1xl bg-info" v-text="'$'+formatNumber(totalExtra)"></td>
-                                                            <td v-if="saldoFaltante > 0" class="font-1xl bg-danger" v-text="'$'+formatNumber(saldoFaltante)"></td>
-                                                            <td v-else  class="font-1xl bg-success" v-text="'$'+formatNumber(saldoFaltante)"></td>
-                                                        </tr>
 
-                                                </tbody>
-
-                                            </table>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                    <td class="td2" v-if="prestamo.dir_band == 0">
+                                        Sin Firma de Dirección
+                                    </td>
+                                        <td class="td2" v-else > Firmado</td>
 
                                 </template>
 
 
+                                <td>
+                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                                @click="abrirModal('observaciones',prestamo)">Observaciones</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <!-- fin de tabla -->
+                    <nav>
+                        <!--Botones de paginacion -->
+                        <ul class="pagination">
+                            <li class="page-item" v-if="arrPaginacion.current_page > 5" @click="dataPrestamos(1)">
+                                <a class="page-link" href="#" >Inicio</a>
+                            </li>
+                            <li class="page-item" v-if="arrPaginacion.current_page > 1"
+                                @click="dataPrestamos(arrPaginacion.current_page-1)">
+                                <a class="page-link" href="#" >Ant</a>
+                            </li>
 
+                            <li class="page-item" v-if="arrPaginacion.current_page-3 >= 1"
+                                @click="dataPrestamos(arrPaginacion.current_page-3)">
+                                <a class="page-link" href="#" v-text="arrPaginacion.current_page-3"></a>
+                            </li>
+                            <li class="page-item" v-if="arrPaginacion.current_page-2 >= 1"
+                                @click="dataPrestamos(arrPaginacion.current_page-2)">
+                                <a class="page-link" href="#" v-text="arrPaginacion.current_page-2"></a>
+                            </li>
+                            <li class="page-item" v-if="arrPaginacion.current_page-1 >= 1"
+                                @click="dataPrestamos(arrPaginacion.current_page-1)">
+                                <a class="page-link" href="#" v-text="arrPaginacion.current_page-1"></a>
+                            </li>
+                            <li class="page-item active" >
+                                <a class="page-link" href="#" v-text="arrPaginacion.current_page"></a>
+                            </li>
+                            <li class="page-item"
+                                v-if="arrPaginacion.current_page+1 <= arrPaginacion.last_page">
+                                <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+1)"
+                                v-text="arrPaginacion.current_page+1"></a>
+                            </li>
+                            <li class="page-item"
+                                v-if="arrPaginacion.current_page+2 <= arrPaginacion.last_page">
+                                <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+2)"
+                                    v-text="arrPaginacion.current_page+2"></a>
+                            </li>
+                            <li class="page-item"
+                                v-if="arrPaginacion.current_page+3 <= arrPaginacion.last_page">
+                                <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+3)"
+                                v-text="arrPaginacion.current_page+3"></a>
+                            </li>
 
+                            <li class="page-item" v-if="arrPaginacion.current_page < arrPaginacion.last_page"
+                                @click="dataPrestamos(arrPaginacion.current_page+1)">
+                                <a class="page-link" href="#" >Sig</a>
+                            </li>
+                            <li class="page-item" v-if="arrPaginacion.current_page < 5 && arrPaginacion.last_page > 5" @click="dataPrestamos(arrayDataPrestamos.last_page)">
+                                <a class="page-link" href="#" >Ultimo</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
 
+        <ModalComponent
+            v-if="modal == 1"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-3"  for="text-input">Colaborador:
+                    </label>
+                    <template  v-if="isRHCurrent && modalVista == '0'">
+                        <select class="col-md-6 form-control"  v-model="id_usuario"  name="" id="">
+                            <option  class=" form-control " v-for="user in arrayUsers" :key="user.id" :value="user.id" v-text="user.nombre + ' '+ user.apellidos" ></option>
+                        </select>
+                    </template>
+                    <template v-else>
+                        <label  class="col-md-6 form-control" v-text="e_nombre"></label>
+                    </template>
+                </div>
 
+                <div class="form-group row">
+                    <label class="col-md-3" >Fecha de inicio de retencion:</label>
+                    <template v-if="status_rh ==2 ||  modalVista == '1'" >
+                        <input disabled class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
+                    </template>
+                    <template v-else >
+                        <input class="col-md-6 form-control" type="date"  v-model="fecha_solic" >
+                    </template>
+                </div>
 
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Gerente a cargo:
+                    </label>
+                    <template  v-if="status_rh == 2 ||  modalVista == '1'">
+                            <select disabled class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                            </select>
+                    </template>
+                    <template v-else >
+                            <select class="col-md-6 form-control"  name="" id=""  v-model="idJefe">
+                                <option v-for="gerente in arrayIdGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre" ></option>
+                            </select>
+                    </template>
+                </div>
 
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" >Monto solicitado:
+                        <span style="color:red;" v-show="monto_solic == 0">*</span>
+                    </label>
 
+                    <template v-if="status_rh ==2 ||  modalVista == '1'">
+                        <input disabled class="col-md-3  form-control"  type="number" v-on:keypress="isNumber($event)" v-model="monto_solic" >
+                    </template>
+                    <template v-else>
+                        <a  v-if="editAjusteMonto ==0"
+                            class="form-control col-md-3"
+                            style="cursor: pointer; color:deepskyblue; text-decoration: underline; text-shadow: slategrey;"
+                            title="Click para editar"
+                            @click="editAjusteMonto=1" v-text="'$'+formatNumber(monto_solic)" >
+                        </a>
+                        <input v-if="editAjusteMonto ==1"  aria-selected="true" class="form-control col-md-3" title="Enter para guardar.."  pattern="\d*" type="text"
+                            @keyup.enter="editAjusteMonto=0"
+                            v-on:keypress="isNumber($event)"  v-model="monto_solic">
+                    </template>
+                </div>
 
-                                <!-- Div para mostrar los errores -->
-                                <div v-show="error_en_solicitud" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in arrayErrorSolicitud" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-descuento">Descuento por quincena.
+                        <span style="color:red;" v-show="desc_quin ==0">*</span>
+                    </label>
+                    <div class="form-group row col-md-9 ">
+                        <template v-if="status_rh ==2 ||  modalVista == '1'">
+                            <input disabled class="form-control col-md-2" type="number" v-on:keypress="isNumber($event)"  v-model="desc_quin" >
+                        </template >
+                        <template v-else>
+                                <a v-if="editAjusteQuin ==0"
+                                    class="form-control col-md-2"
+                                    style="cursor: pointer; color:deepskyblue; text-decoration: underline;"
+                                    title="Click para editar"
+                                    @click="editAjusteQuin=1" v-text="'$'+formatNumber(desc_quin)" >
+                                </a>
+                                <input  v-if="editAjusteQuin ==1"  class="form-control col-md-2" title="Enter para guardar.."  pattern="\d*" type="text"
+                                @keyup.enter="editAjusteQuin=0"
+                                v-on:keypress="isNumber($event)"  v-model="desc_quin">
 
+                        </template>
+                        <template v-if="(modalVista == '0' || modalVista == '2') && status_rh !=2">
+                                <button class="form-control col-md-2 btn btn-info"
+                                        type="button"
+                                        v-show="desc_quin"
+                                        @click="generar_tab = 1 ,
+                                        editAjuste=0,
+                                        generarTablaPagos()">
+                                        Generar
+                                </button>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" >Motivo de prestamo.
+                        <span style="color:red;" v-show="motivo">*</span>
+                    </label>
+                        <template v-if="status_rh == 2 || modalVista == '1'">
+                            <textarea disabled class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                        </template>
+                        <template v-else>
+                            <textarea class="col-md-6 form-control" cols="10" rows="2"  type="text"  maxlength="50" v-model="motivo" ></textarea>
+                        </template>
+                </div>
+
+                <div class="form-group row" v-if="status_rh == 2 && modalVista == '2' && saldoFaltante > 0">
+                    <div class="col-md-4">
+                        <button class="form-control btn btn-success"
+                                type="button"
+                                @click="abrirModal('monto_extra')">
+                                <i class="icon-plus"></i>&nbsp;Nueva retención extaordinaria.
+                        </button>
+                    </div>
+                </div>
+
+                <template v-if="generar_tab == 1" >
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <TableComponent v-if="modalVista == '0' || modalVista == '1'"
+                                :cabecera="['Quincena','Pago Nomina','Pago Extraordinario','Saldo por Retener']">
+                                <template v-slot:tbody>
+                                    <tr  v-for="pago in arrayPagos" :key="pago.id" v-show="pago.pago !=0">
+                                            <td v-text="this.moment(pago.fecha_quincena).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td v-text="'$'+formatNumber(pago.monto_pago)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(pago.monto_pago_extra)"></td>
+                                            <td>
+                                                {{(pago.status == 1 || pago.status == 2) ? '$'+formatNumber(pago.saldo) : ''}}
+                                            </td>
+                                            <td v-if="pago.fecha_pago != null">
+                                                <span class="badge badge-success"
+                                                    v-text="'Pago retenido el dia: ' + this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"
+                                                ></span>
+                                            </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="font-1xl bg-info" v-text="'$'+formatNumber(total = totalNomina)"></td>
+                                        <td class="font-1xl bg-info" v-text="'$'+formatNumber(totalExtra = totalExtraordinario)"></td>
+                                        <td v-if="saldoFaltante > 0" class="font-1xl bg-danger" v-text="'$'+formatNumber(saldoFaltante = totalSaldo)"></td>
+                                        <td v-else  class="font-1xl bg-success" v-text="'$'+formatNumber(saldoFaltante = totalSaldo)"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+
+                            <TableComponent v-else
+                                :cabecera="['Quincena','Pago Nomina','Pago Extraordinario','Saldo por Retener','']"
+                            >
+                                <template v-slot:tbody>
+                                    <tr  v-for="pago in arrayPagos" :key="pago.id" v-show="pago.pago !=0">
+                                        <td v-text="this.moment(pago.fecha_quincena).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td v-text="'$'+formatNumber(pago.monto_pago)"></td>
+                                        <template v-if="pago.status != 1 && id_prestamo !=null">
+                                            <td class="td2">
+                                                <a title="Click para editar" v-if="editAjuste == 0"
+                                                    href="#" @click="editAjuste=1" v-text="'$'+formatNumber(pago.monto_pago_extra)" ></a>
+
+                                                <input  v-if="editAjuste ==1" title="Enter para guardar.." class="form-control2" pattern="\d*" type="text"
+                                                    @keyup.enter="validarMonto(pago,$event.target.value), editAjuste=0" step="1"
+                                                    v-on:keypress="isNumber($event)"  v-model="pago.monto_pago_extra">
+                                            </td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="td2" v-text="'$'+formatNumber(pago.monto_pago_extra)"></td>
+                                        </template>
+                                        <td v-if="pago.fecha_pago">
+                                            {{ (pago.saldo >0) ? '$'+formatNumber(pago.saldo) : '$0.00'}}
+                                        </td>
+                                        <td v-else></td>
+                                        <template v-if="status_rh == 2">
+                                            <td v-if="pago.status == 0" class="form-group-sm" >
+                                                <button v-show="pago.fecha_pago" v-if="editAjuste ==0 && pago.pago !=0"
+                                                        class="bg-success py-sm-1 px-sm-1 btn row"
+                                                        style=" margin:1px"
+                                                        @click="capturarPago(pago)"
+                                                >
+                                                    <i class="fa small fa-2x icon-check"></i>
+                                                    Retener Pago
+                                                </button>
+
+                                                <input v-if="(pago.monto_pago_extra > 0 || pago.monto_pago > 0)"
+                                                    class="form-control"
+                                                    style="cursor: pointer;"
+                                                    name="fecha"
+                                                    placeholder="Capturar fecha de retencion"
+                                                    type="text"
+                                                    onfocus="(this.type='date')"
+                                                    v-model="pago.fecha_pago"
+                                                >
+                                            </td>
+                                            <td v-if="pago.status == 1" class="py-sm-0 justify-content-center"  v-text="'Fecha de retencion de pago: '+ pago.fecha_pago" ></td>
+                                        </template>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="font-1xl bg-info" v-text="'$'+formatNumber(total = totalNomina)"></td>
+                                        <td class="font-1xl bg-info" v-text="'$'+formatNumber(totalExtra = totalExtraordinario)"></td>
+                                        <td v-if="saldoFaltante > 0" class="font-1xl bg-danger" v-text="'$'+formatNumber(saldoFaltante = totalSaldo)"></td>
+                                        <td v-else  class="font-1xl bg-success" v-text="'$'+formatNumber(saldoFaltante = totalSaldo)"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </div>
                 </template>
+                <!-- Div para mostrar los errores -->
+                <div v-show="error_en_solicitud" class="form-group row div-error">
+                    <div class="text-center text-error">
+                        <div v-for="error in arrayErrorSolicitud" :key="error" v-text="error">
+                        </div>
+                    </div>
+                </div>
 
-                <template v-slot:buttons-footer>
-                        <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud' && status_rh !=2">
-                                    <button v-if="saldoFaltante <=0" type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
-                                    <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar solicitud</button>
-                                </div>
+            </template>
 
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <div v-if="modalVista == '0'">
-                                    <button type="button" class="btn btn-success"   @click="enviarSolicitud()">Enviar</button>
-                            </div>
-                            <div v-if="modalVista == '2' && status_rh !=2">
-                                    <button type="button" class="btn btn-success"   @click="editarSolicitud(0)">Guardar cambios</button>
-                            </div>
+            <template v-slot:buttons-footer>
+                <div v-if="isRHCurrent && modalVista == '2' && tituloModal !='Nueva Solicitud' && status_rh !=2">
+                    <button type="button" class="btn btn-success" @click="aprobar_rh(1)">Aprobar</button>
+                    <button type="button" class="btn btn-danger" @click="aprobar_rh(0)">Rechazar solicitud</button>
+                </div>
 
-                            <div v-if="modalVista == '2' && isRHCurrent  && status_rh ==2 ">
-                                    <button type="button" class="btn btn-info"   @click="guardaTablaPagos_editada()">Guardar</button>
-                            </div>
-                </template>
+                <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                <div v-if="modalVista == '0'">
+                        <button type="button" class="btn btn-success"   @click="enviarSolicitud()">Enviar</button>
+                </div>
+                <div v-if="modalVista == '2' && status_rh !=2">
+                        <button type="button" class="btn btn-success"   @click="editarSolicitud()">Guardar cambios</button>
+                </div>
+            </template>
 
-            </ModalComponent>
+        </ModalComponent>
 
-            <!-- inicio modal observaciones  -->
-            <ModalComponent
+        <!-- inicio modal observaciones  -->
+        <ModalComponent
             v-if="modal == 2"
             :titulo="tituloModal"
             @closeModal="cerrarModal()"
-            >
-                <template v-slot:body>
-                         <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                                    <div class="col-md-6">
-                                         <textarea rows="3" cols="30" v-model="obs_prestamo" class="form-control" placeholder="Observacion"></textarea>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button"  class="btn btn-primary" @click="guardaObs()">Guardar</button>
-                                    </div>
-                                </div>
-                                <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
-                                    <template v-slot:tbody>
-
-                                        <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
-                                            <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.observacion" ></td>
-                                            <td v-text="observacion.created_at"></td>
-                                        </tr>
-                                    </template>
-
-                                </TableComponent>
-                </template>
-                   <template v-slot:buttons-footer>
-
-                   </template>
-               </ModalComponent>
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                    <div class="col-md-6">
+                            <textarea rows="3" cols="30" v-model="obs_prestamo" class="form-control" placeholder="Observacion"></textarea>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button"  class="btn btn-primary" @click="guardaObs()">Guardar</button>
+                    </div>
+                </div>
+                <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
+                    <template v-slot:tbody>
+                        <tr v-for="observacion in arrayObservaciones" :key="observacion.id">
+                            <td v-text="observacion.usuario" ></td>
+                            <td v-text="observacion.observacion" ></td>
+                            <td v-text="observacion.created_at"></td>
+                        </tr>
+                    </template>
+                </TableComponent>
+            </template>
+        </ModalComponent>
         <!--FIN DE MODAL  -->
 
-
-
-        </main>
+        <ModalComponent v-if="modal == 3"
+            :titulo="'Nueva retencion extraordinaria'"
+            @closeModal="modal=1"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Monto a retener</label>
+                    <div class="col-md-4">
+                        <input pattern="\d*" type="text" class="form-control" v-on:keypress="isNumber($event)" @change="validarPagoExtra()" v-model="retencion_extra.monto_pago_extra">
+                    </div>
+                    <div class="col-md-3">
+                        <p v-text="'$ ' + formatNumber(retencion_extra.monto_pago_extra)" class="form-control"></p>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Fecha de retención</label>
+                    <div class="col-md-5">
+                        <input type="date" class="form-control"  v-model="retencion_extra.fecha_pago">
+                    </div>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <button type="button" v-if="retencion_extra.fecha_pago != '' && retencion_extra.monto_pago_extra > 0"
+                    class="btn btn-primary" @click="storePago()">Registrar Retención</button>
+            </template>
+        </ModalComponent>
+    </main>
 </template>
 
 <!-- ************************************************************************************************************************************  -->
@@ -588,6 +522,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                    {id:'23679',user:'bd_raul' ,nombre:'Raúl Palos López'},
                    {id:'23684',user:'lucy.hdz' ,nombre:'Maria Lucia Hernandez'},
                    {id:'26546',user:'cp.martin' ,nombre:'Martin Herrera Sanchez'},
+                   {id:'26310',user:'ing_david' ,nombre:'David Calvillo Martinez'},
+                   {id:'33300',user:'meza.marco60' ,nombre:'Marco Antonio Meza'},
                    {id:'24100',user:'guadalupe.ff' ,nombre:'J. Guadalupe Flores Ferrer'},
                 ],
 
@@ -599,8 +535,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 ],
                 arrayDataPrestamos:[],
                 arrayPagos:[],
-                arrayPagosCap:[],
-                arraySaldo:[],
                 arrayObservaciones:[],
                 arrayErrorSolicitud:[],
                 arrayUsers:[],
@@ -647,18 +581,38 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 nom_colaborador:'',
                 status_rh:0,
 
-
-
-
+                retencion_extra:{
+                    monto_pago_extra: 0,
+                    fecha_pago: '',
+                }
             }
         },
-
         computed:{
+            totalNomina: function(){
+                var total = 0.0;
+                for(var i=0;i<this.arrayPagos.length;i++){
+                    if(this.arrayPagos[i].fecha_pago != null)
+                        total += this.arrayPagos[i].monto_pago;
+                }
+                return Math.round(total);
+            },
+            totalExtraordinario: function(){
+                var total = 0.0;
+                for(var i=0;i<this.arrayPagos.length;i++){
+                    if(this.arrayPagos[i].fecha_pago != null)
+                        total += this.arrayPagos[i].monto_pago_extra;
+                }
+                return Math.round(total);
+            },
 
-
+            totalSaldo: function(){
+                var saldo = this.monto_solic;
+                saldo = saldo - this.total - this.totalExtra;
+                return saldo;
+            }
         },
         methods : {
-              validarRegistro(){
+            validarRegistro(){
                 this.error_en_solicitud=0;
                 this.arrayErrorSolicitud=[];
 
@@ -686,291 +640,106 @@ import TableComponent from '../Componentes/TableComponent.vue'
             },
             generaFechaTabla(i,n){
                 let me = this;
+                var date= new Date(this.fecha_solic);
+                var dia  = date.getDate();
+                var mes = date.getMonth()+1;
+                var anio = date.getFullYear();
 
-                if(i == 0 && n < 24 ){ // fecha de pagos capturados
-                        var date= new Date(this.fecha_solic);
-                                  var dia  = date.getDate();
-                                  var mes = date.getMonth()+1;
-                                  var anio = date.getFullYear();
-
-
-                         for( i; i<n; i++){
-
-                            var lastDay = new Date(anio,mes,0).getDate();
-
-                            if(dia <= 15){
-
-                                var dat= new Date(anio , mes-1 , 15 );
-                                var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY');
-                                me.arrayPagosCap[i].f_quincena= dateQ
-                                me.arrayPagosCap[i].fecha_pagosQ =anio +'-'+ mes +'-'+'15';
-                                dia = 16
-                            }else{
-
-                                var dat= new Date(anio , mes-1 , lastDay );
-                                var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY') ;
-                                me.arrayPagosCap[i].f_quincena= dateQ
-                                me.arrayPagosCap[i].fecha_pagosQ =anio +'-'+ mes +'-'+lastDay;
-                                dia = 1;
-                                if(mes == 12 ){
-                                    mes =1;
-                                    anio +=1;
-                                }else{
-                                    mes +=1;
-                                }
-                            }
-
-
-                    }
-
+                for( i; i<n; i++){
+                    var lastDay = new Date(anio,mes,0).getDate();
+                    if(dia <= 15){
+                        var dat= new Date(anio , mes-1 , 15 );
+                        var dateQ = moment(dat).locale('es').format('YYYY-MM-DD');
+                        me.arrayPagos[i].fecha_quincena= dateQ
+                        dia = 16
                     }else{
+                        var dat= new Date(anio , mes-1 , lastDay );
+                        var dateQ = moment(dat).locale('es').format('YYYY-MM-DD') ;
+                        me.arrayPagos[i].fecha_quincena= dateQ
 
-                       if(i > 0 && n== 24 ){
-
-                           var date= new Date(me.arrayPagosCap[i-1].fecha_pagosQ); // i es el numero de elementos del array
-                           // obtiene la fecha del ultimo elemento del array de pagos capturados
-
-                                    var dia  = date.getDate(); // obtiene el dia de la fecha date .. Nota esta devolviendo el dia -1
-                                    if(dia <= 15 ){ // verifica si el dia del ultimo elemento de los pagos capturados es 15
-                                         dia  = 16; // el dia se setea en 16 para que arranque el ciclo para el mes actual pero con el ultimo dia del mes
-                                         var mes = date.getMonth()+1;
-                                    }
-                                    if(dia == 27 || dia == 28 || dia == 29 || dia == 30 ){ // fechas posibles del ultimo elemento del arreglo de pagos capturados
-                                            // se recorre un dia por el echo de que getDay le esta restado un dia
-                                          dia  = 1; // se sete en 1 para que el ciclo arranque con el mes siguiente y con el dia 15
-                                          var mes = date.getMonth()+2;  // se le suma 2 para optener el mes siguiente respecto al mes capturado
-                                    }
-                                    var anio = date.getFullYear();
-
-
-                              for( i; i < n; i++){
-
-                                   var lastDay = new Date(anio,mes,0).getDate();  // optiene el ultimo dia del mes que se le manda
-
-
-                                   if(dia <= 15){
-                                       var dat= new Date(anio , mes-1 , 15 );
-                                       var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY');
-                                       me.arrayPagos[i].f_quincena= dateQ
-                                       dia = 16
-                                   }else{
-                                       var dat= new Date(anio , mes-1 , lastDay );
-                                       var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY') ;
-                                       me.arrayPagos[i].f_quincena= dateQ
-                                       dia = 1;
-                                       if(mes == 12 ){
-                                           mes =1;
-                                           anio +=1;
-                                       }else{
-                                           mes +=1;
-                                       }
-                                   }
-
-
-                               }
-                       }
-
-                           if(i == 0 && n== 24 ){
-                            var date= new Date(this.fecha_solic);
-                                     var dia  = date.getDate();
-                                     var mes = date.getMonth()+1;
-                                     var anio = date.getFullYear();
-
-
-                               for( i; i<n; i++){
-
-                               var lastDay = new Date(anio,mes,0).getDate();
-
-                               if(dia <= 15){
-
-                                   var dat= new Date(anio , mes-1 , 15 );
-                                   var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY');
-                                   me.arrayPagos[i].f_quincena= dateQ
-                                   dia = 16
-                               }else{
-
-                                   var dat= new Date(anio , mes-1 , lastDay );
-                                   var dateQ = moment(dat).locale('es').format('DD-MMMM-YYYY') ;
-                                   me.arrayPagos[i].f_quincena= dateQ
-
-                                   dia = 1;
-                                   if(mes == 12 ){
-                                       mes =1;
-                                       anio +=1;
-                                   }else{
-                                       mes +=1;
-                                   }
-                               }
-
-
-                                }
+                        dia = 1;
+                        if(mes == 12 ){
+                            mes =1;
+                            anio +=1;
+                        }else{
+                            mes +=1;
                         }
-
                     }
-
+                }
 
             },
-
-                // Math.ceil(11.123) devuelve el numero entero siguiente
             generarTablaPagos(){
+                this.borrarTabla();
+                var saldo = parseFloat(this.monto_solic );
+                var pagoQ = parseFloat(this.desc_quin )
 
-                     this.borrarTabla();
+                for(var i=0; i<24; i++){
 
-              // var NpagoQ= parseFloat(this.monto_solic )/ parseFloat(this.desc_quin )
-                //    Math.ceil(NpagoQ)
-                    var saldo = parseFloat(this.monto_solic );
-                    var pagoQ = parseFloat(this.desc_quin )
-
-                    for(var i=0; i<24; i++){
-
-                        var dataObj={'pagoExtra':0};
-                            dataObj['id'] =i+1;
+                    var dataObj={'monto_pago_extra':0};
+                        dataObj['id'] =i+1;
+                        dataObj['fecha_pago'] = null;
+                        dataObj['status'] = 2;
 
 
-                        if(saldo <= 0 ){
-                                dataObj['pago']=0
-                        }else{
-                            if(saldo <= pagoQ ){
-                                dataObj['pago']=saldo
-                               //this.total += saldo;
-                                }
-                            else{
-                                dataObj['pago']=pagoQ
-                               // this.total += pagoQ;
-                            }
-                        }
-
-                        if(saldo <= 0 ){
-                            dataObj['saldo']=0
-
-                        }else{
-                            if(saldo <= pagoQ ){
-                                saldo -=saldo;
-                            }
-                            else{
-                                saldo -=pagoQ;
-                            }
-                            dataObj['saldo']=saldo;
-
-                        }
-
-                         this.arrayPagos.push(dataObj)
-
-                    }
-
-                    if(saldo > 0){
-                        this.saldoFaltante = saldo;
-
-
-                    }
-
-                    this.arrayPagos.forEach(element => {
-                           this.total +=parseFloat(element.pago);
-
-                        });
-                     this.generaFechaTabla(0,24);
-
-
-            },
-
-            validarMonto(pagoQ, inde ,extra){
-
-                this.totalExtra=0; /// se reinicia el monto total de los pagos extraordinarios d
-                                            /// de los pagos No capturados
-                        var index=parseFloat(inde); // convierte de string a cadena
-                        var index_capturado=parseFloat(this.index_cap); // convierte el indice del arreglo de los pagos Capturados
-                        var extraO = parseFloat(extra);
-
-                        console.log(pagoQ,' ',inde,' ',extraO);
-
-                        if(index == 0){
-                        var saldoAnt = parseFloat(this.monto_solic)
-                            console.log('saldo ante',saldoAnt);
-                        }else {
-                            if(this.arrayPagosCap.length >0 &&  index_capturado  == index ){
-                                 var  saldoAnt = this.saldo_ant_Cap;
-
-                            }else{
-                                var  saldoAnt = parseFloat(this.arrayPagos[index-1].saldo)
-                            }
-                        }
-                        var monto=parseFloat(pagoQ) + extraO // total del monto a descontar del saldo anterior
-
-                if(parseFloat(saldoAnt) > monto ){
-                    this.arrayPagos[index].pagoExtra = extraO;
-
-                    this.arrayPagos[index].saldo = saldoAnt - monto;
-
-                    console.log('monto ',monto);
-                    this.totalExtra +=extraO;  // PENDEINTE
-                            if(this.saldoFaltante > 0){
-                                this.saldoFaltante -=extraO;
-                            }else{
-                                this.total -=extraO;
-                            }
-                    this.actualiTabla(index+1,0)
-                }else{
-                    if(parseFloat(saldoAnt) == monto ){
-                        this.arrayPagos[index].pago = monto - extraO;
-                        this.arrayPagos[index].pagoExtra = extraO;
-                        this.arrayPagos[index].saldo = 0;
-                        this.saldoFaltante=0;
-                        this.actualiTabla(index+1,1)
+                    if(saldo <= 0 ){
+                            dataObj['monto_pago']=0
                     }else{
-
-                        this.arrayPagos[index].pago = saldoAnt;
-                        this.arrayPagos[index].pagoExtra = 0;
-                        this.arrayPagos[index].saldo = 0;
-                        this.saldoFaltante=0;
-                        this.actualiTabla(index+1,1)
-                    }
-                }
-            },
-
-
-
-            actualiTabla(index,band){
-                    var n_e_arr =Object.keys(this.arrayPagos).length; //  devuelve el numero de elementos de un objeto
-
-                    console.log(n_e_arr);
-                if(index >=  n_e_arr){
-                    return
-                }else{
-                        for ( index ; index < n_e_arr; index++) { /// NOTA verificar el <=
-
-                           let saldoAnt = this.arrayPagos[index-1].saldo
-                            console.log('Actuali saldo ante',saldoAnt);
-                            console.log('desc qui',this.desc_quin);
-                            if(band ==1){
-                                this.arrayPagos[index].pago = 0;
-                                this.arrayPagos[index].pagoExtra = 0;
-                                this.arrayPagos[index].saldo = 0;
-
-                            }else{
-                                    if(saldoAnt < this.desc_quin ){
-                                        this.arrayPagos[index].pago = saldoAnt;
-                                        this.arrayPagos[index].pagoExtra = 0;
-                                        this.arrayPagos[index].saldo = saldoAnt - saldoAnt;
-                                        console.log('aqui mero entre', saldoAnt);
-                                        console.log('index ',index);
-                                    }else{
-                                        this.arrayPagos[index].pago = this.desc_quin;
-                                        this.arrayPagos[index].pagoExtra = 0;
-                                        this.arrayPagos[index].saldo = saldoAnt - this.arrayPagos[index].pago  ;
-                                    console.log('entro despues de 0');
-                                    }
+                        if(saldo <= pagoQ ){
+                            dataObj['monto_pago']=saldo
+                            //this.total += saldo;
                             }
-
+                        else{
+                            dataObj['monto_pago']=pagoQ
+                            // this.total += pagoQ;
                         }
+                    }
 
-            //this.calculaTotales();
+                    if(saldo <= 0 ){
+                        dataObj['saldo']=0
+
+                    }else{
+                        if(saldo <= pagoQ ){
+                            saldo -=saldo;
+                        }
+                        else{
+                            saldo -=pagoQ;
+                        }
+                        dataObj['saldo']=saldo;
+
+                    }
+                        this.arrayPagos.push(dataObj)
                 }
 
-                 this.guardaTablaPagos_editada();
-
+                this.generaFechaTabla(0,24);
             },
+            validarPagoExtra(){
+                if(this.retencion_extra.monto_pago_extra > this.saldoFaltante)
+                    this.retencion_extra.monto_pago_extra = this.saldoFaltante;
+            },
+            validarMonto(pago, monto_extra){
+                if(monto_extra > pago.saldo){
+                    monto_extra = 0
+                }
 
+                const index = this.arrayPagos.map( e => e.id ).indexOf( pago.id );
+                this.arrayPagos[index].monto_pago_extra = monto_extra;
+                let saldo = parseFloat(this.monto_solic);
+                this.arrayPagos.forEach(e => {
+                    if(saldo > 0){
+                        e.monto_pago = parseFloat(this.desc_quin)
+                        if(parseFloat(e.monto_pago) > saldo)
+                            e.monto_pago = saldo
+                        e.saldo = saldo - (parseFloat(e.monto_pago) + parseFloat(e.monto_pago_extra));
+                        saldo = e.saldo;
+                    }
+                    else{
+                        e.monto_pago = 0;
+                        e.saldo = 0;
+                    }
 
+                });
+                this.editAjuste = 0;
+            },
             guardaObs(){
                 let me = this;
                 axios.post('/prestamos/post_obs',{
@@ -990,7 +759,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             getObservaciones(id){
                     let me = this;
                 var url = '/prestamos/get_obs?id=' + id;
@@ -1002,7 +770,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-             editarSolicitud(band ){
+            editarSolicitud(){
                 let me = this;
                 var url = '/prestamos/editarPrestamo?id=' + this.e_id_user +
                                                         '&monto='+ this.monto_solic +
@@ -1013,20 +781,14 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                                         '&idJefe=' + this.idJefe;
                 axios.put(url).then(function (response) {
                     me.guardaTablaPagos_editada();
-                   if(band == 0 ){
-                       me.cerrarModal();
-                   }
-                       me.dataPrestamos();
-
-                    //window.alert("Cambios guardados correctamente");
-
+                    me.cerrarModal();
+                    me.dataPrestamos();
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
 
             },
-
             enviarSolicitud(){
                 if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
                 {
@@ -1048,11 +810,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                     var respuesta = response.data;
                     me.id_prestamo = respuesta;
-
                     me.guardaTablaPagos();
                     me.cerrarModal();
                     me.dataPrestamos();
-
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -1084,12 +844,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 }).then((result) => {
                     if (result.value) {
                          axios.put('/prestamos/capturar_pago',{
-                            'pago_id' : pago.id_pago,
+                            'pagos' : me.arrayPagos,
                             'solic_id': me.id_prestamo,
-                            'fecha_pago': pago.fecha_captura_pago,
                         }).then(function (response){
                             me.dataPrestamos();
-                            me.getTablaPagos(me.id_prestamo);
+                            const index = me.arrayPagos.map( e => e.id ).indexOf( pago.id );
+                            me.arrayPagos[index].status = 1;
                             swal({
                                 position: 'top-end',
                                 text:"Se capturo el pago correctamente",
@@ -1104,7 +864,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
 
             },
-              firmar(firma_f,id){
+            firmar(firma_f,id){
                 let me = this;
                 Swal.fire({
                     title: '¿Estas seguro de firmar esta solicitud',
@@ -1136,8 +896,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
 
             },
-              aprobar_rh(band){
-
+            aprobar_rh(band){
                 let me = this;
                 Swal.fire({
                     title: 'AprobarSolicitud',
@@ -1150,31 +909,24 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     cancelButtonText: 'Cancelar',
                 }).then((result) => {
                     if (result.value) {
-                         axios.put('/prestamos/aprobar_rh',{
+                        axios.put('/prestamos/aprobar_rh',{
                              'band':band,
                             'id' : this.id_prestamo ,
                             'fecha_aprob':this.fecha_solic,
-
-
                         }).then(function (response){
-                            me.editarSolicitud(0)
-                               // me.dataPrestamos();
-                                //me.cerrarModal();
+                            me.editarSolicitud()
                             swal({
                                 position: 'top-end',
                                 type: 'success',
                                 title: 'Solicitud Aprobada',
                                 showConfirmButton: false,
                                 timer: 1500
-                                })
+                            })
                         }).catch(function (error){
                             console.log(error);
                         });
                     }
                 });
-                //  if(band == 1){
-                //      this.editarSolicitud();
-                // }
 
             },
             guardaTablaPagos(){
@@ -1197,6 +949,31 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
 
+            storePago(){
+                let me = this;
+                axios.post('/prestamos/storeNewPago',{
+                    'id' :  me.id_prestamo,
+                    'monto_pago_extra' : me.retencion_extra.monto_pago_extra,
+                    'fecha_pago' : me.retencion_extra.fecha_pago,
+                }).then(function (response){
+                   me.getTablaPagos(me.id_prestamo)
+                   me.dataPrestamos();
+                   me.modal = 1;
+                   const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Retención guardada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             guardaTablaPagos_editada(){
                 let me = this;
                 axios.put('/prestamos/guardaTablaPagos',{
@@ -1210,76 +987,38 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
 
-             getTablaPagos(id_solicitud){
-            let me = this;
+            getTablaPagos(id_solicitud){
+                let me = this;
                 var url = '/prestamos/getTablaPagos?id=' + id_solicitud;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                     me.arrayPagos=respuesta[0];
-                     me.arrayPagosCap=respuesta[1];
-                      console.log(me.arrayPagos.length); ///// NOTAAAA
-                     if(me.arrayPagosCap.length >= 0){
-
-                         me.arrayPagosCap.forEach((element,index )=> {
-                             if(me.arrayPagosCap.length-1 == index ){
-                                 me.saldo_ant_Cap=element.saldo;
-                                me.index_cap=element.id;
-                            }
-                        });
-                            me.generaFechaTabla(0,me.arrayPagosCap.length);
-                            me.generaFechaTabla(me.arrayPagosCap.length,24);
-                     }else{
-
-                         me.generaFechaTabla(0,24);
-
-                            var array = me.arrayPagos ;
-                            me.arrayPagos =[];
-
-                        for(var i=0 ; i<  me.arrayPagos.length ; i++){
-                            me.arrayPagos.id = array[i].id;
-                            me.arrayPagos.id_pago = array[i].pago_id;
-                            me.arrayPagos.status = array[i].status;
-                            me.arrayPagos.fecha_pago = array[i].fecha_pago;
-                            me.arrayPagos.pago = array[i].pago;
-                            me.arrayPagos.pagoExtra = array[i].pagoExtra;
-                            me.arrayPagos.saldo = array[i].saldo;
-                            if(array[i].saldo ==0)
-                            break;
-                        }
-
-
-                     }
-
-                     me.calculaTotales();
+                    me.arrayPagos=respuesta;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
             eliminaSolicitud(id_solicitud){
-
-
-                   swal({
-                title: '¿Desea eliminar esta solicitud?',
-                text:"Esta acción no se puede revertir!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
+                swal({
+                    title: '¿Desea eliminar esta solicitud?',
+                    text:"Esta acción no se puede revertir!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Si, eliminar!'
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-
                 axios.delete('/prestamos/eliminarSolicitud',
                         {params: {'id': id_solicitud}}).then(function (response){
                         swal(
-                        'Eliminado!',
-                        'Solicitud eliminada correctamente.',
-                        'success'
+                            'Eliminado!',
+                            'Solicitud eliminada correctamente.',
+                            'success'
                         )
-                       me.dataPrestamos();//se enlistan nuevamente los registros
+                        me.dataPrestamos();//se enlistan nuevamente los registros
 
                     }).catch(function (error){
                         console.log(error);
@@ -1287,29 +1026,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 }
                 })
             },
-
-            calculaTotales(){
-                if(this.arrayPagos.length > 0 ){
-
-                    this.total=0;
-                    this.saldoFaltante=0;
-                    this.totalExtra=0;
-                    let ultimo = this.arrayPagos.length -1 ;
-
-                    this.arrayPagos.forEach((element,index) => {
-                       this.total +=parseFloat(element.pago);
-                       if(index == ultimo ){
-                           this.saldoFaltante = parseFloat(element.saldo)
-                       }
-                       this.totalExtra += element.pagoExtra
-                    });
-                } else{
-                    return
-                }
-
-            },
             getUsers(){
-            let me = this;
+                let me = this;
                 var url = '/prestamos/getUsers';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1319,9 +1037,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
-             nom_col(id_user){
-            let me = this;
+            nom_col(id_user){
+                let me = this;
                 var url = '/prestamos/getColaborador?id=' + id_user;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1332,7 +1049,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
             dataPrestamos(page){
-            let me = this;
+                let me = this;
                 var url = '/prestamos/getDataPrestamos?page='+ page +
                             '&idUser='+this.userId+
                             '&isGerenteCurrent='+this.isGerenteCurrent +
@@ -1356,9 +1073,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
-
-              isNumber: function(evt) {
+            isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
                 if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
@@ -1367,28 +1082,27 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     return true;
                 }
             },
-
-
-             formatNumber(value) {
+            formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")
             },
-
-             abrirModal(accion,data=[]){
-
+            abrirModal(accion,data=[]){
                 switch(accion){
+                    case 'monto_extra':{
+                        this.modal = 3;
+                        this.retencion_extra = {
+                            monto_pago_extra: 0,
+                            fecha_pago: '',
+                        };
+                        break;
+                    }
                     case 'registrar':
                     {
-                        const fecha = new Date();
-                        const anio = fecha.getFullYear();
-                        const mes  = fecha.getMonth()+1;
-                        const dia  = fecha.getDate();
                         this.modal=1;
                         this.modalVista='0';
                         this.nom_col(this.userId);
                         this.tituloModal='Nueva Solicitud';
                         //this.fecha_solic=anio+'-'+mes+'-'+dia;
-                        this.arrayPagosCap='';
                         break;
                     }
                     case 'ver':
@@ -1407,7 +1121,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.nom_col(data['user_id']);
                         this.motivo=data['motivo'];
                         this.desc_quin=data['desc_quin'];
-                        this.getTablaPagos(data['id']);  // GENERAR OTRA FUNCION PARA CALCULAR FECHAS DE PAGO EN TABLA
+                        //this.getTablaPagos(data['id']);  // GENERAR OTRA FUNCION PARA CALCULAR FECHAS DE PAGO EN TABLA
+                        this.arrayPagos = data['pagos'];
                         this.generar_tab=1;
 
                         //this.generarTablaPagos();
@@ -1431,13 +1146,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.id_usuario=data['user_id'];
                         this.nom_col(data['user_id']);
                         this.e_id_user=data['user_id'];
-                        this.getTablaPagos(data['id']);
-
-                        //this.generarTablaPagos();
+                        this.arrayPagos = data['pagos'];
                         this.generar_tab=1;
                         break;
-
-
                     }
                     case 'observaciones':
                     {
@@ -1452,7 +1163,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     }
                 }
             },
-
             isGerenteCurrent_Id(){
 
                 this.arrayIdGerentes.forEach(element => {
@@ -1466,20 +1176,17 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                 });
             },
-              isRHCurrent_Id(){
-             this.isRHCurrent = this.arrayIdRH.includes(this.userId)
+            isRHCurrent_Id(){
+                this.isRHCurrent = this.arrayIdRH.includes(this.userId)
                 if(!this.isRHCurrent)
                    this.isRHCurrent = this.arrayIdRH.includes(this.userName)
             },
-              isDirecCurrent_Id(){
-             this.isDireccionCurrent = this.arrayIdDir.includes(this.userId)
+            isDirecCurrent_Id(){
+                this.isDireccionCurrent = this.arrayIdDir.includes(this.userId)
                 if(!this.isDireccionCurrent)
                    this.isDireccionCurrent = this.arrayIdDir.includes(this.userName)
             },
-
-
             cerrarModal(){
-
                 this.modal=null;
                 this.id_prestamo=null;
                 this.tituloModal=null;
@@ -1497,74 +1204,42 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.arrayErrorSolicitud=[];
                 this.id_usuario='';
                 this.borrarTabla();
-
-
             },
             borrarTabla(){
-
                 this.arrayPagos=[];
-                this.arraySaldo=[];
                 this.saldoFaltante=0;
                 this.pago_extraOrd=0;
                 this.total=0;
                 this.totalExtra=0;
-
-
             }
-
         },
         mounted() {
-
             this.isGerenteCurrent_Id();
             this.isRHCurrent_Id();
             this.isDirecCurrent_Id();
             this.dataPrestamos(1);
-            this. getUsers();
-
-
-
+            this.getUsers();
         }
     }
 </script>
 <style scoped>
-.table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-}
-   body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;
-    font-size: 0.875rem;
-    font-weight: normal;
-    line-height: 1.5;
-    color: #151b1e;
-    background-color: #e4e5e6;
-}
-  .td2 {
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;
+        font-size: 0.875rem;
+        font-weight: normal;
+        line-height: 1.5;
+        color: #151b1e;
+        background-color: #e4e5e6;
+    }
+    .td2{
         white-space: nowrap;
         border-bottom: none;
         color: rgb(20, 20, 20);
     }
 
-button{
-    font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;
-}
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
+    button{
+        font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;
     }
 
 </style>

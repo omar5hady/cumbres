@@ -1210,6 +1210,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/prestamos/getUsers','PrestamosController@getUsers');
         Route::put('/prestamos/guardaTablaPagos','PrestamosController@guardaTablaPagos');
 
+        Route::post('/prestamos/storeNewPago','PrestamosController@storeNewPago');
+
 
 
 

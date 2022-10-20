@@ -4,7 +4,7 @@
             <thead>
                 <template v-if="cabecera">
                     <tr>
-                        <th v-for="titulo in cabecera" :key="titulo" v-html="titulo"></th>
+                        <th v-for="(titulo,index) in cabecera" :key="index+titulo" v-html="titulo"></th>
                     </tr>
                 </template>
                 <slot name="thead"></slot>
