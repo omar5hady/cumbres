@@ -533,5 +533,11 @@
         <template v-if="menu == 287">
             <planos-proyectos></planos-proyectos>
         </template>
+        <template v-if="menu == 288">
+            <equip-lotes></equip-lotes>
+        </template>
+        <template v-if="menu == 289">
+            <equip-proveedor></equip-proveedor>
+        </template>
     @endif
 @endsection

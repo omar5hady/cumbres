@@ -17,5 +17,9 @@ class Equipamiento extends Model
     public function solic_equipamiento(){
         return $this->hasMany('App\Solic_equipamiento');
     }
-    
+
+    public function equip_lotes(){
+        return $this->hasMany('App\EquipLote');
+    }
+
 }

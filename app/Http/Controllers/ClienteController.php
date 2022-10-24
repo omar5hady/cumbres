@@ -1287,7 +1287,7 @@ class ClienteController extends Controller
             //Que no se encuentren en el calendario de eventos.
             ->whereNotIn('users.id',$cal)
             ->whereNotIn('users.usuario',[
-                'mayra_jaz', 'vero', 'e_preciado',
+                'may_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
                 'yasmin_ventas', 'ivan.mtz'
             ])
@@ -1320,7 +1320,7 @@ class ClienteController extends Controller
                     ->whereIn('users.id',$as)
                     ->whereNotIn('users.id',$cal)
                     ->whereNotIn('users.usuario',[
-                        'mayra_jaz', 'vero', 'e_preciado',
+                        'may_jaz', 'vero', 'e_preciado',
                         'ALEJANDROT',
                         'yasmin_ventas', 'ivan.mtz'
                     ])
@@ -1341,7 +1341,7 @@ class ClienteController extends Controller
                     ->where('users.usuario','!=','oficina')
                     ->whereNotIn('users.id',$cal)
                     ->whereNotIn('users.usuario',[
-                        'mayra_jaz', 'vero', 'e_preciado',
+                        'may_jaz', 'vero', 'e_preciado',
                         'Guadalupe', 'ALEJANDROT',
                         'yasmin_ventas','lisseth_rios', 'ivan.mtz'
                     ])

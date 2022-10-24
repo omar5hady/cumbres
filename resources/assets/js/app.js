@@ -108,6 +108,9 @@ Vue.component('obra-entrega', require('./components/Obra/EntregaPendiente.vue'))
 Vue.component('prospectos-reasignados', require('./components/Ventas/ProspectosReasignar.vue'));
 Vue.component('reubicacion-component', require('./components/Ventas/Reubicaciones.vue'));
 
+Vue.component('equip-lotes', require('./components/Equipamiento/SolicEquipamiento.vue'));
+Vue.component('equip-proveedor', require('./components/Equipamiento/EquipProveedor.vue'));
+
 //Componentes Rentas
 Vue.component('admin-rentas', require('./components/Rentas/AdminRentas.vue'));
 Vue.component('contrato-rentas', require('./components/Rentas/ContratoRentas.vue'));

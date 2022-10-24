@@ -495,8 +495,8 @@
                 let me = this;
                 var total = 0;
 
-                for(var i=0;i<this.arrayRetenciones.length;i++)
-                    total += parseFloat(this.arrayRetenciones[i].importe)
+                for(var i=0;i<me.arrayRetenciones.length;i++)
+                    total += parseFloat(me.arrayRetenciones[i].importe)
 
                 return total;
             },

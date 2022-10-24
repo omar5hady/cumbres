@@ -23,6 +23,10 @@ class lote extends Model
         return $this->belongsTo('App\Fraccionamiento');
     }
 
+    public function equip_lotes(){
+        return $this->hasMany('App\EquipLote');
+    }
+
     public function etapa(){
         return $this->belongsTo('App\Etapa');
     }

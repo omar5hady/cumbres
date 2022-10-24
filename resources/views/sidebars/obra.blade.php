@@ -11,7 +11,7 @@
                 <a class="nav-link" href="#"><i class="fa fa-play-circle"></i> Inicio de obra</a>
             </li>
         @endif
-        @if(Auth::user()->aviso_obra == 1 || Auth::user()->partidas == 1 
+        @if(Auth::user()->aviso_obra == 1 || Auth::user()->partidas == 1
             || Auth::user()->avance == 1 || Auth::user()->estimaciones == 1
             )
             <li class="nav-item nav-dropdown">
@@ -67,7 +67,7 @@
                 </ul>
             </li>
         @endif
-        
+
         @if(Auth::user()->entregas == 1)
             <li @click="menu=216" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
@@ -78,17 +78,28 @@
                 <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
             </li>
         @endif
-        @if(Auth::user()->id == 25816 || Auth::user()->id == 30993 || Auth::user()->rol_id == 1)
-            <li @click="menu=224" class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamiento</a>
-            </li>
-        @endif
-        @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816 && Auth::user()->id != 25816)
-            <li @click="menu=213" class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
+
+
+        @if(Auth::user()->id == 25816 || Auth::user()->id == 30993 || Auth::user()->rol_id == 1 || Auth::user()->equipamientos == 1)
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#">
+                    <i class="fa fa-building-o"></i> Equipamientos
+                </a>
+                <ul class="nav-dropdown-items nav-dropdown-items2">
+                    @if(Auth::user()->id == 25816 || Auth::user()->id == 30993 || Auth::user()->rol_id == 1)
+                        <li @click="menu=224" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-archive"></i> Administracion de pagos</a>
+                        </li>
+                    @endif
+                    @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816 && Auth::user()->id != 25816)
+                        <li @click="menu=213" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamientos por contrato</a>
+                        </li>
+                    @endif
+                </ul>
             </li>
         @endif
 
-        
+
     </ul>
 </li>
