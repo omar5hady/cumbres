@@ -331,7 +331,6 @@
         },
         data(){
             return{
-                arrayEquipamientos: [],
                 arrayManzanas: [],
                 arrayLotes: [],
                 arraySolicitudes: [],
@@ -455,27 +454,12 @@
                     console.log(error);
                 });
             },
-
-            selectEquipamiento(proveedor){
-                let me = this;
-
-                me.arrayEquipamientos=[];
-                var url = '/select_equipamientos?buscar=' + proveedor;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayEquipamientos = respuesta.equipamiento;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             cerrarModal(){
                 this.getSolicitudes(this.arraySolicitudes.current_page)
                 this.modal = 0;
                 this.tituloModal = '';
                 this.datosSolicitud = {};
                 this.buscadores = {};
-                this.arrayEquipamientos = [];
                 this.arrayManzanas = [];
                 this.arrayLotes = [];
                 this.observacion = '';

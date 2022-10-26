@@ -110,6 +110,7 @@ Vue.component('reubicacion-component', require('./components/Ventas/Reubicacione
 
 Vue.component('equip-lotes', require('./components/Equipamiento/SolicEquipamiento.vue'));
 Vue.component('equip-proveedor', require('./components/Equipamiento/EquipProveedor.vue'));
+Vue.component('equip-obra', require('./components/Equipamiento/EquipObra.vue'));
 
 //Componentes Rentas
 Vue.component('admin-rentas', require('./components/Rentas/AdminRentas.vue'));

@@ -96,6 +96,11 @@
                             <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamientos por contrato</a>
                         </li>
                     @endif
+                    @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816 && Auth::user()->id != 25816)
+                        <li @click="menu=290" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamientos por lote</a>
+                        </li>
+                    @endif
                 </ul>
             </li>
         @endif

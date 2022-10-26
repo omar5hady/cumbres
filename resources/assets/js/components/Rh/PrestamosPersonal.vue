@@ -54,7 +54,7 @@
                         ]"
                     >
                         <template v-slot:tbody>
-                            <tr v-for="prestamo in arrayDataPrestamos" :key="prestamo.id">
+                            <tr v-for="prestamo in arrayDataPrestamos.data" :key="prestamo.id">
                                 <td class="td2">
                                     <template v-if="isRHCurrent && prestamo.status_rh !=2" >
                                         <button type="button"
@@ -150,50 +150,50 @@
                     <nav>
                         <!--Botones de paginacion -->
                         <ul class="pagination">
-                            <li class="page-item" v-if="arrPaginacion.current_page > 5" @click="dataPrestamos(1)">
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page > 5" @click="dataPrestamos(1)">
                                 <a class="page-link" href="#" >Inicio</a>
                             </li>
-                            <li class="page-item" v-if="arrPaginacion.current_page > 1"
-                                @click="dataPrestamos(arrPaginacion.current_page-1)">
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page > 1"
+                                @click="dataPrestamos(arrayDataPrestamos.current_page-1)">
                                 <a class="page-link" href="#" >Ant</a>
                             </li>
 
-                            <li class="page-item" v-if="arrPaginacion.current_page-3 >= 1"
-                                @click="dataPrestamos(arrPaginacion.current_page-3)">
-                                <a class="page-link" href="#" v-text="arrPaginacion.current_page-3"></a>
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page-3 >= 1"
+                                @click="dataPrestamos(arrayDataPrestamos.current_page-3)">
+                                <a class="page-link" href="#" v-text="arrayDataPrestamos.current_page-3"></a>
                             </li>
-                            <li class="page-item" v-if="arrPaginacion.current_page-2 >= 1"
-                                @click="dataPrestamos(arrPaginacion.current_page-2)">
-                                <a class="page-link" href="#" v-text="arrPaginacion.current_page-2"></a>
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page-2 >= 1"
+                                @click="dataPrestamos(arrayDataPrestamos.current_page-2)">
+                                <a class="page-link" href="#" v-text="arrayDataPrestamos.current_page-2"></a>
                             </li>
-                            <li class="page-item" v-if="arrPaginacion.current_page-1 >= 1"
-                                @click="dataPrestamos(arrPaginacion.current_page-1)">
-                                <a class="page-link" href="#" v-text="arrPaginacion.current_page-1"></a>
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page-1 >= 1"
+                                @click="dataPrestamos(arrayDataPrestamos.current_page-1)">
+                                <a class="page-link" href="#" v-text="arrayDataPrestamos.current_page-1"></a>
                             </li>
                             <li class="page-item active" >
-                                <a class="page-link" href="#" v-text="arrPaginacion.current_page"></a>
+                                <a class="page-link" href="#" v-text="arrayDataPrestamos.current_page"></a>
                             </li>
                             <li class="page-item"
-                                v-if="arrPaginacion.current_page+1 <= arrPaginacion.last_page">
-                                <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+1)"
-                                v-text="arrPaginacion.current_page+1"></a>
+                                v-if="arrayDataPrestamos.current_page+1 <= arrayDataPrestamos.last_page">
+                                <a class="page-link" href="#" @click="dataPrestamos(arrayDataPrestamos.current_page+1)"
+                                v-text="arrayDataPrestamos.current_page+1"></a>
                             </li>
                             <li class="page-item"
-                                v-if="arrPaginacion.current_page+2 <= arrPaginacion.last_page">
-                                <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+2)"
-                                    v-text="arrPaginacion.current_page+2"></a>
+                                v-if="arrayDataPrestamos.current_page+2 <= arrayDataPrestamos.last_page">
+                                <a class="page-link" href="#" @click="dataPrestamos(arrayDataPrestamos.current_page+2)"
+                                    v-text="arrayDataPrestamos.current_page+2"></a>
                             </li>
                             <li class="page-item"
-                                v-if="arrPaginacion.current_page+3 <= arrPaginacion.last_page">
-                                <a class="page-link" href="#" @click="dataPrestamos(arrPaginacion.current_page+3)"
-                                v-text="arrPaginacion.current_page+3"></a>
+                                v-if="arrayDataPrestamos.current_page+3 <= arrayDataPrestamos.last_page">
+                                <a class="page-link" href="#" @click="dataPrestamos(arrayDataPrestamos.current_page+3)"
+                                v-text="arrayDataPrestamos.current_page+3"></a>
                             </li>
 
-                            <li class="page-item" v-if="arrPaginacion.current_page < arrPaginacion.last_page"
-                                @click="dataPrestamos(arrPaginacion.current_page+1)">
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page < arrayDataPrestamos.last_page"
+                                @click="dataPrestamos(arrayDataPrestamos.current_page+1)">
                                 <a class="page-link" href="#" >Sig</a>
                             </li>
-                            <li class="page-item" v-if="arrPaginacion.current_page < 5 && arrPaginacion.last_page > 5" @click="dataPrestamos(arrayDataPrestamos.last_page)">
+                            <li class="page-item" v-if="arrayDataPrestamos.current_page < 5 && arrayDataPrestamos.last_page > 5" @click="dataPrestamos(arrayDataPrestamos.last_page)">
                                 <a class="page-link" href="#" >Ultimo</a>
                             </li>
                         </ul>
@@ -1061,11 +1061,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             '&isDireccionCurrent='+ this.isDireccionCurrent;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                     me.arrayDataPrestamos = respuesta.data;
-                     me.arrPaginacion['current_page']=respuesta.current_page;
-                     me.arrPaginacion['last_page']=respuesta.last_page;
+                     me.arrayDataPrestamos = respuesta;
 
-                     if(me.arrayDataPrestamos.length > 0){ // Mod
+                     if(me.arrayDataPrestamos.data.length > 0){ // Mod
                         me.vista_tabla =1;
                      }
                 })

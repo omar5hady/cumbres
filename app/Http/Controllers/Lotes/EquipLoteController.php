@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\EquipLote;
 use App\ObsEquipLote;
+use App\RevEquipLote;
+use App\Personal;
 use Carbon\Carbon;
 
 use Auth;
@@ -96,12 +98,85 @@ class EquipLoteController extends Controller
                 $this->guardarObs( $solicitud['id'], 'Se ha terminado la instalación del equipamiento');
                 break;
             }
+            case 'updateRevision':{
+                $supervisor = Personal::select('nombre','apellidos')->where('id','=',Auth::user()->id)->first();
+                $revision = $request->revision;
+                $solicitud['status'] = 4;
+                $solicitud['obs_recep'] = $revision['obs'];
+                $solicitud['fecha_revision'] = new Carbon();
+                $solicitud['supervisor'] = $supervisor->nombre.' '.$supervisor->apellidos;
+
+                $this->storeRevision($solicitud['id'], $solicitud['tipoRecepcion'], $revision);
+                //$this->guardarObs( $solicitud['id'], 'Recepción de equipamiento completada');
+                break;
+            }
         }
 
         $this->updateInformacion($solicitud);
         if($request->observacion != '')
             $this->guardarObs( $solicitud['id'], $request->observacion );
 
+    }
+
+    private function storeRevision($solicitud_id, $tipo, $revision){
+        switch($tipo){
+            case '1':{
+                $this->storeRevCocina($solicitud_id,$revision);
+                break;
+            }
+            case '2':{
+                $this->storeRevClosets($solicitud_id,$revision);
+                break;
+            }
+        }
+    }
+
+    private function storeRevCocina($solicitud_id,$revision){
+        foreach($revision['acabados'] as $acabado){
+            foreach($acabado['info'] as $rev){
+               $this->storeRev($solicitud_id, $rev);
+            }
+        }
+        foreach($revision['revisiones'] as $acabado){
+            foreach($acabado['info'] as $rev){
+               $this->storeRev($solicitud_id, $rev);
+            }
+        }
+        foreach($revision['otros'] as $acabado){
+            foreach($acabado['info'] as $rev){
+               $this->storeRev($solicitud_id, $rev);
+            }
+        }
+    }
+
+    private function storeRevClosets($solicitud_id,$revision){
+        foreach($revision['acabados'] as $acabado){
+            foreach($acabado['info'] as $rev){
+               $this->storeRev($solicitud_id, $rev);
+            }
+        }
+        foreach($revision['interiores'] as $acabado){
+            foreach($acabado['info'] as $rev){
+               $this->storeRev($solicitud_id, $rev);
+            }
+        }
+        foreach($revision['otros'] as $acabado){
+            foreach($acabado['info'] as $rev){
+               $this->storeRev($solicitud_id, $rev);
+            }
+        }
+    }
+
+    private function storeRev($solicitud_id, $revision){
+        $rev = new RevEquipLote();
+        $rev->solicitud_id = $solicitud_id;
+        $rev->categoria = $revision['categoria'];
+        $rev->subcategoria = $revision['subcategoria'];
+        $rev->concepto = $revision['concepto'];
+        $rev->check1 = $revision['check1'];
+        $rev->check2 = $revision['check2'];
+        $rev->check3 = $revision['check3'];
+        $rev->save();
     }
 
     private function updateInformacion($solicitud){
@@ -122,6 +197,10 @@ class EquipLoteController extends Controller
         $equipamiento->liquidacion_cand     = $solicitud['liquidacion_cand'];
         $equipamiento->comp_pago_1          = $solicitud['comp_pago_1'];
         $equipamiento->comp_pago_2          = $solicitud['comp_pago_2'];
+
+        $equipamiento->obs_recep            = $solicitud['obs_recep'];
+        $equipamiento->fecha_revision       = $solicitud['fecha_revision'];
+        $equipamiento->supervisor           = $solicitud['supervisor'];
         $equipamiento->save();
     }
 }

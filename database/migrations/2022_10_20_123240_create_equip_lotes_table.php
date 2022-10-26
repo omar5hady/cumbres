@@ -37,6 +37,10 @@ class CreateEquipLotesTable extends Migration
             $table->string('comp_pago_1',95)->nullable();
             $table->string('comp_pago_2',95)->nullable();
 
+            $table->text('obs_recep')->nullable();
+            $table->date('fecha_revision')->nullable();
+            $table->string('supervisor',80)->nullable();
+
             $table->timestamps();
             $table->foreign('lote_id')->references('id')->on('lotes');
             $table->foreign('equipamiento_id')->references('id')->on('equipamientos');

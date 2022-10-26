@@ -539,5 +539,8 @@
         <template v-if="menu == 289">
             <equip-proveedor></equip-proveedor>
         </template>
+        <template v-if="menu == 290">
+            <equip-obra></equip-obra>
+        </template>
     @endif
 @endsection
