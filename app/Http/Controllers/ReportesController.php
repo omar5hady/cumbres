@@ -14,6 +14,7 @@ use App\Fraccionamiento;
 use App\Credito;
 use App\Contrato;
 use App\Expediente;
+use App\EquipLote;
 use App\Entrega;
 use App\Dep_credito;
 use App\Lote;
@@ -2243,6 +2244,14 @@ class ReportesController extends Controller
     }
     //Función privada para calcular los montos de venta, status y montos cobrados de un lote para el reporte de recursos propios
     private function retornarMontosRP($lote){
+        $costoEquipamiento = 0;
+        $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+        if(sizeOf($lote->equipamiento))
+            foreach($lote->equipamiento as $eq){
+                $costoEquipamiento += $eq->costo;
+            }
+
+        $lote->ajuste += $costoEquipamiento;
         //Se asigna el valor de venta del lote
         $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
                                 $lote->obra_extra - $lote->ajuste;

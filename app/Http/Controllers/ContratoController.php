@@ -35,6 +35,7 @@ use App\Modelo;
 use App\Cuenta;
 use App\Avaluo;
 use App\User;
+use App\EquipLote;
 use App\PlanoProyecto;
 use App\DocProyecto;
 use NumerosEnLetras;
@@ -340,6 +341,7 @@ class ContratoController extends Controller
                     'clientes.email_coa',
                     'clientes.parentesco_coa',
                     'clientes.lugar_nacimiento_coa',
+                    'clientes.advertising',
                     'v.nombre as vendedor_nombre',
                     'v.apellidos as vendedor_apellidos',
 
@@ -1455,8 +1457,6 @@ class ContratoController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
-        // try{
-        //     DB::beginTransaction();
             $id_lote = $request->lote_id;
             $equipo='';
             $datosFiscales = $request->datosFiscales;
@@ -1532,214 +1532,214 @@ class ContratoController extends Controller
                 $lote->contrato = 1;
                 $lote->save();
 
-            } else {
-                // Ventas canceladas o No firmadas
-                if ($request->status == 0 || $request->status == 2) {
-                    //El lote se habilita para venta.
-                    $lote->contrato = 0;
-                    $lote->apartado = 0;
-                    // En caso de tener equipamiento instalado se ajusta el precio
-                    $lote->ajuste += $ajuste;
-                    // Se indica que el lote cuenta con equipamiento
-                    if($ajuste != 0)
-                        $lote->comentarios ='Lote con equipamiento: '.$equipo.'. '.$lote->comentarios;
-
-                    //Se cancelan los equipamientos solicitados.
-                    if(sizeof($equipamientosCancel) != 0){
-                        foreach ($equipamientosCancel as $canc){
-                            $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
-                            $cancel_equip->control = 2;
-                            $cancel_equip->status = 5;
-                            $cancel_equip->save();
-                        }
-                    }
-
-                    //Se elimina el apartado asignado al lote.
-                    $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
-                    if(sizeof($apartado))
-                        foreach($apartado as $ap){
-                            $borrarApartado = Apartado::findOrFail($ap->id);
-                            $borrarApartado->delete();
-                        }
-                        // Se obtiene el nombre y superficie de terreno del modelo asignado al lote.
-                    $modelo = Modelo::select('terreno','nombre')->where('id','=',$lote->modelo_id)->get();
-
-                    // Ventas que no sean terrenos
-                    if($modelo[0]->nombre != 'Terreno'){
-                        //Se obtiene el precio por excedente en la etapa actual.
-                        $precio_etapa = Precio_etapa::select('id','precio_excedente')
-                        ->where('fraccionamiento_id','=',$lote->fraccionamiento_id)
-                        ->where('etapa_id','=',$lote->etapa_id)->get();
-
-                        // Se obtiene el precio del modelo actual.
-                        $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
-                                        ->where('modelo_id','=',$lote->modelo_id)->get();
-
-                        // Se obtienen los sobreprecios del lote.
-                        $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-                        ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-                        ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
-
-                        //Se calcula el terreno excedente
-                        $terrenoExcedente = round(($lote->terreno - $modelo[0]->terreno),2);
-                        if((double)$terrenoExcedente > 0)
-                            //Se calcula el monto por terreno excedente.
-                            $lote->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
-                        else {
-                            $lote->excedente_terreno = 0;
-                        }
-                        //Se asigna el precio base
-                        $lote->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
-                        //Se calcula el precio de venta del lote.
-                        $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra),2);
-
-                    }
-                    else{
-                        $cotizadorLote = Cotizacion_lotes::select('id')->where('lotes_id','=',$id_lote)
-                            ->where('num_contrato','=',$request->id)->get();
-
-                        if(sizeOf($cotizadorLote)){
-                            $cotizadorLote = Cotizacion_lotes::findOrFail($cotizadorLote[0]->id);
-                            $cotizadorLote->estatus = 2;
-                            $cotizadorLote->save();
-                        }
-                    }
-                    $lote->save();
-
-                    $credito = Credito::select('prospecto_id')
-                        ->where('id', '=', $request->id)
-                        ->get();
-                    $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
-                    $cliente->clasificacion = 6;
-                    $cliente->save();
-                }
-                // Venta firmada
-                if ($request->status == 3) {
-                    //Se obtienen la información del paquete asignado.
-                    $credito = Credito::select('prospecto_id', 'descripcion_paquete', 'num_lote', 'fraccionamiento', 'etapa')
-                        ->where('id', '=', $request->id)
-                        ->get();
-                    //Se asigna el paquete al registro del lote
-                    $lote->paquete = $credito[0]->descripcion_paquete;
-                    //El lote se indica como vendido.
-                    $lote->contrato = 1;
-                    $lote->save();
-                    // Se accede al registro del Cliente.
-                    $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
-                    // Cliente clasificado como ventas
-                    $cliente->clasificacion = 5;
-                    $cliente->advertising = $request->advertising;
-                    if($cliente->coacreditado == 1){
-                        $coa = Personal::select('id')->where('rfc','=',$cliente->rfc_coa)->first();
-                        $coacreditado = Cliente::findOrFail($coa->id);
-                        $coacreditado->advertising = $cliente->advertising;
-                        $coacreditado->save();
-                    }
-                    $vendedorid = $cliente->vendedor_id;
-                    $cliente->save();
-
-                    // Actualización de datos fiscales
-                    $credit_fisc = Credito::findOrFail($request->id);
-                    $p_cliente = Personal::findOrFail($credit_fisc->prospecto_id);
-
-                        if($datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 0 || $datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 1){
-                            $credit_fisc->notif_fisc = 2;
-                            $credit_fisc->fecha_rfc = Carbon::now();
-                            //Se manda notificación sobre la venta.
-                            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
-                            $fecha = Carbon::now();
-                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa.
-                            " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
-                            " con RFC";
-                            $arregloAceptado = [
-                                'notificacion' => [
-                                    'usuario' => $imagenUsuario[0]->usuario,
-                                    'foto' => $imagenUsuario[0]->foto_user,
-                                    'fecha' => $fecha,
-                                    'msj' => $msj,
-                                    'titulo' => 'Venta con RFC'
-                                ]
-                            ];
-
-                            $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
-
-                            if(sizeof($personal))
-                            foreach ($personal as $personas) {
-                                $correo = $personas->email;
-                                Mail::to($correo)->send(new NotificationReceived($msj));
-                                User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
-                            }
-                        }
-                        if($datosFiscales['rfc_fisc'] == '' && $credit_fisc->notif_fisc == 0){
-                            $credit_fisc->notif_fisc = 1;
-                            //Se manda notificación sobre la venta.
-                            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
-                            $fecha = Carbon::now();
-                            $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa.
-                            " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
-                            " sin RFC";
-                            $arregloAceptado = [
-                                'notificacion' => [
-                                    'usuario' => $imagenUsuario[0]->usuario,
-                                    'foto' => $imagenUsuario[0]->foto_user,
-                                    'fecha' => $fecha,
-                                    'msj' => $msj,
-                                    'titulo' => 'Venta sin RFC'
-                                ]
-                            ];
-
-                            $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
-
-                            if(sizeof($personal))
-                            foreach ($personal as $personas) {
-                                $correo = $personas->email;
-                                Mail::to($correo)->send(new NotificationReceived($msj));
-                                User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
-                            }
-                        }
-
-                    // Se capturan los datos fiscales del cliente.
-                    $credit_fisc->email_fisc = $datosFiscales['email_fisc'];
-                    $credit_fisc->tel_fisc = $datosFiscales['tel_fisc'];
-                    $credit_fisc->nombre_fisc = $datosFiscales['nombre_fisc'];
-                    $credit_fisc->direccion_fisc = $datosFiscales['direccion_fisc'];
-                    $credit_fisc->col_fisc = $datosFiscales['col_fisc'];
-                    $credit_fisc->cp_fisc = $datosFiscales['cp_fisc'];
-                    $credit_fisc->rfc_fisc = $datosFiscales['rfc_fisc'];
-
-                    $credit_fisc->cfi_fisc = $datosFiscales['cfi_fisc'];
-                    $credit_fisc->regimen_fisc = $datosFiscales['regimen_fisc'];
-                    $credit_fisc->banco_fisc = $datosFiscales['banco_fisc'];
-                    $credit_fisc->num_cuenta_fisc = $datosFiscales['num_cuenta_fisc'];
-                    $credit_fisc->clabe_fisc = $datosFiscales['clabe_fisc'];
-
-                    $credit_fisc->save();
-
-                    //Se manda notificación sobre la venta.
-                    $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
-                    $fecha = Carbon::now();
-                    $msj = "Se ha vendido el lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa;
-                    $arregloAceptado = [
-                        'notificacion' => [
-                            'usuario' => $imagenUsuario[0]->usuario,
-                            'foto' => $imagenUsuario[0]->foto_user,
-                            'fecha' => $fecha,
-                            'msj' => $msj,
-                            'titulo' => 'Venta :)'
-                        ]
-                    ];
-
-                    $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.id', '=', $vendedorid)->get();
-                    // Se envia notifivacion por correo y en el sistema para informar sobre la venta.
-                    if(sizeof($personal))
-                    foreach ($personal as $personas) {
-                        $correo = $personas->email;
-                        Mail::to($correo)->send(new NotificationReceived($msj));
-                        User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
-                    }
-
-                }
             }
+            // Ventas canceladas o No firmadas
+            if ($request->status == 0 || $request->status == 2) {
+                //El lote se habilita para venta.
+                $lote->contrato = 0;
+                $lote->apartado = 0;
+                // En caso de tener equipamiento instalado se ajusta el precio
+                $lote->ajuste += $ajuste;
+                // Se indica que el lote cuenta con equipamiento
+                if($ajuste != 0)
+                    $lote->comentarios ='Lote con equipamiento: '.$equipo.'. '.$lote->comentarios;
+
+                //Se cancelan los equipamientos solicitados.
+                if(sizeof($equipamientosCancel) != 0){
+                    foreach ($equipamientosCancel as $canc){
+                        $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
+                        $cancel_equip->control = 2;
+                        $cancel_equip->status = 5;
+                        $cancel_equip->save();
+                    }
+                }
+
+                //Se elimina el apartado asignado al lote.
+                $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
+                if(sizeof($apartado))
+                    foreach($apartado as $ap){
+                        $borrarApartado = Apartado::findOrFail($ap->id);
+                        $borrarApartado->delete();
+                    }
+                    // Se obtiene el nombre y superficie de terreno del modelo asignado al lote.
+                $modelo = Modelo::select('terreno','nombre')->where('id','=',$lote->modelo_id)->get();
+
+                // Ventas que no sean terrenos
+                if($modelo[0]->nombre != 'Terreno'){
+                    //Se obtiene el precio por excedente en la etapa actual.
+                    $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                    ->where('fraccionamiento_id','=',$lote->fraccionamiento_id)
+                    ->where('etapa_id','=',$lote->etapa_id)->get();
+
+                    // Se obtiene el precio del modelo actual.
+                    $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                                    ->where('modelo_id','=',$lote->modelo_id)->get();
+
+                    // Se obtienen los sobreprecios del lote.
+                    $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                    ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
+
+                    //Se calcula el terreno excedente
+                    $terrenoExcedente = round(($lote->terreno - $modelo[0]->terreno),2);
+                    if((double)$terrenoExcedente > 0)
+                        //Se calcula el monto por terreno excedente.
+                        $lote->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                    else {
+                        $lote->excedente_terreno = 0;
+                    }
+                    //Se asigna el precio base
+                    $lote->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+                    //Se calcula el precio de venta del lote.
+                    $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra),2);
+
+                }
+                else{
+                    $cotizadorLote = Cotizacion_lotes::select('id')->where('lotes_id','=',$id_lote)
+                        ->where('num_contrato','=',$request->id)->get();
+
+                    if(sizeOf($cotizadorLote)){
+                        $cotizadorLote = Cotizacion_lotes::findOrFail($cotizadorLote[0]->id);
+                        $cotizadorLote->estatus = 2;
+                        $cotizadorLote->save();
+                    }
+                }
+                $lote->save();
+
+                $credito = Credito::select('prospecto_id')
+                    ->where('id', '=', $request->id)
+                    ->get();
+                $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                $cliente->clasificacion = 6;
+                $cliente->save();
+            }
+            // Venta firmada
+            if ($request->status == 3) {
+                //Se obtienen la información del paquete asignado.
+                $credito = Credito::select('prospecto_id', 'descripcion_paquete', 'num_lote', 'fraccionamiento', 'etapa')
+                    ->where('id', '=', $request->id)
+                    ->get();
+                //Se asigna el paquete al registro del lote
+                $lote->paquete = $credito[0]->descripcion_paquete;
+                //El lote se indica como vendido.
+                $lote->contrato = 1;
+                $lote->save();
+                // Se accede al registro del Cliente.
+                $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                // Cliente clasificado como ventas
+                $cliente->clasificacion = 5;
+                $cliente->advertising = $request->advertising;
+                if($cliente->coacreditado == 1){
+                    $coa = Personal::select('id')->where('rfc','=',$cliente->rfc_coa)->first();
+                    $coacreditado = Cliente::findOrFail($coa->id);
+                    $coacreditado->advertising = $cliente->advertising;
+                    $coacreditado->save();
+                }
+                $vendedorid = $cliente->vendedor_id;
+                $cliente->save();
+
+                // Actualización de datos fiscales
+                $credit_fisc = Credito::findOrFail($request->id);
+                $p_cliente = Personal::findOrFail($credit_fisc->prospecto_id);
+
+                    if($datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 0 || $datosFiscales['rfc_fisc'] != '' && $credit_fisc->notif_fisc == 1){
+                        $credit_fisc->notif_fisc = 2;
+                        $credit_fisc->fecha_rfc = Carbon::now();
+                        //Se manda notificación sobre la venta.
+                        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+                        $fecha = Carbon::now();
+                        $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa.
+                        " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
+                        " con RFC";
+                        $arregloAceptado = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'Venta con RFC'
+                            ]
+                        ];
+
+                        $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
+
+                        if(sizeof($personal))
+                        foreach ($personal as $personas) {
+                            $correo = $personas->email;
+                            Mail::to($correo)->send(new NotificationReceived($msj));
+                            User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                        }
+                    }
+                    if($datosFiscales['rfc_fisc'] == '' && $credit_fisc->notif_fisc == 0){
+                        $credit_fisc->notif_fisc = 1;
+                        //Se manda notificación sobre la venta.
+                        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+                        $fecha = Carbon::now();
+                        $msj = "Se ha cerrado la venta del lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa.
+                        " a nombre del cliente ".$p_cliente->nombre.' '.$p_cliente->apellidos.
+                        " sin RFC";
+                        $arregloAceptado = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'Venta sin RFC'
+                            ]
+                        ];
+
+                        $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->whereIn('users.usuario', ['enrique.mag','antonio.nv','shady'])->get();
+
+                        if(sizeof($personal))
+                        foreach ($personal as $personas) {
+                            $correo = $personas->email;
+                            Mail::to($correo)->send(new NotificationReceived($msj));
+                            User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                        }
+                    }
+
+                // Se capturan los datos fiscales del cliente.
+                $credit_fisc->email_fisc = $datosFiscales['email_fisc'];
+                $credit_fisc->tel_fisc = $datosFiscales['tel_fisc'];
+                $credit_fisc->nombre_fisc = $datosFiscales['nombre_fisc'];
+                $credit_fisc->direccion_fisc = $datosFiscales['direccion_fisc'];
+                $credit_fisc->col_fisc = $datosFiscales['col_fisc'];
+                $credit_fisc->cp_fisc = $datosFiscales['cp_fisc'];
+                $credit_fisc->rfc_fisc = $datosFiscales['rfc_fisc'];
+
+                $credit_fisc->cfi_fisc = $datosFiscales['cfi_fisc'];
+                $credit_fisc->regimen_fisc = $datosFiscales['regimen_fisc'];
+                $credit_fisc->banco_fisc = $datosFiscales['banco_fisc'];
+                $credit_fisc->num_cuenta_fisc = $datosFiscales['num_cuenta_fisc'];
+                $credit_fisc->clabe_fisc = $datosFiscales['clabe_fisc'];
+
+                $credit_fisc->save();
+
+                //Se manda notificación sobre la venta.
+                $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+                $fecha = Carbon::now();
+                $msj = "Se ha vendido el lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Venta :)'
+                    ]
+                ];
+
+                $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.id', '=', $vendedorid)->get();
+                // Se envia notifivacion por correo y en el sistema para informar sobre la venta.
+                if(sizeof($personal))
+                foreach ($personal as $personas) {
+                    $correo = $personas->email;
+                    Mail::to($correo)->send(new NotificationReceived($msj));
+                    User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                }
+
+            }
+
 
             $typCredit = inst_seleccionada::where('credito_id', '=', $request->id)->where('elegido', '=', 1)->get();
             $inst = inst_seleccionada::findOrFail($typCredit[0]->id);
@@ -1770,10 +1770,6 @@ class ContratoController extends Controller
 
                 }
             }
-
-        // } catch (Exception $e){
-        //     DB::rollBack();
-        // }
     }
 
     // Función para añadir un nuevo pagare.
@@ -2176,16 +2172,7 @@ class ContratoController extends Controller
             $varContrato = $lote_ant->contrato;
             $lote_ant->contrato = 0;
             $lote_ant->paquete = '';
-            //$lote_ant->apartado = 0;
             $lote_ant->save();
-
-            //Se elimina el apartado asignado al lote anterior
-            // $apartado = Apartado::select('id')->where('lote_id','=',$lote_ant->id)->get();
-            // if(sizeof($apartado))
-            //     foreach($apartado as $ap){
-            //         $borrarApartado = Apartado::findOrFail($ap->id);
-            //         $borrarApartado->delete();
-            //     }
 
             DB::beginTransaction();
 
@@ -2215,9 +2202,16 @@ class ContratoController extends Controller
                     $lote_new->excedente_terreno = 0;
                 }
 
+            $costoEquipamiento = 0;
+            $lote_new->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
+            if(sizeOf($lote_new->equipamiento))
+                foreach($lote_new->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+
             $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
-            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+            $precio_venta = round(($sobreprecios[0]->sobreprecios + $costoEquipamiento + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
             $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
             $lote_new->contrato = 1;
 
@@ -2260,7 +2254,7 @@ class ContratoController extends Controller
             $credito->manzana = $request->manzana;
             $credito->num_lote = $request->num_lote;
             $credito->modelo = $request->modelo;
-            $credito->precio_base = $lote_new->precio_base + $lote_new->ajuste;
+            $credito->precio_base = $lote_new->precio_base + $lote_new->ajuste + $costoEquipamiento;
             $credito->superficie = $request->superficie;
             $credito->terreno_excedente = $terreno_tam_excedente;
             $credito->precio_terreno_excedente = $lote_new->excedente_terreno;
@@ -2333,14 +2327,6 @@ class ContratoController extends Controller
             //$lote_ant->apartado = 0;
             $lote_ant->save();
 
-            // //Se elimina el apartado asignado al lote anterior
-            // $apartado = Apartado::select('id')->where('lote_id','=',$lote_ant->id)->get();
-            // if(sizeof($apartado))
-            //     foreach($apartado as $ap){
-            //         $borrarApartado = Apartado::findOrFail($ap->id);
-            //         $borrarApartado->delete();
-            //     }
-
             DB::beginTransaction();
 
             // Se accede al nuevo lote.
@@ -2368,7 +2354,14 @@ class ContratoController extends Controller
                 else {
                     $lote_new->excedente_terreno = 0;
                 }
-            $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
+
+            $costoEquipamiento = 0;
+            $lote_new->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
+            if(sizeOf($lote_new->equipamiento))
+                foreach($lote_new->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+            $lote_new->precio_base = $precio_modelo[0]->precio_modelo + $costoEquipamiento;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
             // Se calcula el precio de venta para el nuevo lote.
             $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
@@ -2381,7 +2374,7 @@ class ContratoController extends Controller
             $credito->manzana = $request->manzana;
             $credito->num_lote = $request->num_lote;
             $credito->modelo = $request->modelo;
-            $credito->precio_base = $lote_new->precio_base + $lote_new->ajuste;
+            $credito->precio_base = $lote_new->precio_base + $lote_new->ajuste + $costoEquipamiento;
             $credito->superficie = $request->superficie;
             $credito->terreno_excedente = $terreno_tam_excedente;
             $credito->precio_terreno_excedente = $lote_new->excedente_terreno;
@@ -2746,12 +2739,18 @@ class ContratoController extends Controller
                 ->get();
 
         foreach ($lotesDisp as $key => $lote) {
+            $costoEquipamiento = 0;
+            $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+            if(sizeOf($lote->equipamiento))
+                foreach($lote->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
             if($lote->habilitado == 1)
                 $lote->habilitado = 'Habilitado para venta';
             else
                 $lote->habilitado = 'Deshabilitado';
 
-            $lote->precio_venta = $lote->precio_base + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio;
+            $lote->precio_venta = $lote->precio_base + $costoEquipamiento + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio;
         }
 
         return Excel::create('Modelo Caco', function($excel) use ($contratos,$lotesDisp){

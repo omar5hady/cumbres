@@ -12,6 +12,7 @@ use App\Lote;
 use App\Lote_promocion;
 use App\Modelo;
 use App\Etapa;
+use App\EquipLote;
 use App\Fraccionamiento;
 use App\Licencia;
 use App\Partida;
@@ -1031,8 +1032,18 @@ class LoteController extends Controller
         if(sizeof($lotes))
         //Se recorren los registros de lotes encontrados
         foreach($lotes as $index => $lote) {
+            $costoEquipamiento = 0;
+            $lote->equipamiento = EquipLote::join('equipamientos as eq','equip_lotes.equipamiento_id','=','eq.id')
+                        ->select('equip_lotes.*','eq.equipamiento')
+                        ->where('equip_lotes.status','>',3)
+                        ->where('equip_lotes.lote_id','=',$lote->id)->get();
+            if(sizeOf($lote->equipamiento))
+                foreach($lote->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+
             //Se calcula el precio base en caso de tener un ajuste en precio.
-            $lote->precio_base = $lote->precio_base + $lote->ajuste;
+            $lote->precio_base = $lote->precio_base + $lote->ajuste + $costoEquipamiento;
             $lote->tipo = $tipo;//Se asigna el tipo para diferenciar de vendedor
             //Se calcula el precio de venta
             $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
@@ -1277,6 +1288,15 @@ class LoteController extends Controller
                     ->orderBy('lotes.etapa_servicios','DESC')->get();
         //Se recorre el arreglo de lotes
         foreach($lotes as $index => $lote) {
+            $costoEquipamiento = 0;
+            $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+            if(sizeOf($lote->equipamiento))
+                foreach($lote->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+
+            $lote->ajuste += $costoEquipamiento;
+
             $lote->precio_base = $lote->precio_base + $lote->ajuste;//Se calcula el precio base de venta
             //Se calcula el precio de venta final
             $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
@@ -1314,6 +1334,17 @@ class LoteController extends Controller
     {   //Llamada a la función que retorna los lotes habilitados.
         $lotes = $this->getInventario($request);
         $lotes = $lotes->get();
+
+        foreach($lotes as $lote){
+            $costoEquipamiento = 0;
+            $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+            if(sizeOf($lote->equipamiento))
+                foreach($lote->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+
+            $lote->ajuste += $costoEquipamiento;
+        }
             //Creación y retorno en excel de lotes habilitados para venta
             if($request->tipo == 1){
                 return Excel::create('Relacion lotes disponibles',
@@ -1810,6 +1841,16 @@ class LoteController extends Controller
         if(sizeOf($lotes)){
             //Se recorren los resultados obtenidos
             foreach($lotes as $index => $lote){
+
+                    $costoEquipamiento = 0;
+                    $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+                    if(sizeOf($lote->equipamiento))
+                        foreach($lote->equipamiento as $eq){
+                            $costoEquipamiento += $eq->costo;
+                        }
+
+                    $lote->ajuste += $costoEquipamiento;
+
                 $lote->indiv = 0;
                 //Calculo para precio de venta
                 $lote->precio_venta = $lote->precio_base + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio + $lote->ajuste;

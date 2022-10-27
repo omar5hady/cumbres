@@ -98,8 +98,8 @@
 
         <p class="small">
             Las solicitudes de accesorios, modificaciones y servicios adicionales con los que cuenta el inmueble acordados por las partes,
-            son los que se detallan en el cuadro que antecede, los cuales “EL PROMINENTE VENDEDOR”, deberá realizarlos y entregarlos a
-            “EL PROMINENTE COMPRADOR”, al momento de la entrega física del bien inmueble o en fecha _____________________.
+            son los que se detallan en el cuadro que antecede, los cuales “EL PROMITENTE VENDEDOR”, deberá realizarlos y entregarlos a
+            “EL PROMITENTE COMPRADOR”, al momento de la entrega física del bien inmueble o en fecha _____________________.
         </p>
         <br>
 
@@ -130,8 +130,8 @@
         <br>
 
         <p class="small">
-            En caso de que “EL PROMINENTE COMPRADOR”, elija que no desea continuar con los servicios adicionales descritos en el cuadro que
-            antecede, notificará por escrito o correo electrónico a “EL PROMINENTE VENDEDOR”, en cualquier momento la prestación de servicios
+            En caso de que “EL PROMITENTE COMPRADOR”, elija que no desea continuar con los servicios adicionales descritos en el cuadro que
+            antecede, notificará por escrito o correo electrónico a “EL PROMITENTE VENDEDOR”, en cualquier momento la prestación de servicios
             adicionales, especiales o conexos a la compraventa, sin que ello implique la conclusión del contrato principal.
         </p>
         <br>

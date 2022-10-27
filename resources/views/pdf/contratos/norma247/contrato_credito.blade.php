@@ -1710,7 +1710,7 @@
         </p>
 
         <p class="small">
-            Se le hace del conocimiento a <strong>“EL PROMINENTE COMPRADOR”:</strong> que contamos con canales de atención de quejas y solicitudes gratuitos y accesibles,
+            Se le hace del conocimiento a <strong>“EL PROMITENTE COMPRADOR”:</strong> que contamos con canales de atención de quejas y solicitudes gratuitos y accesibles,
             para cualquier queja o sugerencia, los cuales pueden hacerlos llegar vía correo electrónico al correo: postventa@grupocumbres.com y/o atencion@grupocumbres.com o
             vía telefónica al número de atención: 444 8334683, 84 al 85,  con  un horario de lunes a viernes de 9:00 horas a 17:00 horas y sábados de 9:00 horas a 13:00 horas.
             Y el plazo de respuesta de
@@ -1725,7 +1725,7 @@
 
         <p class="small">
             <strong>
-                <u>IMPORTANTE PARA “EL PROMINENTE COMPRADOR”: </u>Antes de que firme como constancia de que tuvo a su disposición la información y documentación
+                <u>IMPORTANTE PARA “EL PROMITENTE COMPRADOR”: </u>Antes de que firme como constancia de que tuvo a su disposición la información y documentación
                 relativa al Inmueble, cerciórese de que la misma coincida con la que efectivamente le hayan mostrado y/o proporcionado
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”

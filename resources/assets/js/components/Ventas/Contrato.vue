@@ -3748,6 +3748,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.monto_total_credito = data['monto_total_credito'];
                 this.enganche_total = data['enganche_total'];
                 this.sobreprecio = data['sobreprecio'];
+                this.advertising = data['advertising'];
 
                 this.id_contrato = data['contratoId'];
 
@@ -3930,7 +3931,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'lote_id':this.lote_id,
                     'motivo_cancel':this.motivo_cancel,
                     'datosFiscales':this.datosFiscales,
-                    'advertising' : this.advertising
                     }).then(function (response){
                     me.listado=4;
                     me.cerrarModal();

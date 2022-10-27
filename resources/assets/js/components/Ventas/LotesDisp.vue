@@ -10,8 +10,8 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Casas Disponibles
                         <!--   Boton descargar excel    -->
-                         <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' + 
-                                buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ 
+                         <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' +
+                                buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+
                                 b_apartado +'&criterio=' + criterio + '&rolId=' + rolId + '&casa_muestra=' + casa_muestra+
                                 '&b_empresa='+b_empresa  + '&tipo=' + tab">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
@@ -23,19 +23,19 @@
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <a @click="cambiarVista(1)" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }">
-                                    CASAS 
+                                    CASAS
                                     <span v-if="tab ==1" style="font-size: 1em; text-align:center;" class="badge badge-light" v-text="'Total: '+ contador"></span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a @click="cambiarVista(2)" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }">
-                                    DEPARTAMENTOS 
+                                    DEPARTAMENTOS
                                     <span v-if="tab ==2" style="font-size: 1em; text-align:center;" class="badge badge-light" v-text="'Total: '+ contador"></span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a @click="cambiarVista(3),casa_muestra = 0" class="nav-link" v-bind:class="{ 'text-info active': tab==3 }">
-                                    RENTAS 
+                                    RENTAS
                                     <span v-if="tab ==3" style="font-size: 1em; text-align:center;" class="badge badge-light" v-text="'Total: '+ contador"></span>
                                 </a>
                             </li>
@@ -63,17 +63,17 @@
                                             <option value="lotes.calle">Calle</option>
                                             <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                         </select>
-                                        
+
                                         <select class="form-control" v-model="buscar" @change="selectEtapa(buscar), selectModelo(buscar,1)">
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        
+
                                     </div>
 
                                     <div class="input-group">
 
-                                        <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)"> 
+                                        <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -82,21 +82,21 @@
                                             <option value="">Modelo</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
-                                        
+
                                     </div>
 
-                                    <div class="input-group">                                    
+                                    <div class="input-group">
 
                                         <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
                                         <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
-                                        
+
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Todos</option>
                                             <option value=0>Sin apartar</option>
                                             <option value=1>Apartados</option>
-                                            
+
                                         </select>
 
                                         <select class="form-control" v-model="casa_muestra" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
@@ -104,7 +104,7 @@
                                             <option value=0>En venta</option>
                                             <option value=1>Casas muestra</option>
                                         </select>
-                                        
+
                                     </div>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -119,9 +119,9 @@
                                             <option value="lotes.calle">Calle</option>
                                             <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                         </select>
-                                        
+
                                         <input type="text"  v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                        
+
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
@@ -135,89 +135,90 @@
                                             <option value=0>Lotes en venta</option>
                                             <option value=1>Casas muestra</option>
                                         </select>
-                                        
+
                                     </div>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    
+
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th v-if="rolId != '2'">Opciones</th>
-                                            <th>Proyecto</th>
-                                            <th>Etapa</th>
-                                            <th>Manzana</th>
-                                            <th># Lote</th>
-                                            <th>% Avance</th>
-                                            <th style="text-align:center;">Modelo</th>
-                                            <th>Calle</th>
-                                            <th># Oficial</th>
-                                            <th style="width:8%">Terreno m&sup2;</th>
-                                            <th>Construc. m&sup2;</th>
-                                            <th>Precio Base</th>
-                                            <th>Terreno Excedente</th>
-                                            <th>Obra extra</th>
-                                            <th>Sobreprecios</th>
-                                            <th>Precio venta</th>
-                                            <th>Promoción</th>
-                                            <th>Fecha termino</th>
-                                            <th>Canal de venta</th>
-                                            <th>% de venta extra</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
-                                            
-                                            <td class="td2" v-if="rolId != '2'" style="width:5%">
-                                                <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
-                                                <i class="icon-lock"></i>
+                            <TableComponent>
+                                <template v-slot:thead>
+                                    <tr>
+                                        <th v-if="rolId != '2'">Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>% Avance</th>
+                                        <th style="text-align:center;">Modelo</th>
+                                        <th>Calle</th>
+                                        <th># Oficial</th>
+                                        <th style="width:8%">Terreno m&sup2;</th>
+                                        <th>Construc. m&sup2;</th>
+                                        <th>Precio Base</th>
+                                        <th>Terreno Excedente</th>
+                                        <th>Obra extra</th>
+                                        <th>Sobreprecios</th>
+                                        <th>Precio venta</th>
+                                        <th>Equipamiento</th>
+                                        <th>Promoción</th>
+                                        <th>Fecha termino</th>
+                                        <th>Canal de venta</th>
+                                        <th>% de venta extra</th>
+                                    </tr>
+                                </template>
+                                <template v-slot:tbody>
+                                    <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
+                                        <td class="td2" v-if="rolId != '2'" style="width:5%">
+                                            <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
+                                            <i class="icon-lock"></i>
+                                            </button>
+                                            <template v-else>
+                                                <button title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
+                                                <i class="icon-magnifier"></i>
                                                 </button>
-                                                <template v-else>
-                                                    <button title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
-                                                    <i class="icon-magnifier"></i>
-                                                    </button>
-                                                    <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
-                                                </template>
-                                            </td>
-                                            
-                                            <td  style="width:20%" v-text="lote.proyecto"></td>
-                                            <td  style="width:20%" v-text="lote.etapa"></td>
-                                            <td  v-text="lote.manzana"></td>
-                                                <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                                <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                            <td  v-text="lote.avance + '%'"></td>
-                                            <td >
-                                                <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
-                                                    {{lote.modelo}}
-                                                </button>
-                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
-                                                <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
-                                            </td>
-                                            <td class="td2" v-text="lote.calle"></td>
-                                                <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
-                                                <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                            <td class="td2" v-text="lote.terreno"></td>
-                                            <td class="td2" v-text="lote.construccion"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.excedente_terreno)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.obra_extra)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
-                                            <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
-                                            <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
-                                                <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>
-                                            </td>
-                                            <td class="td2" v-else v-text="lote.promocion"></td>
-                                            <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
-                                            <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
-                                            <td class="td2" v-if="lote.tipo == 0" style="width:40%" v-text="lote.extra + '%'"></td>
-                                            <td class="td2" v-else-if="lote.tipo == 1" style="width:40%" v-text="lote.extra_ext + '%'"></td>
-                                            <td class="td2" v-else style="width:40%" v-text="'Interno: ' + lote.extra + '% Externo: ' + lote.extra_ext +'%'"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>  
-                            </div>
+                                                <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
+                                            </template>
+                                        </td>
+
+                                        <td  style="width:20%" v-text="lote.proyecto"></td>
+                                        <td  style="width:20%" v-text="lote.etapa"></td>
+                                        <td  v-text="lote.manzana"></td>
+                                            <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                            <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                        <td  v-text="lote.avance + '%'"></td>
+                                        <td >
+                                            <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
+                                                {{lote.modelo}}
+                                            </button>
+                                            <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
+                                            <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
+                                        </td>
+                                        <td class="td2" v-text="lote.calle"></td>
+                                            <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
+                                            <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                        <td class="td2" v-text="lote.terreno"></td>
+                                        <td class="td2" v-text="lote.construccion"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.excedente_terreno)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.obra_extra)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
+                                        <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
+                                        <td>
+                                            <button v-if="lote.equipamiento" @click="verEquipamiento(lote.equipamiento)" class="btn btn-dark">Equipamiento incluido</button>
+                                        </td>
+                                        <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
+                                            <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>
+                                        </td>
+                                        <td class="td2" v-else v-text="lote.promocion"></td>
+                                        <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
+                                        <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
+                                        <td class="td2" v-if="lote.tipo == 0" style="width:40%" v-text="lote.extra + '%'"></td>
+                                        <td class="td2" v-else-if="lote.tipo == 1" style="width:40%" v-text="lote.extra_ext + '%'"></td>
+                                        <td class="td2" v-else style="width:40%" v-text="'Interno: ' + lote.extra + '% Externo: ' + lote.extra_ext +'%'"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -259,16 +260,16 @@
                                         <select class="form-control col-md-3" disabled v-model="criterio" @change="selectFraccionamientos()">
                                             <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         </select>
-                                        
+
                                         <select class="form-control" v-model="buscar" @change="selectEtapa(buscar), selectModelo(buscar,2)">
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        
+
                                     </div>
 
                                     <div class="input-group">
-                                        <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)"> 
+                                        <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -277,21 +278,21 @@
                                             <option value="">Modelo</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
-                                        
+
                                     </div>
 
-                                    <div class="input-group">                                    
+                                    <div class="input-group">
 
                                         <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Nivel a buscar">
                                         <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Departamento a buscar">
-                                        
+
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Todos</option>
                                             <option value=0>Sin apartar</option>
                                             <option value=1>Apartados</option>
-                                            
+
                                         </select>
 
                                         <select class="form-control" v-model="casa_muestra" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
@@ -299,78 +300,76 @@
                                             <option value=0>En venta</option>
                                             <option value=1>Departamentos muestra</option>
                                         </select>
-                                        
+
                                     </div>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
-                           
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th v-if="rolId != '2'">Opciones</th>
-                                            <th>Proyecto</th>
-                                            <th>Etapa</th>
-                                            <th>Nivel</th>
-                                            <th># Departamento</th>
-                                            <th>% Avance</th>
-                                            <th style="text-align:center;">Modelo</th>
-                                            <th>Especificación</th>
-                                            <th>Construcción</th>
-                                            <th># Oficial</th>
-                                            <th>Precio venta</th>
-                                            <th>Promoción</th>
-                                            <th>Fecha termino</th>
-                                            <th>Canal de venta</th>
-                                            <th>% de venta extra</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
-                                            
-                                            <td class="td2" v-if="rolId != '2'" style="width:5%">
-                                                <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
-                                                <i class="icon-lock"></i>
+
+                            <TableComponent>
+                                <template v-slot:thead>
+                                    <tr>
+                                        <th v-if="rolId != '2'">Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Nivel</th>
+                                        <th># Departamento</th>
+                                        <th>% Avance</th>
+                                        <th style="text-align:center;">Modelo</th>
+                                        <th>Especificación</th>
+                                        <th>Construcción</th>
+                                        <th># Oficial</th>
+                                        <th>Precio venta</th>
+                                        <th>Promoción</th>
+                                        <th>Fecha termino</th>
+                                        <th>Canal de venta</th>
+                                        <th>% de venta extra</th>
+                                    </tr>
+                                </template>
+                                <template v-slot:tbody>
+                                    <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
+
+                                        <td class="td2" v-if="rolId != '2'" style="width:5%">
+                                            <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
+                                            <i class="icon-lock"></i>
+                                            </button>
+                                            <template v-else>
+                                                <button title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
+                                                <i class="icon-magnifier"></i>
                                                 </button>
-                                                <template v-else>
-                                                    <button title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
-                                                    <i class="icon-magnifier"></i>
-                                                    </button>
-                                                    <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
-                                                </template>
-                                            </td>
-                                            
-                                            <td  style="width:20%" v-text="lote.proyecto"></td>
-                                            <td  style="width:20%" v-text="lote.etapa"></td>
-                                            <td  v-text="lote.manzana"></td>
-                                            <td  v-text="lote.num_lote"></td>
-                                            <td  v-text="lote.avance + '%'"></td>
-                                            <td >
-                                                <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
-                                                    {{lote.modelo}}
-                                                </button>
-                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
-                                                <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
-                                            </td>
-                                            <td class="td2" v-text="lote.sublote"></td>
-                                            <td class="td2" v-text="lote.construccion"></td>
-                                                <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
-                                                <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                            <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
-                                            <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
-                                                <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>
-                                            </td>
-                                            <td class="td2" v-else v-text="lote.promocion"></td>
-                                            <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
-                                            <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
-                                            <td class="td2" v-if="lote.tipo == 0" style="width:40%" v-text="lote.extra + '%'"></td>
-                                            <td class="td2" v-else-if="lote.tipo == 1" style="width:40%" v-text="lote.extra_ext + '%'"></td>
-                                            <td class="td2" v-else style="width:40%" v-text="'Interno: ' + lote.extra + '% Externo: ' + lote.extra_ext +'%'"></td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>  
-                            </div>
+                                                <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
+                                            </template>
+                                        </td>
+
+                                        <td  style="width:20%" v-text="lote.proyecto"></td>
+                                        <td  style="width:20%" v-text="lote.etapa"></td>
+                                        <td  v-text="lote.manzana"></td>
+                                        <td  v-text="lote.num_lote"></td>
+                                        <td  v-text="lote.avance + '%'"></td>
+                                        <td >
+                                            <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
+                                                {{lote.modelo}}
+                                            </button>
+                                            <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
+                                            <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
+                                        </td>
+                                        <td class="td2" v-text="lote.sublote"></td>
+                                        <td class="td2" v-text="lote.construccion"></td>
+                                            <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
+                                            <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                        <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
+                                        <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
+                                            <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>
+                                        </td>
+                                        <td class="td2" v-else v-text="lote.promocion"></td>
+                                        <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
+                                        <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
+                                        <td class="td2" v-if="lote.tipo == 0" style="width:40%" v-text="lote.extra + '%'"></td>
+                                        <td class="td2" v-else-if="lote.tipo == 1" style="width:40%" v-text="lote.extra_ext + '%'"></td>
+                                        <td class="td2" v-else style="width:40%" v-text="'Interno: ' + lote.extra + '% Externo: ' + lote.extra_ext +'%'"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -415,17 +414,17 @@
                                             <option value="lotes.calle">Calle</option>
                                             <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                         </select>
-                                        
+
                                         <select class="form-control" v-model="buscar" @change="selectEtapa(buscar), selectModelo(buscar,1)">
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        
+
                                     </div>
 
                                     <div class="input-group">
 
-                                        <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)"> 
+                                        <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -434,25 +433,25 @@
                                             <option value="">Modelo</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
-                                        
+
                                     </div>
 
-                                    <div class="input-group">                                    
+                                    <div class="input-group">
 
                                         <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
                                         <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
-                                        
+
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Todos</option>
                                             <option value=0>Sin apartar</option>
                                             <option value=1>Apartados</option>
-                                            
+
                                         </select>
 
-                                      
-                                        
+
+
                                     </div>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -467,9 +466,9 @@
                                             <option value="lotes.calle">Calle</option>
                                             <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                         </select>
-                                        
+
                                         <input type="text"  v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                        
+
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
@@ -478,71 +477,69 @@
                                             <option value=1>Apartados</option>
                                         </select>
 
-                                       
-                                        
+
+
                                     </div>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    
+
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th v-if="rolId != '2'">Opciones</th>
-                                            <th>Proyecto</th>
-                                            <th>Etapa</th>
-                                            <th>Manzana</th>
-                                            <th># Lote</th>
-                                            <th style="text-align:center;">Modelo</th>
-                                            <th>Calle</th>
-                                            <th># Oficial</th>
-                                            <th style="width:8%">Terreno m&sup2;</th>
-                                            <th>Construc. m&sup2;</th>
-                                            <th>Precio renta mensual</th>
-                                            <th>Observaciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
-                                            <template 
-                                                v-if="rolId != 2 || (rolId == 2 && lote.apartado == 0)"
-                                            >
-                                                <td class="td2" v-if="rolId != '2'" style="width:5%">
-                                                    <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="cambiarStatusLote(lote.id,1)" class="btn btn-warning btn-sm">
-                                                    <i class="icon-lock"></i>
+                            <TableComponent>
+                                <template v-slot:thead>
+                                    <tr>
+                                        <th v-if="rolId != '2'">Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th style="text-align:center;">Modelo</th>
+                                        <th>Calle</th>
+                                        <th># Oficial</th>
+                                        <th style="width:8%">Terreno m&sup2;</th>
+                                        <th>Construc. m&sup2;</th>
+                                        <th>Precio renta mensual</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </template>
+                                <template v-slot:tbody>
+                                    <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
+                                        <template
+                                            v-if="rolId != 2 || (rolId == 2 && lote.apartado == 0)"
+                                        >
+                                            <td class="td2" v-if="rolId != '2'" style="width:5%">
+                                                <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="cambiarStatusLote(lote.id,1)" class="btn btn-warning btn-sm">
+                                                <i class="icon-lock"></i>
+                                                </button>
+                                                <template v-else>
+                                                    <button title="Mostrar Apartado" type="button" @click="cambiarStatusLote(lote.id,0)" class="btn btn-danger btn-sm">
+                                                        <i class="icon-check">&nbsp;Desapartar</i>
                                                     </button>
-                                                    <template v-else>
-                                                        <button title="Mostrar Apartado" type="button" @click="cambiarStatusLote(lote.id,0)" class="btn btn-danger btn-sm">
-                                                            <i class="icon-check">&nbsp;Desapartar</i>
-                                                        </button>
-                                                    </template>
-                                                </td>
-                                                <td  style="width:20%" v-text="lote.proyecto"></td>
-                                                <td  style="width:20%" v-text="lote.etapa"></td>
-                                                <td  v-text="lote.manzana"></td>
-                                                    <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                                    <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                                <td >
-                                                    <button v-if="lote.archivo_esp != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnicaRenta(lote.archivo_esp)" class="btn btn-success btn-sm">
-                                                        {{lote.modelo}}
-                                                    </button>
-                                                    <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
-                                                    <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
-                                                </td>
-                                                <td class="td2" v-text="lote.calle"></td>
-                                                    <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
-                                                    <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                                <td class="td2" v-text="lote.terreno"></td>
-                                                <td class="td2" v-text="lote.construccion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(lote.precio_renta)"></td>
-                                                <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
-                                                
-                                            </template>
-                                        </tr>                               
-                                    </tbody>
-                                </table>  
-                            </div>
+                                                </template>
+                                            </td>
+                                            <td  style="width:20%" v-text="lote.proyecto"></td>
+                                            <td  style="width:20%" v-text="lote.etapa"></td>
+                                            <td  v-text="lote.manzana"></td>
+                                                <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                                <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                            <td >
+                                                <button v-if="lote.archivo_esp != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnicaRenta(lote.archivo_esp)" class="btn btn-success btn-sm">
+                                                    {{lote.modelo}}
+                                                </button>
+                                                <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
+                                                <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
+                                            </td>
+                                            <td class="td2" v-text="lote.calle"></td>
+                                                <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
+                                                <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                            <td class="td2" v-text="lote.terreno"></td>
+                                            <td class="td2" v-text="lote.construccion"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.precio_renta)"></td>
+                                            <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
+
+                                        </template>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -571,80 +568,82 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
-                                    <div class="col-md-6">
-                                       <select v-model="vendedor_id"  class="form-control"  @change="selectClientes(vendedor_id)" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
-                                    <div class="col-md-6">
-                                       <select v-model="cliente_id"   class="form-control" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                             
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
-                                    <div class="col-md-6">
-                                       <select  v-model="credito"  class="form-control" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha apartado</label>
-                                    <div class="col-md-4" >
-                                        <label v-if="tipoAccion==2" v-text="fecha_mostrar"></label>
-                                        <label v-if="tipoAccion==3" v-text="fecha_apartado_format"></label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Comentario</label>
-                                    <div class="col-md-6" >
-                                        <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Comentario"></textarea>
-                                    </div>
-                                </div>
-
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==2 && userId != 28128" class="btn btn-primary" @click="apartarLote()">Apartar</button>
-                            <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-warning" @click="desapartarLote()">Desapartar</button>
-                            <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-success" @click="actualizarLote()">Guardar</button>
+            <ModalComponent v-if="modal==1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
+                        <div class="col-md-6">
+                            <select v-model="vendedor_id"  class="form-control"  @change="selectClientes(vendedor_id)" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
+                            </select>
                         </div>
                     </div>
-                      <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->     
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
+                        <div class="col-md-6">
+                            <select v-model="cliente_id"   class="form-control" >
+                                <option value="0">Seleccione</option>
+                                <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
+                        <div class="col-md-6">
+                            <select  v-model="credito"  class="form-control" >
+                                <option value="">Seleccione</option>
+                                <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Fecha apartado</label>
+                        <div class="col-md-4" >
+                            <label v-if="tipoAccion==2" v-text="fecha_mostrar"></label>
+                            <label v-if="tipoAccion==3" v-text="fecha_apartado_format"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Comentario</label>
+                        <div class="col-md-6" >
+                            <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Comentario"></textarea>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==2 && userId != 28128" class="btn btn-primary" @click="apartarLote()">Apartar</button>
+                    <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-warning" @click="desapartarLote()">Desapartar</button>
+                    <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-success" @click="actualizarLote()">Guardar</button>
+                </template>
+            </ModalComponent>
+            <ModalComponent v-if="modal==2"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <TableComponent :cabecera="['Equipamiento']">
+                                <template v-slot:tbody>
+                                    <tr v-for="eq in equipamiento" :key="eq.id">
+                                        <td class="td2">
+                                            {{eq.equipamiento}}
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->
 
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
@@ -658,12 +657,12 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            Dentro de casa disponibles usted podrá consultar aquellas casas que estén disponibles para su venta, 
-                            además dentro del modulo podrá realizar los apartados de las casas (debe contar con los permisos vea el 
+                            Dentro de casa disponibles usted podrá consultar aquellas casas que estén disponibles para su venta,
+                            además dentro del modulo podrá realizar los apartados de las casas (debe contar con los permisos vea el
                             modulo de <strong>“Acceso -> Usuarios”</strong>).
                         </p>
                         <p>
-                            Además, este módulo les permitirá a los asesores ver todo lo referente a un terreno como 
+                            Además, este módulo les permitirá a los asesores ver todo lo referente a un terreno como
                             sus costos, promociones y comisiones.
                         </p>
                     </div>
@@ -672,7 +671,7 @@
                     </div>
                     </div>
                 </div>
-            </div>              
+            </div>
         </main>
 </template>
 
@@ -680,7 +679,14 @@
 <!-- *********************************************************** CODIGO JAVASCRIPT *************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue';
+import TableComponent from '../Componentes/TableComponent.vue';
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         props:{
             rolId:{type: String},
             userId:{type: String}
@@ -716,7 +722,7 @@
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -724,7 +730,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
@@ -732,7 +738,8 @@
                 casa_muestra : 0,
                 b_empresa:'',
                 empresas:[],
-                tab:1
+                tab:1,
+                equipamiento:[]
             }
         },
         computed:{
@@ -776,9 +783,9 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote, criterio,rol){
                 let me = this;
-                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + 
-                    '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio + 
-                    '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra +'&b_empresa='+this.b_empresa + '&tipo=' + this.tab; 
+                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 +
+                    '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio +
+                    '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra +'&b_empresa='+this.b_empresa + '&tipo=' + this.tab;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -820,7 +827,7 @@
                 let me = this;
                 me.buscar2=""
                 me.buscar3=""
-                
+
                 me.arrayEtapas=[];
                 var url = '/selectEtapaDisp?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -863,7 +870,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },     
+            },
             fichaTecnica(archivo){
                 window.open('/files/modelos/'+archivo, '_blank')
             },
@@ -884,7 +891,7 @@
                     me.comentario = me.arrayDatosApartado[0].comentario;
                     me.fecha_apartado_format=moment(me.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
                     me.selectClientes(me.vendedor_id);
-                   
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -934,6 +941,11 @@
 
                 return this.errorLote;
             },
+            verEquipamiento(data){
+                this.equipamiento = data;
+                this.modal = 2;
+                this.tituloModal = 'Equipamiento incluido'
+            },
             cambiarStatusLote(lote, status){
                 let me = this;
                 axios.put('lotes/cambiarStatusLote',{
@@ -962,7 +974,7 @@
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/apartado/registrar',{                 
+                axios.post('/apartado/registrar',{
                     'vendedor_id': this.vendedor_id,
                     'cliente_id': this.cliente_id,
                     'tipo_credito': this.credito,
@@ -994,7 +1006,7 @@
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.put('/apartado/actualizar',{                 
+                axios.put('/apartado/actualizar',{
                     'vendedor_id': this.vendedor_id,
                     'cliente_id': this.cliente_id,
                     'tipo_credito': this.credito,
@@ -1032,7 +1044,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/apartado/eliminar', 
+                axios.delete('/apartado/eliminar',
                         {params: {'lote_id': this.lote_id,
                         'id':this.apartado
                         }}).then(function (response){
@@ -1065,27 +1077,13 @@
                 this.apartado=0;
 
             },
-            cerrarModal2(){
-                this.modal2 = 0;
-                this.tituloModal2 = '';
-            },
-            cerrarModal3(){
-                this.modal3 = 0;
-                this.tituloModal3 = '';
-                this.tipoAccion = 1;
-            },
-            cerrarModal4(){
-                this.modal4 = 0;
-                this.tituloModal4 = '';
-                this.buscar_fraccionamientoExcel = 0;
-            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(lote, accion,data =[]){
                 switch(lote){
                     case "lote":
                     {
                         switch(accion){
-                            
+
                             case 'apartar':
                             {
                                 this.modal =1;
@@ -1110,7 +1108,7 @@
                                 break;
                             }
 
-                            
+
                         }
                     }
                 }
@@ -1160,7 +1158,7 @@
         color: red !important;
         font-weight: bold;
     }
-    
+
 .table2 {
     margin: auto;
     border-collapse: collapse;
@@ -1189,7 +1187,7 @@
     .td2 {
     white-space: nowrap;
     border-bottom: none;
-    
+
     }
 
     .td2:first-of-type, th:first-of-type {
@@ -1198,7 +1196,7 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    }  
+    }
     .badge2 {
     display: inline-block;
     padding: 0.25em 0.4em;

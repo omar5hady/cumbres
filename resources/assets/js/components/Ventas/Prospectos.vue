@@ -149,7 +149,7 @@
                                 </template>
                                 <template v-slot:tbody>
                                     <tr v-for="prospecto in arrayProspectos" :key="prospecto.id"
-                                            :style="(prospecto.advertising==0) ? 'color:red;' : ''"
+                                            :class="[prospecto.advertising == '0' ? 'table-danger' : '']"
                                         >
                                         <td class="td2">
                                             <button  v-if="prospecto.activo" title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Lote;
 use App\Modelo;
 use App\Etapa;
+use App\EquipLote;
 use App\Contrato;
 use App\Licencia;
 use App\DocProyecto;
@@ -1095,6 +1096,17 @@ class LicenciasController extends Controller
         $lotes = $this->getDescargas($request);
         $lotes = $lotes->paginate(12);
 
+        foreach($lotes as $lote){
+            $costoEquipamiento = 0;
+            $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+            if(sizeOf($lote->equipamiento))
+                foreach($lote->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+
+            $lote->ajuste += $costoEquipamiento;
+        }
+
         return [
             'pagination' => [
                 'total'         => $lotes->total(),
@@ -1114,6 +1126,17 @@ class LicenciasController extends Controller
         //Llamada a la función privada que retorna la query principal
         $lotes = $this->getDescargas($request);
         $lotes = $lotes->get();
+
+        foreach($lotes as $lote){
+            $costoEquipamiento = 0;
+            $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+            if(sizeOf($lote->equipamiento))
+                foreach($lote->equipamiento as $eq){
+                    $costoEquipamiento += $eq->costo;
+                }
+        }
+
+
         //Creación y retorno de los resultados en excel.
         return Excel::create(
             'Descargas',
@@ -1150,7 +1173,7 @@ class LicenciasController extends Controller
                     foreach ($lotes as $index => $lote) {
                         $cont++;
 
-                        $precio = $lote->precio_base + $lote->ajuste + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio;
+                        $precio = $lote->precio_base + $lote->ajuste + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio + $costoEquipamiento;
 
                         switch($busqueda){
                             case 'licencias.fecha_licencia':{

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Lote;
 use App\Modelo;
 use App\Fraccionamiento;
+use App\EquipLote;
 use App\Etapa;
 
 class PreciosController extends Controller
@@ -54,6 +55,18 @@ class PreciosController extends Controller
                             ->limit(8)->get();
                     else
                         $inventario = $inventario->distinct()->get();
+
+        if(sizeof($inventario))
+            foreach($inventario as $lote){
+                $costoEquipamiento = 0;
+                $lote->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote->id)->get();
+                if(sizeOf($lote->equipamiento))
+                    foreach($lote->equipamiento as $eq){
+                        $costoEquipamiento += $eq->costo;
+                    }
+
+                $lote->ajuste += $costoEquipamiento;
+            }
 
         return $inventario;
     }
