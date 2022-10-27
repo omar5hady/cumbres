@@ -79,7 +79,7 @@
                                     <option value="2">En proceso de colocación</option>
                                     <option value="3">En Revisión</option>
                                     <option value="4">Aprobado</option>
-                                    <option value="5">Cancelado</option>
+                                    <option value="5">Liquidado</option>
 
                                 </select>
                                 <button type="submit" class="btn btn-primary" @click="getSolicitudes(1)">
@@ -139,7 +139,7 @@
                                         <span v-if="s.status == '2'" class="badge badge-primary">En proceso de colocación</span>
                                         <span v-if="s.status == '3'" class="badge badge-primary">En Revisión</span>
                                         <span v-if="s.status == '4'" class="badge badge-success">Aprobado</span>
-                                        <span v-if="s.status == '5'" class="badge badge-danger">Cancelado</span>
+                                        <span v-if="s.status == '5'" class="badge badge-success"><i class="icon-check"></i> Liquidado</span>
                                     </td>
                                     <td>
                                         <span v-if="!s.fin_instalacion && s.fecha_anticipo || s.fin_instalacion && s.fecha_anticipo && s.status != '4'"
@@ -151,7 +151,7 @@
                                     <td class="td2" v-text="'$'+$root.formatNumber(s.costo - s.anticipo - s.liquidacion)"></td>
 
                                     <template><!--Liquidacion-->
-                                        <td>
+                                        <td class="text-center">
                                             <a v-if="s.fecha_liquidacion" href="#" @click="abrirModal('liquidacion', s)" v-text="
                                                 this.moment(s.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+$root.formatNumber(s.liquidacion)"></a>
                                             <a v-else href="#" v-text="'Sin Liquidacion'"></a>
@@ -172,7 +172,10 @@
                                     </template>
 
                                     <td><!--Imprimir Recepción-->
-                                        Imprimir recepcion
+                                        <a v-if="s.fecha_revision" target="_blank"
+                                        :href="'/equip-lotes/printRecepcion/print?id='+s.id" class="btn btn-sm btn-primary" title="Ver recepción">
+                                            Imprimir recepción
+                                        </a>
                                     </td>
                                     <td class="text-center">
                                         <button class="btn btn-info" @click="abrirModal('obs',s)" title="Ver Observaciones">
@@ -390,6 +393,24 @@
                                     </div>
                                 </div>
                             </template>
+                            <template v-if="tipoAccion == 3">
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de liquidación</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="datosSolicitud.fecha_liquidacion" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">$ Monto a liquidar</label>
+                                    <div class="col-md-4">
+                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                            v-model="datosSolicitud.liquidacion" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="form-control"> {{ $root.formatNumber(datosSolicitud.liquidacion) }}</p>
+                                    </div>
+                                </div>
+                            </template>
                         </template>
                         <template v-slot:buttons-footer>
                             <button type="button"
@@ -397,6 +418,9 @@
                             </button>
                             <button type="button"
                                 class="btn btn-success" v-if="tipoAccion == 2" @click="updateSolicitud('updateColocacion')">Guardar cambios
+                            </button>
+                            <button type="button"
+                                class="btn btn-success" v-if="tipoAccion == 3" @click="updateSolicitud('updateLiquidacion')">Guardar cambios
                             </button>
                         </template>
                     </ModalComponent>
@@ -691,8 +715,14 @@
                     }
                     case 'colocacion':{
                         this.modal = 2;
-                        this.tipoAccion = 'Programar fecha de colocación';
+                        this.tituloModal = 'Programar fecha de colocación';
                         this.tipoAccion = 2;
+                        break;
+                    }
+                    case 'liquidacion':{
+                        this.modal = 2;
+                        this.tituloModal = 'Generar liquidación';
+                        this.tipoAccion = 3;
                         break;
                     }
                     case 'obs':{

@@ -1272,6 +1272,8 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/equip-lotes', Lotes\EquipLoteController::class);
+
+        Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');
         Route::post('/equip-lotes/storeObservacion','Lotes\EquipLoteController@storeObservacion');
 
         Route::get('/docs/entregaInterapas', 'Contrato\DocumentosController@printEntregaInterapas');

@@ -66,7 +66,7 @@
                                     <option value="2">En proceso de colocación</option>
                                     <option value="3">En Revisión</option>
                                     <option value="4">Aprobado</option>
-                                    <option value="5">Cancelado</option>
+                                    <option value="5">Liquidado</option>
 
                                 </select>
                                 <button type="submit" class="btn btn-primary" @click="getSolicitudes(1)">
@@ -125,7 +125,7 @@
                                         <span v-if="s.status == '2'" class="badge badge-primary">En proceso de colocación</span>
                                         <span v-if="s.status == '3'" class="badge badge-primary">En Revisión</span>
                                         <span v-if="s.status == '4'" class="badge badge-success">Aprobado</span>
-                                        <span v-if="s.status == '5'" class="badge badge-danger">Cancelado</span>
+                                        <span v-if="s.status == '5'" class="badge badge-success"><i class="icon-check"></i> Liquidado</span>
                                     </td>
                                     <td class="td2" v-text="'$'+$root.formatNumber(s.anticipo + s.liquidacion)"></td>
                                     <td class="td2" v-text="'$'+$root.formatNumber(s.costo - s.anticipo - s.liquidacion)"></td>
@@ -141,7 +141,10 @@
                                     </td>
 
                                     <td><!--Imprimir Recepción-->
-                                        Imprimir recepcion
+                                        <a v-if="s.fecha_revision" target="_blank"
+                                        :href="'/equip-lotes/printRecepcion/print?id='+s.id" class="btn btn-sm btn-primary" title="Ver recepción">
+                                            Imprimir recepción
+                                        </a>
                                     </td>
                                     <td class="text-center">
                                         <button class="btn btn-info" @click="abrirModal('obs',s)" title="Ver Observaciones">

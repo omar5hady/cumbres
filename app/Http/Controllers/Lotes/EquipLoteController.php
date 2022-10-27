@@ -110,6 +110,11 @@ class EquipLoteController extends Controller
                 //$this->guardarObs( $solicitud['id'], 'Recepción de equipamiento completada');
                 break;
             }
+            case 'updateLiquidacion':{
+                $solicitud['status'] = 5;
+                $this->guardarObs( $solicitud['id'], 'La solicitud ha sido liquidada');
+                break;
+            }
         }
 
         $this->updateInformacion($solicitud);
@@ -202,5 +207,55 @@ class EquipLoteController extends Controller
         $equipamiento->fecha_revision       = $solicitud['fecha_revision'];
         $equipamiento->supervisor           = $solicitud['supervisor'];
         $equipamiento->save();
+    }
+
+    public function printRecepcion(Request $request){
+        $lote = EquipLote::join('lotes as l','equip_lotes.lote_id','=','l.id')
+                    ->join('fraccionamientos as p','l.fraccionamiento_id','=','p.id')
+                    ->join('etapas as e','l.etapa_id','=','e.id')
+                    ->join('modelos as m','l.modelo_id','=','m.id')
+                    ->join('equipamientos as eq','equip_lotes.equipamiento_id','=','eq.id')
+                    ->join('proveedores as pro','eq.proveedor_id','=','pro.id')
+                    ->select('l.num_lote','l.manzana','l.sublote','m.nombre as modelo',
+                        'l.emp_constructora', 'p.nombre as proyecto', 'e.num_etapa as etapa',
+                        'pro.proveedor', 'l.casa_muestra', 'equip_lotes.fecha_revision','equip_lotes.obs_recep',
+                        'equip_lotes.supervisor','equip_lotes.id', 'eq.tipoRecepcion', 'eq.equipamiento'
+                    )
+                    ->where('equip_lotes.id','=',$request->id)->first();
+
+        if($lote->tipoRecepcion != 0){
+            $lote->revision = $this->getCategorias($lote->id);
+                if(sizeof($lote->revision))
+                    foreach($lote->revision as $categoria){
+                        $categoria->subcategoria = $this->getSubCategoria($lote->id,$categoria->categoria);
+                        foreach($categoria->subcategoria as $sub){
+                            $sub->concepto = $this->getDetalle($lote->id,$categoria->categoria, $sub->subcategoria);
+                        }
+                    }
+        }
+
+        //return $lote;
+        $pdf = \PDF::loadview('pdf.Docs.Equipamiento.RecepcionEquip', ['revision' => $lote]);
+        //$pdf->setPaper('A4','landscape');
+        return $pdf->stream('RecepcionEquipamiento.pdf');
+
+    }
+
+    private function getCategorias($solicitud_id){
+        return RevEquipLote::select('categoria')->where('solicitud_id','=',$solicitud_id)->distinct()->get();
+    }
+
+    private function getSubCategoria($solicitud_id, $categoria){
+        return RevEquipLote::select('subcategoria')->where('solicitud_id','=',$solicitud_id)
+                ->where('categoria','=',$categoria)
+                ->distinct()->get();
+    }
+
+    private function getDetalle($solicitud_id, $categoria, $subcategoria){
+        return RevEquipLote::select('concepto','check1','check2','check3')
+                ->where('solicitud_id','=',$solicitud_id)
+                ->where('categoria','=',$categoria)
+                ->where('subcategoria','=',$subcategoria)
+                ->get();
     }
 }

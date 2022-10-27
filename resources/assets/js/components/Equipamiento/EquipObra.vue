@@ -890,7 +890,7 @@
                             },
                             {
                                 'categoria' : 'Otras Revisiones',
-                                'subcategoria': 'Estufa',
+                                'subcategoria': 'Tarja',
                                 'concepto': 'Pzas extra',
                                 'check1' : 1,
                                 'check2' : 0,
