@@ -10,11 +10,22 @@ use App\RevEquipLote;
 use App\Personal;
 use Carbon\Carbon;
 
+use App\DropboxFiles;
+use Spatie\Dropbox\Client;
+use Illuminate\Support\Facades\Storage;
+
 use Auth;
 use DB;
 
 class EquipLoteController extends Controller
 {
+    public function __construct()
+    {
+        // Necesitamos obtener una instancia de la clase Client la cual tiene algunos métodos
+        // que serán necesarios.
+        $this->dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+    }
+
     public function index(Request $request){
         $solicitudes = EquipLote::join('lotes as l','equip_lotes.lote_id','=','l.id')
                 ->join('fraccionamientos as p','l.fraccionamiento_id','=','p.id')
@@ -257,5 +268,63 @@ class EquipLoteController extends Controller
                 ->where('categoria','=',$categoria)
                 ->where('subcategoria','=',$subcategoria)
                 ->get();
+    }
+
+    public function fileSubmit(Request $request){
+        $id = $request->id;
+        $equipamiento = EquipLote::findOrFail($id);
+        $url = $this->storeFile($request);
+
+        if($request->tipo == 1){
+            $this->deleteAnt($equipamiento->comp_pago_1);
+            $equipamiento->comp_pago_1 = $url;
+        }
+        if($request->tipo == 2){
+            $this->deleteAnt($equipamiento->comp_pago_2);
+            $equipamiento->comp_pago_2 = $url;
+        }
+        $equipamiento->save();
+    }
+
+    private function deleteAnt($urlAnt){
+        $file = DropboxFiles::select('id')->where('public_url','=',$urlAnt)->get();
+        if(sizeof($file)){
+            // Eliminamos el registro de nuestra tabla.
+            $del = DropboxFiles::findOrFail($file[0]->id);
+            $this->dropbox->delete('Equipamiento/'.$del->name);
+            $del->delete();
+        }
+    }
+
+    private function storeFile(Request $request){
+
+        $carpeta = 'Equipamiento/';
+        $name = uniqid() . '' . $request->file->getClientOriginalName();
+        // Guardamos el archivo indicando el driver y el método putFileAs el cual recibe
+        // el directorio donde será almacenado, el archivo y el nombre.
+        // ¡No olvides validar todos estos datos antes de guardar el archivo!
+        Storage::disk('dropbox')->putFileAs(
+            $carpeta,
+            $request->file,
+            $name
+        );
+
+        // Creamos el enlace publico en dropbox utilizando la propiedad dropbox
+        // definida en el constructor de la clase y almacenamos la respuesta.
+        $response = $this->dropbox->createSharedLinkWithSettings(
+            $carpeta.$name,
+            ["requested_visibility" => "public"]
+        );
+
+        // Creamos un nuevo registro en la tabla files con los datos de la respuesta.
+        $archivo = new DropboxFiles();
+        $archivo->name = $response['name'];
+        $archivo->extension = $request->file->getClientOriginalExtension();
+        $archivo->size = $response['size'];
+        $archivo->public_url = $response['url'];
+        $archivo->save();
+
+        return $archivo->public_url;
+
     }
 }

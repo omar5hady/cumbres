@@ -1275,6 +1275,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');
         Route::post('/equip-lotes/storeObservacion','Lotes\EquipLoteController@storeObservacion');
+        Route::post('/equip-lotes/fileSubmit','Lotes\EquipLoteController@fileSubmit');
 
         Route::get('/docs/entregaInterapas', 'Contrato\DocumentosController@printEntregaInterapas');
 

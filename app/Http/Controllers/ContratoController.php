@@ -2203,9 +2203,9 @@ class ContratoController extends Controller
                 }
 
             $costoEquipamiento = 0;
-            $lote_new->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
-            if(sizeOf($lote_new->equipamiento))
-                foreach($lote_new->equipamiento as $eq){
+            $equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
+            if(sizeOf($equipamiento))
+                foreach($equipamiento as $eq){
                     $costoEquipamiento += $eq->costo;
                 }
 
@@ -2356,9 +2356,9 @@ class ContratoController extends Controller
                 }
 
             $costoEquipamiento = 0;
-            $lote_new->equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
-            if(sizeOf($lote_new->equipamiento))
-                foreach($lote_new->equipamiento as $eq){
+            $equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
+            if(sizeOf($equipamiento))
+                foreach($equipamiento as $eq){
                     $costoEquipamiento += $eq->costo;
                 }
             $lote_new->precio_base = $precio_modelo[0]->precio_modelo + $costoEquipamiento;

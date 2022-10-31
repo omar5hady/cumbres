@@ -13,10 +13,11 @@
                             <i class="icon-plus"></i>&nbsp;Nueva Solicitud
                         </button>
                     </div>
-
+                    <!-- Mostrar mensaje de carga -->
                     <div class="info-center" v-if="loading">
                         <LoadingComponentVue></LoadingComponentVue>
                     </div>
+                    <!-- Listado de solicitudes registradas -->
                     <div class="card-body" v-else>
                         <div class="form-group row">
                             <div class="col-md-6">
@@ -114,10 +115,10 @@
                                             <a v-else href="#" v-text="'Sin anticipo'"></a>
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-info" title="Subir archivo">
+                                            <button class="btn btn-sm btn-info" title="Subir archivo" @click="abrirModal('comprobante1',s)">
                                                 <i class="fa fa-cloud-upload"></i>
                                             </button>
-                                            <a v-if="s.comp_pago_1" :href="s.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                            <a v-if="s.comp_pago_1" :href="s.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo" target="_blank">
                                                 <i class="fa fa-cloud-download"></i>
                                             </a>
                                         </td>
@@ -155,17 +156,17 @@
                                             <a v-if="s.fecha_liquidacion" href="#" @click="abrirModal('liquidacion', s)" v-text="
                                                 this.moment(s.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+$root.formatNumber(s.liquidacion)"></a>
                                             <a v-else href="#" v-text="'Sin Liquidacion'"></a>
-                                            <button v-if="s.status == 4 && fecha_liquidacion == null" title="Realizar liquidacion" type="button"
+                                            <button v-if="s.status == 4 && s.fecha_liquidacion == null" title="Realizar liquidacion" type="button"
                                                 @click="abrirModal('liquidacion', s)" class="btn btn-success pull-right">
                                                 <i class="fa fa-check-square-o"></i> Generar
                                             </button>
                                         </td>
 
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-info" title="Subir archivo">
+                                            <button class="btn btn-sm btn-info" title="Subir archivo" @click="abrirModal('comprobante2',s)">
                                                 <i class="fa fa-cloud-upload"></i>
                                             </button>
-                                            <a v-if="s.comp_pago_2" :href="s.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                            <a v-if="s.comp_pago_2" :href="s.comp_pago_2" class="btn btn-sm btn-primary" target="_blank" title="Descargar archivo">
                                                 <i class="fa fa-cloud-download"></i>
                                             </a>
                                         </td>
@@ -354,7 +355,7 @@
                             </button>
                         </template>
                     </ModalComponent>
-
+                    <!-- Modal para actualizar registro segun el caso seleccionado -->
                     <ModalComponent v-if="modal == 2"
                         :titulo="tituloModal"
                         @closeModal="cerrarModal()"
@@ -424,7 +425,7 @@
                             </button>
                         </template>
                     </ModalComponent>
-
+                    <!-- Modal para observaciones -->
                     <ModalComponent v-if="modal == 3"
                         :titulo="tituloModal"
                         @closeModal="cerrarModal()"
@@ -458,6 +459,39 @@
                             </template>
                         </template>
                     </ModalComponent>
+
+                    <!-- Modal para la carga de los archivos-->
+                    <ModalComponent v-if="modal == 4"
+                        :titulo="tituloModal"
+                        :size="'modal-md'"
+                        @closeModal="cerrarModal()"
+                    >
+                        <template v-slot:body>
+                            <div class="modal-body">
+                                <div class="contenedor-modal">
+                                    <div class="form-sub">
+                                        <form  method="post" @submit="formSubmitFile" enctype="multipart/form-data">
+                                            <div class="form-opc">
+                                                <div class="form-archivo">
+                                                    <input ref="fileSelector" v-show="false" type="file"  v-on:change="onFileChange">
+                                                    <label class="label-button" @click="onSelectFile">
+                                                        Sube aqui el comprobante de pago
+                                                        <i class="fa fa-upload"></i>
+                                                    </label>
+                                                    <div v-if="nom_archivo=='Seleccione Archivo'" class="text-file-hide"   v-text="nom_archivo" ></div>
+                                                    <div v-else class="text-file"  v-text="nom_archivo"></div>
+                                                </div>
+                                                <div class="boton-modal">
+                                                    <button v-show="nom_archivo!='Seleccione Archivo'" type="submit" class="btn btn-success boton-modal">Subir Archivo</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </ModalComponent>
+                    <!--Fin del modal-->
 
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -505,7 +539,10 @@
 
                 datosSolicitud: {},
                 buscadores: {},
-                observacion: ''
+                observacion: '',
+
+                archivo: '',
+                nom_archivo: 'Seleccione Archivo',
             }
         },
         computed:{
@@ -513,6 +550,41 @@
 
 
         methods : {
+            onFileChange(e){
+                console.log(e.target.files[0]);
+                this.archivo = e.target.files[0];
+                this.nom_archivo = e.target.files[0].name;
+            },
+            onSelectFile(){
+                this.$refs.fileSelector.click()
+            },
+
+            formSubmitFile(e) {
+                e.preventDefault();
+                let currentObj = this;
+
+                let formData = new FormData();
+                formData.append('file', this.archivo);
+                formData.append('id', this.datosSolicitud.id);
+                formData.append('tipo', this.datosSolicitud.tipoArchivo);
+                let me = this;
+                axios.post('/equip-lotes/fileSubmit', formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comprobante guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+                    me.getSolicitudes(me.arraySolicitudes.current_page);
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+                });
+            },
             getSolicitudes(page){
                 let me = this;
 
@@ -688,6 +760,8 @@
                 this.arrayManzanas = [];
                 this.arrayLotes = [];
                 this.observacion = '';
+                this.archivo = '';
+                this.nom_archivo = 'Seleccione Archivo';
             },
             abrirModal(accion,data={}){
                 this.datosSolicitud = data;
@@ -730,6 +804,18 @@
                         this.arrayObs = this.datosSolicitud.obs;
                         break;
                     }
+                    case 'comprobante1':{
+                        this.modal = 4;
+                        this.tituloModal = 'Carga de primer comprobante de pago';
+                        this.datosSolicitud.tipoArchivo = 1;
+                        break;
+                    }
+                    case 'comprobante2':{
+                        this.modal = 4;
+                        this.tituloModal = 'Carga de segundo comprobante de pago';
+                        this.datosSolicitud.tipoArchivo = 2;
+                        break;
+                    }
                 }
             }
         },
@@ -753,27 +839,101 @@
         font-weight: bold;
     }
     .td2, .th2 {
-    border: solid rgb(200, 200, 200) 1px;
-    padding: .5rem;
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
 
     .td2 {
-    white-space: nowrap;
-    border-bottom: none;
-    color: rgb(20, 20, 20);
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
     }
 
     .td2:first-of-type, th:first-of-type {
-    border-left: none;
+        border-left: none;
     }
 
     .td2:last-of-type, th:last-of-type {
-    border-right: none;
+        border-right: none;
     }
 
     .info-center{
         display: flex;
         justify-content: center;
         width: 100% !important;
+    }
+    .text-formfile{
+        color: grey;
+        display:flex;
+        padding-top: 13px;
+    /*  background-color: aqua; */
+        justify-content: left;
+
+    }
+    .contenedor-modal{
+        display: block;
+        flex-direction: column;
+
+        margin: auto;
+        overflow-x: auto;
+        width: fit-content;
+        max-width: 100%;
+    }
+    .label-button{
+        border-style: solid;
+        cursor:pointer;
+        color: #fff;
+        background-color: #00ADEF;
+        border-color: #00ADEF;
+        padding: 10px;
+        margin: 15px;
+    }
+
+    .label-button:hover {
+        color: #fff;
+        background-color: #1b8eb7;
+        border-color: #00b0bb;
+    }
+    .form-sub{
+        border: 1px solid #c2cfd6;
+        margin-top: 20px;
+        width: 100%;
+
+
+    }
+    .form-opc{
+        display: flex;
+        flex-direction: column;
+
+
+    }
+    .form-archivo{
+        display: flex;
+        flex-direction: row;
+
+        width: 100%;
+    }
+    .text-file{
+
+        color: rgb(39, 38, 38);
+        font-size:12px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+    }
+    .text-file-hide{
+        color: rgb(127, 130, 134);
+        font-size:13px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+    }
+    .boton-modal{
+        margin-top: 15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
     }
 </style>
