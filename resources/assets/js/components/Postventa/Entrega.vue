@@ -77,12 +77,17 @@
                             </div>
                         </div>
 
-                        <TableComponent :cabecera="['#','Proyecto','Etapa','Manzana','Lote','Cliente',
+                        <TableComponent :cabecera="['','#','Proyecto','Etapa','Manzana','Lote','Cliente',
                                 'Fecha entrega (Obra)','Paquete y/o Promocioón',
                                 'Equipamiento','Firma de escrituras','Fecha de entrega','Finalizar Entrega',''
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="contratos in arrayContratos" :key="contratos.id" v-bind:style="{ backgroundColor : contratos.fecha_firma_esc == null ? '#C26F6F' : '#FFFFFF'}">
+                                        <td>
+                                            <button v-if="contratos.planos.length > 0" @click="abrirModal('verPlanos',contratos.planos)" class="btn btn-scarlet">
+                                                Planos
+                                            </button>
+                                        </td>
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -310,12 +315,17 @@
                         </div>
 
                         <TableComponent :cabecera="[
-                            '# Ref','Proyecto','Etapa','Manzana','Lote','Cliente','Fecha de firma',
+                            '','# Ref','Proyecto','Etapa','Manzana','Lote','Cliente','Fecha de firma',
                             'Fecha entrega (Obra)','Paquete y/o Promocioón','Fecha de Entrega',
                             '# Reprogramaciones','Observaciones',
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="entregas in arrayEntregas" :key="entregas.id">
+                                    <td>
+                                        <button v-if="entregas.planos.length > 0" @click="abrirModal('verPlanos',entregas.planos)" class="btn btn-scarlet">
+                                            Planos
+                                        </button>
+                                    </td>
                                     <td class="td2">
                                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.folio}}</a>
                                         <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -698,54 +708,75 @@
             <!-- -->
 
             <!-- Inicio Modal Archivo Fiscal-->
-        <ModalComponent v-if="modal==5"
-            :titulo="tituloModal"
-            @closeModal="cerrarModal()"
-        >
-            <template v-slot:body>
+            <ModalComponent v-if="modal==5"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
 
-                    <div class="form-group row">
-                        <input type="file"
-                            v-show="false"
-                            ref="archivoSelector"
-                            @change="onSelectedArchivo"
-                            accept="image/png, image/jpeg, image/gif, application/pdf"
-                        >
-                        <div class="col-md-9" v-if="!archivo">
-                            <button
-                                @click="onSelectArchivo"
-                                class="btn btn-scarlet">
-                                Seleccionar Poliza de Garantia
-                                <i class="fa fa-upload"></i>
-                            </button>
+                        <div class="form-group row">
+                            <input type="file"
+                                v-show="false"
+                                ref="archivoSelector"
+                                @change="onSelectedArchivo"
+                                accept="image/png, image/jpeg, image/gif, application/pdf"
+                            >
+                            <div class="col-md-9" v-if="!archivo">
+                                <button
+                                    @click="onSelectArchivo"
+                                    class="btn btn-scarlet">
+                                    Seleccionar Poliza de Garantia
+                                    <i class="fa fa-upload"></i>
+                                </button>
 
+                            </div>
+
+                            <div class="col-md-7" v-else>
+                                <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                                <button
+                                    @click="onSelectArchivo"
+                                    class="btn btn-info">
+                                    Cambiar Archivo
+                                    <i class="fa fa-upload"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-3" v-if="archivo">
+                                <button
+                                    @click="saveArchivo"
+                                    class="btn btn-scarlet">
+                                    Guardar Poliza
+                                    <i class="icon-check"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="col-md-7" v-else>
-                            <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
-                            <button
-                                @click="onSelectArchivo"
-                                class="btn btn-info">
-                                Cambiar Archivo
-                                <i class="fa fa-upload"></i>
-                            </button>
-                        </div>
-                        <div class="col-md-3" v-if="archivo">
-                            <button
-                                @click="saveArchivo"
-                                class="btn btn-scarlet">
-                                Guardar Poliza
-                                <i class="icon-check"></i>
-                            </button>
-                        </div>
-                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <a v-if="polizaGarantia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/entregas/downloadPoliza/'+polizaGarantia">Descargar poliza</a>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->
 
-            </template>
-            <template v-slot:buttons-footer>
-                <a v-if="polizaGarantia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/entregas/downloadPoliza/'+polizaGarantia">Descargar poliza</a>
-            </template>
-        </ModalComponent>
-        <!--Fin del modal-->
+            <ModalComponent v-if="modal == 6"
+                    :titulo="tituloModal"
+                    @closeModal="cerrarModal"
+                >
+                    <template v-slot:body>
+                        <div class="col-md-12">
+                            <TableComponent :cabecera="['Tipo','Descripcion','']">
+                                <template v-slot:tbody>
+                                    <tr v-for="p in planos" :key="p.id">
+                                        <td class="td2" v-text="p.tipo"></td>
+                                        <td class="td2" v-text="p.description"></td>
+                                        <td class="td2">
+                                            <a :href="p.file.public_url" target="_blank" class="btn btn-success">Ver Plano</a>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </div>
+                    </template>
+                </ModalComponent>
      </main>
 </template>
 
@@ -764,6 +795,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
         },
         data(){
             return{
+                planos:[],
                 observacion:'',
                 arrayObservacion : [],
 
@@ -973,12 +1005,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             abrirPDF(id){
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
                 win.focus();
             },
-
             selectNombreArchivoModelo(id){
                 let me = this;
                 me.nombre_archivo_modelo='';
@@ -992,8 +1022,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
-
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
@@ -1010,7 +1038,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             selectEtapa(buscar){
                 let me = this;
                 me.b_etapa=""
@@ -1027,7 +1054,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             //Select todas las manzanas
             selectManzanas(buscar1, buscar2){
                 let me = this;
@@ -1059,7 +1085,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1067,7 +1092,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
-
             cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1075,12 +1099,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarEntregas(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
-
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1090,7 +1112,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     return true;
                 }
             },
-
             storeObservacion(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -1115,7 +1136,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             listarObservacion(page, buscar){
                 let me = this;
                 var url = '/postventa/indexObservacion?page=' + page + '&buscar=' + buscar ;
@@ -1129,7 +1149,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
 
             },
-
             progFecha(){
                 if(this.validarFecha()) //Se verifica si hay un error (campo vacio)
                 {
@@ -1158,7 +1177,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             progHora(){
                 if(this.validarHora()) //Se verifica si hay un error (campo vacio)
                 {
@@ -1215,7 +1233,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             finalizarEntrega(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -1241,7 +1258,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-
             validarFecha(){
                 this.errorEntrega=0;
                 this.errorMostrarMsjEntrega=[];
@@ -1278,8 +1294,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.datosCliente = {};
                 this.errorEntrega = 0;
                 this.errorMostrarMsjEntrega = [];
+                this.planos = [];
             },
-
             abrirModal(accion,data =[]){
                 switch(accion){
 
@@ -1289,6 +1305,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.folio = data['folio'];
                         this.observacion = '';
                         this.tipoAccion = 1;
+                        break;
+                    }
+
+                    case 'verPlanos':{
+                        this.planos = data;
+                        this.modal = 6;
+                        this.tituloModal = 'Planos del lote';
                         break;
                     }
 

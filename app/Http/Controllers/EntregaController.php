@@ -17,6 +17,7 @@ use App\lote;
 use App\Credito;
 use App\Etapa;
 use App\Ini_obra;
+use App\PlanoProyecto;
 use App\User;
 use Carbon\Carbon;
 use NumerosEnLetras;
@@ -24,9 +25,17 @@ use Excel;
 use Auth;
 use DB;
 
+
+use App\Http\Resources\PlanoResource;
+
 /*  Controlador para entregas de vivienda.  */
 class EntregaController extends Controller
 {
+
+    private function getPlanos($lote_id){
+        return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
+    }
+
     // Función para registrar la petición de entrega de una vivienda en el sistema
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -175,6 +184,7 @@ class EntregaController extends Controller
             $contratos = $contratos->orderBy('licencias.avance','desc')->orderBy('lotes.fecha_entrega_obra','desc')->paginate(8);
             if(sizeOf($contratos)){
                 foreach($contratos as $index => $contrato){
+                    $contrato->planos = $this->getPlanos($contrato->loteId);
                     // Se obtiene el equipamiento solicitado por cada contrato.
                     $equipamiento = Solic_equipamiento::select('fecha_colocacion','fin_instalacion')
                             ->where('contrato_id','=',$contrato->folio)
@@ -445,6 +455,11 @@ class EntregaController extends Controller
         $contratos = $contratos->orderBy('licencias.avance','desc')
                                 ->orderBy('lotes.fecha_entrega_obra','desc')
                                 ->paginate(8);
+
+        if(sizeof($contratos))
+            foreach($contratos as $contrato){
+                $contrato->planos = $this->getPlanos($contrato->loteId);
+            }
 
         return [
             'pagination' => [
