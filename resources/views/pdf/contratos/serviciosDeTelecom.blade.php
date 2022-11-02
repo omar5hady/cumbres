@@ -39,7 +39,7 @@
                 <strong>Grupo Constructor Cumbres, S.A de C.V.</strong>
             @endif
 
-            se responsabiliza en dejar los ductos necesarios para que a futuro la empresa(s)
+            se responsabiliza en dejar los ductos para que a futuro la empresa(s)
             @if ($serviciosTele[0]->empresas_telecom != null)
                 {{ $serviciosTele[0]->empresas_telecom }},
             @else

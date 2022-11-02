@@ -40,7 +40,7 @@
         <p align="justify">
             Referente al servicio de telefonía, Internet y tv por cable. Le informamos que <strong>Grupo Constructor
                 Cumbres, S.A de C.V.</strong>
-            se responsabiliza en dejar los ductos necesarios para que a futuro la empresa(s)
+            se responsabiliza en dejar los ductos para que a futuro la empresa(s)
             {{ $archivos[0]->empresas_telecom }}, realice el cableado para llevar los servicios antes mencionados a su
             nueva casa.
         </p>
