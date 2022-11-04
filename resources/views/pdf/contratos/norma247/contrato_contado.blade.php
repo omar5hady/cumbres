@@ -686,18 +686,44 @@
                 @endif publicidad sobre bienes y servicios.
         </p>
 
-        <p>
-            <div class="table">
-                <div class="table-row">
-                    <div colspan="3" class="table-cell"></div>
-                    <div colspan="2" class="table-cell"><br><br>_____________________________________</div>
+        @if($contrato->coacreditado == 0)
+            <p>
+                <div class="table">
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell"></div>
+                        <div colspan="3" class="table-cell"><br><br>_____________________________________________</div>
+                    </div>
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell"></div>
+                        <div colspan="3" class="table-cell">
+                            <center>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
+                                <strong>“EL PROMITENTE COMPRADOR”</strong></center>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-row">
-                    <div colspan="3" class="table-cell"></div>
-                    <div colspan="2" class="table-cell">Firma o rúbrica de <strong>“EL PROMITENTE COMPRADOR”</strong></div>
+            </p>
+        @else
+
+            <p>
+                <div class="table">
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell"><br><br>_________________________________</div>
+                        <div colspan="1" class="table-cell"></div>
+                        <div colspan="2" class="table-cell"><br><br>_________________________________</div>
+                    </div>
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell">
+                            <center>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
+                        </div>
+                        <div colspan="1" class="table-cell"></div>
+                        <div colspan="2" class="table-cell">
+                            <center>{{mb_strtoupper($contrato->nombre_coa)}} {{mb_strtoupper($contrato->apellidos_coa)}}</center>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </p>
+            </p>
+
+        @endif
 
         <p>
             <strong>NOVENA.- PROCESO DE CANCELACIÓN. “EL PROMITENTE COMPRADOR”</strong> podrá cancelar el presente contrato, sin responsabilidad alguna, siempre y cuando

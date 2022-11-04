@@ -389,6 +389,7 @@ class ModeloController extends Controller
             ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
             'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom',
             'fraccionamientos.nombre as proyecto','etapas.empresas_telecom','etapas.empresas_telecom_satelital',
+            'etapas.carpeta_ventas',
             'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
         ->where('modelos.nombre','!=','Por Asignar')
         ->where('etapas.num_etapa','!=','Sin Asignar');

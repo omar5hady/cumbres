@@ -201,10 +201,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/etapa/eliminar','EtapaController@destroy');
 
         Route::post('/formSubmitReglamento/{id}','EtapaController@uploadReglamento');
+        Route::post('/formSubmitCarpetaVentas/{id}','EtapaController@formSubmitCarpetaVentas');
         Route::post('/formSubmitCartaServicios/{id}','EtapaController@uploadPlantillaCartaServicios');
         Route::post('/formSubmitCartaServicios2/{id}','EtapaController@uploadPlantillaCartaServicios2');
         Route::get('/downloadReglamento/{fileName}' , 'EtapaController@downloadReglamento');
-        Route::get('/downloadPlantilla/cartaServicios/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios');
+        Route::get('/downloadPlantilla/cartaServicios2/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios2');
+        Route::get('/downloadCarpetaVentas/{fileName}' , 'EtapaController@downloadCarpetaVentas');
         Route::get('/downloadPlantilla/cartaServicios2/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios2');
         Route::post('/etapas/costoMantenimiento/registrar/{id}','EtapaController@registrarCostoMantenimiento');
         Route::post('/formSubmitTelecom/{id}','EtapaController@uploadPlantillaTelecom');

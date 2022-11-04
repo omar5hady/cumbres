@@ -27,11 +27,12 @@
                             </div>
                         </div>
                         <TableComponent
-                            :cabecera="['','Etapa','Fraccionamiento','Fecha de inicio ','Fecha de termino',
+                            :cabecera="['','Etapa','Fraccionamiento',
                             'Reglamento','Plantilla para carta de servicios','Costo de mantenimiento Casa',
-                            'Costo de mantenimiento Lote','Empresa(s) de telecomunicacion',
-                            'Empresa(s) de telecomunicacion satelital',
+                            'Costo de mantenimiento Lote','Telecomunicacion',
+                            'Telecomunicacion satelital',
                             'Plantilla servicios de telecomunicacion',
+                            'Carpeta de ventas'
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="etapa in arrayEtapa" :key="etapa.id">
@@ -45,8 +46,6 @@
                                     </td>
                                     <td class="td2" v-text="etapa.num_etapa"></td>
                                     <td class="td2" v-text="etapa.fraccionamiento"></td>
-                                    <td class="td2" v-text="etapa.f_ini"></td>
-                                    <td class="td2" v-text="etapa.f_fin"></td>
                                     <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
                                     <td class="td2" v-else></td>
                                     <td class="td2"  v-if="etapa.plantilla_carta_servicios || etapa.plantilla_carta_servicios2">
@@ -63,6 +62,10 @@
                                     <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
                                     <td class="td2" v-if = "etapa.plantilla_telecom"><a target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
                                     <td class="td2" v-else></td>
+                                    <td>
+                                        <a target="_blank" class="btn btn-primary btn-sm" v-if="etapa.carpeta_ventas"
+                                            v-bind:href="'/downloadCarpetaVentas/'+etapa.carpeta_ventas"><i class="fa fa-download"></i></a>
+                                    </td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -107,6 +110,7 @@
                             <option class=" form-control " value="lote">Plantilla para la carta de los servicios Lote. </option>
                             <option class=" form-control " value="telecom">Plantilla para los servicios de telecomunicacion. </option>
                             <option class=" form-control " value="reglamento">Reglamento para esta etapa</option>
+                            <option class=" form-control " value="carpeta">Carpeta de ventas</option>
                         </select>
 
                         <div v-if="formActive" >
@@ -119,13 +123,14 @@
                                             <label v-if="formActive == 'lote'" class="tite-form">Sube aqui la plantilla para la carta de los servicios Lote  <u>794 x 986</u></label>
                                             <label v-if="formActive == 'telecom'" class="tite-form">Sube aqui la plantilla para los servicios de telecomunicacion</label>
                                             <label v-if="formActive == 'reglamento'" class="tite-form">Sube aqui el reglamento para esta etapa</label>
+                                            <label v-if="formActive == 'carpeta'" class="tite-form">Sube aqui la carpeta de ventas</label>
                                             <div class="form-archivo">
                                                 <input ref="imageSelectorArchivo" v-show="false" type="file"  v-on:change="onImageChange">
 
                                                                 <label class="label-button"
                                                                     @click="onSelectArchivo"
                                                                     >
-                                                                    Sube aqui la plantilla
+                                                                    Sube aqui el archivo
                                                                     <br>
                                                                 <i class="fa fa-upload" style=" justify-content: center; align-self: center;"></i>
                                                                 </label>
@@ -302,6 +307,10 @@ import vSelect from 'vue-select';
                      nombre ='archivo_reglamento'
                      url ='/formSubmitReglamento/'
                 }
+                if (this.formActive == 'carpeta' ) {
+                     nombre ='carpeta_ventas'
+                     url ='/formSubmitCarpetaVentas/'
+                }
 
                 formData.append(nombre, this.archivo);
                 let me = this;
@@ -316,7 +325,7 @@ import vSelect from 'vue-select';
                         timer: 2000
                         })
                     me.cerrarModal();
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+                    me.listarEtapa(this.pagination.current_page,me.buscar,me.buscar2,me.criterio);
 
                 }).catch(function (error) {
                     currentObj.output = error;
@@ -345,7 +354,7 @@ import vSelect from 'vue-select';
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarEtapa(this.pagination.current_page,'','','fraccionamiento.nombre');
+                    me.listarEtapa(this.pagination.current_page,me.buscar,me.buscar2,me.criterio);
 
                     //Se muestra mensaje Success
                     swal({

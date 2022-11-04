@@ -117,7 +117,7 @@ class EtapaController extends Controller
                 'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento', 'etapas.plantilla_carta_servicios2',
                 'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento', 'etapas.costo_mantenimiento2','etapas.plantilla_telecom','etapas.empresas_telecom',
                 'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida', 'etapas.carpeta_ventas')
                 ->where('etapas.num_etapa','!=','Sin Asignar');
 
         if($buscar!=''){
@@ -251,6 +251,26 @@ class EtapaController extends Controller
             return['etapas' => $etapas];
     }
 
+    public function formSubmitCarpetaVentas(Request $request, $id){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $etapa = Etapa::findOrFail($id);
+
+        if($etapa->carpeta_ventas != NULL){
+            $pathAnterior = public_path().'/files/etapas/carpeta_ventas/'.$etapa->carpeta_ventas;
+            File::delete($pathAnterior);
+        }
+            $fileName = uniqid().'.'.$request->carpeta_ventas->getClientOriginalExtension();
+            $moved =  $request->carpeta_ventas->move(public_path('/files/etapas/carpeta_ventas/'), $fileName);
+
+            if($moved){
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                $etapa = Etapa::findOrFail($request->id);
+                $etapa->carpeta_ventas = $fileName;
+                $etapa->save(); //Insert
+            }
+                return back();
+    }
+
     // Función para almacenar el reglamento de la etapa.
     public function uploadReglamento (Request $request, $id){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -266,7 +286,6 @@ class EtapaController extends Controller
                 if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $reglamentoEtapa = Etapa::findOrFail($request->id);
                 $reglamentoEtapa->archivo_reglamento = $fileName;
-                $reglamentoEtapa->id = $id;
                 $reglamentoEtapa->save(); //Insert
             }
                 return back();
@@ -280,7 +299,6 @@ class EtapaController extends Controller
                 if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $reglamentoEtapa = Etapa::findOrFail($request->id);
                 $reglamentoEtapa->archivo_reglamento = $fileName;
-                $reglamentoEtapa->id = $id;
                 $reglamentoEtapa->save(); //Insert
 
                 }
@@ -364,6 +382,12 @@ class EtapaController extends Controller
     // Funcion para descargar la plantilla para carta de servicios en terrenos
     public function downloadPlantillaCartaServicios2 ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
+        return response()->file($pathtoFile);
+    }
+
+    // Funcion para descargar la plantilla para carta de servicios en terrenos
+    public function downloadCarpetaVentas ($fileName){
+        $pathtoFile = public_path().'/files/etapas/carpeta_ventas/'.$fileName;
         return response()->file($pathtoFile);
     }
 

@@ -21,8 +21,8 @@ class CreateEtapasTable extends Migration
             $table->date('f_fin')->nullable();
             $table->unsignedInteger('personal_id');
             $table->string('archivo_reglamento',100)->nullable();
-            $table->string('plantilla_carta_servicios',100)->nullable();         
-            $table->string('plantilla_carta_servicios2',100)->nullable();  
+            $table->string('plantilla_carta_servicios',100)->nullable();
+            $table->string('plantilla_carta_servicios2',100)->nullable();
             $table->double('costo_mantenimiento')->nullable();
             $table->double('costo_mantenimiento2')->default(0);
             $table->string('plantilla_telecom',100)->nullable();
@@ -30,13 +30,15 @@ class CreateEtapasTable extends Migration
             $table->string('empresas_telecom_satelital',120)->nullable();
             $table->string('carta_bienvenida',191)->nullable();
             $table->string('factibilidad',191)->nullable();
-            
+
             $table->string('num_cuenta_admin',50)->nullable();
             $table->string('clabe_admin',50)->nullable();
             $table->string('sucursal_admin',50)->nullable();
             $table->string('titular_admin',100)->nullable();
             $table->string('banco_admin',50)->nullable();
             $table->float('terreno_m2',10,2)->default(0);
+
+            $table->string('carpeta_ventas')->nullable();
 
             $table->date('fecha_ini_venta')->nullable();
 

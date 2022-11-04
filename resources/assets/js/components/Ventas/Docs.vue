@@ -18,7 +18,7 @@
                                         <option value="">Proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="b_etapa"> 
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -32,7 +32,7 @@
                                         <option value="">Modelo</option>
                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                     </select>
-                                    
+
                                     <button type="submit" @click="listarArchivos(1,b_fraccionamiento,b_etapa,b_modelo,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -44,6 +44,7 @@
                                         <th>Fraccionamiento</th>
                                         <th>Etapa</th>
                                         <th>Modelo</th>
+                                        <th>Carpeta de ventas</th>
                                         <th>Reglamento de la etapa</th>
                                         <th>Carta de servicios</th>
                                         <th>Carta servicios de telecomunicaciones</th>
@@ -52,10 +53,18 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="archivos in arrayArchivos" :key="archivos.id">
-                                  
+
                                         <td v-text="archivos.proyecto"></td>
                                         <td v-text="archivos.num_etapa"></td>
                                         <td v-text="archivos.modelo"></td>
+                                        <template>
+                                            <td v-if="archivos.carpeta_ventas != null">
+                                                <a class="btn btn-primary btn-sm" v-bind:href="'/downloadCarpetaVentas/'+archivos.carpeta_ventas">Descarga</a>
+                                            </td>
+                                            <td v-else>
+                                                Aun sin cargar
+                                            </td>
+                                        </template>
                                         <template>
                                             <td v-if="archivos.archivo_reglamento != null">
                                                 <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/reglamentoEtapa/'+archivos.etapaID">Descarga</a>
@@ -89,9 +98,9 @@
                                             </td>
                                         </template>
 
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -111,7 +120,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            
+
         </main>
 </template>
 
@@ -124,7 +133,7 @@
          props:{
             rolId:{type: String}
         },
-		
+
         data(){
             return{
                 proceso : false,
@@ -137,11 +146,11 @@
                 b_fraccionamiento: '',
                 b_etapa: '',
                 b_modelo:  '',
-                
+
                 errorModelo : 0,
                 errorMostrarMsjModelo : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -149,9 +158,9 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.id', 
+                criterio : 'fraccionamientos.id',
                 buscar : '',
-                
+
             }
         },
         computed:{
@@ -231,7 +240,7 @@
 
             selectModelo(buscar){
                 let me = this;
-              
+
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
