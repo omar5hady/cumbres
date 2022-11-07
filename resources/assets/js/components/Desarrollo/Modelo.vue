@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <TableComponent :cabecera="['Opciones','Tipo','Proyecto','Modelo',
-                            'Terreno mts&sup2;','Construcción mts&sup2;','Especificaciónes',
+                            'Terreno mts&sup2;','Construcción mts&sup2;','Recorrido virtual','Especificaciónes',
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="modelo in arrayModelo" :key="modelo.id">
@@ -61,6 +61,11 @@
                                     <td class="td2" v-text="modelo.nombre"></td>
                                     <td class="td2" v-text="modelo.terreno"></td>
                                     <td class="td2" v-text="modelo.construccion"></td>
+                                    <td class="td2">
+                                        <a v-if="modelo.recorrido" class="btn btn-success" :href="modelo.recorrido" target="_blank">
+                                            <i class="fa fa-ravelry"></i>Recorrido
+                                        </a>
+                                    </td>
                                     <td class="td2">
                                         <button v-if="modelo.especificaciones.length"
                                             title="Ver especificaciones" type="button"
@@ -131,6 +136,12 @@
                         <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
                         <div class="col-md-7">
                             <input type="text" v-model="construccion" class="form-control" placeholder="Construccion">
+                        </div>
+                    </div>
+                     <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Recorrido virtual</label>
+                        <div class="col-md-7">
+                            <input type="url" v-model="recorrido" class="form-control" placeholder="Recorrido">
                         </div>
                     </div>
                     <!-- Div para mostrar los errores que mande validerModelo -->
@@ -302,6 +313,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 fraccionamiento_id : 0,
                 terreno : 0,
                 construccion : 0.0,
+                recorrido: '',
 
                 nuevo:0,
                 version:'',
@@ -534,7 +546,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                    'archivo': this.archivo
+                    'archivo': this.archivo,
+                    'recorrido': this.recorrido
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -570,7 +583,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'terreno': this.terreno,
                     'construccion': this.construccion,
                     'archivo': this.archivo,
-                    'id' : this.id
+                    'id' : this.id,
+                    'recorrido': this.recorrido
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -656,6 +670,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.archivo = '';
                 this.especificaciones = {}
                 this.modal2=0;
+                this.recorrido = ''
 
                 this.errorModelo = 0;
                 this.errorMostrarMsjModelo = [];
@@ -691,6 +706,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.terreno = 0;
                                 this.construccion = 0;
                                 this.tipoAccion = 1;
+                                this.recorrido = '';
                                 break;
                             }
                             case 'actualizar':
@@ -704,6 +720,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
                                 this.terreno=data['terreno'];
                                 this.construccion=data['construccion'];
+                                this.recorrido = data['recorrido'];
                                 break;
                             }
                             case 'subirArchivo':

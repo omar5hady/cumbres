@@ -37,71 +37,64 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Modelo</th>
-                                        <th>Carpeta de ventas</th>
-                                        <th>Reglamento de la etapa</th>
-                                        <th>Carta de servicios</th>
-                                        <th>Carta servicios de telecomunicaciones</th>
-                                        <th>Catálogo de especificaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="archivos in arrayArchivos" :key="archivos.id">
+                        <TableComponent :cabecera="['Fraccionamiento','Etapa','Modelo','Carpeta de ventas',
+                                'Reglamento de la etapa','Carta de servicios',
+                                'Carta servicios de telecomunicaciones','Catálogo de especificaciones'
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="archivos in arrayArchivos" :key="archivos.id">
+                                    <td v-text="archivos.proyecto"></td>
+                                    <td v-text="archivos.num_etapa"></td>
+                                    <td class="td2">
+                                        {{archivos.modelo}}&nbsp;&nbsp;
+                                        <a v-if="archivos.recorrido" class="btn btn-success" :href="archivos.recorrido" target="_blank" title="Recorrido virutal">
+                                            <i class="fa fa-ravelry"></i>
+                                        </a>
+                                    </td>
+                                    <template>
+                                        <td v-if="archivos.carpeta_ventas != null">
+                                            <a class="btn btn-primary btn-sm" v-bind:href="'/downloadCarpetaVentas/'+archivos.carpeta_ventas">Descarga</a>
+                                        </td>
+                                        <td v-else>
+                                            Aun sin cargar
+                                        </td>
+                                    </template>
+                                    <template>
+                                        <td v-if="archivos.archivo_reglamento != null">
+                                            <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/reglamentoEtapa/'+archivos.etapaID">Descarga</a>
+                                        </td>
+                                        <td v-else>
+                                            Aun sin cargar
+                                        </td>
+                                    </template>
+                                    <template>
+                                        <td v-if="archivos.plantilla_carta_servicios != null && archivos.costo_mantenimiento != null">
+                                            <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServicios/'+archivos.etapaID" target="_blank">Visualizar</a>
+                                        </td>
+                                        <td v-else>
+                                            Aun sin cargar
+                                        </td>
+                                    </template>
+                                    <template>
+                                        <td v-if="archivos.plantilla_telecom != null && archivos.empresas_telecom != null">
+                                            <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServiciosTelecomunicaciones/'+archivos.etapaID" target="_blank">Visualizar</a>
+                                        </td>
+                                        <td v-else>
+                                            Aun sin cargar
+                                        </td>
+                                    </template>
+                                    <template>
+                                        <td v-if="archivos.archivo != null">
+                                            <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/catalogoEspecificaciones/'+archivos.modeloID">Descarga</a>
+                                        </td>
+                                        <td v-else>
+                                            Aun sin cargar
+                                        </td>
+                                    </template>
 
-                                        <td v-text="archivos.proyecto"></td>
-                                        <td v-text="archivos.num_etapa"></td>
-                                        <td v-text="archivos.modelo"></td>
-                                        <template>
-                                            <td v-if="archivos.carpeta_ventas != null">
-                                                <a class="btn btn-primary btn-sm" v-bind:href="'/downloadCarpetaVentas/'+archivos.carpeta_ventas">Descarga</a>
-                                            </td>
-                                            <td v-else>
-                                                Aun sin cargar
-                                            </td>
-                                        </template>
-                                        <template>
-                                            <td v-if="archivos.archivo_reglamento != null">
-                                                <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/reglamentoEtapa/'+archivos.etapaID">Descarga</a>
-                                            </td>
-                                            <td v-else>
-                                                Aun sin cargar
-                                            </td>
-                                        </template>
-                                        <template>
-                                            <td v-if="archivos.plantilla_carta_servicios != null && archivos.costo_mantenimiento != null">
-                                                <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServicios/'+archivos.etapaID" target="_blank">Visualizar</a>
-                                            </td>
-                                            <td v-else>
-                                                Aun sin cargar
-                                            </td>
-                                        </template>
-                                        <template>
-                                            <td v-if="archivos.plantilla_telecom != null && archivos.empresas_telecom != null">
-                                                <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServiciosTelecomunicaciones/'+archivos.etapaID" target="_blank">Visualizar</a>
-                                            </td>
-                                            <td v-else>
-                                                Aun sin cargar
-                                            </td>
-                                        </template>
-                                        <template>
-                                            <td v-if="archivos.archivo != null">
-                                                <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/catalogoEspecificaciones/'+archivos.modeloID">Descarga</a>
-                                            </td>
-                                            <td v-else>
-                                                Aun sin cargar
-                                            </td>
-                                        </template>
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -129,11 +122,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue'
     export default {
          props:{
             rolId:{type: String}
         },
-
+        components:{
+            TableComponent
+        },
         data(){
             return{
                 proceso : false,
@@ -259,15 +255,20 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
     .div-error{
         display:flex;

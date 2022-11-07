@@ -26,7 +26,7 @@ class ModeloController extends Controller
         //Query
         $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
-            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion',
+            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion', 'modelos.recorrido',
             'modelos.archivo','modelos.id','espec_obra')
             ->where('modelos.nombre', '!=','Por Asignar');//Diferente a modelo por asignar
         if($buscar != '')//Busqueda general
@@ -70,6 +70,7 @@ class ModeloController extends Controller
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;
         $modelo->archivo = $request->archivo;
+        $modelo->recorrido = $request->recorrido;
         $modelo->save();
         //Se crean las partidas correspondientes para el nuevo modelo.
         for($i =1;$i<=49;$i++){
@@ -286,6 +287,7 @@ class ModeloController extends Controller
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;
+        $modelo->recorrido = $request->recorrido;
         $modelo->save();
     }
     //Función para eliminar el registro de un modelo.
@@ -389,7 +391,7 @@ class ModeloController extends Controller
             ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
             'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom',
             'fraccionamientos.nombre as proyecto','etapas.empresas_telecom','etapas.empresas_telecom_satelital',
-            'etapas.carpeta_ventas',
+            'etapas.carpeta_ventas', 'modelos.recorrido',
             'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
         ->where('modelos.nombre','!=','Por Asignar')
         ->where('etapas.num_etapa','!=','Sin Asignar');

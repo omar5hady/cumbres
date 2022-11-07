@@ -22,6 +22,7 @@ class CreateModelosTable extends Migration
             $table->float('construccion');
             $table->string('archivo')->nullable();
             $table->string('espec_obra',50)->nullable();
+            $table->string('recorrido',191)->nullable();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
 

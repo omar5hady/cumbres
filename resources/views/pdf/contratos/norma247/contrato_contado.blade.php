@@ -1034,7 +1034,7 @@
 
 
         <p  align="center">
-            @if($contrato->coacreditaod == 0)
+            @if($contrato->coacreditado == 0)
                 <div class="table">
                     <div class="table-row">
                         <div class="table-cell"></div>
@@ -1258,7 +1258,7 @@
         </p>
 
         <p  align="center">
-            @if($contrato->coacreditaod == 0)
+            @if($contrato->coacreditado == 0)
                 <div class="table">
                     <div class="table-row">
                         <div class="table-cell"></div>
@@ -1556,7 +1556,7 @@
         </p>
 
         <p  align="center">
-            @if($contrato->coacreditaod == 0)
+            @if($contrato->coacreditado == 0)
                 <div class="table">
                     <div class="table-row">
                         <div class="table-cell"></div>
