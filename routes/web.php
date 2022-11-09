@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/clientes/storeObservacion','ClienteController@storeObservacion');
         Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
         Route::put('/clientes/actualizar','ClienteController@update');
+        Route::put('clientes/setAdvertising','ClienteController@setAdvertising');
         Route::put('/clientes/actualizar2','ClienteController@updateProspecto');
         Route::get('/clientes/observacion','ClienteController@listarObservacion');
         Route::get('/clientes/clientesPorReasignar','ClienteController@clientesPorReasignar');

@@ -16,1614 +16,1177 @@
 
             <!----------------- Listado Contratos ------------------------------>
                     <!-- Div Card Body para listar -->
-                        <div class="card-body"> 
-                            <div class="form-group row">
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <select class="form-control"  @keyup.enter="listarComisiones(1)" v-model="b_mes" >
-                                            <option value="">Mes</option>
-                                            <option value="01">Enero</option>
-                                            <option value="02">Febrero</option>
-                                            <option value="03">Marzo</option>
-                                            <option value="04">Abril</option>
-                                            <option value="05">Mayo</option>
-                                            <option value="06">Junio</option>
-                                            <option value="07">Julio</option>
-                                            <option value="08">Agosto</option>
-                                            <option value="09">Septiembre</option>
-                                            <option value="10">Octubre</option>
-                                            <option value="11">Noviembre</option>
-                                            <option value="12">Diciembre</option>
-                                            
-                                        </select>
-                                        <select class="form-control"  @keyup.enter="listarComisiones(1)" v-model="b_anio" >
-                                            <option value="">Año</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2020">2020</option>
-                                            <option value="2021">2021</option>
-                                            <option value="2022">2022</option>
-                                            <option value="2023">2023</option>
-                                            <option value="2024">2024</option>
-                                            <option value="2025">2025</option>
-                                            <option value="2026">2026</option>
-                                            <option value="2027">2027</option>
-                                            <option value="2028">2028</option>
-                                            <option value="2029">2029</option>
-                                            <option value="2030">2030</option>
-                                        </select>
-                                    </div>
+                    <loading-component v-if="loading"></loading-component>
+                    <div class="card-body" v-else>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control"  @keyup.enter="listarComisiones(1)" v-model="b_mes" >
+                                        <option value="">Mes</option>
+                                        <option v-for="m in meses" :key="m.id" :value="m.id">{{m.mes}}</option>
+                                    </select>
+                                    <select class="form-control"  @keyup.enter="listarComisiones(1)" v-model="b_anio" >
+                                        <option value="">Año</option>
+                                        <option v-for="a in anios" :key="a" :value="a">{{a}}</option>
+                                    </select>
                                 </div>
+                            </div>
 
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <!--Criterios para el listado de busqueda -->
-                                        <label class="form-control col-md-4" disabled>
-                                            Asesor:
-                                        </label>
-                                        <select class="form-control"  v-model="tipo_asesor" @change="selectAsesores()" >
-                                            <option value="">Tipo</option>
-                                            <option value=0>Interno</option>
-                                            <option value=1>Externo</option>
-                                        </select>
-                                        <select class="form-control"  v-model="b_asesor_id" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group">
-                                        <button type="submit" @click="listarComisiones(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <label class="form-control col-md-4" disabled>
+                                        Asesor:
+                                    </label>
+                                    <select class="form-control"  v-model="tipo_asesor" @change="selectAsesores()" >
+                                        <option value="">Tipo</option>
+                                        <option value=0>Interno</option>
+                                        <option value=1>Externo</option>
+                                    </select>
+                                    <select class="form-control"  v-model="b_asesor_id" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <button type="submit" @click="listarComisiones(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Mes</th>
-                                            <th>Año</th>
-                                            <th>Asesor</th>
-                                            <th>Total Comisión</th>
-                                            <th>Total Pagado</th>
-                                            <th></th>
-                                            <!-- <th>Autorizacion 1</th>
-                                            <th>Autorizacion 2</th> -->
-                                            <!-- <th>Total por Pagar</th> -->
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="contrato in arrayComisiones" :key="contrato.id">
-                                            <td class="td2">
-                                                    <button type="button" title="Ver detalle de la comision" @click="abrirModal('detalle',contrato)" class="btn btn-primary btn-sm">
-                                                        <i class="fa fa-eye"></i>
-                                                    </button>
-                                                </td>
-                                            <td class="td2" v-if="contrato.mes == 1" v-text="'Enero'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 2" v-text="'Febrero'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 3" v-text="'Marzo'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 4" v-text="'Abril'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 5" v-text="'Mayo'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 6" v-text="'Junio'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 7" v-text="'Julio'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 8" v-text="'Agosto'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 9" v-text="'Septiembre'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 10" v-text="'Octubre'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 11" v-text="'Noviembre'"></td>
-                                            <td class="td2" v-else-if="contrato.mes == 12" v-text="'Diciembre'"></td>
-                                            <td class="td2" v-text="contrato.anio"></td>
-                                            <td class="td2" v-text="contrato.asesor"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(contrato.total_comision)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(contrato.total_pagado)"></td>
-                                            <!-- <td></td>
-                                            <td>
-                                                <button v-if="contrato.autorizacion1 == 0" type="button" title="Aprobar" @click="aprobar(contrato.id)" class="btn btn-success btn-sm">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                <label v-else v-text="this.moment(contrato.fecha_aut1).locale('es').format('DD/MMM/YYYY')"></label>
-                                            </td>
-                                            <td>
-                                                <button v-if="contrato.autorizacion2 == 0 && contrato.autorizacion1 == 1" type="button" title="Aprobar" @click="aprobar(contrato.id)" class="btn btn-success btn-sm">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                <label v-else-if="contrato.autorizacion2 == 1" v-text="this.moment(contrato.fecha_aut2).locale('es').format('DD/MMM/YYYY')"></label>
-                                            </td> -->
-                                            <!-- <td class="td2" v-text="'$'+formatNumber(contrato.total_porPagar)"></td> -->
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                            </div>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination2.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2)" v-text="page2"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
-                    
+                        <TableComponent :cabecera="['','Mes','Año','Asesor','Total Comisión','Total Pagado',' ']">
+                            <template v-slot:tbody>
+                                <tr v-for="contrato in arrayComisiones" :key="contrato.id">
+                                    <td class="td2">
+                                        <button type="button" title="Ver detalle de la comision" @click="abrirModal('detalle',contrato)" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2">
+                                        {{ ( contrato.mes == 1) ? 'Enero'
+                                            : (contrato.mes == 2) ? 'Febrero'
+                                            : (contrato.mes == 3) ? 'Marzo'
+                                            : (contrato.mes == 4) ? 'Abril'
+                                            : (contrato.mes == 5) ? 'Mayo'
+                                            : (contrato.mes == 6) ? 'Junio'
+                                            : (contrato.mes == 7) ? 'Julio'
+                                            : (contrato.mes == 8) ? 'Agosto'
+                                            : (contrato.mes == 9) ? 'Septiembre'
+                                            : (contrato.mes == 10) ? 'Octubre'
+                                            : (contrato.mes == 11) ? 'Noviembre'
+                                            : 'Diciembre'
+                                        }}
+                                    </td>
+                                    <td class="td2" v-text="contrato.anio"></td>
+                                    <td class="td2" v-text="contrato.asesor"></td>
+                                    <td class="td2" v-text="'$'+formatNumber(contrato.total_comision)"></td>
+                                    <td class="td2" v-text="'$'+formatNumber(contrato.total_pagado)"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2)" v-text="page2"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
             <!-- Inicio Modal GENERAR COMISION -->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
+            <ModalComponent :titulo="tituloModal" v-if="modal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-1 form-control-label" for="text-input">Mes</label>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="mes" >
+                                <option value="">Mes</option>
+                               <option v-for="m in meses" :key="m.id" :value="m.id">{{m.mes}}</option>
+                            </select>
+                        </div>
+                        <label class="col-md-1 form-control-label" for="text-input">Año</label>
+                        <div class="col-md-2">
+                            <select class="form-control"  v-model="anio" >
+                               <option v-for="a in anios" :key="a" :value="a">{{a}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-1 form-control-label" for="text-input">Asesor</label>
+                        <div class="col-md-8">
+                            <select class="form-control"  v-model="asesor_id" >
+                                <option value="">Seleccione</option>
+                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" @click="getComision(asesor_id), ventas = 1" class="btn btn-primary">
+                                <i class="fa fa-search-plus"></i> &nbsp;Buscar ventas
                             </button>
                         </div>
-                        <div class="modal-body">
+                    </div>
 
-                            <div class="form-group row">
-                                <label class="col-md-1 form-control-label" for="text-input">Mes</label>
-                                <div class="col-md-3">
-                                    <select class="form-control" v-model="mes" >
-                                        <option value="">Mes</option>
-                                        <option value="01">Enero</option>
-                                        <option value="02">Febrero</option>
-                                        <option value="03">Marzo</option>
-                                        <option value="04">Abril</option>
-                                        <option value="05">Mayo</option>
-                                        <option value="06">Junio</option>
-                                        <option value="07">Julio</option>
-                                        <option value="08">Agosto</option>
-                                        <option value="09">Septiembre</option>
-                                        <option value="10">Octubre</option>
-                                        <option value="11">Noviembre</option>
-                                        <option value="12">Diciembre</option>
-                                    </select>
-                                </div>
-                                <label class="col-md-1 form-control-label" for="text-input">Año</label>
-                                <div class="col-md-2">
-                                    <select class="form-control"  v-model="anio" >
-                                        <option value="2018">2018</option>
-                                        <option value="2019">2019</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                        <option value="2028">2028</option>
-                                        <option value="2029">2029</option>
-                                        <option value="2030">2030</option>
-                                        <option value="2031">2031</option>
-                                        <option value="2032">2032</option>
-                                        <option value="2033">2033</option>
-                                        <option value="2034">2034</option>
-                                        <option value="2035">2035</option>
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="form-group row line-separator"></div>
 
-                            <div class="form-group row">
-                                <label class="col-md-1 form-control-label" for="text-input">Asesor</label>
-                                <div class="col-md-8">
-                                    <select class="form-control"  v-model="asesor_id" >
-                                        <option value="">Seleccione</option>
-                                        <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="button" @click="getComision(asesor_id), ventas = 1" class="btn btn-primary">
-                                        <i class="fa fa-search-plus"></i> &nbsp;Buscar ventas
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="form-group row line-separator"></div>
-
-                            <!-- VENTAS -->
-                                <div class="form-group row">
-                                    <h6 v-if="ventas==1 && numVentas>0"  style="font-weight: bold; color: blue;" class="col-md-3">Ventas: {{this.numVentas}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && tipoVendedor == 0 && numVentas>0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th @dblclick="cambiar()"> <a href="#">Este pago</a> </th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
-                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
-                                                    <td v-else></td>
-                                                    <td class="td2" v-text="venta.fecha"></td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.id"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.proyecto"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.proyecto"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.etapa"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.manzana"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.manzana"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.num_lote"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.num_lote"></span>
-                                                    </td>
-                                                    <td class="td2" v-text="venta.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                    <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
-                                                    <td v-text="venta.avance_lote + '%'"></td>
-                                                    <td class="td2">{{ venta.porcentaje_comision.toFixed(3) }}%</td>
-                                                    <td v-text="'$'+formatNumber(venta.comision_pagar)"></td>
-                                                    
-                                                    <template v-if="modif == 0">
-
-                                                        <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                                                            <td><input v-model="venta.este_pago" @keyup.enter="totalPagar()" ></td>
-                                                        <!------->
-                                                            <td v-text="'$'+formatNumber(venta.por_pagar = venta.comision_pagar - venta.este_pago )"></td>
-
-                                                    </template>
-                                                    <template v-else>
-                                                        <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                                                            <td v-text="'$'+formatNumber(venta.este_pago)"></td>
-                                                            
-                                                        <!------->
-                                                            <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
-                                                           
-               
-                                                    </template>
-                                                        
-
-                                                    
-                                                </tr>  
-                                                <tr>
-                                                    <td align="right" colspan="12"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision = totalComision)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
-                                                    <!-- <td v-if="modif == 0"> ${{formatNumber(total_porPagar =total_comision - total_pagado)}} </td> -->
-                                                    <td > ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
-                                                    
-                                                    
-                                                    
-                                                </tr>                     
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-else-if="ventas==1 && tipoVendedor == 1 && numVentas>0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
-                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
-                                                    <td v-else></td>
-                                                    <td class="td2" v-text="venta.fecha"></td>
-                                                    <td v-text="venta.id"></td>
-                                                    <td class="td2" v-text="venta.proyecto"></td>
-                                                    <td class="td2" v-text="venta.etapa"></td>
-                                                    <td class="td2" v-text="venta.manzana"></td>
-                                                    <td v-text="venta.num_lote"></td>
-                                                    <td class="td2" v-text="venta.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                    <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
-                                                    <td v-text="venta.avance_lote + '%'"></td>
-                                                    <td>
-                                                        {{ venta.porcentaje_comision.toFixed(1) }}%
-                                                    </td>
-                                                    <td v-text="'$'+formatNumber(venta.comision_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(venta.iva = (venta.comision_pagar * 0.16 ))"></td>
-                                                    <td v-if="bandRetencion == 1" v-text="'$'+formatNumber(venta.retencion = (venta.iva * (2/3)))"></td>
-                                                    <td v-else v-text="'$'+formatNumber(venta.retencion = 0)"></td>
-                                                    <td v-if="bandISR == 1" v-text="'$'+formatNumber(venta.isr = (venta.comision_pagar * .10 ))"></td>
-                                                    <td v-else v-text="'$'+formatNumber(venta.isr = 0 )"></td>
-                                                    
-                                                    
-                                                    <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                                                        <td v-if="venta.indiv == 0 && venta.pagado > 1" v-text="'$'+formatNumber(venta.este_pago = (venta.comision_pagar / 2) + venta.iva - venta.isr - venta.retencion)"></td>
-                                                        <td v-else-if="venta.indiv == 1 && venta.pagado > 1" v-text="'$'+formatNumber(venta.este_pago = (venta.comision_pagar) + venta.iva - venta.isr - venta.retencion )"></td>
-                                                        <td v-else-if="venta.pagado < 2" v-text="'$'+formatNumber(venta.este_pago = 0)"></td>
-                                                    <!------->
-                                                        <td v-if="venta.indiv == 0 && venta.pagado > 1" v-text="'$'+formatNumber(venta.por_pagar = (venta.comision_pagar / 2))"></td>
-                                                        <td v-else-if="venta.indiv == 1 && venta.pagado > 1" v-text="'$'+formatNumber(venta.por_pagar = 0)"></td>
-                                                        <td v-else-if="venta.pagado < 2" v-text="'$'+formatNumber(venta.por_pagar = (venta.comision_pagar) + venta.iva - venta.isr - venta.retencion )"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                    <td> ${{formatNumber(total_comision = totalComision)}} </td>
-                                                    <td> ${{formatNumber(total_iva = totalIva)}} </td>
-                                                    <td> ${{formatNumber(total_retencion = totalRetencion)}} </td>
-                                                    <td> ${{formatNumber(total_isr = totalIsr)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
-                                                    
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            
-                            <!-- Individualizadas -->
-                                <div class="form-group row">
-                                    <h6 v-if="ventas==1 && numIndividualizadas != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Individualizadas: {{this.numIndividualizadas }}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && numIndividualizadas != 0 && tipoVendedor == 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
-                                                    <td class="td2" v-text="indiv.fecha"></td>
-                                                    <td v-text="indiv.id"></td>
-                                                    <td class="td2" v-text="indiv.proyecto"></td>
-                                                    <td class="td2" v-text="indiv.etapa"></td>
-                                                    <td class="td2" v-text="indiv.manzana"></td>
-                                                    <td v-text="indiv.num_lote"></td>
-                                                    <td class="td2" v-text="indiv.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
-                                                    <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
-                                                    <td v-text="indiv.avance_lote + '%'"></td>
-                                                    <td v-text="indiv.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
-                                                    
-                                                    <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(0)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
-                                                    <td> ${{formatNumber(0)}} </td>
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-else-if="ventas==1 && tipoVendedor == 1 && numIndividualizadas>0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
-                                                    <td class="td2" v-text="indiv.fecha"></td>
-                                                    <td v-text="indiv.id"></td>
-                                                    <td class="td2" v-text="indiv.proyecto"></td>
-                                                    <td class="td2" v-text="indiv.etapa"></td>
-                                                    <td class="td2" v-text="indiv.manzana"></td>
-                                                    <td v-text="indiv.num_lote"></td>
-                                                    <td class="td2" v-text="indiv.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
-                                                    <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
-                                                    <td v-text="indiv.avance_lote + '%'"></td>
-                                                    <td v-text="indiv.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.iva)"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.retencion)"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.isr)"></td>
-                                                    
-                                                    <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(0)"></td>
-                                                    
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                    <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
-                                                    <td> ${{formatNumber(total_iva_indiv  = totalIvaIndiv)}} </td>
-                                                    <td> ${{formatNumber(total_retencion_indiv  = totalRetencionIndiv)}} </td>
-                                                    <td> ${{formatNumber(total_isr_indiv  = totalIsrIndiv)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
-                                                    <td> ${{formatNumber(0)}} </td>
-                                                    
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <div class="form-group row line-separator"  v-if="ventas==1"></div>
-                            
-                            <!-- VENTAS CANCELADAS -->
-                                <div class="form-group row">
-                                    <h6 v-if="ventas==1 & numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Canceladas: {{this.numCancelaciones}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && numCancelaciones != 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Fecha de cancelación</th>
-                                                    <th>$ Anticipo</th>
-                                                    <th>Bono</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="anticipo in arrayCanceladas" :key="anticipo.folio">
-                                                    <td v-text="anticipo.id"></td>
-                                                    <td class="td2" v-text="anticipo.proyecto"></td>
-                                                    <td class="td2" v-text="anticipo.etapa"></td>
-                                                    <td class="td2" v-text="anticipo.manzana"></td>
-                                                    <td v-text="anticipo.num_lote"></td>
-                                                    <td class="td2" v-text="anticipo.nombre_cliente"></td>
-                                                    <td v-text="anticipo.fecha_status"></td>
-                                                    <td v-text="'$'+formatNumber(anticipo.este_pago)"></td>
-                                                    <td v-text="'$'+formatNumber(anticipo.bono)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="7"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_anticipo = totalAnticipo)}} </td>
-                                                    <td> ${{formatNumber(total_bono = totalBono)}} </td>
-                                                    
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <!-- COMISIONES QUE HABIAN QUEDADO PENDIENTES POR FALTA DE PAGARE -->
-                                <div class="form-group row">
-                                    <h6 v-if="ventas==1 & numPendientes != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Pendientes: {{this.numPendientes}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && numPendientes != 0 && tipoVendedor == 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
-                                                    <td class="td2" v-text="pendiente.fecha"></td>
-                                                    <td v-text="pendiente.id"></td>
-                                                    <td class="td2" v-text="pendiente.proyecto"></td>
-                                                    <td class="td2" v-text="pendiente.etapa"></td>
-                                                    <td class="td2" v-text="pendiente.manzana"></td>
-                                                    <td v-text="pendiente.num_lote"></td>
-                                                    <td class="td2" v-text="pendiente.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
-                                                    <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
-                                                    <td v-text="pendiente.avance_lote + '%'"></td>
-                                                    <td v-text="pendiente.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
-                                                    
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(pendiente.este_pago = pendiente.comision_pagar )"></td>
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.por_pagar = (pendiente.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(pendiente.por_pagar=0)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && numPendientes != 0 && tipoVendedor == 1">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
-                                                    <td class="td2" v-text="pendiente.fecha"></td>
-                                                    <td v-text="pendiente.id"></td>
-                                                    <td class="td2" v-text="pendiente.proyecto"></td>
-                                                    <td class="td2" v-text="pendiente.etapa"></td>
-                                                    <td class="td2" v-text="pendiente.manzana"></td>
-                                                    <td v-text="pendiente.num_lote"></td>
-                                                    <td class="td2" v-text="pendiente.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
-                                                    <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
-                                                    <td v-text="pendiente.avance_lote + '%'"></td>
-                                                    <td v-text="pendiente.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.iva)"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.retencion)"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.isr)"></td>
-                                                    
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar / 2) + pendiente.iva - pendiente.isr - pendiente.retencion)"></td>
-                                                    <td v-else v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar) + pendiente.iva - pendiente.isr - pendiente.retencion )"></td>
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.por_pagar = (pendiente.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(pendiente.por_pagar=0)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                    <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
-                                                    <td> ${{formatNumber(total_iva_pendiente = totalIvaPendiente)}} </td>
-                                                    <td> ${{formatNumber(total_retencion_pendiente = totalRetencionPendiente)}} </td>
-                                                    <td> ${{formatNumber(total_isr_pendiente = totalIsrPendiente)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <!-- CAMBIOS -->
-                                <div class="form-group row">
-                                    <h6 v-if="ventas==1 & numCambios != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cambios: {{this.numCambios}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && numCambios != 0 && tipoVendedor == 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <th>Anticipo anterior (-)</th>
-                                                    <th></th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="cambio in arrayCambios" :key="cambio.id">
-                                                    <td class="td2" v-text="cambio.fecha"></td>
-                                                    <td v-text="cambio.id"></td>
-                                                    <td class="td2" v-text="cambio.proyecto_ant + ' -> ' + cambio.proyecto"></td>
-                                                    <td class="td2" v-text="cambio.etapa_ant + ' -> ' + cambio.etapa"></td>
-                                                    <td class="td2" v-text="cambio.manzana_ant + ' -> ' + cambio.manzana"></td>
-                                                    <td class="td2" v-text="cambio.lote_ant + ' -> ' + cambio.num_lote"></td>
-                                                    <td class="td2" v-text="cambio.nombre_cliente"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(cambio.precio_venta_ant) + ' -> ' + formatNumber(cambio.precio_venta)"></td>
-                                                    <td class="td2" v-text="cambio.tipo_credito + '(' + cambio.institucion + ')'"></td>
-                                                    <td v-text="cambio.avance_lote + '%'"></td>
-                                                    <td v-text="cambio.porcentaje_comision + '%'"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(cambio.comision_pagar = (cambio.precio_venta * (cambio.porcentaje_comision/100) ) )"></td>
-                                                    
-                                                    <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(cambio.este_pago = cambio.comision_pagar )"></td>
-                                                    <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.por_pagar = (cambio.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(cambio.por_pagar=0)"></td>
-                                                    <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
-                                                    <td>
-                                                        <button title="No aplica cambio" type="button" class="btn btn-danger btn-sm" @click="noAplica(cambio.id)">
-                                                            <i class="fa fa-close"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision_cambio = totalComisionCambio)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_cambio = totalPagadoCambio)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar_cambio = totalPorPagarCambio)}} </td>
-                                                    <td colspan="2"> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="ventas==1 && numPendientes != 0 && tipoVendedor == 1">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <th>Anticipo anterior (-)</th>
-                                                    <th></th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="cambio in arrayCambios" :key="cambio.id">
-                                                    <td class="td2" v-text="cambio.fecha"></td>
-                                                    <td v-text="cambio.id"></td>
-                                                    <td class="td2" v-text="cambio.proyecto_ant + '->' + cambio.proyecto"></td>
-                                                    <td class="td2" v-text="cambio.etapa_ant + '->' + cambio.etapa"></td>
-                                                    <td class="td2" v-text="cambio.manzana_ant + '->' + cambio.manzana"></td>
-                                                    <td v-text="cambio.lote_ant + '->' + cambio.num_lote"></td>
-                                                    <td class="td2" v-text="cambio.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(cambio.precio_venta)"></td>
-                                                    <td class="td2" v-text="cambio.tipo_credito + '(' + cambio.institucion + ')'"></td>
-                                                    <td v-text="cambio.avance_lote + '%'"></td>
-                                                    <td v-text="cambio.porcentaje_comision + '%'"></td>
-                                                    <td class="td2" v-text="'$'+formatNumber(cambio.comision_pagar = (cambio.precio_venta * (cambio.porcentaje_comision/100) ) )"></td>
-                                                    <td v-text="'$'+formatNumber(cambio.iva = cambio.comision_pagar * 0.16)"></td>
-                                                    <td v-if="bandRetencion == 1" v-text="'$'+formatNumber(cambio.retencion = (cambio.iva * (2/3)))"></td>
-                                                    <td v-else v-text="'$'+formatNumber(cambio.retencion = 0)"></td>
-                                                    <td v-if="bandISR == 1" v-text="'$'+formatNumber(cambio.isr = (cambio.comision_pagar * .10 ))"></td>
-                                                    <td v-else v-text="'$'+formatNumber(cambio.isr = 0 )"></td>
-                                                    
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar / 2) + cambio.iva - cambio.isr - cambio.retencion)"></td>
-                                                    <td v-else v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar) + cambio.iva - cambio.isr - cambio.retencion )"></td>
-                                                    <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.por_pagar = (cambio.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(cambio.por_pagar=0)"></td>
-                                                    <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
-                                                    <td>
-                                                        <button title="No aplica cambio" type="button" class="btn btn-danger btn-sm" @click="noAplica(cambio.id)">
-                                                            <i class="fa fa-close"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                     <td> ${{formatNumber(total_comision_cambio = totalComisionCambio)}} </td>
-                                                     <td><strong> ${{formatNumber(total_iva_cambio = totalIvaCambio)}} </strong></td>
-                                                     <td><strong> ${{formatNumber(total_retencion_cambio = totalRetencionCambio)}} </strong></td>
-                                                     <td><strong> ${{formatNumber(total_isr_cambio = totalIsrCambio)}} </strong></td>
-                                                    <td><strong> ${{formatNumber(total_pagado_cambio = totalPagadoCambio)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar_cambio = totalPorPagarCambio)}} </td>
-                                                    <td colspan="2"> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <!-- <div class="form-group row line-separator"  v-if="ventas==1"></div> -->
-
-                            <!-- DATOS DE VENTA -->
-
-                                <div class="form-group row"  v-if="ventas==1 && tipoVendedor == 0">
-                                    
-                                    <div class="col-md-8">
-
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th> Total </th>
-                                                    <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente + total_pagado_cambio)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>- Ventas canceladas </th>
-                                                    <td>  $ {{formatNumber(total_anticipo)}} </td>
-                                                </tr>
-                                                <tr v-if="total_anticipo_cambio != 0">
-                                                    <th>- Cambios </th>
-                                                    <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>- Bonos cancelados </th>
-                                                    <td>  $ {{formatNumber(total_bono)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>- Sueldo del mes </th>
-                                                    <td class="td2">  
-                                                        <input type="text" v-if="sueldoBand" pattern="\d*" v-model="apoyo"  v-on:keypress="isNumber($event)" class="col-md-4" >
-                                                        &nbsp; $ {{formatNumber(apoyo)}}
-                                                    </td>
-                                                </tr>
-                                                <tr v-if=" restante != 0">
-                                                    <th>- Acumulado anterior </th>
-                                                    <td>  $ {{formatNumber(restante)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Total a pagar</th>
-                                                    <td> $ {{formatNumber(total_a_pagar = totalAPagar )}}</td>
-                                                </tr>
-                                            </thead>
-                                        </table>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="form-group row line-separator"></div>
-
-                                <div class="form-group row"  v-if="ventas==1 && tipoVendedor == 1">
-                                    
-                                    <div class="col-md-8">
-
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th> Total </th>
-                                                    <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente + total_pagado_cambio)}} </td>
-                                                </tr>
-                                                <tr v-if="total_anticipo_cambio != 0">
-                                                    <th>- Cambios </th>
-                                                    <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
-                                                </tr>
-                                                <tr v-if="numCancelaciones > 0">
-                                                    <th>- Ventas canceladas </th>
-                                                    <td>  $ {{formatNumber(total_anticipo)}} </td>
-                                                </tr>
-                                                <tr v-if="numCancelaciones > 0">
-                                                    <th>- Bonos cancelados </th>
-                                                    <td>  $ {{formatNumber(total_bono)}} </td>
-                                                </tr>
-
-                                                <tr v-if=" restante != 0">
-                                                    <th>- Acumulado anterior </th>
-                                                    <td>  $ {{formatNumber(restante)}} </td>
-                                                </tr>
-                                                
-                                                <tr>
-                                                    <th>Total a pagar</th>
-                                                    <td> $ {{formatNumber(total_a_pagar = totalAPagar )}}</td>
-                                                </tr>
-                                            </thead>
-                                        </table>
-
-                                    </div>
-                                </div>
-                            
-                            <!-- Div para mostrar los errores que mande validerPersonal -->
-                            <div v-show="errorComision" class="form-group row div-error">
-                                <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsjComision" :key="error" v-text="error"></div>
-                                </div>
-                            </div>
-                      
+                    <template v-if="ventas == 1">
+                        <!-- VENTAS -->
+                        <div class="form-group row">
+                            <h6 v-if="numVentas>0"  style="font-weight: bold; color: blue;" class="col-md-3">Ventas: {{this.numVentas}}</h6>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" v-if="ventas==1" class="btn btn-primary" @click="registrarComision()">Generar comisión</button>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                        <div class="form-group row" v-if="tipoVendedor == 0 && numVentas>0">
+                            <div class="col-md-12">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Fecha</th>
+                                            <th>Folio</th>
+                                            <th>Proyecto</th>
+                                            <th>Etapa</th>
+                                            <th>Manzana</th>
+                                            <th>Lote</th>
+                                            <th>Cliente</th>
+                                            <th>Precio Venta</th>
+                                            <th>Crédito</th>
+                                            <th>% Avance</th>
+                                            <th>% De comisión</th>
+                                            <th>Comisión a pagar</th>
+                                            <th @dblclick="cambiar()"> <a href="#">Este pago</a> </th>
+                                            <th>Por pagar</th>
+                                        </tr>
+                                    </template>
+                                    <template v-slot:tbody>
+                                        <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                            <td class="td2">
+                                                {{ (venta.emp_constructora != venta.emp_terreno) ? 'Alianza' : '' }}
+                                            </td>
+                                            <td class="td2" v-text="venta.fecha"></td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.id">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.proyecto">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.etapa">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.manzana">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.num_lote">
+                                                </span>
+                                            </td>
+                                            <td class="td2" v-text="venta.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                            <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
+                                            <td v-text="venta.avance_lote + '%'"></td>
+                                            <td class="td2">{{ venta.porcentaje_comision.toFixed(3) }}%</td>
+                                            <td v-text="'$'+formatNumber(venta.comision_pagar)"></td>
+                                            <template v-if="modif == 0">
+                                                <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                                                <td><input v-model="venta.este_pago" @keyup.enter="totalPagar()"></td>
+                                                <!------->
+                                                <td v-text="'$'+formatNumber(venta.por_pagar = venta.comision_pagar - venta.este_pago )"></td>
+                                            </template>
+                                            <template v-else>
+                                                <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                                                <td v-text="'$'+formatNumber(venta.este_pago)"></td>
+                                                <!------->
+                                                <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
+                                            </template>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="12"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision = totalComision)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
+                                            <td > ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-else-if="tipoVendedor == 1 && numVentas>0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    '','Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta','Crédito',
+                                    '% Avance','% De comisión','Comisión a pagar','IVA','Retención','ISR','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                            <td> {{ (venta.emp_constructora != venta.emp_terreno) ? 'Alianza' : '' }} </td>
+                                            <td class="td2" v-text="venta.fecha"></td>
+                                            <td v-text="venta.id"></td>
+                                            <td class="td2" v-text="venta.proyecto"></td>
+                                            <td class="td2" v-text="venta.etapa"></td>
+                                            <td class="td2" v-text="venta.manzana"></td>
+                                            <td v-text="venta.num_lote"></td>
+                                            <td class="td2" v-text="venta.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                            <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
+                                            <td v-text="venta.avance_lote + '%'"></td>
+                                            <td> {{ venta.porcentaje_comision.toFixed(1) }}% </td>
+                                            <td v-text="'$'+formatNumber(venta.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(venta.iva = (venta.comision_pagar * 0.16 ))"></td>
+                                            <td v-if="bandRetencion == 1" v-text="'$'+formatNumber(venta.retencion = (venta.iva * (2/3)))"></td>
+                                            <td v-else v-text="'$'+formatNumber(venta.retencion = 0)"></td>
+                                            <td v-if="bandISR == 1" v-text="'$'+formatNumber(venta.isr = (venta.comision_pagar * .10 ))"></td>
+                                            <td v-else v-text="'$'+formatNumber(venta.isr = 0 )"></td>
+
+                                            <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                                            <td v-if="venta.indiv == 0 && venta.pagado > 1" v-text="'$'+formatNumber(venta.este_pago = (venta.comision_pagar / 2) + venta.iva - venta.isr - venta.retencion)"></td>
+                                            <td v-else-if="venta.indiv == 1 && venta.pagado > 1" v-text="'$'+formatNumber(venta.este_pago = (venta.comision_pagar) + venta.iva - venta.isr - venta.retencion )"></td>
+                                            <td v-else-if="venta.pagado < 2" v-text="'$'+formatNumber(venta.este_pago = 0)"></td>
+                                            <!------->
+                                            <td v-if="venta.indiv == 0 && venta.pagado > 1" v-text="'$'+formatNumber(venta.por_pagar = (venta.comision_pagar / 2))"></td>
+                                            <td v-else-if="venta.indiv == 1 && venta.pagado > 1" v-text="'$'+formatNumber(venta.por_pagar = 0)"></td>
+                                            <td v-else-if="venta.pagado < 2" v-text="'$'+formatNumber(venta.por_pagar = (venta.comision_pagar) + venta.iva - venta.isr - venta.retencion )"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                            <td> ${{formatNumber(total_comision = totalComision)}} </td>
+                                            <td> ${{formatNumber(total_iva = totalIva)}} </td>
+                                            <td> ${{formatNumber(total_retencion = totalRetencion)}} </td>
+                                            <td> ${{formatNumber(total_isr = totalIsr)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <!-- Individualizadas -->
+                        <div class="form-group row">
+                            <h6 v-if="numIndividualizadas != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Individualizadas: {{this.numIndividualizadas }}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numIndividualizadas != 0 && tipoVendedor == 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="['Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente',
+                                    'Precio Venta','Crédito','% Avance','% De comisión','Comisión a pagar','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
+                                            <td class="td2" v-text="indiv.fecha"></td>
+                                            <td v-text="indiv.id"></td>
+                                            <td class="td2" v-text="indiv.proyecto"></td>
+                                            <td class="td2" v-text="indiv.etapa"></td>
+                                            <td class="td2" v-text="indiv.manzana"></td>
+                                            <td v-text="indiv.num_lote"></td>
+                                            <td class="td2" v-text="indiv.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
+                                            <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
+                                            <td v-text="indiv.avance_lote + '%'"></td>
+                                            <td v-text="indiv.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
+                                            <td> ${{formatNumber(0)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-else-if="tipoVendedor == 1 && numIndividualizadas>0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta','Crédito','% Avance',
+                                    '% De comisión','Comisión a pagar','IVA','Retención','ISR','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
+                                            <td class="td2" v-text="indiv.fecha"></td>
+                                            <td v-text="indiv.id"></td>
+                                            <td class="td2" v-text="indiv.proyecto"></td>
+                                            <td class="td2" v-text="indiv.etapa"></td>
+                                            <td class="td2" v-text="indiv.manzana"></td>
+                                            <td v-text="indiv.num_lote"></td>
+                                            <td class="td2" v-text="indiv.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
+                                            <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
+                                            <td v-text="indiv.avance_lote + '%'"></td>
+                                            <td v-text="indiv.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.iva)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.retencion)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.isr)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                            <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
+                                            <td> ${{formatNumber(total_iva_indiv  = totalIvaIndiv)}} </td>
+                                            <td> ${{formatNumber(total_retencion_indiv  = totalRetencionIndiv)}} </td>
+                                            <td> ${{formatNumber(total_isr_indiv  = totalIsrIndiv)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
+                                            <td> ${{formatNumber(0)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <!-- VENTAS CANCELADAS -->
+                        <div class="form-group row">
+                            <h6 v-if="numCancelaciones != 0" style="font-weight: bold; color: blue;" class="col-md-3">Canceladas: {{this.numCancelaciones}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numCancelaciones != 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Fecha de cancelación','$ Anticipo','Bono'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="anticipo in arrayCanceladas" :key="anticipo.folio">
+                                            <td v-text="anticipo.id"></td>
+                                            <td class="td2" v-text="anticipo.proyecto"></td>
+                                            <td class="td2" v-text="anticipo.etapa"></td>
+                                            <td class="td2" v-text="anticipo.manzana"></td>
+                                            <td v-text="anticipo.num_lote"></td>
+                                            <td class="td2" v-text="anticipo.nombre_cliente"></td>
+                                            <td v-text="anticipo.fecha_status"></td>
+                                            <td v-text="'$'+formatNumber(anticipo.este_pago)"></td>
+                                            <td v-text="'$'+formatNumber(anticipo.bono)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="7"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_anticipo = totalAnticipo)}} </td>
+                                            <td> ${{formatNumber(total_bono = totalBono)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <!-- COMISIONES QUE HABIAN QUEDADO PENDIENTES POR FALTA DE PAGARE -->
+                        <div class="form-group row">
+                            <h6 v-if="numPendientes != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Pendientes: {{this.numPendientes}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta',
+                                    'Crédito','% Avance','% De comisión','Comisión a pagar','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
+                                            <td class="td2" v-text="pendiente.fecha"></td>
+                                            <td v-text="pendiente.id"></td>
+                                            <td class="td2" v-text="pendiente.proyecto"></td>
+                                            <td class="td2" v-text="pendiente.etapa"></td>
+                                            <td class="td2" v-text="pendiente.manzana"></td>
+                                            <td v-text="pendiente.num_lote"></td>
+                                            <td class="td2" v-text="pendiente.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
+                                            <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
+                                            <td v-text="pendiente.avance_lote + '%'"></td>
+                                            <td v-text="pendiente.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
+
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(pendiente.este_pago = pendiente.comision_pagar )"></td>
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.por_pagar = (pendiente.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(pendiente.por_pagar=0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 1">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta','Crédito','% Avance',
+                                    '% De comisión','Comisión a pagar','IVA','Retención','ISR','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
+                                            <td class="td2" v-text="pendiente.fecha"></td>
+                                            <td v-text="pendiente.id"></td>
+                                            <td class="td2" v-text="pendiente.proyecto"></td>
+                                            <td class="td2" v-text="pendiente.etapa"></td>
+                                            <td class="td2" v-text="pendiente.manzana"></td>
+                                            <td v-text="pendiente.num_lote"></td>
+                                            <td class="td2" v-text="pendiente.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
+                                            <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
+                                            <td v-text="pendiente.avance_lote + '%'"></td>
+                                            <td v-text="pendiente.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.iva)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.retencion)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.isr)"></td>
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar / 2) + pendiente.iva - pendiente.isr - pendiente.retencion)"></td>
+                                            <td v-else v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar) + pendiente.iva - pendiente.isr - pendiente.retencion )"></td>
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.por_pagar = (pendiente.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(pendiente.por_pagar=0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                            <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
+                                            <td> ${{formatNumber(total_iva_pendiente = totalIvaPendiente)}} </td>
+                                            <td> ${{formatNumber(total_retencion_pendiente = totalRetencionPendiente)}} </td>
+                                            <td> ${{formatNumber(total_isr_pendiente = totalIsrPendiente)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <!-- CAMBIOS -->
+                        <div class="form-group row">
+                            <h6 v-if="numCambios != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cambios: {{this.numCambios}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numCambios != 0 && tipoVendedor == 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta','Crédito','% Avance',
+                                    '% De comisión','Comisión a pagar','Este pago','Por pagar','Anticipo anterior (-)',''
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="cambio in arrayCambios" :key="cambio.id">
+                                            <td class="td2" v-text="cambio.fecha"></td>
+                                            <td v-text="cambio.id"></td>
+                                            <td class="td2" v-text="cambio.proyecto_ant + ' -> ' + cambio.proyecto"></td>
+                                            <td class="td2" v-text="cambio.etapa_ant + ' -> ' + cambio.etapa"></td>
+                                            <td class="td2" v-text="cambio.manzana_ant + ' -> ' + cambio.manzana"></td>
+                                            <td class="td2" v-text="cambio.lote_ant + ' -> ' + cambio.num_lote"></td>
+                                            <td class="td2" v-text="cambio.nombre_cliente"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(cambio.precio_venta_ant) + ' -> ' + formatNumber(cambio.precio_venta)"></td>
+                                            <td class="td2" v-text="cambio.tipo_credito + '(' + cambio.institucion + ')'"></td>
+                                            <td v-text="cambio.avance_lote + '%'"></td>
+                                            <td v-text="cambio.porcentaje_comision + '%'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(cambio.comision_pagar = (cambio.precio_venta * (cambio.porcentaje_comision/100) ) )"></td>
+
+                                            <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(cambio.este_pago = cambio.comision_pagar )"></td>
+                                            <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.por_pagar = (cambio.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(cambio.por_pagar=0)"></td>
+                                            <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
+                                            <td>
+                                                <button title="No aplica cambio" type="button" class="btn btn-danger btn-sm" @click="noAplica(cambio.id)">
+                                                    <i class="fa fa-close"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision_cambio = totalComisionCambio)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_cambio = totalPagadoCambio)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar_cambio = totalPorPagarCambio)}} </td>
+                                            <td colspan="2"> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 1">
+                            <div class="col-md-12">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Folio</th>
+                                            <th>Proyecto</th>
+                                            <th>Etapa</th>
+                                            <th>Manzana</th>
+                                            <th>Lote</th>
+                                            <th>Cliente</th>
+                                            <th>Precio Venta</th>
+                                            <th>Crédito</th>
+                                            <th>% Avance</th>
+                                            <th>% De comisión</th>
+                                            <th>Comisión a pagar</th>
+                                            <th>IVA</th>
+                                            <th>Retención</th>
+                                            <th>ISR</th>
+
+                                            <th>Este pago</th>
+                                            <th>Por pagar</th>
+                                            <th>Anticipo anterior (-)</th>
+                                            <th></th>
+                                            <!-- <th>Observaciones</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="cambio in arrayCambios" :key="cambio.id">
+                                            <td class="td2" v-text="cambio.fecha"></td>
+                                            <td v-text="cambio.id"></td>
+                                            <td class="td2" v-text="cambio.proyecto_ant + '->' + cambio.proyecto"></td>
+                                            <td class="td2" v-text="cambio.etapa_ant + '->' + cambio.etapa"></td>
+                                            <td class="td2" v-text="cambio.manzana_ant + '->' + cambio.manzana"></td>
+                                            <td v-text="cambio.lote_ant + '->' + cambio.num_lote"></td>
+                                            <td class="td2" v-text="cambio.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(cambio.precio_venta)"></td>
+                                            <td class="td2" v-text="cambio.tipo_credito + '(' + cambio.institucion + ')'"></td>
+                                            <td v-text="cambio.avance_lote + '%'"></td>
+                                            <td v-text="cambio.porcentaje_comision + '%'"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(cambio.comision_pagar = (cambio.precio_venta * (cambio.porcentaje_comision/100) ) )"></td>
+                                            <td v-text="'$'+formatNumber(cambio.iva = cambio.comision_pagar * 0.16)"></td>
+                                            <td v-if="bandRetencion == 1" v-text="'$'+formatNumber(cambio.retencion = (cambio.iva * (2/3)))"></td>
+                                            <td v-else v-text="'$'+formatNumber(cambio.retencion = 0)"></td>
+                                            <td v-if="bandISR == 1" v-text="'$'+formatNumber(cambio.isr = (cambio.comision_pagar * .10 ))"></td>
+                                            <td v-else v-text="'$'+formatNumber(cambio.isr = 0 )"></td>
+
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar / 2) + cambio.iva - cambio.isr - cambio.retencion)"></td>
+                                            <td v-else v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar) + cambio.iva - cambio.isr - cambio.retencion )"></td>
+                                            <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.por_pagar = (cambio.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(cambio.por_pagar=0)"></td>
+                                            <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
+                                            <td>
+                                                <button title="No aplica cambio" type="button" class="btn btn-danger btn-sm" @click="noAplica(cambio.id)">
+                                                    <i class="fa fa-close"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                                <td> ${{formatNumber(total_comision_cambio = totalComisionCambio)}} </td>
+                                                <td><strong> ${{formatNumber(total_iva_cambio = totalIvaCambio)}} </strong></td>
+                                                <td><strong> ${{formatNumber(total_retencion_cambio = totalRetencionCambio)}} </strong></td>
+                                                <td><strong> ${{formatNumber(total_isr_cambio = totalIsrCambio)}} </strong></td>
+                                            <td><strong> ${{formatNumber(total_pagado_cambio = totalPagadoCambio)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar_cambio = totalPorPagarCambio)}} </td>
+                                            <td colspan="2"> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- DATOS DE VENTA -->
+                        <div class="form-group row"  v-if="tipoVendedor == 0">
+                            <div class="col-md-8">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th> Total </th>
+                                            <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente + total_pagado_cambio)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>- Ventas canceladas </th>
+                                            <td>  $ {{formatNumber(total_anticipo)}} </td>
+                                        </tr>
+                                        <tr v-if="total_anticipo_cambio != 0">
+                                            <th>- Cambios </th>
+                                            <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>- Bonos cancelados </th>
+                                            <td>  $ {{formatNumber(total_bono)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>- Sueldo del mes </th>
+                                            <td class="td2">
+                                                <input type="text" v-if="sueldoBand" pattern="\d*" v-model="apoyo"  v-on:keypress="isNumber($event)" class="col-md-4" >
+                                                &nbsp; $ {{formatNumber(apoyo)}}
+                                            </td>
+                                        </tr>
+                                        <tr v-if=" restante != 0">
+                                            <th>- Acumulado anterior </th>
+                                            <td>  $ {{formatNumber(restante)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total a pagar</th>
+                                            <td> $ {{formatNumber(total_a_pagar = totalAPagar )}}</td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row"  v-if="tipoVendedor == 1">
+                            <div class="col-md-8">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th> Total </th>
+                                            <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente + total_pagado_cambio)}} </td>
+                                        </tr>
+                                        <tr v-if="total_anticipo_cambio != 0">
+                                            <th>- Cambios </th>
+                                            <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
+                                        </tr>
+                                        <tr v-if="numCancelaciones > 0">
+                                            <th>- Ventas canceladas </th>
+                                            <td>  $ {{formatNumber(total_anticipo)}} </td>
+                                        </tr>
+                                        <tr v-if="numCancelaciones > 0">
+                                            <th>- Bonos cancelados </th>
+                                            <td>  $ {{formatNumber(total_bono)}} </td>
+                                        </tr>
+
+                                        <tr v-if=" restante != 0">
+                                            <th>- Acumulado anterior </th>
+                                            <td>  $ {{formatNumber(restante)}} </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Total a pagar</th>
+                                            <td> $ {{formatNumber(total_a_pagar = totalAPagar )}}</td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Div para mostrar los errores que mande validerPersonal -->
+                    <div v-show="errorComision" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjComision" :key="error" v-text="error"></div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="ventas==1" class="btn btn-primary" @click="registrarComision()">Generar comisión</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!-- Inicio Modal VER COMISION -->
-             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal1" :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-1 form-control-label" for="text-input">Mes</label>
+                        <div class="col-md-3">
+                            <select disabled class="form-control" v-model="mes" >
+                                <option value="">Mes</option>
+                                <option v-for="m in meses" :key="m.id" :value="m.id">{{m.mes}}</option>
+                            </select>
                         </div>
-                        <div class="modal-body">
-
-                            <div class="form-group row">
-                                <label class="col-md-1 form-control-label" for="text-input">Mes</label>
-                                <div class="col-md-3">
-                                    <select disabled class="form-control" v-model="mes" >
-                                        <option value="">Mes</option>
-                                        <option value="1">Enero</option>
-                                        <option value="2">Febrero</option>
-                                        <option value="3">Marzo</option>
-                                        <option value="4">Abril</option>
-                                        <option value="5">Mayo</option>
-                                        <option value="6">Junio</option>
-                                        <option value="7">Julio</option>
-                                        <option value="8">Agosto</option>
-                                        <option value="9">Septiembre</option>
-                                        <option value="10">Octubre</option>
-                                        <option value="11">Noviembre</option>
-                                        <option value="12">Diciembre</option>
-                                    </select>
-                                </div>
-                                <label class="col-md-1 form-control-label" for="text-input">Año</label>
-                                <div class="col-md-2">
-                                    <select disabled class="form-control"  v-model="anio" >
-                                        <option value="2018">2018</option>
-                                        <option value="2019">2019</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                        <option value="2028">2028</option>
-                                        <option value="2029">2029</option>
-                                        <option value="2030">2030</option>
-                                        <option value="2031">2031</option>
-                                        <option value="2032">2032</option>
-                                        <option value="2033">2033</option>
-                                        <option value="2034">2034</option>
-                                        <option value="2035">2035</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                
-                                <label class="col-md-1 form-control-label" for="text-input">Asesor</label>
-                                <div class="col-md-6">
-                                    <h6 v-text="asesor"></h6>
-                                </div>
-                            </div>
-
-                            <div class="form-group row line-separator"></div>
-
-                            <!-- VENTAS -->
-                                <div class="form-group row">
-                                    <h6   style="font-weight: bold; color: blue;" class="col-md-3">Ventas: {{this.numVentas}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoVendedor == 0 && numVentas != 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
-                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
-                                                    <td v-else></td>
-                                                    <td class="td2" v-text="venta.fecha"></td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.folio"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.folio"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.proyecto"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.proyecto"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.etapa"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.manzana"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.manzana"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.num_lote"></span>
-                                                        <span v-else class="badge2 badge-success" v-text="venta.num_lote"></span>
-                                                    </td>
-                                                    <td class="td2" v-text="venta.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                    <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
-                                                    <td v-text="venta.avance_lote + '%'"></td>
-                                                    <!--- Calculo de la comision que corresponde segun ventas y avance ----->
-                                                        
-                                                    <td v-text="venta.porcentaje_comision + '%'"></td>
-                                                    <!----------------------->
-                                                    <td v-text="'$'+formatNumber(venta.comision_pagar )"></td>
-                                                    
-                                                    <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                                                        <td v-text="'$'+formatNumber(venta.este_pago)"></td>
-                                                    <!------->
-                                                        <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
-                                                </tr>  
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision = totalComision)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
-                                                    
-                                                    
-                                                </tr>                     
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-else-if="tipoVendedor == 1 && numVentas != 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
-                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
-                                                    <td v-else></td>
-                                                    <td class="td2" v-text="venta.fecha"></td>
-                                                    <td v-text="venta.id"></td>
-                                                    <td class="td2" v-text="venta.proyecto"></td>
-                                                    <td class="td2" v-text="venta.etapa"></td>
-                                                    <td class="td2" v-text="venta.manzana"></td>
-                                                    <td v-text="venta.num_lote"></td>
-                                                    <td class="td2" v-text="venta.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                    <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
-                                                    <td v-text="venta.avance_lote + '%'"></td>
-                                                    
-                                                    <td v-text="venta.porcentaje_comision + '%'"></td>
-
-
-                                                    <td v-text="'$'+formatNumber(venta.comision_pagar )"></td>
-                                                    <td v-text="'$'+formatNumber(venta.iva )"></td>
-                                                    <td v-text="'$'+formatNumber(venta.retencion )"></td>
-                                                    <td v-text="'$'+formatNumber(venta.isr)"></td>
-                                                    
-                                                    <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                                                        <td v-text="'$'+formatNumber(venta.este_pago)"></td>
-                                                    <!------->
-                                                        <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
-                                                </tr> 
-                                                     
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                    <td> ${{formatNumber(total_comision = totalComision)}} </td>
-                                                    <td> ${{formatNumber(total_iva = totalIva)}} </td>
-                                                    <td> ${{formatNumber(total_retencion = totalRetencion)}} </td>
-                                                    <td> ${{formatNumber(total_isr = totalIsr)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
-                                                    
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            
-                            <!-- Individualizadas -->
-                                <div class="form-group row">
-                                    <h6 v-if="numIndividualizadas != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Individualizadas: {{this.numIndividualizadas}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="numIndividualizadas != 0 && tipoVendedor == 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
-                                                    <td class="td2" v-text="indiv.fecha"></td>
-                                                    <td v-text="indiv.folio"></td>
-                                                    <td class="td2" v-text="indiv.proyecto"></td>
-                                                    <td class="td2" v-text="indiv.etapa"></td>
-                                                    <td class="td2" v-text="indiv.manzana"></td>
-                                                    <td v-text="indiv.num_lote"></td>
-                                                    <td class="td2" v-text="indiv.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
-                                                    <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
-                                                    <td v-text="indiv.avance_lote + '%'"></td>
-                                                    <td v-text="indiv.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
-                                                    
-                                                    <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(0)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
-                                                    <td> ${{formatNumber(0)}} </td>
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-else-if="tipoVendedor == 1 && numIndividualizadas>0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
-                                                    <td class="td2" v-text="indiv.fecha"></td>
-                                                    <td v-text="indiv.id"></td>
-                                                    <td class="td2" v-text="indiv.proyecto"></td>
-                                                    <td class="td2" v-text="indiv.etapa"></td>
-                                                    <td class="td2" v-text="indiv.manzana"></td>
-                                                    <td v-text="indiv.num_lote"></td>
-                                                    <td class="td2" v-text="indiv.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
-                                                    <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
-                                                    <td v-text="indiv.avance_lote + '%'"></td>
-                                                    <td v-text="indiv.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.iva)"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.retencion)"></td>
-                                                    <td v-text="'$'+formatNumber(indiv.isr)"></td>
-                                                    
-                                                    <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(0)"></td>
-                                                    
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                    <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
-                                                    <td> ${{formatNumber(total_iva_indiv  = totalIvaIndiv)}} </td>
-                                                    <td> ${{formatNumber(total_retencion_indiv  = totalRetencionIndiv)}} </td>
-                                                    <td> ${{formatNumber(total_isr_indiv  = totalIsrIndiv)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
-                                                    <td> ${{formatNumber(0)}} </td>
-                                                    
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <div class="form-group row line-separator" ></div>
-                            
-                            <!-- VENTAS CANCELADAS -->
-                                <div class="form-group row">
-                                    <h6 v-if="numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Canceladas: {{this.numCancelaciones}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="numCancelaciones != 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Fecha de venta</th>
-                                                    <th>Fecha de cancelación</th>
-                                                    <th>$ Anticipo</th>
-                                                    <th>Bono</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="anticipo in arrayCanceladas" :key="anticipo.folio">
-                                                    <td v-text="anticipo.folio"></td>
-                                                    <td class="td2" v-text="anticipo.proyecto"></td>
-                                                    <td class="td2" v-text="anticipo.etapa"></td>
-                                                    <td class="td2" v-text="anticipo.manzana"></td>
-                                                    <td v-text="anticipo.num_lote"></td>
-                                                    <td class="td2" v-text="anticipo.nombre_cliente"></td>
-                                                    <td v-text="anticipo.fecha"></td>
-                                                    <td v-text="anticipo.fecha_status"></td>
-                                                    <td v-text="'$'+formatNumber(anticipo.este_pago)"></td>
-                                                    <td v-text="'$'+formatNumber(anticipo.bono)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="7"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_anticipo = totalAnticipo)}} </td>
-                                                    <td> ${{formatNumber(total_bono = totalBono)}} </td>
-                                                    
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <!-- COMISIONES QUE HABIAN QUEDADO PENDIENTES POR FALTA DE PAGARE -->
-                                <div class="form-group row">
-                                    <h6 v-if=" numPendientes != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Pendientes: {{this.numPendientes}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
-                                                    <td class="td2" v-text="pendiente.fecha"></td>
-                                                    <td v-text="pendiente.folio"></td>
-                                                    <td class="td2" v-text="pendiente.proyecto"></td>
-                                                    <td class="td2" v-text="pendiente.etapa"></td>
-                                                    <td class="td2" v-text="pendiente.manzana"></td>
-                                                    <td v-text="pendiente.num_lote"></td>
-                                                    <td class="td2" v-text="pendiente.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
-                                                    <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
-                                                    <td v-text="pendiente.avance_lote + '%'"></td>
-                                                    <td v-text="pendiente.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
-                                                    
-                                                    <td v-text="'$'+formatNumber(pendiente.este_pago  )"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.por_pagar )"></td>
-                                                    
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 1">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Folio</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Etapa</th>
-                                                    <th>Manzana</th>
-                                                    <th>Lote</th>
-                                                    <th>Cliente</th>
-                                                    <th>Precio Venta</th>
-                                                    <th>Crédito</th>
-                                                    <th>% Avance</th>
-                                                    <th>% De comisión</th>
-                                                    <th>Comisión a pagar</th>
-                                                    <th>IVA</th>
-                                                    <th>Retención</th>
-                                                    <th>ISR</th>
-                                                    
-                                                    <th>Este pago</th>
-                                                    <th>Por pagar</th>
-                                                    <!-- <th>Observaciones</th> -->
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
-                                                    <td class="td2" v-text="pendiente.fecha"></td>
-                                                    <td v-text="pendiente.id"></td>
-                                                    <td class="td2" v-text="pendiente.proyecto"></td>
-                                                    <td class="td2" v-text="pendiente.etapa"></td>
-                                                    <td class="td2" v-text="pendiente.manzana"></td>
-                                                    <td v-text="pendiente.num_lote"></td>
-                                                    <td class="td2" v-text="pendiente.nombre_cliente"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
-                                                    <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
-                                                    <td v-text="pendiente.avance_lote + '%'"></td>
-                                                    <td v-text="pendiente.porcentaje_comision + '%'"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.iva)"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.retencion)"></td>
-                                                    <td v-text="'$'+formatNumber(pendiente.isr)"></td>
-                                                    
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar / 2) + pendiente.iva - pendiente.isr - pendiente.retencion)"></td>
-                                                    <td v-else v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar) + pendiente.iva - pendiente.isr - pendiente.retencion )"></td>
-                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.por_pagar = (pendiente.comision_pagar / 2) )"></td>
-                                                    <td v-else v-text="'$'+formatNumber(pendiente.por_pagar=0)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
-                                                    <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
-                                                    <td> ${{formatNumber(total_iva_pendiente = totalIvaPendiente)}} </td>
-                                                    <td> ${{formatNumber(total_retencion_pendiente = totalRetencionPendiente)}} </td>
-                                                    <td> ${{formatNumber(total_isr_pendiente = totalIsrPendiente)}} </td>
-                                                    <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <!-- <div class="form-group row line-separator"  v-if="ventas==1"></div> -->
-
-                            <!-- CAMBIOS  -->
-                                <div class="form-group row">
-                                    <h6 v-if=" numCambios != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cambios: {{this.numCambios}}</h6>
-                                </div>
-
-                                <div class="form-group row" v-if="numCambios != 0">
-                                    <div class="col-md-12">
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Descripcion</th>
-                                                    <th>Monto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="cambio in arrayCambios" :key="cambio.id">
-                                                    <td class="td2" v-text="cambio.descripcion"></td>
-                                                    <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
-                                                </tr>      
-                                                <tr>
-                                                    <td align="right"><strong>Total: </strong></td>
-                                                    <td> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
-                                                      
-                                                </tr>                       
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            <!-- DATOS DE VENTA -->
-
-                                <div class="form-group row"  v-if="tipoVendedor == 0">
-                                    
-                                    <div class="col-md-8">
-
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th> Total </th>
-                                                    <td>  &nbsp; $ {{formatNumber(total )}} </td>
-                                                </tr>
-                                                <tr v-if="total_anticipo_cambio != 0">
-                                                    <th>- Cambios </th>
-                                                    <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>- Ventas canceladas </th>
-                                                    <td>  &nbsp; $ {{formatNumber(total_anticipo)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>- Bonos cancelados </th>
-                                                    <td>  &nbsp; $ {{formatNumber(total_bono)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>- Sueldo del mes </th>
-                                                    <td>  &nbsp; $ {{formatNumber(apoyo)}} </td>
-                                                </tr>
-                                                <tr v-if=" restante != 0">
-                                                    <th>- Acumulado anterior </th>
-                                                    <td>  &nbsp; $ {{formatNumber(restante)}} </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Total a pagar</th>
-                                                    <td><strong>&nbsp; $ {{formatNumber(total_a_pagar)}}</strong> </td>
-                                                </tr>
-                                            </thead>
-                                        </table>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="form-group row line-separator"></div>
-
-                                <div class="form-group row"  v-if="tipoVendedor == 1">
-                                    
-                                    <div class="col-md-8">
-
-                                        <table class="table table-bordered table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th> Total </th>
-                                                    <td>  $ {{formatNumber(total )}} </td>
-                                                </tr>
-                                                <tr v-if="numCancelaciones > 0">
-                                                    <th>- Ventas canceladas </th>
-                                                    <td>  $ {{formatNumber(total_anticipo)}} </td>
-                                                </tr>
-                                                <tr v-if="numCancelaciones > 0">
-                                                    <th>- Bonos cancelados </th>
-                                                    <td>  $ {{formatNumber(total_bono)}} </td>
-                                                </tr>
-
-                                                <tr v-if=" restante != 0">
-                                                    <th>- Acumulado anterior </th>
-                                                    <td>  $ {{formatNumber(restante)}} </td>
-                                                </tr>
-                                                
-                                                <tr>
-                                                    <th>Total a pagar</th>
-                                                    <td> $ {{formatNumber(total_a_pagar )}}</td>
-                                                </tr>
-                                            </thead>
-                                        </table>
-
-                                    </div>
-                                </div>
-                            
-                            <!-- Div para mostrar los errores que mande validerPersonal -->
-                            <div v-show="errorComision" class="form-group row div-error">
-                                <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsjComision" :key="error" v-text="error"></div>
-                                </div>
-                            </div>
-                      
+                        <label class="col-md-1 form-control-label" for="text-input">Año</label>
+                        <div class="col-md-2">
+                            <select disabled class="form-control"  v-model="anio" >
+                                <option v-for="a in anios" :key="a" :value="a">{{a}}</option>
+                            </select>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <a class="btn btn-success" v-bind:href=" 
-                                '/comision/excel?' + 
-                                'mes=' + mes +
-                                '&anio=' + anio +
-                                '&asesor=' + asesor +
-                                '&tipoVendedor=' + tipoVendedor +
-                                //Ventas
-                                '&numVentas=' + numVentas +
-                                
-                                '&total_comision=' + total_comision +
-                                '&total_pagado=' + total_pagado +
-                                '&total_porPagar=' + total_porPagar +
-                                '&total_iva=' + total_iva +
-                                '&total_retencion=' + total_retencion +
-                                '&total_isr=' + total_isr +
-                                //Individualizadas
-                                '&numIndividualizadas=' + numIndividualizadas +
-                                '&total_comision_indiv=' + total_comision_indiv +
-                                '&total_pagado_indiv=' + total_pagado_indiv +
-                                '&total_iva_indiv=' + total_iva_indiv +
-                                '&total_retencion_indiv=' + total_retencion_indiv +
-                                '&total_isr_indiv=' + total_isr_indiv +
-                                //Canceladas
-                                '&numCancelaciones=' + numCancelaciones +
-                                '&total_anticipo=' + total_anticipo +
-                                '&total_bono=' + total_bono +
-                                //Pendientes
-                                '&numPendientes=' + numPendientes +
-                                '&total_comision_pendiente=' + total_comision_pendiente +
-                                '&total_pagado_pendiente=' + total_pagado_pendiente +
-                                '&total_porPagar_pendiente=' + total_porPagar_pendiente +
-                                '&total_iva_pendiente=' + total_iva_pendiente +
-                                '&total_retencion_pendiente=' + total_retencion_pendiente +
-                                '&total_isr_pendiente=' + total_isr_pendiente +
-                                //Cambios
-                                '&numCambios=' + numCambios +
-                                '&total_anticipo_cambio=' + total_anticipo_cambio +
+                    </div>
 
-                                //Datos
-                                '&total=' + total +
-                                '&apoyo=' + apoyo +
-                                '&restante=' + restante +
-                                '&total_a_pagar=' + total_a_pagar + 
-                                '&comision_id=' + id
-                            " >
-                                &nbsp;Descargar
-                            </a>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-1 form-control-label" for="text-input">Asesor</label>
+                        <div class="col-md-6">
+                            <h6 v-text="asesor"></h6>
+                        </div>
+                    </div>
+
+                    <div class="form-group row line-separator"></div>
+
+                    <!-- VENTAS -->
+                        <div class="form-group row">
+                            <h6   style="font-weight: bold; color: blue;" class="col-md-3">Ventas: {{this.numVentas}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoVendedor == 0 && numVentas != 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    '','Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta',
+                                    'Crédito','% Avance','% De comisión','Comisión a pagar','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                            <td>
+                                                {{(venta.emp_constructora != venta.emp_terreno) ? 'Alianza' : ''}}
+                                            </td>
+                                            <td class="td2" v-text="venta.fecha"></td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.folio">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.proyecto">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.etapa">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.manzana">
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge2" :class="[venta.fecha_exp == null] ? 'badge-danger' : 'badge-success'"
+                                                    v-text="venta.num_lote">
+                                                </span>
+                                            </td>
+                                            <td class="td2" v-text="venta.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                            <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
+                                            <td v-text="venta.avance_lote + '%'"></td>
+                                            <td v-text="venta.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(venta.comision_pagar )"></td>
+                                            <td v-text="'$'+formatNumber(venta.este_pago)"></td>
+                                            <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision = totalComision)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-else-if="tipoVendedor == 1 && numVentas != 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    '',
+                                    'Fecha',
+                                    'Folio',
+                                    'Proyecto',
+                                    'Etapa',
+                                    'Manzana',
+                                    'Lote',
+                                    'Cliente',
+                                    'Precio Venta',
+                                    'Crédito',
+                                    '% Avance',
+                                    '% De comisión',
+                                    'Comisión a pagar',
+                                    'IVA',
+                                    'Retención',
+                                    'ISR',
+                                    'Este pago',
+                                    'Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                            <td>
+                                                {{(venta.emp_constructora != venta.emp_terreno) ? 'Alianza' : ''}}
+                                            </td>
+                                            <td class="td2" v-text="venta.fecha"></td>
+                                            <td v-text="venta.id"></td>
+                                            <td class="td2" v-text="venta.proyecto"></td>
+                                            <td class="td2" v-text="venta.etapa"></td>
+                                            <td class="td2" v-text="venta.manzana"></td>
+                                            <td v-text="venta.num_lote"></td>
+                                            <td class="td2" v-text="venta.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                            <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
+                                            <td v-text="venta.avance_lote + '%'"></td>
+                                            <td v-text="venta.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(venta.comision_pagar )"></td>
+                                            <td v-text="'$'+formatNumber(venta.iva )"></td>
+                                            <td v-text="'$'+formatNumber(venta.retencion )"></td>
+                                            <td v-text="'$'+formatNumber(venta.isr)"></td>
+                                            <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                                                <td v-text="'$'+formatNumber(venta.este_pago)"></td>
+                                            <!------->
+                                                <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                            <td> ${{formatNumber(total_comision = totalComision)}} </td>
+                                            <td> ${{formatNumber(total_iva = totalIva)}} </td>
+                                            <td> ${{formatNumber(total_retencion = totalRetencion)}} </td>
+                                            <td> ${{formatNumber(total_isr = totalIsr)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+
+                    <!-- Individualizadas -->
+                        <div class="form-group row">
+                            <h6 v-if="numIndividualizadas != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Individualizadas: {{this.numIndividualizadas}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numIndividualizadas != 0 && tipoVendedor == 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta',
+                                    'Crédito','% Avance','% De comisión','Comisión a pagar','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
+                                            <td class="td2" v-text="indiv.fecha"></td>
+                                            <td v-text="indiv.folio"></td>
+                                            <td class="td2" v-text="indiv.proyecto"></td>
+                                            <td class="td2" v-text="indiv.etapa"></td>
+                                            <td class="td2" v-text="indiv.manzana"></td>
+                                            <td v-text="indiv.num_lote"></td>
+                                            <td class="td2" v-text="indiv.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
+                                            <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
+                                            <td v-text="indiv.avance_lote + '%'"></td>
+                                            <td v-text="indiv.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
+                                            <td> ${{formatNumber(0)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-else-if="tipoVendedor == 1 && numIndividualizadas>0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta',
+                                    'Crédito','% Avance','% De comisión','Comisión a pagar','IVA','Retención','ISR','Este pago','Por pagar'
+                                ]"
+                                >
+                                    <template v-slot:tbody>
+                                        <tr v-for="indiv in arrayIndividualizadas" :key="indiv.id">
+                                            <td class="td2" v-text="indiv.fecha"></td>
+                                            <td v-text="indiv.id"></td>
+                                            <td class="td2" v-text="indiv.proyecto"></td>
+                                            <td class="td2" v-text="indiv.etapa"></td>
+                                            <td class="td2" v-text="indiv.manzana"></td>
+                                            <td v-text="indiv.num_lote"></td>
+                                            <td class="td2" v-text="indiv.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(indiv.precio_venta)"></td>
+                                            <td class="td2" v-text="indiv.tipo_credito + '(' + indiv.institucion + ')'"></td>
+                                            <td v-text="indiv.avance_lote + '%'"></td>
+                                            <td v-text="indiv.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(indiv.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.iva)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.retencion)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.isr)"></td>
+                                            <td v-text="'$'+formatNumber(indiv.por_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                            <td> ${{formatNumber(total_comision_indiv = totalComisionIndiv)}} </td>
+                                            <td> ${{formatNumber(total_iva_indiv  = totalIvaIndiv)}} </td>
+                                            <td> ${{formatNumber(total_retencion_indiv  = totalRetencionIndiv)}} </td>
+                                            <td> ${{formatNumber(total_isr_indiv  = totalIsrIndiv)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_indiv = totalPagadoIndiv)}} </strong></td>
+                                            <td> ${{formatNumber(0)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                    <div class="form-group row line-separator" ></div>
+
+                    <!-- VENTAS CANCELADAS -->
+                        <div class="form-group row">
+                            <h6 v-if="numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Canceladas: {{this.numCancelaciones}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numCancelaciones != 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Fecha de venta',
+                                    'Fecha de cancelación','$ Anticipo','Bono',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="anticipo in arrayCanceladas" :key="anticipo.folio">
+                                            <td v-text="anticipo.folio"></td>
+                                            <td class="td2" v-text="anticipo.proyecto"></td>
+                                            <td class="td2" v-text="anticipo.etapa"></td>
+                                            <td class="td2" v-text="anticipo.manzana"></td>
+                                            <td v-text="anticipo.num_lote"></td>
+                                            <td class="td2" v-text="anticipo.nombre_cliente"></td>
+                                            <td v-text="anticipo.fecha"></td>
+                                            <td v-text="anticipo.fecha_status"></td>
+                                            <td v-text="'$'+formatNumber(anticipo.este_pago)"></td>
+                                            <td v-text="'$'+formatNumber(anticipo.bono)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="8"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_anticipo = totalAnticipo)}} </td>
+                                            <td> ${{formatNumber(total_bono = totalBono)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                    <!-- COMISIONES QUE HABIAN QUEDADO PENDIENTES POR FALTA DE PAGARE -->
+                        <div class="form-group row">
+                            <h6 v-if=" numPendientes != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Pendientes: {{this.numPendientes}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta',
+                                    'Crédito','% Avance','% De comisión','Comisión a pagar','Este pago','Por pagar',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
+                                            <td class="td2" v-text="pendiente.fecha"></td>
+                                            <td v-text="pendiente.folio"></td>
+                                            <td class="td2" v-text="pendiente.proyecto"></td>
+                                            <td class="td2" v-text="pendiente.etapa"></td>
+                                            <td class="td2" v-text="pendiente.manzana"></td>
+                                            <td v-text="pendiente.num_lote"></td>
+                                            <td class="td2" v-text="pendiente.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
+                                            <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
+                                            <td v-text="pendiente.avance_lote + '%'"></td>
+                                            <td v-text="pendiente.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.este_pago  )"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.por_pagar )"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="numPendientes != 0 && tipoVendedor == 1">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="[
+                                    'Fecha','Folio','Proyecto','Etapa','Manzana','Lote','Cliente','Precio Venta','Crédito',
+                                    '% Avance','% De comisión','Comisión a pagar','IVA','Retención','ISR','Este pago','Por pagar'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="pendiente in arrayPendientes" :key="pendiente.id">
+                                            <td class="td2" v-text="pendiente.fecha"></td>
+                                            <td v-text="pendiente.id"></td>
+                                            <td class="td2" v-text="pendiente.proyecto"></td>
+                                            <td class="td2" v-text="pendiente.etapa"></td>
+                                            <td class="td2" v-text="pendiente.manzana"></td>
+                                            <td v-text="pendiente.num_lote"></td>
+                                            <td class="td2" v-text="pendiente.nombre_cliente"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.precio_venta)"></td>
+                                            <td class="td2" v-text="pendiente.tipo_credito + '(' + pendiente.institucion + ')'"></td>
+                                            <td v-text="pendiente.avance_lote + '%'"></td>
+                                            <td v-text="pendiente.porcentaje_comision + '%'"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.comision_pagar)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.iva)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.retencion)"></td>
+                                            <td v-text="'$'+formatNumber(pendiente.isr)"></td>
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar / 2) + pendiente.iva - pendiente.isr - pendiente.retencion)"></td>
+                                            <td v-else v-text="'$'+formatNumber(pendiente.este_pago = (pendiente.comision_pagar) + pendiente.iva - pendiente.isr - pendiente.retencion )"></td>
+                                            <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(pendiente.por_pagar = (pendiente.comision_pagar / 2) )"></td>
+                                            <td v-else v-text="'$'+formatNumber(pendiente.por_pagar=0)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right" colspan="11"><strong>Total:</strong></td>
+                                            <td> ${{formatNumber(total_comision_pendiente = totalComisionPendiente)}} </td>
+                                            <td> ${{formatNumber(total_iva_pendiente = totalIvaPendiente)}} </td>
+                                            <td> ${{formatNumber(total_retencion_pendiente = totalRetencionPendiente)}} </td>
+                                            <td> ${{formatNumber(total_isr_pendiente = totalIsrPendiente)}} </td>
+                                            <td><strong> ${{formatNumber(total_pagado_pendiente = totalPagadoPendiente)}} </strong></td>
+                                            <td> ${{formatNumber(total_porPagar_pendiente = totalPorPagarPendiente)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                    <!-- <div class="form-group row line-separator"  v-if="ventas==1"></div> -->
+
+                    <!-- CAMBIOS  -->
+                        <div class="form-group row">
+                            <h6 v-if=" numCambios != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cambios: {{this.numCambios}}</h6>
+                        </div>
+
+                        <div class="form-group row" v-if="numCambios != 0">
+                            <div class="col-md-12">
+                                <TableComponent :cabecera="['Descripcion','Monto']">
+                                    <template v-slot:tbody>
+                                        <tr v-for="cambio in arrayCambios" :key="cambio.id">
+                                            <td class="td2" v-text="cambio.descripcion"></td>
+                                            <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right"><strong>Total: </strong></td>
+                                            <td> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                    <!-- DATOS DE VENTA -->
+                        <div class="form-group row"  v-if="tipoVendedor == 0">
+                            <div class="col-md-8">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th> Total </th>
+                                            <td>  &nbsp; $ {{formatNumber(total )}} </td>
+                                        </tr>
+                                        <tr v-if="total_anticipo_cambio != 0">
+                                            <th>- Cambios </th>
+                                            <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>- Ventas canceladas </th>
+                                            <td>  &nbsp; $ {{formatNumber(total_anticipo)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>- Bonos cancelados </th>
+                                            <td>  &nbsp; $ {{formatNumber(total_bono)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>- Sueldo del mes </th>
+                                            <td>  &nbsp; $ {{formatNumber(apoyo)}} </td>
+                                        </tr>
+                                        <tr v-if=" restante != 0">
+                                            <th>- Acumulado anterior </th>
+                                            <td>  &nbsp; $ {{formatNumber(restante)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total a pagar</th>
+                                            <td><strong>&nbsp; $ {{formatNumber(total_a_pagar)}}</strong> </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row"  v-if="tipoVendedor == 1">
+                            <div class="col-md-8">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th> Total </th>
+                                            <td>  $ {{formatNumber(total )}} </td>
+                                        </tr>
+                                        <tr v-if="numCancelaciones > 0">
+                                            <th>- Ventas canceladas </th>
+                                            <td>  $ {{formatNumber(total_anticipo)}} </td>
+                                        </tr>
+                                        <tr v-if="numCancelaciones > 0">
+                                            <th>- Bonos cancelados </th>
+                                            <td>  $ {{formatNumber(total_bono)}} </td>
+                                        </tr>
+                                        <tr v-if=" restante != 0">
+                                            <th>- Acumulado anterior </th>
+                                            <td>  $ {{formatNumber(restante)}} </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total a pagar</th>
+                                            <td> $ {{formatNumber(total_a_pagar )}}</td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
+                </template>
+                <template v-slot:buttons-footer>
+                    <a class="btn btn-success" v-bind:href="
+                        '/comision/excel?' +
+                        'mes=' + mes +
+                        '&anio=' + anio +
+                        '&asesor=' + asesor +
+                        '&tipoVendedor=' + tipoVendedor +
+                        //Ventas
+                        '&numVentas=' + numVentas +
+
+                        '&total_comision=' + total_comision +
+                        '&total_pagado=' + total_pagado +
+                        '&total_porPagar=' + total_porPagar +
+                        '&total_iva=' + total_iva +
+                        '&total_retencion=' + total_retencion +
+                        '&total_isr=' + total_isr +
+                        //Individualizadas
+                        '&numIndividualizadas=' + numIndividualizadas +
+                        '&total_comision_indiv=' + total_comision_indiv +
+                        '&total_pagado_indiv=' + total_pagado_indiv +
+                        '&total_iva_indiv=' + total_iva_indiv +
+                        '&total_retencion_indiv=' + total_retencion_indiv +
+                        '&total_isr_indiv=' + total_isr_indiv +
+                        //Canceladas
+                        '&numCancelaciones=' + numCancelaciones +
+                        '&total_anticipo=' + total_anticipo +
+                        '&total_bono=' + total_bono +
+                        //Pendientes
+                        '&numPendientes=' + numPendientes +
+                        '&total_comision_pendiente=' + total_comision_pendiente +
+                        '&total_pagado_pendiente=' + total_pagado_pendiente +
+                        '&total_porPagar_pendiente=' + total_porPagar_pendiente +
+                        '&total_iva_pendiente=' + total_iva_pendiente +
+                        '&total_retencion_pendiente=' + total_retencion_pendiente +
+                        '&total_isr_pendiente=' + total_isr_pendiente +
+                        //Cambios
+                        '&numCambios=' + numCambios +
+                        '&total_anticipo_cambio=' + total_anticipo_cambio +
+
+                        //Datos
+                        '&total=' + total +
+                        '&apoyo=' + apoyo +
+                        '&restante=' + restante +
+                        '&total_a_pagar=' + total_a_pagar +
+                        '&comision_id=' + id"
+                    >
+                        &nbsp;Descargar
+                    </a>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-
         </main>
 </template>
 
@@ -1632,9 +1195,17 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from '../Componentes/ModalComponent.vue';
+import TableComponent from '../Componentes/TableComponent.vue';
+import LoadingComponent from '../Componentes/LoadingComponent.vue';
     export default {
         props:{
             rolId:{type: String}
+        },
+        components:{
+            LoadingComponent,
+            TableComponent,
+            ModalComponent
         },
         data(){
             return{
@@ -1642,9 +1213,9 @@
                 proceso:false,
                 tipo_asesor:'',
                 arrayComisiones:[],
-                arrayAsesores:[], 
+                arrayAsesores:[],
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -1671,8 +1242,8 @@
                 arrayIndividualizadas:[],
                 arrayPendientes : [],
                 arrayCambios:[],
-                
-                numVentas:'', 
+
+                numVentas:'',
 
                 tipoVendedor:0,
                 esquema:2,
@@ -1684,9 +1255,9 @@
                 sueldoBand:true,
 
                 modif : 0,
-                
+
                 asesor_id:'',
-                
+
                 modal1:0,
 
                 total_comision:0,
@@ -1730,11 +1301,28 @@
                 bandRetencion:0,
 
                 asesor : '',
-                
-                ///
+
                 mes:'',
                 anio:'',
-               
+
+                meses: [
+                    {'id': 1,    'mes':     'Enero'},
+                    {'id': 2,    'mes':     'Febrero'},
+                    {'id': 3,    'mes':     'Marzo'},
+                    {'id': 4,    'mes':     'Abril'},
+                    {'id': 5,    'mes':     'Mayo'},
+                    {'id': 6,    'mes':     'Junio'},
+                    {'id': 7,    'mes':     'Julio'},
+                    {'id': 8,    'mes':     'Agosto'},
+                    {'id': 9,    'mes':     'Septiembre'},
+                    {'id': 10,   'mes':     'Octubre'},
+                    {'id': 11,   'mes':     'Noviembre'},
+                    {'id': 12,   'mes':     'Diciembre'},
+                ],
+                anios:[2018,2019,2020,2021,2022,2023,2024,2025,2026,2027],
+
+                loading: true
+
             }
         },
         computed:{
@@ -1767,7 +1355,7 @@
                 return pagesArray2;
             },
 
-            
+
             totalComision: function(){
                 var totalComision =0.0;
                 for(var i=0;i<this.arrayVentas.length;i++){
@@ -2062,12 +1650,13 @@
 
                 return total_a_pagar;
             }
-          
+
         },
-       
+
         methods : {
             listarComisiones(page){
                 let me = this;
+                me.loading = true;
                 var url = '/comision/indexComisiones?page=' + page + '&b_mes=' + this.b_mes + '&b_anio=' + this.b_anio + '&b_asesor_id=' + this.b_asesor_id + '&tipo=' + this.tipo_asesor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -2075,15 +1664,17 @@
                     me.pagination2 = respuesta.pagination;
                     me.mes = respuesta.month;
                     me.anio = respuesta.year;
+                    me.loading = false;
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.loading = false;
                 })
             },
 
             totalPagar(){
                 let me = this;
-                
+
                 me.total_porPagar  =0.0;
                 for(var i=0;i<me.arrayVentas.length;i++){
                     me.total_porPagar += parseFloat(me.arrayVentas[i].por_pagar)
@@ -2092,7 +1683,7 @@
                     me.total_porPagar = 0;
                 //me.total_porPagar = Math.round(me.total_porPagar*100)/100;
                 me.total_porPagar;
-                
+
             },
 
             cambiar(){
@@ -2107,7 +1698,7 @@
                 let me = this;
                 var url = '/comision/getComision?mes=' + me.mes + '&anio=' + me.anio + '&vendedor=' + id;
                  axios.get(url).then(function (response) {
-                     
+
                     var respuesta = response.data;
                     me.numVentas = respuesta.numVentas;
 
@@ -2117,7 +1708,7 @@
                     // });
                     me.esquema = respuesta.esquema;
                     me.tipoVendedor = respuesta.tipo;
-                    
+
                     me.arrayCanceladas = respuesta.canceladas;
                     me.arrayIndividualizadas = respuesta.individualizadas;
                     me.arrayPendientes = respuesta.pendientes;
@@ -2132,8 +1723,6 @@
                     me.restante = respuesta.acumuladoAnt;
                     me.sueldoBand = respuesta.sueldo;
 
-                    
-
                     me.bandISR = respuesta.isr;
                     me.bandRetencion = respuesta.retencion;
 
@@ -2144,7 +1733,7 @@
                             me.apoyo = 0;
                         }
                     }
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2170,7 +1759,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, registrar!'
                     }).then((result) => {
 
@@ -2228,7 +1817,7 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarComisiones(page);
             },
-            
+
             selectAsesores(){
                 let me = this;
                 me.b_asesor_id = '';
@@ -2241,8 +1830,8 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
-            },  
+
+            },
 
             cerrarModal(){
                 this.modal = 0;
@@ -2306,10 +1895,10 @@
             },
 
             noAplica(id){
-                 
+
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-            
+
                 Swal({
                     title: 'Estas seguro?',
                     animation: false,
@@ -2320,16 +1909,16 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, cambiar!'
                     }).then((result) => {
 
                     if (result.value) {
-                    
+
                         axios.put('/comision/desartarCambio',{
                             'id':id
-                        }); 
-                        
+                        });
+
                         me.getComision(me.asesor_id);
                         Swal({
                             title: 'Hecho!',
@@ -2340,8 +1929,8 @@
                         })
                     }
                 })
-                
-              
+
+
             },
 
             detalleComision(comision_id){
@@ -2364,7 +1953,7 @@
                     me.arrayCambios = respuesta.cambios;
                     me.numCambios = respuesta.numCambios;
 
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2435,38 +2024,22 @@
                         this.total_anticipo = data['total_anticipo'];
                         this.tipoVendedor = data['tipo_vendedor'];
                         this.detalleComision(this.id);
-                        
+
 
                         break;
                     }
-                    
+
                 }
             }
-        
+
         },
-        mounted() {          
+        mounted() {
             this.listarComisiones(1);
             this.selectAsesores();
         }
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-       
-    }
-    .modal-body{
-        height: 450px;
-        width: 100%;
-        overflow-y: auto;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -2484,15 +2057,6 @@
         .btnagregar{
         margin-top: 2rem;
         }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
 
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
@@ -2511,7 +2075,7 @@
 
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
     .badge2 {
         display: inline-block;
         padding: 0.25em 0.4em;

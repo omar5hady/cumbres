@@ -11,14 +11,14 @@
                     <i class="fa fa-align-justify"></i> Cotizador de lotes
                     &nbsp;
                 </div>
-                
+
                 <div class="card-body">
                     <!--FORMULARIO-->
                     <div class="row">
                         <input type="date" v-model="r_fecha" v-on:change="actualizar()" class="form-control col-sm-2 text-info">
-                        
+
                         <div class="form-control col-md-6" style="padding:0px;">
-                            <v-select 
+                            <v-select
                                 :on-search="selectCliente"
                                 label="n_completo"
                                 :options="arrayClientes"
@@ -44,9 +44,9 @@
                                 <option v-if="lote.sublote != null" :key="lote.id" :value="lote" v-text="lote.num_lote + ' '+ lote.sublote"></option>
                                 <option v-else :key="lote.id" :value="lote" v-text="lote.num_lote"></option>
                             </template>
-                            
+
                         </select>
-                        
+
                         <div v-text="r_sup_terreno+' m²'" class="text-info form-control col-sm-2" title="Superficie de Terreno"></div>
                         <div v-text="'Costo m² $ '+r_valor_m2.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-2" title="Costo m²"></div>
                         <div v-text="'Valor de Venta $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-3" title="Valor de Venta"></div>
@@ -67,14 +67,14 @@
                         <button @click="generarPdf()" :disabled="(idCliente==0||arrayMensualidad.length==0)" class="btn btn-sm btn-success col-sm-1">
                             <i class="fa fa-file-pdf-o"></i> PDF
                         </button>
-                        
+
                     </div>
                     <br>
 
                     <div class="row">
                         <!--TOTALES A PAGAR-->
-                        <table class="table table-bordered table-striped">
-                            <tbody>
+                        <TableComponent>
+                            <template v-slot:tbody>
                                 <tr>
                                     <td class=" text-right">
                                         <strong v-if="r_mensualidad > 2" v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
@@ -91,49 +91,34 @@
                                             ></strong>
                                             <strong class="badge-info" v-text="
                                                 'Total a Pagar $ '
-                                                +(r_valor_venta-r_valor_descuento).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
-                                            "></strong>
+                                                +(r_valor_venta-r_valor_descuento).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">
+                                            </strong>
                                         </template>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            </template>
+                        </TableComponent>
 
                         <!--PAGOS-->
-                        <table class="table2 table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th># Pago</th>
-                                    <th>Mensualidad</th>
-                                    <th>Cantidad</th>
-                                    <th>Fecha</th>
-                                    <th>Dias</th>
-                                    <th>% Descuento</th>
-                                    <th>Descuento</th>
-                                    <th>Pago a capital</th>
-                                    <th>Interes</th>
-                                    <th>Total a Pagar</th>
-                                    <th>Saldo Pendiente</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <TableComponent :cabecera="[
+                            '# Pago','Mensualidad','Cantidad','Fecha','Dias','% Descuento','Descuento',
+                            'Pago a capital','Interes','Total a Pagar','Saldo Pendiente',
+                        ]">
+                            <template v-slot:tbody>
                                 <tr v-for="pago in arrayMensualidad" :key="pago.folio">
                                     <td v-text="pago.folio" class="text-info text-center">#</td>
-                                    
-                                    <td v-if="pago.pago == 0" >Enganche</td>
-                                    <td v-else>Mensualidad</td>
-                                    
+                                    <td>
+                                        {{(pago.pago == 0) ? 'Enganche' : 'Mensualidad'}}
+                                    </td>
                                     <td style="padding:0px;">
                                         <input v-model="pago.cantidad" v-on:keyup.enter="calculaPrecio(pago),actualizar()" type="number" step="100" class="form-control" style="height: 45px;">
                                     </td>
-
                                     <td style="padding:0px;" class="text-center">
                                         <input v-model="pago.fecha" v-on:change="calculaPrecio(pago)" type="date" class="form-control" style="height: 45px;">
                                     </td>
                                     <td>
                                         <span v-text="pago.dias" class="badge" v-bind:class="!(r_mensualidad>6) ? 'badge-success' : 'badge-warning'"></span>
                                     </td>
-
                                     <td v-text="pago.interesesPor+'%'"></td>
                                     <td v-text="'$ '+pago.descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Descuento</td>
                                     <td v-text="'$ '+pago.pagoCapital.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Pago Capital</td>
@@ -141,12 +126,12 @@
                                     <td v-text="'$ '+pago.totalAPagar.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Total a Pagar</td>
                                     <td v-text="'$ '+pago.saldo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Saldo</td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            </template>
+                        </TableComponent>
 
                         <br>
-                        <table class="table2 table table-bordered table-striped">
-                            <thead>
+                        <TableComponent>
+                            <template v-slot:thead>
                                 <tr>
                                     <td class="text-center" colspan="10">
                                         <strong class="badge badge-warning">
@@ -154,13 +139,11 @@
                                         </strong>
                                     </td>
                                 </tr>
-                            </thead>
-                            <thead>
                                 <tr>
                                     <th colspan="10">Plan Comercial de Pagos</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            </template>
+                            <template v-slot:tbody>
                                 <tr>
                                     <td class="text-center"><strong>De 0 a 1 mes</strong></td>
                                     <td class="text-center"><strong>De 1 a 6 mes</strong></td>
@@ -177,8 +160,8 @@
                                     <td class="text-center">{{arrayListA[8].valor + '% de Interes de tasa anual'}}</td>
                                     <td class="text-center">{{arrayListA[9].valor + '% de Interes de tasa anual'}}</td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            </template>
+                        </TableComponent>
                     </div>
                 </div>
             </div>
@@ -189,8 +172,9 @@
 
 <script>
 import vSelect from 'vue-select';
+import TableComponent from '../Componentes/TableComponent.vue';
 export default {
-    
+
     data() {
         return{
             r_fecha:'',
@@ -234,7 +218,8 @@ export default {
 
     },
     components:{
-        vSelect
+        vSelect,
+        TableComponent,
     },
     methods: {
         generarLista(){
@@ -268,7 +253,7 @@ export default {
                 default:{
                     this.interesAnual = 0;
                     this.interesMensual = 0;
-                    break; 
+                    break;
                 }
             }
 
@@ -278,7 +263,7 @@ export default {
 
             let fullPrice = parseFloat(this.r_valor_venta-this.r_valor_descuento);
             let fechaPago = '';
-            
+
 
             //asignacion de fecha actual
                 if(this.r_fecha =="") this.r_fecha = moment().format('YYYY-MM-DD');
@@ -296,17 +281,17 @@ export default {
                     this.valor_enganche = parseFloat(fullPrice*0.3);
                     //this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
                     this.valor_minMens = (((fullPrice-this.valor_enganche)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
-                    
 
-                }else if(this.r_mensualidad == 1){  
+
+                }else if(this.r_mensualidad == 1){
                     this.valor_enganche = parseFloat(fullPrice.toFixed(2));
-                
-                }else if(this.r_mensualidad == 2){  
+
+                }else if(this.r_mensualidad == 2){
                     this.valor_minMens = parseFloat((fullPrice-10000).toFixed(2));
 
                 }else if(this.r_mensualidad > 2 && this.r_mensualidad <=6){
                     this.valor_minMens = ((fullPrice-10000)/this.r_mensualidad).toFixed(2);
-                    
+
                 }else this.valor_minMens = (((fullPrice-10000)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
             //asignacion de primer pago o enganche
             let intMes = 0.0;
@@ -321,7 +306,7 @@ export default {
                 if(i == this.r_mensualidad && this.r_mensualidad != 1){
                     this.arrayMensualidad.forEach(item =>{
                         monto = monto+parseFloat(item.cantidad);
-                        
+
                     });
                     monto = (fullPrice-monto).toFixed(2);
                 }else monto = i?this.valor_minMens:this.valor_enganche;
@@ -363,7 +348,7 @@ export default {
                     saldo:0
                 });
             }
-            
+
             //si la mensualidad es 1 se elimina un campo
             if(this.r_mensualidad == 1 || this.r_mensualidad == 2) this.arrayMensualidad.pop();
 
@@ -396,10 +381,10 @@ export default {
                 default:{
                     this.interesAnual = 0;
                     this.interesMensual = 0;
-                    break; 
+                    break;
                 }
             }
-            
+
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
 
             let descuento = this.montoDescuento(index);
@@ -411,7 +396,7 @@ export default {
                 dias = this.dias(this.arrayMensualidad[parseInt(index.folio-2)].fecha, index.fecha)-1;
             }
             let folio = index.folio-1;
-            
+
             //fechas de pago
                 let firstFechaPago = new Date(
                     index.fecha.substring(5,7)
@@ -451,7 +436,7 @@ export default {
                 cantidad =(this.arrayMensualidad[folio-1].saldo < 0.001)?0:cantidad;
             }
 
-            
+
             this.arrayMensualidad[folio].fecha = fechaFinalPago;//index.fecha;
 
             if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interesMont = this.intereses(index);
@@ -465,7 +450,7 @@ export default {
             this.arrayMensualidad[folio].dias = dias;
 
             //Calcular saldo pendiente
-            
+
             let saldo = this.r_valor_venta-this.r_valor_descuento;
             this.arrayMensualidad.forEach(
                 m => {
@@ -475,7 +460,7 @@ export default {
             );
         },
         selectFraccionamientos(){
-            let me = this;  
+            let me = this;
             me.arrayFraccionamientos=[];
             var url = '/get/fraccionamientos/lotes';
 
@@ -505,27 +490,27 @@ export default {
             let descuento = 0;
             if(this.r_mensualidad != 2){
                 let dias = this.dias(this.r_fecha, datos.fecha)
-                
+
 
                 let date = new Date(this.r_fecha);
                 let days = this.daysInMonth(date.getMonth()+1, date.getFullYear());
-                
+
 
                 if(datos.pago == "0" && datos.cantidad > 10000 && dias <= 10 && this.r_mensualidad != 48){
                     let engancheExed = datos.cantidad-10000;
-                    
+
                     descuento = 4;
                     montoDescuento = this.descuento(engancheExed, descuento);
 
                 }else if(datos.pago == "0" && datos.cantidad > (this.r_valor_venta*.30) && dias <= 10){
                     let engancheExed = datos.cantidad-(this.r_valor_venta*.30);
-                    
+
                     descuento = 4;
                     montoDescuento = this.descuento(engancheExed, descuento);
                 }
 
             }
-            
+
 
             let array = [montoDescuento, descuento];
             //return montoDescuento;
@@ -539,7 +524,7 @@ export default {
             var from = moment(startDate),
                     to = moment(endDate),
                     days = 0;
-                
+
             while (!from.isAfter(to,'day')) {
                 // Si no es sabado ni domingo
                 //if (from.isoWeekday() !== 6 && from.isoWeekday() !== 7) {
@@ -565,7 +550,7 @@ export default {
             }else{
                 dias = this.dias(this.arrayMensualidad[parseInt(datos.folio-2)].fecha, datos.fecha);
             }
-                
+
             let montoInteres = 0;
 
             let intMes = this.arrayMensualidad[datos.folio-2].saldo * this.interesMensual;
@@ -604,11 +589,11 @@ export default {
         selectCliente(search, loading){
             let me = this;
             loading(true)
-            
+
             var url = '/clientes?page=1&criterio=personal.nombre&b_clasificacion=&buscar='+search;
-            
+
             axios.get(url).then(function (response) {
-                
+
                 let respuesta = response.data;
                 q: search
                 me.arrayClientes = respuesta.personas.data;
@@ -626,7 +611,7 @@ export default {
         },
         guardaCotizacion(){
             this.actualizar();
-            
+
             Swal.fire({
                 title: '¿Estas seguro?',
                 text: "Este cambio no se podrá deshacer!",
@@ -638,7 +623,7 @@ export default {
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.value) {
-                    
+
 
                     axios.post('/calc/guardar/cotizacion',{
                         'pago':this.arrayMensualidad,

@@ -141,7 +141,8 @@ class ClienteController extends Controller
         else
             $personas = $personas->where('clientes.clasificacion', '!=', 7);
 
-
+        if($request->b_advertising != '')
+            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
@@ -873,6 +874,10 @@ class ClienteController extends Controller
             }
         }
 
+        if($request->b_advertising != '')
+            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
+
+
         $personas = $personas->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
                         ->get();
@@ -968,6 +973,15 @@ class ClienteController extends Controller
         )->download('xls');
     }
 
+    public function setAdvertising(Request $request){
+        $cliente = Cliente::findOrFail($request->id);
+        if($cliente->advertising == 0)
+            $cliente->advertising = 1;
+        else
+            $cliente->advertising = 0;
+        $cliente->save();
+    }
+
     // Función para exportar a excel los clientes en general.
     public function exportExcelClientesGerente(Request $request)
     {
@@ -985,6 +999,10 @@ class ClienteController extends Controller
             $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
         else
             $personas = $personas->where('clientes.clasificacion', '!=', 7);
+
+        if($request->b_advertising != '')
+            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
+
 
         if($buscar != '')
             switch($criterio){

@@ -205,7 +205,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
                                         <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
                                         <td>
-                                            <button v-if="lote.equipamiento" @click="verEquipamiento(lote.equipamiento)" class="btn btn-dark">Equipamiento incluido</button>
+                                            <button v-if="lote.equipamiento.length > 0" @click="verEquipamiento(lote.equipamiento)" class="btn btn-dark">Equipamiento incluido</button>
                                         </td>
                                         <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
                                             <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>

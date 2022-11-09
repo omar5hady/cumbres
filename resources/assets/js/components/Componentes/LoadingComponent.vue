@@ -1,6 +1,8 @@
 <template>
-    <div style="margin-top:80px; margin-bottom:80px;">
-        <span class="loader"></span>
+    <div class="info-center">
+        <div style="margin-top:80px; margin-bottom:80px;">
+            <span class="loader"></span>
+        </div>
     </div>
 </template>
 
@@ -42,4 +44,9 @@ export default {};
       transform: translateX(100px) scale(0.3);
     }
   }
+  .info-center{
+        display: flex;
+        justify-content: center;
+        width: 100% !important;
+    }
 </style>

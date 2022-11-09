@@ -28,6 +28,19 @@ export default {
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+    width: 2px;
+}
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(180, 180, 180);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e4e5e6;
+  }
+
 .table2 {
     margin: auto;
     border-collapse: collapse;

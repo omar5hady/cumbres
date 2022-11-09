@@ -118,11 +118,23 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" disabled value="Apto para publicidad:" placeholder="Apto para publicidad">
+                                        <select class="form-control" v-model="b_advertising" >
+                                            <option value="">Todos</option>
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
                                 <div class="col-md-8" >
                                     <div class="input-group">
                                         <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad +  + '&b_advertising=' + this.b_advertising + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad +  + '&b_advertising=' + b_advertising + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -209,6 +221,13 @@
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.vAux_completo"></td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
+                                        <td v-if="rolId != 2">
+                                            <button @click="setAdvertising(prospecto.id)"
+                                                class="btn" :class="[prospecto.advertising == '0' ? 'btn-danger' : 'btn-success']">
+                                                <i :class="[prospecto.advertising == '0' ? 'icon-close' : 'icon-check']"></i>
+                                                {{( prospecto.advertising == '0') ? 'No' : 'Si'}}
+                                            </button>
+                                        </td>
                                     </tr>
                                 </template>
                             </TableComponent>
@@ -1406,6 +1425,7 @@
                 reasignar:0,
                 clv_lada:52,
                 clv_lada_coa:52,
+                b_advertising:''
             }
         },
         components:{
@@ -1447,7 +1467,7 @@
             /**Metodo para mostrar los registros */
             listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 +
+                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_advertising=' + me.b_advertising +
                     '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&seguimiento='+me.b_seguimiento +
                     '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio + '&b_aux=' + me.b_aux;
                 axios.get(url).then(function (response) {
@@ -2104,6 +2124,29 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Coacreditado agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            setAdvertising(id){
+                let me = this;
+                axios.put('clientes/setAdvertising',{
+                    'id' : id
+                }).then(function (response){
+                    //Se muestra mensaje Success
+                    const index = me.arrayProspectos.map( e => e.id ).indexOf( id )
+                    if(me.arrayProspectos[index].advertising == 1)
+                        me.arrayProspectos[index].advertising = 0;
+                    else
+                        me.arrayProspectos[index].advertising = 1;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Prospecto actualizado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
