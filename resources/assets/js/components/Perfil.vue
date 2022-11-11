@@ -38,12 +38,12 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <br>
-                    Nombre de cliente: {{rem.nombre+" "+rem.apellidos}}<br>
+                    Nombre de cliente: <a href="#" @click="$root.$data.buscar = `${rem.nombre} ${rem.apellidos}`,$root.$data.menu = 250">{{rem.nombre+" "+rem.apellidos}}</a><br>
                     Email <a :href="'mailto:'+rem.email" v-text="rem.email"></a>
                     Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
                     <br>
                     <div class="px-3 py-2 text-right">
-                        <button type="button" class="btn btn-dark rounded" data-dismiss="alert" @click="enterado(rem.id)">
+                        <button type="button" class="btn btn-dark rounded" data-dismiss="alert" @click="enterado(rem.id), $">
                             <span aria-hidden="true">Enterado</span>
                         </button>
                     </div>
@@ -60,7 +60,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <br>
-                    Nombre de cliente: {{rem.nombre+" "+rem.apellidos}}<br>
+                    Nombre de cliente: <a href="#" @click="$root.$data.buscar = `${rem.nombre} ${rem.apellidos}`,$root.$data.menu = 250">{{rem.nombre+" "+rem.apellidos}}</a><br>
                     Email <a :href="'mailto:'+rem.email" v-text="rem.email"></a>
                     Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
                     <br>

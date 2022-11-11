@@ -246,7 +246,8 @@ class DigitalLeadController extends Controller
                         'foto' => $imagenUsuario[0]->foto_user,
                         'fecha' => $fecha,
                         'msj' => 'Le ha asignado un lead digital',
-                        'titulo' => 'Lead Digital'
+                        'titulo' => 'Lead Digital',
+                        'menu' => 250,
                     ]
                 ];
                 // Se envia notificación al asesor sobre la asignación del Lead.
@@ -357,7 +358,8 @@ class DigitalLeadController extends Controller
                         'foto' => $imagenUsuario[0]->foto_user,
                         'fecha' => $fecha,
                         'msj' => 'Se le ha asignado un lead digital',
-                        'titulo' => 'Lead Digital'
+                        'titulo' => 'Lead Digital',
+                        'menu' => 250,
                     ]
                 ];
                 $obs = new Obs_lead(); // Registra comentario con la asignación del lead.
@@ -525,7 +527,8 @@ class DigitalLeadController extends Controller
                 'foto' => $imagenUsuario[0]->foto_user,
                 'fecha' => $fecha,
                 'msj' => $msj,
-                'titulo' => 'Lead :)'
+                'titulo' => 'Lead :)',
+                'menu' => 250,
             ]
         ];
 
@@ -669,7 +672,8 @@ class DigitalLeadController extends Controller
                         'foto' => $imagenUsuario[0]->foto_user,
                         'fecha' => $fecha,
                         'msj' => 'El lead '.$lead->nombre.' '.$lead->apellidos.' ha sido descartado',
-                        'titulo' => 'Lead Descartado'
+                        'titulo' => 'Lead Descartado',
+                        'menu' => 250,
                     ]
                 ];
 

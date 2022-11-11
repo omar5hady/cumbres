@@ -31,6 +31,7 @@ use App\Detalle_previo;
 use App\Revision_previa;
 use App\Reubicacion;
 use App\Descripcion_detalle;
+use App\Lote_promocion;
 
 class ReportesController extends Controller
 {
@@ -3826,7 +3827,7 @@ class ReportesController extends Controller
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->select('f.nombre as proyecto','e.num_etapa as etapa','m.nombre as modelo',
                     'lotes.manzana','lotes.num_lote','lotes.sublote','lotes.casa_muestra', 'licencias.avance',
-                    'lotes.id'
+                    'lotes.id', 'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio','lotes.ajuste'
                 )
                 ->where('lotes.contrato','=',0)
                 ->where('lotes.habilitado','=',$habilitado)
@@ -3843,6 +3844,34 @@ class ReportesController extends Controller
                 $lotes = $lotes->where('lotes.emp_constructora','=', $empresa);
 
             $lotes = $lotes->paginate(20);
+
+            if($habilitado == 1){
+                foreach($lotes as $lote){
+                    $lote->precio_venta = 0;
+                    $lote->promocion = '';
+                    $costoEquipamiento = 0;
+
+                    $lote->equipamiento = EquipLote::join('equipamientos as eq','equip_lotes.equipamiento_id','=','eq.id')
+                                ->select('equip_lotes.*','eq.equipamiento')
+                                ->where('equip_lotes.status','>',3)
+                                ->where('equip_lotes.lote_id','=',$lote->id)->get();
+                    if(sizeOf($lote->equipamiento))
+                        foreach($lote->equipamiento as $eq){
+                            $costoEquipamiento += $eq->costo;
+                        }
+
+                    //Se calcula el precio base en caso de tener un ajuste en precio.
+                    $lote->precio_venta = $lote->precio_base + $lote->ajuste + $costoEquipamiento + $lote->excedente_terreno + $lote->sobreprecio;
+
+                    $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                        ->select('promociones.nombre')
+                        ->where('lotes_promocion.lote_id','=',$lote->id)
+                        ->where('promociones.v_ini','<=',Carbon::today()->format('ymd'))
+                        ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
+                    if(sizeof($promocion))
+                        $lote->promocion = $promocion[0]->nombre;
+                }
+            }
 
             return $lotes;
 

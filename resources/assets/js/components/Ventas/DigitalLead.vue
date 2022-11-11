@@ -19,7 +19,7 @@
                     </button>
                     &nbsp;
                 </div>
-                
+
                 <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-5">
@@ -77,7 +77,7 @@
                                     <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
                                     <select class="form-control" v-model="b_proyecto">
                                         <option value="">Seleccione</option>
-                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
+                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
                                             :value="proyecto.id" v-text="proyecto.nombre">
                                         </option>
                                     </select>
@@ -99,7 +99,7 @@
                                         <option value="3">Enviado a prospectos</option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="input-group">
                                     <button @click="listarLeads(1)" class="btn btn-primary">
                                         <i class="fa fa-search"></i> Buscar
@@ -114,7 +114,7 @@
                                     <button disabled class="btn btn-primary">
                                         {{'Total: '+arrayLeads.total}}
                                     </button>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -144,13 +144,13 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>   
+                                            </button>
                                             <button type="button" v-if="lead.vendedor_asign == null" @click="asignarVendedor(lead.id)" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-exchange"></i>
-                                            </button>    
+                                            </button>
                                             <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                           
+                                            </button>
                                         </td>
                                         <td>
                                             <div class="clearfix">
@@ -160,15 +160,15 @@
                                                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </td>
-                                        <td v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" class="td2" v-text="lead.nombre + ' ' + lead.apellidos"></td>                                                    
+                                        <td v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" class="td2" v-text="lead.nombre + ' ' + lead.apellidos"></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -185,11 +185,11 @@
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Enviado a prospectos</span></td>
                                         <td class="td2" v-text="lead.vendedor"></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                        
-                                       
+
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -213,23 +213,23 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>    
+                                            </button>
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>   
+                                            </button>
                                             <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                            
+                                            </button>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -242,11 +242,11 @@
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                        
-                                       
+
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -269,38 +269,38 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>  
+                                            </button>
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>      
+                                            </button>
                                             <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                           
+                                            </button>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.direccion"></td>  
-                                        <td v-text="lead.descripcion"></td>  
+                                        <td v-text="lead.direccion"></td>
+                                        <td v-text="lead.descripcion"></td>
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                        
-                                       
+
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -323,23 +323,23 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>  
+                                            </button>
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>      
+                                            </button>
                                             <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                           
+                                            </button>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -348,17 +348,17 @@
                                             <span v-if="lead.prioridad == 'Baja'" class="badge badge-light">Baja</span>
                                             <span v-if="lead.prioridad == 'Media'" class="badge badge-warning">Media</span>
                                             <span v-if="lead.prioridad == 'Alta'" class="badge badge-danger">Alta</span>
-                                        </td>  
-                                        <td v-text="lead.descripcion"></td>  
+                                        </td>
+                                        <td v-text="lead.descripcion"></td>
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                        
-                                       
+
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -380,29 +380,29 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>       
+                                            </button>
                                             <button title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                           
+                                            </button>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.direccion"></td>  
-                                        <td v-text="lead.descripcion"></td>  
+                                        <td v-text="lead.direccion"></td>
+                                        <td v-text="lead.descripcion"></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                     </tr>
                                 </tbody>
@@ -428,35 +428,35 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>  
+                                            </button>
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>      
+                                            </button>
                                             <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                           
+                                            </button>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.direccion"></td>  
-                                        <td>${{formatNumber(lead.rango1)}}</td>  
-                                        <td>{{formatNumber(lead.rango2)}}m&sup2;</td>  
-                                        
+                                        <td v-text="lead.direccion"></td>
+                                        <td>${{formatNumber(lead.rango1)}}</td>
+                                        <td>{{formatNumber(lead.rango2)}}m&sup2;</td>
+
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td v-text="lead.descripcion"></td> 
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td v-text="lead.descripcion"></td>
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                     </tr>
                                 </tbody>
@@ -479,40 +479,40 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>  
+                                            </button>
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>      
+                                            </button>
                                             <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
-                                            </button>                           
+                                            </button>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>    
+                                        </td>
                                         <td v-else-if="lead.diferencia > 15" class="td2">
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.descripcion"></td>  
+                                        <td v-text="lead.descripcion"></td>
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2"> 
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                        <td class="td2">
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
                                             @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            
+
                         </div>
                         <nav>
                             <ul class="pagination">
@@ -520,41 +520,41 @@
                                     <a class="page-link" href="#" @click="listarLeads(1)">Inicio</a>
                                 </li>
                                 <li v-if="arrayLeads.current_page-3 >= 1">
-                                    <a class="page-link" href="#" 
-                                    @click="listarLeads(arrayLeads.current_page-3)" 
+                                    <a class="page-link" href="#"
+                                    @click="listarLeads(arrayLeads.current_page-3)"
                                     v-text="arrayLeads.current_page-3" ></a>
                                 </li>
                                 <li v-if="arrayLeads.current_page-2 >= 1">
-                                    <a class="page-link" href="#" 
-                                    @click="listarLeads(arrayLeads.current_page-2)" 
+                                    <a class="page-link" href="#"
+                                    @click="listarLeads(arrayLeads.current_page-2)"
                                     v-text="arrayLeads.current_page-2" ></a>
                                 </li>
                                 <li v-if="arrayLeads.current_page-1 >= 1">
-                                    <a class="page-link" href="#" 
-                                    @click="listarLeads(arrayLeads.current_page-1)" 
+                                    <a class="page-link" href="#"
+                                    @click="listarLeads(arrayLeads.current_page-1)"
                                     v-text="arrayLeads.current_page-1" ></a>
                                 </li>
-                                
+
                                 <li class="page-item active">
                                     <a class="page-link" href="#" v-text="arrayLeads.current_page" ></a>
                                 </li>
-                                
+
                                 <li v-if="arrayLeads.current_page+1 <= arrayLeads.last_page">
-                                    <a class="page-link" href="#" 
-                                    @click="listarLeads(arrayLeads.current_page+1)" 
+                                    <a class="page-link" href="#"
+                                    @click="listarLeads(arrayLeads.current_page+1)"
                                     v-text="arrayLeads.current_page+1" ></a>
                                 </li>
                                 <li v-if="arrayLeads.current_page+2 <= arrayLeads.last_page">
-                                    <a class="page-link" href="#" 
-                                    @click="listarLeads(arrayLeads.current_page+2)" 
+                                    <a class="page-link" href="#"
+                                    @click="listarLeads(arrayLeads.current_page+2)"
                                     v-text="arrayLeads.current_page+2" ></a>
                                 </li>
                                 <li v-if="arrayLeads.current_page+3 <= arrayLeads.last_page">
-                                    <a class="page-link" href="#" 
-                                    @click="listarLeads(arrayLeads.current_page+3)" 
+                                    <a class="page-link" href="#"
+                                    @click="listarLeads(arrayLeads.current_page+3)"
                                     v-text="arrayLeads.current_page+3" ></a>
                                 </li>
-                                
+
                                 <li class="page-item">
                                     <a class="page-link" href="#" @click="listarLeads(arrayLeads.last_page)">Ultimo</a>
                                 </li>
@@ -596,7 +596,7 @@
                                         <option value="7">Cumbres León</option>
                                     </select>
                                 </div>
-                                
+
                             </div>
                             <!--  VENTAS  -->
                             <div v-if="motivo == 1" class="">
@@ -619,8 +619,8 @@
                                             <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
                                         </div>
                                     </div>
-                                    
-                                    
+
+
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Campaña publicitaria</label>
                                         <div class="col-md-4">
@@ -640,7 +640,7 @@
                                                 <option value="Pagina web">Pagina web</option>
                                                 <option value="Llamada Telefonica">Llamada Telefónica</option>
                                                 <option value="Correo Electrónico">Correo Electrónico</option>
-                                                
+
                                             </datalist>
                                         </div>
                                     </div>
@@ -650,7 +650,7 @@
                                         <div class="col-md-6">
                                             <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
+                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
                                                     :value="proyecto.id" v-text="proyecto.nombre">
                                                 </option>
                                                 <option value="0">Otro...</option>
@@ -675,7 +675,7 @@
                                                 <option value="1">Inversión</option>
                                             </select>
                                         </div>
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
                                         <div class="col-md-5">
                                             <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
@@ -709,14 +709,14 @@
                                     <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
                                         <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
 
-                                        <select class="form-control" 
-                                            v-if="userId == 25511 
-                                                || userId == 28669 
-                                                || userId == 28270 
-                                                || userId == 11 
-                                                || userId == 28271 
-                                                || userId == 29692 
-                                                || userId == 13 
+                                        <select class="form-control"
+                                            v-if="userId == 25511
+                                                || userId == 28669
+                                                || userId == 28270
+                                                || userId == 11
+                                                || userId == 28271
+                                                || userId == 29692
+                                                || userId == 13
                                                 || rolId == 1"  v-model="vendedor_asign" >
                                             <option value="">Vendedor asignado</option>
                                             <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
@@ -747,11 +747,11 @@
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
                                         </div>
 
-                                       
+
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
@@ -769,7 +769,7 @@
                                             <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label class="col-md-1 form-control-label" for="text-input">Sexo:</label>
                                         <div class="col-md-3">
@@ -789,23 +789,23 @@
                                         <label class="col-md-2 form-control-label" for="text-input">Estado civil:</label>
                                         <div class="col-md-3">
                                             <select class="form-control" v-model="edo_civil" >
-                                                <option value="0">Seleccione</option> 
-                                                <option value="1">Casado - separacion de bienes</option> 
-                                                <option value="2">Casado - sociedad conyugal</option> 
-                                                <option value="3">Divorciado</option> 
-                                                <option value="4">Soltero</option> 
+                                                <option value="0">Seleccione</option>
+                                                <option value="1">Casado - separacion de bienes</option>
+                                                <option value="2">Casado - sociedad conyugal</option>
+                                                <option value="3">Divorciado</option>
+                                                <option value="4">Soltero</option>
                                                 <option value="5">Union libre</option>
-                                                <option value="6">Viudo</option> 
-                                                <option value="7">Otro</option>    
+                                                <option value="6">Viudo</option>
+                                                <option value="7">Otro</option>
                                             </select>
                                         </div>
 
                                         <label class="col-md-1 form-control-label" for="text-input">Hijos?</label>
                                         <div class="col-md-2">
                                             <select class="form-control" v-model="hijos" >
-                                                <option value="">Seleccione</option> 
-                                                <option value="1">Si</option> 
-                                                <option value="0">No</option>   
+                                                <option value="">Seleccione</option>
+                                                <option value="1">Si</option>
+                                                <option value="0">No</option>
                                             </select>
                                         </div>
 
@@ -815,7 +815,7 @@
                                         </div>
                                     </div>
 
-                                    
+
                                         <div class="form-group row line-separator"></div>
 
                                         <div class="col-md-12">
@@ -829,7 +829,7 @@
                                             <datalist id="cityname">
                                                 <option value="">Seleccione</option>
                                                 <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.nombre" v-text="empresa.nombre"></option>
-                                                
+
                                             </datalist>
                                         </div>
 
@@ -838,7 +838,7 @@
                                             <input type="number" min="0" v-model="ingresos" class="form-control" >
                                         </div>
                                     </div>
-                                        
+
                                 </template>
 
                                 <template v-if="paso == 3"> <!-- Datos Importantes -->
@@ -880,8 +880,8 @@
                                         <label class="col-md-2 form-control-label" for="text-input">¿Mascotas?</label>
                                         <div class="col-md-2">
                                             <select class="form-control" v-model="mascotas" >
-                                                <option value="1">Si</option> 
-                                                <option value="0">No</option>   
+                                                <option value="1">Si</option>
+                                                <option value="0">No</option>
                                             </select>
                                         </div>
 
@@ -893,10 +893,10 @@
                                         <label class="col-md-2 form-control-label" v-if="mascotas == 1" for="text-input">Tamaño de mascota?</label>
                                         <div v-if="mascotas == 1" class="col-md-2">
                                             <select class="form-control" v-model="tam_mascota" >
-                                                <option value="0">Seleccione</option> 
-                                                <option value="1">Chico</option> 
-                                                <option value="2">Mediano</option>   
-                                                <option value="3">Grande</option>   
+                                                <option value="0">Seleccione</option>
+                                                <option value="1">Chico</option>
+                                                <option value="2">Mediano</option>
+                                                <option value="3">Grande</option>
                                             </select>
                                         </div>
                                     </div>
@@ -906,8 +906,8 @@
                                         <label class="col-md-2 form-control-label" for="text-input">¿Autos?</label>
                                         <div class="col-md-2">
                                             <select class="form-control" v-model="autos" >
-                                                <option value="1">Si</option> 
-                                                <option value="0">No</option>   
+                                                <option value="1">Si</option>
+                                                <option value="0">No</option>
                                             </select>
                                         </div>
 
@@ -918,7 +918,7 @@
 
                                     </div>
 
-                                    
+
                                         <div class="form-group row line-separator"></div>
 
                                     <div class="form-group row">
@@ -952,7 +952,7 @@
                                             <textarea v-model="perfil_cliente" class="form-control" rows="5"></textarea>
                                         </div>
                                     </div>
-                                        
+
                                 </template>
 
 
@@ -994,11 +994,11 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="email" class="form-control" placeholder="Email">
                                         </div>
-                                        
+
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
@@ -1075,11 +1075,11 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="email" class="form-control" placeholder="Email">
                                         </div>
-                                        
+
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
@@ -1090,8 +1090,8 @@
                                             <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
                                         </div>
                                     </div>
-                                    
-                                    
+
+
                                     <div class="form-group row">
 
                                         <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
@@ -1104,7 +1104,7 @@
                                                 <option value="Pagina web">Pagina web</option>
                                                 <option value="Llamada Telefonica">Llamada Telefónica</option>
                                                 <option value="Correo Electrónico">Correo Electrónico</option>
-                                                
+
                                             </datalist>
                                         </div>
                                     </div>
@@ -1114,7 +1114,7 @@
                                         <div class="col-md-6">
                                             <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
+                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
                                                     :value="proyecto.id" v-text="proyecto.nombre">
                                                 </option>
                                                 <option value="0">Otro...</option>
@@ -1131,7 +1131,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-3 form-control-label" for="text-input">Prototipo de interes: </label>
                                         <div class="col-md-5">
                                             <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
@@ -1160,7 +1160,7 @@
                                         </div>
                                     </div>
 
-                                    
+
                                 </template>
 
 
@@ -1180,7 +1180,7 @@
                                         <div class="col-md-2">
                                             <button type="button" @click="getDatosCliente(rfc)" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-search"></i>
-                                            </button> 
+                                            </button>
                                         </div>
                                     </div>
 
@@ -1217,7 +1217,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
@@ -1258,7 +1258,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular_rec" class="form-control" placeholder="Celular" maxlength="10">
@@ -1306,11 +1306,11 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="email" class="form-control" placeholder="Email">
                                         </div>
-                                        
+
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
@@ -1321,8 +1321,8 @@
                                             <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
                                         </div>
                                     </div>
-                                    
-                                    
+
+
                                     <div class="form-group row">
 
                                         <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
@@ -1335,7 +1335,7 @@
                                                 <option value="Pagina web">Pagina web</option>
                                                 <option value="Llamada Telefonica">Llamada Telefónica</option>
                                                 <option value="Correo Electrónico">Correo Electrónico</option>
-                                                
+
                                             </datalist>
                                         </div>
                                     </div>
@@ -1348,17 +1348,17 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-3 form-control-label" for="text-input">Medida en m&sup2;: </label>
                                         <div class="col-md-5">
                                             <input class="form-control" type="number" v-model="rango2">
                                             <p><strong>{{ formatNumber(rango2)}}m&sup2;</strong></p>
-                                            
+
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-3 form-control-label" for="text-input">Precio por m&sup2;: </label>
                                         <div class="col-md-5">
                                             <input class="form-control" type="number" v-model="rango1">
@@ -1378,7 +1378,7 @@
                                     </div>
 
 
-                                    
+
                                 </template>
 
 
@@ -1420,11 +1420,11 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="email" class="form-control" placeholder="Email">
                                         </div>
-                                        
+
                                     </div>
 
                                     <div class="form-group row">
-                                        
+
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
@@ -1443,7 +1443,7 @@
                                         </div>
                                     </div>
 
-                                   
+
                                     <div class="form-group row">
                                         <strong>
                                             <label class="col-md-12 form-control-label" for="text-input">Descripción </label>
@@ -1464,7 +1464,7 @@
                                             <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
                                             </div>
                                         </div>
-                                    </div>                                
+                                    </div>
                             <!-- fin del form solicitud de avaluo -->
 
 
@@ -1472,17 +1472,17 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <template v-if="motivo == 1">
-                                <button type="button" 
+                                <button type="button"
                                 v-if="(tipoAccion == 2 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
                                 class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
                             </template>
-                            
-                            <button type="button" 
+
+                            <button type="button"
                                 v-if="(tipoAccion == 2 && motivo == 1 && status !=0)"
                                 class="btn btn-danger" @click="descartar()">Descartar
                             </button>
 
-                            <!-- <button type="button" 
+                            <!-- <button type="button"
                                 v-if="(tipoAccion == 2 && motivo == 1 && status !=0 && status !=3)"
                                 class="btn btn-success" @click="finalizar()">Finalizar
                             </button> -->
@@ -1530,7 +1530,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <table class="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
@@ -1541,14 +1541,14 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="observacion in arrayObs.data" :key="observacion.id">
-                                            
+
                                             <td v-text="observacion.usuario" ></td>
                                             <td v-text="observacion.comentario" ></td>
                                             <td v-text="observacion.created_at"></td>
-                                        </tr>                               
+                                        </tr>
                                     </tbody>
                                 </table>
-                                
+
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -1570,12 +1570,12 @@ export default {
             rolId:{type: String},
             userId:{type: String}
         },
-    
+
     data() {
         return{
-            
+
             arrayLeads:[],
-           
+
             myAlerts:{
                 popAlert : function(title = 'Alert',type = "success", description =''){
                     swal({
@@ -1594,7 +1594,7 @@ export default {
             tituloModal:'',
             tipoAccion: 0,
             editar:0,
-            b_cliente:'',
+            b_cliente: '',
             b_status : '',
             b_campania : '',
             b_asesor:'',
@@ -1617,9 +1617,9 @@ export default {
             arrayEmpresas:[],
             arrayCreditos:[],
             arrayObs:[],
-            arrayAsesores:[], 
+            arrayAsesores:[],
             arrayClaves:[],
-            
+
             medio_contacto: '',
             medio_publicidad: '',
             campania_id: '',
@@ -1694,25 +1694,25 @@ export default {
             if(this.rfc == null)
                 this.rfc = '';
 
-            if(this.nombre=='' || this.apellidos=='') 
+            if(this.nombre=='' || this.apellidos=='')
                 this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
-            if(this.sexo=='' || this.sexo == null) 
+            if(this.sexo=='' || this.sexo == null)
                 this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
-            if(this.celular=='' || this.celular == null) 
+            if(this.celular=='' || this.celular == null)
                 this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
-            if(this.email=='' || this.email == null) 
+            if(this.email=='' || this.email == null)
                 this.errorMostrarMsjProspecto.push("Ingresar email personal.");
-            if(this.empresa=='' || this.empresa == null) 
+            if(this.empresa=='' || this.empresa == null)
                 this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
-            if(this.f_nacimiento=='' || this.f_nacimiento == null) 
+            if(this.f_nacimiento=='' || this.f_nacimiento == null)
                 this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
-            if(this.rfc=='' || this.rfc.length < 10 || this.rfc == null) 
+            if(this.rfc=='' || this.rfc.length < 10 || this.rfc == null)
                 this.errorMostrarMsjProspecto.push("RFC no valido");
-            if(this.edo_civil==0 || this.edo_civil == '' || this.edo_civil == null) 
+            if(this.edo_civil==0 || this.edo_civil == '' || this.edo_civil == null)
                 this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
-            if(this.proyecto_interes==0 || this.proyecto_interes == '') 
+            if(this.proyecto_interes==0 || this.proyecto_interes == '')
                 this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
-            if(this.medio_contacto=='') 
+            if(this.medio_contacto=='')
                 this.errorMostrarMsjProspecto.push("Escribir medio de contacto.");
 
             if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
@@ -1724,7 +1724,7 @@ export default {
         sendProspecto(){
             if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
                 return;
-            
+
             let me = this;
             //Con axios se llama el metodo store del controller
             axios.post('/leads/sendProspectos',{
@@ -1806,7 +1806,7 @@ export default {
             if (result.value) {
                 let me = this;
 
-            axios.delete('/leads/delete', 
+            axios.delete('/leads/delete',
                     {params: {'id': id}}).then(function (response){
                     swal(
                     'Borrado!',
@@ -1851,7 +1851,7 @@ export default {
         },
 
         finalizar(){
-            
+
             let me = this;
             (async function getFruit () {
                 const {value: comentario} = await Swal({
@@ -1876,7 +1876,7 @@ export default {
 
                         'lead_id' : me.id,
                         'comentario' :comentario,
-                        
+
                 })
                     //Con axios se llama el metodo update de LoteController
                     axios.put('/leads/changeStatus',{
@@ -1944,7 +1944,7 @@ export default {
             me.encuentraRFC=0;
             axios.get(url).then(function (response) {
             var respuesta = response.data;
-            me.encuentraRFC = respuesta.rfc1; 
+            me.encuentraRFC = respuesta.rfc1;
 
             if(me.encuentraRFC==1) {
                 var vendedorrfc = [];
@@ -1957,7 +1957,7 @@ export default {
                 animation: false,
                 customClass: 'animated tada'
                 })
-            } 
+            }
             else{
                 if(me.vendedor_asign == '' || me.vendedor_asign == 0)
                     me.vendedor_asign = 0;
@@ -2003,8 +2003,8 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
-            
-        }, 
+
+        },
         getClavesLadas(){
             let me = this;
             me.arrayClaves=[];
@@ -2016,15 +2016,15 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
-            
-        },   
+
+        },
         listarLeads (page){
             if(this.rolId == 12)
                 this.b_motivo = 2;
 
             if(this.rolId == 3)
                 this.b_motivo = 6;
-            
+
             axios.get('/leads/index'+
                 '?buscar='+this.b_cliente+
                 '&campania='+this.b_campania+
@@ -2037,7 +2037,7 @@ export default {
                 '&prioridad='+this.b_prioridad+
                 '&modelo='+this.b_modelo+
                 '&page='+page
-                
+
             ).then(
                 response => this.arrayLeads = response.data,
 
@@ -2051,7 +2051,7 @@ export default {
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayEmpresas = respuesta.empresas.data;
-                
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -2071,7 +2071,7 @@ export default {
         },
         selectModelo(buscar){
             let me = this;
-            
+
             me.arrayModelos=[];
             var url = '/select_modelo_proyecto?buscar=' + buscar;
             axios.get(url).then(function (response) {
@@ -2101,7 +2101,7 @@ export default {
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayCampanias = respuesta;
-                
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -2112,24 +2112,24 @@ export default {
             me.loading = true;
             me.datos.empresa_coa = val1.nombre;
             me.datos.empresaCoa_id = val1.id;
-            
-        }, 
+
+        },
         getDatosEmpresa2(val1){
             let me = this;
             me.loading = true;
             me.datos.empresa_id = val1.id;
             me.datos.empresa = val1.nombre;
-            
+
         },
         selectEstados(){
             let me = this;
             me.arrayEstados=[];
-            
+
             var url = '/select_estados';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayEstados = respuesta.estados;
-                
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -2169,7 +2169,7 @@ export default {
             axios.get('/leads/getObs'+
                 '?id='+id+
                 '&page='+page
-                
+
             ).then(
                 response => this.arrayObs = response.data
             ).catch(error => console.log(error));
@@ -2177,8 +2177,8 @@ export default {
             sms(){
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/customsms').then(function (response){
-                    
-                    
+
+
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -2260,12 +2260,12 @@ export default {
                 'motivo' : this.motivo,
                 'descripcion' : this.descripcion,
                 'direccion' : this.direccion,
-                
+
             }).then(function (response){
                 me.proceso=false;
                 me.cerrarModal();
                 me.listarLeads(1);
-                
+
                 me.myAlerts.popAlert('Lead registrado correctamente');
             }).catch(function (error){
                 console.log(error);
@@ -2343,12 +2343,12 @@ export default {
                 'motivo' : this.motivo,
                 'descripcion' : this.descripcion,
                 'direccion' : this.direccion,
-                
+
             }).then(function (response){
                 me.proceso=false;
                 me.cerrarModal();
                 me.listarLeads(1);
-                
+
                 me.myAlerts.popAlert('Guardado correctamente');
             }).catch(function (error){
                 console.log(error);
@@ -2366,11 +2366,11 @@ export default {
                 'lead_id' : this.id,
                 'comentario' : this.comentario,
                 'fecha_aviso' : this.fecha_aviso
-                
+
             }).then(function (response){
                 me.proceso=false;
                 me.listarObservacion(1,me.id);
-                
+
                 //Se muestra mensaje Success
                 const toast = Swal.mixin({
                     toast: true,
@@ -2391,16 +2391,16 @@ export default {
 
         abrirModal1(id,motivo){
             this.modal = 2;
-            this.id = id; 
+            this.id = id;
             this.comentario = '';
             this.tituloModal='Observaciones';
             this.motivo = motivo;
             this.fecha_aviso = '';
         },
-        
+
         abrirModal(accion,data =[]){
             this.selectEstados();
-            
+
             this.selectEmpresa(this.empresa);
             this.selectCreditos();
 
@@ -2418,7 +2418,7 @@ export default {
                     this.motivo = data['motivo'];
                     this.descripcion = data['descripcion'];
                     this.direccion = data['direccion'];
-                    
+
                     //////////// PASO 1 //////////////////
                     this.nombre = data['nombre'];
                     this.apellidos = data['apellidos'];
@@ -2471,7 +2471,7 @@ export default {
                     this.prospecto = data['prospecto'];
 
                     this.status = data['status'];
-                    
+
                     break;
                 }
 
@@ -2485,7 +2485,7 @@ export default {
                     this.motivo = 0;
                     this.descripcion = '';
                     this.direccion = '';
-                    
+
                     //////////// PASO 1 //////////////////
                     this.nombre = '';
                     this.apellidos = '';
@@ -2537,7 +2537,7 @@ export default {
                     break;
                 }
             }
-            
+
 
         },
 
@@ -2556,17 +2556,22 @@ export default {
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
 
-    
+
         back(){
             this.editar = 0;
         }
     },
     mounted() {
+        this.b_cliente = this.$root.$data.buscar;
         this.listarLeads(1);
         this.selectCampania(1);
         this.selectFraccionamientos();
         this.selectAsesores();
         this.getClavesLadas();
+        this.$root.$data.buscar = '';
+    },
+    created(){
+
     }
 };
 </script>
@@ -2591,7 +2596,7 @@ export default {
         position: fixed !important;
         background-color: #3c29297a !important;
         overflow-y: auto;
-    
+
     }
     .div-error {
     display: flex;
@@ -2601,7 +2606,7 @@ export default {
     color: red !important;
     font-weight: bold;
     }
-    
+
     .bg-gradient-primary {
         background: #00ADEF!important;
         background: linear-gradient(45deg,#321fdb 0%,#00ADEF 100%)!important;
@@ -2637,6 +2642,6 @@ export default {
 
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
 </style>
 

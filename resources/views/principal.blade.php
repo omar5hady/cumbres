@@ -31,15 +31,15 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <ul class="nav navbar-nav d-md-down-none">
-            <!-- <li class="nav-item px-3">
+            {{-- <li class="nav-item px-3">
                 <a class="nav-link" href="#">Escritorio</a>
             </li>
             <li class="nav-item px-3">
                 <a class="nav-link" href="#">Configuraciones</a>
-            </li> -->
+            </li> --}}
         </ul>
         <ul class="nav navbar-nav ml-auto">
-        <notification rol-id="{{Auth::user()->rol_id}}" :notifications="notifications"></notification>
+            <notification rol-id="{{Auth::user()->rol_id}}" :notifications="notifications"></notification>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/{{Auth::user()->foto_user}}" class="img-avatar">

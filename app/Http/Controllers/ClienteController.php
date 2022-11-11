@@ -1416,11 +1416,9 @@ class ClienteController extends Controller
 
         }
         $cont = 0;
-
-        if(sizeof($ids))
-            //$value = random_int ( 0 , (sizeOf($ids)-1) );
-            $value = 0;
-
+        $value = 0;
+        if(sizeof($ids) == 0)
+            $ids[0] = 19;
 
         return [
             'vendedores' =>  $vendedores,

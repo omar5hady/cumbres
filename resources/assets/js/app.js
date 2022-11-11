@@ -236,7 +236,8 @@ const app = new Vue({
         notifications: [],
         proyectos : [],
         modelos : [],
-        etapas: []
+        etapas: [],
+        buscar:''
     },
 
     methods:{
