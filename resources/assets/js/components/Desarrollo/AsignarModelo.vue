@@ -13,7 +13,7 @@
                     <button type="button" class="btn btn-success" @click="abrirModal('asignar')" >
                         <i class="icon-pencil"></i>&nbsp;Asignar Etapas
                     </button>
-                    
+
                     <!---->
                 </div>
                 <div class="card-body">
@@ -33,7 +33,7 @@
                                 </select>
 
                                 <input type="text" v-else v-model="buscar" @keyup.enter="listarLote(1)" class="form-control" placeholder="Texto a buscar">
-                                
+
                             </div>
                         </div>
                     </div>
@@ -41,12 +41,12 @@
                     <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
                         <div class="col-md-6">
                             <div class="input-group">
-                                
-                                <select class="form-control"  v-model="buscar2" @keyup.enter="listarLote(1)"> 
+
+                                <select class="form-control"  v-model="buscar2" @keyup.enter="listarLote(1)">
                                     <option value="">Etapa</option>
                                     <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                 </select>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -59,16 +59,16 @@
                                     <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                 </select>
                                 <input type="text" v-model="buscar3" @keyup.enter="listarLote(1)" class="form-control" placeholder="Manzana a buscar">
-                                
+
                             </div>
                         </div>
                     </div>
                     <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
                         <div class="col-md-8">
                             <div class="input-group">
-                                
+
                                 <input type="text" v-model="b_lote" @keyup.enter="listarLote(1)" class="form-control" placeholder="Lote a buscar">
-                                <select class="form-control" v-model="b_puente" @keyup.enter="listarLote(1)"> 
+                                <select class="form-control" v-model="b_puente" @keyup.enter="listarLote(1)">
                                     <option value="">Credito Puente</option>
                                     <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                 </select>
@@ -102,143 +102,356 @@
 
                     <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
                         <li class="nav-item" v-if="arrayLote.total > 0">
-                            <a class="nav-link" 
+                            <a class="nav-link"
                             @click="listarLote(1),vista=1" v-bind:class="{ 'text-primary active': vista==1 }"
                             role="tab" v-text="'Habilitadas Venta: '+ arrayLote.total"></a>
                         </li>
                         <li class="nav-item" v-if="arrayRenta.total > 0">
-                            <a class="nav-link" 
+                            <a class="nav-link"
                             @click="listarLote(1),vista=2" v-bind:class="{ 'text-primary active': vista==2 }"
                             role="tab" v-text="'Habilitadas Renta: '+ arrayRenta.total"></a>
                         </li>
                         <li class="nav-item" v-if="arrayDeshabilitados.total > 0">
-                            <a class="nav-link"  
+                            <a class="nav-link"
                             @click="listarLote(1),vista=3" v-bind:class="{ 'text-primary active': vista==3 }"
-                            role="tab" v-text="'Deshabilitadas: ' + arrayDeshabilitados.total"></a>
+                            role="tab" v-text="'Deshabilitadas: ' + (arrayDeshabilitados.total + des_comercial.total + des_macro.total)"></a>
                         </li>
                     </ul>
 
                     <!-- Deshabilitadas -->
                         <div  v-if="vista == 3">
-                            <TableComponent>
-                                <template v-slot:thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
-                                        </th>
-                                        <th>Opciones</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa comercial</th>
-                                        <th>Etapa de servicio</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Sublote</th>
-                                        <th>Modelo</th>
-                                        <th>Calle</th>
-                                        <th>Numero</th>
-                                        <th>Interior</th>
-                                        <th>Terreno mts&sup2;</th>
-                                        <th>Construcción mts&sup2;</th>
-                                        <th>Credito puente</th>
-                                        <th>Avance</th>
-                                        <th>Casa en venta</th>
-                                        <th>Canal de ventas</th>
+                            <ul class="nav nav2 nav-tabs" id="myTab2" role="tablist">
+                                <li class="nav-item" v-if="arrayDeshabilitados.total > 0">
+                                    <a class="nav-link"
+                                    @click="listarLote(1),vistaDes=1" v-bind:class="{ 'text-primary active': vistaDes==1 }"
+                                    role="tab" v-text="'Lotes: ' + arrayDeshabilitados.total"></a>
+                                </li>
+                                <li class="nav-item" v-if="des_comercial.total > 0">
+                                    <a class="nav-link"
+                                    @click="listarLote(1),vistaDes=2" v-bind:class="{ 'text-primary active': vistaDes==2 }"
+                                    role="tab" v-text="'Lote Comercial: ' + des_comercial.total"></a>
+                                </li>
+                                <li class="nav-item" v-if="des_macro.total > 0">
+                                    <a class="nav-link"
+                                    @click="listarLote(1),vistaDes=3" v-bind:class="{ 'text-primary active': vistaDes==3 }"
+                                    role="tab" v-text="'Macrolotes: ' + des_macro.total"></a>
+                                </li>
+                            </ul>
+                            <template v-if="vistaDes == 1">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                            </th>
+                                            <th>Opciones</th>
+                                            <th>Proyecto</th>
+                                            <th>Etapa comercial</th>
+                                            <th>Etapa de servicio</th>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                            <th>Sublote</th>
+                                            <th>Modelo</th>
+                                            <th>Calle</th>
+                                            <th>Numero</th>
+                                            <th>Interior</th>
+                                            <th>Terreno mts&sup2;</th>
+                                            <th>Construcción mts&sup2;</th>
+                                            <th>Credito puente</th>
+                                            <th>Avance</th>
+                                            <th>Casa en venta</th>
+                                            <th>Canal de ventas</th>
+                                            </tr>
+                                    </template>
+                                    <template v-slot:tbody>
+                                        <tr v-for="lote in arrayDeshabilitados.data" :key="lote.id">
+                                            <td class="td2">
+                                                <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
+                                            </td>
+
+                                            <td class="td2">
+                                                <button type="button" @click="abrirModal('actualizar',lote)" class="btn btn-warning btn-sm">
+                                                    <i class="icon-pencil"></i>
+                                                </button>
+                                                <button v-if="lote.tipo == 2" title="Subir colindancias" type="button" @click="abrirModal('subirArchivo',lote)" class="btn btn-dark btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
+                                                </button>
+                                            </td>
+
+                                            <td class="td2" v-text="lote.proyecto"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
+                                                <span v-else class="badge badge-danger"> Por Asignar </span>
+                                            </td>
+                                            <td class="td2" v-text="lote.etapa_servicios"></td>
+                                            <td class="td2" v-text="lote.manzana"></td>
+                                            <td class="td2" v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="lote.sublote"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                                <span v-else class="badge badge-danger"> Por Asignar </span>
+                                            </td>
+                                            <td class="td2" v-text="lote.calle"></td>
+                                            <td class="td2" v-text="lote.numero"></td>
+                                            <td class="td2" v-text="lote.interior"></td>
+                                            <td class="td2" v-text="lote.terreno"></td>
+                                            <td class="td2" v-text="lote.construccion"></td>
+                                            <td class="td2" v-text="lote.credito_puente"></td>
+                                            <td class="td2" v-text="lote.avance+'%'"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
+                                                <span v-else class="badge badge-danger">Inactivo</span>
+                                            </td>
+                                            <td class="td2" v-text="lote.comentarios"></td>
                                         </tr>
-                                </template>
-                                <template v-slot:tbody>
-                                    <tr v-for="lote in arrayDeshabilitados.data" :key="lote.id">
-                                        <td class="td2">
-                                            <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
-                                        </td>
+                                    </template>
+                                </TableComponent>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" @click="listarLote(1)">
+                                            <a class="page-link" href="#" >Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayDeshabilitados.current_page > 1"
+                                            @click="listarLote(arrayDeshabilitados.current_page-1)">
+                                            <a class="page-link" href="#" >Ant</a>
+                                        </li>
 
-                                        <td class="td2">
-                                            <button type="button" @click="abrirModal('actualizar',lote)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="lote.tipo == 2" title="Subir colindancias" type="button" @click="abrirModal('subirArchivo',lote)" class="btn btn-dark btn-sm">
-                                                <i class="icon-cloud-upload"></i>
-                                            </button>
-                                        </td>
+                                        <li class="page-item" v-if="arrayDeshabilitados.current_page-3 >= 1"
+                                            @click="listarLote(arrayDeshabilitados.current_page-3)">
+                                            <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page-3"></a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayDeshabilitados.current_page-2 >= 1"
+                                            @click="listarLote(arrayDeshabilitados.current_page-2)">
+                                            <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page-2"></a>
+                                        </li>
+                                        <li class="page-item" v-if="arrayDeshabilitados.current_page-1 >= 1"
+                                            @click="listarLote(arrayDeshabilitados.current_page-1)">
+                                            <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page-1"></a>
+                                        </li>
+                                        <li class="page-item active" >
+                                            <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="arrayDeshabilitados.current_page+1 <= arrayDeshabilitados.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(arrayDeshabilitados.current_page+1)"
+                                            v-text="arrayDeshabilitados.current_page+1"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="arrayDeshabilitados.current_page+2 <= arrayDeshabilitados.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(arrayDeshabilitados.current_page+2)"
+                                            v-text="arrayDeshabilitados.current_page+2"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="arrayDeshabilitados.current_page+3 <= arrayDeshabilitados.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(arrayDeshabilitados.current_page+3)"
+                                            v-text="arrayDeshabilitados.current_page+3"></a>
+                                        </li>
 
-                                        <td class="td2" v-text="lote.proyecto"></td>
-                                        <td class="td2">
-                                            <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
-                                            <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
-                                        <td class="td2" v-text="lote.etapa_servicios"></td>
-                                        <td class="td2" v-text="lote.manzana"></td>
-                                        <td class="td2" v-text="lote.num_lote"></td>
-                                        <td class="td2" v-text="lote.sublote"></td>
-                                        <td class="td2">
-                                            <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
-                                            <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
-                                        <td class="td2" v-text="lote.calle"></td>
-                                        <td class="td2" v-text="lote.numero"></td>
-                                        <td class="td2" v-text="lote.interior"></td>
-                                        <td class="td2" v-text="lote.terreno"></td>
-                                        <td class="td2" v-text="lote.construccion"></td>
-                                        <td class="td2" v-text="lote.credito_puente"></td>
-                                        <td class="td2" v-text="lote.avance+'%'"></td>
-                                        <td class="td2">
-                                            <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
-                                            <span v-else class="badge badge-danger">Inactivo</span>
-                                        </td> 
-                                        <td class="td2" v-text="lote.comentarios"></td>
-                                    </tr>
-                                </template>
-                            </TableComponent>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" @click="listarLote(1)">
-                                        <a class="page-link" href="#" >Inicio</a>
-                                    </li>
-                                    <li class="page-item" v-if="arrayDeshabilitados.current_page > 1"
-                                        @click="listarLote(arrayDeshabilitados.current_page-1)">
-                                        <a class="page-link" href="#" >Ant</a>
-                                    </li>
+                                        <li class="page-item" v-if="arrayDeshabilitados.current_page < arrayDeshabilitados.last_page"
+                                            @click="listarLote(arrayDeshabilitados.current_page+1)">
+                                            <a class="page-link" href="#" >Sig</a>
+                                        </li>
+                                        <li class="page-item" @click="listarLote(arrayDeshabilitados.last_page)">
+                                            <a class="page-link" href="#" >Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </template>
+                            <template v-if="vistaDes == 2">
+                                <TableComponent :cabecera="[
+                                    'Opciones','Proyecto','Etapa comercial','Etapa de servicio','Manzana','# Lote','Sublote',
+                                    'Modelo','Calle','Numero','Interior','Terreno mts&sup2;','Construcción mts&sup2;',
+                                    'Credito puente','Avance','Casa en venta','Canal de ventas'
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="lote in des_comercial.data" :key="lote.id">
+                                            <td class="td2">
+                                                <button type="button" @click="abrirModal('actualizar',lote)" class="btn btn-warning btn-sm">
+                                                    <i class="icon-pencil"></i>
+                                                </button>
+                                                <button v-if="lote.tipo == 2" title="Subir colindancias" type="button" @click="abrirModal('subirArchivo',lote)" class="btn btn-dark btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
+                                                </button>
+                                            </td>
 
-                                    <li class="page-item" v-if="arrayDeshabilitados.current_page-3 >= 1"
-                                        @click="listarLote(arrayDeshabilitados.current_page-3)">
-                                        <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page-3"></a>
-                                    </li>
-                                    <li class="page-item" v-if="arrayDeshabilitados.current_page-2 >= 1"
-                                        @click="listarLote(arrayDeshabilitados.current_page-2)">
-                                        <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page-2"></a>
-                                    </li>
-                                    <li class="page-item" v-if="arrayDeshabilitados.current_page-1 >= 1"
-                                        @click="listarLote(arrayDeshabilitados.current_page-1)">
-                                        <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page-1"></a>
-                                    </li>
-                                    <li class="page-item active" >
-                                        <a class="page-link" href="#" v-text="arrayDeshabilitados.current_page"></a>
-                                    </li>
-                                    <li class="page-item" 
-                                        v-if="arrayDeshabilitados.current_page+1 <= arrayDeshabilitados.last_page">
-                                        <a class="page-link" href="#" @click="listarLote(arrayDeshabilitados.current_page+1)" 
-                                        v-text="arrayDeshabilitados.current_page+1"></a>
-                                    </li>
-                                    <li class="page-item" 
-                                        v-if="arrayDeshabilitados.current_page+2 <= arrayDeshabilitados.last_page">
-                                        <a class="page-link" href="#" @click="listarLote(arrayDeshabilitados.current_page+2)"
-                                        v-text="arrayDeshabilitados.current_page+2"></a>
-                                    </li>
-                                    <li class="page-item" 
-                                        v-if="arrayDeshabilitados.current_page+3 <= arrayDeshabilitados.last_page">
-                                        <a class="page-link" href="#" @click="listarLote(arrayDeshabilitados.current_page+3)"
-                                        v-text="arrayDeshabilitados.current_page+3"></a>
-                                    </li>
+                                            <td class="td2" v-text="lote.proyecto"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
+                                                <span v-else class="badge badge-danger"> Por Asignar </span>
+                                            </td>
+                                            <td class="td2" v-text="lote.etapa_servicios"></td>
+                                            <td class="td2" v-text="lote.manzana"></td>
+                                            <td class="td2" v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="lote.sublote"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                                <span v-else class="badge badge-danger"> Por Asignar </span>
+                                            </td>
+                                            <td class="td2" v-text="lote.calle"></td>
+                                            <td class="td2" v-text="lote.numero"></td>
+                                            <td class="td2" v-text="lote.interior"></td>
+                                            <td class="td2" v-text="lote.terreno"></td>
+                                            <td class="td2" v-text="lote.construccion"></td>
+                                            <td class="td2" v-text="lote.credito_puente"></td>
+                                            <td class="td2" v-text="lote.avance+'%'"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
+                                                <span v-else class="badge badge-danger">Inactivo</span>
+                                            </td>
+                                            <td class="td2" v-text="lote.comentarios"></td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" @click="listarLote(1)">
+                                            <a class="page-link" href="#" >Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="des_comercial.current_page > 1"
+                                            @click="listarLote(des_comercial.current_page-1)">
+                                            <a class="page-link" href="#" >Ant</a>
+                                        </li>
 
-                                    <li class="page-item" v-if="arrayDeshabilitados.current_page < arrayDeshabilitados.last_page"
-                                        @click="listarLote(arrayDeshabilitados.current_page+1)">
-                                        <a class="page-link" href="#" >Sig</a>
-                                    </li>
-                                    <li class="page-item" @click="listarLote(arrayDeshabilitados.last_page)">
-                                        <a class="page-link" href="#" >Ultimo</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                                        <li class="page-item" v-if="des_comercial.current_page-3 >= 1"
+                                            @click="listarLote(des_comercial.current_page-3)">
+                                            <a class="page-link" href="#" v-text="des_comercial.current_page-3"></a>
+                                        </li>
+                                        <li class="page-item" v-if="des_comercial.current_page-2 >= 1"
+                                            @click="listarLote(des_comercial.current_page-2)">
+                                            <a class="page-link" href="#" v-text="des_comercial.current_page-2"></a>
+                                        </li>
+                                        <li class="page-item" v-if="des_comercial.current_page-1 >= 1"
+                                            @click="listarLote(des_comercial.current_page-1)">
+                                            <a class="page-link" href="#" v-text="des_comercial.current_page-1"></a>
+                                        </li>
+                                        <li class="page-item active" >
+                                            <a class="page-link" href="#" v-text="des_comercial.current_page"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="des_comercial.current_page+1 <= des_comercial.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(des_comercial.current_page+1)"
+                                            v-text="des_comercial.current_page+1"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="des_comercial.current_page+2 <= des_comercial.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(des_comercial.current_page+2)"
+                                            v-text="des_comercial.current_page+2"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="des_comercial.current_page+3 <= des_comercial.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(des_comercial.current_page+3)"
+                                            v-text="des_comercial.current_page+3"></a>
+                                        </li>
+
+                                        <li class="page-item" v-if="des_comercial.current_page < des_comercial.last_page"
+                                            @click="listarLote(des_comercial.current_page+1)">
+                                            <a class="page-link" href="#" >Sig</a>
+                                        </li>
+                                        <li class="page-item" @click="listarLote(des_comercial.last_page)">
+                                            <a class="page-link" href="#" >Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </template>
+                            <template v-if="vistaDes == 3">
+                                <TableComponent :cabecera="[
+                                    'Opciones','Proyecto','Etapa comercial','Etapa de servicio','Manzana',
+                                    '# Lote','Sublote','Modelo','Calle','Numero','Interior','Terreno mts&sup2;',
+                                    'Construcción mts&sup2;','Credito puente','Avance','Casa en venta','Canal de ventas',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="lote in des_macro.data" :key="lote.id">
+                                            <td class="td2">
+                                                <button type="button" @click="abrirModal('actualizar',lote)" class="btn btn-warning btn-sm">
+                                                    <i class="icon-pencil"></i>
+                                                </button>
+                                                <button v-if="lote.tipo == 2" title="Subir colindancias" type="button" @click="abrirModal('subirArchivo',lote)" class="btn btn-dark btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
+                                                </button>
+                                            </td>
+
+                                            <td class="td2" v-text="lote.proyecto"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
+                                                <span v-else class="badge badge-danger"> Por Asignar </span>
+                                            </td>
+                                            <td class="td2" v-text="lote.etapa_servicios"></td>
+                                            <td class="td2" v-text="lote.manzana"></td>
+                                            <td class="td2" v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="lote.sublote"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                                <span v-else class="badge badge-danger"> Por Asignar </span>
+                                            </td>
+                                            <td class="td2" v-text="lote.calle"></td>
+                                            <td class="td2" v-text="lote.numero"></td>
+                                            <td class="td2" v-text="lote.interior"></td>
+                                            <td class="td2" v-text="lote.terreno"></td>
+                                            <td class="td2" v-text="lote.construccion"></td>
+                                            <td class="td2" v-text="lote.credito_puente"></td>
+                                            <td class="td2" v-text="lote.avance+'%'"></td>
+                                            <td class="td2">
+                                                <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
+                                                <span v-else class="badge badge-danger">Inactivo</span>
+                                            </td>
+                                            <td class="td2" v-text="lote.comentarios"></td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" @click="listarLote(1)">
+                                            <a class="page-link" href="#" >Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="des_macro.current_page > 1"
+                                            @click="listarLote(des_macro.current_page-1)">
+                                            <a class="page-link" href="#" >Ant</a>
+                                        </li>
+
+                                        <li class="page-item" v-if="des_macro.current_page-3 >= 1"
+                                            @click="listarLote(des_macro.current_page-3)">
+                                            <a class="page-link" href="#" v-text="des_macro.current_page-3"></a>
+                                        </li>
+                                        <li class="page-item" v-if="des_macro.current_page-2 >= 1"
+                                            @click="listarLote(des_macro.current_page-2)">
+                                            <a class="page-link" href="#" v-text="des_macro.current_page-2"></a>
+                                        </li>
+                                        <li class="page-item" v-if="des_macro.current_page-1 >= 1"
+                                            @click="listarLote(des_macro.current_page-1)">
+                                            <a class="page-link" href="#" v-text="des_macro.current_page-1"></a>
+                                        </li>
+                                        <li class="page-item active" >
+                                            <a class="page-link" href="#" v-text="des_macro.current_page"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="des_macro.current_page+1 <= des_macro.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(des_macro.current_page+1)"
+                                            v-text="des_macro.current_page+1"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="des_macro.current_page+2 <= des_macro.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(des_macro.current_page+2)"
+                                            v-text="des_macro.current_page+2"></a>
+                                        </li>
+                                        <li class="page-item"
+                                            v-if="des_macro.current_page+3 <= des_macro.last_page">
+                                            <a class="page-link" href="#" @click="listarLote(des_macro.current_page+3)"
+                                            v-text="des_macro.current_page+3"></a>
+                                        </li>
+
+                                        <li class="page-item" v-if="des_macro.current_page < des_macro.last_page"
+                                            @click="listarLote(des_macro.current_page+1)">
+                                            <a class="page-link" href="#" >Sig</a>
+                                        </li>
+                                        <li class="page-item" @click="listarLote(des_macro.last_page)">
+                                            <a class="page-link" href="#" >Ultimo</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </template>
                         </div>
 
                     <!-- Habilitadas Venta -->
@@ -266,7 +479,7 @@
                                         <td class="td2">
                                             <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
+                                        </td>
                                         <td class="td2" v-text="lote.etapa_servicios"></td>
                                         <td class="td2" v-text="lote.manzana"></td>
                                         <td class="td2" v-text="lote.num_lote"></td>
@@ -274,7 +487,7 @@
                                         <td class="td2">
                                             <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
-                                        </td> 
+                                        </td>
                                         <td class="td2" v-text="lote.calle"></td>
                                         <td class="td2" v-text="lote.numero"></td>
                                         <td class="td2" v-text="lote.interior"></td>
@@ -285,7 +498,7 @@
                                         <td class="td2">
                                             <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
                                             <span v-else class="badge badge-danger">Inactivo</span>
-                                        </td> 
+                                        </td>
                                         <td class="td2" v-text="lote.comentarios"></td>
                                         <td class="td2">
                                             <span v-if="lote.status == 0" class="badge badge-primary">Disponible</span>
@@ -294,7 +507,7 @@
                                         </td>
                                         <td class="td2" v-text="lote.emp_constructora"></td>
                                         <td class="td2" v-text="lote.emp_terreno"></td>
-                                    </tr> 
+                                    </tr>
                                 </template>
                             </TableComponent>
                             <nav>
@@ -323,17 +536,17 @@
                                     <li class="page-item active" >
                                         <a class="page-link" href="#" v-text="arrayLote.current_page"></a>
                                     </li>
-                                    <li class="page-item" 
+                                    <li class="page-item"
                                         v-if="arrayLote.current_page+1 <= arrayLote.last_page">
-                                        <a class="page-link" href="#" @click="listarLote(arrayLote.current_page+1)" 
+                                        <a class="page-link" href="#" @click="listarLote(arrayLote.current_page+1)"
                                         v-text="arrayLote.current_page+1"></a>
                                     </li>
-                                    <li class="page-item" 
+                                    <li class="page-item"
                                         v-if="arrayLote.current_page+2 <= arrayLote.last_page">
                                         <a class="page-link" href="#" @click="listarLote(arrayLote.current_page+2)"
                                         v-text="arrayLote.current_page+2"></a>
                                     </li>
-                                    <li class="page-item" 
+                                    <li class="page-item"
                                         v-if="arrayLote.current_page+3 <= arrayLote.last_page">
                                         <a class="page-link" href="#" @click="listarLote(arrayLote.current_page+3)"
                                         v-text="arrayLote.current_page+3"></a>
@@ -370,13 +583,13 @@
                                         <td class="td2" v-text="lote.proyecto"></td>
                                         <td class="td2">
                                             <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
-                                        </td> 
+                                        </td>
                                         <td class="td2" v-text="lote.manzana"></td>
                                         <td class="td2" v-text="lote.num_lote"></td>
                                         <td class="td2" v-text="lote.sublote"></td>
                                         <td class="td2">
                                             <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
-                                        </td> 
+                                        </td>
                                         <td class="td2" v-text="lote.calle"></td>
                                         <td class="td2" v-text="lote.numero"></td>
                                         <td class="td2" v-text="lote.interior"></td>
@@ -414,17 +627,17 @@
                                     <li class="page-item active" >
                                         <a class="page-link" href="#" v-text="arrayRenta.current_page"></a>
                                     </li>
-                                    <li class="page-item" 
+                                    <li class="page-item"
                                         v-if="arrayRenta.current_page+1 <= arrayRenta.last_page">
-                                        <a class="page-link" href="#" @click="listarLote(arrayRenta.current_page+1)" 
+                                        <a class="page-link" href="#" @click="listarLote(arrayRenta.current_page+1)"
                                         v-text="arrayRenta.current_page+1"></a>
                                     </li>
-                                    <li class="page-item" 
+                                    <li class="page-item"
                                         v-if="arrayRenta.current_page+2 <= arrayRenta.last_page">
                                         <a class="page-link" href="#" @click="listarLote(arrayRenta.current_page+2)"
                                         v-text="arrayRenta.current_page+2"></a>
                                     </li>
-                                    <li class="page-item" 
+                                    <li class="page-item"
                                         v-if="arrayRenta.current_page+3 <= arrayRenta.last_page">
                                         <a class="page-link" href="#" @click="listarLote(arrayRenta.current_page+3)"
                                         v-text="arrayRenta.current_page+3"></a>
@@ -447,7 +660,7 @@
         </div>
         <!--Inicio del modal agregar/actualizar-->
         <ModalComponent v-if="modal==1"
-            :titulo="tituloModal"            
+            :titulo="tituloModal"
             @closeModal="cerrarModal()"
         >
             <template v-slot:body>
@@ -474,7 +687,7 @@
                         <div class="col-md-4">
                             <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
                         </div>
-                    </div>                        
+                    </div>
 
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
@@ -511,7 +724,7 @@
                     </div>
 
                     <div class="form-group row line-separator"></div>
-                    
+
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
                         <div class="col-md-3" >
@@ -591,7 +804,7 @@
                     </div>
 
                     <div class="form-group row line-separator"></div>
-                    
+
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Casa muestra</label>
                         <div class="col-md-2">
@@ -625,6 +838,22 @@
                     </div>
 
                     <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Macrolote</label>
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="macro_lote" id="radio8" type="radio" value="1" name="radios8">
+                                <label class="form-check-label" for="radio8">Si </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="macro_lote" id="radio9" type="radio" value="0" name="radios8">
+                                <label class="form-check-label" for="radio9">No </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Regimen condominio</label>
                         <div class="col-md-2">
                             <div class="form-check">
@@ -640,7 +869,7 @@
                         </div>
 
                         <!-- Hidden para agregar el id de la empresa -->
-                        
+
                         <div class="form-group row">
                             <div class="col-md-4">
                                 <input type="hidden" value="1" v-model="empresa_id" class="form-control">
@@ -648,7 +877,7 @@
                         </div>
                     </div>
 
-                    
+
                     <!-- Div para mostrar los errores que mande validerModelo -->
                     <div v-show="errorLote" class="form-group row div-error">
                         <div class="text-center text-error">
@@ -712,7 +941,7 @@
             </template>
         </ModalComponent>
         <!--Fin del modal-->
-        
+
         <!-- Manual -->
         <ModalComponent v-if="modal==3"
             @closeModal="cerrarModal()"
@@ -720,17 +949,17 @@
         >
             <template v-slot:body>
                 <p>
-                    Para asignar un modelo debe asegurarse de haber creado el o los modelos que desea asignar a 
+                    Para asignar un modelo debe asegurarse de haber creado el o los modelos que desea asignar a
                     los lotes vea el módulo <strong>“Desarrollo -> Modelos”</strong>.
                 </p>
                 <p>
-                    Puede asignar el modelo a una serie de lote seleccionando la casilla que aparece de lado 
-                    izquierdo y presionando el botón de asignar modelo, o puede asignar el modelo dando clic 
+                    Puede asignar el modelo a una serie de lote seleccionando la casilla que aparece de lado
+                    izquierdo y presionando el botón de asignar modelo, o puede asignar el modelo dando clic
                     sobre el icono del lote (lapis) de editar y seleccionando el modelo deseado para ese lote en específico.
                 </p>
                 <p>
-                    Para <strong>activar un lote</strong> y ponerlo a la venta debe asegurarse de que la etapa y el modelo que le 
-                    fue asignado al lote cuente con un precio y un precio de terreno excedente asignado vea el 
+                    Para <strong>activar un lote</strong> y ponerlo a la venta debe asegurarse de que la etapa y el modelo que le
+                    fue asignado al lote cuente con un precio y un precio de terreno excedente asignado vea el
                     módulo <strong>“Precios -> Precios de etapa”</strong>.
                 </p>
             </template>
@@ -774,6 +1003,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 terreno : 0,
                 construccion : 0,
                 casa_muestra: 0,
+                macro_lote: 0,
                 lote_comercial: 0,
                 habilitado: 0,
                 credito_puente:'',
@@ -786,15 +1016,19 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 arrayLote : [],
                 arrayRenta : [],
                 arrayDeshabilitados : [],
+                des_comercial : [],
+                des_macro : [],
+
                 vista : 1,
+                vistaDes : 1,
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
-                
+
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
@@ -820,13 +1054,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
         },
         computed:{
 
-            arrayProyectos(){ 
+            arrayProyectos(){
                 return _.uniqBy(this.arrayLote, 'proyecto');
             }
 
         },
 
-        
+
         methods : {
             onImageChange(e){
                 console.log(e.target.files[0]);
@@ -838,9 +1072,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 e.preventDefault();
 
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('archivo', this.archivo);
                 formData.append('id', this.id);
                 let me = this;
@@ -864,17 +1098,17 @@ import TableComponent from '../Componentes/TableComponent.vue'
             },
 
             selectAll: function() {
-            this.lotes_ini = [];
+                this.lotes_ini = [];
 
-            if (!this.allSelected) {
-                for (var lote in this.arrayDeshabilitados.data
-                ) {
-                    this.lotes_ini.push(this.arrayDeshabilitados.data[lote].id.toString());
+                if (!this.allSelected) {
+                    for (var lote in this.arrayDeshabilitados.data
+                    ) {
+                        this.lotes_ini.push(this.arrayDeshabilitados.data[lote].id.toString());
+                    }
                 }
-            }
             },
 
-             select: function() {
+            select: function() {
                 this.allSelected = false;
             },
             asignarModelos(){
@@ -891,7 +1125,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                 }).then((result) => {
 
@@ -900,7 +1134,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             axios.put('/lote/actualizar3',{
                                 'id': element,
                                 'etapa_id' : this.etapa_id,
-                            }); 
+                            });
                         });
                         me.listarLote(1);
                         me.cerrarModal();
@@ -918,14 +1152,16 @@ import TableComponent from '../Componentes/TableComponent.vue'
             /**Metodo para mostrar los registros */
             listarLote(page){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.buscar2 + '&buscar3=' + me.buscar3  + 
-                    '&bmodelo=' + me.b_modelo + '&blote=' + me.b_lote + '&b_habilitado='+ me.b_habilitado 
+                var url = '/lote?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.buscar2 + '&buscar3=' + me.buscar3  +
+                    '&bmodelo=' + me.b_modelo + '&blote=' + me.b_lote + '&b_habilitado='+ me.b_habilitado
                             +'&criterio=' + me.criterio + '&b_puente=' + me.b_puente + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes
                     me.arrayRenta = respuesta.rentas
                     me.arrayDeshabilitados = respuesta.deshabilitadas
+                    me.des_comercial = respuesta.des_comercial
+                    me.des_macro = respuesta.des_macro
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -968,7 +1204,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     me.b_empresa="";
                     me.b_empresa2="";
                 }
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -982,11 +1218,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
             selectEtapa(buscar){
                 let me = this;
                 if(me.modal == 0){
-                
+
                 me.buscar2=""
                 me.buscar3=""
                 }
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -998,11 +1234,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
 
-            
+
 
             selectModelo(buscar){
                 let me = this;
-              
+
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -1028,11 +1264,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-            
+
 
             selectConsYTerreno(buscar){
                 let me = this;
-              
+
                 me.arrayModelosTC=[];
                 var url = '/select_construcc_terreno?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -1048,12 +1284,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-            },        
+            },
 
             actualizarLote(){
                 if (this.proceso === true) {
                     return;
-                } 
+                }
                 if(this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
@@ -1078,6 +1314,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'terreno': this.terreno,
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
+                    'macro_lote' : this.macro_lote,
                     'lote_comercial': this.lote_comercial,
                     'habilitado': this.habilitado,
                     'credito_puente':this.credito_puente,
@@ -1088,7 +1325,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'extra_ext' : this.extra_ext,
                     'casa_renta' : this.casa_renta,
                     'precio_renta' : this.precio_renta
-                    
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1137,7 +1374,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/lote/eliminar', 
+                axios.delete('/lote/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -1197,7 +1434,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.credito_puente='';
                 this.comentarios= '';
                 this.fecha_termino_ventas = '';
-                
+
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
                 this.archivo = '';
@@ -1210,7 +1447,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(accion,data =[]){
-                
+
                 if(this.lotes_ini.length<1 && accion=='asignar'){
                     Swal({
                         title: 'No se ha seleccionado ningun lote',
@@ -1228,7 +1465,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             this.modelo_id=data['modelo_id'];
                         if(data['etapas']!='Sin Asignar')
                             this.etapa_id=data['etapa_id'];
-                            
+
                         this.proceso=false;
                         this.modal =1;
                         this.tituloModal='Actualizar Lote';
@@ -1237,11 +1474,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.fraccionamiento_id=data['fraccionamiento_id'];
                         this.extra = data['extra'];
                         this.extra_ext = data['extra_ext'];
-                        
+
                         this.manzana=data['manzana'];
                         this.num_lote=data['num_lote'];
                         this.sublote=data['sublote'];
-                        
+
                         this.empresa_id=data['empresa_id'];
                         this.calle=data['calle'];
                         this.numero=data['numero'];
@@ -1249,6 +1486,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.terreno=data['terreno'];
                         this.construccion=data['construccion'];
                         this.casa_muestra=data['casa_muestra'];
+                        this.macro_lote = data['macro_lote'];
                         this.lote_comercial=data['lote_comercial'];
                         this.habilitado=data['habilitado'];
                         this.credito_puente=data['credito_puente'];
@@ -1258,7 +1496,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                         this.casa_renta = data['casa_renta'];
                         this.precio_renta = data['precio_renta'];
-            
+
                         break;
                     }
 
@@ -1340,5 +1578,5 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

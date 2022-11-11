@@ -10,7 +10,7 @@ class lote extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['fraccionamiento_id','etapa_id','manzana','num_lote','sublote','modelo_id',
                             'empresa_id','calle','numero','interior','terreno','construccion','casa_muestra',
-                            'casa_renta',
+                            'casa_renta', 'macro_lote',
                             'lote_comercial','ini_obra','clv_catastral','etapa_servicios','credito_puente',
                             'siembra','fecha_ini','fecha_fin','arquitecto_id','ehl_solicitado','sobreprecio',
                             'aviso','obra_extra', 'habilitado','apartado','contrato','excedente_terreno',

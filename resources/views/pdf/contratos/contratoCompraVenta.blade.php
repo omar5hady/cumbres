@@ -678,20 +678,20 @@
                 @endif
                 <div class="table-row">
                     @if ($contratos[0]->coacreditado == 0)
+                        <div colspan="10" class="table-cell">ASESOR DE VENTAS:
+                            {{ mb_strtoupper($contratos[0]->vendedor_nombre) }}
+                            {{ mb_strtoupper($contratos[0]->vendedor_apellidos) }} ______________________</div>
+                        <div colspan="10" class="table-cell">COMPRADOR:
+                            {{ mb_strtoupper($contratos[0]->apellidos) }}
+                            {{ mb_strtoupper($contratos[0]->nombre) }}____________________</div>
+                    @else
                         <div colspan="6" class="table-cell">ASESOR DE VENTAS:
                             {{ mb_strtoupper($contratos[0]->vendedor_nombre) }}
                             {{ mb_strtoupper($contratos[0]->vendedor_apellidos) }} ______________________</div>
                         <div colspan="6" class="table-cell">COMPRADOR:
                             {{ mb_strtoupper($contratos[0]->apellidos) }}
                             {{ mb_strtoupper($contratos[0]->nombre) }}____________________</div>
-                    @else
-                        <div colspan="4" class="table-cell">ASESOR DE VENTAS:
-                            {{ mb_strtoupper($contratos[0]->vendedor_nombre) }}
-                            {{ mb_strtoupper($contratos[0]->vendedor_apellidos) }} ______________________</div>
-                        <div colspan="4" class="table-cell">COMPRADOR:
-                            {{ mb_strtoupper($contratos[0]->apellidos) }}
-                            {{ mb_strtoupper($contratos[0]->nombre) }}____________________</div>
-                        <div colspan="4" class="table-cell">Y : {{ mb_strtoupper($contratos[0]->nombre_coa) }}
+                        <div colspan="6" class="table-cell">Y : {{ mb_strtoupper($contratos[0]->nombre_coa) }}
                             {{ mb_strtoupper($contratos[0]->apellidos_coa) }}____________________</div>
                     @endif
                 </div>
@@ -705,32 +705,33 @@
                     </div>
                 @endif
                 <div class="table-row">
-                    <div colspan="12" class="table-cell">NOTA: ESTE DOCUMENTO PIERDE SU EFECTO SI EN EL LAPSO DE 5
+                    <div colspan="20" class="table-cell">NOTA: ESTE DOCUMENTO PIERDE SU EFECTO SI EN EL LAPSO DE 5
                         DIAS NATURALES NO ES LIQUIDADO EL PAGO #1.</div>
                 </div>
                 <div class="table-row">
                     @if ($contratos[0]->medio_publicidad === 'Recomendado')
-                        <div colspan="12" class="table-cell">MEDIO POR EL CUAL SE ENTERO: RECOMENDADO. (NOMBRE:
+                        <div colspan="20" class="table-cell">MEDIO POR EL CUAL SE ENTERO: RECOMENDADO. (NOMBRE:
                             {{ mb_strtoupper($contratos[0]->nombre_recomendado) }})</div>
                     @else
-                        <div colspan="12" class="table-cell">MEDIO POR EL CUAL SE ENTERO:
+                        <div colspan="20" class="table-cell">MEDIO POR EL CUAL SE ENTERO:
                             {{ mb_strtoupper($contratos[0]->medio_publicidad) }}</div>
                     @endif
                 </div>
                 <div class="table-row">
-                    <div colspan="12" class="table-cell">OBSERVACIONES:
-                        {{ mb_strtoupper($contratos[0]->observacion) }}</div>
+                    <div colspan="20" class="table-cell">OBSERVACIONES:
+                        {{ mb_strtoupper($contratos[0]->observacion) }}
+                    </div>
                 </div>
                 <!--<div class="table-row">
                     <div colspan="5" class="table-cell"></div>
                 </div>  -->
                 <div class="table-row">
                     @if ($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
-                        <div colspan="12" class="table-cell" style="text-align:center;">
+                        <div colspan="20" class="table-cell" style="text-align:center;">
                             <hr style="border-color:gray;"> www.concretania.mx
                         </div>
                     @else
-                        <div colspan="12" class="table-cell" style="text-align:center;">
+                        <div colspan="20" class="table-cell" style="text-align:center;">
                             <hr style="border-color:gray;"> www.casascumbres.mx
                         </div>
                     @endif

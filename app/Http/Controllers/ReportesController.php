@@ -3874,8 +3874,20 @@ class ReportesController extends Controller
             else
                 $lotes = $lotes->whereBetween('licencias.avance', [1, 97]);
 
-            return $lotes->paginate(20);
 
+            $lotes = $lotes->paginate(20);
+
+            if(sizeOf($lotes)){
+                foreach($lotes as $lote){
+                    $venta = Credito::join('contratos','creditos.id','=','contratos.id')
+                                ->select('creditos.precio_venta','creditos.promocion')
+                                ->where('lote_id','=',$lote->id)->first();
+                    $lote->precio_venta = $venta->precio_venta;
+                    $lote->promocion = $venta->promocion;
+                }
+            }
+
+            return $lotes;
     }
 
     private function getContadoIndividualizados($empresa){

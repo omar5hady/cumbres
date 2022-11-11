@@ -38,7 +38,7 @@ export default {
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #e4e5e6;
+    background: #a5a6a6;
   }
 
 .table2 {

@@ -25,13 +25,13 @@
 
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
-                                <a @click="tab=1" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }">
+                                <a @click="tab=1" class="btn nav-link" v-bind:class="{ 'text-info active': tab==1 }">
                                     Cobranza
                                     <span v-if="tab ==1" style="font-size: 1em; text-align:center;" class="badge badge-light"></span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab=2" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }">
+                                <a @click="tab=2" class="btn nav-link" v-bind:class="{ 'text-info active': tab==2 }">
                                     Inventario
                                     <span v-if="tab ==2" style="font-size: 1em; text-align:center;" class="badge badge-light"></span>
                                 </a>
@@ -41,14 +41,14 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
-                                        <select class="form-control col-md-4" v-model="emp_constructora">
-                                            <option value="">Empresa constructora</option>
-                                            <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
-                                            <option value="CONCRETANIA">CONCRETANIA</option>
-                                        </select>
+                                    <select class="form-control col-md-4" v-model="emp_constructora">
+                                        <option value="">Empresa constructora</option>
+                                        <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                        <option value="CONCRETANIA">CONCRETANIA</option>
+                                    </select>
 
-                                        <button v-if="tab == 1" type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <button v-if="tab == 2" type="submit" @click="getReporteInventarios(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button v-if="tab == 1" type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button v-if="tab == 2" type="submit" @click="getReporteInventarios(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -240,6 +240,14 @@
                                                     {{(lote.sublote) ? `${lote.num_lote} ${lote.sublote}` : lote.num_lote}}
                                                 </td>
                                                 <td class="td2" v-text="lote.modelo"></td>
+                                                <td v-if="lote.precio_venta"> {{ '$' + formatNumber(lote.precio_venta)}}</td>
+                                                <td v-if="lote.promocion">
+                                                    <button v-if="lote.promocion != 'Sin Promoción'" class="btn btn-primary" title="Ver Promoción"
+                                                        @click="mostrarPromo(lote.promocion)"
+                                                    >
+                                                        <i class="icon-eye"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </template>
                                     </TableComponent>
@@ -439,6 +447,15 @@
                     console.log(error);
                     me.loading = false
                 });
+            },
+
+            mostrarPromo(promo){
+                 Swal({
+                    title: 'Promoción',
+                    html: "<h6 style='color:#111F4F'>" + promo + "</h6>",
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
             },
 
             getReporteInventarios(page){

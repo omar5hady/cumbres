@@ -140,7 +140,13 @@ class LoteController extends Controller
         //se asignan a variable para lotes, rentas y deshabilitadas
         $lotes = $this->getLotes($request);
         $rentas = $this->getLotes($request);
+
         $deshabilitadas = $this->getLotes($request);
+        $des_comercial = $this->getLotes($request);
+        $des_macro = $this->getLotes($request);
+
+
+
         //Filtros necesarios para obtener lotes habilitados
         $lotes = $lotes->where('lotes.habilitado','=', 1)
                         ->where('lotes.casa_renta','=', 0)
@@ -195,6 +201,26 @@ class LoteController extends Controller
 
         //Filtros necesarios para obtener lotes deshabilitados
         $deshabilitadas = $deshabilitadas->where('lotes.habilitado','=', 0)
+                        ->where('lotes.lote_comercial','=',0)
+                        ->where('lotes.macro_lote','=',0)
+                        ->orderBy('fraccionamientos.nombre','ASC')
+                        ->orderBy('etapas.num_etapa','ASC')
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')
+                        ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
+
+        $des_comercial = $des_comercial->where('lotes.habilitado','=', 0)
+                        ->where('lotes.lote_comercial','=',1)
+                        ->where('lotes.macro_lote','=',0)
+                        ->orderBy('fraccionamientos.nombre','ASC')
+                        ->orderBy('etapas.num_etapa','ASC')
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')
+                        ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
+
+        $des_macro = $des_macro->where('lotes.habilitado','=', 0)
+                        ->where('lotes.lote_comercial','=',0)
+                        ->where('lotes.macro_lote','=',1)
                         ->orderBy('fraccionamientos.nombre','ASC')
                         ->orderBy('etapas.num_etapa','ASC')
                         ->orderBy('lotes.manzana','ASC')
@@ -205,6 +231,8 @@ class LoteController extends Controller
             'lotes' => $lotes,
             'rentas' => $rentas,
             'deshabilitadas' => $deshabilitadas,
+            'des_comercial' => $des_comercial,
+            'des_macro' => $des_macro,
         ];
     }
 
@@ -372,6 +400,7 @@ class LoteController extends Controller
         $lote->construccion = $request->construccion;
         $lote->credito_puente = $request->credito_puente;
         $lote->lote_comercial = $request->lote_comercial;
+        $lote->macro_lote = $request->macro_lote;
         $lote->casa_muestra = $request->casa_muestra;
         $lote->comentarios = $request->comentarios;
         $lote->regimen_condom = $request->regimen;
@@ -653,10 +682,18 @@ class LoteController extends Controller
                             $emp_terreno = 'Grupo Constructor Cumbres';
                             $emp_constructora = 'Grupo Constructor Cumbres';
 
+                            $macro_lote = $lote_comercial = 0;
+
                             if($value->empresa_terreno == 2)
                                 $emp_terreno = 'CONCRETANIA';
                             if($value->empresa_constructora == 2)
                                 $emp_constructora = 'CONCRETANIA';
+
+                            if($value->macro_lote == 1)
+                                $macro_lote = 1;
+                            if($value->lote_comercial == 1)
+                                $lote_comercial = 1;
+
                             //Si el numero de lote en el archivo no esta vacio
                             if($value->num_lote != '' || $value->num_lote != 0)
                             {   //Se inserta el registro en un arreglo.
@@ -679,7 +716,9 @@ class LoteController extends Controller
                                     'arquitecto_id' => 1,
                                     'emp_constructora' =>$emp_constructora,
                                     'emp_terreno' =>$emp_terreno,
-                                    'indivisos' => $value->indivisos
+                                    'indivisos' => $value->indivisos,
+                                    'lote_comercial' => $lote_comercial,
+                                    'macro_lote' => $macro_lote
                                 ];
                                 //Y se crea otro arreglo para las licencias
                                 $insert2[]  = [

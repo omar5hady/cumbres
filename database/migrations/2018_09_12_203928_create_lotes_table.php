@@ -31,6 +31,7 @@ class CreateLotesTable extends Migration
             $table->boolean('casa_renta')->default(0);
             $table->float('precio_renta',8,2)->default(0);
             $table->boolean('lote_comercial')->default(0);
+            $table->boolean('macro_lote')->default(0);
             $table->boolean('ini_obra')->default(0);
             $table->boolean('habilitado')->default(0);
             $table->boolean('regimen_condom')->default(0);
