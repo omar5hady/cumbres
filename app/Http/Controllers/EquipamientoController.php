@@ -116,7 +116,7 @@ class EquipamientoController extends Controller
         if($request->b_empresa != ''){
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
-        
+
         if ($buscar == '') {
             $contratos = $contratos
                 ->where('contratos.status', '!=', 0)
@@ -290,5 +290,5 @@ class EquipamientoController extends Controller
         $contrato->save();
     }
 
-    
+
 }

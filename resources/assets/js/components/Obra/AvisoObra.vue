@@ -15,63 +15,51 @@
                         </button>
                         <!---->
                     </div>
-                    <!-- Div Card Body para listar -->
-                    <template v-if="listado == 1">
-                        <div class="card-body"> 
-                            <div class="form-group row">
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
-                                            <option value="ini_obras.clave">Clave</option>
-                                            <option value="contratistas.nombre">Contratista</option>
-                                            <option value="ini_obras.f_ini">Fecha de inicio</option>
-                                            <option value="ini_obras.f_fin">Fecha de termino</option>
-                                            <option value="ini_obras.fraccionamiento_id">Proyecto</option>
-                                        </select>
-                                        <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1,buscar,criterio)" v-model="buscar" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                        </select>
-                                         <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
-                                         <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
-                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                    <LoadingComponent v-if="loading"></LoadingComponent>
+                    <template v-else>
+                        <!-- Div Card Body para listar -->
+                        <template v-if="listado == 1">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                                <option value="ini_obras.clave">Clave</option>
+                                                <option value="contratistas.nombre">Contratista</option>
+                                                <option value="ini_obras.f_ini">Fecha de inicio</option>
+                                                <option value="ini_obras.f_fin">Fecha de termino</option>
+                                                <option value="ini_obras.fraccionamiento_id">Proyecto</option>
+                                            </select>
+                                            <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1,buscar,criterio)" v-model="buscar" >
+                                                <option value="">Seleccione</option>
+                                                <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                            </select>
+                                            <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
+                                            <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
+                                            <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <select class="form-control" v-model="b_empresa" >
-                                            <option value="">Empresa constructora</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
-                                        <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a class="btn btn-success" v-bind:href="'/iniobra/excelAvisos?buscar=' + buscar + '&criterio=' + criterio" >
-                                            <i class="icon-pencil"></i>&nbsp;Excel
-                                        </a>
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <select class="form-control" v-model="b_empresa" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
+                                            <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <a class="btn btn-success" v-bind:href="'/iniobra/excelAvisos?buscar=' + buscar + '&criterio=' + criterio" >
+                                                <i class="icon-pencil"></i>&nbsp;Excel
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Clave</th>
-                                            <th>Contratista</th>
-                                            <th>Fraccionamiento</th>
-                                            <th>Superficie total</th>
-                                            <th>Importe total</th>
-                                            <th>Fecha de inicio </th>
-                                            <th>Fecha de termino</th>
-                                            <th>
-                                               
-                                            </th>
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <TableComponent :cabecera="[
+                                    'Opciones','Clave','Contratista','Fraccionamiento','Superficie total','Importe total',
+                                    'Fecha de inicio ','Fecha de termino',''
+                                ]">
+                                    <template v-slot:tbody>
                                         <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id" title="Ver detalle">
                                             <td>
                                                 <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
@@ -80,7 +68,6 @@
                                                 <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
-
                                                 <button title="Subir contrato" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
                                                     <i class="icon-cloud-upload"></i>
                                                 </button>
@@ -108,723 +95,666 @@
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                             </div>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                            <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
-                        </div>
-                    </template>
-                    
-                    <!-- Div Card Body para nuevo registro -->
-                    <template v-else-if="listado == 0">
-                        <div class="card-body"> 
-                            <div class="form-group row border">
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <label for="">Contratista </label>
-                                        <v-select 
-                                            :on-search="selectContratista"
-                                            label="nombre"
-                                            :options="arrayContratista"
-                                            placeholder="Buscar contratista..."
-                                            :onChange="getDatosContratista"
-                                        >
-                                        </v-select>
+                        </template>
+
+                        <!-- Div Card Body para nuevo registro -->
+                        <template v-else-if="listado == 0">
+                            <div class="card-body">
+                                <div class="form-group row border">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="">Contratista </label>
+                                            <v-select
+                                                :on-search="selectContratista"
+                                                label="nombre"
+                                                :options="arrayContratista"
+                                                placeholder="Buscar contratista..."
+                                                :onChange="getDatosContratista"
+                                            >
+                                            </v-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">Clave </label>
+                                        <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">Fecha de inicio </label>
+                                        <input type="date" class="form-control" v-model="f_ini">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">Fecha de termino </label>
+                                        <input type="date" class="form-control" v-model="f_fin">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">% Anticipo </label>
+                                        <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">% Costo Indirecto </label>
+                                        <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Fraccionamiento </label>
+                                            <v-select
+                                                :on-search="selectFraccionamiento"
+                                                label="nombre"
+                                                :options="arrayFraccionamientos"
+                                                placeholder="Buscar proyecto..."
+                                                :onChange="getDatosFraccionamiento"
+                                            >
+                                            </v-select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Dirección del proyecto:</label>
+                                            <input class="form-control"  type="text" v-model="direccion_proy">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Manzana</label>
+                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Entre calle </label>
+                                            <input class="form-control"  type="text" v-model="calle1">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Y Calle </label>
+                                            <input class="form-control"  type="text" v-model="calle2">
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-md-12">
+                                        <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                        <div v-show="errorAvisoObra" class="form-group row div-error">
+                                            <div class="text-center text-error">
+                                                <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group row border">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Lote</label>
+                                            <div class="form-inline">
+                                            <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
+                                                <option value="0">Seleccione</option>
+                                                <template v-for="lotes in arrayLotes">
+                                                    <option v-if="lotes.sublote == null" :key="lotes.id"
+                                                        :value="lotes.id" v-text="lotes.num_lote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin">
+                                                    </option>
+                                                    <option v-else :key="lotes.id" :value="lotes.id"
+                                                        v-text="lotes.num_lote + ' ' + lotes.sublote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin"></option>
+                                                </template>
+                                            </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
+                                            <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
+                                            <input type="text" pattern="\d*" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
+                                            <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
+                                            <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <button @click="agregarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <TableComponent :cabecera="[
+                                            'Opciones','Descripcion','Lote','Manzana','M&sup2;','Costo Directo',
+                                            'Costo Indirecto','Obra extra','Importe','Termino'
+                                        ]">
+                                            <template v-slot:tbody>
+                                                <template v-if="arrayAvisoObraLotes.length">
+                                                    <tr v-for="(detalle,index) in arrayAvisoObraLotes" :key="detalle.id">
+                                                        <td>
+                                                            <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>
+                                                            <input v-model="detalle.descripcion" type="text" class="form-control">
+                                                        </td>
+                                                        <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
+                                                        <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
+                                                        <td v-text="detalle.manzana"></td>
+                                                        <td v-text="detalle.superficie"></td>
+                                                        <td>
+                                                            <input v-model="detalle.costo_directo" type="text" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            {{'$' +formatNumber(detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100)}}
+                                                        </td>
+                                                        <td>
+                                                            <input v-model="detalle.obra_extra" type="text" class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            {{'$' +formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" v-model="detalle.fin_obra" class="form-control">
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr style="background-color: #CEECF5;">
+
+                                                    <td align="right" colspan="5"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
+                                                        <td align="right"> <strong>{{ '$' +formatNumber(total_costo_directo=totalCostoDirecto) }}</strong> </td>
+                                                        <td align="right"> <strong>{{ '$' +formatNumber(total_costo_indirecto=totalCostoIndirecto) }}</strong> </td>
+                                                        <td align="right" colspan="2"> <strong>{{ '$' +formatNumber(total_importe=totalImporte) }}</strong> </td>
+                                                    </tr>
+                                                </template>
+                                                <template v-else>
+                                                    <tr>
+                                                        <td colspan="9">
+                                                            No hay lotes seleccionados
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </template>
+                                        </TableComponent>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label for="">Clave </label>
-                                    <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
-                                </div> 
-                                <div class="col-md-3">
-                                    <label for="">Fecha de inicio </label>
-                                    <input type="date" class="form-control" v-model="f_ini">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">Fecha de termino </label>
-                                    <input type="date" class="form-control" v-model="f_fin">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">% Anticipo </label>
-                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">% Costo Indirecto </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
-                                </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
+                                <!-- Parametros para contrato -->
+                                <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Tipo</label>
+                                            <div class="form-inline">
+                                            <select class="form-control" v-model="tipo">
+                                                <option value="Vivienda">Vivienda</option>
+                                                <option value="Urbanización">Urbanización</option>
+                                                <option value="Casa club">Casa club</option>
+                                                <option value="Caseta">Caseta</option>
+                                                <option value="Locales">Locales</option>
+                                            </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label>IVA</label>
+                                            <div class="form-inline">
+                                            <select class="form-control" v-model="iva">
+                                                <option value="0">No</option>
+                                                <option value="1">Si</option>
+                                            </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
+                                            <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
+                                            <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                        <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Div Card Body para actualizar registros -->
+                        <template v-else-if="listado == 3">
+                            <div class="card-body">
+                                <div class="form-group row border">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="">Contratista </label>
+                                            <v-select
+                                                :on-search="selectContratista"
+                                                label="nombre"
+                                                :options="arrayContratista"
+                                                placeholder="Buscar contratista..."
+                                                :onChange="getDatosContratista"
+                                            >
+                                            </v-select>
+                                            <input type="text" class="form-control" readonly  v-model="contratista">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="">Clave </label>
+                                        <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">Fecha de inicio </label>
+                                        <input type="date" class="form-control" v-model="f_ini">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">Fecha de termino </label>
+                                        <input type="date" class="form-control" v-model="f_fin">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">% Anticipo </label>
+                                        <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="">% Costo Indirecto </label>
+                                        <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
                                         <label for="">Fraccionamiento </label>
-                                        <v-select 
-                                            :on-search="selectFraccionamiento"
-                                            label="nombre"
-                                            :options="arrayFraccionamientos"
-                                            placeholder="Buscar proyecto..."
-                                            :onChange="getDatosFraccionamiento"
-                                        >
-                                        </v-select>
+                                            <input type="text" class="form-control" readonly  v-model="fraccionamiento">
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Dirección del proyecto:</label>
-                                        <input class="form-control"  type="text" v-model="direccion_proy">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Dirección del proyecto:</label>
+                                            <input class="form-control"  type="text" v-model="direccion_proy">
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Manzana</label>
-                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Entre calle </label>
-                                        <input class="form-control"  type="text" v-model="calle1">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Y Calle </label>
-                                        <input class="form-control"  type="text" v-model="calle2">
-                                    </div>
-                                </div>
-
-                                
-
-                                 <div class="col-md-12">
-                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorAvisoObra" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Manzana</label>
+                                            <div class="form-inline">
+                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                            </select>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row border">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Lote</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
-                                            <option value="0">Seleccione</option>
-                                            <template v-for="lotes in arrayLotes">
-                                                <option v-if="lotes.sublote == null" :key="lotes.id" 
-                                                    :value="lotes.id" v-text="lotes.num_lote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin">
-                                                </option>
-                                                <option v-else :key="lotes.id" :value="lotes.id" 
-                                                    v-text="lotes.num_lote + ' ' + lotes.sublote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin"></option>
-                                            </template>
-                                        </select>
-                                           
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Entre calle </label>
+                                            <input class="form-control"  type="text" v-model="calle1">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
-                                        <input type="text" pattern="\d*" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
-                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
-                                        <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
-                                    </div>
-                                </div>
 
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <button @click="agregarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Opciones</th>
-                                                <th>Descripcion</th>
-                                                <th>Lote</th>
-                                                <th>Manzana</th>
-                                                <th>M&sup2;</th>
-                                                <th>Costo Directo</th>
-                                                <th>Costo Indirecto</th>
-                                                <th>Obra extra</th>
-                                                <th>Importe</th>
-                                                <th>Termino</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayAvisoObraLotes.length">
-                                            <tr v-for="(detalle,index) in arrayAvisoObraLotes" :key="detalle.id">
-                                                <td>
-                                                    <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
-                                                        <i class="icon-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <input v-model="detalle.descripcion" type="text" class="form-control">
-                                                </td>
-                                                <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
-                                                <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
-                                                <td v-text="detalle.manzana">
-
-                                                </td>
-                                                <td v-text="detalle.superficie">
-                                                   
-                                                </td>
-                                                <td>
-                                                    <input v-model="detalle.costo_directo" type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    {{'$' +formatNumber(detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100)}}
-                                                </td>
-                                                <td>
-                                                    <input v-model="detalle.obra_extra" type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    {{'$' +formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
-                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
-                                                </td>
-                                                <td>
-                                                    <input type="date" v-model="detalle.fin_obra" class="form-control">
-                                                </td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                               
-                                               <td align="right" colspan="5"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
-                                                <td align="right"> <strong>{{ '$' +formatNumber(total_costo_directo=totalCostoDirecto) }}</strong> </td>
-                                                <td align="right"> <strong>{{ '$' +formatNumber(total_costo_indirecto=totalCostoIndirecto) }}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>{{ '$' +formatNumber(total_importe=totalImporte) }}</strong> </td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="9">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Parametros para contrato -->
-                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Tipo</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="tipo">
-                                            <option value="Vivienda">Vivienda</option>
-                                            <option value="Urbanización">Urbanización</option>
-                                            <option value="Casa club">Casa club</option>
-                                            <option value="Caseta">Caseta</option>
-                                            <option value="Locales">Locales</option>
-                                        </select>
-                                           
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Y Calle </label>
+                                            <input class="form-control"  type="text" v-model="calle2">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <label>IVA</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="iva">
-                                            <option value="0">No</option>
-                                            <option value="1">Si</option>
-                                        </select>
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
 
-                    <!-- Div Card Body para actualizar registros -->
-                    <template v-else-if="listado == 3">
-                        <div class="card-body"> 
-                            <div class="form-group row border">
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <label for="">Contratista </label>
-                                        <v-select 
-                                            :on-search="selectContratista"
-                                            label="nombre"
-                                            :options="arrayContratista"
-                                            placeholder="Buscar contratista..."
-                                            :onChange="getDatosContratista"
-                                        >
-                                        </v-select>
-                                         <input type="text" class="form-control" readonly  v-model="contratista">
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-3">
-                                    <label for="">Clave </label>
-                                    <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
-                                </div> 
-                                <div class="col-md-3">
-                                    <label for="">Fecha de inicio </label>
-                                    <input type="date" class="form-control" v-model="f_ini">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">Fecha de termino </label>
-                                    <input type="date" class="form-control" v-model="f_fin">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">% Anticipo </label>
-                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">% Costo Indirecto </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                       <label for="">Fraccionamiento </label>
-                                        <input type="text" class="form-control" readonly  v-model="fraccionamiento">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Dirección del proyecto:</label>
-                                        <input class="form-control"  type="text" v-model="direccion_proy">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Manzana</label>
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                        </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Entre calle </label>
-                                        <input class="form-control"  type="text" v-model="calle1">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Y Calle </label>
-                                        <input class="form-control"  type="text" v-model="calle2">
-                                    </div>
-                                </div>
-
-                                 <div class="col-md-12">
-                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorAvisoObra" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                    <div class="col-md-12">
+                                        <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                        <div v-show="errorAvisoObra" class="form-group row div-error">
+                                            <div class="text-center text-error">
+                                                <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
-                                
-                            </div>
-                            <div class="form-group row border">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Lote</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
-                                            <option value="0">Seleccione</option>
-                                            <template v-for="lotes in arrayLotes">
-                                                <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                                <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' ' + lotes.sublote"></option>
+                                <div class="form-group row border">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Lote</label>
+                                            <div class="form-inline">
+                                                <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
+                                                    <option value="0">Seleccione</option>
+                                                    <template v-for="lotes in arrayLotes">
+                                                        <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                        <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' ' + lotes.sublote"></option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
+                                            <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
+                                            <input type="text" pattern="\d*" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
+                                            <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
+                                            <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <TableComponent
+                                            :cabecera="[
+                                                'Opciones','Descripcion','Lote','Manzana','M&sup2;','Costo Directo',
+                                                'Costo Indirecto','Obra extra','Importe','Termino'
+                                            ]"
+                                        >
+                                            <template v-slot:tbody>
+                                                <template v-if="arrayAvisoObraLotes.length">
+                                                    <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
+                                                        <td>
+                                                            <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>
+                                                            <input v-model="detalle.descripcion" type="text" class="form-control">
+                                                        </td>
+                                                        <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
+                                                        <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
+                                                        <td v-text="detalle.manzana"></td>
+                                                        <td style="text-align: right;" v-text="detalle.construccion"></td>
+                                                        <td style="text-align: right;">
+                                                            <input v-model="detalle.costo_directo" type="text" class="form-control">
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            <input v-model="detalle.obra_extra" type="text" class="form-control">
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
+                                                        </td>
+                                                        <td>
+                                                            <input v-model="detalle.fin_obra" type="date" class="form-control">
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr style="background-color: #CEECF5;">
+                                                        <td align="right" colspan="5"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
+                                                        <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
+                                                        <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
+                                                        <td align="right" colspan="2"> <strong>{{'$'+formatNumber( total_importe=totalImporte)}}</strong> </td>
+                                                    </tr>
+                                                </template>
+                                                <template v-else>
+                                                    <tr>
+                                                        <td colspan="9">
+                                                            No hay lotes seleccionados
+                                                        </td>
+                                                    </tr>
+                                                </template>
                                             </template>
-                                            
-                                        </select>
-                                           
+                                        </TableComponent>
+                                    </div>
+                                </div>
+                                <!-- Parametros para contrato -->
+                                <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Tipo</label>
+                                            <div class="form-inline">
+                                            <select class="form-control" v-model="tipo">
+                                                <option value="Vivienda">Vivienda</option>
+                                                <option value="Urbanización">Urbanización</option>
+                                                <option value="Casa club">Casa club</option>
+                                                <option value="Caseta">Caseta</option>
+                                                <option value="Locales">Locales</option>
+                                            </select>
+
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
-                                        <input type="text" pattern="\d*" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
-                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
-                                        <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
-                                    </div>
-                                </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label>IVA</label>
+                                            <div class="form-inline">
+                                            <select class="form-control" v-model="iva">
+                                                <option value="0">No</option>
+                                                <option value="1">Si</option>
+                                            </select>
 
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Opciones</th>
-                                                <th>Descripcion</th>
-                                                <th>Lote</th>
-                                                <th>Manzana</th>
-                                                <th>M&sup2;</th>
-                                                <th>Costo Directo</th>
-                                                <th>Costo Indirecto</th>
-                                                <th>Obra extra</th>
-                                                <th>Importe</th>
-                                                <th>Termino</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayAvisoObraLotes.length">
-                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
-                                                <td>
-                                                    <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
-                                                        <i class="icon-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <input v-model="detalle.descripcion" type="text" class="form-control">
-                                                </td>
-                                                <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
-                                                <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
-                                                <td v-text="detalle.manzana">
-
-                                                </td>
-                                                <td style="text-align: right;" v-text="detalle.construccion">
-                                                   
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <input v-model="detalle.costo_directo" type="text" class="form-control">
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <input v-model="detalle.obra_extra" type="text" class="form-control">
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
-                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
-                                                </td>
-                                                <td>
-                                                    <input v-model="detalle.fin_obra" type="date" class="form-control">
-                                                </td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                                
-                                                <td align="right" colspan="5"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
-                                                <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>{{'$'+formatNumber( total_importe=totalImporte)}}</strong> </td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="9">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <!-- Parametros para contrato -->
-                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Tipo</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="tipo">
-                                            <option value="Vivienda">Vivienda</option>
-                                            <option value="Urbanización">Urbanización</option>
-                                            <option value="Casa club">Casa club</option>
-                                            <option value="Caseta">Caseta</option>
-                                            <option value="Locales">Locales</option>
-                                        </select>
-                                           
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <label>IVA</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="iva">
-                                            <option value="0">No</option>
-                                            <option value="1">Si</option>
-                                        </select>
-                                           
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
+                                            <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
+                                            <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                        <button type="button" class="btn btn-primary" @click="actualizarAvisoObra()"> Actualizar </button>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
+                            </div>
+                        </template>
+
+                        <!--Div para ver detalle del aviso -->
+                        <template v-else-if="listado == 2">
+                            <div class="card-body">
+                                <div class="form-group row border">
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
+                                            <p v-text="contratista"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
+                                        <p v-text="clave"></p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
+                                        <p v-text="f_ini"></p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
+                                        <p v-text="f_fin"></p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
+                                        <p v-text="anticipo+'%'"></p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label style="color:#2271b3;" for=""><strong>% Costo Indirecto </strong></label>
+                                        <p v-text="costo_indirecto_porcentaje+'%'"></p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
+                                            <p v-text="fraccionamiento"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label style="color:#2271b3;" for=""><strong>Dirección del proyecto:</strong></label>
+                                            <p v-text="direccion_proy"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
+                                            <div class="form-inline">
+                                            <p v-text="'$'+formatNumber(total_anticipo)"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <TableComponent :cabecera="[
+                                            'Descripcion','Lote','Manzana','M&sup2;','Costo Directo','Costo Indirecto',
+                                            'Obra extra','Importe'
+                                        ]">
+                                            <template v-slot:tbody>
+                                                <template  v-if="arrayAvisoObraLotes.length">
+                                                    <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
+                                                        <td v-text="detalle.descripcion"></td>
+                                                        <td v-text="detalle.lote"></td>
+                                                        <td v-text="detalle.manzana"></td>
+                                                        <td style="text-align: right;" v-text="detalle.construccion"></td>
+                                                        <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_directo)"></td>
+                                                        <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
+                                                        <td style="text-align: right;" v-text="'$'+formatNumber(detalle.obra_extra)"></td>
+                                                        <td align="right">
+                                                            {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr style="background-color: #CEECF5;">
+                                                        <td align="right" colspan="4"> <strong>{{ formatNumber(total_construccion)}}</strong> </td>
+                                                        <td align="right"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
+                                                        <td align="right"> <strong>${{ formatNumber(total_costo_indirecto=totalCostoIndirecto)}}</strong> </td>
+                                                        <td align="right" colspan="2"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
+                                                    </tr>
+                                                </template>
+                                                <template v-else>
+                                                    <tr>
+                                                        <td colspan="9">
+                                                            No hay lotes seleccionados
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </template>
+                                        </TableComponent>
                                     </div>
                                 </div>
-                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="actualizarAvisoObra()"> Actualizar </button>
+                                <div class="form-group row">
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ id " >
+                                            <i></i>Exportar relacion en excel
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-primary" @click="modal = 2"><i class="fa fa-print"></i>&nbsp; Imprimir Contrato</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </template>
                     </template>
 
-                    <!--Div para ver detalle del aviso -->
-                    <template v-else-if="listado == 2">
-                        <div class="card-body"> 
-                            <div class="form-group row border">
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
-                                        <p v-text="contratista"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
-                                    <p v-text="clave"></p>
-                                </div> 
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
-                                    <p v-text="f_ini"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
-                                    <p v-text="f_fin"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
-                                    <p v-text="anticipo+'%'"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>% Costo Indirecto </strong></label>
-                                    <p v-text="costo_indirecto_porcentaje+'%'"></p>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
-                                        <p v-text="fraccionamiento"></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong>Dirección del proyecto:</strong></label>
-                                        <p v-text="direccion_proy"></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
-                                        <div class="form-inline">
-                                        <p v-text="'$'+formatNumber(total_anticipo)"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Descripcion</th>
-                                                <th>Lote</th>
-                                                <th>Manzana</th>
-                                                <th>M&sup2;</th>
-                                                <th>Costo Directo</th>
-                                                <th>Costo Indirecto</th>
-                                                <th>Obra extra</th>
-                                                <th>Importe</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayAvisoObraLotes.length">
-                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
-                                                <td v-text="detalle.descripcion"></td>
-                                                <td v-text="detalle.lote"></td>
-                                                <td v-text="detalle.manzana"></td>
-                                                <td style="text-align: right;" v-text="detalle.construccion"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_directo)"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.obra_extra)"></td>
-                                                <td align="right">
-                                                    {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
-                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
-                                                </td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="4"> <strong>{{ formatNumber(total_construccion)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_costo_indirecto=totalCostoIndirecto)}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="9">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                </div>
-                                   <div class="col-md-9">
-                                    <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ id " >
-                                        <i></i>Exportar relacion en excel
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" @click="modal = 2"><i class="fa fa-print"></i>&nbsp; Imprimir Contrato</button>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                    
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
             <!-- Modal para la carga pdf -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal == 1"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div v-if="tipoAccion == 1" >
+                        <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
-                        <div v-if="tipoAccion == 1" class="modal-body">
-                            <div>
-                                <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                <strong>Seleccionar contrato</strong>
 
-                                        <strong>Seleccionar contrato</strong>
+                                <input type="file" class="form-control" v-on:change="onImageChange">
+                                <br/>
+                                <button type="submit" class="btn btn-success">Cargar</button>
+                        </form>
+                    </div>
+                    <div v-else>
+                        <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
 
-                                        <input type="file" class="form-control" v-on:change="onImageChange">
-                                        <br/>
-                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                </form>
-                            </div>
-                        </div>
+                            <strong>Seleccionar archivo</strong>
 
-                        <div v-else class="modal-body">
-                            <div>
-                                <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
-
-                                        <strong>Seleccionar archivo</strong>
-
-                                        <input type="file" class="form-control" v-on:change="onImageChange2">
-                                        <br/>
-                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                </form>
-                            </div>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                            <input type="file" class="form-control" v-on:change="onImageChange2">
+                            <br/>
+                            <button type="submit" class="btn btn-success">Cargar</button>
+                        </form>
+                    </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!-- Modal para la carga pdf -->
@@ -855,13 +785,13 @@
                                 <i></i>Imprimir
                             </a>
                         </div>
-                    </div> 
+                    </div>
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
-           
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -874,26 +804,26 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            Para poder agregar o ver un lote que desea agregar a un aviso de obra asegúrese de que el lote 
+                            Para poder agregar o ver un lote que desea agregar a un aviso de obra asegúrese de que el lote
                             cuenta con el inicio de obra (vea <strong>“Obra -> Inicio de obra”</strong>).
                         </p>
                         <p>
-                            <strong>Cuando un lote es agregado a un nuevo aviso de obra</strong>, el lote o lotes agregados al 
-                            nuevo aviso de obra, podrá ser visto en el listado del módulo partidas, 
-                            donde podrá asignar o registrar los costos del proyecto. 
+                            <strong>Cuando un lote es agregado a un nuevo aviso de obra</strong>, el lote o lotes agregados al
+                            nuevo aviso de obra, podrá ser visto en el listado del módulo partidas,
+                            donde podrá asignar o registrar los costos del proyecto.
                             (el lote solo podrá ser visto en el listado si es agregado en un nuevo inicio de obra)
                         </p>
                         <p>
-                            En caso de que al guardar cualquier cambio no suceda nada (no parece la ventana que indica 
-                            la que los cambios fueron guardados correctamente), actualicé la página y asegúrese de 
+                            En caso de que al guardar cualquier cambio no suceda nada (no parece la ventana que indica
+                            la que los cambios fueron guardados correctamente), actualicé la página y asegúrese de
                             estar llenando correctamente los cambios.
                         </p>
                         <p>
                             Para agregar un <strong>nuevo contratista</strong> al listado acceda al módulo de “<strong>Obra -> Contratistas</strong>”.
                         </p>
                         <p>
-                            <strong>Nota:</strong> al agregar un nuevo lote a un nuevo aviso de obra podrá encontrar un listado con la etiqueta “Lote”, 
-                            donde podrá visualizar, el número de lote, el nombre de la compañía propietaria del lote y la fecha de 
+                            <strong>Nota:</strong> al agregar un nuevo lote a un nuevo aviso de obra podrá encontrar un listado con la etiqueta “Lote”,
+                            donde podrá visualizar, el número de lote, el nombre de la compañía propietaria del lote y la fecha de
                             término de aviso de obra.
                         </p>
                     </div>
@@ -913,6 +843,9 @@
 
 <script>
     import vSelect from 'vue-select';
+    import LoadingComponent from '../Componentes/LoadingComponent.vue';
+    import ModalComponent from '../Componentes/ModalComponent.vue';
+    import TableComponent from '../Componentes/TableComponent.vue';
     export default {
         props:{
             rolId:{type: String}
@@ -953,7 +886,7 @@
                 errorAvisoObra : 0,
                 errorMostrarMsjAvisoObra : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -961,7 +894,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'ini_obras.clave', 
+                criterio : 'ini_obras.clave',
                 buscar : '',
                 arrayProyectos : [],
                 arrayFraccionamientos : [],
@@ -985,12 +918,15 @@
                 fraccionamiento:'',
                 empresa_constructora:'',
                 apoderado:'ING. DAVID CALVILLO MARTINEZ',
-                direccion_proy:''
-                
+                direccion_proy:'',
+                loading:true
             }
         },
         components:{
-            vSelect
+            vSelect,
+            LoadingComponent,
+            ModalComponent,
+            TableComponent
         },
         computed:{
             isActived: function(){
@@ -1026,7 +962,7 @@
         totalCostoIndirecto: function(){
             var resultado_costo_indirecto =0.0;
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
-                resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto) 
+                resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
             }
             return Math.round(resultado_costo_indirecto*100)/100;
         },
@@ -1052,7 +988,7 @@
             return Math.round(resultado_construccion_total*100)/100;
         }
         },
-       
+
         methods : {
             onImageChange(e){
                 console.log(e.target.files[0]);
@@ -1061,13 +997,13 @@
             formSubmit(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('pdf', this.pdf);
                 axios.post('/formSubmitContratoObra/'+this.id, formData)
                 .then(function (response) {
-                   
+
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -1089,13 +1025,13 @@
             formSubmit2(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('pdf', this.pdf);
                 axios.post('/formSubmitRegistroObra/'+this.id, formData)
                 .then(function (response) {
-                   
+
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -1113,14 +1049,17 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page, buscar, criterio){
                 let me = this;
+                me.loading = true;
                 var url = '/iniobra?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoObra = respuesta.ini_obra.data;
                     me.pagination = respuesta.pagination;
+                    me.loading = false;
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.loading = false;
                 });
             },
             getEmpresa(){
@@ -1189,13 +1128,13 @@
             },
             selectManzanaLotes(buscar){
                 let me = this;
-              
+
                 me.arrayManzanaLotes=[];
                 var url = '/select_manzana_lotes?buscar='+buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayManzanaLotes = respuesta.lotesManzana;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1203,13 +1142,13 @@
             },
             selectLotes(buscar , buscar2){
                 let me = this;
-              
+
                 me.arrayLotes=[];
                 var url = '/select_lotes_obra?buscar='+buscar + '&buscar2=' + buscar2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1217,7 +1156,7 @@
             },
             selectDatosLotes(buscar){
                 let me = this;
-              
+
                 me.arrayDatosLotes = [];
                 var url = '/select_datos_lotes?buscar='+buscar;
                 axios.get(url).then(function (response) {
@@ -1309,7 +1248,7 @@
                     }else{
                     me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
                     me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
-                   
+
                     axios.post('/iniobra/lote/registrar',{
                         'id': this.id,
                         'lote': this.lote,
@@ -1332,7 +1271,7 @@
                             .catch(function (error) {
                                 console.log(error);
                             });
-                      
+
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -1361,9 +1300,9 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-                axios.delete('/iniobra/lote/eliminar', 
+                axios.delete('/iniobra/lote/eliminar',
                         {params: {'id': data['id']}}).then(function (response){
-                        
+
                          //Obtener detalle
                             me.arrayAvisoObraLotes=[];
                             var urld = '/iniobra/obtenerDetalles?id=' + me.id;
@@ -1446,7 +1385,7 @@
                 {
                     return;
                 }
-                
+
                 this.proceso=true;
                 let me = this;
                 me.total_anticipo=(me.anticipo/100)*me.total_importe;
@@ -1490,12 +1429,12 @@
                     console.log(error);
                 });
             },
-            
+
              limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
             },
-  
+
             limpiarDatos(){
                 this.contratista_id=0;
                 this.f_fin='';
@@ -1538,14 +1477,14 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-                axios.delete('/iniobra/contrato/eliminar', 
+                axios.delete('/iniobra/contrato/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
                         'Contrato borrada correctamente.',
                         'success'
                         )
-                         me.listarAvisos(1,'','ini_obras.clave'); 
+                         me.listarAvisos(1,'','ini_obras.clave');
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -1649,7 +1588,7 @@
                         this.pdf=data['documento'];
                         break;
                     }
-                } 
+                }
             },
             actualizarContrato(id){
                 let me= this;
@@ -1679,7 +1618,7 @@
                     me.selectManzanaLotes(me.fraccionamiento_id);
                     me.id=id;
                     me.direccion_proy = arrayAvisoT[0]['direccion_proy'];
-                  
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1695,7 +1634,7 @@
                     console.log(error);
                 });
             }
-           
+
         },
         mounted() {
             this.listarAvisos(1,this.buscar,this.criterio);
@@ -1704,7 +1643,7 @@
             this.selectDatosLotes(this.lote_id);
             this.selectProyectos();
             this.getEmpresa();
-          
+
         }
     }
 </script>

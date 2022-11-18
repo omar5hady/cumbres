@@ -84,25 +84,15 @@
                             </li>
                             <li class="nav-item">
                                 <a @click="urbanizacion = 1" class="nav-link" v-bind:class="{ 'text-info active': urbanizacion==1 }">
-                                    URBANIZACIÓN 
+                                    URBANIZACIÓN
                                 </a>
                             </li>
                         </ul>
-                        
+
                         <div class="tab-content" v-if="urbanizacion == 0">
                             <br>
-                            <table class="table1 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        
-                                        <th>Partida</th>
-                                        <th>Avance</th>
-                                        <th>Porcentaje</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <TableComponent :cabecera="['Opciones', 'Partida','Avance','Porcentaje']">
+                                <template v-slot:tbody>
                                     <tr v-for="avance in arrayAvance" :key="avance.id">
                                         <template v-if="avance.porcentaje > 0">
                                             <td style="width:9%">
@@ -113,17 +103,17 @@
                                                 <i class="icon-trash"></i>
                                                 </button>
                                             </td>
-                                            
+
                                             <td v-text="avance.partida" style="width:30%"></td>
                                             <td style="width:8%">
-                                                <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
+                                                <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" >
                                                 <input v-else type="number" pattern="\d*" v-on:change="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                             </td>
                                             <td style="width:10%" v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
                                         </template>
-                                    </tr>                               
-                                </tbody>
-                            </table>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
@@ -142,18 +132,9 @@
 
                         <div class="tab-content" v-if="urbanizacion == 1">
                             <br>
-                            <table class="table1 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Partida</th>
-                                        <th>Avance</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <TableComponent :cabecera="['Partida','Avance']">
+                                <template v-slot:tbody>
                                     <tr v-for="avance in arrayUrbanizacion" :key="avance.id">
-                                      
-                                        
                                         <td v-text="avance.partida" style="width:30%"></td>
                                         <td style="width:10%">
                                             <button v-if="avance.avance == 0" @click="setAvanceUrb(avance.id)" type="button" class="btn btn-default btn-sm">
@@ -163,12 +144,11 @@
                                                 <i class="icon-check"></i>
                                             </button>
                                         </td>
-                                        
-                                    </tr>                               
-                                </tbody>
-                            </table>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                         </div>
-                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                        <button class="btn btn-sm btn-default" @click="modal=2">Manual</button>
                     </div>
 
                     <div class="card-body" v-if="resumen==1">
@@ -202,79 +182,60 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Clave</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Modelo</th>
-                                        <th>Manzana</th>
-                                        <th>Lote</th>
-                                        <th>Etapa de servicio</th>
-                                        <th>Planos obra</th>
-                                        <th>Termino obra</th>
-                                        <th>Inicio</th>
-                                        <th>Termino</th>
-                                        <th>Porcentaje de avance</th>
-                                        <th>Paquete</th>
-                                        <th>Especificaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
-                                        <td class="td2" style="width:9%">
-                                            <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
-                                                <i class="icon-eye"></i>
-                                            </button>
+                        <TableComponent :cabecera="[
+                            'Opciones','Clave','Fraccionamiento','Modelo','Manzana','Lote',
+                            'Etapa de servicio','Planos obra','Termino obra','Inicio',
+                            'Termino','Porcentaje de avance','Paquete','Especificaciones'
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
+                                    <td class="td2" style="width:9%">
+                                        <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="avancepro.aviso"></td>
+                                    <td class="td2">
+                                        <span v-if="avancepro.contrato==0" class="badge" v-text="avancepro.proyecto"></span>
+                                        <span v-if="avancepro.contrato==1" class="badge badge-success" v-text="avancepro.proyecto"></span>
+                                    </td>
+                                    <td class="td2">
+                                        <span v-if="avancepro.contrato==0" class="badge" v-text="avancepro.modelos"></span>
+                                        <span v-if="avancepro.contrato==1" class="badge badge-success" v-text="avancepro.modelos"></span>
+                                    </td>
+                                    <td class="td2">
+                                        <span v-if="avancepro.contrato==0" class="badge" v-text="avancepro.manzana"></span>
+                                        <span v-if="avancepro.contrato==1" class="badge badge-success" v-text="avancepro.manzana"></span>
+                                    </td>
+                                    <template v-if="avancepro.sublote == null">
+                                        <td class="td2">
+                                            <span v-if="avancepro.contrato==0" class="badge" v-text="avancepro.lote"></span>
+                                            <span v-if="avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
                                         </td>
-                                        <td class="td2" v-text="avancepro.aviso"></td>
-                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.proyecto"></td>
-                                        <td class="td2" v-else>
-                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.proyecto"></span>
+                                    </template>
+                                    <template v-else>
+                                        <td class="td2">
+                                            <span v-if="avancepro.contrato==0" class="badge" v-text="avancepro.lote + ' '+ avancepro.sublote"></span>
+                                            <span v-if="avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote + ' '+ avancepro.sublote"></span>
                                         </td>
-                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.modelos"></td>
-                                        <td class="td2" v-else>
-                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.modelos"></span>
-                                        </td>
-                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.manzana"></td>
-                                        <td class="td2" v-else>
-                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.manzana"></span>
-                                        </td>
-                                        <template v-if="avancepro.sublote == null">
-                                            <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.lote"></td>
-                                            <td class="td2" v-else>
-                                                <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
-                                            </td>
-                                        </template>
-                                        <template v-else>
-                                            <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.lote + ' '+ avancepro.sublote"></td>
-                                            <td class="td2" v-else>
-                                                <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote + ' '+ avancepro.sublote"></span>
-                                            </td>
-                                        </template>
-                                        <td class="td2" v-text="avancepro.etapa_servicios"></td>
-                                         <template>
-                                            <td class="td2" v-if="avancepro.f_planos_obra" v-text="this.moment(avancepro.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-else v-text="'Sin planos'"></td>
-                                        </template>
-                                        <td class="td2" v-text="avancepro.fin_obra"></td>
-                                        <td class="td2" v-text="avancepro.fecha_ini"></td>
-                                        <td class="td2" v-text="avancepro.fecha_fin"></td>
-                                        <td class="td2" v-if="avancepro.porcentajeTotal > 100" v-text="formatNumber(100) + '%'"></td>
-                                        <td class="td2" v-else v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
-                                        <td class="td2"> <button v-if="avancepro.paquete != null && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
-                                       <td style="width:7%">
-                                            <a v-if="avancepro.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a>
-                                            <a v-if="avancepro.espec_obra" class="btn btn-warning btn-sm" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+avancepro.espec_obra"><i class="icon-cloud-download"></i></a>
-                                        </td>
-                                    
-                                        
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                                    </template>
+                                    <td class="td2" v-text="avancepro.etapa_servicios"></td>
+                                    <td class="td2">
+                                        {{(avancepro.f_planos_obra) ? this.moment(avancepro.f_planos_obra).locale('es').format('DD/MMM/YYYY') : 'Sin planos'}}
+                                    </td>
+                                    <td class="td2" v-text="avancepro.fin_obra"></td>
+                                    <td class="td2" v-text="avancepro.fecha_ini"></td>
+                                    <td class="td2" v-text="avancepro.fecha_fin"></td>
+                                    <td class="td2" v-if="avancepro.porcentajeTotal > 100" v-text="formatNumber(100) + '%'"></td>
+                                    <td class="td2" v-else v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
+                                    <td class="td2"> <button v-if="avancepro.paquete != null && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
+                                    <td style="width:7%">
+                                        <a v-if="avancepro.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a>
+                                        <a v-if="avancepro.espec_obra" class="btn btn-warning btn-sm" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+avancepro.espec_obra"><i class="icon-cloud-download"></i></a>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -289,179 +250,130 @@
                                 </li>
                             </ul>
                         </nav>
-                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                        <button class="btn btn-sm btn-default" @click="modal=2">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                        <input type="text" disabled v-model="fraccionamiento"  class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
-                                    <div class="col-md-6">
-                                        <input type="text" disabled v-model="modelos"  class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Partida</label>
-                                    <div class="col-md-9">
-                                        <input type="text" disabled v-model="partida" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Avance</label>
-                                    <div class="col-md-2">
-                                        <input type="number" pattern="\d*" step="0.1" min="0" max="1" onkeydown="return false" v-model="avance" maxlength="3" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo de la Partida">
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="erroPartida" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjAvance" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarAvance()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarAvance()">Actualizar</button>
+            <ModalComponent v-if="modal == 1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                        <div class="col-md-6">
+                            <input type="text" disabled v-model="fraccionamiento"  class="form-control">
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
+                        <div class="col-md-6">
+                            <input type="text" disabled v-model="modelos"  class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Partida</label>
+                        <div class="col-md-9">
+                            <input type="text" disabled v-model="partida" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Avance</label>
+                        <div class="col-md-2">
+                            <input type="number" pattern="\d*" step="0.1" min="0" max="1" onkeydown="return false" v-model="avance" maxlength="3" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo de la Partida">
+                        </div>
+                    </div>
+
+                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                    <div v-show="erroPartida" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjAvance" :key="error" v-text="error"></div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarAvance()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarAvance()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal Excel-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="fraccionamiento_id" @click="selectNumContratos(fraccionamiento_id)" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contrato</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="numContrato" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="contratos in arrayNumContratos" :key="contratos.clave" :value="contratos.clave" v-text="contratos.clave"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                             <!--   Boton   -->
-                            <template v-if="tipoAccion == 5">
-                                <a class="btn btn-success" v-bind:href="'/avances/resume_excel?buscar=' + fraccionamiento_id + '&contrato=' + numContrato" >
-                                    <i class="icon-share-alt"></i>&nbsp;Descargar
-                                </a>
-                            </template> 
-
-                            <template v-if="tipoAccion == 4">
-                                <a class="btn btn-primary" v-bind:href="'/avances/res_partidas/'+numContrato" >
-                                    <i class="icon-share-alt"></i>&nbsp;Descargar resumen partidas
-                                </a>
-                            </template> 
-                            
-                            <!---->
+            <ModalComponent :titulo="tituloModal"
+                v-if="modal2"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="fraccionamiento_id" @click="selectNumContratos(fraccionamiento_id)" >
+                                <option value="">Seleccione</option>
+                                <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Contrato</label>
+                        <div class="col-md-6">
+                            <select class="form-control" v-model="numContrato" >
+                                <option value="">Seleccione</option>
+                                <option v-for="contratos in arrayNumContratos" :key="contratos.clave" :value="contratos.clave" v-text="contratos.clave"></option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <a class="btn btn-success" v-if="tipoAccion == 5"
+                        :href="'/avances/resume_excel?buscar=' + fraccionamiento_id + '&contrato=' + numContrato" >
+                        <i class="icon-share-alt"></i>&nbsp;Descargar
+                    </a>
+                    <a class="btn btn-primary" v-if="tipoAccion == 4"
+                        :href="'/avances/res_partidas/'+numContrato" >
+                        <i class="icon-share-alt"></i>&nbsp;Descargar resumen partidas
+                    </a>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
-            
+
             <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Cuando un lote es agregado a un nuevo aviso de obra</strong> el lote o lotes agregados al nuevo aviso de obra, podrá ser 
-                            visto en el listado del módulo de <strong>avance</strong>.
-                            <br><strong>(el lote solo podrá ser visto en el listado si es agregado en un nuevo inicio de obra)</strong>
-                        </p>
-                        <p>Para <strong>ver el avancé de un inicio de obra especifico</strong> y sus lotes pueda usar los botones de opciones podrá ver 
-                            el listado de las partidas.
-                        </p>
-                        <p>
-                            Puede <strong>registrar el avancé de una partida</strong> colocando una cantidad del 0 al 1 
-                            (puede utilizar decimales para indicar el porcentaje del avancé de la partida Ejemplo: 50% = 0.5), 
-                            puede guardar los cambios presionando la tecla enter.
-                        </p>
-                        <p>
-                            Puede agregar una <strong>fecha de visita de avaluó</strong> desde la vista de avancé.
-                        </p>
-                        <p>
-                            Puede identificar aquellas partidas que tienen asignado un costo asignado y que por lo tanto afectan el registro del avance.
-                            <br><strong>Ejemplo 1,</strong> partidas con color naranja serán aquellas partidas que afectan directamente al avance (debe ser registrado el avance de esta partida).
-                            <br><strong>Ejemplo 2,</strong> partidas con color verde serán aquellas partidas que afectan directamente al avance, pero ya se les registro algún porcentaje de avance.
-                        </p>
-                        <p>
-                            Si <strong>la casilla donde coloca el “avance” muestra un color rojo</strong> esto indica que el avance fue modificado en más de una ocasión.
-                        </p>
-                        <p>
-                            <strong>Nota:</strong> aquellos avances que presenten un remarcado color verde en Fraccionamiento, 
-                            Modelo, Manzana y Lote indicaran que son lotes que cuentan con un contrato.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
+            <ModalComponent v-if="modal==2"
+                :titulo="'Manual'"
+                @closeModal="modal=0"
+            >
+                <template v-slot:body>
+                    <p><strong>Cuando un lote es agregado a un nuevo aviso de obra</strong> el lote o lotes agregados al nuevo aviso de obra, podrá ser
+                        visto en el listado del módulo de <strong>avance</strong>.
+                        <br><strong>(el lote solo podrá ser visto en el listado si es agregado en un nuevo inicio de obra)</strong>
+                    </p>
+                    <p>Para <strong>ver el avancé de un inicio de obra especifico</strong> y sus lotes pueda usar los botones de opciones podrá ver
+                        el listado de las partidas.
+                    </p>
+                    <p>
+                        Puede <strong>registrar el avancé de una partida</strong> colocando una cantidad del 0 al 1
+                        (puede utilizar decimales para indicar el porcentaje del avancé de la partida Ejemplo: 50% = 0.5),
+                        puede guardar los cambios presionando la tecla enter.
+                    </p>
+                    <p>
+                        Puede agregar una <strong>fecha de visita de avaluó</strong> desde la vista de avancé.
+                    </p>
+                    <p>
+                        Puede identificar aquellas partidas que tienen asignado un costo asignado y que por lo tanto afectan el registro del avance.
+                        <br><strong>Ejemplo 1,</strong> partidas con color naranja serán aquellas partidas que afectan directamente al avance (debe ser registrado el avance de esta partida).
+                        <br><strong>Ejemplo 2,</strong> partidas con color verde serán aquellas partidas que afectan directamente al avance, pero ya se les registro algún porcentaje de avance.
+                    </p>
+                    <p>
+                        Si <strong>la casilla donde coloca el “avance” muestra un color rojo</strong> esto indica que el avance fue modificado en más de una ocasión.
+                    </p>
+                    <p>
+                        <strong>Nota:</strong> aquellos avances que presenten un remarcado color verde en Fraccionamiento,
+                        Modelo, Manzana y Lote indicaran que son lotes que cuentan con un contrato.
+                    </p>
+                </template>
+            </ModalComponent>
 
         </main>
 </template>
@@ -471,7 +383,14 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import TableComponent from '../Componentes/TableComponent.vue';
+import ModalComponent from '../Componentes/ModalComponent.vue';
+
     export default {
+        components:{
+            ModalComponent,
+            TableComponent
+        },
         data(){
             return{
                 id:0,
@@ -500,7 +419,7 @@
                 erroPartida : 0,
                 errorMostrarMsjAvance : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -508,7 +427,7 @@
                     'to' : 0,
                 },
                 paginationResume : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -516,7 +435,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 buscar1: '',
                 buscar2: '',
@@ -618,7 +537,7 @@
             /**Metodo para mostrar los registros */
             listarAvancePromedio(page, buscar, buscar1, buscar2 ,criterio){
                 let me = this;
-                var url = '/avanceProm?page=' + page + '&buscar=' + buscar +  '&buscar1=' + buscar1 + '&buscar2=' + buscar2 + 
+                var url = '/avanceProm?page=' + page + '&buscar=' + buscar +  '&buscar1=' + buscar1 + '&buscar2=' + buscar2 +
                 '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -660,7 +579,7 @@
                 axios.put('/licencias/progFechaVisita',{
                     'id':this.lote_id,
                     'visita_avaluo' : this.visita_avaluo,
-                    
+
                 }).then(function (response){
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -761,7 +680,7 @@
                 axios.put('/avance/setAvanceUrb',{
                     'id': id
                 }).then(function (response){
-                   
+
                     me.getPartidasUrbanizacion(me.lote_id);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -788,7 +707,7 @@
                     'partida_id': partida,
                     'id' : id
                 }).then(function (response){
-                    
+
                     me.listarAvance(1,lote,'avances.lote_id');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
@@ -826,7 +745,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/avance/eliminar', 
+                axios.delete('/avance/eliminar',
                         {params: {'id': this.id,'modelo_id':this.modelo_id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -852,7 +771,7 @@
 
                 return this.erroAvance;
             },
-                   
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -917,8 +836,8 @@
                     }
                 }
                 this.select_fraccionamiento();
-                
-               
+
+
             },
             getEmpresa(){
                 let me = this;
@@ -934,7 +853,7 @@
             },
         },
         mounted() {
-            this.listarAvance(1,this.buscar,this.criterio);      
+            this.listarAvance(1,this.buscar,this.criterio);
             this.listarAvancePromedio(1,this.buscar,this.buscar1,this.buscar2,this.criterio);
             this.select_fraccionamiento();
             this.getEmpresa();
@@ -942,30 +861,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-        
-    }
-    .table1{
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
 
     .td2, .th2 {
     border: solid rgb(200, 200, 200) 1px;
@@ -984,14 +879,6 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
-
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        
     }
 
     .btn2 {

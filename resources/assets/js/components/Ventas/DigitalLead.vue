@@ -19,1552 +19,1435 @@
                     </button>
                     &nbsp;
                 </div>
+                <LoadingComponent v-if="loading"></LoadingComponent>
+                <div class="card-body" v-else>
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <div class="input-group">
 
-                <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-5">
-                                <div class="input-group">
-
-                                    <select @change="changeMotivo()" v-if="rolId != 2 && rolId != 12 && rolId != 3" class="form-control col-sm-5" v-model="b_motivo">
-                                        <option value="1">Ventas</option>
-                                        <option value="5">Recomendados</option>
-                                        <option value="2">Postventa</option>
-                                        <option value="3">Rentas</option>
-                                        <option value="4">Dirección</option>
-                                        <option value="6">Terrenos</option>
-                                        <option value="7">Cumbres León</option>
-                                    </select>
-                                </div>
+                                <select @change="changeMotivo()" v-if="rolId != 2 && rolId != 12 && rolId != 3" class="form-control col-sm-5" v-model="b_motivo">
+                                    <option value="1">Ventas</option>
+                                    <option value="5">Recomendados</option>
+                                    <option value="2">Postventa</option>
+                                    <option value="3">Rentas</option>
+                                    <option value="4">Dirección</option>
+                                    <option value="6">Terrenos</option>
+                                    <option value="7">Cumbres León</option>
+                                </select>
                             </div>
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
-                                    <input type="text" v-if="b_motivo == 3" v-model="b_modelo" @keyup.enter="listarLeads(1)" placeholder="Modelo" class="form-control col-sm-6">
-                                    <select v-if="b_motivo != 1" class="form-control col-sm-4" v-model="b_status">
-                                        <option value="">Todos</option>
-                                        <option value="1">Pendientes</option>
-                                        <option value="3">Finalizados</option>
-                                    </select>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
+                                <input type="text" v-if="b_motivo == 3" v-model="b_modelo" @keyup.enter="listarLeads(1)" placeholder="Modelo" class="form-control col-sm-6">
+                                <select v-if="b_motivo != 1" class="form-control col-sm-4" v-model="b_status">
+                                    <option value="">Todos</option>
+                                    <option value="1">Pendientes</option>
+                                    <option value="3">Finalizados</option>
+                                </select>
 
-                                    <select v-if="b_motivo == 1" class="form-control col-sm-5" v-model="b_campania">
-                                        <option value="">Campaña publicitaria</option>
-                                        <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
-                                    </select>
-                                </div>
+                                <select v-if="b_motivo == 1" class="form-control col-sm-5" v-model="b_campania">
+                                    <option value="">Campaña publicitaria</option>
+                                    <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8" v-if="b_motivo ==1">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
+                                <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                                <input type="date" v-model="b_fecha2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                            </div>
+                        </div>
+                        <div class="col-md-6" v-if="b_motivo ==4">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Prioridad:" class="form-control col-sm-4">
+                                <select class="form-control"  v-model="b_prioridad" >
+                                    <option value="">Todos</option>
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8" v-if="b_motivo ==1">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
+                                <select class="form-control" v-model="b_proyecto">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                        :value="proyecto.id" v-text="proyecto.nombre">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="input-group" v-if="b_motivo == 1">
+                                <select class="form-control"  v-model="b_asesor" >
+                                    <option value="">Vendedor asignado</option>
+                                    <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                </select>
+                                <!--Criterios para el listado de busqueda -->
+                                <select v-if="b_motivo == 1" class="form-control col-sm-4" v-model="b_status">
+                                    <option value="">Status</option>
+                                    <option value="1">En Seguimiento</option>
+                                    <option value="0">Descartado</option>
+                                    <option value="2">Potencial</option>
+                                    <option value="3">Enviado a prospectos</option>
+                                </select>
                             </div>
 
-                            <div class="col-md-8" v-if="b_motivo ==1">
-                                <div class="input-group">
-                                    <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
-                                    <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
-                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
-                                </div>
-                            </div>
-                            <div class="col-md-6" v-if="b_motivo ==4">
-                                <div class="input-group">
-                                    <input type="text" readonly placeholder="Prioridad:" class="form-control col-sm-4">
-                                    <select class="form-control"  v-model="b_prioridad" >
-                                        <option value="">Todos</option>
-                                        <option value="Baja">Baja</option>
-                                        <option value="Media">Media</option>
-                                        <option value="Alta">Alta</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <div class="input-group">
+                                <button @click="listarLeads(1)" class="btn btn-primary">
+                                    <i class="fa fa-search"></i> Buscar
+                                </button>
+                                <a v-if="b_motivo == 1" class="btn btn-success" v-bind:href="'/campanias/excelLeads'+
+                                        '?buscar='+ b_cliente+'&campania='+ b_campania+
+                                        '&status='+ b_status+'&asesor='+ b_asesor+
+                                        '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
+                                        '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
+                                    <i class="fa fa-file-text"></i>&nbsp; Excel
+                                </a>
+                                <button disabled class="btn btn-primary">
+                                    {{'Total: '+arrayLeads.total}}
+                                </button>
 
-                            <div class="col-md-8" v-if="b_motivo ==1">
-                                <div class="input-group">
-                                    <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
-                                    <select class="form-control" v-model="b_proyecto">
-                                        <option value="">Seleccione</option>
-                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
-                                            :value="proyecto.id" v-text="proyecto.nombre">
-                                        </option>
-                                    </select>
-                                </div>
                             </div>
-
-                            <div class="col-md-8">
-                                <div class="input-group" v-if="b_motivo == 1">
-                                    <select class="form-control"  v-model="b_asesor" >
-                                        <option value="">Vendedor asignado</option>
-                                        <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                    </select>
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select v-if="b_motivo == 1" class="form-control col-sm-4" v-model="b_status">
-                                        <option value="">Status</option>
-                                        <option value="1">En Seguimiento</option>
-                                        <option value="0">Descartado</option>
-                                        <option value="2">Potencial</option>
-                                        <option value="3">Enviado a prospectos</option>
-                                    </select>
-                                </div>
-
-                                <div class="input-group">
-                                    <button @click="listarLeads(1)" class="btn btn-primary">
-                                        <i class="fa fa-search"></i> Buscar
+                        </div>
+                    </div>
+                    <br>
+                    <TableComponent v-if="b_motivo == 1"
+                        :cabecera="[
+                            '','Avance','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
+                            'Presupuesto','Modelo recomendado','Estatus','Vendedor asignado',
+                            'Fecha de alta','Observaciones'
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
                                     </button>
-                                    <a v-if="b_motivo == 1" class="btn btn-success" v-bind:href="'/campanias/excelLeads'+
-                                            '?buscar='+ b_cliente+'&campania='+ b_campania+
-                                            '&status='+ b_status+'&asesor='+ b_asesor+
-                                            '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
-                                            '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
-                                        <i class="fa fa-file-text"></i>&nbsp; Excel
+                                    <button type="button" v-if="lead.vendedor_asign == null" @click="asignarVendedor(lead.id)" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-exchange"></i>
+                                    </button>
+                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <div class="clearfix">
+                                        <div class="float-left"><strong>{{lead.progress}}%</strong></div>
+                                    </div>
+                                    <div class="progress progress-xs">
+                                        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" >{{ lead.nombre + ' ' + lead.apellidos }}</span>
+                                    <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
+                                    <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
+                                </td>
+                                <td class="td2">
+                                    <a  v-if="lead.celular != null" title="Enviar whatsapp"
+                                        class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
                                     </a>
-                                    <button disabled class="btn btn-primary">
-                                        {{'Total: '+arrayLeads.total}}
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.email != null" title="Enviar correo"
+                                        class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'">
+                                        <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    {{ (lead.nombre_campania != null) ? `${lead.nombre_campania} - ${lead.medio_digital}` : 'Tráfico organico' }}
+                                </td>
+                                <td class="td2">
+                                    {{(lead.proyecto_interes != 0) ? lead.proyecto : lead.zona_interes}}
+                                </td>
+                                <td class="td2">
+                                    {{ (lead.rango1 != null) ? `$${formatNumber(lead.rango1)} - $${formatNumber(lead.rango2)}` : '' }}
+                                </td>
+                                <td class="td2" v-text="lead.modelo_interes"></td>
+                                <td class="td2">
+                                    <span v-if="lead.status == '1'" class="badge badge-warning">En Seguimiento</span>
+                                    <span v-if="lead.status == '0'" class="badge badge-danger">Descartado</span>
+                                    <span v-if="lead.status == '2'" class="badge badge-success">Potencial</span>
+                                    <span v-if="lead.status == '3'" class="badge badge-success">Enviado a prospectos</span>
+                                </td>
+                                <td class="td2" v-text="lead.vendedor"></td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                        @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <TableComponent v-if="b_motivo == 2"
+                        :cabecera="[
+                            '','Nombre','Celular','Correo','Dirección','Descripción del problema','Status','Fecha de alta',
+                            'Observaciones'
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
                                     </button>
-
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-
-                        <div class="table-responsive">
-                            <table v-if="b_motivo == 1" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Avance</th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Campaña</th>
-                                        <th>Proyecto o zona de interés </th>
-                                        <th>Presupuesto</th>
-                                        <th>Modelo recomendado</th>
-                                        <th>Estatus</th>
-                                        <th>Vendedor asignado</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button type="button" v-if="lead.vendedor_asign == null" @click="asignarVendedor(lead.id)" class="btn btn-primary btn-sm">
-                                                <i class="fa fa-exchange"></i>
-                                            </button>
-                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <div class="clearfix">
-                                                <div class="float-left"><strong>{{lead.progress}}%</strong></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" class="td2" v-text="lead.nombre + ' ' + lead.apellidos"></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.nombre_campania != null" v-text="lead.nombre_campania + '-'+lead.medio_digital"></td>
-                                        <td class="td2" v-else v-text="'Tráfico organico'"></td>
-                                        <td class="td2" v-if="lead.proyecto_interes != 0" v-text="lead.proyecto"></td>
-                                        <td class="td2" v-else v-text="lead.zona_interes"></td>
-                                        <td class="td2" v-if="lead.rango1 != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
-                                        <td class="td2" v-text="lead.modelo_interes"></td>
-                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
-                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
-                                        <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
-                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Enviado a prospectos</span></td>
-                                        <td class="td2" v-text="lead.vendedor"></td>
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table v-else-if="b_motivo == 3" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Proyecto o zona de interés </th>
-                                        <th>Modelo de interes</th>
-                                        <th>Mensualidad deseada</th>
-                                        <th>Status</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.proyecto_interes != 0" v-text="lead.proyecto"></td>
-                                        <td class="td2" v-else v-text="lead.zona_interes"></td>
-                                        <td class="td2" v-text="lead.modelo_interes"></td>
-                                        <td class="td2" v-if="lead.rango1 != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
-                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
-                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table v-else-if="b_motivo == 2" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Dirección</th>
-                                        <th>Descripción del problema</th>
-                                        <th>Status</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.direccion"></td>
-                                        <td v-text="lead.descripcion"></td>
-                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
-                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
-                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table v-else-if="b_motivo == 4" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Prioridad</th>
-                                        <th>Descripción del problema</th>
-                                        <th>Status</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td>
-                                            <span v-if="lead.prioridad == 'Baja'" class="badge badge-light">Baja</span>
-                                            <span v-if="lead.prioridad == 'Media'" class="badge badge-warning">Media</span>
-                                            <span v-if="lead.prioridad == 'Alta'" class="badge badge-danger">Alta</span>
-                                        </td>
-                                        <td v-text="lead.descripcion"></td>
-                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
-                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
-                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table v-else-if="b_motivo == 5" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Dirección</th>
-                                        <th>Descripción</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.direccion"></td>
-                                        <td v-text="lead.descripcion"></td>
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <table v-else-if="b_motivo == 6" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Dirección del terreno</th>
-                                        <th>Costo m&sup2;</th>
-                                        <th>Medidas</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Notas</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.direccion"></td>
-                                        <td>${{formatNumber(lead.rango1)}}</td>
-                                        <td>{{formatNumber(lead.rango2)}}m&sup2;</td>
-
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td v-text="lead.descripcion"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table v-else-if="b_motivo == 7" class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Celular</th>
-                                        <th>Correo</th>
-                                        <th>Descripción</th>
-                                        <th>Status</th>
-                                        <th>Fecha de alta</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td class="td2" style="width:10%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                                <i class="icon-pencil"></i>
-                                            </button>
-                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                            <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>
-                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
-                                        </td>
-                                        <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null" >
-                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                        </td><td class="td2" v-else ></td>
-                                        <td v-text="lead.descripcion"></td>
-                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
-                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
-                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
-                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2">
-                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-
-                        </div>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" @click="listarLeads(1)">Inicio</a>
-                                </li>
-                                <li v-if="arrayLeads.current_page-3 >= 1">
-                                    <a class="page-link" href="#"
-                                    @click="listarLeads(arrayLeads.current_page-3)"
-                                    v-text="arrayLeads.current_page-3" ></a>
-                                </li>
-                                <li v-if="arrayLeads.current_page-2 >= 1">
-                                    <a class="page-link" href="#"
-                                    @click="listarLeads(arrayLeads.current_page-2)"
-                                    v-text="arrayLeads.current_page-2" ></a>
-                                </li>
-                                <li v-if="arrayLeads.current_page-1 >= 1">
-                                    <a class="page-link" href="#"
-                                    @click="listarLeads(arrayLeads.current_page-1)"
-                                    v-text="arrayLeads.current_page-1" ></a>
-                                </li>
-
-                                <li class="page-item active">
-                                    <a class="page-link" href="#" v-text="arrayLeads.current_page" ></a>
-                                </li>
-
-                                <li v-if="arrayLeads.current_page+1 <= arrayLeads.last_page">
-                                    <a class="page-link" href="#"
-                                    @click="listarLeads(arrayLeads.current_page+1)"
-                                    v-text="arrayLeads.current_page+1" ></a>
-                                </li>
-                                <li v-if="arrayLeads.current_page+2 <= arrayLeads.last_page">
-                                    <a class="page-link" href="#"
-                                    @click="listarLeads(arrayLeads.current_page+2)"
-                                    v-text="arrayLeads.current_page+2" ></a>
-                                </li>
-                                <li v-if="arrayLeads.current_page+3 <= arrayLeads.last_page">
-                                    <a class="page-link" href="#"
-                                    @click="listarLeads(arrayLeads.current_page+3)"
-                                    v-text="arrayLeads.current_page+3" ></a>
-                                </li>
-
-                                <li class="page-item">
-                                    <a class="page-link" href="#" @click="listarLeads(arrayLeads.last_page)">Ultimo</a>
-                                </li>
-                                <li></li>
-                                <li>
-                                    <input class="page-link" type="text" placeholder="Pagina a buscar" v-model="pagina" @keyup.enter="listarLeads(pagina)">
-                                </li>
-                            </ul>
-                        </nav>
+                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                        <i class="icon-check"></i>
+                                    </button>
+                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
+                                    <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                    <span class="badge2 badge-danger" v-else-if="lead.diferencia > 15">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp" class="btn btn-success"
+                                        target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.email != null" title="Enviar correo" class="btn btn-secondary"
+                                        :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td v-text="lead.direccion"></td>
+                                <td v-text="lead.descripcion"></td>
+                                <td class="td2">
+                                    <span  v-if="lead.status == '1'" class="badge badge-warning">En Seguimiento</span>
+                                    <span v-if="lead.status == '0'" class="badge badge-danger">Descartado</span>
+                                    <span v-if="lead.status == '3'" class="badge badge-success">Finalizado</span>
+                                </td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <TableComponent v-if="b_motivo == 3"
+                        :cabecera="['','Nombre','Celular','Correo','Proyecto o zona de interés ','Modelo de interes',
+                            'Mensualidad deseada','Status','Fecha de alta','Observaciones'
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                    </button>
+                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                        <i class="icon-check"></i>
+                                    </button>
+                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <span v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos"></span>
+                                    <span class="badge2 badge-warning" v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                    <span class="badge2 badge-danger" v-else-if="lead.diferencia > 15">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp" class="btn btn-success" target="_blank"
+                                        :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    <a  v-if="lead.email != null" title="Enviar correo" class="btn btn-secondary"
+                                        :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2" v-if="lead.proyecto_interes != 0" v-text="lead.proyecto"></td>
+                                <td class="td2" v-else v-text="lead.zona_interes"></td>
+                                <td class="td2" v-text="lead.modelo_interes"></td>
+                                <td class="td2">
+                                    {{(lead.rango1 != null) ? '$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2) : ''}}
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.status == '1'" class="badge badge-warning">En Seguimiento</span>
+                                    <span v-if="lead.status == '0'" class="badge badge-danger">Descartado</span>
+                                    <span v-if="lead.status == '3'" class="badge badge-success">Finalizado</span>
+                                </td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <TableComponent v-if="b_motivo == 4"
+                        :cabecera="[
+                            '','Nombre','Celular','Correo','Prioridad','Descripción del problema','Status',
+                            'Fecha de alta','Observaciones'
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                    </button>
+                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                        <i class="icon-check"></i>
+                                    </button>
+                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
+                                    <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                    <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp" class="btn btn-success" target="_blank"
+                                        :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    <a  v-if="lead.email != null" title="Enviar correo" class="btn btn-secondary"
+                                        :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <span v-if="lead.prioridad == 'Baja'" class="badge badge-light">Baja</span>
+                                    <span v-if="lead.prioridad == 'Media'" class="badge badge-warning">Media</span>
+                                    <span v-if="lead.prioridad == 'Alta'" class="badge badge-danger">Alta</span>
+                                </td>
+                                <td v-text="lead.descripcion"></td>
+                                <td class="td2">
+                                    <span v-if="lead.status == '1'" class="badge badge-warning">En Seguimiento</span>
+                                    <span v-if="lead.status == '0'" class="badge badge-danger">Descartado</span>
+                                    <span v-if="lead.status == '3'" class="badge badge-success">Finalizado</span>
+                                </td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <TableComponent v-if="b_motivo == 5"
+                        :cabecera="[
+                            '','Nombre','Celular','Correo','Dirección','Descripción','Fecha de alta','Observaciones'
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                    </button>
+                                    <button title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
+                                    <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                    <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp" class="btn btn-success" target="_blank"
+                                        :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.email != null" title="Enviar correo" class="btn btn-secondary"
+                                        :href="'mailto:'+lead.email+ ';'">
+                                        <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td v-text="lead.direccion"></td>
+                                <td v-text="lead.descripcion"></td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <TableComponent v-if="b_motivo == 6"
+                        :cabecera="[
+                            '','Nombre','Celular','Correo','Dirección del terreno','Costo m&sup2;',
+                            'Medidas','Fecha de alta','Notas','Observaciones',
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                    </button>
+                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                        <i class="icon-check"></i>
+                                    </button>
+                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
+                                    <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                    <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp" class="btn btn-success"
+                                        target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.email != null" title="Enviar correo" class="btn btn-secondary"
+                                        :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td v-text="lead.direccion"></td>
+                                <td>${{formatNumber(lead.rango1)}}</td>
+                                <td>{{formatNumber(lead.rango2)}}m&sup2;</td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td v-text="lead.descripcion"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <TableComponent v-if="b_motivo == 7"
+                        :cabecera="[
+                            '','Nombre','Celular','Correo','Descripción','Status','Fecha de alta','Observaciones',
+                        ]"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2" style="width:10%">
+                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                    </button>
+                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                        <i class="icon-check"></i>
+                                    </button>
+                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                        <i class="icon-close"></i>
+                                    </button>
+                                </td>
+                                <td class="td2">
+                                    <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
+                                    <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                    <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">
+                                        {{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}
+                                    </span>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp" class="btn btn-success" target="_blank"
+                                        :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td class="td2">
+                                    <a v-if="lead.email != null" title="Enviar correo" class="btn btn-secondary"
+                                        :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i>
+                                    </a>
+                                </td>
+                                <td v-text="lead.descripcion"></td>
+                                <td class="td2">
+                                    <span v-if="lead.status == '1'" class="badge badge-warning">En Seguimiento</span>
+                                    <span v-if="lead.status == '0'" class="badge badge-danger">Descartado</span>
+                                    <span v-if="lead.status == '3'" class="badge badge-success">Finalizado</span>
+                                </td>
+                                <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2">
+                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
+                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="#" @click="listarLeads(1)">Inicio</a>
+                            </li>
+                            <li v-if="arrayLeads.current_page-3 >= 1">
+                                <a class="page-link" href="#"
+                                @click="listarLeads(arrayLeads.current_page-3)"
+                                v-text="arrayLeads.current_page-3" ></a>
+                            </li>
+                            <li v-if="arrayLeads.current_page-2 >= 1">
+                                <a class="page-link" href="#"
+                                @click="listarLeads(arrayLeads.current_page-2)"
+                                v-text="arrayLeads.current_page-2" ></a>
+                            </li>
+                            <li v-if="arrayLeads.current_page-1 >= 1">
+                                <a class="page-link" href="#"
+                                @click="listarLeads(arrayLeads.current_page-1)"
+                                v-text="arrayLeads.current_page-1" ></a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#" v-text="arrayLeads.current_page" ></a>
+                            </li>
+                            <li v-if="arrayLeads.current_page+1 <= arrayLeads.last_page">
+                                <a class="page-link" href="#"
+                                @click="listarLeads(arrayLeads.current_page+1)"
+                                v-text="arrayLeads.current_page+1" ></a>
+                            </li>
+                            <li v-if="arrayLeads.current_page+2 <= arrayLeads.last_page">
+                                <a class="page-link" href="#"
+                                @click="listarLeads(arrayLeads.current_page+2)"
+                                v-text="arrayLeads.current_page+2" ></a>
+                            </li>
+                            <li v-if="arrayLeads.current_page+3 <= arrayLeads.last_page">
+                                <a class="page-link" href="#"
+                                @click="listarLeads(arrayLeads.current_page+3)"
+                                v-text="arrayLeads.current_page+3" ></a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" @click="listarLeads(arrayLeads.last_page)">Ultimo</a>
+                            </li>
+                            <li></li>
+                            <li>
+                                <input class="page-link" type="text" placeholder="Pagina a buscar" v-model="pagina" @keyup.enter="listarLeads(pagina)">
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
 
         <!--Inicio del modal -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+        <ModalComponent v-if="modal==1"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input">Motivo de contacto:</label>
+                    <div class="col-md-4">
+                        <select class="form-control" :disabled="tipoAccion == 2" v-model="motivo">
+                            <option value="0">Seleccione</option>
+                            <option value="1">Ventas</option>
+                            <option value="5">Recomendados</option>
+                            <option value="2">Postventa</option>
+                            <option value="3">Rentas</option>
+                            <option value="4">Dirección</option>
+                            <option value="6">Terrenos</option>
+                            <option value="7">Cumbres León</option>
+                        </select>
+                    </div>
+                </div>
+                <!--  VENTAS  -->
+                <div v-if="motivo == 1" class="">
+                    <div class="card-body">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Lead</a></li>
+                            <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Datos personales</a></li>
+                            <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Datos importantes</a></li>
+                        </ul>
+                    </div>
+
+                    <template v-if="paso == 1"> <!-- Datos del lead -->
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <!-- form para solicitud de avaluo -->
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Motivo de contacto:</label>
-                                <div class="col-md-4">
-                                    <select class="form-control" :disabled="tipoAccion == 2" v-model="motivo">
-                                        <option value="0">Seleccione</option>
-                                        <option value="1">Ventas</option>
-                                        <option value="5">Recomendados</option>
-                                        <option value="2">Postventa</option>
-                                        <option value="3">Rentas</option>
-                                        <option value="4">Dirección</option>
-                                        <option value="6">Terrenos</option>
-                                        <option value="7">Cumbres León</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                            <!--  VENTAS  -->
-                            <div v-if="motivo == 1" class="">
-                                <div class="card-body">
-                                    <ul class="nav nav-tabs">
-                                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Lead</a></li>
-                                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Datos personales</a></li>
-                                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Datos importantes</a></li>
-                                    </ul>
-                                </div>
-
-                                <template v-if="paso == 1"> <!-- Datos del lead -->
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Campaña publicitaria</label>
-                                        <div class="col-md-4">
-                                            <select class="form-control" v-model="campania_id">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
-                                        <div class="col-md-4">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option value="Facebook">Facebook</option>
-                                                <option value="Instagram">Instagram</option>
-                                                <option value="Pagina web">Pagina web</option>
-                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
-                                                <option value="Correo Electrónico">Correo Electrónico</option>
-
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
-                                        <div class="col-md-6">
-                                            <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
-                                                    :value="proyecto.id" v-text="proyecto.nombre">
-                                                </option>
-                                                <option value="0">Otro...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" v-if="proyecto_interes == 0">
-
-                                        <label class="col-md-3 form-control-label" v-if="proyecto_interes == 0" for="text-input">Zona o proyecto: </label>
-                                        <div class="col-md-6" v-if="proyecto_interes == 0">
-                                            <input type="text" v-model="zona_interes" class="form-control" placeholder="Zona de interes">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Tipo de uso</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" v-model="tipo_uso">
-                                                <option value="">Seleccione</option>
-                                                <option value="0">Habitar</option>
-                                                <option value="1">Inversión</option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
-                                        <div class="col-md-5">
-                                            <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
-                                            <datalist id="modelosName">
-                                                <option value="">Modelo</option>
-                                                <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Presupuesto</label>
-                                        <div class="col-md-2">
-                                            <p><strong>${{ formatNumber(rango1)}}</strong></p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
-                                            <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="300000" max="2500000">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <p><strong>${{ formatNumber(rango2)}}</strong></p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
-                                            <input class="form-control" type="range" name="price-max" id="price-max" v-model="rango2" min="300000" max="2500000">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row line-separator"></div>
-
-                                    <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
-                                        <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
-
-                                        <select class="form-control"
-                                            v-if="userId == 25511
-                                                || userId == 28669
-                                                || userId == 28270
-                                                || userId == 11
-                                                || userId == 28271
-                                                || userId == 29692
-                                                || userId == 13
-                                                || rolId == 1"  v-model="vendedor_asign" >
-                                            <option value="">Vendedor asignado</option>
-                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                        </select>
-
-                                    </div>
-
-                                </template>
-
-                                <template v-if="paso == 2"> <!-- Datos personales -->
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <select  v-model="clv_lada"  class="form-control" >
-                                                <option value="">Clave lada</option>
-                                                <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-                                        <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="rfc" @keyup="selectRFC(rfc)" class="form-control" placeholder="RFC" maxlength="10">
-                                        </div>
-                                        <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-1 form-control-label" for="text-input">Sexo:</label>
-                                        <div class="col-md-3">
-                                            <select class="form-control" v-model="sexo">
-                                                <option value="">Seleccione</option>
-                                                <option value="F">Femenino</option>
-                                                <option value="M">Masculino</option>
-                                            </select>
-                                        </div>
-                                        <label class="col-md-2 form-control-label" for="text-input">Fecha de nacimiento:</label>
-                                        <div class="col-md-3">
-                                            <input type="date" v-model="f_nacimiento" class="form-control" >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Estado civil:</label>
-                                        <div class="col-md-3">
-                                            <select class="form-control" v-model="edo_civil" >
-                                                <option value="0">Seleccione</option>
-                                                <option value="1">Casado - separacion de bienes</option>
-                                                <option value="2">Casado - sociedad conyugal</option>
-                                                <option value="3">Divorciado</option>
-                                                <option value="4">Soltero</option>
-                                                <option value="5">Union libre</option>
-                                                <option value="6">Viudo</option>
-                                                <option value="7">Otro</option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-1 form-control-label" for="text-input">Hijos?</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" v-model="hijos" >
-                                                <option value="">Seleccione</option>
-                                                <option value="1">Si</option>
-                                                <option value="0">No</option>
-                                            </select>
-                                        </div>
-
-                                        <label v-if="hijos == 1" class="col-md-2 form-control-label" for="text-input">¿Cuantos?</label>
-                                        <div v-if="hijos == 1" class="col-md-2">
-                                            <input type="number" min="0" v-model="num_hijos" class="form-control" >
-                                        </div>
-                                    </div>
-
-
-                                        <div class="form-group row line-separator"></div>
-
-                                        <div class="col-md-12">
-                                            <h6 align="center"><strong> Lugar de trabajo </strong></h6>
-                                        </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Empresa</label>
-                                        <div class="col-md-5">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="empresa" v-on:keypress="selectEmpresa(empresa)" placeholder="Empresa">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.nombre" v-text="empresa.nombre"></option>
-
-                                            </datalist>
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Ingresos</label>
-                                        <div class="col-md-3">
-                                            <input type="number" min="0" v-model="ingresos" class="form-control" >
-                                        </div>
-                                    </div>
-
-                                </template>
-
-                                <template v-if="paso == 3"> <!-- Datos Importantes -->
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Tipo de Crédito</label>
-                                        <div class="col-md-4">
-                                            <select  v-model="tipo_credito"  class="form-control" >
-                                                <option value="">Seleccione</option>
-                                                <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">¿Coacreditado?</label>
-                                        <div class="col-md-2">
-                                        <select  v-model="coacreditado"  class="form-control" >
-                                                <option value="0">No</option>
-                                                <option value="1">Si</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">¿Pago mensual deseado?</label>
-                                        <div class="col-md-3">
-                                            <input type="number" min="0" v-model="pago_mensual" class="form-control" >
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">¿Enganche?</label>
-                                        <div class="col-md-3">
-                                            <input type="number" min="0" v-model="enganche" class="form-control" >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row line-separator"></div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">¿Mascotas?</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" v-model="mascotas" >
-                                                <option value="1">Si</option>
-                                                <option value="0">No</option>
-                                            </select>
-                                        </div>
-
-                                        <label v-if="mascotas == 1" class="col-md-2 form-control-label" for="text-input">Cuantos?</label>
-                                        <div class="col-md-2">
-                                            <input v-if="mascotas == 1" type="number" min="0" v-model="num_mascotas" class="form-control" >
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" v-if="mascotas == 1" for="text-input">Tamaño de mascota?</label>
-                                        <div v-if="mascotas == 1" class="col-md-2">
-                                            <select class="form-control" v-model="tam_mascota" >
-                                                <option value="0">Seleccione</option>
-                                                <option value="1">Chico</option>
-                                                <option value="2">Mediano</option>
-                                                <option value="3">Grande</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">¿Autos?</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" v-model="autos" >
-                                                <option value="1">Si</option>
-                                                <option value="0">No</option>
-                                            </select>
-                                        </div>
-
-                                        <label v-if="autos == 1" class="col-md-2 form-control-label" for="text-input">¿Cuantos?</label>
-                                        <div class="col-md-2">
-                                            <input v-if="autos == 1" type="number" min="0" v-model="num_autos" class="form-control" >
-                                        </div>
-
-                                    </div>
-
-
-                                        <div class="form-group row line-separator"></div>
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">¿Busca alguna amenidad en especial dentro de la privada?</label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <input type="text" v-model="amenidad_priv" maxlength="191" class="form-control" placeholder="Amenidad en privada" >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">¿Habrá algún detalle en especial, que busque dentro de su casa?</label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <input type="text" v-model="detalle_casa" maxlength="191" class="form-control" placeholder="Detalle en su nuevo hogar" >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row line-separator"></div>
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">Perfil del lead</label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <textarea v-model="perfil_cliente" class="form-control" rows="5"></textarea>
-                                        </div>
-                                    </div>
-
-                                </template>
-
-
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Campaña publicitaria</label>
+                            <div class="col-md-4">
+                                <select class="form-control" v-model="campania_id">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
+                                </select>
                             </div>
 
-                            <!-- POSTVENTA -->
-                            <div v-if="motivo == 2 || motivo == 4" class="">
+                            <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                            <div class="col-md-4">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Pagina web">Pagina web</option>
+                                    <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                    <option value="Correo Electrónico">Correo Electrónico</option>
 
-                                <template v-if="paso == 1"> <!-- Datos del lead -->
-                                    <div class="form-group row line-separator"></div>
+                                </datalist>
+                            </div>
+                        </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                        :value="proyecto.id" v-text="proyecto.nombre">
+                                    </option>
+                                    <option value="0">Otro...</option>
+                                </select>
+                            </div>
+                        </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
-                                        <div class="col-md-4">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option value="Facebook">Facebook</option>
-                                                <option value="Instagram">Instagram</option>
-                                                <option value="Pagina web">Pagina web</option>
-                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
-                                                <option value="Correo Electrónico">Correo Electrónico</option>
-                                            </datalist>
-                                        </div>
-                                    </div>
+                        <div class="form-group row" v-if="proyecto_interes == 0">
+                            <label class="col-md-3 form-control-label" v-if="proyecto_interes == 0" for="text-input">Zona o proyecto: </label>
+                            <div class="col-md-6" v-if="proyecto_interes == 0">
+                                <input type="text" v-model="zona_interes" class="form-control" placeholder="Zona de interes">
+                            </div>
+                        </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" v-if="tipoAccion == 1">
-                                        <label class="col-md-2 form-control-label" for="text-input">Prioridad: </label>
-                                        <div class="col-md-6">
-                                            <select class="form-control" v-model="prioridad">
-                                                <option value="Baja">Baja</option>
-                                                <option value="Media">Media</option>
-                                                <option value="Alta">Alta</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" v-if="tipoAccion == 2">
-                                        <label class="col-md-2 form-control-label" for="text-input">Prioridad: </label>
-                                        <div class="col-md-6">
-                                            <span v-if="prioridad == 'Baja'" class="badge badge-light">Baja</span>
-                                            <span v-if="prioridad == 'Media'" class="badge badge-warning">Media</span>
-                                            <span v-if="prioridad == 'Alta'" class="badge badge-danger">Alta</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">Descripción del problema</label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
-                                        </div>
-                                    </div>
-
-                                </template>
-
-
-
-
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Tipo de uso</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="tipo_uso">
+                                    <option value="">Seleccione</option>
+                                    <option value="0">Habitar</option>
+                                    <option value="1">Inversión</option>
+                                </select>
                             </div>
 
-                            <!--  RENTAS  -->
-                            <div v-if="motivo == 3" class="">
-                                <div class="form-group row line-separator"></div>
-
-                                <template v-if="paso == 1"> <!-- Datos del lead -->
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
-                                        <div class="col-md-4">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option value="Facebook">Facebook</option>
-                                                <option value="Instagram">Instagram</option>
-                                                <option value="Pagina web">Pagina web</option>
-                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
-                                                <option value="Correo Electrónico">Correo Electrónico</option>
-
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
-                                        <div class="col-md-6">
-                                            <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
-                                                    :value="proyecto.id" v-text="proyecto.nombre">
-                                                </option>
-                                                <option value="0">Otro...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row" v-if="proyecto_interes == 0">
-
-                                        <label class="col-md-3 form-control-label" v-if="proyecto_interes == 0" for="text-input">Zona o proyecto: </label>
-                                        <div class="col-md-6" v-if="proyecto_interes == 0">
-                                            <input type="text" v-model="zona_interes" class="form-control" placeholder="Zona de interes">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-3 form-control-label" for="text-input">Prototipo de interes: </label>
-                                        <div class="col-md-5">
-                                            <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
-                                            <datalist id="modelosName">
-                                                <option value="">Modelo</option>
-                                                <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Rango de mensualidad</label>
-                                        <div class="col-md-2">
-                                            <p><strong>${{ formatNumber(rango1)}}</strong></p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
-                                            <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="5000" max="30000">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <p><strong>${{ formatNumber(rango2)}}</strong></p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
-                                            <input class="form-control" type="range" name="price-max" id="price-max" v-model="rango2" min="5000" max="35000">
-                                        </div>
-                                    </div>
-
-
-                                </template>
-
-
+                            <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
+                            <div class="col-md-5">
+                                <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
+                                <datalist id="modelosName">
+                                    <option value="">Modelo</option>
+                                    <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
+                                </datalist>
                             </div>
+                        </div>
 
-                            <!-- RECOMENDADOS -->
-                            <div v-if="motivo == 5" class="">
-
-                                <template v-if="paso == 1"> <!-- Datos del lead -->
-                                    <div class="form-group row line-separator"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>RFC:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="rfc" class="form-control" placeholder="RFC">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="button" @click="getDatosCliente(rfc)" class="btn btn-primary btn-sm">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
-                                        <div class="col-md-4">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option value="Facebook">Facebook</option>
-                                                <option value="Instagram">Instagram</option>
-                                                <option value="Pagina web">Pagina web</option>
-                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
-                                                <option value="Correo Electrónico">Correo Electrónico</option>
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row line-separator"></div>
-
-                                    <center><h6>Recomendado</h6></center>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre_rec" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos_rec" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
-
-                                     <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email_rec" class="form-control" placeholder="Email">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular_rec" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono_rec" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">Descripción</label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
-                                        </div>
-                                    </div>
-
-                                </template>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Presupuesto</label>
+                            <div class="col-md-2">
+                                <p><strong>${{ formatNumber(rango1)}}</strong></p>
                             </div>
-
-                            <!--  RENTAS  -->
-                            <div v-if="motivo == 6" class="">
-                                <div class="form-group row line-separator"></div>
-
-                                <template v-if="paso == 1"> <!-- Datos del lead -->
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
-                                        <div class="col-md-4">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option value="Facebook">Facebook</option>
-                                                <option value="Instagram">Instagram</option>
-                                                <option value="Pagina web">Pagina web</option>
-                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
-                                                <option value="Correo Electrónico">Correo Electrónico</option>
-
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 form-control-label" for="text-input"><strong>Ubicación del terreno</strong></label>
-                                        <div class="col-md-8">
-                                            <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-3 form-control-label" for="text-input">Medida en m&sup2;: </label>
-                                        <div class="col-md-5">
-                                            <input class="form-control" type="number" v-model="rango2">
-                                            <p><strong>{{ formatNumber(rango2)}}m&sup2;</strong></p>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-3 form-control-label" for="text-input">Precio por m&sup2;: </label>
-                                        <div class="col-md-5">
-                                            <input class="form-control" type="number" v-model="rango1">
-                                            <p><strong>${{ formatNumber(rango1)}}</strong></p>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">Notas</label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
-                                        </div>
-                                    </div>
-
-
-
-                                </template>
-
-
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
+                                <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="300000" max="2500000">
                             </div>
-
-                            <!-- POSTVENTA -->
-                            <div v-if="motivo == 7" class="">
-
-                                <template v-if="paso == 1"> <!-- Datos del lead -->
-                                    <div class="form-group row line-separator"></div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
-                                        <div class="col-md-4">
-                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
-                                            <datalist id="cityname">
-                                                <option value="">Seleccione</option>
-                                                <option value="Facebook">Facebook</option>
-                                                <option value="Instagram">Instagram</option>
-                                                <option value="Pagina web">Pagina web</option>
-                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
-                                                <option value="Correo Electrónico">Correo Electrónico</option>
-                                            </datalist>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="form-group row">
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
-                                        </div>
-
-                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
-                                        <div class="col-md-6">
-                                            <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group row">
-                                        <strong>
-                                            <label class="col-md-12 form-control-label" for="text-input">Descripción </label>
-                                        </strong>
-
-                                        <div class="col-md-12">
-                                            <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
-                                        </div>
-                                    </div>
-
-                                </template>
-
+                            <div class="col-md-2">
+                                <p><strong>${{ formatNumber(rango2)}}</strong></p>
                             </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
+                                <input class="form-control" type="range" name="price-max" id="price-max" v-model="rango2" min="300000" max="2500000">
+                            </div>
+                        </div>
 
-                            <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorProspecto" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
-                                            </div>
-                                        </div>
-                                    </div>
-                            <!-- fin del form solicitud de avaluo -->
+                        <div class="form-group row line-separator"></div>
+
+                        <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
+                            <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
+
+                            <select class="form-control"
+                                v-if="userId == 25511
+                                    || userId == 28669
+                                    || userId == 28270
+                                    || userId == 11
+                                    || userId == 28271
+                                    || userId == 29692
+                                    || userId == 13
+                                    || rolId == 1"  v-model="vendedor_asign" >
+                                <option value="">Vendedor asignado</option>
+                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                            </select>
+
+                        </div>
+                    </template>
+
+                    <template v-if="paso == 2"> <!-- Datos personales -->
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <select  v-model="clv_lada"  class="form-control" >
+                                    <option value="">Clave lada</option>
+                                    <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
 
 
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <template v-if="motivo == 1">
-                                <button type="button"
-                                v-if="(tipoAccion == 2 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
-                                class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
-                            </template>
 
-                            <button type="button"
-                                v-if="(tipoAccion == 2 && motivo == 1 && status !=0)"
-                                class="btn btn-danger" @click="descartar()">Descartar
-                            </button>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
 
-                            <!-- <button type="button"
-                                v-if="(tipoAccion == 2 && motivo == 1 && status !=0 && status !=3)"
-                                class="btn btn-success" @click="finalizar()">Finalizar
-                            </button> -->
+                        <div class="form-group row">
+                            <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="rfc" @keyup="selectRFC(rfc)" class="form-control" placeholder="RFC" maxlength="10">
+                            </div>
+                            <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
+                            </div>
+                        </div>
 
-                            <div></div>
+                        <div class="form-group row">
+                            <label class="col-md-1 form-control-label" for="text-input">Sexo:</label>
+                            <div class="col-md-3">
+                                <select class="form-control" v-model="sexo">
+                                    <option value="">Seleccione</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="M">Masculino</option>
+                                </select>
+                            </div>
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha de nacimiento:</label>
+                            <div class="col-md-3">
+                                <input type="date" v-model="f_nacimiento" class="form-control" >
+                            </div>
+                        </div>
 
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" v-if="tipoAccion == 1 && motivo != 0" class="btn btn-success" @click="storeLead()">Registrar</button>
-                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateLead()">Guardar cambios</button>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Estado civil:</label>
+                            <div class="col-md-3">
+                                <select class="form-control" v-model="edo_civil" >
+                                    <option value="0">Seleccione</option>
+                                    <option value="1">Casado - separacion de bienes</option>
+                                    <option value="2">Casado - sociedad conyugal</option>
+                                    <option value="3">Divorciado</option>
+                                    <option value="4">Soltero</option>
+                                    <option value="5">Union libre</option>
+                                    <option value="6">Viudo</option>
+                                    <option value="7">Otro</option>
+                                </select>
+                            </div>
+
+                            <label class="col-md-1 form-control-label" for="text-input">Hijos?</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="hijos" >
+                                    <option value="">Seleccione</option>
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+
+                            <label v-if="hijos == 1" class="col-md-2 form-control-label" for="text-input">¿Cuantos?</label>
+                            <div v-if="hijos == 1" class="col-md-2">
+                                <input type="number" min="0" v-model="num_hijos" class="form-control" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="col-md-12">
+                            <h6 align="center"><strong> Lugar de trabajo </strong></h6>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Empresa</label>
+                            <div class="col-md-5">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="empresa" v-on:keypress="selectEmpresa(empresa)" placeholder="Empresa">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.nombre" v-text="empresa.nombre"></option>
+                                </datalist>
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Ingresos</label>
+                            <div class="col-md-3">
+                                <input type="number" min="0" v-model="ingresos" class="form-control" >
+                            </div>
+                        </div>
+                    </template>
+
+                    <template v-if="paso == 3"> <!-- Datos Importantes -->
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Tipo de Crédito</label>
+                            <div class="col-md-4">
+                                <select  v-model="tipo_credito"  class="form-control" >
+                                    <option value="">Seleccione</option>
+                                    <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
+                                </select>
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">¿Coacreditado?</label>
+                            <div class="col-md-2">
+                            <select  v-model="coacreditado"  class="form-control" >
+                                    <option value="0">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">¿Pago mensual deseado?</label>
+                            <div class="col-md-3">
+                                <input type="number" min="0" v-model="pago_mensual" class="form-control" >
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">¿Enganche?</label>
+                            <div class="col-md-3">
+                                <input type="number" min="0" v-model="enganche" class="form-control" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">¿Mascotas?</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="mascotas" >
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+
+                            <label v-if="mascotas == 1" class="col-md-2 form-control-label" for="text-input">Cuantos?</label>
+                            <div class="col-md-2">
+                                <input v-if="mascotas == 1" type="number" min="0" v-model="num_mascotas" class="form-control" >
+                            </div>
+
+                            <label class="col-md-2 form-control-label" v-if="mascotas == 1" for="text-input">Tamaño de mascota?</label>
+                            <div v-if="mascotas == 1" class="col-md-2">
+                                <select class="form-control" v-model="tam_mascota" >
+                                    <option value="0">Seleccione</option>
+                                    <option value="1">Chico</option>
+                                    <option value="2">Mediano</option>
+                                    <option value="3">Grande</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">¿Autos?</label>
+                            <div class="col-md-2">
+                                <select class="form-control" v-model="autos" >
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+
+                            <label v-if="autos == 1" class="col-md-2 form-control-label" for="text-input">¿Cuantos?</label>
+                            <div class="col-md-2">
+                                <input v-if="autos == 1" type="number" min="0" v-model="num_autos" class="form-control" >
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">¿Busca alguna amenidad en especial dentro de la privada?</label>
+                            </strong>
+
+                            <div class="col-md-12">
+                                <input type="text" v-model="amenidad_priv" maxlength="191" class="form-control" placeholder="Amenidad en privada" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">¿Habrá algún detalle en especial, que busque dentro de su casa?</label>
+                            </strong>
+
+                            <div class="col-md-12">
+                                <input type="text" v-model="detalle_casa" maxlength="191" class="form-control" placeholder="Detalle en su nuevo hogar" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">Perfil del lead</label>
+                            </strong>
+
+                            <div class="col-md-12">
+                                <textarea v-model="perfil_cliente" class="form-control" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- POSTVENTA -->
+                <div v-if="motivo == 2 || motivo == 4" class="">
+                    <template v-if="paso == 1"> <!-- Datos del lead -->
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                            <div class="col-md-4">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Pagina web">Pagina web</option>
+                                    <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                    <option value="Correo Electrónico">Correo Electrónico</option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion == 1">
+                            <label class="col-md-2 form-control-label" for="text-input">Prioridad: </label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="prioridad">
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="tipoAccion == 2">
+                            <label class="col-md-2 form-control-label" for="text-input">Prioridad: </label>
+                            <div class="col-md-6">
+                                <span v-if="prioridad == 'Baja'" class="badge badge-light">Baja</span>
+                                <span v-if="prioridad == 'Media'" class="badge badge-warning">Media</span>
+                                <span v-if="prioridad == 'Alta'" class="badge badge-danger">Alta</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">Descripción del problema</label>
+                            </strong>
+
+                            <div class="col-md-12">
+                                <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!--  RENTAS  -->
+                <div v-if="motivo == 3" class="">
+                    <div class="form-group row line-separator"></div>
+                    <template v-if="paso == 1"> <!-- Datos del lead -->
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                            <div class="col-md-4">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Pagina web">Pagina web</option>
+                                    <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                    <option value="Correo Electrónico">Correo Electrónico</option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                        :value="proyecto.id" v-text="proyecto.nombre">
+                                    </option>
+                                    <option value="0">Otro...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="proyecto_interes == 0">
+
+                            <label class="col-md-3 form-control-label" v-if="proyecto_interes == 0" for="text-input">Zona o proyecto: </label>
+                            <div class="col-md-6" v-if="proyecto_interes == 0">
+                                <input type="text" v-model="zona_interes" class="form-control" placeholder="Zona de interes">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Prototipo de interes: </label>
+                            <div class="col-md-5">
+                                <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
+                                <datalist id="modelosName">
+                                    <option value="">Modelo</option>
+                                    <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Rango de mensualidad</label>
+                            <div class="col-md-2">
+                                <p><strong>${{ formatNumber(rango1)}}</strong></p>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
+                                <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="5000" max="30000">
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>${{ formatNumber(rango2)}}</strong></p>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
+                                <input class="form-control" type="range" name="price-max" id="price-max" v-model="rango2" min="5000" max="35000">
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- RECOMENDADOS -->
+                <div v-if="motivo == 5" class="">
+                    <template v-if="paso == 1"> <!-- Datos del lead -->
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>RFC:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="rfc" class="form-control" placeholder="RFC">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" @click="getDatosCliente(rfc)" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                            <div class="col-md-4">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Pagina web">Pagina web</option>
+                                    <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                    <option value="Correo Electrónico">Correo Electrónico</option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
+                            </div>
+                        </div>
+
+                        <div class="form-group row line-separator"></div>
+
+                        <center><h6>Recomendado</h6></center>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre_rec" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos_rec" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email_rec" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular_rec" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono_rec" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">Descripción</label>
+                            </strong>
+
+                            <div class="col-md-12">
+                                <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!--  RENTAS  -->
+                <div v-if="motivo == 6" class="">
+                    <div class="form-group row line-separator"></div>
+
+                    <template v-if="paso == 1"> <!-- Datos del lead -->
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email" class="form-control" placeholder="Email">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                            <div class="col-md-4">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Pagina web">Pagina web</option>
+                                    <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                    <option value="Correo Electrónico">Correo Electrónico</option>
+
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input"><strong>Ubicación del terreno</strong></label>
+                            <div class="col-md-8">
+                                <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Medida en m&sup2;: </label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="number" v-model="rango2">
+                                <p><strong>{{ formatNumber(rango2)}}m&sup2;</strong></p>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Precio por m&sup2;: </label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="number" v-model="rango1">
+                                <p><strong>${{ formatNumber(rango1)}}</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">Notas</label>
+                            </strong>
+                            <div class="col-md-12">
+                                <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- POSTVENTA -->
+                <div v-if="motivo == 7" class="">
+                    <template v-if="paso == 1"> <!-- Datos del lead -->
+                        <div class="form-group row line-separator"></div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                            <div class="col-md-4">
+                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                <datalist id="cityname">
+                                    <option value="">Seleccione</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="Pagina web">Pagina web</option>
+                                    <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                    <option value="Correo Electrónico">Correo Electrónico</option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="email" class="form-control" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                            </div>
+
+                            <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
+                            <div class="col-md-6">
+                                <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <strong>
+                                <label class="col-md-12 form-control-label" for="text-input">Descripción </label>
+                            </strong>
+
+                            <div class="col-md-12">
+                                <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                    </template>
+                </div>
+
+                <!-- Div para mostrar los errores de captura -->
+                <div v-show="errorProspecto" class="form-group row div-error">
+                    <div class="text-center text-error">
+                        <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
                         </div>
                     </div>
-                      <!-- /.modal-content -->
                 </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal consulta-->
+            </template>
+            <template v-slot:buttons-footer>
+                <template v-if="motivo == 1">
+                    <button type="button"
+                        v-if="(tipoAccion == 2 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
+                        class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos
+                    </button>
+                    <button type="button"
+                        v-if="(tipoAccion == 2 && status !=0)"
+                        class="btn btn-danger" @click="descartar()">Descartar
+                    </button>
+                </template>
+                    <div></div>
+                <button type="button" v-if="tipoAccion == 1 && motivo != 0" class="btn btn-success" @click="storeLead()">Registrar</button>
+                <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateLead()">Guardar cambios</button>
+            </template>
+        </ModalComponent>
+        <!--Fin del modal consulta-->
 
-             <!--Inicio del modal observaciones-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                                    <div class="col-md-6">
-                                         <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha para recordatorio</label>
-                                    <div class="col-md-3">
-                                         <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
-                                    </div>
-                                </div>
-
-
-                                <table class="table table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Observacion</th>
-                                            <th>Fecha</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="observacion in arrayObs.data" :key="observacion.id">
-
-                                            <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.comentario" ></td>
-                                            <td v-text="observacion.created_at"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        </div>
+        <!--Inicio del modal observaciones-->
+        <ModalComponent v-if="modal==2"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                    <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                    <div class="col-md-6">
+                            <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
                     </div>
-                      <!-- /.modal-content -->
                 </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label" for="text-input">Fecha para recordatorio</label>
+                    <div class="col-md-3">
+                            <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
+                    </div>
+                </div>
+                <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                    <template v-slot:tbody>
+                        <tr v-for="observacion in arrayObs.data" :key="observacion.id">
+                            <td v-text="observacion.usuario" ></td>
+                            <td v-text="observacion.comentario" ></td>
+                            <td v-text="observacion.created_at"></td>
+                        </tr>
+                    </template>
+                </TableComponent>
+            </template>
+        </ModalComponent>
     </main>
 </template>
 
 <script>
 import vSelect from 'vue-select';
+import LoadingComponent from '../Componentes/LoadingComponent.vue';
+import TableComponent from '../Componentes/TableComponent.vue';
+import ModalComponent from '../Componentes/ModalComponent.vue';
+
 export default {
     props:{
             rolId:{type: String},
@@ -1605,6 +1488,7 @@ export default {
             b_prioridad:'',
             b_modelo:'',
             proceso : false,
+            loading: false,
 
             datos : [],
             arrayEmpresa: [],
@@ -1685,7 +1569,10 @@ export default {
 
     },
     components:{
-        vSelect
+        vSelect,
+        ModalComponent,
+        TableComponent,
+        LoadingComponent
     },
     methods: {
         validarProspecto(){
@@ -2019,30 +1906,28 @@ export default {
 
         },
         listarLeads (page){
-            if(this.rolId == 12)
-                this.b_motivo = 2;
+            let me = this;
+            me.loading = true;
+            if(me.rolId == 12)
+                me.b_motivo = 2;
 
-            if(this.rolId == 3)
-                this.b_motivo = 6;
+            if(me.rolId == 3)
+                me.b_motivo = 6;
 
-            axios.get('/leads/index'+
-                '?buscar='+this.b_cliente+
-                '&campania='+this.b_campania+
-                '&status='+this.b_status+
-                '&asesor='+this.b_asesor+
-                '&motivo='+this.b_motivo+
-                '&fecha1='+this.b_fecha1+
-                '&fecha2='+this.b_fecha2+
-                '&proyecto='+this.b_proyecto+
-                '&prioridad='+this.b_prioridad+
-                '&modelo='+this.b_modelo+
-                '&page='+page
-
-            ).then(
-                response => this.arrayLeads = response.data,
-
-                this.pagina = ''
-            ).catch(error => console.log(error));
+            axios.get('/leads/index'+'?buscar=' + me.b_cliente+
+                '&campania='+me.b_campania  + '&status='+me.b_status+
+                '&asesor='+me.b_asesor      + '&motivo='+me.b_motivo +
+                '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
+                '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
+                '&modelo='+me.b_modelo      + '&page=' + page
+            ).then(function(response){
+                me.arrayLeads = response.data;
+                me.pagina = ''
+                me.loading = false;
+            }).catch(function (error) {
+                console.log(error);
+                me.loading = false;
+            });
         },
         selectEmpresa(buscar){
             let me = this;
@@ -2570,9 +2455,6 @@ export default {
         this.getClavesLadas();
         this.$root.$data.buscar = '';
     },
-    created(){
-
-    }
 };
 </script>
 <style>
@@ -2580,31 +2462,6 @@ export default {
         height:1px;
         background:#717171;
         border-bottom:1px solid #c2cfd6;
-    }
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .modal-body{
-        height: 500px;
-        width: 100%;
-        overflow-y: auto;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-
-    }
-    .div-error {
-    display: flex;
-    justify-content: center;
-    }
-    .text-error {
-    color: red !important;
-    font-weight: bold;
     }
 
     .bg-gradient-primary {
@@ -2614,15 +2471,6 @@ export default {
     }
     .p-3 {
         padding: 1rem!important;
-    }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {

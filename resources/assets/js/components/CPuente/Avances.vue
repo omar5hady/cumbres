@@ -13,39 +13,32 @@
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
                     </div>
-                    <!-- Div Card Body para listar -->
-                    <template v-if="vista == 0">
-                        <div class="card-body"> 
-                            <div class="form-group row">
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <select class="form-control" @keyup.enter="listarAvisos(1)" v-model="buscar" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                        </select>
-                                        <input type="text" class="form-control" v-model="b_folio" @keyup.enter="listarAvisos(1)" placeholder="Folio">
-                                    </div>
-                                    <div class="input-group">
-                                        <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+
+                    <loading-component v-if="loading"></loading-component>
+
+                    <template v-else>
+                        <!-- Div Card Body para listar -->
+                        <template v-if="vista == 0">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <select class="form-control" @keyup.enter="listarAvisos(1)" v-model="buscar" >
+                                                <option value="">Seleccione</option>
+                                                <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                            </select>
+                                            <input type="text" class="form-control" v-model="b_folio" @keyup.enter="listarAvisos(1)" placeholder="Folio">
+                                        </div>
+                                        <div class="input-group">
+                                            <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                           
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Folio</th>
-                                            <th>Proyecto</th>
-                                            <th>Número de Cuenta</th>
-                                            <th>Avance Edificación</th>
-                                            <th>Avance Urbanizacion</th>
-                                            <th></th>
-                                            <!-- <th>Fecha solicitud</th>
-                                            <th>Status</th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+
+                                <TableComponent :cabecera="[
+                                    'Folio','Proyecto','Número de Cuenta','Avance Edificación','Avance Urbanizacion','']"
+                                >
+                                    <template v-slot:tbody>
                                         <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" @click="getLotesPuente(creditosPuente)">
                                             <td>
                                                 <a href="#" v-text="creditosPuente.folio"></a>
@@ -59,171 +52,131 @@
                                                     <i class="fa fa-book">&nbsp;Observaciones</i>
                                                 </button>
                                             </td>
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                            </div>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </template>
-                    <template v-if="vista == 1">
-                        <div class="card-body"> 
-                            <div class="col-xl-12 col-lg-5 col-md-4">
-                                <div class="card">
-
-                                     <!-- Cabecera con datos generales del crédito -->
-                                        <div>
-                                             <div class="card-body p-12 d-flex align-items-center">
-                                                <div>
-                                                    <div class="text-value text-uppercase font-weight-bold text-primary text-center">
-                                                        Estado de cuenta del Crédito Puente "{{datosPuente.proyecto}} {{datosPuente.lotes}} VIV"
-                                                    </div>
-                                                </div>
-                                                <br>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-left:0px;">
-                                            <div class="card-body p-3 d-flex align-items-center">
-                                                <div>
-                                                    <div class="text-uppercase font-weight-bold" 
-                                                        v-text="'Folio: '">
-                                                    </div>
-                                                    
-                                                    <div class="text-uppercase font-weight-bold" 
-                                                        v-text="'Institucion de crédito: '">
-                                                    </div>
-                                                    <div class="text-uppercase font-weight-bold" 
-                                                        v-text="'Número de casas: '">
-                                                    </div>
-                                                    <div class="text-uppercase font-weight-bold" 
-                                                        v-text="'Ingresos a: '">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="card-body p-3 d-flex align-items-center">
-                                                <div>
-                                                    <div class="text-uppercase" 
-                                                        v-text="datosPuente.folio">
-                                                    </div>
-                                                    <div class="text-uppercase" 
-                                                        v-text="datosPuente.banco">
-                                                    </div>
-                                                    <div class="text-uppercase" 
-                                                        v-text="datosPuente.lotes">
-                                                    </div>
-                                                    <div class="text-uppercase" 
-                                                        v-text="'CTA DE '+ datosPuente.banco+' '+datosPuente.num_cuenta">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                </div>
-                            </div>
-                           
-                            <div class="table-responsive">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th># Lote</th>
-                                            <th>Manzana</th>
-                                            <th>Modelo</th>
-                                            <th>Avance Edificación</th>
-                                            <th>Avance Urbanizacion</th>
-                                            <!-- <th>Fecha solicitud</th>
-                                            <th>Status</th> -->
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                    </template>
+                                </TableComponent>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </template>
+                        <template v-if="vista == 1">
+                            <div class="card-body">
+                                <div class="col-xl-12 col-lg-5 col-md-4">
+                                    <div class="card">
+
+                                        <!-- Cabecera con datos generales del crédito -->
+                                            <div>
+                                                <div class="card-body p-12 d-flex align-items-center">
+                                                    <div>
+                                                        <div class="text-value text-uppercase font-weight-bold text-primary text-center">
+                                                            Estado de cuenta del Crédito Puente "{{datosPuente.proyecto}} {{datosPuente.lotes}} VIV"
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="margin-left:0px;">
+                                                <div class="card-body p-3 d-flex align-items-center">
+                                                    <div>
+                                                        <div class="text-uppercase font-weight-bold"
+                                                            v-text="'Folio: '">
+                                                        </div>
+
+                                                        <div class="text-uppercase font-weight-bold"
+                                                            v-text="'Institucion de crédito: '">
+                                                        </div>
+                                                        <div class="text-uppercase font-weight-bold"
+                                                            v-text="'Número de casas: '">
+                                                        </div>
+                                                        <div class="text-uppercase font-weight-bold"
+                                                            v-text="'Ingresos a: '">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body p-3 d-flex align-items-center">
+                                                    <div>
+                                                        <div class="text-uppercase"
+                                                            v-text="datosPuente.folio">
+                                                        </div>
+                                                        <div class="text-uppercase"
+                                                            v-text="datosPuente.banco">
+                                                        </div>
+                                                        <div class="text-uppercase"
+                                                            v-text="datosPuente.lotes">
+                                                        </div>
+                                                        <div class="text-uppercase"
+                                                            v-text="'CTA DE '+ datosPuente.banco+' '+datosPuente.num_cuenta">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                    </div>
+                                </div>
+
+                                <TableComponent :cabecera="[
+                                    '# Lote','Manzana','Modelo','Avance Edificación','Avance Urbanizacion'
+                                ]">
+                                    <template v-slot:tbody>
                                         <tr v-for="lote in arrayLotes" :key="lote.id">
                                             <td v-text="lote.num_lote"></td>
                                             <td v-text="lote.manzana"></td>
                                             <td v-text="lote.modelo"></td>
                                             <td v-bind:class="{'listo':lote.avance >= 99, 'zero':lote.avance <25}"> {{formatNumber(lote.avance)}}%</td>
                                             <td> {{lote.avanceUrb}}/{{lote.conteoUrb}}</td>
-                                            
-                                        </tr>                               
-                                    </tbody>
-                                </table>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                             </div>
-                        </div>
+                        </template>
                     </template>
-                    
+
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
             <!--Inicio del modal obs-->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" 
-                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                    <div class="modal-dialog modal-primary modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" v-text="tituloModal"></h4>
-                                <button type="button" class="close" @click="cerrarModal(0)" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-
-                                <div class="modal-body">
-                                    <template v-if="tipoAccion == 1">
-                                        
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" v-model="observacion" class="form-control">
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
-                                                </div>
-                                            </div>
-
-                                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                                <table class="table table-bordered table-striped table-sm">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Usuario</th>
-                                                            <th>Observacion</th>
-                                                            <th>Fecha</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="observacion in arrayObs" :key="observacion.id">
-                                                            <td v-text="observacion.usuario" ></td>
-                                                            <td v-text="observacion.observacion" ></td>
-                                                            <td v-text="observacion.created_at"></td>
-                                                        </tr>                               
-                                                    </tbody>
-                                                </table>
-                                            </form>
-                                    </template>
-
-                                </div>
-                                <!-- Botones del modal -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(0)">Cerrar</button>
-                                </div>
-                            
+            <ModalComponent v-if="modal == 1"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal(0)"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="observacion" class="form-control">
                         </div>
-                        <!-- /.modal-content -->
+
+                        <div class="col-md-3">
+                            <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
+                        </div>
                     </div>
-                    <!-- /.modal-dialog -->
-                </div>
+
+                    <TableComponent :cabecera="['Usuario','Observacion','Fecha']">
+                        <template v-slot:tbody>
+                             <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.observacion" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -233,9 +186,18 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import LoadingComponent from '../Componentes/LoadingComponent.vue';
+import TableComponent from '../Componentes/TableComponent.vue';
+import ModalComponent from '../Componentes/ModalComponent.vue';
+
     export default {
         props:{
             userName:{type: String}
+        },
+        components:{
+            TableComponent,
+            LoadingComponent,
+            ModalComponent
         },
         data(){
             return{
@@ -243,9 +205,10 @@
                 id:0,
                 arrayCreditosPuente : [],
                 vista:0,
+                loading:true,
                 tipoAccion: 0,
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -270,17 +233,15 @@
                 b_status:3,
                 arrayProyectos : [],
                 arrayCargos : [],
-                
+
                 modal:0,
                 tituloModal:'',
                 tipoAccion:1,
                 arrayObs:[],
                 arrayLotes:[],
-                
+
                 observacion:'',
             }
-        },
-        components:{
         },
         computed:{
             isActived: function(){
@@ -289,7 +250,7 @@
             totalPagar: function(){
                 let me = this;
                 var total_pago =0;
-                    total_pago =parseFloat(me.interes) + parseFloat(me.cantidad); 
+                    total_pago =parseFloat(me.interes) + parseFloat(me.cantidad);
                 return total_pago;
             },
             //Calcula los elementos de la paginación
@@ -318,17 +279,20 @@
             listarAvisos(page){
                 let me = this;
                 me.vista = 0;
+                me.loading = true;
                 var url = '/cPuentes/indexCreditosAvances?page=' + page + '&fraccionamiento=' + me.buscar + '&folio=' + me.b_folio + '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditosPuente = respuesta.creditos.data;
                     me.pagination = respuesta.pagination;
+                    me.loading = false;
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.loading = false;
                 });
             },
-            
+
             getLotesPuente(data){
                 let me = this;
                 me.id = data.id;
@@ -344,7 +308,7 @@
                     console.log(error);
                 });
             },
-            
+
             getObs(id){
                 let me = this;
                 me.arrayObs=[];
@@ -357,7 +321,7 @@
                     console.log(error);
                 });
             },
-            
+
             selectProyectos(){
                 let me = this;
                 me.arrayProyectos=[];
@@ -390,13 +354,13 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-            
+
             storeObs(){
                 let me = this;
                 axios.post('/cPuentes/storeObs',{
                     'id': this.id,
                     'observacion': this.observacion,
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -408,7 +372,7 @@
                         })
                         me.getObs(me.id);
                         me.observacion = '';
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -437,7 +401,7 @@
                     'pagoLote' : pagoLote,
                     'lote_id' : me.lote_id,
                     'lotePuenteId' : me.lotePuenteId
-                   
+
                 }).then(function (response){
                     //Obtener detalle
                         swal({
@@ -449,7 +413,7 @@
                         })
                         me.cerrarModal(1);
                         me.getEdoCuenta(me.datosPuente.id);
-                    
+
                 }).catch(function (error){
                     console.log(error);
                 });
@@ -469,26 +433,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;

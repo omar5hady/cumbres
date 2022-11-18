@@ -15,57 +15,49 @@
                     </button>
                     <!---->
                 </div>
-                <!-- Div Card Body para listar -->
-                <template v-if="listado == 1">
-                    <div class="card-body"> 
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
-                                        <option value="ini_obras.clave">Clave</option>
-                                        <option value="contratistas.nombre">Contratista</option>
-                                        <option value="ini_obras.f_ini">Fecha de inicio</option>
-                                        <option value="ini_obras.f_fin">Fecha de termino</option>
-                                        <option value="ini_obras.fraccionamiento_id">Proyecto</option>
-                                    </select>
-                                    <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1)" v-model="buscar" >
-                                        <option value="">Seleccione</option>
-                                        <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                    </select>
-                                        <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control">
-                                        <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control">
-                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control" placeholder="Texto a buscar">
+                <LoadingComponent v-if="loading"></LoadingComponent>
+
+                <template v-else>
+                    <!-- Div Card Body para listar -->
+                    <template v-if="listado == 1">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                            <option value="ini_obras.clave">Clave</option>
+                                            <option value="contratistas.nombre">Contratista</option>
+                                            <option value="ini_obras.f_ini">Fecha de inicio</option>
+                                            <option value="ini_obras.f_fin">Fecha de termino</option>
+                                            <option value="ini_obras.fraccionamiento_id">Proyecto</option>
+                                        </select>
+                                        <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1)" v-model="buscar" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+                                            <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control">
+                                            <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control">
+                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control" placeholder="Texto a buscar">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <select class="form-control" v-model="b_empresa" >
-                                        <option value="">Empresa constructora</option>
-                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                    </select>
-                                    <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <select class="form-control" v-model="b_empresa" >
+                                            <option value="">Empresa constructora</option>
+                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                        </select>
+                                        <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Clave</th>
-                                        <th>Contratista</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Importe total</th>
-                                        <th>Fecha de inicio </th>
-                                        <th>Fecha de termino</th>
-                                        <th></th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <TableComponent :cabecera="[
+                                'Opciones','Clave','Contratista','Fraccionamiento','Importe total',
+                                'Fecha de inicio ','Fecha de termino',''
+                            ]">
+                                <template v-slot:tbody>
                                     <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id" title="Ver detalle">
                                         <td>
                                             <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra.id)">
@@ -74,7 +66,6 @@
                                             <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
                                                 <i class="icon-pencil"></i>
                                             </button>
-
                                             <button title="Subir contrato" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
                                                 <i class="icon-cloud-upload"></i>
                                             </button>
@@ -101,580 +92,525 @@
                                                 <i class="fa fa-download"></i>
                                             </a>
                                         </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                         </div>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                
-                            </ul>
-                        </nav>
-                    </div>
-                </template>
-                
-                <!-- Div Card Body para nuevo registro -->
-                <template v-else-if="listado == 0">
-                    <div class="card-body"> 
-                        <div class="form-group row border">
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <label for="">Contratista </label>
-                                    <v-select 
-                                        :on-search="selectContratista"
-                                        label="nombre"
-                                        :options="arrayContratista"
-                                        placeholder="Buscar contratista..."
-                                        :onChange="getDatosContratista"
-                                    >
-                                    </v-select>
+                    </template>
+
+                    <!-- Div Card Body para nuevo registro -->
+                    <template v-else-if="listado == 0">
+                        <div class="card-body">
+                            <div class="form-group row border">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="">Contratista </label>
+                                        <v-select
+                                            :on-search="selectContratista"
+                                            label="nombre"
+                                            :options="arrayContratista"
+                                            placeholder="Buscar contratista..."
+                                            :onChange="getDatosContratista"
+                                        >
+                                        </v-select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="">Clave </label>
-                                <input type="text" class="form-control" v-model="datosContrato.clave" placeholder="CLV-00-00">
-                            </div> 
-                            <div class="col-md-3">
-                                <label for="">Fecha de inicio </label>
-                                <input type="date" class="form-control" v-model="datosContrato.f_ini">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="">Fecha de termino </label>
-                                <input type="date" class="form-control" v-model="datosContrato.f_fin">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="">% Anticipo </label>
-                                <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.anticipo" v-on:keypress="isNumber($event)">
-                            </div>
-
-                            <div class="col-md-3">
-                                <label for="">% Garantia Ret </label>
-                                <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.porc_garantia_ret" v-on:keypress="isNumber($event)">
-                            </div>
-
-                            <div class="col-md-3">
-                                    <label for="">% Costo Indirecto </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="datosContrato.costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                <div class="col-md-3">
+                                    <label for="">Clave </label>
+                                    <input type="text" class="form-control" v-model="datosContrato.clave" placeholder="CLV-00-00">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Fecha de inicio </label>
+                                    <input type="date" class="form-control" v-model="datosContrato.f_ini">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Fecha de termino </label>
+                                    <input type="date" class="form-control" v-model="datosContrato.f_fin">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">% Anticipo </label>
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.anticipo" v-on:keypress="isNumber($event)">
                                 </div>
 
-                            <div class="col-md-4">
-                                <label for="">Costo Directo </label>
-                                <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_costo_directo" v-on:keypress="isNumber($event)">
-                            </div>
-
-                            <div class="col-md-4" v-show="datosContrato.total_costo_directo > 0">
-                                <label for=""></label>
-                                <h6>${{ formatNumber(datosContrato.total_costo_directo) }}</h6>
-                            </div>
-
-                            <div class="col-md-4" ></div>
-
-
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="">Fraccionamiento </label>
-                                    <v-select 
-                                        :on-search="selectFraccionamiento"
-                                        label="nombre"
-                                        :options="arrayFraccionamientos"
-                                        placeholder="Buscar proyecto..."
-                                        :onChange="getDatosFraccionamiento"
-                                    >
-                                    </v-select>
+                                <div class="col-md-3">
+                                    <label for="">% Garantia Ret </label>
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.porc_garantia_ret" v-on:keypress="isNumber($event)">
                                 </div>
-                            </div>
 
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label>Dirección del proyecto:</label>
-                                    <input class="form-control"  type="text" v-model="datosContrato.direccion_proy">
+                                <div class="col-md-3">
+                                        <label for="">% Costo Indirecto </label>
+                                        <input type="number" class="form-control" min="0" max="100" v-model="datosContrato.costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                    </div>
+
+                                <div class="col-md-4">
+                                    <label for="">Costo Directo </label>
+                                    <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_costo_directo" v-on:keypress="isNumber($event)">
                                 </div>
-                            </div>
 
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="">Num. Torres:</label>
-                                    <input class="form-control"  type="text" v-model="datosContrato.num_torres">
+                                <div class="col-md-4" v-show="datosContrato.total_costo_directo > 0">
+                                    <label for=""></label>
+                                    <h6>${{ formatNumber(datosContrato.total_costo_directo) }}</h6>
                                 </div>
-                            </div>
 
-                            
-                                <div class="col-md-12">
-                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorAvisoObra" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                <div class="col-md-4" ></div>
+
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="">Fraccionamiento </label>
+                                        <v-select
+                                            :on-search="selectFraccionamiento"
+                                            label="nombre"
+                                            :options="arrayFraccionamientos"
+                                            placeholder="Buscar proyecto..."
+                                            :onChange="getDatosFraccionamiento"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Dirección del proyecto:</label>
+                                        <input class="form-control"  type="text" v-model="datosContrato.direccion_proy">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="">Num. Torres:</label>
+                                        <input class="form-control"  type="text" v-model="datosContrato.num_torres">
+                                    </div>
+                                </div>
+
+
+                                    <div class="col-md-12">
+                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group row border">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Lote</label>
+                                        <div class="form-inline">
+                                            <select class="form-control" v-model="datosContrato.lote_id" @change="selectDatosLotes(datosContrato.lote_id)">
+                                                <option value="">Seleccione</option>
+                                                <template v-for="lotes in arrayLotes">
+                                                    <option v-if="lotes.sublote == null" :key="lotes.id"
+                                                        :value="lotes.id" v-text="lotes.num_lote + ' - ' + lotes.fecha_fin">
+                                                    </option>
+                                                    <option v-else :key="lotes.id" :value="lotes.id"
+                                                        v-text="lotes.num_lote + ' ' + lotes.sublote + ' - ' + lotes.fecha_fin"></option>
+                                                </template>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                        </div>
-                        <div class="form-group row border">
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label>Lote</label> 
-                                    <div class="form-inline">
-                                        <select class="form-control" v-model="datosContrato.lote_id" @change="selectDatosLotes(datosContrato.lote_id)">
-                                            <option value="">Seleccione</option>
-                                            <template v-for="lotes in arrayLotes">
-                                                <option v-if="lotes.sublote == null" :key="lotes.id" 
-                                                    :value="lotes.id" v-text="lotes.num_lote + ' - ' + lotes.fecha_fin">
-                                                </option>
-                                                <option v-else :key="lotes.id" :value="lotes.id" 
-                                                    v-text="lotes.num_lote + ' ' + lotes.sublote + ' - ' + lotes.fecha_fin"></option>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <TableComponent :cabecera="[
+                                        'Opciones','Descripcion','Departamento','Nivel','M&sup2;','Termino'
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <template v-if="arrayAvisoObraLotes.length">
+                                                <tr v-for="(detalle,index) in arrayAvisoObraLotes" :key="detalle.id">
+                                                    <td>
+                                                        <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
+                                                            <i class="icon-close"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <input v-model="detalle.descripcion" type="text" class="form-control">
+                                                    </td>
+                                                    <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
+                                                    <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
+                                                    <td v-text="detalle.manzana"></td>
+                                                    <td>{{detalle.superficie}} m&sup2; </td>
+                                                    <td>
+                                                        <input type="date" v-model="detalle.fin_obra" class="form-control">
+                                                    </td>
+                                                </tr>
+                                                <tr style="background-color: #CEECF5;">
+                                                    <td align="right" colspan="4"></td>
+                                                    <td align="right"> <strong>{{ total_construccion=totalSuperficie}}m&sup2;</strong> </td>
+                                                </tr>
                                             </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td colspan="9">
+                                                        No hay lotes seleccionados
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </TableComponent>
+                                </div>
+                            </div>
+
+                            <!-- Parametros para contrato -->
+                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo</label>
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="datosContrato.tipo">
+                                            <option value="Departamentos">Departamentos</option>
                                         </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="table-responsive col-md-12">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Descripcion</th>
-                                            <th>Departamento</th>
-                                            <th>Nivel</th>
-                                            <th>M&sup2;</th>
-                                            <th>Termino</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody v-if="arrayAvisoObraLotes.length">
-                                        <tr v-for="(detalle,index) in arrayAvisoObraLotes" :key="detalle.id">
-                                            <td>
-                                                <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
-                                                    <i class="icon-close"></i>
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <input v-model="detalle.descripcion" type="text" class="form-control">
-                                            </td>
-                                            <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
-                                            <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
-                                            <td v-text="detalle.manzana"></td>
-                                            <td>{{detalle.superficie}} m&sup2; </td>
-                                            <td>
-                                                <input type="date" v-model="detalle.fin_obra" class="form-control">
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: #CEECF5;">   
-                                            <td align="right" colspan="4"></td>
-                                            <td align="right"> <strong>{{ total_construccion=totalSuperficie}}m&sup2;</strong> </td>
-                                        </tr>
-                                    </tbody>
 
-                                    <tbody v-else>
-                                        <tr>
-                                            <td colspan="9">
-                                                No hay lotes seleccionados
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Parametros para contrato -->
-                        <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label>Tipo</label> 
-                                    <div class="form-inline">
-                                    <select class="form-control" v-model="datosContrato.tipo">
-                                        <option value="Departamentos">Departamentos</option>
-                                    </select>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="form-group">
-                                    <label>IVA</label> 
-                                    <div class="form-inline">
-                                    <select class="form-control" v-model="datosContrato.iva">
-                                        <option value="0">No</option>
-                                        <option value="1">Si</option>
-                                    </select>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-
-                <!--Div para ver detalle del aviso -->
-                <template v-else-if="listado == 2">
-                    <div class="card-body"> 
-                        <div class="form-group row border">
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
-                                    <p v-text="datosContrato.contratista"></p>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
-                                <p v-text="datosContrato.clave"></p>
-                            </div> 
-                            <div class="col-md-3">
-                                <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
-                                <p v-text="datosContrato.f_ini"></p>
-                            </div>
-                            <div class="col-md-3">
-                                <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
-                                <p v-text="datosContrato.f_fin"></p>
-                            </div>
-                            <div class="col-md-3">
-                                <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
-                                <p v-text="datosContrato.anticipo+'%'"></p>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label style="color:#2271b3;" for=""><strong>% Garantia Ret </strong></label>
-                                <p v-text="datosContrato.porc_garantia_ret+'%'"></p>
-                            </div>
-
-                            <div class="col-md-4" v-show="datosContrato.total_importe > 0">
-                                <label style="color:#2271b3;" for=""><strong>% Importe Total </strong></label>
-                                <h6>${{ formatNumber(datosContrato.total_importe) }}</h6>
-                            </div>
-
-                            <div class="col-md-8" ></div>
-                            
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
-                                    <p v-text="datosContrato.proyecto"></p>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label style="color:#2271b3;" for=""><strong>Dirección del proyecto:</strong></label>
-                                    <p v-text="datosContrato.direccion_proy"></p>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
-                                    <div class="form-inline">
-                                    <p v-text="'$'+formatNumber(datosContrato.total_anticipo)"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="table-responsive col-md-12">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Descripcion</th>
-                                            <th>Departamento</th>
-                                            <th>Nivel</th>
-                                            <th>M&sup2;</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody v-if="arrayAvisoObraLotes.length">
-                                        <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
-                                            <td v-text="detalle.descripcion"></td>
-                                            <td v-text="detalle.lote"></td>
-                                            <td v-text="detalle.manzana"></td>
-                                            <td style="text-align: right;">{{detalle.construccion}} m&sup2;</td>
-                                        </tr>
-                                
-                                        <tr style="background-color: #CEECF5;">
-                                            <td align="right" colspan="4"> <strong>{{ formatNumber(datosContrato.total_superficie)}} m&sup2;</strong> </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                            </div>
-                            <!-- <div class="col-md-9">
-                                <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ datosContrato.id " >
-                                    <i></i>Exportar relacion en excel
-                                </a>
-                            </div> -->
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-primary" @click="modal = 2"><i class="fa fa-print"></i>&nbsp; Imprimir Contrato</button>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-
-                <!-- Div Card Body para actualizar registros -->
-                <template v-else-if="listado == 3">
-                    <div class="card-body"> 
-                        <div class="form-group row border">
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <label for="">Contratista </label>
-                                    <v-select 
-                                        :on-search="selectContratista"
-                                        label="nombre"
-                                        :options="arrayContratista"
-                                        placeholder="Buscar contratista..."
-                                        :onChange="getDatosContratista"
-                                    >
-                                    </v-select>
-                                        <input type="text" class="form-control" readonly  v-model="datosContrato.contratista">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-3">
-                                <label for="">Clave </label>
-                                <input type="text" class="form-control" v-model="datosContrato.clave" placeholder="CLV-00-00">
-                            </div> 
-                            <div class="col-md-3">
-                                <label for="">Fecha de inicio </label>
-                                <input type="date" class="form-control" v-model="datosContrato.f_ini">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="">Fecha de termino </label>
-                                <input type="date" class="form-control" v-model="datosContrato.f_fin">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="">% Anticipo </label>
-                                <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.anticipo" v-on:keypress="isNumber($event)">
-                            </div>
-
-                            <div class="col-md-3">
-                                <label for="">% Garantia Ret </label>
-                                <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.porc_garantia_ret" v-on:keypress="isNumber($event)">
-                            </div>
-
-                            <div class="col-md-3">
-                                    <label for="">% Costo Indirecto </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="datosContrato.costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
-                                </div>
-
-                            <div class="col-md-4">
-                                <label for="">Costo Directo </label>
-                                <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_costo_directo" v-on:keypress="isNumber($event)">
-                            </div>
-
-                            <div class="col-md-4" v-show="datosContrato.total_costo_directo > 0">
-                                <label for=""></label>
-                                <h6>${{ formatNumber(datosContrato.total_costo_directo) }}</h6>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Fraccionamiento </label>
-                                    <input type="text" class="form-control" readonly  v-model="datosContrato.proyecto">
-                                </div>
-                            </div>
-
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label>Dirección del proyecto:</label>
-                                    <input class="form-control"  type="text" v-model="datosContrato.direccion_proy">
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Num Torres:</label>
-                                    <input class="form-control"  type="text" v-model="datosContrato.num_torres">
-                                </div>
-                            </div>
-
-                                <div class="col-md-12">
-                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorAvisoObra" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                        </div>
-                        <div class="form-group row border">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>Lote</label> 
-                                    <div class="form-inline">
-                                    <select class="form-control" v-model="datosContrato.lote_id"  @change="selectDatosLotes(datosContrato.lote_id)">
-                                        <option value="">Seleccione</option>
-                                        <template v-for="lotes in arrayLotes">
-                                            <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                            <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' ' + lotes.sublote"></option>
-                                        </template>
-                                        
-                                    </select>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="table-responsive col-md-12">
-                                <table class="table2 table-bordered table-striped table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Descripcion</th>
-                                            <th>Departamento</th>
-                                            <th>Nivel</th>
-                                            <th>M&sup2;</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody v-if="arrayAvisoObraLotes.length">
-                                        <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
-                                            <td>
-                                                <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
-                                                    <i class="icon-close"></i>
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <input v-model="detalle.descripcion" type="text" class="form-control">
-                                            </td>
-                                            <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
-                                            <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
-                                            <td v-text="detalle.manzana"></td>
-                                            <td style="text-align: right;">{{detalle.construccion}}m&sup2;</td>
-                                        </tr>
-                                
-                                        <tr style="background-color: #CEECF5;">
-                                            <td colspan="4"></td>
-                                            <td align="right"> <strong>{{ total_construccion=totalConstruccion}}m&sup2;</strong> </td>
-                                        </tr>
-                                    </tbody>
-
-                                    <tbody v-else>
-                                        <tr>
-                                            <td colspan="9">
-                                                No hay lotes seleccionados
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- Parametros para contrato -->
-                        <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
-                            <div class="col-md-1">
-                                <div class="form-group">
-                                    <label>IVA</label> 
-                                    <div class="form-inline">
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <label>IVA</label>
+                                        <div class="form-inline">
                                         <select class="form-control" v-model="datosContrato.iva">
                                             <option value="0">No</option>
                                             <option value="1">Si</option>
                                         </select>
+
+                                        </div>
                                     </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                <button type="button" class="btn btn-primary" @click="actualizarAvisoObra()"> Actualizar </button>
+                    </template>
+
+                    <!--Div para ver detalle del aviso -->
+                    <template v-else-if="listado == 2">
+                        <div class="card-body">
+                            <div class="form-group row border">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
+                                        <p v-text="datosContrato.contratista"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
+                                    <p v-text="datosContrato.clave"></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
+                                    <p v-text="datosContrato.f_ini"></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
+                                    <p v-text="datosContrato.f_fin"></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
+                                    <p v-text="datosContrato.anticipo+'%'"></p>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>% Garantia Ret </strong></label>
+                                    <p v-text="datosContrato.porc_garantia_ret+'%'"></p>
+                                </div>
+
+                                <div class="col-md-4" v-show="datosContrato.total_importe > 0">
+                                    <label style="color:#2271b3;" for=""><strong>% Importe Total </strong></label>
+                                    <h6>${{ formatNumber(datosContrato.total_importe) }}</h6>
+                                </div>
+
+                                <div class="col-md-8" ></div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
+                                        <p v-text="datosContrato.proyecto"></p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;" for=""><strong>Dirección del proyecto:</strong></label>
+                                        <p v-text="datosContrato.direccion_proy"></p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
+                                        <div class="form-inline">
+                                        <p v-text="'$'+formatNumber(datosContrato.total_anticipo)"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <TableComponent :cabecera="[
+                                        'Descripcion','Departamento','Nivel','M&sup2;'
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
+                                                <td v-text="detalle.descripcion"></td>
+                                                <td v-text="detalle.lote"></td>
+                                                <td v-text="detalle.manzana"></td>
+                                                <td style="text-align: right;">{{detalle.construccion}} m&sup2;</td>
+                                            </tr>
+
+                                            <tr style="background-color: #CEECF5;">
+                                                <td align="right" colspan="4"> <strong>{{ formatNumber(datosContrato.total_superficie)}} m&sup2;</strong> </td>
+                                            </tr>
+                                        </template>
+                                    </TableComponent>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                </div>
+                                <!-- <div class="col-md-9">
+                                    <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ datosContrato.id " >
+                                        <i></i>Exportar relacion en excel
+                                    </a>
+                                </div> -->
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary" @click="modal = 2"><i class="fa fa-print"></i>&nbsp; Imprimir Contrato</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
+
+                    <!-- Div Card Body para actualizar registros -->
+                    <template v-else-if="listado == 3">
+                        <div class="card-body">
+                            <div class="form-group row border">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="">Contratista </label>
+                                        <v-select
+                                            :on-search="selectContratista"
+                                            label="nombre"
+                                            :options="arrayContratista"
+                                            placeholder="Buscar contratista..."
+                                            :onChange="getDatosContratista"
+                                        >
+                                        </v-select>
+                                            <input type="text" class="form-control" readonly  v-model="datosContrato.contratista">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="">Clave </label>
+                                    <input type="text" class="form-control" v-model="datosContrato.clave" placeholder="CLV-00-00">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Fecha de inicio </label>
+                                    <input type="date" class="form-control" v-model="datosContrato.f_ini">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Fecha de termino </label>
+                                    <input type="date" class="form-control" v-model="datosContrato.f_fin">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">% Anticipo </label>
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.anticipo" v-on:keypress="isNumber($event)">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="">% Garantia Ret </label>
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="datosContrato.porc_garantia_ret" v-on:keypress="isNumber($event)">
+                                </div>
+
+                                <div class="col-md-3">
+                                        <label for="">% Costo Indirecto </label>
+                                        <input type="number" class="form-control" min="0" max="100" v-model="datosContrato.costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                    </div>
+
+                                <div class="col-md-4">
+                                    <label for="">Costo Directo </label>
+                                    <input type="text" pattern="\d*" class="form-control" v-model="datosContrato.total_costo_directo" v-on:keypress="isNumber($event)">
+                                </div>
+
+                                <div class="col-md-4" v-show="datosContrato.total_costo_directo > 0">
+                                    <label for=""></label>
+                                    <h6>${{ formatNumber(datosContrato.total_costo_directo) }}</h6>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Fraccionamiento </label>
+                                        <input type="text" class="form-control" readonly  v-model="datosContrato.proyecto">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Dirección del proyecto:</label>
+                                        <input class="form-control"  type="text" v-model="datosContrato.direccion_proy">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Num Torres:</label>
+                                        <input class="form-control"  type="text" v-model="datosContrato.num_torres">
+                                    </div>
+                                </div>
+
+                                    <div class="col-md-12">
+                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group row border">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Lote</label>
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="datosContrato.lote_id"  @change="selectDatosLotes(datosContrato.lote_id)">
+                                            <option value="">Seleccione</option>
+                                            <template v-for="lotes in arrayLotes">
+                                                <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                                <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' ' + lotes.sublote"></option>
+                                            </template>
+
+                                        </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <TableComponent :cabecera="[
+                                        'Opciones','Descripcion','Departamento','Nivel','M&sup2;'
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <template v-if="arrayAvisoObraLotes.length">
+                                                <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
+                                                    <td>
+                                                        <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
+                                                            <i class="icon-close"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <input v-model="detalle.descripcion" type="text" class="form-control">
+                                                    </td>
+                                                    <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
+                                                    <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
+                                                    <td v-text="detalle.manzana"></td>
+                                                    <td style="text-align: right;">{{detalle.construccion}}m&sup2;</td>
+                                                </tr>
+
+                                                <tr style="background-color: #CEECF5;">
+                                                    <td colspan="4"></td>
+                                                    <td align="right"> <strong>{{ total_construccion=totalConstruccion}}m&sup2;</strong> </td>
+                                                </tr>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td colspan="9">
+                                                        No hay lotes seleccionados
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </TableComponent>
+                                </div>
+                            </div>
+                            <!-- Parametros para contrato -->
+                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <label>IVA</label>
+                                        <div class="form-inline">
+                                            <select class="form-control" v-model="datosContrato.iva">
+                                                <option value="0">No</option>
+                                                <option value="1">Si</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="actualizarAvisoObra()"> Actualizar </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </template>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
 
         <!-- Modal para la carga pdf -->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal"></h4>
-                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
+        <ModalComponent v-if="modal == 1"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div v-if="tipoAccion == 1">
+                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                        <strong>Seleccionar contrato</strong>
 
-                    <div v-if="tipoAccion == 1" class="modal-body">
-                        <div>
-                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-                                <strong>Seleccionar contrato</strong>
+                        <input type="file" class="form-control" v-on:change="onImageChange">
+                        <br/>
+                        <button type="submit" class="btn btn-success">Cargar</button>
+                    </form>
+                </div>
+                <div v-else>
+                    <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
+                        <strong>Seleccionar archivo</strong>
 
-                                <input type="file" class="form-control" v-on:change="onImageChange">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                        </div>
-                    </div>
+                        <input type="file" class="form-control" v-on:change="onImageChange2">
+                        <br/>
+                        <button type="submit" class="btn btn-success">Cargar</button>
+                    </form>
+                </div>
+            </template>
+        </ModalComponent>
 
-                    <div v-else class="modal-body">
-                        <div>
-                            <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
-                                <strong>Seleccionar archivo</strong>
-
-                                <input type="file" class="form-control" v-on:change="onImageChange2">
-                                <br/>
-                                <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        </div>
-                </div> 
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!--Fin del modal-->
 
         <!-- Modal para la carga pdf -->
-        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Seleccionar apoderado legal</h4>
-                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div>
-                            <select class="form-control" v-model="apoderado">
-                                <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
-                                <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
-                                <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Botones del modal -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <a class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + datosContrato.id + '&apoderado=' + apoderado"  target="_blank">
-                            <i></i>Imprimir
-                        </a>
-                    </div>
-                </div> 
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
+        <ModalComponent v-if="modal==2"
+            :titulo="'Seleccionar apoderado legal'"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div>
+                    <select class="form-control" v-model="apoderado">
+                        <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
+                        <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
+                        <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
+                    </select>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <a class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + datosContrato.id + '&apoderado=' + apoderado"  target="_blank">
+                    <i></i>Imprimir
+                </a>
+            </template>
+        </ModalComponent>
         <!--Fin del modal-->
     </main>
 </template>
@@ -685,6 +621,9 @@
 
 <script>
     import vSelect from 'vue-select';
+    import TableComponent from '../../Componentes/TableComponent.vue';
+    import ModalComponent from '../../Componentes/ModalComponent.vue';
+    import LoadingComponent from '../../Componentes/LoadingComponent.vue';
     export default {
         props:{
             rolId:{type: String}
@@ -705,7 +644,7 @@
                 buscar : '',
                 b_empresa:'',
                 criterio : 'ini_obras.clave',
-                
+
                 modal : 0,
                 tituloModal : '',
                 tipoAccion : 0,
@@ -714,6 +653,7 @@
                 errorAvisoObra : 0,
                 errorMostrarMsjAvisoObra : [],
                 proceso : false,
+                loading : true,
 
                 datosContrato : {
                     contratista_id : '',
@@ -751,13 +691,14 @@
                     modelo : '',
                     empresa_constructora : ''
                 },
-
                 apoderado:'ING. DAVID CALVILLO MARTINEZ',
-
             }
         },
         components:{
-            vSelect
+            vSelect,
+            LoadingComponent,
+            TableComponent,
+            ModalComponent
         },
         computed:{
             totalCostoDirecto: function(){
@@ -770,7 +711,7 @@
             totalCostoIndirecto: function(){
                 var resultado_costo_indirecto =0.0;
                 for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
-                    resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto) 
+                    resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
                 }
                 return Math.round(resultado_costo_indirecto*100)/100;
             },
@@ -804,13 +745,13 @@
             formSubmit(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('pdf', this.pdf);
                 axios.post('/formSubmitContratoObra/'+this.datosContrato.id, formData)
                 .then(function (response) {
-                   
+
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -832,13 +773,13 @@
             formSubmit2(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('pdf', this.pdf);
                 axios.post('/formSubmitRegistroObra/'+this.datosContrato.id, formData)
                 .then(function (response) {
-                   
+
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -856,17 +797,20 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                var url = '/iniobra?page=' + page + '&buscar=' + me.buscar 
-                + '&criterio=' + me.criterio 
-                + '&empresa=' + me.b_empresa 
+                me.loading = true;
+                var url = '/iniobra?page=' + page + '&buscar=' + me.buscar
+                + '&criterio=' + me.criterio
+                + '&empresa=' + me.b_empresa
                 + '&tipo=Departamentos';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoObra = respuesta.ini_obra.data;
                     me.pagination = respuesta.pagination;
+                    me.loading = false;
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.loading = false;
                 });
             },
             getEmpresa(){
@@ -950,7 +894,7 @@
             },
             selectDatosLotes(buscar){
                 let me = this;
-              
+
                 me.arrayDatosLotes = [];
                 var url = '/select_datos_lotes?buscar='+buscar;
                 axios.get(url).then(function (response) {
@@ -1055,7 +999,7 @@
                                 .catch(function (error) {
                                     console.log(error);
                                 });
-                        
+
                         }).catch(function (error){
                             console.log(error);
                         });
@@ -1083,9 +1027,9 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-                axios.delete('/iniobra/lote/eliminar', 
+                axios.delete('/iniobra/lote/eliminar',
                         {params: {'id': id}}).then(function (response){
-                        
+
                          //Obtener detalle
                             me.arrayAvisoObraLotes=[];
                             var urld = '/iniobra/obtenerDetalles?id=' + me.datosContrato.id;
@@ -1166,7 +1110,7 @@
                     return;
                 if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
                     return;
-                
+
                 this.proceso=true;
                 let me = this;
                 me.datosContrato.total_costo_indirecto = parseFloat((me.datosContrato.costo_indirecto_porcentaje/100) * me.datosContrato.total_costo_directo).toFixed(2);
@@ -1214,12 +1158,12 @@
                     console.log(error);
                 });
             },
-            
+
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
             },
-  
+
             limpiarDatos(){
                 this.arrayAvisoObraLotes=[];
                 this.arrayLotes=[];
@@ -1274,14 +1218,14 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-                axios.delete('/iniobra/contrato/eliminar', 
+                axios.delete('/iniobra/contrato/eliminar',
                         {params: {'id': this.datosContrato.id}}).then(function (response){
                         swal(
                         'Borrado!',
                         'Contrato borrada correctamente.',
                         'success'
                         )
-                         me.listarAvisos(1); 
+                         me.listarAvisos(1);
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -1328,7 +1272,7 @@
                 this.listado=2;
                 //Obtener datos de cabecera
                 me.obtenerDatos(id)
-                
+
             },
             obtenerDatos(id){
                 let me = this;
@@ -1378,7 +1322,7 @@
                         this.pdf=data['documento'];
                         break;
                     }
-                } 
+                }
             },
             actualizarContrato(id){
                 let me= this;
@@ -1388,7 +1332,7 @@
                 me.obtenerDatos(id)
                 me.selectLotes(me.datosContrato.fraccionamiento_id)
             }
-           
+
         },
         mounted() {
             this.listarAvisos(1);
@@ -1398,36 +1342,9 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
-    }
-    .div-error{
-        display:flex;
-        justify-content: center;
-    }
-    .text-error{
-        color: red !important;
-        font-weight: bold;
     }
     @media (min-width: 600px){
         .btnagregar{
