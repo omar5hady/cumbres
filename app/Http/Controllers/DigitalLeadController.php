@@ -204,6 +204,12 @@ class DigitalLeadController extends Controller
         return $leads;
     }
 
+    public function importFromBot(Request $request){
+        $fecha = Carbon::now();
+
+        return $request;
+    }
+
     // Funcion para registrar un nuevo Lead.
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -211,6 +217,8 @@ class DigitalLeadController extends Controller
         $lead = new Digital_lead(); // Nuevo lead
         $lead->nombre = $request->nombre;
         $lead->apellidos = $request->apellidos;
+        $lead->name_user = $request->nombre;
+        $lead->last_name_user = $request->apellidos;
         $lead->telefono = $request->telefono;
         $lead->clv_lada = $request->clv_lada;
         $lead->celular = $request->celular;

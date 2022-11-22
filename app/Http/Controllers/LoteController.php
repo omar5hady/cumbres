@@ -2255,4 +2255,56 @@ class LoteController extends Controller
         return response()->file($pathtoFile);
     }
 
+    public function getInventarioRes(Request $request){
+
+        $modelos = Modelo::select('id','nombre as modelo')
+                ->where('nombre','!=','Por Asignar')
+                ->where('nombre','!=','Terreno')
+                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                ->orderBy('modelo','asc')
+                ->get();
+
+        foreach($modelos as $key => $modelo){
+            $modelo->lote = $this->findLote($modelo, $request->etapa_id);
+            if($modelo->lote == NULL)
+                unset($modelos[$key]);
+            else{
+                $modelo->lote = $this->getEquipamientoLote($modelo->lote);
+            }
+        }
+        return $modelos;
+    }
+
+    private function findLote($modelo,$etapa){
+        $lote = Lote::select('num_lote','manzana','sublote','excedente_terreno','obra_extra','sobreprecio','precio_base','ajuste')
+            ->where('contrato','=',0)->where('apartado','=',0)
+            ->where('habilitado','=',1)
+            ->where('casa_renta','=',0)
+            ->where('casa_muestra','=',0)
+            ->where('lote_comercial','=',0)
+            ->where('modelo_id','=',$modelo->id)
+            ->where('lotes.etapa_id','=',$etapa)
+            ->orderBy('excedente_terreno','asc')->first();
+        return $lote;
+    }
+
+    private function getEquipamientoLote($lote){
+        $lote->costoEquipamiento = 0;
+        $equipamiento = EquipLote::join('equipamientos as eq','equip_lotes.equipamiento_id','=','eq.id')
+                    ->select('equip_lotes.*','eq.equipamiento')
+                    ->where('equip_lotes.status','>',3)
+                    ->where('equip_lotes.lote_id','=',$lote->id)->get();
+        if(sizeOf($equipamiento))
+            foreach($equipamiento as $eq){
+                $lote->costoEquipamiento += $eq->costo;
+            }
+
+        $lote->p_venta =
+            $lote->costoEquipamiento + $lote->excedente_terreno +
+            $lote->obra_extra + $lote->obra_extra + $lote->sobreprecio +
+            $lote->precio_base + $lote->ajuste;
+
+        return $lote;
+    }
+
 }

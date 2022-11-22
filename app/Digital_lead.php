@@ -42,7 +42,10 @@ class Digital_lead extends Model
         'zona_interes',
         'pago_mensual',
         'enganche',
-        'fecha_update'
+        'fecha_update',
+        'messenger_id',
+        'name_user',
+        'last_name_user'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function obs_leads(){

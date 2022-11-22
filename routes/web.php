@@ -16,6 +16,7 @@ use App\Http\Controllers\Rh\FondoAhorro;
 Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
 Route::get('/clientes/upApp','ClienteController@upApp');
 Route::get('/getClavesLadas','PersonalController@getClavesLadas');
+Route::post('/leads/importFromBot', 'DigitalLeadController@importFromBot');
 
 Route::group(['middleware' => ['guest']],function(){
 
@@ -253,6 +254,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     ////////////////////        RUTAS LOTES    /////////////////////////////////
         Route::get('/lote','LoteController@index');
+        Route::get('/lote/getInventarioRes','LoteController@getInventarioRes');
         Route::get('/lote/dispEspecificaciones','VersionModeloController@indexLotes');
         Route::get('/asignar_modelo/excel','LoteController@exportExcelAsignarModelo');
         Route::get('/lote2','LoteController@index2');
@@ -1142,6 +1144,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/leads/delete','DigitalLeadController@delete');
         Route::get('/leads/getObs','DigitalLeadController@getObs');
         Route::post('/leads/store', 'DigitalLeadController@store');
+
         Route::put('/leads/update', 'DigitalLeadController@update');
         Route::put('/leads/changeStatus', 'DigitalLeadController@changeStatus');
         Route::post('/leads/storeObs', 'DigitalLeadController@storeObs');

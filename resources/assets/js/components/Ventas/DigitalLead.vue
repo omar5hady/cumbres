@@ -14,6 +14,10 @@
                         <i class="icon-people"></i>&nbsp;Nuevo
                     </button>
 
+                    <button v-if="b_motivo == 1" type="button" class="btn btn-scarlet" @click="abrirModal('inventario')">
+                        Inventario
+                    </button>
+
                     <button v-if="rolId == 1" type="button" class="btn btn-dark" @click="sms()">
                         PRUEBA SMS
                     </button>
@@ -1412,9 +1416,9 @@
             @closeModal="cerrarModal()"
         >
             <template v-slot:body>
-                    <div class="form-group row">
-                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                    <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input">Observacion</label>
+                    <div class="col-md-7">
                             <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
                     </div>
                 </div>
@@ -1437,6 +1441,58 @@
                         </tr>
                     </template>
                 </TableComponent>
+            </template>
+        </ModalComponent>
+
+        <ModalComponent v-if="modal==3"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input"><strong>Proyecto</strong></label>
+                    <div class="col-md-6">
+                        <select class="form-control" v-model="buscadores.fraccionamiento_id" v-on:change="$root.selectEtapa(buscadores.fraccionamiento_id)">
+                            <option value="">Seleccione</option>
+                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                :value="proyecto.id" v-text="proyecto.nombre">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input"><strong>Etapa</strong></label>
+                    <div class="col-md-6">
+                        <select class="form-control" v-model="buscadores.etapa_id" v-on:change="getInventario()">
+                            <option value="">Seleccione</option>
+                            <option
+                                v-for="etapa in $root.$data.etapas"
+                                :key="etapa.id"
+                                :value="etapa.id"
+                                v-text="etapa.num_etapa">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <TableComponent :cabecera="['Modelo','#Lote', 'Manzana', 'Precio']">
+                            <template v-slot:tbody>
+                                <tr v-for="lote in inventario" :key="lote.id">
+                                    <td class="td2">{{lote.modelo}}</td>
+                                    <td class="td2">
+                                        {{ (lote.lote.sublote) ? lote.lote.num_lote + ' ' + lote.lote.sublote
+                                            : lote.lote.num_lote
+                                         }}
+                                    </td>
+                                    <td class="td2">{{lote.lote.manzana}}</td>
+                                    <td class="td2" v-text="'$'+ formatNumber(lote.lote.p_venta)"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
+                </div>
             </template>
         </ModalComponent>
     </main>
@@ -1489,7 +1545,8 @@ export default {
             b_modelo:'',
             proceso : false,
             loading: false,
-
+            buscadores:{},
+            inventario:[],
             datos : [],
             arrayEmpresa: [],
             arrayColonias:[],
@@ -2006,6 +2063,18 @@ export default {
             me.datos.empresa = val1.nombre;
 
         },
+        getInventario(){
+            let me = this;
+            me.inventario = [];
+
+            var url = '/lote/getInventarioRes?fraccionamiento_id='+me.buscadores.fraccionamiento_id
+                +   '&etapa_id=' + me.buscadores.etapa_id;
+            axios.get(url).then(function(response){
+                me.inventario = response.data;
+            }).catch(function(error){
+                console.log(error)
+            })
+        },
         selectEstados(){
             let me = this;
             me.arrayEstados=[];
@@ -2419,6 +2488,17 @@ export default {
                     this.amenidad_priv = '';
                     this.detalle_casa = '';
                     this.perfil_cliente = '';
+                    break;
+                }
+
+                case 'inventario':{
+                    this.buscadores = {
+                        fraccionamiento_id : '',
+                        etapa_id : ''
+                    };
+                    this.inventario = [];
+                    this.tituloModal = 'Inventario';
+                    this.modal = 3;
                     break;
                 }
             }

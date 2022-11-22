@@ -21,6 +21,8 @@ class CreateDigitalLeadsTable extends Migration
             $table->foreign('campania_id')->references('id')->on('campanias')->onDelete('cascade');
             $table->string('nombre',50);
             $table->string('apellidos',80)->nullable();
+            $table->string('name_user',50);
+            $table->string('last_name_user',80)->nullable();
             $table->string('email')->nullable();
             $table->integer('clv_lada',3)->default(52);
             $table->string('celular',10)->nullable();
@@ -31,7 +33,7 @@ class CreateDigitalLeadsTable extends Migration
             $table->double('rango1')->nullable();
             $table->double('rango2')->nullable();
             $table->boolean('edo_civil')->nullable(); //TinyInt
-            $table->string('perfil_cliente')->nullable(); 
+            $table->string('perfil_cliente')->nullable();
             $table->double('ingresos')->default(0);
             $table->boolean('coacreditado')->nullable();
             $table->boolean('hijos')->nullable();
@@ -46,8 +48,8 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('empresa')->nullable();
             $table->boolean('status')->default(1);
             $table->integer('vendedor_asign')->nullable();
-            $table->string('amenidad_priv')->nullable(); 
-            $table->string('detalle_casa')->nullable(); 
+            $table->string('amenidad_priv')->nullable();
+            $table->string('detalle_casa')->nullable();
             $table->string('rfc',10)->nullable();
             $table->string('nss',11)->nullable();
             $table->char('sexo',1)->nullable();
@@ -70,7 +72,9 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('direccion',191)->nullable();
 
             $table->boolean('prospecto')->default(0);
-        
+
+            $table->string('messenger_id',255)->nullable();
+
             $table->timestamps();
         });
     }
