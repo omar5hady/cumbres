@@ -57,7 +57,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-8" v-if="b_motivo ==1">
+                        <div class="col-md-8" v-if="b_motivo ==1 || b_motivo == 2">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
                                 <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">

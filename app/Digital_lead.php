@@ -43,6 +43,7 @@ class Digital_lead extends Model
         'pago_mensual',
         'enganche',
         'fecha_update',
+        'fecha_asign',
         'messenger_id',
         'name_user',
         'last_name_user'

@@ -207,6 +207,33 @@ class DigitalLeadController extends Controller
     public function importFromBot(Request $request){
         $fecha = Carbon::now();
 
+        $l = Digital_lead::select('id')->where('messenger_id','=',$request->user_id)->get();
+
+        if(sizeof($l)){
+            $obs = new Obs_lead();
+            $obs->lead_id = $l[0]->id;
+            $obs->comentario = 'Nueva interaccion con bot';
+            $obs->usuario = 'Sistema Cumbres';
+            $obs->save();
+        }
+        else{
+            $lead = new Digital_lead(); // Nuevo lead
+            $lead->nombre = $request->nombre;
+            $lead->apellidos = $request->apellidos;
+            $lead->name_user = $request->nombre;
+            $lead->last_name_user = $request->apellidos;
+            $lead->messenger_id = $request->user_id;
+            $lead->save();
+
+            // Se crea un comentario para el lead indicando el registro.
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Lead registrado desde bot';
+            $obs->usuario = 'Sistema Cumbres';
+            $obs->save();
+        }
+
+
         return $request;
     }
 
@@ -591,6 +618,7 @@ class DigitalLeadController extends Controller
     // Funcion para asignar un lead de manera aleatoria.
     public function asignarLead(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now(); // Fecha actual.
         try{
             DB::beginTransaction();
             // Se accede al registro del lead.
@@ -606,6 +634,7 @@ class DigitalLeadController extends Controller
             // Se asigna el vendedor obtenido al lead.
             $lead->vendedor_asign = $vendedor_asign['vendedor_elegido'];
             $lead->status = 2;// Se cambia estus para indicar que es un cliente potencial.
+            $lead->fecha_asign = $fecha;
             $lead->save();
 
             $vendedor = Vendedor::findOrFail($vendedor_asign['vendedor_elegido']);
@@ -818,9 +847,11 @@ class DigitalLeadController extends Controller
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->select(
                                 'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.fecha_update', 'digital_leads.fecha_asign',
                                 'digital_leads.apellidos')
                 ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                 ->where('fecha_update','>',$today)
+                ->where('digital_leads.fecha_asign','>',$today)
                 ->where('status','!=',0);
                 if($fecha1 != '') // Fecha de registro
                     $asesor->amarillo = $asesor->amarillo->whereBetween('created_at', [$fecha1, $fecha2]);
@@ -834,9 +865,11 @@ class DigitalLeadController extends Controller
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->select(
                                 'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.fecha_update', 'digital_leads.fecha_asign',
                                 'digital_leads.apellidos')
                     ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                     ->where('fecha_update','<=',$today)
+                    ->where('digital_leads.fecha_asign','>',$today)
                     ->where('status','!=',0);
                     if($fecha1 != '') // Fecha de registro
                         $asesor->rojo = $asesor->rojo->whereBetween('created_at', [$fecha1, $fecha2]);

@@ -577,6 +577,7 @@ export default {
             this.r_sup_terreno = data.terreno;
             this.r_valor_m2 = data.precio_base/data.terreno;
             this.r_valor_venta = this.r_sup_terreno*this.r_valor_m2;
+            this.r_valor_venta = this.r_valor_venta + data.ajuste;
             this.idLote = data.id;
 
             if(this.r_mensualidad != "") this.generarLista();

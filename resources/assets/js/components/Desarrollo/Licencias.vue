@@ -1434,6 +1434,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.errorMostrarMsjLote = [];
                 this.proyectoSel = '';
                 this.cargando = 0;
+                this.allLic = [];
 
             },
             cerrarObs(){

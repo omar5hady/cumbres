@@ -58,6 +58,7 @@ class CreateDigitalLeadsTable extends Migration
             $table->double('enganche')->nullable();
             $table->string('zona_interes',100)->nullable();
             $table->date('fecha_update')->nullable();
+            $table->date('fecha_asign')->nullable();
 
             $table->string('prioridad',10)->nullable();
 
