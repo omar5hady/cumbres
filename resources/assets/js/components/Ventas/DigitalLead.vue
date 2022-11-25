@@ -774,17 +774,6 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
-                            <div class="col-md-3">
-                                <input type="text" v-model="rfc" @keyup="selectRFC(rfc)" class="form-control" placeholder="RFC" maxlength="10">
-                            </div>
-                            <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
-                            <div class="col-md-4">
-                                <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label class="col-md-1 form-control-label" for="text-input">Sexo:</label>
                             <div class="col-md-3">
                                 <select class="form-control" v-model="sexo">
@@ -798,6 +787,37 @@
                                 <input type="date" v-model="f_nacimiento" class="form-control" >
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Lugar de nacimiento:</label>
+                            <div class="col-md-6">
+                                <input type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento">
+                                <datalist id="cityname3">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
+                                </datalist>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="rfc" @keyup="selectRFC(rfc)" class="form-control" placeholder="RFC" maxlength="10">
+                            </div>
+                            <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
+                            <div class="col-md-4">
+                                <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-1 form-control-label" for="text-input">CURP:</label>
+                            <div class="col-md-3">
+                                <input type="text" v-model="curp" class="form-control" placeholder="CURP" maxlength="18">
+                            </div>
+                        </div>
+
 
                         <div class="form-group row">
                             <label class="col-md-2 form-control-label" for="text-input">Estado civil:</label>
@@ -1672,6 +1692,9 @@ export default {
             prospecto:0,
             prioridad:'Baja',
 
+            curp: '',
+            lugar_nacimiento: '',
+
             nombre_rec:'',
             apellidos_rec:'',
             email_rec:'',
@@ -1765,7 +1788,8 @@ export default {
                 'edo_civil' : this.edo_civil,
                 'empresa' : this.empresa,
                 'ingresos' : this.ingresos,
-
+                'curp': this.curp,
+                'lugar_nacimiento' : this.lugar_nacimiento,
                 ////////////// Paso 3 /////////////////
                 'coacreditado' : this.coacreditado,
             }).then(function (response){
@@ -2268,6 +2292,9 @@ export default {
                 'vendedor_asign' : this.vendedor_asign,
                 'prioridad' : this.prioridad,
 
+                'curp': this.curp,
+                'lugar_nacimiento' : this.lugar_nacimiento,
+
                 'nombre_rec': this.nombre_rec,
                 'apellidos_rec': this.apellidos_rec,
                 'email_rec': this.email_rec,
@@ -2350,6 +2377,9 @@ export default {
                 'zona_interes' : this.zona_interes,
                 'vendedor_asign' : this.vendedor_asign,
                 'prioridad' : this.prioridad,
+
+                'curp': this.curp,
+                'lugar_nacimiento' : this.lugar_nacimiento,
 
                 'nombre_rec': this.nombre_rec,
                 'apellidos_rec': this.apellidos_rec,
@@ -2481,6 +2511,8 @@ export default {
                     this.vendedor_asign = data['vendedor_asign'];
                     this.vendedor = data['vendedor'];
                     this.prioridad = data['prioridad'];
+                    this.curp = data['curp'];
+                    this.lugar_nacimiento = data['lugar_nacimiento'];
 
                     this.nombre_rec = data['nombre_rec'];
                     this.apellidos_rec = data['apellidos_rec'];
@@ -2547,6 +2579,9 @@ export default {
                     this.vendedor_asign = 0;
                     this.vendedor = '';
                     this.prioridad = 'Baja';
+
+                    this.curp = '';
+                    this.lugar_nacimiento = '';
 
                     this.nombre_rec = '';
                     this.apellidos_rec = '';

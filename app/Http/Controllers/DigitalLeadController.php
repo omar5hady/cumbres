@@ -336,6 +336,9 @@ class DigitalLeadController extends Controller
         $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
 
+        $lead->curp = strtoupper( $request->curp );
+        $lead->lugar_nacimiento = $request->lugar_nacimiento;
+
         $lead->nombre_rec = $request->nombre_rec;
         $lead->apellidos_rec = $request->apellidos_rec;
         $lead->email_rec = $request->email_rec;
@@ -371,7 +374,7 @@ class DigitalLeadController extends Controller
         $lead->fecha_update = $fecha;
 
         /////////////// PASO 2 ////////////////
-            $lead->rfc = $request->rfc;
+            $lead->rfc = strtoupper( $request->rfc );
             $lead->nss = $request->nss;
             $lead->sexo = $request->sexo;
             $lead->f_nacimiento = $request->f_nacimiento;
@@ -450,6 +453,9 @@ class DigitalLeadController extends Controller
         $lead->zona_interes = $request->zona_interes;
         $lead->fecha_update = $fecha;
 
+        $lead->curp = strtoupper($request->curp);
+        $lead->lugar_nacimiento = $request->lugar_nacimiento;
+
         $lead->nombre_rec = $request->nombre_rec;
         $lead->apellidos_rec = $request->apellidos_rec;
         $lead->email_rec = $request->email_rec;
@@ -487,7 +493,7 @@ class DigitalLeadController extends Controller
         }
 
         /////////////// PASO 2 ////////////////
-        $lead->rfc = $request->rfc;
+        $lead->rfc = strtoupper($request->rfc);
         $lead->nss = $request->nss;
         $lead->sexo = $request->sexo;
         $lead->f_nacimiento = $request->f_nacimiento;
@@ -592,6 +598,8 @@ class DigitalLeadController extends Controller
                 $cliente->ingreso = $request->ingresos;
                 $cliente->coacreditado = $request->coacreditado;
                 $cliente->clasificacion = 4;
+                $cliente->curp = $request->curp;
+                $cliente->lugar_nacimiento = $request->lugar_nacimiento;
                 $cliente->save();
             }
             // Se accede al registro del Lead

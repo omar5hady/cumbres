@@ -46,7 +46,9 @@ class Digital_lead extends Model
         'fecha_asign',
         'messenger_id',
         'name_user',
-        'last_name_user'
+        'last_name_user',
+        'curp',
+        'lugar_nacimiento'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function obs_leads(){

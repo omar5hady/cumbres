@@ -59,22 +59,20 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('zona_interes',100)->nullable();
             $table->date('fecha_update')->nullable();
             $table->date('fecha_asign')->nullable();
-
             $table->string('prioridad',10)->nullable();
-
             $table->string('nombre_rec',50)->nullable();
             $table->string('apellidos_rec',80)->nullable();
             $table->string('email_rec')->nullable();
             $table->string('celular_rec',10)->nullable();
             $table->string('telefono_rec',10)->nullable();
-
             $table->boolean('motivo')->default(1); // 1 Ventas, 2 Postventa, 3 Rentas
             $table->string('descripcion',191)->nullable();
             $table->string('direccion',191)->nullable();
-
             $table->boolean('prospecto')->default(0);
-
             $table->string('messenger_id',255)->nullable();
+
+            $table->string('curp',18)->nullable();
+            $table->string('lugar_nacimiento',80)->nullable();
 
             $table->timestamps();
         });
