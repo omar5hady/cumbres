@@ -12,7 +12,7 @@ class CampaniaController extends Controller
 {
     // Función para retornar las campañas creadas
     public function indexCampanias(Request $request){
-        $campania = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id');
+        $campania = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id','presupuesto');
 
         if($request->buscar != ''){
             $campania = $campania->where('nombre_campania','like','%'.$request->buscar.'%')
@@ -30,6 +30,7 @@ class CampaniaController extends Controller
         $campania->medio_digital = $request->medio_digital;
         $campania->fecha_ini = $request->fecha_ini;
         $campania->fecha_fin = $request->fecha_fin;
+        $campania->presupuesto = $request->presupuesto;
         $campania->save();
     }
 
@@ -44,9 +45,10 @@ class CampaniaController extends Controller
             $campania->medio_digital = $medio;
             $campania->fecha_ini = $request->fecha_ini;
             $campania->fecha_fin = $request->fecha_fin;
+            $campania->presupuesto = $request->presupuesto;
             $campania->save();
         }
-        
+
     }
 
     // Función para eliminar la campaña.
@@ -59,12 +61,12 @@ class CampaniaController extends Controller
     // Función para retornar las campañas activas.
     public function campaniaActiva(Request $request){
         $current = Carbon::now()->toDateString();
-        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id');
+        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id','presupuesto');
                     if($request->buscar == ''){
                         $campanias = $campanias->whereDate('fecha_ini','<=',$current)
                         ->whereDate('fecha_fin','>=',$current);
                     }
-                    
+
                     $campanias = $campanias->orderBy('nombre_campania','asc')->get();
 
         return $campanias;

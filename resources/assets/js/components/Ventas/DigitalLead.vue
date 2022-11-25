@@ -42,7 +42,24 @@
                         </div>
                         <div class="col-md-8">
                             <div class="input-group">
-                                <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
+                                <input type="text" readonly placeholder="Nombre" class="form-control col-sm-4">
+                                <input type="text"
+                                    v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
+                                <input type="text"
+                                    v-model="b_apellidos" @keyup.enter="listarLeads(1)" placeholder="Apellidos" class="form-control col-sm-6">
+                            </div>
+                        </div>
+                        <div class="col-md-8" v-if="rolId != 2">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Usuario" class="form-control col-sm-4">
+                                <input type="text"
+                                    v-model="b_user_name" @keyup.enter="listarLeads(1)" placeholder="Nombre de Usuario" class="form-control col-sm-6">
+                                <input type="text"
+                                    v-model="b_user_lastname" @keyup.enter="listarLeads(1)" placeholder="Nombre de Usuario" class="form-control col-sm-6">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
                                 <input type="text" v-if="b_motivo == 3" v-model="b_modelo" @keyup.enter="listarLeads(1)" placeholder="Modelo" class="form-control col-sm-6">
                                 <select v-if="b_motivo != 1" class="form-control col-sm-4" v-model="b_status">
                                     <option value="">Todos</option>
@@ -114,6 +131,13 @@
                                         '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
                                         '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
                                     <i class="fa fa-file-text"></i>&nbsp; Excel
+                                </a>
+                                <a v-if="b_motivo == 1" class="btn btn-primary" v-bind:href="'/campanias/excelToImport'+
+                                        '?buscar='+ b_cliente+'&campania='+ b_campania+
+                                        '&status='+ b_status+'&asesor='+ b_asesor+
+                                        '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
+                                        '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
+                                    <i class="fa fa-file-text"></i>&nbsp; Excel para Audiencia
                                 </a>
                                 <button disabled class="btn btn-primary">
                                     {{'Total: '+arrayLeads.total}}
@@ -603,6 +627,16 @@
                             </div>
                             <div class="col-md-4">
                                 <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="rolId != 2 && tipoAccion == 2">
+                            <label class="col-md-2 form-control-label" for="text-input"><strong>Usuario:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                            <div class="col-md-4">
+                                <input type="text" disabled v-model="name_user" class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" disabled v-model="last_name_user" class="form-control" placeholder="Apellidos">
                             </div>
                         </div>
 
@@ -1463,7 +1497,7 @@
                 <div class="form-group row">
                     <label class="col-md-2 form-control-label" for="text-input"><strong>Etapa</strong></label>
                     <div class="col-md-6">
-                        <select class="form-control" v-model="buscadores.etapa_id" v-on:change="getInventario()">
+                        <select class="form-control" v-model="buscadores.etapa_id" v-on:change="getInventario(), getInventarioFull()">
                             <option value="">Seleccione</option>
                             <option
                                 v-for="etapa in $root.$data.etapas"
@@ -1477,17 +1511,45 @@
 
                 <div class="form-group row">
                     <div class="col-md-12">
-                        <TableComponent :cabecera="['Modelo','#Lote', 'Manzana', 'Precio']">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Resumen</a></li>
+                            <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Completo</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-12" v-if="paso == 1">
+                        <TableComponent :cabecera="['Modelo','Manzana', '#Lote', 'Precio']">
                             <template v-slot:tbody>
                                 <tr v-for="lote in inventario" :key="lote.id">
                                     <td class="td2">{{lote.modelo}}</td>
+                                    <td class="td2">{{lote.lote.manzana}}</td>
                                     <td class="td2">
                                         {{ (lote.lote.sublote) ? lote.lote.num_lote + ' ' + lote.lote.sublote
                                             : lote.lote.num_lote
                                          }}
                                     </td>
-                                    <td class="td2">{{lote.lote.manzana}}</td>
                                     <td class="td2" v-text="'$'+ formatNumber(lote.lote.p_venta)"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
+                    <div class="col-md-12" v-if="paso == 2">
+                        <TableComponent :cabecera="['Modelo','Manzana', '#Lote', 'Sup. Terreno', 'Precio', 'Promoción']">
+                            <template v-slot:tbody>
+                                <tr v-for="lote in inventarioFull" :key="lote.id">
+                                    <td class="td2">{{lote.modelo}}</td>
+                                    <td class="td2">{{lote.manzana}}</td>
+                                    <td class="td2">
+                                        {{ (lote.sublote) ? lote.num_lote + ' ' + lote.sublote
+                                            : lote.num_lote
+                                         }}
+                                    </td>
+                                    <td class="td2">{{formatNumber(lote.terreno)}} m&sup2;</td>
+                                    <td class="td2" v-text="'$'+ formatNumber(lote.p_venta)"></td>
+                                    <td>
+                                        <button @click="mostrarPromo(lote.promocion)" v-if="lote.promocion != ''">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -1534,6 +1596,7 @@ export default {
             tipoAccion: 0,
             editar:0,
             b_cliente: '',
+            b_apellidos : '',
             b_status : '',
             b_campania : '',
             b_asesor:'',
@@ -1543,10 +1606,13 @@ export default {
             b_proyecto:'',
             b_prioridad:'',
             b_modelo:'',
+            b_user_name : '',
+            b_user_lastname : '',
             proceso : false,
             loading: false,
             buscadores:{},
             inventario:[],
+            inventarioFull:[],
             datos : [],
             arrayEmpresa: [],
             arrayColonias:[],
@@ -1566,6 +1632,8 @@ export default {
             campania_id: '',
             nombre: '',
             apellidos: '',
+            name_user : '',
+            last_name_user : '',
             email: '',
             celular: '',
             clv_lada:52,
@@ -1664,7 +1732,14 @@ export default {
 
             return this.errorProspecto;
         },
-
+        mostrarPromo(promo){
+            Swal({
+            title: 'Promoción',
+            html: "<h5 style='color:#111F4F'>" + promo + "</h5>",
+            animation: false,
+            customClass: 'animated tada'
+            })
+        },
         sendProspecto(){
             if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
                 return;
@@ -1971,12 +2046,13 @@ export default {
             if(me.rolId == 3)
                 me.b_motivo = 6;
 
-            axios.get('/leads/index'+'?buscar=' + me.b_cliente+
+            axios.get('/leads/index'+'?buscar=' + me.b_cliente+ '&b_apellidos=' + me.b_apellidos +
                 '&campania='+me.b_campania  + '&status='+me.b_status+
                 '&asesor='+me.b_asesor      + '&motivo='+me.b_motivo +
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
-                '&modelo='+me.b_modelo      + '&page=' + page
+                '&modelo='+me.b_modelo      + '&page=' + page +
+                '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname
             ).then(function(response){
                 me.arrayLeads = response.data;
                 me.pagina = ''
@@ -2071,6 +2147,18 @@ export default {
                 +   '&etapa_id=' + me.buscadores.etapa_id;
             axios.get(url).then(function(response){
                 me.inventario = response.data;
+            }).catch(function(error){
+                console.log(error)
+            })
+        },
+        getInventarioFull(){
+            let me = this;
+            me.inventarioFull = [];
+
+            var url = '/lote/getInventarioFull?fraccionamiento_id='+me.buscadores.fraccionamiento_id
+                +   '&etapa_id=' + me.buscadores.etapa_id;
+            axios.get(url).then(function(response){
+                me.inventarioFull = response.data;
             }).catch(function(error){
                 console.log(error)
             })
@@ -2375,6 +2463,8 @@ export default {
 
                     //////////// PASO 1 //////////////////
                     this.nombre = data['nombre'];
+                    this.last_name_user = data['last_name_user'];
+                    this.name_user = data['name_user'];
                     this.apellidos = data['apellidos'];
                     this.telefono = data['telefono'];
                     this.clv_lada = data['clv_lada'];
@@ -2497,6 +2587,8 @@ export default {
                         etapa_id : ''
                     };
                     this.inventario = [];
+                    this.paso = 1;
+                    this.inventarioFull = [];
                     this.tituloModal = 'Inventario';
                     this.modal = 3;
                     break;

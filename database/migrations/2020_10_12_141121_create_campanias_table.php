@@ -19,6 +19,7 @@ class CreateCampaniasTable extends Migration
             $table->string('medio_digital');
             $table->date('fecha_ini');
             $table->date('fecha_fin');
+            $table->double('presupuesto',10,3)->default(0);
             $table->timestamps();
         });
     }

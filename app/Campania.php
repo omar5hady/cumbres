@@ -12,7 +12,8 @@ class Campania extends Model
         'nombre_campania',
         'medio_digital',
         'fecha_ini',
-        'fecha_fin'
+        'fecha_fin',
+        'presupuesto'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function lead(){

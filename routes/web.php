@@ -255,6 +255,7 @@ Route::group(['middleware' => ['auth']],function(){
     ////////////////////        RUTAS LOTES    /////////////////////////////////
         Route::get('/lote','LoteController@index');
         Route::get('/lote/getInventarioRes','LoteController@getInventarioRes');
+        Route::get('/lote/getInventarioFull','LoteController@getInventarioFull');
         Route::get('/lote/dispEspecificaciones','VersionModeloController@indexLotes');
         Route::get('/asignar_modelo/excel','LoteController@exportExcelAsignarModelo');
         Route::get('/lote2','LoteController@index2');
@@ -1133,6 +1134,7 @@ Route::group(['middleware' => ['auth']],function(){
         //////////////////// RUTAS PARA LEADS ////////////////////////
         Route::get('/campanias/index','CampaniaController@indexCampanias');
         Route::get('/campanias/excelLeads','DigitalLeadController@excelLeads');
+        Route::get('/campanias/excelToImport','DigitalLeadController@excelToImport');
         Route::put('/campanias/update', 'CampaniaController@update');
         Route::post('/campanias/store', 'CampaniaController@store');
         Route::delete('/campanias/delete', 'CampaniaController@delete');

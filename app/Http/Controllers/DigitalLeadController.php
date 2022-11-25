@@ -105,6 +105,73 @@ class DigitalLeadController extends Controller
         )->download('xls');
     }
 
+    public function excelToImport(Request $request){
+        // Llamada a la funcion privada que obtiene la query necesaria.
+        $leads = $this->queryLeads($request);
+        $leads = $leads->get();
+        // Retorno y creación en excel del resultado.
+        return Excel::create('Digital Leads', function($excel) use ($leads){
+            $excel->sheet('Digital Leads', function($sheet) use ($leads){
+                $sheet->row(1, [
+                    'email',
+                    'email',
+                    'email',
+                    'phone',
+                    'phone',
+                    'phone',
+                    'madid',
+                    'fn',
+                    'ln',
+                    'zip',
+                    'ct',
+                    'st',
+                    'country',
+                    'dob',
+                    'doby',
+                    'gen',
+                    'age',
+                    'uid',
+                    'valu',
+                ]);
+
+                $cont=2;
+
+                foreach($leads as $index => $lead) {
+                    $year = new Carbon($lead->f_nacimiento);
+                    $nac = Carbon::parse($lead->f_nacimiento);
+                    $now = Carbon::now();
+                    $edad = $nac->diffInYears($now);
+                    $year = $year->format('Y');
+                    $sheet->row($cont, [
+                        $lead->email,
+                        '',
+                        '',
+                        '+'.$lead->clv_lada.$lead->celular,
+                        '',
+                        '',
+                        '',
+                        $lead->name_user,
+                        $lead->last_name_user,
+                        '',
+                        '',
+                        '',
+                        '',
+                        $lead->f_nacimiento,
+                        $year,
+                        $lead->sexo,
+                        $edad,
+                        $lead->messenger_id,
+                        '',
+                    ]);
+                    $cont++;
+                }
+                $num='A1:K' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('csv');
+    }
+
     // Función privada para calcular el progreso de registro de información en un lead.
     private function getProgress($lead){
         $progress = 0; // Se inicializa variable donde se almacena el progreso calculado
@@ -143,6 +210,9 @@ class DigitalLeadController extends Controller
     // Función privada que obtiene la query con leads registrados.
     private function queryLeads($request){
         $buscar = $request->buscar;
+        $b_apellidos = $request->b_apellidos;
+        $b_user = $request->b_user_name;
+        $b_user_lastname = $request->b_user_lastname;
         $campania = $request->campania;
         $status = $request->status;
         $asesor = $request->asesor;
@@ -179,13 +249,20 @@ class DigitalLeadController extends Controller
                 if($fecha1 != '' && $fecha2!='') // Fecha de registro
                     $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1,$fecha2]);
                 if($buscar != '') // Nombre de lead
-                    $leads = $leads->where(DB::raw("CONCAT(digital_leads.nombre,' ',digital_leads.apellidos)"), 'like', '%'. $buscar . '%');
-                if($status != '') /* Estatus de lead:
-                                1 = En Seguimiento
-                                0 = Descartado
-                                2 = Potencial
-                                3 = Enviado a prospectos
-                                */
+                    $leads = $leads->where('digital_leads.nombre','like', '%'. $buscar . '%');
+                if($b_apellidos != '') // Nombre de lead
+                    $leads = $leads->where('digital_leads.apellidos','like', '%'. $b_apellidos . '%');
+                if($b_user != '') // Nombre de lead
+                    $leads = $leads->where('digital_leads.name_user', 'like', '%'. $b_user . '%');
+                if($b_user_lastname != '') // Nombre de lead
+                    $leads = $leads->where('digital_leads.last_name_user', 'like', '%'. $b_user_lastname . '%');
+                if($status != '')
+                    /* Estatus de lead:
+                            1 = En Seguimiento
+                            0 = Descartado
+                            2 = Potencial
+                            3 = Enviado a prospectos
+                    */
                     $leads = $leads->where('digital_leads.status','=',$status);
 
                 if($modelo != '') // Prototipo de interes

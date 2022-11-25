@@ -1102,9 +1102,9 @@
             <strong>DÉCIMA CUARTA.- FALLECIMIENTO DE “EL PROMITENTE COMPRADOR”.</strong> En caso de fallecimiento de
             <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
-                    “LOS PROMITENTES VENDEDORES”
+                    “LOS PROMITENTES COMPRADORES”
                 @else
-                    “EL PROMITENTE VENDEDOR”
+                    “EL PROMITENTE COMPRADOR”
                 @endif
             </strong>, el presente contrato subsistirá en todos sus efectos y alcances, transmitiendo los derechos y obligaciones de
             <strong>“EL PROMITENTE COMPRADOR”</strong> a sus sucesores, en los términos que prevea la Legislación Civil del Estado de SLP. Salvo que manifiesten a

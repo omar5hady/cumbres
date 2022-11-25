@@ -24,21 +24,22 @@
                                 </div>
                             </div>
                         </div>
-                        <TableComponent :cabecera="['Opciones','Campaña','Medio Digital','Inicio','Termino']">
+                        <TableComponent :cabecera="['Opciones','Campaña','Medio Digital','Inicio','Termino','Presupuesto']">
                             <template v-slot:tbody>
                                 <tr v-for="campania in arrayCampanias.data" :key="campania.id">
                                     <td class="td2" style="width:15%">
                                         <button title="Editar" type="button" @click="abrirModal('actualizar',campania)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
-                                        </button>  
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarCampania(campania)">
                                             <i class="icon-trash"></i>
-                                        </button>                                       
+                                        </button>
                                     </td>
                                     <td class="td2" v-text="campania.nombre_campania"></td>
                                     <td class="td2" v-text="campania.medio_digital"></td>
                                     <td class="td2" v-text="this.moment(campania.fecha_ini).locale('es').format('DD/MMM/YYYY')"></td>
                                     <td class="td2" v-text="this.moment(campania.fecha_fin).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td class="td2" v-text="'$'+$root.formatNumber(campania.presupuesto)"></td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -48,41 +49,41 @@
                                             <a class="page-link" href="#" @click="listarCampania(1)">Inicio</a>
                                         </li>
                                         <li v-if="arrayCampanias.current_page-3 >= 1">
-                                            <a class="page-link" href="#" 
-                                            @click="listarCampania(arrayCampanias.current_page-3)" 
+                                            <a class="page-link" href="#"
+                                            @click="listarCampania(arrayCampanias.current_page-3)"
                                             v-text="arrayCampanias.current_page-3" ></a>
                                         </li>
                                         <li v-if="arrayCampanias.current_page-2 >= 1">
-                                            <a class="page-link" href="#" 
-                                            @click="listarCampania(arrayCampanias.current_page-2)" 
+                                            <a class="page-link" href="#"
+                                            @click="listarCampania(arrayCampanias.current_page-2)"
                                             v-text="arrayCampanias.current_page-2" ></a>
                                         </li>
                                         <li v-if="arrayCampanias.current_page-1 >= 1">
-                                            <a class="page-link" href="#" 
-                                            @click="listarCampania(arrayCampanias.current_page-1)" 
+                                            <a class="page-link" href="#"
+                                            @click="listarCampania(arrayCampanias.current_page-1)"
                                             v-text="arrayCampanias.current_page-1" ></a>
                                         </li>
-                                        
+
                                         <li class="page-item active">
                                             <a class="page-link" href="#" v-text="arrayCampanias.current_page" ></a>
                                         </li>
-                                        
+
                                         <li v-if="arrayCampanias.current_page+1 <= arrayCampanias.last_page">
-                                            <a class="page-link" href="#" 
-                                            @click="listarCampania(arrayCampanias.current_page+1)" 
+                                            <a class="page-link" href="#"
+                                            @click="listarCampania(arrayCampanias.current_page+1)"
                                             v-text="arrayCampanias.current_page+1" ></a>
                                         </li>
                                         <li v-if="arrayCampanias.current_page+2 <= arrayCampanias.last_page">
-                                            <a class="page-link" href="#" 
-                                            @click="listarCampania(arrayCampanias.current_page+2)" 
+                                            <a class="page-link" href="#"
+                                            @click="listarCampania(arrayCampanias.current_page+2)"
                                             v-text="arrayCampanias.current_page+2" ></a>
                                         </li>
                                         <li v-if="arrayCampanias.current_page+3 <= arrayCampanias.last_page">
-                                            <a class="page-link" href="#" 
-                                            @click="listarCampania(arrayCampanias.current_page+3)" 
+                                            <a class="page-link" href="#"
+                                            @click="listarCampania(arrayCampanias.current_page+3)"
                                             v-text="arrayCampanias.current_page+3" ></a>
                                         </li>
-                                        
+
                                         <li class="page-item">
                                             <a class="page-link" href="#" @click="listarCampania(arrayCampanias.last_page)">Ultimo</a>
                                         </li>
@@ -99,10 +100,21 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                   <div class="form-group row">
+                    <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Nombre de la campaña</label>
                         <div class="col-md-9">
                             <input type="text" v-model="nombre" class="form-control" placeholder="Campaña">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Presupuesto</label>
+                        <div class="col-md-4">
+                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                 v-model="presupuesto" class="form-control" placeholder="Presupuesto">
+                        </div>
+                        <div class="col-md-4">
+                            <p class="form-control"> ${{ $root.formatNumber(presupuesto) }}</p>
                         </div>
                     </div>
 
@@ -116,7 +128,7 @@
                             <input type="date" v-model="fecha_fin" class="form-control" placeholder="Fecha de inicio">
                         </div>
                     </div>
-                    
+
                     <template v-if="tipoAccion==1">
                         <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Medio publicitario</label>
@@ -139,7 +151,7 @@
                                 <h5 class="modal-title"> Medios elegidos </h5>
                             </div>
                             <table class="table table-bordered table-striped table-sm">
-                                
+
                                 <tbody>
                                     <tr v-for="(medioD,index) in medios" :key="medioD">
                                         <td style="width:25%">
@@ -148,7 +160,7 @@
                                             </button>
                                         </td>
                                         <td v-text="medioD" ></td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -167,7 +179,7 @@
                         </div>
                     </template>
 
-                    
+
                     <div v-show="errorCampania" class="form-group row div-error">
                         <div class="text-center text-error">
                             <div v-for="error in errorMostrarMsj" :key="error" v-text="error">
@@ -202,6 +214,7 @@
                 medio_digital:'',
                 fecha_ini:'',
                 fecha_fin:'',
+                presupuesto:0,
                 arrayCampanias : [],
                 medios:[],
                 arrayMediosPublicidad:[],
@@ -224,19 +237,19 @@
             }
         },
         computed:{
-            
+
         },
         methods : {
             listarCampania (page){
                 axios.get('/campanias/index'+
                     '?buscar='+this.buscar+
                     '&page='+page
-                    
+
                 ).then(
                     response => this.arrayCampanias = response.data
                 ).catch(error => console.log(error));
             },
-           
+
             addMedio(medio){
                 this.medios.push(medio);
             },
@@ -257,7 +270,8 @@
                     'nombre': this.nombre,
                     'medio_digital':this.medios,
                     'fecha_ini':this.fecha_ini,
-                    'fecha_fin':this.fecha_fin
+                    'fecha_fin':this.fecha_fin,
+                    'presupuesto':this.presupuesto
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -287,7 +301,7 @@
                 });
             },
             actualizarCampania(){
-                
+
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -296,9 +310,10 @@
                     'medio_digital':this.medio_digital,
                     'fecha_ini':this.fecha_ini,
                     'fecha_fin':this.fecha_fin,
+                    'presupuesto':this.presupuesto,
                     'id' : this.id
                 }).then(function (response){
-                    
+
                     me.cerrarModal();
                     me.listarCampania(1); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");
@@ -311,7 +326,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
-                    
+
                 });
             },
             eliminarCampania(data =[]){
@@ -330,7 +345,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/campanias/delete', 
+                axios.delete('/campanias/delete',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -386,6 +401,7 @@
                         this.nombre = '';
                         this.medio_digital = '';
                         this.tipoAccion = 1;
+                        this.presupuesto = 0;
                         this.medios = [];
                         break;
                     }
@@ -400,6 +416,7 @@
                         this.fecha_fin =data['fecha_fin'];
                         this.nombre = data['nombre_campania'];
                         this.medio_digital = data['medio_digital'];
+                        this.presupuesto = data['presupuesto'];
                         break;
                     }
                 }
@@ -410,7 +427,7 @@
         }
     }
 </script>
-<style>    
+<style>
     .div-error{
         display: flex;
         justify-content: center;
