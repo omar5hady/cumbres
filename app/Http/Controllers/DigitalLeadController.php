@@ -221,6 +221,7 @@ class DigitalLeadController extends Controller
         $proyecto = $request->proyecto;
         $prioridad = $request->prioridad;
         $modelo = $request->modelo;
+        $b_semaforo = $request->b_semaforo;
         //Query principal
         $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
@@ -275,6 +276,16 @@ class DigitalLeadController extends Controller
                     $leads = $leads->where('digital_leads.vendedor_asign','=',$asesor);
                 if($prioridad != '') // Prioridad de atención. Baja, Media o Alta
                             $leads = $leads->where('digital_leads.prioridad','=',$prioridad);
+
+                if($b_semaforo != ''){
+                    if($b_semaforo == 1)
+                        $leads = $leads->where('fecha_update','>=',Carbon::now()->subDays(7));
+                    if($b_semaforo == 2)
+                        $leads = $leads->where('fecha_update','<=',Carbon::now()->subDays(7))
+                                        ->where('fecha_update','>',Carbon::now()->subDays(15));
+                    if($b_semaforo == 3)
+                        $leads = $leads->where('fecha_update','<',Carbon::now()->subDays(16));
+                }
             $leads = $leads->orderBy('nombre','asc')
             ->orderBy('apellidos','asc');
 

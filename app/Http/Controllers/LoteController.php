@@ -2279,7 +2279,7 @@ class LoteController extends Controller
         $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
             ->select('lotes.num_lote','lotes.manzana','lotes.sublote', 'modelos.nombre as modelo',
                 'lotes.excedente_terreno','lotes.obra_extra','lotes.sobreprecio', 'lotes.terreno',
-                'lotes.construccion',
+                'lotes.construccion', 'lotes.id',
                 'lotes.precio_base','lotes.ajuste')
             ->where('contrato','=',0)->where('apartado','=',0)
             ->where('habilitado','=',1)

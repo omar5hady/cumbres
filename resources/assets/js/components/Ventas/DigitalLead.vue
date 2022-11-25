@@ -93,6 +93,18 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6" v-if="b_motivo == 1">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Niv. Atención:" class="form-control col-sm-4">
+                                <select class="form-control"  v-model="b_semaforo" >
+                                    <option value="">Todos</option>
+                                    <option value="1">Al corriente</option>
+                                    <option value="2">7-15 dias</option>
+                                    <option value="3">+16 dias</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-8" v-if="b_motivo ==1">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
@@ -1646,6 +1658,7 @@ export default {
             arrayObs:[],
             arrayAsesores:[],
             arrayClaves:[],
+            b_semaforo : '',
 
             medio_contacto: '',
             medio_publicidad: '',
@@ -2075,7 +2088,7 @@ export default {
                 '&asesor='+me.b_asesor      + '&motivo='+me.b_motivo +
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
-                '&modelo='+me.b_modelo      + '&page=' + page +
+                '&modelo='+me.b_modelo      + '&page=' + page + '&b_semaforo=' + me.b_semaforo +
                 '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname
             ).then(function(response){
                 me.arrayLeads = response.data;
