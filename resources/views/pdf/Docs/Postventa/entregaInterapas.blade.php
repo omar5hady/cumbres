@@ -113,7 +113,7 @@
     <div class="backblue subheader"></div>
 
     <div class="contenido fecha">
-        <p>San Luis Potosí, S.L.P. a _____ de  _________ del 20____.</p>
+        <p>San Luis Potosí, S.L.P. a {{$contrato->entrega_real}}.</p>
     </div>
 
     <div class="contenido info">
@@ -130,8 +130,9 @@
     <div class="contenido firma">
         <p>Recibí</p>
         <br><br><br>
-        <p>_______________________________________</p>
-        <p>NOMBRE Y FIRMA</p>
+        <p>______________________________________________</p>
+        <p>Firma</p>
+        <p>{{mb_strtoupper($contrato->nombre)}} {{mb_strtoupper($contrato->apellidos)}}</p>
     </div>
 
     <div class="cover-container"></div>

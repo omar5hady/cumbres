@@ -122,7 +122,7 @@
             </p>
 
             <p>
-                b)	Que las facultades de su representante legal constan en la escritura pública número 1560
+                b)	Que las facultades de su representante constan en la escritura pública número 1560
                     de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
                     San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
                     Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
@@ -160,7 +160,7 @@
 
             <br>
 
-            <p>II.- Declara <strong>CONCRETANIA</strong> por medio de su representante legal:</p>
+            <p>II.- Declara <strong>CONCRETANIA</strong> por medio de su representante:</p>
 
             <p>
                 a)	Que es una sociedad mercantil debidamente constituida con arreglo a las leyes de la República Mexicana según consta en la
@@ -172,7 +172,7 @@
             </p>
 
             <p>
-                b)	Que  las facultades de su representante legal constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                b)	Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
                 otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
                 inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
                 123507, mismas atribuciones que no le han sido revocadas a la fecha.
@@ -267,7 +267,7 @@
                 </p>
 
                 <p>
-                    b)	Que las facultades de su representante legal constan en la escritura pública número 1560
+                    b)	Que las facultades de su representante constan en la escritura pública número 1560
                     de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
                     San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
                     Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
@@ -284,7 +284,7 @@
                 </p>
 
                 <p>
-                    b)	Que  las facultades de su representante legal constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                    b)	Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
                     otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
                     inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
                     123507, mismas atribuciones que no le han sido revocadas a la fecha.

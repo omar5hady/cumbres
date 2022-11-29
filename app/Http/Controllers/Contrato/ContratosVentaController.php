@@ -143,20 +143,18 @@ class ContratosVentaController extends Controller
             $contrato->t_garanita = 10;
 
 
-        $contrato->hoy = new Carbon();
         if($contrato->entrega_real != NULL){
-
             $contrato->entrega_real = new Carbon($contrato->entrega_real);
+            $contrato->entrega_real2 = new Carbon($contrato->entrega_real);
             $contrato->fin_poliza = new Carbon($contrato->entrega_real);
         }
         else{
-
             $contrato->entrega_real = new Carbon($contrato->entrega_program);
+            $contrato->entrega_real2 = new Carbon($contrato->entrega_real);
             $contrato->fin_poliza = new Carbon($contrato->entrega_program);
         }
 
-        $contrato->hoy = new Carbon();
-        $contrato->hoy = $contrato->hoy->formatLocalized('%d días del mes de %B del año %Y');
+        $contrato->hoy = $contrato->entrega_real2->formatLocalized('%d días del mes de %B del año %Y');
 
         $contrato->fin_poliza = $contrato->fin_poliza->addYears($contrato->t_garanita);
         $contrato->entrega_real = $contrato->entrega_real->formatLocalized('día %d del mes de %B del año %Y');

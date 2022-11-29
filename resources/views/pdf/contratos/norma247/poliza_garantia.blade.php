@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Carta de Notificación a Interapas</title>
+    <title>Poliza de Garantía</title>
 </head>
 <style type="text/css">
     /* @import url('https://fonts.googleapis.com/css?family=Muli&display=swap'); */
@@ -256,7 +256,7 @@
                 @else
                     <b>CONCRETANIA, S.A. DE C.V.,</b>
                 @endif
-                EN LO SUCESIVO <b>“LA CONSTRUCTORA”,</b> REPRESENTADA POR SU APODERADO LEGAL EL
+                EN LO SUCESIVO <b>“LA CONSTRUCTORA”,</b> REPRESENTADA POR SU APODERADO EL
                 @if($contrato->etapa == 'PRIVADA ALCAZAR')
                     <b>C.P. MARTÍN HERRERA SÁNCHEZ,</b>
                 @else
@@ -268,7 +268,14 @@
                 EN LO SUCESIVO <b>“EL PROPIETARIO,</b> RESPECTO A LA VIVIENDA UBICADA EN EL
                 LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
                 DE LA MANZANA {{mb_strtoupper($contrato->manzana)}} DE LA
-                CALLE {{mb_strtoupper($contrato->calle_lote)}} DE EL FRACCIONAMIENTO HABITACIONAL {{mb_strtoupper($contrato->proyecto)}}
+                CALLE {{mb_strtoupper($contrato->calle_lote)}}
+                #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}} DE EL FRACCIONAMIENTO HABITACIONAL
+                @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
+                    {{ mb_strtoupper( str_replace('FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto)) }}
+                @else
+                    {{mb_strtoupper($contrato->proyecto)}}
+                @endif
+
                 LOCALIZADO EN {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
             </p>
 
@@ -284,7 +291,7 @@
 
             <p class="text">
                 <strong>PRIMERA.-</strong> “LA CONSTRUCTORA” SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN
-                EN LA VIVIENDA DESCRITA EN ESTA PÓLIZA, DURANTE  LOS PLAZOS MARCADOS EN LOS APÉNDICES CORRESPONDIENES A PARTIR DE LA FECHA DE LA
+                EN LA VIVIENDA DESCRITA EN ESTA PÓLIZA, DURANTE  LOS PLAZOS MARCADOS EN LOS APÉNDICES CORRESPONDIENES A PARTIR DE LA FECHA DE
                 ENTREGA DE LA VIVIENDA.  LOS HORARIOS DE ATENCIÓN PARA RECIBIR  UN REPORTE  Y HACER VÁLIDA LA GARANTÍA: ES EN DÍAS HÁBILES
                 DE LUNES A VIERNES DE 9:00 AM A 5:00 PM Y SÁBADOS DE 9:00 AM A 1:00 PM
             </p>
@@ -371,9 +378,17 @@
         <div class="backblue footer">
             <center>
                 <p class="subtitle">
-                    FRACCIONAMIENTO: {{mb_strtoupper($contrato->proyecto)}} MNZA: {{mb_strtoupper($contrato->manzana)}}
-                    LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
-                    CALLE {{mb_strtoupper($contrato->calle_lote)}}. {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
+                    FRACCIONAMIENTO:
+                        @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
+                            {{ mb_strtoupper( str_replace('FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto)) }}
+                        @else
+                            {{mb_strtoupper($contrato->proyecto)}}
+                        @endif
+                    MNZA: {{mb_strtoupper($contrato->manzana)}}
+                    LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                    CALLE: {{mb_strtoupper($contrato->calle_lote)}}
+                    #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}.
+                    {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
                 </p>
             </center>
         </div>
@@ -448,7 +463,7 @@
                 <b>COBERTURA DE GARANTÍA POR FALLAS ESTRUCTURALES CON GARANTIA DE {{$contrato->t_garanita}} AÑOS.</b> <br>
             </p>
             <ul>
-                <li><p class="text-apendice list">DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN PISOS, MUROS Y LOSAS Y  QUE TENGA UNA APERTURA MAYOR A 1.5 MM.</p></li>
+                <li><p class="text-apendice list">DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN PISOS, MUROS, LOSAS Y  QUE TENGA UNA APERTURA MAYOR A 1.5 MM.</p></li>
             </ul>
 
             <br><br>
@@ -1133,7 +1148,7 @@
 
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA RECEPCIÓN DE VIVIENDA</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA DE NOTIFICACIÓN A INTERAPAS</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1321,9 +1336,17 @@
     <div class="backblue footer">
         <center>
             <p class="subtitle">
-                FRACCIONAMIENTO: {{mb_strtoupper($contrato->proyecto)}} MNZA: {{mb_strtoupper($contrato->manzana)}}
-                LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
-                CALLE {{mb_strtoupper($contrato->calle_lote)}}. {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
+                FRACCIONAMIENTO:
+                    @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
+                        {{ mb_strtoupper( str_replace('FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto)) }}
+                    @else
+                        {{mb_strtoupper($contrato->proyecto)}}
+                    @endif
+                MNZA: {{mb_strtoupper($contrato->manzana)}}
+                LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                CALLE: {{mb_strtoupper($contrato->calle_lote)}}
+                #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}.
+                {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
             </p>
         </center>
     </div>
