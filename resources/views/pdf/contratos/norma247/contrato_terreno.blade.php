@@ -65,9 +65,9 @@
             CONTRATO DE COMPRAVENTA DE TERRENO DESTINADO A USO HABITACIONAL AL QUE EN LO SUCESIVO SE LE DENOMINARÁ,
             EL <strong>“CONTRATO DE COMPRAVENTA”,</strong> QUE CELEBRAN POR UNA PARTE
             @if($contrato->emp_terreno == 'Grupo Constructor Cumbres')
-                <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR EL SR. ING. ALEJANDRO F. PEREZ ESPINOSA
+                <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
             @else
-                <strong>CONCRETANIA, S. A. DE. C.V</strong>, REPRESENTADA EN ESTE ACTO POR EL SR. ING. DAVID CALVILLO MARTINEZ
+                <strong>CONCRETANIA, S. A. DE. C.V</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNANDEZ LOERA
             @endif
             A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO <strong>EL PROMITENTE VENDEDOR</strong>
             Y POR LA OTRA PARTE, POR SU PROPIO DERECHO
@@ -97,10 +97,10 @@
             </p>
 
             <p>
-                b)	Que las facultades de su representante legal constan en la escritura pública número 3
-                de fecha 8 de diciembre del 1999, otorgada ante el Notario Público número 33 del primer distrito judicial de
-                San Luis Potosí, Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro Público de la Propiedad y del
-                Comercio en San Luis Potosí, bajo el folio mercantil 70, mismas atribuciones que no le han sido revocadas a la fecha.
+                b)	Que las facultades de su representante legal constan en la escritura pública número 1560
+                    de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
+                    San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
+                    Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
             </p>
         @else
 
@@ -114,10 +114,10 @@
             </p>
 
             <p>
-                b)	Que  las facultades de su representante legal constan en la escritura pública número 764 de fecha 25 de julio del 2018,
-                otorgada ante el Notario Público número 4 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Octaviano Gómez y
-                González inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
-                N-2018073682, mismas atribuciones que no le han sido revocadas a la fecha.
+                b)	Que  las facultades de su representante legal constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
+                inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
+                123507, mismas atribuciones que no le han sido revocadas a la fecha.
             </p>
 
         @endif

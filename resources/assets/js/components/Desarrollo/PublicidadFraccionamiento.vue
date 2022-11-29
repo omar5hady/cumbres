@@ -19,7 +19,7 @@
                                       <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                       <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
-                                    
+
                                     <select class="form-control" v-if="criterio=='tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
@@ -45,8 +45,14 @@
                                     <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
                                     <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
                                     <td v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
-                                    <td class="td2" style="width:7%" v-if = "fraccionamiento.logo_fracc"><a target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadLogoFraccionamiento/'+fraccionamiento.logo_fracc"><i class="fa fa-download fa-spin"></i></a></td>
-                                    <td class="td2" v-else></td>
+                                    <td class="td2" style="width:7%" >
+                                        <a v-if="fraccionamiento.logo_fracc" target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadLogoFraccionamiento/'+fraccionamiento.logo_fracc">
+                                        <i class="fa fa-download fa-spin"></i></a>
+                                    </td>
+                                    <td class="td2" style="width:7%" >
+                                        <a v-if="fraccionamiento.logo_fracc2" target="_blank" class="btn btn-success btn-sm" v-bind:href="'/downloadLogoFraccionamiento/'+fraccionamiento.logo_fracc2">
+                                        <i class="fa fa-download fa-spin"></i></a>
+                                    </td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -68,7 +74,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            
+
             <!-- Modal para la carga de los archivos-->
             <ModalComponent v-if="modal"
                 :titulo="tituloModal"
@@ -78,11 +84,15 @@
                 <template v-slot:body>
 
                       <div class="modal-body">
+                        <select class=" form-control " @click="limpiaInputArchivos()" v-model="tipo">
+                            <option class=" form-control " value="color">Logo a Color </option>
+                            <option class=" form-control " value="blanco">Logo a Blanco y Negro </option>
+                        </select>
                         <div class="contenedor-modal">
 
                                 <div class="form-sub">
                                     <form  method="post" @submit="formSubmitLogo" enctype="multipart/form-data">
-                                         <div class="form-opc"> 
+                                         <div class="form-opc">
                                             <div class="form-archivo">
 
                                                 <input ref="imageSelectorLogo" v-show="false" type="file"  v-on:change="onImageChangeLogo">
@@ -94,7 +104,7 @@
                                                                 <i class="fa fa-upload"></i>
                                                                 </label>
                                                     <div v-if="nom_archivo=='Seleccione Archivo'" class="text-file-hide"   v-text="nom_archivo" ></div>
-                                            
+
                                                     <div v-else class="text-file"  v-text="nom_archivo"></div>
                                             </div>
                                                 <div class="boton-modal">
@@ -105,12 +115,12 @@
                                     </form>
 
                                 </div>
-                        
-                     
-                        
+
+
+
                         </div>
 
-                    
+
                     </div>
                 </template>
             </ModalComponent>
@@ -138,20 +148,20 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 nombre : '',
                 tipo_proyecto : 0,
                 calle : '',
-               
+
                 archivo_logo: '',
-               
+
                 arrayFraccionamiento : [],
                 modal : 0,
                 modal: 0,
-              
+
                 tituloModal: '',
                 nom_archivo:'Seleccione Archivo',
                 tipoAccion: 0,
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -159,9 +169,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'nombre',
                 buscar : '',
-              
+                tipo: 'color',
+
             }
         },
         computed:{
@@ -193,7 +204,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             }
         },
         methods : {
-            //funciones para carga de los logo del fraccionamiento 
+            //funciones para carga de los logo del fraccionamiento
             onImageChangeLogo(e){
                 console.log(e.target.files[0]);
                 this.archivo_logo = e.target.files[0];
@@ -206,9 +217,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
             formSubmitLogo(e) {
                 e.preventDefault();
                 let currentObj = this;
-            
+
                 let formData = new FormData();
                 formData.append('archivo_logo', this.archivo_logo);
+                formData.append('tipo', this.tipo);
                 let me = this;
                 axios.post('/formSubmitLogoFraccionamiento/'+this.id, formData)
                 .then(function (response) {
@@ -249,7 +261,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarFraccionamiento(page,buscar,criterio);
             },
-            
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -264,6 +276,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.tituloModal='Subir Logo';
                 this.id=data['id'];
                 this.archivo_logo=data['logo_fracc'];
+                this.tipo = 'color';
             }
         },
         mounted() {
@@ -273,30 +286,30 @@ import TableComponent from '../Componentes/TableComponent.vue'
 </script>
 <style scoped>
     .text-formfile{
-    
+
         color: grey;
         display:flex;
         padding-top: 13px;
     /*  background-color: aqua; */
         justify-content: left;
-    
+
     }
     .contenedor-modal{
-        
+
         display: block;
         flex-direction: column;
-        
+
         margin: auto;
         overflow-x: auto;
         width: fit-content;
         max-width: 100%;
-    
+
 
     }
 
     .label-button{
     border-style: solid;
-    cursor:pointer; 
+    cursor:pointer;
     color: #fff;
     background-color: #00ADEF;
     border-color: #00ADEF;
@@ -308,50 +321,50 @@ import TableComponent from '../Componentes/TableComponent.vue'
     color: #fff;
     background-color: #1b8eb7;
     border-color: #00b0bb;
-    
-      
+
+
       }
     .form-sub{
         border: 1px solid #c2cfd6;
         margin-top: 20px;
         width: 100%;
-        
-    
+
+
     }
     .form-opc{
         display: flex;
         flex-direction: column;
-        
-    
+
+
     }
     .form-archivo{
         display: flex;
         flex-direction: row;
-    
+
         width: 100%;
     }
     .text-file{
-    
+
         color: rgb(39, 38, 38);
         font-size:12px;
         word-break: break-all;
         font-weight: bold;
         width: 300px;
         padding: 15px;
-        
-        
-    
+
+
+
     }
     .text-file-hide{
-    
+
         color: rgb(127, 130, 134);
         font-size:13px;
         word-break: break-all;
         font-weight: bold;
         width: 300px;
         padding: 15px;
-        
-        
+
+
     }
     .boton-modal{
         margin-top: 15px;

@@ -444,11 +444,14 @@ class FraccionamientoController extends Controller
         if($moved){
             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
             $logo = Fraccionamiento::findOrFail($request->id);
-            $logo->logo_fracc = $fileName;
+            if($request->tipo == 'color')
+                $logo->logo_fracc = $fileName;
+            else
+                $logo->logo_fracc2 = $fileName;
             $logo->id = $id;
             $logo->save(); //Insert
 
-            }
+        }
     }
     public function downloadFileLogoFraccionamiento($fileName){
 

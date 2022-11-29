@@ -9,7 +9,7 @@ class Fraccionamiento extends Model
     protected $table = 'fraccionamientos'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['nombre','tipo_proyecto','calle','colonia','estado','ciudad','fecha_ini_venta',
-                            'archivo_planos','archivo_escrituras','delegacion','cp','email_administracion',
+                            'archivo_planos','archivo_escrituras','delegacion','cp','email_administracion', 'logo_fracc2',
                             'logo_fracc', 'numero', 'gerente_id','arquitecto_id','postventa_id'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function etapa(){

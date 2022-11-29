@@ -96,8 +96,12 @@
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ contratos.folio">Carta de alarma</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/docs/entregaInterapas?id='+ contratos.folio">Carta de Notificacion a Interapas</a>
+                                                <a v-if="contratos.fecha_program" class="dropdown-item" target="_blank"
+                                                        v-bind:href="'/contrato/printGarantia/'+ contratos.folio">Poliza de garantia
+                                                </a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
-                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
+
+                                                <!-- <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a> -->
                                             </div>
                                         </td>
                                         <td class="td2">

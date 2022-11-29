@@ -28,6 +28,7 @@ class CreateFraccionamientosTable extends Migration
             $table->integer('cp')->nullable();
             $table->string('email_administracion',40)->nullable();
             $table->string('logo_fracc',100)->nullable();
+            $table->string('logo_fracc2',255)->nullable();
             $table->date('fecha_ini_venta')->nullable();
             $table->integer('gerente_id')->nullable();
             $table->integer('arquitecto_id')->nullable();

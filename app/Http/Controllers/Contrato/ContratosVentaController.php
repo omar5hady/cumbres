@@ -31,6 +31,7 @@ class ContratosVentaController extends Controller
 
         $contrato = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas as inst', 'creditos.id', '=', 'inst.credito_id')
+            ->leftJoin('entregas','contratos.id','=','entregas.id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -46,6 +47,7 @@ class ContratosVentaController extends Controller
                 'lotes.clv_catastral', 'lotes.fin_obra', 'lotes.condiciones as estado_inmueble',
                 'lotes.indivisos', 'lotes.etapa_id', 'lotes.fraccionamiento_id',
                 'lotes.gas_nat',
+                'entregas.fecha_program as entrega_program', 'entregas.fecha_entrega_real as entrega_real',
                 'l.avance','l.colindancias', 'l.num_escritura', 'l.num_notario',
                 'l.distrito_notario','l.folio_registro', 'l.date_escritura', 'l.date_birth',
                 'modelos.nombre as modelo', 'modelos.tipo as tipo_modelo',
@@ -53,6 +55,7 @@ class ContratosVentaController extends Controller
                 'fraccionamientos.ciudad as ciudad_proy',
                 'fraccionamientos.estado as estado_proy',
                 'fraccionamientos.calle as direccionProyecto',
+                'fraccionamientos.logo_fracc2',
                 'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos',
                 'personal.num_ine', 'personal.num_pasaporte',
                 'personal.f_nacimiento', 'personal.rfc','personal.homoclave',
@@ -82,6 +85,7 @@ class ContratosVentaController extends Controller
             ->where('inst.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
             ->first();
+
 
         $contrato->especificaciones = $this->getEspecificaciones($contrato->lote_id);
         $contrato->amenidades = $this->getAmenidades($contrato->etapa_id);
@@ -127,6 +131,45 @@ class ContratosVentaController extends Controller
             return !$date->isWeekend();
         }, $dt2);
 
+    }
+
+    public function printGarantia(Request $request, $id){
+        setlocale(LC_TIME, 'es_MX.utf8');
+
+        //Llamada a la función privada que obtiene los datos del contrato.
+        $contrato = $this->getDatosContrato($id);
+        $contrato->t_garanita = 5;
+        if($contrato->etapa == 'PRIVADA VILLA DEL REY')
+            $contrato->t_garanita = 10;
+
+
+        $contrato->hoy = new Carbon();
+        if($contrato->entrega_real != NULL){
+
+            $contrato->entrega_real = new Carbon($contrato->entrega_real);
+            $contrato->fin_poliza = new Carbon($contrato->entrega_real);
+        }
+        else{
+
+            $contrato->entrega_real = new Carbon($contrato->entrega_program);
+            $contrato->fin_poliza = new Carbon($contrato->entrega_program);
+        }
+
+        $contrato->hoy = new Carbon();
+        $contrato->hoy = $contrato->hoy->formatLocalized('%d días del mes de %B del año %Y');
+
+        $contrato->fin_poliza = $contrato->fin_poliza->addYears($contrato->t_garanita);
+        $contrato->entrega_real = $contrato->entrega_real->formatLocalized('día %d del mes de %B del año %Y');
+        $contrato->fin_poliza = $contrato->fin_poliza->formatLocalized('día %d del mes de %B del año %Y');
+
+        $contrato->getEquipamiento = Solic_equipamiento::select('fecha_anticipo')
+                                        ->where('contrato_id','=',$contrato->id)
+                                        ->where('fecha_anticipo','!=',NULL)->count();
+
+
+        $pdf = \PDF::loadview('pdf.contratos.norma247.poliza_garantia', ['contrato' => $contrato]);
+
+        return $pdf->stream('contrato_venta.pdf');
     }
 
 

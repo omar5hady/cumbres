@@ -695,6 +695,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contrato/printAvisoPrivacidad','Contrato\ContratosVentaController@printAvisoPrivacidad')->name('Aviso_Privacidad.pdf');
         Route::get('/contrato/printProcGarantia','Contrato\ContratosVentaController@printProcGarantia')->name('Proc_Garantia.pdf');
         Route::get('/contrato/printAnexoE/{id}','Contrato\ContratosVentaController@printAnexoE')->name('Anexo_E.pdf');
+        Route::get('/contrato/printGarantia/{id}','Contrato\ContratosVentaController@printGarantia')->name('Poliza_garantia.pdf');
 
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');

@@ -122,10 +122,10 @@
             </p>
 
             <p>
-                b)	Que las facultades de su representante legal constan en la escritura pública número 3
-                de fecha 8 de diciembre del 1999, otorgada ante el Notario Público número 33 del primer distrito judicial de
-                San Luis Potosí, Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro Público de la Propiedad y del
-                Comercio en San Luis Potosí, bajo el folio mercantil 70, mismas atribuciones que no le han sido revocadas a la fecha.
+                b)	Que las facultades de su representante legal constan en la escritura pública número 1560
+                    de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
+                    San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
+                    Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
             </p>
 
             <p>
@@ -172,10 +172,10 @@
             </p>
 
             <p>
-                b)	Que  las facultades de su representante legal constan en la escritura pública número 764 de fecha 25 de julio del 2018,
-                otorgada ante el Notario Público número 4 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Octaviano Gómez y
-                González inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
-                N-2018073682, mismas atribuciones que no le han sido revocadas a la fecha.
+                b)	Que  las facultades de su representante legal constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
+                inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
+                123507, mismas atribuciones que no le han sido revocadas a la fecha.
             </p>
 
             <p>
@@ -267,10 +267,10 @@
                 </p>
 
                 <p>
-                    b)	Que las facultades de su representante legal constan en la escritura pública número 3
-                    de fecha 8 de diciembre del 1999, otorgada ante el Notario Público número 33 del primer distrito judicial de
-                    San Luis Potosí, Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro Público de la Propiedad y del
-                    Comercio en San Luis Potosí, bajo el folio mercantil 70, mismas atribuciones que no le han sido revocadas a la fecha.
+                    b)	Que las facultades de su representante legal constan en la escritura pública número 1560
+                    de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
+                    San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
+                    Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
                 </p>
             @else
 
@@ -284,10 +284,10 @@
                 </p>
 
                 <p>
-                    b)	Que  las facultades de su representante legal constan en la escritura pública número 764 de fecha 25 de julio del 2018,
-                    otorgada ante el Notario Público número 4 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Octaviano Gómez y
-                    González inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
-                    N-2018073682, mismas atribuciones que no le han sido revocadas a la fecha.
+                    b)	Que  las facultades de su representante legal constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                    otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
+                    inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
+                    123507, mismas atribuciones que no le han sido revocadas a la fecha.
                 </p>
 
             @endif
