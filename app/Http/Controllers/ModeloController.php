@@ -27,7 +27,7 @@ class ModeloController extends Controller
         $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
             'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion', 'modelos.recorrido',
-            'modelos.archivo','modelos.id','espec_obra')
+            'modelos.archivo','modelos.id','espec_obra','modelos.ficha_tecnica')
             ->where('modelos.nombre', '!=','Por Asignar');//Diferente a modelo por asignar
         if($buscar != '')//Busqueda general
                 $modelos = $modelos->where($criterio, 'like', '%'. $buscar . '%');
@@ -310,9 +310,37 @@ class ModeloController extends Controller
             $modelo->archivo = $fileName;
             $modelo->id = $id;
             $modelo->save(); //Insert
-
-            }
+        }
     	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+    //Función para subir el archivo de especificaciones de un modelo.
+    public function submitFichaTecnica(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $id = $request->id;
+        $fileName = uniqid().'.'.$request->archivo->getClientOriginalExtension();
+        $moved =  $request->archivo->move(public_path('/files/modelos/ficha'), $fileName);
+
+        if($moved){
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+            $modelo = Modelo::findOrFail($request->id);
+
+            if($modelo->ficha_tecnica != NULL){
+                $pathAnterior = public_path() . '/files/modelos/ficha/' . $modelo->ficha_tecnica;
+                File::delete($pathAnterior);
+            }
+
+            $modelo->ficha_tecnica = $fileName;
+            $modelo->id = $id;
+            $modelo->save(); //Insert
+
+        }
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+    //Función para descargar el archivo especificaciones de modelo.
+    public function downloadFichaTecnica($fileName){
+        $pathtoFile = public_path().'/files/modelos/ficha/'.$fileName;
+        return response()->file($pathtoFile);
     }
     //Función para descargar el archivo especificaciones de modelo.
     public function downloadFile($fileName){

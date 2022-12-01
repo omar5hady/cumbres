@@ -26,7 +26,8 @@ class CreateEntregasTable extends Migration
             $table->boolean('cero_detalles')->default(0);
 
             $table->integer('cont_reprogram')->default(0);
-            $table->date('garantia_file')->nullable();
+            $table->string('garantia_file',255)->nullable();
+            $table->string('entrega_file',255)->nullable();
 
             $table->timestamps();
 

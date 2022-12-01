@@ -337,6 +337,7 @@
                                             <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ entregas.folio">Contrato de compra venta</a>
                                             <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ entregas.folio">Carta de alarma</a>
                                             <a class="dropdown-item" @click="abrirModal('garantia',entregas)">Poliza de Garantia</a>
+                                            <a class="dropdown-item" @click="abrirModal('acta_entrega',entregas)">Acta de entrega</a>
                                         </div>
                                     </td>
                                     <td class="td2">
@@ -718,7 +719,7 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-
+                    <template v-if="tipoAccion == 1">
                         <div class="form-group row">
                             <input type="file"
                                 v-show="false"
@@ -754,10 +755,48 @@
                                 </button>
                             </div>
                         </div>
+                    </template>
+                    <template v-if="tipoAccion == 2">
+                        <div class="form-group row">
+                            <input type="file"
+                                v-show="false"
+                                ref="archivoSelector"
+                                @change="onSelectedArchivo"
+                                accept="image/png, image/jpeg, image/gif, application/pdf"
+                            >
+                            <div class="col-md-9" v-if="!archivo">
+                                <button
+                                    @click="onSelectArchivo"
+                                    class="btn btn-scarlet">
+                                    Seleccionar Acta de Entrega
+                                    <i class="fa fa-upload"></i>
+                                </button>
 
+                            </div>
+
+                            <div class="col-md-7" v-else>
+                                <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                                <button
+                                    @click="onSelectArchivo"
+                                    class="btn btn-info">
+                                    Cambiar Archivo
+                                    <i class="fa fa-upload"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-3" v-if="archivo">
+                                <button
+                                    @click="formSubmitFileEntrega"
+                                    class="btn btn-scarlet">
+                                    Guardar Acta de Entega
+                                    <i class="icon-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
                 </template>
                 <template v-slot:buttons-footer>
-                    <a v-if="polizaGarantia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/entregas/downloadPoliza/'+polizaGarantia">Descargar poliza</a>
+                    <a v-if="polizaGarantia != null && tipoAccion == 1" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/entregas/downloadPoliza/'+polizaGarantia">Descargar poliza</a>
+                    <a v-if="entrega_file != null && tipoAccion == 2" class="btn btn-primary btn-sm" target="_blank" :href="entrega_file">Ver Acta de Entrega</a>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -858,6 +897,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 promocion :'',
                 paquete:'',
                 polizaGarantia:'',
+                entrega_file : '',
 
                 // Criterios para historial de contratos
                 pagination2 : {
@@ -975,6 +1015,29 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         })
                     me.polizaGarantia = me.archivo.name
                     me.archivo = undefined;
+                    me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            formSubmitFileEntrega(){
+                let formData = new FormData();
+
+                formData.append('file', this.archivo);
+                formData.append('id', this.contrato_id);
+                let me = this;
+                axios.post('/entregas/formSubmitFileEntrega', formData)
+                .then(function (response) {
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.archivo = undefined;
+                    me.cerrarModal();
                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
 
                 }).catch(function (error) {
@@ -1322,9 +1385,19 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                     case 'garantia':{
                         this.modal = 5;
+                        this.tipoAccion = 1;
                         this.tituloModal = 'Subir Poliza de Garantia';
                         this.contrato_id = data['folio'];
                         this.polizaGarantia = data['garantia_file'];
+                        break;
+                    }
+
+                    case 'acta_entrega':{
+                        this.modal = 5
+                        this.tipoAccion = 2;
+                        this.tituloModal = 'Subir Acta de Entrega';
+                        this.contrato_id = data['folio'];
+                        this.entrega_file = data['entrega_file'];
                         break;
                     }
 

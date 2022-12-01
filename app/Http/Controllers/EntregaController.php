@@ -28,11 +28,23 @@ use Auth;
 use DB;
 
 
+use App\DropboxFiles;
+use Spatie\Dropbox\Client;
+use Illuminate\Support\Facades\Storage;
+
+
 use App\Http\Resources\PlanoResource;
 
 /*  Controlador para entregas de vivienda.  */
 class EntregaController extends Controller
 {
+
+    public function __construct()
+    {
+        // Necesitamos obtener una instancia de la clase Client la cual tiene algunos métodos
+        // que serán necesarios.
+        $this->dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+    }
 
     private function getPlanos($lote_id){
         return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
@@ -638,6 +650,7 @@ class EntregaController extends Controller
                 'entregas.hora_entrega_real',
                 'entregas.cont_reprogram',
                 'entregas.garantia_file',
+                'entregas.entrega_file',
                 DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
             )
             ->where('contratos.status', '!=', 0)
@@ -900,7 +913,7 @@ class EntregaController extends Controller
                 ];
     }
 
-    // Función para subir archivo fiscal para ventas.
+    // Función para subir archivo poliza para ventas.
     public function formSubmitPoliza(Request $request, $id){
 
         $contrato = Entrega::findOrFail($id);
@@ -918,6 +931,60 @@ class EntregaController extends Controller
         }
 
     	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    // Función para subir archivo entrega para ventas.
+    public function formSubmitFileEntrega(Request $request){
+        $id = $request->id;
+        $entrega = Entrega::findOrFail($id);
+        $url = $this->storeFile($request);
+
+            $this->deleteAnt($entrega->entrega_file);
+            $entrega->entrega_file = $url;
+
+        $entrega->save();
+    }
+
+    private function deleteAnt($urlAnt){
+        $file = DropboxFiles::select('id')->where('public_url','=',$urlAnt)->get();
+        if(sizeof($file)){
+            // Eliminamos el registro de nuestra tabla.
+            $del = DropboxFiles::findOrFail($file[0]->id);
+            $this->dropbox->delete('Postventa/Entregas/'.$del->name);
+            $del->delete();
+        }
+    }
+
+    private function storeFile(Request $request){
+
+        $carpeta = 'Postventa/Entregas/';
+        $name = uniqid() . '' . $request->file->getClientOriginalName();
+        // Guardamos el archivo indicando el driver y el método putFileAs el cual recibe
+        // el directorio donde será almacenado, el archivo y el nombre.
+        // ¡No olvides validar todos estos datos antes de guardar el archivo!
+        Storage::disk('dropbox')->putFileAs(
+            $carpeta,
+            $request->file,
+            $name
+        );
+
+        // Creamos el enlace publico en dropbox utilizando la propiedad dropbox
+        // definida en el constructor de la clase y almacenamos la respuesta.
+        $response = $this->dropbox->createSharedLinkWithSettings(
+            $carpeta.$name,
+            ["requested_visibility" => "public"]
+        );
+
+        // Creamos un nuevo registro en la tabla files con los datos de la respuesta.
+        $archivo = new DropboxFiles();
+        $archivo->name = $response['name'];
+        $archivo->extension = $request->file->getClientOriginalExtension();
+        $archivo->size = $response['size'];
+        $archivo->public_url = $response['url'];
+        $archivo->save();
+
+        return $archivo->public_url;
+
     }
 
     // Función que descarga el archivo fiscal de una venta.

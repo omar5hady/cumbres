@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <TableComponent :cabecera="['Opciones','Tipo','Proyecto','Modelo',
-                            'Terreno mts&sup2;','Construcción mts&sup2;','Recorrido virtual','Especificaciónes',
+                            'Terreno mts&sup2;','Construcción mts&sup2;','Recorrido virtual','Ficha Tecn.','Especificaciónes',
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="modelo in arrayModelo" :key="modelo.id">
@@ -65,6 +65,11 @@
                                         <a v-if="modelo.recorrido" class="btn btn-success" :href="modelo.recorrido" target="_blank">
                                             <i class="fa fa-ravelry"></i>Recorrido
                                         </a>
+                                    </td>
+                                    <td class="td2">
+                                        <button v-if="modelo.ficha_tecnica != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(modelo.ficha_tecnica)" class="btn btn-success btn-sm">
+                                            <i class="icon-eye"></i>
+                                        </button>
                                     </td>
                                     <td class="td2">
                                         <button v-if="modelo.especificaciones.length"
@@ -196,6 +201,7 @@
                 <template v-slot:body>
                      <select class=" form-control " @click="limpiaInputArchivos()" v-model="formActive">
                             <option class=" form-control " value="">Seleccione archivo a subir.</option>
+                            <option class=" form-control " value="ficha_tecnica">Ficha Tecnica</option>
                             <option class=" form-control " value="excel">Importar desde excel.</option>
                             <option class=" form-control " value="especifi">Catalogo de especificaciones. </option>
                             <option class=" form-control " @click="getVersiones(id)" value="new_especifi">Añadir nueva version especificaciones. </option>
@@ -390,9 +396,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.archivo = e.target.files[0];
                 this.nom_archivo = e.target.files[0].name;
             },
-              onSelectArchivo(){
+            onSelectArchivo(){
                  this.$refs.imageSelectorArchivo.click()
-                },
+            },
 
             formSubmit(e) {
                 e.preventDefault();
@@ -418,6 +424,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (this.formActive == 'excel'){
                     url ='/specification'
                     formData.append( 'modelo_id' , this.id);
+                }
+
+                if(this.formActive == 'ficha_tecnica'){
+                    url = '/modelo/submitFichaTecnica'
+                    formData.append( 'id' , this.id);
                 }
 
 
@@ -448,6 +459,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     currentObj.output = error;
                 });
 
+            },
+
+            fichaTecnica(archivo){
+                window.open('/files/modelos/ficha/'+archivo, '_blank')
             },
 
             verDescripcion(detalle){

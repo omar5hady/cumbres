@@ -252,6 +252,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/modelo/actualizar','ModeloController@update');
         Route::delete('/modelo/eliminar','ModeloController@destroy');
         Route::post('/formSubmitModelo/{id}','ModeloController@formSubmit');
+        Route::post('/modelo/submitFichaTecnica','ModeloController@submitFichaTecnica');
         Route::get('/downloadModelo/{fileName}' , 'ModeloController@downloadFile');
         Route::post('/formSubmitModelo/especificaciones/obra/{id}','ModeloController@formSubmitEspecObra');
         Route::get('/downloadModelo/obra/{fileName}' , 'ModeloController@downloadFileEspecObra');
@@ -575,6 +576,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/postventa/cartaAlarma','EntregaController@cartaAlarma');
 
         Route::post('/entregas/formSubmitPoliza/{id}','EntregaController@formSubmitPoliza');
+        Route::post('/entregas/formSubmitFileEntrega','EntregaController@formSubmitFileEntrega');
         Route::get('/entregas/downloadPoliza/{fileName}' , 'EntregaController@downloadFilePoliza');
 
         Route::get('/postventa/cartaRecepcion/{id}','EntregaController@cartaRecepcion');

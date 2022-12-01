@@ -1552,7 +1552,12 @@
                         <TableComponent :cabecera="['Modelo','Manzana', '#Lote', 'Precio']">
                             <template v-slot:tbody>
                                 <tr v-for="lote in inventario" :key="lote.id">
-                                    <td class="td2">{{lote.modelo}}</td>
+                                    <td class="td2">
+                                        <button v-if="lote.ficha_tecnica != null" title="Ver ficha tecnica" type="button" @click="fichaTecnica(lote.ficha_tecnica)" class="btn btn-success btn-sm">
+                                            {{lote.modelo}}
+                                        </button>
+                                        <p v-else>{{lote.modelo}}</p>
+                                    </td>
                                     <td class="td2">{{lote.lote.manzana}}</td>
                                     <td class="td2">
                                         {{ (lote.lote.sublote) ? lote.lote.num_lote + ' ' + lote.lote.sublote
@@ -1951,6 +1956,10 @@ export default {
 
                 })()
 
+        },
+
+        fichaTecnica(archivo){
+            window.open('/files/modelos/ficha/'+archivo, '_blank')
         },
 
         descartar(){

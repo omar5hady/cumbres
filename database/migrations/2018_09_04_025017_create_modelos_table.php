@@ -21,6 +21,7 @@ class CreateModelosTable extends Migration
             $table->float('terreno');
             $table->float('construccion');
             $table->string('archivo')->nullable();
+            $table->string('ficha_tecnica',255)->nullable();
             $table->string('espec_obra',50)->nullable();
             $table->string('recorrido',191)->nullable();
 

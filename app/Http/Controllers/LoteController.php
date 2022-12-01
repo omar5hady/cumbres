@@ -2257,7 +2257,7 @@ class LoteController extends Controller
 
     public function getInventarioRes(Request $request){
 
-        $modelos = Modelo::select('id','nombre as modelo')
+        $modelos = Modelo::select('id','nombre as modelo', 'ficha_tecnica')
                 ->where('nombre','!=','Por Asignar')
                 ->where('nombre','!=','Terreno')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
