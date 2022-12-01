@@ -6,12 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <body style="margin: 0; padding: 0;">
-	<table border="0" cellpadding="0" cellspacing="0" width="100%">	
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 		<tr>
 			<td style="padding: 10px 0 30px 0;">
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 					<tr>
-						<td align="center" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
+						<td align="center" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Helvetica;">
 							<img src="https://www.casascumbres.mx/wp-content/uploads/2016/05/Logotipo-casas-cumbres-300x81.png" width="320" height="110" style="display: block;" />
 						</td>
 					</tr>
@@ -19,13 +19,13 @@
 						<td bgcolor="#70bbd9" style="padding: 40px 30px 40px 30px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
-									<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 24px; font-weight: bold; font-family: Arial, sans-serif;">
+									<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 24px; font-weight: bold; font-family: Helvetica;">
 										<b>Has recibido una nueva notificacion!</b>
 									</td>
 								</tr>
 								<tr>
-									<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 18px; font-weight: bold; font-family: Arial, sans-serif;">
-									{{$mensaje}}	
+									<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 18px; font-weight: bold; font-family: Helvetica;">
+									{{$mensaje}}
 									</td>
 								</tr>
 								<tr>
@@ -35,17 +35,17 @@
 												<td width="260" valign="top">
 													<table align="center" border="0" cellpadding="0" cellspacing="0" width="50%">
 														<tr>
-															<td align="center" bgcolor="#70bbd9" style="background-color: #e05443; padding: 30px 0 30px 0; color: #ffffff; font-size: 18px; font-weight: bold; font-family: Arial, sans-serif;" >
-															<a style="padding: 20px 20px 15px !important; color: #ffffff; text-decoration: none;" target="_blank" href="https://siicumbres.com">Ingresar</a>	
+															<td align="center" bgcolor="#70bbd9" style="background-color: #e05443; padding: 30px 0 30px 0; color: #ffffff; font-size: 18px; font-weight: bold; font-family: Helvetica;" >
+															<a style="padding: 20px 20px 15px !important; color: #ffffff; text-decoration: none;" target="_blank" href="https://siicumbres.com">Ingresar</a>
 															</td>
 														</tr>
-														
+
 													</table>
-												</td>						
+												</td>
 											</tr>
 											<tr>
-												<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 18px; font-weight: bold; font-family: Arial, sans-serif;">
-												Hola compañero! si recibes este correo es porque tienes una nueva notificacion en siicumbres, te recomendamos revisarla. 	
+												<td align="center" bgcolor="#70bbd9" style="padding: 40px 0 30px 0; color: #ffffff; font-size: 18px; font-weight: bold; font-family: Helvetica;">
+												Hola compañero! si recibes este correo es porque tienes una nueva notificacion en siicumbres, te recomendamos revisarla.
 												</td>
 											</tr>
 										</table>
@@ -58,7 +58,7 @@
 						<td bgcolor="#ee4c50" style="padding: 30px 30px 30px 30px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
-									<td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">
+									<td style="color: #ffffff; font-family: Helvetica; font-size: 14px;" width="75%">
 										&reg; Grupo Constructor Cumbres 2019<br/>
 											 "Soñamos casas, construimos sueños"
 									</td>
@@ -66,7 +66,7 @@
 										<table border="0" cellpadding="0" cellspacing="0">
 											<tr>
 												<td style="font-size: 0; line-height: 0;" width="20"></td>
-												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+												<td style="font-family: Helvetica; font-size: 12px; font-weight: bold;">
 													<a href="http://www.facebook.com/CasasCumbresSLP">
 														<img src="http://tutsplus.github.io/build-an-html-email-template-from-scratch/images/fb.gif" width="38" height="38" style="display: block;" border="0" />
 													</a>

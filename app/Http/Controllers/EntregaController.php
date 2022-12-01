@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeNotification;
 use App\Notifications\NotifyAdmin;
 use App\Http\Controllers\NotificacionesAvisosController;
 use App\Fraccionamiento;
@@ -353,6 +355,11 @@ class EntregaController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }
+    }
+
+    public function sendPlanos(Request $request){
+        $contrato = Contrato::where('id','=',$request->id)->first();
+        Mail::to('omar.ramos@grupocumbres.com')->send(new WelcomeNotification($contrato));
     }
 
     // Función para indicar la fecha de entrega programada.

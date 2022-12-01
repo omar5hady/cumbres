@@ -49,7 +49,6 @@
         padding: 5px;
         margin: 0px;
         font-size: 8pt;
-        text-indent: 10px;
     }
 
     .text-table{
@@ -250,7 +249,7 @@
         </div>
         <div class="contenido info">
             <p class="text">
-                GARANTÍA QUE OTORGA
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GARANTÍA QUE OTORGA
                 @if($contrato->emp_constructora == 'Grupo Constructor Cumbres')
                     <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.,</b>
                 @else
@@ -264,7 +263,7 @@
                 @endif
                 CON DOMICILIO EN MANUEL GUTIÉRREZ NÁJERA NO. 190 COL. TEQUISQUIAPAN CP. 78230  DE LA
                 CIUDAD DE SAN LUIS POTOSÍ S.L.P. CON TELÉFONO 444 833-46-83,
-                A FAVOR DE. {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }},
+                A FAVOR DE {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }},
                 EN LO SUCESIVO <b>“EL PROPIETARIO,</b> RESPECTO A LA VIVIENDA UBICADA EN EL
                 LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
                 DE LA MANZANA {{mb_strtoupper($contrato->manzana)}} DE LA
@@ -280,7 +279,7 @@
             </p>
 
             <p class="text">
-                LA PRESENTE PÓLIZA SE EXPIDE EN CUMPLIMIENTO A LO DISPUESTO EN EL CONTRATO DE PROMESA DE COMPRAVENTA DEL
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LA PRESENTE PÓLIZA SE EXPIDE EN CUMPLIMIENTO A LO DISPUESTO EN EL CONTRATO DE PROMESA DE COMPRAVENTA DEL
                 INMUEBLE ARRIBA CITADO. <b>“LA CONSTRUCTORA”</b> ASUMIÓ EL COMPROMISO PARA RESPONDER DIRECTAMENTE ANTE
                 <b>“EL PROPIETARIO”,</b> DE LAS SIGUIENTES:
             </p>
@@ -290,51 +289,51 @@
             </center>
 
             <p class="text">
-                <strong>PRIMERA.-</strong> “LA CONSTRUCTORA” SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>PRIMERA.-</strong> “LA CONSTRUCTORA” SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN
                 EN LA VIVIENDA DESCRITA EN ESTA PÓLIZA, DURANTE  LOS PLAZOS MARCADOS EN LOS APÉNDICES CORRESPONDIENES A PARTIR DE LA FECHA DE
-                ENTREGA DE LA VIVIENDA.  LOS HORARIOS DE ATENCIÓN PARA RECIBIR  UN REPORTE  Y HACER VÁLIDA LA GARANTÍA: ES EN DÍAS HÁBILES
+                ENTREGA DE LA VIVIENDA. LOS HORARIOS DE ATENCIÓN PARA RECIBIR UN REPORTE Y HACER VÁLIDA LA GARANTÍA ES EN DÍAS HÁBILES
                 DE LUNES A VIERNES DE 9:00 AM A 5:00 PM Y SÁBADOS DE 9:00 AM A 1:00 PM
             </p>
 
             <p class="text">
-                <strong>SEGUNDA.-</strong> “LA CONSTRUCTORA”, SE COMPROMETE, FRENTE A “EL PROPIETARIO” Y/O SUS BENEFICIARIOS,
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>SEGUNDA.-</strong> “LA CONSTRUCTORA”, SE COMPROMETE, FRENTE A “EL PROPIETARIO” Y/O SUS BENEFICIARIOS,
                 A PROCEDER A LA REPARACIÓN, POR SU CUENTA Y COSTO, DE LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE SE PRESENTEN EN LA
                 VIVIENDA OBJETO DE LA PRESENTE PÓLIZA. DICHOS TRABAJOS LOS INICIARÁ “LA CONSTRUCTORA” DENTRO DE UN PLAZO NO MAYOR
                 DE 8 DÍAS HÁBILES CONTADOS A PARTIR DE LA FECHA EN QUE RECIBA LA COMUNICACIÓN RESPECTIVA POR PARTE DE “EL PROPIETARIO”,
-                DEBIENDO CONCLUIRLOS DENTRO DE UN PLAZO DE 20 DÍAS HÁBILES.  SALVO CASOS ESPECIALES QUE REQUIERAN DE UN MAYOR PLAZO
-                PARA SU REPARCIÓN. “LA CONSTRUCTORA” NO RESPONDERÁ POR DESPERFECTOS DERIVADOS DEL MAL USO O POR FALTA DE MANTENIMIENTO
+                DEBIENDO CONCLUIRLOS DENTRO DE UN PLAZO DE 20 DÍAS HÁBILES. SALVO CASOS ESPECIALES QUE REQUIERAN DE UN MAYOR PLAZO
+                PARA SU REPARACIÓN. “LA CONSTRUCTORA” NO RESPONDERÁ POR DESPERFECTOS DERIVADOS DEL MAL USO O POR FALTA DE MANTENIMIENTO
                 DE LA VIVIENDA, POR PARTE DE “EL PROPIETARIO”.
             </p>
 
             <p class="text">
-                <strong>TERCERA.-</strong> “EL PROPIETARIO” MANIFIESTA SU CONFORMIDAD CON EL ESTADO QUE GUARDAN LOS BIENES E
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>TERCERA.-</strong> “EL PROPIETARIO” MANIFIESTA SU CONFORMIDAD CON EL ESTADO QUE GUARDAN LOS BIENES E
                 INSTALACIONES DE LA VIVIENDA, EN LOS TÉRMINOS SEÑALADOS EN EL ANEXO Nº 1 DE LA PRESENTE PÓLIZA.
             </p>
 
             <p class="text">
-                <strong>CUARTA.-</strong> LA GARANTÍA DE QUE SE TRATA SE HARÁ EFECTIVA, A FAVOR DE”EL PROPIETARIO”,
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>CUARTA.-</strong> LA GARANTÍA DE QUE SE TRATA SE HARÁ EFECTIVA, A FAVOR DE “EL PROPIETARIO”,
                 Y/O SUS BENEFICIARIOS CUANDO ASÍ SE SOLICITE A “LA CONSTRUCTORA”, SIEMPRE Y CUANDO SE PRESENTE DENTRO DEL
                 TÉRMINO DE VIGENCIA DE LA MISMA, INTERRUMPIÉNDOSE SU PRESCRIPCIÓN DESDE LA FECHA DEL REQUERIMIENTO HECHO POR ESCRITO.
             </p>
 
             <p class="text">
-                “LA CONSTRUCTORA” ADQUIERE LA  RESPONSABILIDAD DERIVADA DE LAS RECLAMACIONES QUE DE ACUERDO A LO ESTABLECIDO
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“LA CONSTRUCTORA” ADQUIERE LA RESPONSABILIDAD DERIVADA DE LAS RECLAMACIONES QUE DE ACUERDO A LO ESTABLECIDO
                 EN LA PRESENTE PÓLIZA PUEDA EFECTUAR “EL PROPIETARIO”.
             </p>
 
             <p class="text">
-                <strong>QUINTA.-</strong> “EL PROPIETARIO” DEBERÁ CONSERVAR EN SU PODER LA PRESENTE PÓLIZA DE GARANTÍA Y
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>QUINTA.-</strong> “EL PROPIETARIO” DEBERÁ CONSERVAR EN SU PODER LA PRESENTE PÓLIZA DE GARANTÍA Y
                 AL REPORTAR ALGÚN DESPERFECTO, OBTENER DE “LA CONSTRUCTORA” EL DOCUMENTO QUE ACREDITE LA REPARACION SATISFACTORIA
                 DEL DESPERFECTO REPORTADO, TENIENDO LA OBLIGACIÓN DE FIRMARLE A “LA CONSTRUCTORA” EL DOCUMENTO EN DONDE SE ACREDITE TAL CIRCUNSTANCIA.
             </p>
 
             <p class="text">
-                <strong>SEXTA.-</strong> CUALQUIER MODIFICACIÓN O AMPLIACIÓN QUE REALICE “EL PROPIETARIO” A LA VIVIENDA DEJARÁ
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>SEXTA.-</strong> CUALQUIER MODIFICACIÓN O AMPLIACIÓN QUE REALICE “EL PROPIETARIO” A LA VIVIENDA DEJARÁ
                 SIN EFECTO LA COBERTURA DE LA GARANTÍA DEL APÉNDICE CORRESPONDIENTE A LA PRESENTE PÓLIZA.
             </p>
 
             <p class="text">
-                <strong>SEPTIMA.-</strong> EL TÉRMINO DE VIGENCIA DE LA PRESENTE PÓLIZA COMENZARÁ A PARTIR DEL
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>SEPTIMA.-</strong> EL TÉRMINO DE VIGENCIA DE LA PRESENTE PÓLIZA COMENZARÁ A PARTIR DEL
                 {{mb_strtoupper($contrato->entrega_real)}}, Y CONCLUIRÁ EL {{mb_strtoupper($contrato->fin_poliza)}}.
                 AJUSTANDO CADA CONCEPTO AL
                 PERÍODO DE COBERTURA QUE SE ESPECIFICA EN LOS APÉNDICE 1, APÉNDICE 2 Y APÉNDICE 3, DE ESTA MISMA PÓLIZA.
@@ -426,7 +425,7 @@
             </div>
             <p class="text-apendice">
                 <b>COBERTURA DE GARANTÍA POR VICIOS OCULTOS QUE REPORTE LA VIVIENDA.</b> <br>
-                <b>ACCESORIOS E INSTALACIONES REALIZADOS POR LA CONSTRUCTORA CON GARANTÍA DE DOCE MESES.</b>
+                <b>ACCESORIOS E INSTALACIONES REALIZADOS POR LA CONSTRUCTORA CON GARANTÍA DE 12 MESES.</b>
                 <br>
             </p>
             <ul>
@@ -449,7 +448,7 @@
             </div>
             <p class="text-apendice">
                 <b>COBERTURA DE GARANTÍA POR FALLAS  EN LA IMPERMEABILIZACIÓN DE LA VIVIENDA.</b> <br>
-                <b>CON GARANTÍA DE TRES AÑOS.</b>
+                <b>CON GARANTÍA DE 3 AÑOS.</b>
                 <br>
             </p>
             <ul>
@@ -463,8 +462,18 @@
                 <b>COBERTURA DE GARANTÍA POR FALLAS ESTRUCTURALES CON GARANTIA DE {{$contrato->t_garanita}} AÑOS.</b> <br>
             </p>
             <ul>
-                <li><p class="text-apendice list">DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN PISOS, MUROS, LOSAS Y  QUE TENGA UNA APERTURA MAYOR A 1.5 MM.</p></li>
+                <li><p class="text-apendice list">DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN PISOS, MUROS, LOSAS Y  QUE TENGA UNA APERTURA MAYOR A 1.5 mm.</p></li>
             </ul>
+
+            <div class="h-apendice">
+                <p style="margin: 2px;">NOTA</p>
+            </div>
+            <p class="text-apendice">
+                LA PÓLIZA <b>NO APLICA</b> PARA NINGÚN DEFECTO EN VIDRIOS, PUERTAS, VENTANAS NI DOMOS; YA SEAN ROTOS, FISURADOS O RAYADOS;
+                DÉSPUES DE ENTREGADA LA VIVIENDA A "EL PROPIETARIO". <br>
+                LA PÓLIZA <b>NO APLICA</b> EN EL CASO DE DAÑOS GENERADOS POR EL USO DE MULTI-CONTACTOS, MAL USO DE LAS INSTALACIONES O SOBRE CARGAS.
+            </p>
+
 
             <br><br>
 
@@ -529,7 +538,7 @@
             <div class="table2">
                 <div class="table-row2">
                     <div colspan="4" class="table-title">
-                        <p class="text-table">ALBAÑILERIA</p>
+                        <p class="text-table">ALBAÑILERÍA</p>
                     </div>
                     <div colspan="3" class="table-title">
                         <p class="text-table">SIN DEFECTO</p>
@@ -538,7 +547,7 @@
                         <p class="text-table">&nbsp;</p>
                     </div>
                     <div colspan="4" class="table-title">
-                        <p class="text-table">HERRERIA Y CANCELERÍA</p>
+                        <p class="text-table">HERRERÍA Y CANCELERÍA</p>
                     </div>
                     <div colspan="3" class="table-title">
                         <p class="text-table">SIN DEFECTO</p>
@@ -683,7 +692,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <p class="text-table">SOCKETS, SPOT y ARBOTANTES</p>
+                        <p class="text-table">SOCKETS, SPOT Y ARBOTANTES</p>
                     </div>
                     <div colspan="3" class="table-cell2 llenado">
                         <p class="text-table"></p>
@@ -998,7 +1007,7 @@
                         <p class="text-table">&nbsp;</p>
                     </div>
                     <div colspan="4" class="table-cell2">
-                        <p class="text-table">JARDINERIA</p>
+                        <p class="text-table">JARDINERÍA</p>
                     </div>
                     <div  colspan="3" class="table-cell2 llenado">
                         <p class="text-table"></p>
@@ -1125,8 +1134,8 @@
             <br>
             <center>
                 <strong><p class="text">
-                    POR ESTE CONDUCTO HAGO CONSTAR QUE RECIBÍ DE <br>
-                    @if($contrato->emp_constructora == 'Grupo Constructor Cumstrongres')
+                    POR ESTE CONDUCTO HAGO CONSTAR QUE RECIBÍ DE
+                    @if($contrato->emp_constructora != 'Grupo Constructor Cumstrongres')
                         GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.,
                     @else
                         CONCRETANIA, S.A. DE C.V.,
@@ -1146,17 +1155,10 @@
                     </div>
                 </div>
 
+
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA DE NOTIFICACIÓN A INTERAPAS</p></li>
-                    </div>
-                    <div colspan="1" class="table-cell2 llenado">
-                        <p class="text-table2"></p>
-                    </div>
-                </div>
-                <div class="table-row2">
-                    <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA RECEPCIÓN DOCUMENTAL</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA DE ENTREGA - VIVIENDA</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1188,7 +1190,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">POLIZA DE GARANTÍA</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">PÓLIZA DE GARANTÍA</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1241,7 +1243,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">TRIPTÍCO DE INSTALACIÓN DE GAS</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">TRÍPTICO DE INSTALACIÓN DE GAS</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1250,7 +1252,7 @@
                 @if(!str_contains($contrato->etapa, 'EXTERIOR'))
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
-                            <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">2 MEMBRETES DE IDENTIFICACIÓN VEHICULAR</p></li>
+                            <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">2 MARBETES DE IDENTIFICACIÓN VEHICULAR</p></li>
                         </div>
                         <div colspan="1" class="table-cell2 llenado">
                             <p class="text-table2"></p>
@@ -1279,7 +1281,7 @@
                 @endif
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">OTROS</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"></p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1287,7 +1289,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">OTROS</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"></p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>

@@ -17,6 +17,10 @@ Route::get('/integracionCobros/exportFormat','CobrosController@exportFormat');
 Route::get('/clientes/upApp','ClienteController@upApp');
 Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 Route::post('/leads/importFromBot', 'DigitalLeadController@importFromBot');
+Route::get('/mailPrueba', 'EntregaController@sendPlanos');
+// Route::post('/mailPrueba', function () {
+//     return view('mails/welcome');
+// });
 
 Route::group(['middleware' => ['guest']],function(){
 
