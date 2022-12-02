@@ -303,4 +303,9 @@ class ContratosVentaController extends Controller
         $pathtoFile = public_path().'/pdf/ProcedimientoGarantia.pdf';
         return response()->file($pathtoFile);
     }
+
+    public function printProcServicios(){
+        $pathtoFile = public_path().'/pdf/ProcedimientoAguaLuz.pdf';
+        return response()->file($pathtoFile);
+    }
 }

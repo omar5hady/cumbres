@@ -95,7 +95,8 @@
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ contratos.folio">Carta de alarma</a>
-                                                <a class="dropdown-item" target="_blank" v-bind:href="'/docs/entregaInterapas?id='+ contratos.folio">Carta de Notificacion a Interapas</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/docs/entregaInterapas?id='+ contratos.folio">Acta de Entrega-Vivienda</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/contrato/printProcServicios'">Procedimiento de Agua-Luz</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contrato/printProcGarantia'">Procedimiento de Garantia</a>
                                                 <a v-if="contratos.fecha_program" class="dropdown-item" target="_blank"
                                                         v-bind:href="'/contrato/printGarantia/'+ contratos.folio">Poliza de garantia

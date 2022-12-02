@@ -573,7 +573,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/postventa/cartaMantenimiento/{id}','EntregaController@cartaCuotaMantenimiento');
         Route::get('/postventa/polizaDeGarantia/{id}','EntregaController@polizaDeGarantia');
-        Route::get('/postventa/cartaAlarma','EntregaController@cartaAlarma');
+        Route::get('/postventa/cartaAlarma','EntregaController@cartaAlarma')->name('Proc_Alarma.pdf');
 
         Route::post('/entregas/formSubmitPoliza/{id}','EntregaController@formSubmitPoliza');
         Route::post('/entregas/formSubmitFileEntrega','EntregaController@formSubmitFileEntrega');
@@ -700,6 +700,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contrato/printContratoCredito/{id}','Contrato\ContratosVentaController@printContratoCredito')->name('contrato_venta_credito.pdf');
         Route::get('/contrato/printAvisoPrivacidad','Contrato\ContratosVentaController@printAvisoPrivacidad')->name('Aviso_Privacidad.pdf');
         Route::get('/contrato/printProcGarantia','Contrato\ContratosVentaController@printProcGarantia')->name('Proc_Garantia.pdf');
+        Route::get('/contrato/printProcServicios','Contrato\ContratosVentaController@printProcServicios')->name('ProcedimientoAguaLuz.pdf');
         Route::get('/contrato/printAnexoE/{id}','Contrato\ContratosVentaController@printAnexoE')->name('Anexo_E.pdf');
         Route::get('/contrato/printGarantia/{id}','Contrato\ContratosVentaController@printGarantia')->name('Poliza_garantia.pdf');
 

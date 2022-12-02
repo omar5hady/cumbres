@@ -1120,7 +1120,7 @@
                     </div>
                     <div colspan="4" class="table-cell1">
                         <p class="h1">ANEXO N° 2</p>
-                        <p class="subtitle">RECEPCIÓN DE LLAVES, DOCUMENTACIÓN Y ACCESORIOS DE LA VIVIENDA</p>
+                        <p class="subtitle">ACTA DE ENTREGA - VIVIENDA</p>
                     </div>
                     <div  class="table-cell1">
                         @if($contrato->logo_fracc2)
@@ -1132,23 +1132,39 @@
         </div>
         <div class="contenido info">
             <br>
-            <center>
-                <strong><p class="text">
-                    POR ESTE CONDUCTO HAGO CONSTAR QUE RECIBÍ DE
-                    @if($contrato->emp_constructora != 'Grupo Constructor Cumstrongres')
-                        GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.,
+                <p class="text" style="font-size: 9pt;">
+                    EL {{mb_strtoupper($contrato->entrega_real)}} FIRMAN POR UNA PARTE EL
+                    @if($contrato->etapa == 'PRIVADA ALCAZAR')
+                        <b>C.P. MARTÍN HERRERA SÁNCHEZ,</b>
                     @else
-                        CONCRETANIA, S.A. DE C.V.,
+                        <b>ING. SAJID MEZA MEDELLIN</b>
                     @endif
-                    LO SIGUIENTE:
-                </p></strong>
-            </center>
+                    COMO REPRESENTANTE DE
+                    @if($contrato->emp_constructora != 'Grupo Constructor Cumstrongres')
+                        <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</b>
+                    @else
+                        <b>CONCRETANIA, S.A. DE C.V.</b>
+                    @endif
+                    Y POR OTRA PARTE EL SR.(A) {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
+                    PROPIETARIO(A) Y POR SU PROPIO DERECHO DE FORMALIZAR LA ENTREGA DE LA VIVIENDA UBICADA EN EL
+                    LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                    MANZANA {{mb_strtoupper($contrato->manzana)}} DE LA CALLE {{mb_strtoupper($contrato->calle_lote)}}
+                    #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}
+                    DEL FRACCIONAMIENTO
+                        @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
+                            {{ mb_strtoupper( str_replace(' FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto))}};
+                        @else
+                            {{mb_strtoupper($contrato->proyecto)}};
+                        @endif
+                    LA CUAL SE ENCUENTRA TOTALMENTE TERMINADA Y EN CONDICIONES DE HABITARSE, POR LO QUE EL COMPRADOR LA RECIBE A SU ENTERA
+                    SATISFACCIÓN CON TODA LA DOCUMENTACIÓN QUE A CONTINUACIÓN SE ENUMERA.
+                </p>
             <br><br>
 
             <div class="table2">
                 <div class="table-row2">
-                    <div colspan="4" class="table-title">
-                        <p class="text-table2" style="margin-left: 95px;">CONCEPTO</p>
+                    <div colspan="4" class="table-title" style="padding: 5px;">
+                        <p class="text-table2" style="text-align: center;">CONCEPTO</p>
                     </div>
                     <div colspan="1" class="table-title">
                         <p class="text-table2" style="text-align: center;">RECIBIDO</p>
@@ -1158,7 +1174,7 @@
 
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA DE ENTREGA - VIVIENDA</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">ACTA DE ENTREGA - VIVIENDA</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1206,7 +1222,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">PLANO EJECUTIVO DIGITAL</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">ENVIÍO DIGITAL DE PLANO EJECUTIVO DE VIVIENDA</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1227,7 +1243,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA PROCEDIMIENTO PARA REALIZAR CONTRATO INTERAPAS / CFE</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">PROCEDIMIENTO PARA REALIZAR CONTRATO INTERAPAS / CFE</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1272,13 +1288,31 @@
                 @if($contrato->getEquipamiento > 0)
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
-                            <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">GARANTÍA DE EQUIPAMIENTO</p></li>
+                            <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">GARANTÍA DE EQUIPAMIENTO OTORGADO POR PROVEEDOR</p></li>
                         </div>
                         <div colspan="1" class="table-cell2 llenado">
                             <p class="text-table2"></p>
                         </div>
                     </div>
                 @endif
+                @if(!str_contains($contrato->etapa, 'EXTERIOR'))
+                    <div class="table-row2">
+                        <div colspan="4" class="table-cell2">
+                            <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA BIENVENIDA DE LA ADMINISTRACIÓN</p></li>
+                        </div>
+                        <div colspan="1" class="table-cell2 llenado">
+                            <p class="text-table2"></p>
+                        </div>
+                    </div>
+                @endif
+                <div class="table-row2">
+                    <div colspan="4" class="table-cell2">
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">MANIFIESTO ACTA DE ENTREGA-VIVIENDA (USO PARA INTERAPAS)</p></li>
+                    </div>
+                    <div colspan="1" class="table-cell2 llenado">
+                        <p class="text-table2"></p>
+                    </div>
+                </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
                         <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"></p></li>
@@ -1300,7 +1334,6 @@
                 </div>
             </div>
 
-            <br><br>
             <br><br>
             <br><br>
 

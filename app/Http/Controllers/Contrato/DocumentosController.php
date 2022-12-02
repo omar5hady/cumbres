@@ -32,9 +32,12 @@ class DocumentosController extends Controller
             ->join('lotes','creditos.lote_id','=','lotes.id')
             ->join('fraccionamientos as proyecto', 'lotes.fraccionamiento_id','=','proyecto.id')
             ->select('p.nombre','p.apellidos','creditos.fraccionamiento as proyecto','creditos.etapa',
-                'creditos.manzana','lotes.num_lote','lotes.sublote', 'lotes.calle','lotes.numero',
-                'lotes.interior','proyecto.delegacion','proyecto.estado',
-                'entregas.fecha_program as entrega_program', 'entregas.fecha_entrega_real as entrega_real'
+                'creditos.manzana','lotes.num_lote','lotes.sublote', 'lotes.calle as direccionProyecto','lotes.numero',
+                'lotes.emp_constructora',
+                'lotes.interior','proyecto.delegacion','proyecto.estado as estado_proy',
+                'entregas.fecha_program as entrega_program', 'entregas.fecha_entrega_real as entrega_real',
+                'proyecto.ciudad as ciudad_proy',
+                'proyecto.logo_fracc2'
             )
             ->where('creditos.id','=',$id)
             ->first();
