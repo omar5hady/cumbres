@@ -7,86 +7,90 @@
         <title>Carta alarma</title>
     </head>
     <style type="text/css">
-    @font-face {
-    font-family: 'Gotham-Book';
-    font-size:12;
-    font-style: Book;
-    src: url("GothamBook.ttf") format('truetype');
+    @page{
+        margin: 0cm 0cm 0cm 0cm;
     }
+
     body {
-        font-family: Gotham-Book, sans-serif;
+        font-family: 'AvenirNextLTPro','Muli', Helvetica;
     }
-    .table-cell3 { display: table-cell; padding: 0em; font-size: 10pt; }
-    .table3 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; }
-    .table-row { display: table-row; }
+
+    .contenido{
+        top: 70px;
+        position: fixed;
+        color: #001e2c;
+        width: 100%;
+        margin-left: 30px;
+        margin-right: 160px;
+        font-size: 9.5pt;
+    }
+
+    .info{
+        top: 30% !important;
+        margin-left: 146.54px;
+        margin-right: 146.54px;
+        text-align: justify;
+    }
+
+    .fecha{
+        top: 25.5% !important;
+        text-align: right;
+    }
+
+    .firma{
+        position: fixed;
+        color: #001e2c;
+        width: 100%;
+        top: 84.5%;
+        width: 100%;
+    }
+
+    .firma p{
+        font-size: 9pt;
+        line-height: 5%;
+    }
+
     </style>
+
     <body>
-        <div style="margin-top: 0px; width: 100%; position: fixed; text-align: center;">
-        {{-- <IMG style="margin-top: -20px;" SRC="files/etapas/plantillasTelecom/{{$serviciosTele[0]->plantilla_telecom}}" width="794" height="1020"> --}}
-            <div style="margin-top: 160px; position: absolute; width: 100%; left:60px; right:60px;">
+        <img style="margin-top: 0px; position:fixed;"
+                src="img/Alarma1.png" width="100%">
 
 
-                <p style="text-align: right;"> San Luis Potosí, S.L.P. a ____ de ____________ del 20_____</p><br><br>
+        <img style="margin-top: 19.9cm; position:fixed;"
+                src="img/Alarma2.png" width="100%">
 
-                <p align="justify">Bienvenido a la Familia Cumbres Sr (a). <u>{{mb_strtoupper($alarma[0]->nombre_cliente)}}   </u></p><br>
-
-                <p align="justify">¡Muchas felicidades por tu nueva casa!</p>
-
-                <p align="justify">&nbsp;&nbsp;&nbsp;&nbsp;Queremos informarte que tu nueva casa cuenta con una promoción que consta de una
-                    alarma básica y dos años de monitoreo gratis; este paquete incluye dos contactos magnéticos
-                    y dos sensores de movimiento. Este servicio lo proporciona la empresa Sistemas
-                    Digitales de Seguridad Privada, S.A de C.V (SDS).
-                </p>
-
-                <p align="justify">&nbsp;&nbsp;&nbsp;&nbsp;Para que puedas realizar la contratación e instalación te solicitamos comunicarte con
-                    el <b>Sr. Reynaldo Ramos Castillo</b> asesor de ventas de la empresa de SDS en los números
-                    telefónicos <b>444 825 41 03 y 444 848 1284</b>
-                </p>
-
-                <p align="justify">
-                    &nbsp;&nbsp;&nbsp;&nbsp;Dispones de <b>3 semanas posteriores a la entrega de tu casa como límite</b> para su
-                    instalación para hacer válida esta promoción. Además te pedimos nos apoyes a supervisar
-                    la calidad que nos ofrece esta empresa, revisando minuciosamente la instalación
-                    de tu alarma, comprobando que utilicen material nuevo y que quede instalada a tu
-                    entera satisfacción.
-                </p><br>
-
-                <p align="center">
-                    Atentamente.
-                </p>
-
-
-
-                <br>
-                <br>
-                <br>
-                <br>
-
-                <div class="table3">
-
-
-                    <div class="table-row">
-                        <div colspan="2" class="table-cell3">_________________________________</div>
-                        <div style="width: 8%;" class="table-cell3"></div>
-                        <div colspan="2" class="table-cell3">_________________________________</div>
-                    </div>
-                    <div class="table-row">
-
-                        <div colspan="2" class="table-cell3">
-                            Departamento de Post-Venta
-                            <br>Grupo Constructor Cumbres S.A. de C.V.</div>
-
-                        <div style="width: 8%;" class="table-cell3"></div>
-                        <div colspan="2" class="table-cell3">
-                            {{mb_strtoupper($alarma[0]->nombre_cliente)}}
-                            <br>(Quedo enterado de que he recibido)
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
+        <div class="contenido fecha">
+            <p>San Luis Potosí, S.L.P. A {{mb_strtoupper($contrato->entrega_real)}} </p>
         </div>
+
+        <div class="contenido info">
+            <p>
+                &nbsp;&nbsp;&nbsp;&nbsp; QUEREMOS INFORMARTE QUE TU NUEVA CASA CUENTA CON UNA PROMOCIÓN QUE CONSTA DE
+                <b>UNA ALARMA BÁSICA Y DOS AÑOS DE MONITOREO GRATIS;</b> ESTE PAQUETE INCLUYE DOS CONTACTOS MAGNÉTICOS Y DOS
+                SENSORES DE MOVIMIENTO. ESTE SERVICIO LO PROPORCIONA LA EMPRESA SISTEMAS DIGITALES DE SEGURIDAD PRIVADA, S.A DE C.V (SDS).
+            </p>
+            <p>
+                &nbsp;&nbsp;&nbsp;&nbsp; PARA QUE PUEDAS REALIZAR LA CONTRATACIÓN E INSTALACIÓN TE SOLICITAMOS COMUNICARTE CON EL
+                <b>SR. REYNALDO RAMOS CASTILLO</b> ASESOR DE VENTAS DE LA EMPRESA DE SDS A LOS NÚMEROS TELEFÓNICOS
+                <b>(444) 825 4103 Y (444) 848 1284.</b>
+            </p>
+            <p>
+                &nbsp;&nbsp;&nbsp;&nbsp; DISPONES DE 3 SEMANAS POSTERIORES A LA ENTREGA DE TU CASA COMO LÍMITE PARA SU INSTALACIÓN
+                PARA HACER VÁLIDA ESTA PROMOCIÓN. ADEMÁS TE PEDIMOS NOS APOYES A SUPERVISAR LA CALIDAD QUE NOS OFRECE ESTA EMPRESA,
+                <b>REVISANDO MINUCIOSAMENTE LA INSTALACIÓN DE TU ALARMA, COMPROBANDO QUE UTILICEN MATERIAL NUEVO Y
+                    QUE QUEDE INSTALADA A TU ENTERA SATISFACCIÓN.
+                </b>
+            </p>
+        </div>
+
+        <div class="firma">
+            <center>
+                <strong>
+                    <p>{{mb_strtoupper($contrato->nombre_cliente)}} </p>
+                </strong>
+            </center>
+        </div>
+
     </body>
 </html>

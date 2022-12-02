@@ -29,6 +29,7 @@ class WelcomeNotification extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.welcome',['contrato' => $this->contrato]);
+        return $this->view('mails.welcome',['contrato' => $this->contrato])
+        ->subject("Bienvenido a tu nuevo hogar");
     }
 }

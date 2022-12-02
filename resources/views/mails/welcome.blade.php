@@ -25,12 +25,16 @@
 									</td>
 								</tr>
 								<tr>
-									<td align="center" style="color: #00203a; font-size: 20px; font-weight: bold; font-family: Helvetica;">
+									<td align="center" style="color: #00203a; font-size: 20px; font-family: Helvetica;">
+                                        <br><br>
                                         <p>
                                             Bienvenido (a) a la familia Cumbres!! Agradecemos tu confianza y te hacemos llegar el <b>PLANO</b>
-                                            de tu Nueva Casa ubicada en el lote <b>189</b> del proyecto <b>CATARA</b> etapa
-                                            <b>TORINO</b> a nombre de JAIME OMAR RAMOS VÁZQUEZ
+                                            de tu Nueva Casa ubicada en el lote <b>{{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}</b>
+                                            del proyecto <b>{{mb_strtoupper($contrato->fraccionamiento)}}</b> etapa
+                                            <b>{{mb_strtoupper($contrato->etapa)}}</b> a
+                                            nombre de <b>{{mb_strtoupper($contrato->nombre)}} {{mb_strtoupper($contrato->apellidos)}}</b>
                                         </p>
+                                        <br>
                                         <p>
                                             Da clic en este enlace para obtener tus documentos
                                         </p>
@@ -38,7 +42,7 @@
 								</tr>
                                 <tr>
 									<td align="center" style="padding: 10px 0 10px 0; color: #fff; font-size: 20px; font-weight: bold; font-family: Helvetica;">
-                                        <a href="www.casascumbres.mx" target="_blank">
+                                        <a href="{{$contrato->plano->public_url}}" target="_blank">
                                             <img src="https://siicumbres.com/img/mail/Button_1.png" alt="" width="150">
                                         </a>
 									</td>

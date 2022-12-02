@@ -369,14 +369,28 @@ class EntregaController extends Controller
         }
     }
 
-    public function sendPlanos(Request $request){
-        $contrato = Contrato::where('id','=',$request->id)->first();
+    private function sendPlanos(Request $request){
+        $contrato = Credito::join('lotes','creditos.lote_id','=','lotes.id')
+        ->join('personal as p','creditos.prospecto_id','=','p.id')
+        ->select('p.nombre','p.apellidos','creditos.fraccionamiento','creditos.etapa',
+            'lotes.num_lote','lotes.sublote','lotes.id'
+        )
+        ->where('creditos.id','=',$request->folio)->first();
+
+        $contrato->plano = PlanoProyecto::join('dropbox_files as dp','plano_proyectos.file_id','=','dp.id')
+        ->select('dp.public_url')
+        ->where('plano_proyectos.tipo','=','LICENCIA')
+        ->where('plano_proyectos.lote_id','=',$contrato->id)
+        ->orderBy('plano_proyectos.id','desc')->first();
+        //return $contrato;
+
         Mail::to('omar.ramos@grupocumbres.com')->send(new WelcomeNotification($contrato));
     }
 
     // Función para indicar la fecha de entrega programada.
     public function setFechaProgramada(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $this->sendPlanos($request);
         $entrega = Entrega::findOrFail($request->folio);
         $entrega->fecha_program = $request->fecha_program;
         //En caso de ser reprogramada por motivo del contratista
@@ -836,18 +850,25 @@ class EntregaController extends Controller
 
     // Función para imprimir la carta de recepción de alarma.
     public function cartaAlarma(Request $request){
+        setlocale(LC_TIME, 'es_MX.utf8');
         // Query principal para obtener los datos necesarios.
-        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-        ->join('personal as c', 'clientes.id', '=', 'c.id')
-        ->select('contratos.id as folio',
+        $contrato = Entrega::join('creditos', 'entregas.id', '=', 'creditos.id')
+        ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+        ->select('creditos.id as folio',
+            'entregas.fecha_program as entrega_program', 'entregas.fecha_entrega_real as entrega_real',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente")
         )
-        ->where('contratos.id','=',$request->id)
-        ->get();
+        ->where('creditos.id','=',$request->id)
+        ->first();
+
+        if($contrato->entrega_real != NULL)
+            $contrato->entrega_real = new Carbon($contrato->entrega_real);
+        else
+            $contrato->entrega_real = new Carbon($contrato->entrega_program);
+
+        $contrato->entrega_real = $contrato->entrega_real->formatLocalized('%d de %B del %Y');
         // Llamada a la vista blade.
-        $pdf = \PDF::loadview('pdf.DocsPostVenta.CartaAlarma', ['alarma' => $contratos]);
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.CartaAlarma', ['contrato' => $contrato]);
         // Retorno de la carta generada.
         return $pdf->stream('carta_alarma.pdf');
     }

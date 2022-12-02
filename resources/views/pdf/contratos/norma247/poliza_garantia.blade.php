@@ -409,7 +409,7 @@
                     </div>
                     <div colspan="4" class="table-cell1">
                         <p class="h1">APÉNDICES</p>
-                        <p class="subtitle">REPARACIÓN DE DAÑOS Y VICIOS OCULTOS DE VIVIENDA</p>
+                        <p class="subtitle">COBERTURAS DE GARANTÍAS</p>
                     </div>
                     <div  class="table-cell1">
                         @if($contrato->logo_fracc2)
@@ -1145,9 +1145,9 @@
                     @else
                         <b>CONCRETANIA, S.A. DE C.V.</b>
                     @endif
-                    Y POR OTRA PARTE EL SR.(A) {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
+                    Y POR OTRA PARTE EL SR.(A) <b>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}</b>
                     PROPIETARIO(A) Y POR SU PROPIO DERECHO DE FORMALIZAR LA ENTREGA DE LA VIVIENDA UBICADA EN EL
-                    LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                    <b>LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
                     MANZANA {{mb_strtoupper($contrato->manzana)}} DE LA CALLE {{mb_strtoupper($contrato->calle_lote)}}
                     #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}
                     DEL FRACCIONAMIENTO
@@ -1156,6 +1156,7 @@
                         @else
                             {{mb_strtoupper($contrato->proyecto)}};
                         @endif
+                    </b>
                     LA CUAL SE ENCUENTRA TOTALMENTE TERMINADA Y EN CONDICIONES DE HABITARSE, POR LO QUE EL COMPRADOR LA RECIBE A SU ENTERA
                     SATISFACCIÓN CON TODA LA DOCUMENTACIÓN QUE A CONTINUACIÓN SE ENUMERA.
                 </p>
@@ -1315,7 +1316,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"></p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"><br></p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1323,7 +1324,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"></p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"><br></p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
