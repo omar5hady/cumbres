@@ -1351,6 +1351,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/servicios_etapas','ServEtapaController@index');
         Route::get('/select_gerentes','UserController@select_users_gerentes');
         Route::get('/select_rfcs','PersonalController@selectRFC');
+        Route::get('/leads/findRFC','DigitalLeadController@findRFC');
         Route::get('/select_notarias','NotariaController@select_notarias');
         Route::get('/select_gestores','PersonalController@select_gestores');
         Route::get('/selectGerentesVentas','UserController@selectGerentesVentas');

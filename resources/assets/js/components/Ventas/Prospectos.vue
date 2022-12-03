@@ -393,7 +393,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="">RFC  <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span> <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" v-on:keypress="isSpace($event)" maxlength="10" style="text-transform:uppercase" class="form-control" @keyup="selectRFC(rfc)"  v-model="rfc" placeholder="RFC">
+                                        <input type="text" v-on:keypress="isSpace($event)" maxlength="10" style="text-transform:uppercase" class="form-control" @keyup="selectRFC(rfc), findRFC(rfc)"  v-model="rfc" placeholder="RFC">
                                     </div>
                                 </div>
 
@@ -497,7 +497,8 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                   <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
-                                    <select class="form-control" v-model="publicidad_id" @change="nombre_recomendado=''" >
+                                    <select class="form-control" :disabled="rfcLead.length > 0"
+                                        v-model="publicidad_id" @change="nombre_recomendado=''" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                                     </select>
@@ -1382,6 +1383,7 @@
                 arrayMediosPublicidad:[],
                 arrayEstados:[],
                 encuentraRFC:0,
+                rfcLead:'',
                 asesor_id:0,
 
                 modal : 0,
@@ -2511,10 +2513,37 @@
                         customClass: 'animated tada'
                         })
                     }
-                    })
+                })
                 .catch(function (error) {
                     console.log(error);
                 });
+
+            },
+            findRFC(rfc){
+                let me = this;
+                if(rfc.length == 10 && me.encuentraRFC == 0){
+
+                    var url = '/leads/findRFC?rfc=' + rfc;
+                    me.rfcLead=[];
+                    axios.get(url).then(function (response) {
+                        me.rfcLead = response.data;
+
+                        if(me.rfcLead.length > 0) {
+                            let aviso = 'Este RFC esta registrado como Lead'
+                            if(me.rfcLead[0].nombre)
+                                aviso = 'Este RFC esta registrado como Lead y agregado por: ' + me.rfcLead[0].nombre + ' ' + me.rfcLead[0].apellidos
+                            Swal({
+                            title: aviso,
+                            animation: false,
+                            customClass: 'animated tada'
+                            })
+                            me.publicidad_id = 5;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
 
             },
             asignarProspecto(){

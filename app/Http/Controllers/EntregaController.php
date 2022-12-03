@@ -384,7 +384,8 @@ class EntregaController extends Controller
         ->orderBy('plano_proyectos.id','desc')->first();
         //return $contrato;
 
-        Mail::to('omar.ramos@grupocumbres.com')->send(new WelcomeNotification($contrato));
+        if($contrato->plano != NULL)
+            Mail::to('omar.ramos@grupocumbres.com')->send(new WelcomeNotification($contrato));
     }
 
     // Función para indicar la fecha de entrega programada.

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\PartidaController;
+use App\Contrato;
 use App\Modelo;
 use App\Specification;
-use DB;
-use App\Contrato;
-use Auth;
 use App\Version_modelo;
+use DB;
+use File;
+use Auth;
 
 use App\Http\Resources\SpecificationResource;
 
@@ -63,9 +64,13 @@ class ModeloController extends Controller
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $m = Modelo::select('nombre','ficha_tecnica')->where('nombre','=',$request->nombre)->first();
+
         $modelo = new Modelo();
         $modelo->nombre = $request->nombre;
         $modelo->tipo = $request->tipo;
+        if($m->ficha_tecnia != NULL)
+            $modelo->ficha_tecnica = $m->ficha_tecnica;
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;
@@ -323,16 +328,17 @@ class ModeloController extends Controller
 
         if($moved){
             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-            $modelo = Modelo::findOrFail($request->id);
-
-            if($modelo->ficha_tecnica != NULL){
-                $pathAnterior = public_path() . '/files/modelos/ficha/' . $modelo->ficha_tecnica;
+            $n_modelo = Modelo::select('nombre','ficha_tecnica')->where('id','=',$id)->first();
+            $modelos = Modelo::select('id')->where('nombre','=',$n_modelo->nombre)->get();
+            if($n_modelo->ficha_tecnica != NULL){
+                $pathAnterior = public_path() . '/files/modelos/ficha/' . $n_modelo->ficha_tecnica;
                 File::delete($pathAnterior);
             }
-
-            $modelo->ficha_tecnica = $fileName;
-            $modelo->id = $id;
-            $modelo->save(); //Insert
+            foreach($modelos as $m){
+                $modelo = Modelo::findOrFail($m->id);
+                $modelo->ficha_tecnica = $fileName;
+                $modelo->save(); //Insert
+            }
 
         }
     	return response()->json(['success'=>'You have successfully upload file.']);

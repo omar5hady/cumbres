@@ -538,6 +538,17 @@ class DigitalLeadController extends Controller
 
     }
 
+    public function findRFC(Request $request){
+        $rfc = $request->rfc;
+        $lead = Digital_lead::leftJoin('personal','digital_leads.vendedor_asign','=','personal.id')
+                        ->select('digital_leads.rfc','digital_leads.vendedor_asign',
+                            'personal.nombre', 'personal.apellidos'
+                        )
+                        ->where('digital_leads.rfc','=',$rfc)->get(); // verifica si hay mas de una concidencia de RFC y los cuenta
+
+        return $lead;
+    }
+
     // Función para registrar lead en la Tabla de Prospectos.
     public function sendProspectos(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
