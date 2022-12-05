@@ -127,17 +127,22 @@
     </div>
 
     <div class="contenido fecha">
-        <p>San Luis Potosí, S.L.P. a {{$contrato->entrega_real}}.</p>
+        <p>SAN LUIS POTOSÍ, S.L.P. a {{mb_strtoupper($contrato->entrega_real)}}.</p>
     </div>
 
     <div class="contenido info">
-        <p>Recibí de entera conformidad por parte de <strong>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</strong>
-            la vivienda ubicada en el LOTE {{$contrato->num_lote}}{{($contrato->sublote)?'-'.$contrato->sublote:''}}
-            de la MANZANA {{$contrato->manzana}}
-            de la calle {{$contrato->calle}}
+        <p>RECIBí DE ENTERA CONFORMIDAD POR PARTE DE <strong>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</strong>
+            LA VIVIENDA UBICADA EN EL LOTE {{$contrato->num_lote}}{{($contrato->sublote)?'-'.$contrato->sublote:''}}
+            DE LA MANZANA {{ mb_strtoupper($contrato->manzana) }}
+            DE LA CALLE {{mb_strtoupper($contrato->calle)}}
             No. {{$contrato->numero}}{{($contrato->interior)?' Int.'.$contrato->interior:''}}
-            del FRACCIONAMIENTO "{{$contrato->proyecto}}" ubicado
-            en {{$contrato->delegacion}} en {{$contrato->estado}}.
+            DEL FRACCIONAMIENTO
+            @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
+                "{{ mb_strtoupper( str_replace('FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto)) }}"
+            @else
+                "{{mb_strtoupper($contrato->proyecto)}}"
+            @endif
+            UBICADO EN {{mb_strtoupper($contrato->delegacion)}} EN {{mb_strtoupper($contrato->estado_proy)}}.
         </p>
     </div>
 

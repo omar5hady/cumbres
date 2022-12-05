@@ -803,25 +803,25 @@
             <!--Fin del modal-->
 
             <ModalComponent v-if="modal == 6"
-                    :titulo="tituloModal"
-                    @closeModal="cerrarModal"
-                >
-                    <template v-slot:body>
-                        <div class="col-md-12">
-                            <TableComponent :cabecera="['Tipo','Descripcion','']">
-                                <template v-slot:tbody>
-                                    <tr v-for="p in planos" :key="p.id">
-                                        <td class="td2" v-text="p.tipo"></td>
-                                        <td class="td2" v-text="p.description"></td>
-                                        <td class="td2">
-                                            <a :href="p.file.public_url" target="_blank" class="btn btn-success">Ver Plano</a>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </TableComponent>
-                        </div>
-                    </template>
-                </ModalComponent>
+                :titulo="tituloModal"
+                @closeModal="cerrarModal"
+            >
+                <template v-slot:body>
+                    <div class="col-md-12">
+                        <TableComponent :cabecera="['Tipo','Descripcion','']">
+                            <template v-slot:tbody>
+                                <tr v-for="p in planos" :key="p.id">
+                                    <td class="td2" v-text="p.tipo"></td>
+                                    <td class="td2" v-text="p.description"></td>
+                                    <td class="td2">
+                                        <a :href="p.file.public_url" target="_blank" class="btn btn-success">Ver Plano</a>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
+                </template>
+            </ModalComponent>
      </main>
 </template>
 

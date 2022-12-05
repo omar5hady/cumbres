@@ -15,7 +15,7 @@
                     </button>
                     <!---->
                 </div>
-                <LoadingComponent v-if="loading"></LoadingComponent>
+                <LoadingComponent v-if="loadingComp"></LoadingComponent>
 
                 <template v-else>
                     <!-- Div Card Body para listar -->
@@ -654,6 +654,7 @@
                 errorMostrarMsjAvisoObra : [],
                 proceso : false,
                 loading : true,
+                loadingComp : true,
 
                 datosContrato : {
                     contratista_id : '',
@@ -797,7 +798,7 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                me.loading = true;
+                me.loadingComp = true;
                 var url = '/iniobra?page=' + page + '&buscar=' + me.buscar
                 + '&criterio=' + me.criterio
                 + '&empresa=' + me.b_empresa
@@ -806,11 +807,11 @@
                     var respuesta = response.data;
                     me.arrayAvisoObra = respuesta.ini_obra.data;
                     me.pagination = respuesta.pagination;
-                    me.loading = false;
+                    me.loadingComp = false;
                 })
                 .catch(function (error) {
                     console.log(error);
-                    me.loading = false;
+                    me.loadingComp = false;
                 });
             },
             getEmpresa(){

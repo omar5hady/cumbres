@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Catalogo de Detalles 
+                        <i class="fa fa-align-justify"></i> Catalogo de Detalles
                         <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('subconcepto','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
@@ -24,37 +24,30 @@
                                         <option value="">Detalle General</option>
                                         <option v-for="general in arrayGenerales" :key="general.id" :value="general.id" v-text="general.general"></option>
                                     </select>
-                                    
+
                                     <input type="text" v-model="b_subconcepto" @keyup.enter="listarSubConcepto(1,b_id_gral,b_subconcepto)" class="form-control" placeholder="Subconcepto a buscar">
                                     <button type="submit" @click="listarSubConcepto(1,b_id_gral,b_subconcepto)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Detalle General</th>
-                                        <th>Subconcepto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="sub in arraySubConceptos" :key="sub.id">
-                                        <td style="width:10%">
-                                            <button type="button" @click="abrirModal('subconcepto','actualizar',sub)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success2 btn-sm" @click="abrirModal2('detalle','registrar',sub), listarDetalle(1, sub.id)" title="Asignar detalle">
-                                            <i class="icon-share"></i>
-                                            </button>
-                                        </td>
-                                        <td style="width:20%" v-text="sub.general" ></td>
-                                        <td v-text="sub.subconcepto" ></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="[
+                            '', 'Detalle General', 'Subconcepto'
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="sub in arraySubConceptos" :key="sub.id">
+                                    <td class="td2" style="width:10%">
+                                        <button type="button" @click="abrirModal('subconcepto','actualizar',sub)" class="btn btn-warning btn-sm">
+                                        <i class="icon-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('detalle','registrar',sub), listarDetalle(1, sub.id)" title="Asignar detalle">
+                                        <i class="icon-share"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" style="width:20%" v-text="sub.general" ></td>
+                                    <td class="td2" v-text="sub.subconcepto" ></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -74,145 +67,113 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal"
+                @closeModal="cerrarModal()"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Concepto General</label>
+                        <div class="col-md-7">
+                                <select class="form-control col-md-7" v-model="id_gral">
+                                <option value="">Seleccionar</option>
+                                <option v-for="general in arrayGenerales" :key="general.id" :value="general.id" v-text="general.general"></option>
+                            </select>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Concepto General</label>
-                                    <div class="col-md-7">
-                                         <select class="form-control col-md-7" v-model="id_gral">
-                                            <option value="">Seleccionar</option>
-                                            <option v-for="general in arrayGenerales" :key="general.id" :value="general.id" v-text="general.general"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Sub concepto</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="subconcepto" class="form-control" placeholder="Supconcepto">
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorSubconcepto" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjSubconcepto" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarSubConcepto()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarSubconcepto()">Actualizar</button>
-                        </div>
-                        
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Sub concepto</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="subconcepto" class="form-control" placeholder="Supconcepto">
+                        </div>
+                    </div>
+
+                    <!-- Div para mostrar los errores que mande validerPaquete -->
+                    <div v-show="errorSubconcepto" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjSubconcepto" :key="error" v-text="error">
+
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarSubConcepto()">Guardar</button>
+                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarSubconcepto()">Actualizar</button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal asignar detalles al subconcepto-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent v-if="modal2"
+                @closeModal="cerrarModal2()"
+                :titulo="tituloModal2"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Detalle</label>
+                        <div class="col-md-6">
+                            <input type="text" v-model="detalle" class="form-control" placeholder="Supconcepto">
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Detalle</label>
-                                    <div class="col-md-6">
-                                       <input type="text" v-model="detalle" class="form-control" placeholder="Supconcepto">
-                                    </div>
-                                </div>
-                                
-                                <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorDetalle" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjDetalle" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        <div class="col-md-3">
                             <button type="button" class="btn btn-primary" @click="registrarDetalle()">Guardar</button>
-
-                            </div>
-                                <div class="modal-header" v-if="mostrar == 1">
-                                    <h5 class="modal-title">Detalles</h5>
-                                    <button type="button" @click="actualizar=1" v-if="actualizar==0" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                </div>
-                                <table class="table table-bordered table-striped table-sm" v-if="mostrar == 1">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Detalles</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="detalle in arrayDetalles" :key="detalle.id">
-                                            <td style="width:10%">
-                                                <button type="button" v-if="detalle.activo == 1" class="btn btn-success2 btn-sm" @click="eliminarDetalle(detalle)">
-                                                <i class="fa fa-check"></i>
-                                                </button>
-                                                <button type="button" v-if="detalle.activo == 0" class="btn btn-danger btn-sm" @click="activarDetalle(detalle)">
-                                                <i class="fa fa-remove"></i>
-                                                </button>
-                                            </td>
-                                            <td v-if="actualizar == 0" v-text="detalle.detalle" ></td>
-                                            <input v-else type="text" @keyup.enter="actualizarDetalle(detalle.id,$event.target.value)" :id="detalle.id" :value="detalle.detalle" class="form-control" >
-                                        </tr>                               
-                                    </tbody>
-                                </table>
-                                <nav>
-                                    <!--Botones de paginacion -->
-                                    <ul class="pagination">
-                                        <li class="page-item" v-if="pagination2.current_page > 1">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
-                                        </li>
-                                        <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            
                         </div>
-                    <!-- /.modal-content -->
-                
-                <!-- /.modal-dialog -->
-            </div>
+                    </div>
+
+                    <div class="modal-header" v-if="mostrar == 1">
+                        <h5 class="modal-title">Detalles</h5>
+                        <button type="button" @click="actualizar=1" v-if="actualizar==0" class="btn btn-warning btn-sm">
+                            <i class="icon-pencil"></i>
+                        </button>
+                    </div>
+
+                    <table class="table table-bordered table-striped table-sm" v-if="mostrar == 1">
+                        <thead>
+                            <tr>
+                                <th>Opciones</th>
+                                <th>Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="detalle in arrayDetalles" :key="detalle.id">
+                                <td style="width:10%">
+                                    <button type="button" v-if="detalle.activo == 1" class="btn btn-success  btn-sm" @click="eliminarDetalle(detalle)">
+                                    <i class="fa fa-check"></i>
+                                    </button>
+                                    <button type="button" v-if="detalle.activo == 0" class="btn btn-danger btn-sm" @click="activarDetalle(detalle)">
+                                    <i class="fa fa-remove"></i>
+                                    </button>
+                                </td>
+                                <td v-if="actualizar == 0" v-text="detalle.detalle" ></td>
+                                <input v-else type="text" @keyup.enter="actualizarDetalle(detalle.id,$event.target.value)" :id="detalle.id" :value="detalle.detalle" class="form-control" >
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav  v-if="mostrar == 1">
+                        <!--Botones de paginacion -->
+                        <ul class="pagination">
+                            <li class="page-item" v-if="pagination2.current_page > 1">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
+                            </li>
+                            <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
+                            </li>
+                            <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- Div para mostrar los errores que mande validerPaquete -->
+                    <div v-show="errorDetalle" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjDetalle" :key="error" v-text="error"></div>
+                        </div>
+                    </div>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -222,18 +183,25 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import ModalComponent from '../Componentes/ModalComponent.vue';
+    import TableComponent from '../Componentes/TableComponent.vue';
+
     export default {
+        components:{
+            TableComponent,
+            ModalComponent
+        },
         data(){
             return{
                 proceso:false,
                 b_id_gral : '',
                 subconcepto : '',
                 detalle : '',
-               
+
                 arrayGenerales : [],
                 arraySubConceptos : [],
                 arrayDetalles : [],
-               
+
                 modal : 0,
                 mostrar : 0,
                 tituloModal : '',
@@ -245,7 +213,7 @@
                 errorMostrarMsjSubconcepto : [],
                 errorMostrarMsjDetalle : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -253,14 +221,14 @@
                     'to' : 0,
                 },
                  pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                offset : 3, 
+                offset : 3,
                 id_gral : '',
                 b_subconcepto : '',
                 id_sub : '',
@@ -428,7 +396,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                     }).then((result) => {
 
@@ -436,8 +404,8 @@
                         axios.post('/catalogoDetalle/storeDetalle',{
                             'id_sub': this.id_sub,
                             'detalle': this.detalle
-                            }); 
-                   // me.listarLote(1,'','','','','','','lote');   
+                            });
+                   // me.listarLote(1,'','','','','','','lote');
                     me.proceso=false;
                     me.listarDetalle(1,me.id_sub);
                         if(me.arrayDetalles.length>0)
@@ -451,7 +419,7 @@
                         })
                     }})
             },
-            
+
             actualizarSubconcepto(){
                 if(this.validarSubConcepto() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -469,7 +437,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    
+
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -491,7 +459,7 @@
                     'detalle': detalle,
                 }).then(function (response){
                     me.listarDetalle(1,me.id_sub);
-                    
+
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -520,7 +488,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.put('/catalogoDetalle/desactivarDetalle', 
+                axios.put('/catalogoDetalle/desactivarDetalle',
                          {'id': this.id_detalle}).then(function (response){
                         swal(
                         'Borrado!',
@@ -552,7 +520,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.put('/catalogoDetalle/activarDetalle', 
+                axios.put('/catalogoDetalle/activarDetalle',
                          {'id': this.id_detalle}).then(function (response){
                         swal(
                         'Activado!',
@@ -574,7 +542,7 @@
 
                 if(this.subconcepto=='') //Si la variable departamento esta vacia
                     this.errorMostrarMsjSubconcepto.push("Escribir el subconcepto.");
-                
+
                 if(this.id_gral=='') //Si la variable departamento esta vacia
                     this.errorMostrarMsjSubconcepto.push("Seleccionar el detalle general.");
 
@@ -589,7 +557,7 @@
 
                 if(this.detalle =='') //Si la variable departamento esta vacia
                     this.errorMostrarMsjDetalle.push("Escribir el detalle especifico");
-                
+
                 if(this.errorMostrarMsjDetalle.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorDetalle = 1;
 
@@ -600,7 +568,7 @@
                 this.tituloModal = '';
                 this.id_gral = '';
                 this.subconcepto = '';
-                
+
                 this.errorSubconcepto = 0;
                 this.errorMostrarMsjSubconcepto = [];
                 this.listarSubConcepto(this.pagination.current_page,this.b_id_gral,this.b_subconcepto);
@@ -674,17 +642,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -692,23 +649,23 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }    
-    .btn-success2 {
-        color: #fff;
-        background-color: #2c309e;
-        border-color: #313a98;
     }
-    .btn-success2:active, .btn-success2.active, .show > .btn-success2.dropdown-toggle {
-        background-color: #2c309e;
-        background-image: none;
-        border-color: #313a98;
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
-    .btn-success2:focus, .btn-success2.focus {
-        box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);
+
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
     }
-    .btn-success2:hover {
-        color: #fff;
-        background-color: #2c309e;
-        border-color: #313a98;
+
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

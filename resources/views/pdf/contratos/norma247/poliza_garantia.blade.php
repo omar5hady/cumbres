@@ -290,7 +290,7 @@
 
             <p class="text">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>PRIMERA.-</strong> “LA CONSTRUCTORA” SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN
-                EN LA VIVIENDA DESCRITA EN ESTA PÓLIZA, DURANTE  LOS PLAZOS MARCADOS EN LOS APÉNDICES CORRESPONDIENES A PARTIR DE LA FECHA DE
+                EN LA VIVIENDA DESCRITA EN ESTA PÓLIZA, DURANTE  LOS PLAZOS MARCADOS EN LOS APÉNDICES CORRESPONDIENTES A PARTIR DE LA FECHA DE
                 ENTREGA DE LA VIVIENDA. LOS HORARIOS DE ATENCIÓN PARA RECIBIR UN REPORTE Y HACER VÁLIDA LA GARANTÍA ES EN DÍAS HÁBILES
                 DE LUNES A VIERNES DE 9:00 AM A 5:00 PM Y SÁBADOS DE 9:00 AM A 1:00 PM
             </p>
@@ -323,7 +323,7 @@
 
             <p class="text">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>QUINTA.-</strong> “EL PROPIETARIO” DEBERÁ CONSERVAR EN SU PODER LA PRESENTE PÓLIZA DE GARANTÍA Y
-                AL REPORTAR ALGÚN DESPERFECTO, OBTENER DE “LA CONSTRUCTORA” EL DOCUMENTO QUE ACREDITE LA REPARACION SATISFACTORIA
+                AL REPORTAR ALGÚN DESPERFECTO, OBTENER DE “LA CONSTRUCTORA” EL DOCUMENTO QUE ACREDITE LA REPARACIÓN SATISFACTORIA
                 DEL DESPERFECTO REPORTADO, TENIENDO LA OBLIGACIÓN DE FIRMARLE A “LA CONSTRUCTORA” EL DOCUMENTO EN DONDE SE ACREDITE TAL CIRCUNSTANCIA.
             </p>
 
@@ -452,7 +452,7 @@
                 <br>
             </p>
             <ul>
-                <li><p class="text-apendice list">DEFECTOS EN IMPERMEABILIZACIÓN, A CAUSA DE INSTALACIÓN O APLICACIÓN  DE IMPERMEABLIZANTE.</p></li>
+                <li><p class="text-apendice list">DEFECTOS EN IMPERMEABILIZACIÓN, A CAUSA DE INSTALACIÓN O APLICACIÓN  DE IMPERMEABILIZANTE.</p></li>
             </ul>
 
             <div class="h-apendice">
@@ -1223,7 +1223,7 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">ENVIÍO DIGITAL DE PLANO EJECUTIVO DE VIVIENDA</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">ENVÍO DIGITAL DE PLANO EJECUTIVO DE VIVIENDA</p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
