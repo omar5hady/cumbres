@@ -541,10 +541,37 @@ class DigitalLeadController extends Controller
     public function findRFC(Request $request){
         $rfc = $request->rfc;
         $lead = Digital_lead::leftJoin('personal','digital_leads.vendedor_asign','=','personal.id')
-                        ->select('digital_leads.rfc','digital_leads.vendedor_asign',
+                        ->select('digital_leads.rfc','digital_leads.vendedor_asign', 'digital_leads.id',
                             'personal.nombre', 'personal.apellidos'
                         )
-                        ->where('digital_leads.rfc','=',$rfc)->get(); // verifica si hay mas de una concidencia de RFC y los cuenta
+                        ->where('digital_leads.rfc','=',$rfc)
+                        ->get(); // verifica si hay mas de una concidencia de RFC y los cuenta
+
+        if(sizeOf($lead)){
+            $l = Digital_lead::findOrFail($lead[0]->id);
+            $l->vendedor_asign =  Auth::user()->id;
+            $l->prospecto = 1; // Indica que ha sido registrado en la tabla de personal.
+            $l->status = 3;
+            $l->save();
+
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $arreglo = [
+                        'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => 'El lead ha sido registrado en modulo de prospectos',
+                        'titulo' => 'Prospecto registrado',
+                        'menu' => 250,
+                    ]
+                ];
+                $obs = new Obs_lead(); // Registra comentario con la asignación del lead.
+                $obs->lead_id = $l->id;
+                $obs->comentario = 'Aviso!, el Lead ha sido registrado por '.Auth::user()->usuario.' en el modulo de prospectos';
+                $obs->usuario = Auth::user()->usuario;
+                $obs->save();
+        }
 
         return $lead;
     }
@@ -662,7 +689,8 @@ class DigitalLeadController extends Controller
         // Se registra notificiación
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
         $fecha = Carbon::now();
-        $msj = "Nuevo comentario en el lead: ".$lead->nombre.' '.$lead->apellidos;
+        if($request->fecha_aviso != '')
+            $msj = "Nuevo comentario en el lead: ".$lead->nombre.' '.$lead->apellidos;
         $arregloAceptado = [
             'notificacion' => [
                 'usuario' => $imagenUsuario[0]->usuario,
@@ -679,8 +707,10 @@ class DigitalLeadController extends Controller
             ->where('id', '=', 25511)
             ->orWhere('rol_id','=',8)
             ->where('digital_lead','=',1)
-            ->orWhere('rol_id','=',1)
-            ->get();
+            ->orWhere('rol_id','=',1);
+            if($lead->vendedor_asign != NULL)
+                $personal = $personal->orWhere('id','=',$lead->vendedor_asign);
+            $personal = $personal->get();
         }
 
         if($lead->motivo == 2){ // Postventa
@@ -768,7 +798,8 @@ class DigitalLeadController extends Controller
             ->where('obs_leads.visto','=', NULL);
         // Leads con comentarios programados para recordatorio.
         $reminders_fecha=Digital_lead::join('obs_leads', 'digital_leads.id','=','obs_leads.lead_id')
-        ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo','obs_leads.fecha_aviso');
+            ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo','obs_leads.fecha_aviso');
+
             if(Auth::user()->rol_id == 2 ){ // Asesores.
                 $reminders = $reminders
                                 ->where('digital_leads.vendedor_asign','=', Auth::user()->id)//Vendedor asignado al lead
@@ -793,6 +824,13 @@ class DigitalLeadController extends Controller
             elseif(Auth::user()->id == 3){ // Terrenos.
                 $reminders = $reminders->where('motivo','=', 6);
                 $reminders = $reminders->get();
+            }
+            elseif(Auth::user()->rol_id == 8 &&  Auth::user()->digital_lead == 1
+                || Auth::user()->rol_id == 1
+                ){ // Asesores.
+                    $reminders_fecha = $reminders_fecha
+                        ->where('obs_leads.visto','=', NULL) // Comentario sin ver
+                        ->where('obs_leads.fecha_aviso','=', Carbon::now()->format('Y-m-d'))->get();// Comentario programado para la fecha actual.
             }
 
             return ['reminders'=>$reminders,

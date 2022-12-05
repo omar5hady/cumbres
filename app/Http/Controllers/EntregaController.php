@@ -373,7 +373,7 @@ class EntregaController extends Controller
         $contrato = Credito::join('lotes','creditos.lote_id','=','lotes.id')
         ->join('personal as p','creditos.prospecto_id','=','p.id')
         ->select('p.nombre','p.apellidos','creditos.fraccionamiento','creditos.etapa',
-            'lotes.num_lote','lotes.sublote','lotes.id'
+            'lotes.num_lote','lotes.sublote','lotes.id','p.email'
         )
         ->where('creditos.id','=',$request->folio)->first();
 
@@ -385,14 +385,15 @@ class EntregaController extends Controller
         //return $contrato;
 
         if($contrato->plano != NULL)
-            Mail::to('omar.ramos@grupocumbres.com')->send(new WelcomeNotification($contrato));
+            Mail::to($contrato->email)->send(new WelcomeNotification($contrato));
     }
 
     // Función para indicar la fecha de entrega programada.
     public function setFechaProgramada(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $this->sendPlanos($request);
         $entrega = Entrega::findOrFail($request->folio);
+        if($entrega->cont_reprogram == 0)
+            $this->sendPlanos($request);
         $entrega->fecha_program = $request->fecha_program;
         //En caso de ser reprogramada por motivo del contratista
         if($request->mot_program == 'Contratista'){

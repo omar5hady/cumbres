@@ -15,7 +15,7 @@
                         </button>
                         <!---->
                     </div>
-                    <LoadingComponent v-if="loading"></LoadingComponent>
+                    <LoadingComponent v-if="loadingModule"></LoadingComponent>
                     <template v-else>
                         <!-- Div Card Body para listar -->
                         <template v-if="listado == 1">
@@ -919,7 +919,8 @@
                 empresa_constructora:'',
                 apoderado:'ING. DAVID CALVILLO MARTINEZ',
                 direccion_proy:'',
-                loading:true
+                loading:true,
+                loadingModule:true
             }
         },
         components:{
@@ -1049,17 +1050,17 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page, buscar, criterio){
                 let me = this;
-                me.loading = true;
+                me.loadingModule = true;
                 var url = '/iniobra?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoObra = respuesta.ini_obra.data;
                     me.pagination = respuesta.pagination;
-                    me.loading = false;
+                    me.loadingModule = false;
                 })
                 .catch(function (error) {
                     console.log(error);
-                    me.loading = false;
+                    me.loadingModule = false;
                 });
             },
             getEmpresa(){

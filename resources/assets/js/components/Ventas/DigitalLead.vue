@@ -2008,25 +2008,25 @@ export default {
             let me = this;
             me.encuentraRFC=0;
             axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.encuentraRFC = respuesta.rfc1;
+                var respuesta = response.data;
+                me.encuentraRFC = respuesta.rfc1;
 
-            if(me.encuentraRFC==1) {
-                var vendedorrfc = [];
-                var nombrevendedor = '';
-                vendedorrfc = respuesta.vendedor;
-                me.vendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
-                me.vendedor_asign = vendedorrfc[0]['id'] ;
-                Swal({
-                title: 'Este RFC ya ha sido agregado por: ' + me.vendedor ,
-                animation: false,
-                customClass: 'animated tada'
-                })
-            }
-            else{
-                if(me.vendedor_asign == '' || me.vendedor_asign == 0)
-                    me.vendedor_asign = 0;
-            }
+                if(me.encuentraRFC==1) {
+                    var vendedorrfc = [];
+                    var nombrevendedor = '';
+                    vendedorrfc = respuesta.vendedor;
+                    me.vendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
+                    me.vendedor_asign = vendedorrfc[0]['id'] ;
+                    Swal({
+                        title: 'Este RFC ya ha sido agregado por: ' + me.vendedor ,
+                        animation: false,
+                        customClass: 'animated tada'
+                    })
+                }
+                else{
+                    if(me.vendedor_asign == '' || me.vendedor_asign == 0)
+                        me.vendedor_asign = 0;
+                }
             })
             .catch(function (error) {
                 console.log(error);
