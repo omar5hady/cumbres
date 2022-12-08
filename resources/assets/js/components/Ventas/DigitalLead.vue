@@ -2060,7 +2060,7 @@ export default {
         selectAsesores(){
             let me = this;
             me.arrayAsesores=[];
-            var url = '/select/asesores?tipo=0';
+            var url = '/select/asesores?tipo=0&condicion=1';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayAsesores = respuesta.personas;

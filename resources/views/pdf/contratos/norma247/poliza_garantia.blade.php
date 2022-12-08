@@ -470,7 +470,7 @@
             </div>
             <p class="text-apendice">
                 LA PÓLIZA <b>NO APLICA</b> PARA NINGÚN DEFECTO EN VIDRIOS, PUERTAS, VENTANAS NI DOMOS; YA SEAN ROTOS, FISURADOS O RAYADOS;
-                DÉSPUES DE ENTREGADA LA VIVIENDA A "EL PROPIETARIO". <br>
+                DESPUÉS DE ENTREGADA LA VIVIENDA A "EL PROPIETARIO". <br>
                 LA PÓLIZA <b>NO APLICA</b> EN EL CASO DE DAÑOS GENERADOS POR EL USO DE MULTI-CONTACTOS, MAL USO DE LAS INSTALACIONES O SOBRE CARGAS.
             </p>
 
@@ -1191,7 +1191,13 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">ACTA DE ENTREGA RECEPCIÓN INTERAPAS</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">
+                            @if($contrato->proyecto != 'ANDALUZ')
+                                ACTA DE ENTREGA RECEPCIÓN INTERAPAS
+                            @else
+                                ACTA DE ENTREGA RECEPCIÓN OOAPVR
+                            @endif
+                        </p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1244,7 +1250,12 @@
                 </div>
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">PROCEDIMIENTO PARA REALIZAR CONTRATO INTERAPAS / CFE</p></li>
+                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">PROCEDIMIENTO PARA REALIZAR CONTRATO
+                            @if($contrato->proyecto != 'ANDALUZ')
+                                INTERAPAS /
+                            @endif
+                            CFE
+                        </p></li>
                     </div>
                     <div colspan="1" class="table-cell2 llenado">
                         <p class="text-table2"></p>
@@ -1266,7 +1277,7 @@
                         <p class="text-table2"></p>
                     </div>
                 </div>
-                @if(!str_contains($contrato->etapa, 'EXTERIOR'))
+                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ')
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
                             <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">2 MARBETES DE IDENTIFICACIÓN VEHICULAR</p></li>
@@ -1296,7 +1307,7 @@
                         </div>
                     </div>
                 @endif
-                @if(!str_contains($contrato->etapa, 'EXTERIOR'))
+                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ')
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
                             <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA BIENVENIDA DE LA ADMINISTRACIÓN</p></li>
@@ -1306,14 +1317,16 @@
                         </div>
                     </div>
                 @endif
-                <div class="table-row2">
-                    <div colspan="4" class="table-cell2">
-                        <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">MANIFIESTO ACTA DE ENTREGA-VIVIENDA (USO PARA INTERAPAS)</p></li>
+                @if($contrato->proyecto != 'ANDALUZ')
+                    <div class="table-row2">
+                        <div colspan="4" class="table-cell2">
+                            <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">MANIFIESTO ACTA DE ENTREGA-VIVIENDA (USO PARA INTERAPAS)</p></li>
+                        </div>
+                        <div colspan="1" class="table-cell2 llenado">
+                            <p class="text-table2"></p>
+                        </div>
                     </div>
-                    <div colspan="1" class="table-cell2 llenado">
-                        <p class="text-table2"></p>
-                    </div>
-                </div>
+                @endif
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
                         <li style="margin-left: 25px; padding: 2px;"><p class="text-table2"><br></p></li>

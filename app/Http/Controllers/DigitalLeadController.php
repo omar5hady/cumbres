@@ -297,6 +297,7 @@ class DigitalLeadController extends Controller
 
         $l = Digital_lead::select('id')->where('messenger_id','=',$request->user_id)->get();
 
+
         if(sizeof($l)){
             $obs = new Obs_lead();
             $obs->lead_id = $l[0]->id;
@@ -306,10 +307,11 @@ class DigitalLeadController extends Controller
         }
         else{
             $lead = new Digital_lead(); // Nuevo lead
-            $lead->nombre = $request->nombre;
+            $lead->nombre = $request->first_name;
             $lead->apellidos = $request->apellidos;
             $lead->name_user = $request->nombre;
             $lead->last_name_user = $request->apellidos;
+            $lead->medio_contacto = 'Facebook';
             $lead->messenger_id = $request->user_id;
             $lead->save();
 
@@ -319,10 +321,41 @@ class DigitalLeadController extends Controller
             $obs->comentario = 'Lead registrado desde bot';
             $obs->usuario = 'Sistema Cumbres';
             $obs->save();
+
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',3)->get();
+            $fecha = Carbon::now();
+            $arregloAceptado = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => 'Nueva registro con bot',
+                    'titulo' => 'BOT :)',
+                    'menu' => 250,
+                ]
+            ];
+            User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+
         }
 
+        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',3)->get();
+        $fecha = Carbon::now();
+        $arregloAceptado = [
+            'notificacion' => [
+                'usuario' => $imagenUsuario[0]->usuario,
+                'foto' => $imagenUsuario[0]->foto_user,
+                'fecha' => $fecha,
+                'msj' => 'Nueva interaccion con bot',
+                'titulo' => 'BOT :)',
+                'menu' => 250,
+            ]
+        ];
 
-        return $request;
+
+        User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+
+
+        //return $request;
     }
 
     // Funcion para registrar un nuevo Lead.
@@ -689,8 +722,7 @@ class DigitalLeadController extends Controller
         // Se registra notificiación
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
         $fecha = Carbon::now();
-        if($request->fecha_aviso != '')
-            $msj = "Nuevo comentario en el lead: ".$lead->nombre.' '.$lead->apellidos;
+        $msj = "Nuevo comentario en el lead: ".$lead->nombre.' '.$lead->apellidos;
         $arregloAceptado = [
             'notificacion' => [
                 'usuario' => $imagenUsuario[0]->usuario,

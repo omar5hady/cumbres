@@ -53,8 +53,6 @@
 
     .cover-container{
         top: 10%;
-        background-color: #003058;
-        opacity: 0.1;
         text-align: center;
         align-items: center;
         width: 100%;
@@ -127,7 +125,7 @@
     </div>
 
     <div class="contenido fecha">
-        <p>SAN LUIS POTOSÍ, S.L.P. a {{mb_strtoupper($contrato->entrega_real)}}.</p>
+        <p>SAN LUIS POTOSÍ, S.L.P. A {{mb_strtoupper($contrato->entrega_real)}}.</p>
     </div>
 
     <div class="contenido info">
