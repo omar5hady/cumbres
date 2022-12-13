@@ -7,26 +7,31 @@ use App\Proveedor;
 
 use App\Personal;
 use App\User;
+use App\ProvCuenta;
 use Illuminate\Support\Facades\DB;
 use Auth;
 
 class ProveedorController extends Controller
 {
-    // obtiene informacion de la tabla  de proveedores  
+    // obtiene informacion de la tabla  de proveedores
     public function index(Request $request){
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
-       
-        $proveedores = Proveedor::select('id','proveedor', 'contacto', 'direccion', 'colonia',
+
+        $proveedores = Proveedor::select('id','proveedor', 'contacto',
+                    'direccion', 'colonia', 'num_cuenta', 'banco',
                     'telefono', 'email', 'email2', 'poliza','tipo');
-                    
+
         if($buscar != '') $proveedores = $proveedores->where($criterio, 'like', '%'. $buscar . '%');
-                    
+
 
         $proveedores = $proveedores->orderBy('proveedor','asc')
                     ->paginate(20);
-        
+
+        foreach($proveedores as $prov){
+            $prov->cuentas = ProvCuenta::where('proveedor_id','=',$prov->id)->get();
+        }
 
         return [
             'pagination' => [
@@ -42,13 +47,21 @@ class ProveedorController extends Controller
 
     }
 
-    // crea un nuevo registro en las tablas de personal y en la tabla de proveedor 
+    public function storeCuenta(Request $request){
+        $cuenta = new ProvCuenta();
+        $cuenta->num_cuenta = $request->num_cuenta;
+        $cuenta->banco = $request->banco;
+        $cuenta->proveedor_id = $request->proveedor_id;
+        $cuenta->save();
+    }
+
+    // crea un nuevo registro en las tablas de personal y en la tabla de proveedor
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        try{       
-            DB::beginTransaction();  
-        
-            $persona = new Personal();  
+        try{
+            DB::beginTransaction();
+
+            $persona = new Personal();
             $persona->departamento_id = 9;
             $persona->nombre = $request->proveedor;
             $persona->apellidos = '.';
@@ -74,26 +87,38 @@ class ProveedorController extends Controller
             $proveedor->email2 =$request->email2;
             $proveedor->poliza=$request->poliza;
             $proveedor->tipo=$request->tipo;
+            $proveedor->num_cuenta = $request->num_cuenta;
+            $proveedor->banco = $request->banco;
             $proveedor->save();
- 
-            $user = new User();
-            $user->id = $persona->id;
-            $user->usuario = $request->usuario;
-            $user->password = bcrypt( $request->password);
-            $user->condicion = '1';
-            $user->rol_id = 10;          
- 
-            $user->id = $persona->id;
-            $user->save();
+
+            if($request->num_cuenta != '' &&  $request->banco != ''){
+                $cuenta = new ProvCuenta();
+                $cuenta->num_cuenta = $request->num_cuenta;
+                $cuenta->banco = $request->banco;
+                $cuenta->proveedor_id = $proveedor->id;
+                $cuenta->save();
+            }
+
+            if($request->usuario != ''){
+                $user = new User();
+                $user->id = $persona->id;
+                $user->usuario = $request->usuario;
+                $user->password = bcrypt( $request->password);
+                $user->condicion = '1';
+                $user->rol_id = 10;
+
+                $user->id = $persona->id;
+                $user->save();
+            }
             DB::commit();
- 
+
         } catch (Exception $e){  // en caso de que haya algun conflicto en crear los registros , no se crea y se regresa a un estado inicial
             DB::rollBack();
-        }         
+        }
     }
 
-    // atualiza solo los datos de la tabla del proveedor 
-    public function update(Request $request){ 
+    // atualiza solo los datos de la tabla del proveedor
+    public function update(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $proveedor = Proveedor::findOrFail($request->id);
         $proveedor->proveedor =$request->proveedor;
@@ -105,6 +130,8 @@ class ProveedorController extends Controller
         $proveedor->email2 =$request->email2;
         $proveedor->poliza=$request->poliza;
         $proveedor->tipo=$request->tipo;
+        $proveedor->num_cuenta = $request->num_cuenta;
+        $proveedor->banco = $request->banco;
         $proveedor->save();
     }
 

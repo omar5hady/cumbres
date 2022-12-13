@@ -257,6 +257,9 @@ class DigitalLeadController extends Controller
                     $leads = $leads->where('digital_leads.name_user', 'like', '%'. $b_user . '%');
                 if($b_user_lastname != '') // Nombre de lead
                     $leads = $leads->where('digital_leads.last_name_user', 'like', '%'. $b_user_lastname . '%');
+                if($request->b_contacto != ''){
+                    $leads = $leads->where('digital_leads.medio_contacto', 'like', '%'. $request->b_contacto . '%');
+                }
                 if($status != '')
                     /* Estatus de lead:
                             1 = En Seguimiento
@@ -301,17 +304,22 @@ class DigitalLeadController extends Controller
         if(sizeof($l)){
             $obs = new Obs_lead();
             $obs->lead_id = $l[0]->id;
-            $obs->comentario = 'Nueva interaccion con bot';
+            if($request->mensaje != ''){
+                $obs->comentario = $request->mensaje;
+            }
+            else{
+                $obs->comentario = 'Nueva interaccion con bot';
+            }
             $obs->usuario = 'Sistema Cumbres';
             $obs->save();
         }
         else{
             $lead = new Digital_lead(); // Nuevo lead
-            $lead->nombre = $request->first_name;
+            $lead->nombre = $request->nombre;
             $lead->apellidos = $request->apellidos;
             $lead->name_user = $request->nombre;
             $lead->last_name_user = $request->apellidos;
-            $lead->medio_contacto = 'Facebook';
+            $lead->medio_contacto = 'Facebook Cumbres';
             $lead->messenger_id = $request->user_id;
             $lead->save();
 
@@ -329,7 +337,7 @@ class DigitalLeadController extends Controller
                     'usuario' => $imagenUsuario[0]->usuario,
                     'foto' => $imagenUsuario[0]->foto_user,
                     'fecha' => $fecha,
-                    'msj' => 'Nueva registro con bot',
+                    'msj' => 'Nueva registro con bot: '. $lead->nombre.' '.$lead->apellidos,
                     'titulo' => 'BOT :)',
                     'menu' => 250,
                 ]
@@ -350,6 +358,16 @@ class DigitalLeadController extends Controller
                 'menu' => 250,
             ]
         ];
+
+        $personal = User::select('id')
+            ->orWhere('rol_id','=',8)
+            ->where('digital_lead','=',1)
+            ->orWhere('rol_id','=',1)
+            ->get();
+
+        foreach($personal as $persona){
+            User::findOrFail($persona->id)->notify(new NotifyAdmin($arregloAceptado));
+        }
 
 
         User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));

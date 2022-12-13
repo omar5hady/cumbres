@@ -23,6 +23,8 @@ class CreateProveedoresTable extends Migration
             $table->string('email',70)->nullable();
             $table->string('email2',70)->nullable();
             $table->string('poliza')->nullable();
+            $table->string('num_cuenta',50)->nullable();
+            $table->string('banco',80)->nullable();
             $table->boolean('tipo')->default(0);
             $table->timestamps();
         });

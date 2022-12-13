@@ -71,6 +71,7 @@
                                     <option value="">Campaña publicitaria</option>
                                     <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
                                 </select>
+                                <input type="text" v-if="b_motivo == 1" v-model="b_contacto" @keyup.enter="listarLeads(1)" placeholder="Medio de contacto" class="form-control col-sm-6">
                             </div>
                         </div>
 
@@ -666,12 +667,16 @@
                                 <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
                                 <datalist id="cityname">
                                     <option value="">Seleccione</option>
-                                    <option value="Facebook">Facebook</option>
+                                    <option value="Facebook Cumbres">Facebook Cumbres</option>
+                                    <option value="Facebook Sirenia">Facebook Sirenia</option>
+                                    <option value="Facebook Catara">Facebook Sirenia</option>
+                                    <option value="Facebook Valle Real">Facebook Sirenia</option>
+                                    <option value="Facebook Andaluz">Facebook Andaluz</option>
+                                    <option value="Imperia">Facebook Sirenia</option>
                                     <option value="Instagram">Instagram</option>
                                     <option value="Pagina web">Pagina web</option>
                                     <option value="Llamada Telefonica">Llamada Telefónica</option>
                                     <option value="Correo Electrónico">Correo Electrónico</option>
-
                                 </datalist>
                             </div>
                         </div>
@@ -1645,6 +1650,7 @@ export default {
             b_modelo:'',
             b_user_name : '',
             b_user_lastname : '',
+            b_contacto : '',
             proceso : false,
             loading: false,
             buscadores:{},
@@ -2000,6 +2006,7 @@ export default {
             this.b_proyecto='';
             this.b_prioridad='';
             this.b_modelo ='';
+            this.b_contacto = '';
 
             this.listarLeads(1);
         },
@@ -2098,7 +2105,8 @@ export default {
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
                 '&modelo='+me.b_modelo      + '&page=' + page + '&b_semaforo=' + me.b_semaforo +
-                '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname
+                '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname +
+                '&b_contacto='+me.b_contacto
             ).then(function(response){
                 me.arrayLeads = response.data;
                 me.pagina = ''

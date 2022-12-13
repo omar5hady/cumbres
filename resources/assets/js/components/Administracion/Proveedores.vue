@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Proveedores
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('proveedor','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -24,18 +24,18 @@
                                         <option value="proveedor">Proveedor</option>
                                         <option value="contacto">Contacto</option>
                                     </select>
-                                    
+
                                     <input type="text" v-model="buscar" @keyup.enter="listarProveedores(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarProveedores(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
-                        <TableComponent 
+                        <TableComponent
                             :cabecera="['','Proveedor','Contacto','Dirección','Colonia','Teléfono','Email','P. Garantia']">
                             <template v-slot:tbody>
                                 <tr v-for="proveedor in arrayProveedores" :key="proveedor.id">
                                     <td class="td2" style="width:10%">
-                                        <button type="button" @click="abrirModal('proveedor','actualizar',proveedor)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('actualizar',proveedor)" class="btn btn-warning btn-sm">
                                         <i class="icon-pencil"></i>
                                         </button>
                                         <button type="button" class="btn btn-dark btn-sm" @click="abrirModal2('equipamiento','registrar',proveedor), listarEquipamiento(1, proveedor.id)" title="Asignar equipamiento">
@@ -49,7 +49,7 @@
                                     <td class="td2" v-text="proveedor.telefono" ></td>
                                     <td class="td2" v-text="proveedor.email" ></td>
                                     <td class="td2" v-text="proveedor.poliza" ></td>
-                                </tr> 
+                                </tr>
                             </template>
                         </TableComponent>
                         <nav>
@@ -71,97 +71,119 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <ModalComponent v-if="modal"
+            <ModalComponent v-if="modal == 1"
                 :titulo="tituloModal"
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Proveedor</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="proveedor" class="form-control" placeholder="Proveedor">
-                        </div>
-                    </div>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': vista==0 }" @click="vista = 0">Proveedor</a></li>
+                        <li v-if="tipoAccion == 1" class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': vista==1 }" @click="vista = 1">Usuario</a></li>
+                    </ul>
+                    <template v-if="vista == 0">
+                        <div style="padding-top:10px;">
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Proveedor</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="proveedor" class="form-control" placeholder="Proveedor">
+                                </div>
+                            </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
-                        </div>
-                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Contacto</label>
+                                <div class="col-md-4">
+                                    <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
+                                </div>
+                                <label  v-if="tipoAccion==1" class="col-md-1 form-control-label" for="text-input">RFC</label>
+                                <div class="col-md-4"  v-if="tipoAccion==1">
+                                    <input type="text" v-model="rfc" maxlength="13" class="form-control" placeholder="RFC">
+                                </div>
+                            </div>
 
-                    <div class="form-group row" v-if="tipoAccion==1">
-                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="rfc" maxlength="13" class="form-control" placeholder="RFC">
-                        </div>
-                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Direccion</label>
+                                <div class="col-md-5">
+                                    <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                                </div>
+                                 <label class="col-md-1 form-control-label" for="text-input">Colonia</label>
+                                <div class="col-md-4">
+                                    <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                                </div>
+                            </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                        <div class="col-md-8">
-                            <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
-                        </div>
-                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Telefono</label>
+                                <div class="col-md-4">
+                                    <input type="text" maxlength="10" pattern="\d*" v-model="telefono" class="form-control" placeholder="Telefono" v-on:keypress="$root.isNumber($event)">
+                                </div>
+                            </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
-                        </div>
-                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Email</label>
+                                <div class="col-md-4">
+                                    <input type="text" v-model="email" class="form-control" placeholder="Correo electronico">
+                                </div>
+                                <label class="col-md-2 form-control-label" for="text-input">Email (Opcional)</label>
+                                <div class="col-md-4">
+                                    <input type="text" v-model="email2" class="form-control" placeholder="Correo electronico">
+                                </div>
+                            </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                        <div class="col-md-4">
-                            <input type="text" maxlength="10" pattern="\d*" v-model="telefono" class="form-control" placeholder="Telefono" v-on:keypress="isNumber($event)">
-                        </div>
-                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Cuenta Bancaria</label>
+                                <div class="col-md-4">
+                                    <input type="text" v-model="num_cuenta" pattern="\d*" v-on:keypress="$root.isNumber($event)"
+                                        class="form-control" placeholder="Num. Cuenta" :disabled="tipoAccion == 2">
+                                </div>
+                                <label class="col-md-2 form-control-label" for="text-input">Banco</label>
+                                <div class="col-md-4">
+                                    <select class="form-control" v-model="banco" :disabled="tipoAccion == 2">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row" v-if="tipoAccion == 2">
+                                <div class="col-md-4">
+                                    <button class="btn btn-success" title="Nueva cuenta" @click="abrirModal('banco')">
+                                        <i class="icon-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="email" class="form-control" placeholder="Correo electronico">
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Tipo</label>
+                                <div class="col-md-4">
+                                    <select class="form-control" v-model="tipo">
+                                        <option value="0">Interno</option>
+                                        <option value="1">Externo</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </template>
+                    <template v-if="vista == 1">
+                        <div style="padding-top:10px;">
+                            <div class="form-group row" v-if="tipoAccion==1">
+                                <label class="col-md-2 form-control-label" for="text-input">Usuario</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="usuario" class="form-control" placeholder="User">
+                                </div>
+                            </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Email (Opcional)</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="email2" class="form-control" placeholder="Correo electronico">
+                            <div class="form-group row" v-if="tipoAccion==1">
+                                <label class="col-md-2 form-control-label" for="text-input">Contraseña</label>
+                                <div class="col-md-6">
+                                    <input type="password" v-model="password" class="form-control" placeholder="Password">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                        <div class="col-md-6">
-                            <select class="form-control col-md-4" v-model="tipo">
-                                <option value="0">Interno</option>
-                                <option value="1">Externo</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row" v-if="tipoAccion==1">
-                        <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="usuario" class="form-control" placeholder="User">
-                        </div>
-                    </div>
-
-                    <div class="form-group row" v-if="tipoAccion==1">
-                        <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
-                        <div class="col-md-6">
-                            <input type="password" v-model="password" class="form-control" placeholder="Password">
-                        </div>
-                    </div>
+                    </template>
 
                     <!-- Div para mostrar los errores que mande validerPaquete -->
                     <div v-show="errorProveedor" class="form-group row div-error">
                         <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjProveedor" :key="error" v-text="error">
-
-                            </div>
+                            <div v-for="error in errorMostrarMsjProveedor" :key="error" v-text="error"></div>
                         </div>
                     </div>
                 </template>
@@ -172,6 +194,59 @@
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
+
+            <ModalComponent v-if="modal == 2"
+                :titulo="'Cuentas Bancarias'"
+                @closeModal="modal = 1"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Num Cuenta</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="n_cuenta" pattern="\d*" v-on:keypress="$root.isNumber($event)"
+                                class="form-control" placeholder="Num. Cuenta">
+                        </div>
+                        <label class="col-md-2 form-control-label" for="text-input">Banco</label>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="n_banco">
+                                <option value="">Banco</option>
+                                <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <button class="btn btn-primary" title="Guardar Cuenta" @click="storeCuenta()">
+                                Guardar cuenta &nbsp;<i class="icon-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="modal-header" style="background-color: #EC008C; padding:5px;">
+                        <h5 class="modal-title"> Cuentas agregadas </h5>
+                    </div>
+
+                    <div class="form-group">
+                        <TableComponent :cabecera="['','Banco','Num Cuenta']">
+                            <template v-slot:tbody>
+                                <tr v-for="cuenta in arrayCuentas" :key="cuenta.id">
+                                    <td class="td2" style="width:10%">
+                                        <button type="button" @click="eliminar(cuenta.id)" class="btn btn-danger btn-sm">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm"
+                                            @click="seleccionarCuenta(cuenta)" title="Seleccionar cuenta">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="cuenta.banco" ></td>
+                                    <td class="td2" v-text="cuenta.num_cuenta" ></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </div>
+                </template>
+            </ModalComponent>
 
 
             <!--Inicio del modal asignar equipamiento-->
@@ -206,7 +281,7 @@
                             <button type="button" class="btn btn-success" @click="registrarEquipamiento()">Añadir</button>
                         </div>
                     </div>
-                    
+
                     <!-- Div para mostrar los errores que mande validerPaquete -->
                     <div v-show="errorEquipamiento" class="form-group row div-error">
                         <div class="text-center text-error">
@@ -236,7 +311,7 @@
                                         </button>
                                     </td>
                                     <td v-text="equipamiento.equipamiento" ></td>
-                                </tr>                               
+                                </tr>
                             </tbody>
                         </table>
                         <nav>
@@ -289,25 +364,32 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 usuario : '',
                 password : '',
                 rfc: '',
+                num_cuenta: '',
+                banco: '',
+                n_banco: '',
+                n_cuenta: '',
                 equipamiento : '',
                 tipoRecepcion : 0,
                 equipamientoId: 0,
-               
+
                 arrayProveedores : [],
                 arrayEquipamientos : [],
-               
+                arrayBancos : [],
+                arrayCuentas : [],
+
                 modal : 0,
                 mostrar : 0,
                 tituloModal : '',
                 modal2 : 0,
                 tituloModal2 : '',
                 tipoAccion: 0,
+                vista: 0,
                 errorProveedor : 0,
                 errorEquipamiento : 0,
                 errorMostrarMsjProveedor : [],
                 errorMostrarMsjEquipamiento : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -315,7 +397,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                  pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -323,7 +405,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'proveedor', 
+                criterio : 'proveedor',
                 buscar : '',
                 buscar2 : '',
             }
@@ -413,15 +495,6 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -461,11 +534,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'password': this.password,
                     'rfc': this.rfc,
                     'email2': this.email2,
-                    'tipo' : this.tipo
+                    'tipo' : this.tipo,
+                    'num_cuenta' : this.num_cuenta,
+                    'banco' : this.banco
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    
+
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -497,7 +572,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, asignar!'
                     }).then((result) => {
 
@@ -505,8 +580,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         axios.post('/equipamiento/registrar',{
                             'proveedor_id': this.id,
                             'equipamiento': this.equipamiento
-                            }); 
-                   // me.listarLote(1,'','','','','','','lote');   
+                            });
+                   // me.listarLote(1,'','','','','','','lote');
                     me.proceso=false;
                     me.listarEquipamiento(1,me.id);
                         if(me.arrayEquipamientos.length>0)
@@ -520,7 +595,30 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         })
                     }})
             },
-            
+            storeCuenta(){
+                let me = this;
+                axios.post('/proveedor/storeCuenta',{
+                    'num_cuenta': me.n_cuenta,
+                    'banco': me.n_banco,
+                    'proveedor_id':me.id
+                }).then(function (response){
+                    me.modal = 1; //al guardar el registro se cierra el modal
+                    me.num_cuenta = me.n_cuenta;
+                    me.banco = me.n_banco;
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cuenta agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
             actualizarProveedores(){
                 if(this.validarProveedor() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -540,7 +638,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'email': this.email,
                     'email2': this.email2,
                     'tipo' : this.tipo,
-                    'id': this.id
+                    'id': this.id,
+                    'num_cuenta' : this.num_cuenta,
+                    'banco' : this.banco
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -573,7 +673,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.put('/equipamiento/eliminar', 
+                axios.put('/equipamiento/eliminar',
                          {'id': this.equipamientoId}).then(function (response){
                         swal(
                         'Borrado!',
@@ -588,6 +688,28 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     });
                 }
                 })
+            },
+            seleccionarCuenta(cuenta){
+                this.num_cuenta = cuenta.num_cuenta;
+                this.banco = cuenta.banco;
+                this.modal = 1;
+                swal(
+                    'Listo!',
+                    'Cuenta seleccionada.',
+                    'success'
+                )
+            },
+            selectBancos(){
+                let me = this;
+                me.arrayBancos=[];
+                var url = '/select_inst_financiamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayBancos = respuesta.instituciones_financiamiento;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             activarEquipamiento(data =[]){
                 this.equipamientoId=data['id'];
@@ -605,7 +727,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.put('/equipamiento/activar', 
+                axios.put('/equipamiento/activar',
                          {'id': this.equipamientoId}).then(function (response){
                         swal(
                         'Activado!',
@@ -639,7 +761,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                 if(this.equipamiento =='') //Si la variable departamento esta vacia
                     this.errorMostrarMsjEquipamiento.push("Selecciona el equipamiento");
-                
+
                 if(this.errorMostrarMsjEquipamiento.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorEquipamiento = 1;
 
@@ -673,50 +795,54 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(modelo, accion,data =[]){
-                switch(modelo){
-                    case "proveedor":
+            abrirModal(accion,data =[]){
+                this.modal = 1;
+                this.vista = 0;
+                switch(accion){
+                    case 'registrar':
                     {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar proveedor';
-                                this.proveedor = '';
-                                this.contacto = '';
-                                this.telefono = '';
-                                this.direccion = '';
-                                this.colonia = '';
-                                this.email = '';
-                                this.email2 = '';
-                                this.tipoAccion = 1;
-                                this.usuario ='';
-                                this.password ='';
-                                this.rfc='';
-                                this.tipo = 0;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar proveedor';
-                                this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.proveedor = data['proveedor'];
-                                this.contacto = data['contacto'];
-                                this.telefono = data['telefono'];
-                                this.direccion = data['direccion'];
-                                this.colonia = data['colonia'];
-                                this.email = data['email'];
-                                this.email2 = data['email2'];
-                                this.tipo = data['tipo'];
-                                break;
-                            }
-                        }
+                        this.tituloModal = 'Registrar proveedor';
+                        this.proveedor = '';
+                        this.contacto = '';
+                        this.telefono = '';
+                        this.direccion = '';
+                        this.colonia = '';
+                        this.email = '';
+                        this.email2 = '';
+                        this.tipoAccion = 1;
+                        this.usuario ='';
+                        this.password ='';
+                        this.rfc='';
+                        this.num_cuenta='';
+                        this.banco='';
+                        this.tipo = 0;
+                        break;
+                    }
+                    case 'actualizar':
+                    {
+                        this.tituloModal='Actualizar proveedor';
+                        this.tipoAccion=2;
+                        this.id=data['id'];
+                        this.proveedor = data['proveedor'];
+                        this.contacto = data['contacto'];
+                        this.telefono = data['telefono'];
+                        this.direccion = data['direccion'];
+                        this.colonia = data['colonia'];
+                        this.email = data['email'];
+                        this.email2 = data['email2'];
+                        this.tipo = data['tipo'];
+                        this.banco = data['banco'];
+                        this.num_cuenta = data['num_cuenta'];
+                        this.arrayCuentas = data['cuentas'];
+                        break;
+                    }
+                    case 'banco':{
+                        this.modal = 2;
+                        this.n_banco = '';
+                        this.n_cuenta = '';
+                        break;
                     }
                 }
-
             },
             abrirModal2(modelo, accion,data =[]){
                 switch(modelo){
@@ -739,6 +865,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
         },
         mounted() {
             this.listarProveedores(1,this.buscar,this.criterio);
+            this.selectBancos();
         }
     }
 </script>
@@ -750,7 +877,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
     .text-error{
         color: red !important;
         font-weight: bold;
-    }    
+    }
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
