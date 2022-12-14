@@ -51,7 +51,7 @@ body{
                     @if($contrato->emp_constructora == 'Grupo Constructor Cumbres')
                         la Sra. Mayra Jazmín Salazar Alonso
                     @else
-                        La Sra. Elizabeth Hernandez Loera
+                        La Sra. Elizabeth Hernández Loera
                     @endif
                     a quien en lo sucesivo se le
                     denominará <strong>“LA PARTE VENDEDORA”</strong>; y por otra parte el Sr. (a) {{mb_strtoupper($contrato->nombre_completo)}}
@@ -68,7 +68,7 @@ body{
                     sociedad <strong>{{$contrato->emp_constructora}}, S.A. de C.V.</strong>,
                     representada en este acto por su representante la Sra. Mayra Jazmín Salazar Alonso y la sociedad
                     <strong>{{mb_strtoupper($contrato->emp_terreno)}},S.A. de C.V.</strong>, representada en este acto por su representante legal
-                    La Sra. Elizabeth Hernandez Loera a quien en lo sucesivo se les
+                    La Sra. Elizabeth Hernández Loera a quien en lo sucesivo se les
                     denominará <strong>“LA PARTE VENDEDORA”</strong>; y por otra parte el Sr. (a) {{mb_strtoupper($contrato->nombre_completo)}}
                     @if($contrato->coacreditado == 1)
                         y el Sr (a) {{$contrato->nombre_coa}} {{$contrato->apellidos_coa}}
@@ -411,7 +411,7 @@ body{
                         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td width=220 colspan="5"><center>CONCRETANIA, S.A. de C.V.
                             <br> REPRESENTADA POR
-                            <br> LA SRA. ELIZABETH HERNANDEZ LOERA</center></td>
+                            <br> LA SRA. ELIZABETH HERNÁNDEZ LOERA</center></td>
                     </tr>
                 </table>
             @else
@@ -426,7 +426,7 @@ body{
                                     {{mb_strtoupper($contrato->emp_constructora)}}, S.A. de C.V.
                                     @if($contrato->emp_constructora == 'CONCRETANIA')
                                         <br> REPRESENTADA POR
-                                        <br> LA SRA. ELIZABETH HERNANDEZ LOERA
+                                        <br> LA SRA. ELIZABETH HERNÁNDEZ LOERA
                                     @else
                                         <br> REPRESENTADA POR
                                         <br> LA SRA. MAYRA JAZMIN SALAZAR ALONSO

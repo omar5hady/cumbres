@@ -31,14 +31,14 @@
                             </div>
                         </div>
                         <TableComponent
-                            :cabecera="['','Proveedor','Contacto','Dirección','Colonia','Teléfono','Email','P. Garantia']">
+                            :cabecera="['','Proveedor','Contacto','Dirección','Colonia','Teléfono','Email','P. Garantia','Constancia Fiscal']">
                             <template v-slot:tbody>
                                 <tr v-for="proveedor in arrayProveedores" :key="proveedor.id">
                                     <td class="td2" style="width:10%">
                                         <button type="button" @click="abrirModal('actualizar',proveedor)" class="btn btn-warning btn-sm">
                                         <i class="icon-pencil"></i>
                                         </button>
-                                        <button type="button" class="btn btn-dark btn-sm" @click="abrirModal2('equipamiento','registrar',proveedor), listarEquipamiento(1, proveedor.id)" title="Asignar equipamiento">
+                                        <button type="button" class="btn btn-dark btn-sm" @click="abrirModal2(proveedor), listarEquipamiento(1, proveedor.id)" title="Asignar equipamiento">
                                         <i class="icon-share"></i>
                                         </button>
                                     </td>
@@ -49,6 +49,12 @@
                                     <td class="td2" v-text="proveedor.telefono" ></td>
                                     <td class="td2" v-text="proveedor.email" ></td>
                                     <td class="td2" v-text="proveedor.poliza" ></td>
+                                    <td class="td2">
+                                        <button class="btn" :class="[proveedor.const_fisc ? 'btn-success' : 'btn-default']"
+                                                title="Cargar constancia" @click="abrirModal('constancia',proveedor)">
+                                            <i class="icon-cloud-upload"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -143,6 +149,13 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Clabe interbancaria</label>
+                                <div class="col-md-4">
+                                    <input type="text" v-model="clabe" pattern="\d*" v-on:keypress="$root.isNumber($event)"
+                                        class="form-control" placeholder="Clabe" :disabled="tipoAccion == 2">
+                                </div>
+                            </div>
                             <div class="form-group row" v-if="tipoAccion == 2">
                                 <div class="col-md-4">
                                     <button class="btn btn-success" title="Nueva cuenta" @click="abrirModal('banco')">
@@ -215,6 +228,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-md-2 form-control-label" for="text-input">Clabe interbancaria</label>
+                        <div class="col-md-3">
+                            <input type="text" v-model="n_clabe" pattern="\d*" v-on:keypress="$root.isNumber($event)"
+                                class="form-control" placeholder="Clabe interbancaria">
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <div class="col-md-4">
                             <button class="btn btn-primary" title="Guardar Cuenta" @click="storeCuenta()">
                                 Guardar cuenta &nbsp;<i class="icon-plus"></i>
@@ -241,12 +261,61 @@
                                     </td>
                                     <td class="td2" v-text="cuenta.banco" ></td>
                                     <td class="td2" v-text="cuenta.num_cuenta" ></td>
+                                    <td class="td2" v-text="cuenta.clabe" ></td>
                                 </tr>
                             </template>
                         </TableComponent>
                     </div>
                 </template>
             </ModalComponent>
+
+            <!-- Inicio Modal Archivo Fiscal-->
+            <ModalComponent v-if="modal==3"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div class="form-group row">
+                        <input type="file"
+                            v-show="false"
+                            ref="archivoSelector"
+                            @change="onSelectedArchivo"
+                            accept="image/png, image/jpeg, image/gif, application/pdf"
+                        >
+                        <div class="col-md-9" v-if="!archivo">
+                            <button
+                                @click="onSelectArchivo"
+                                class="btn btn-scarlet">
+                                Seleccionar Constancia Fiscal
+                                <i class="fa fa-upload"></i>
+                            </button>
+
+                        </div>
+
+                        <div class="col-md-7" v-else>
+                            <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                            <button
+                                @click="onSelectArchivo"
+                                class="btn btn-info">
+                                Cambiar Archivo
+                                <i class="fa fa-upload"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-3" v-if="archivo">
+                            <button
+                                @click="formSubmitFileEntrega"
+                                class="btn btn-scarlet">
+                                Guardar archivo
+                                <i class="icon-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <a v-if="const_fisc != null" class="btn btn-primary btn-sm" target="_blank" :href="const_fisc">Ver Constancia fiscal</a>
+                </template>
+            </ModalComponent>
+            <!--Fin del modal-->
 
 
             <!--Inicio del modal asignar equipamiento-->
@@ -366,11 +435,14 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 rfc: '',
                 num_cuenta: '',
                 banco: '',
+                clabe:'',
                 n_banco: '',
                 n_cuenta: '',
+                n_clabe:'',
                 equipamiento : '',
                 tipoRecepcion : 0,
                 equipamientoId: 0,
+                const_fisc : '',
 
                 arrayProveedores : [],
                 arrayEquipamientos : [],
@@ -408,6 +480,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 criterio : 'proveedor',
                 buscar : '',
                 buscar2 : '',
+
+                archivo:'',
             }
         },
         computed:{
@@ -466,6 +540,35 @@ import TableComponent from '../Componentes/TableComponent.vue'
             }
         },
         methods : {
+            onSelectedArchivo( event ){
+                this.archivo = {}
+                this.archivo = event.target.files[0]
+            },
+            onSelectArchivo(){
+                this.$refs.archivoSelector.click()
+            },
+            formSubmitFileEntrega(){
+                let formData = new FormData();
+
+                formData.append('file', this.archivo);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/proveedor/submitProveedorConst', formData)
+                .then(function (response) {
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.archivo = undefined;
+                    me.cerrarModal();
+
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             /**Metodo para mostrar los registros */
             listarProveedores(page, buscar, criterio){
                 let me = this;
@@ -536,7 +639,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'email2': this.email2,
                     'tipo' : this.tipo,
                     'num_cuenta' : this.num_cuenta,
-                    'banco' : this.banco
+                    'banco' : this.banco,
+                    'clabe' : this.clabe
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -600,11 +704,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 axios.post('/proveedor/storeCuenta',{
                     'num_cuenta': me.n_cuenta,
                     'banco': me.n_banco,
+                    'clabe': me.n_clabe,
                     'proveedor_id':me.id
                 }).then(function (response){
                     me.modal = 1; //al guardar el registro se cierra el modal
                     me.num_cuenta = me.n_cuenta;
                     me.banco = me.n_banco;
+                    me.clabe = me.n_clabe;
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -640,7 +746,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'tipo' : this.tipo,
                     'id': this.id,
                     'num_cuenta' : this.num_cuenta,
-                    'banco' : this.banco
+                    'banco' : this.banco,
+                    'clabe' : this.clabe
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -692,6 +799,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             seleccionarCuenta(cuenta){
                 this.num_cuenta = cuenta.num_cuenta;
                 this.banco = cuenta.banco;
+                this.clabe = cuenta.clabe;
                 this.modal = 1;
                 swal(
                     'Listo!',
@@ -840,27 +948,24 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.modal = 2;
                         this.n_banco = '';
                         this.n_cuenta = '';
+                        this.n_clabe = '';
+                        break;
+                    }
+                    case 'constancia':{
+                        this.modal= 3;
+                        this.tituloModal = 'Subir Constancia fiscal';
+                        this.contrato_id = data['folio'];
+                        this.const_fisc = data['const_fisc'];
+                        this.id=data['id'];
                         break;
                     }
                 }
             },
-            abrirModal2(modelo, accion,data =[]){
-                switch(modelo){
-                    case "equipamiento":
-                    {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal2 = 1;
-                                this.tituloModal2 = 'Asignar equipamiento a: ' + data['proveedor'];
-                                this.equipamiento = '';
-                                this.id = data['id'];
-                                break;
-                            }
-                        }
-                    }
-                }
-
+            abrirModal2(data){
+                this.modal2 = 1;
+                this.tituloModal2 = 'Asignar equipamiento a: ' + data['proveedor'];
+                this.equipamiento = '';
+                this.id = data['id'];
             }
         },
         mounted() {

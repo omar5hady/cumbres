@@ -3,16 +3,80 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Proveedor;
-
 use App\Personal;
 use App\User;
 use App\ProvCuenta;
-use Illuminate\Support\Facades\DB;
 use Auth;
+
+use App\DropboxFiles;
+use Spatie\Dropbox\Client;
+use Illuminate\Support\Facades\Storage;
 
 class ProveedorController extends Controller
 {
+
+    public function __construct()
+    {
+        // Necesitamos obtener una instancia de la clase Client la cual tiene algunos métodos
+        // que serán necesarios.
+        $this->dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+    }
+
+     // Función para subir archivo entrega para ventas.
+     public function submitProveedorConst(Request $request){
+        $id = $request->id;
+        $proveedor = Proveedor::findOrFail($id);
+        $url = $this->storeFile($request);
+
+            $this->deleteAnt($proveedor->const_fisc);
+            $proveedor->const_fisc = $url;
+
+        $proveedor->save();
+    }
+
+    private function deleteAnt($urlAnt){
+        $file = DropboxFiles::select('id')->where('public_url','=',$urlAnt)->get();
+        if(sizeof($file)){
+            // Eliminamos el registro de nuestra tabla.
+            $del = DropboxFiles::findOrFail($file[0]->id);
+            $this->dropbox->delete('Proveedor/Constancia/'.$del->name);
+            $del->delete();
+        }
+    }
+
+    private function storeFile(Request $request){
+
+        $carpeta = 'Proveedor/Constancia/';
+        $name = uniqid() . '' . $request->file->getClientOriginalName();
+        // Guardamos el archivo indicando el driver y el método putFileAs el cual recibe
+        // el directorio donde será almacenado, el archivo y el nombre.
+        // ¡No olvides validar todos estos datos antes de guardar el archivo!
+        Storage::disk('dropbox')->putFileAs(
+            $carpeta,
+            $request->file,
+            $name
+        );
+
+        // Creamos el enlace publico en dropbox utilizando la propiedad dropbox
+        // definida en el constructor de la clase y almacenamos la respuesta.
+        $response = $this->dropbox->createSharedLinkWithSettings(
+            $carpeta.$name,
+            ["requested_visibility" => "public"]
+        );
+
+        // Creamos un nuevo registro en la tabla files con los datos de la respuesta.
+        $archivo = new DropboxFiles();
+        $archivo->name = $response['name'];
+        $archivo->extension = $request->file->getClientOriginalExtension();
+        $archivo->size = $response['size'];
+        $archivo->public_url = $response['url'];
+        $archivo->save();
+
+        return $archivo->public_url;
+    }
+
     // obtiene informacion de la tabla  de proveedores
     public function index(Request $request){
         $buscar = $request->buscar;
@@ -20,7 +84,7 @@ class ProveedorController extends Controller
 
 
         $proveedores = Proveedor::select('id','proveedor', 'contacto',
-                    'direccion', 'colonia', 'num_cuenta', 'banco',
+                    'direccion', 'colonia', 'num_cuenta', 'banco', 'clabe', 'const_fisc',
                     'telefono', 'email', 'email2', 'poliza','tipo');
 
         if($buscar != '') $proveedores = $proveedores->where($criterio, 'like', '%'. $buscar . '%');
@@ -51,6 +115,7 @@ class ProveedorController extends Controller
         $cuenta = new ProvCuenta();
         $cuenta->num_cuenta = $request->num_cuenta;
         $cuenta->banco = $request->banco;
+        $cuenta->clabe = $request->clabe;
         $cuenta->proveedor_id = $request->proveedor_id;
         $cuenta->save();
     }
@@ -88,6 +153,7 @@ class ProveedorController extends Controller
             $proveedor->poliza=$request->poliza;
             $proveedor->tipo=$request->tipo;
             $proveedor->num_cuenta = $request->num_cuenta;
+            $proveedor->clabe = $request->clabe;
             $proveedor->banco = $request->banco;
             $proveedor->save();
 
@@ -95,6 +161,7 @@ class ProveedorController extends Controller
                 $cuenta = new ProvCuenta();
                 $cuenta->num_cuenta = $request->num_cuenta;
                 $cuenta->banco = $request->banco;
+                $cuenta->clabe = $request->clabe;
                 $cuenta->proveedor_id = $proveedor->id;
                 $cuenta->save();
             }

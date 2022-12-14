@@ -67,7 +67,7 @@
             @if($contrato->emp_terreno == 'Grupo Constructor Cumbres')
                 <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
             @else
-                <strong>CONCRETANIA, S. A. DE. C.V</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNANDEZ LOERA
+                <strong>CONCRETANIA, S. A. DE. C.V</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA
             @endif
             A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO <strong>EL PROMITENTE VENDEDOR</strong>
             Y POR LA OTRA PARTE, POR SU PROPIO DERECHO

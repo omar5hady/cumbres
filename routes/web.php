@@ -942,6 +942,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/proveedor','ProveedorController@index');
         Route::post('/proveedor/registrar','ProveedorController@store');
         Route::post('/proveedor/storeCuenta','ProveedorController@storeCuenta');
+        Route::post('/proveedor/submitProveedorConst','ProveedorController@submitProveedorConst');
         Route::put('/proveedor/actualizar','ProveedorController@update');
         Route::get('/select_proveedor','ProveedorController@selectProveedor');
 

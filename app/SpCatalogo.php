@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProvCuenta extends Model
+class SpCatalogo extends Model
 {
     protected $fillable = [
-        'proveedor_id','banco','num_cuenta','clabe'
+        'cargo', 'concepto', 'departamento_id'
     ];
 }

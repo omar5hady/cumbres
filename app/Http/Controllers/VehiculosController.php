@@ -37,6 +37,7 @@ class VehiculosController extends Controller
             'Mazda',
             'Nissan',
             'Polaris',
+            'Renault',
             'Seat',
             'Suzuki',
             'Toyota',
@@ -54,17 +55,17 @@ class VehiculosController extends Controller
                 ->select('vehiculos.*','personal.nombre','personal.apellidos');
         if($request->b_vehiculo != '')//Buscador por nombre de vehiculo
             $vehiculos = $vehiculos->where('vehiculos.vehiculo','like','%'.$request->b_vehiculo.'%');
-        if($request->b_empresa != '')//Buscador por empresa 
+        if($request->b_empresa != '')//Buscador por empresa
             $vehiculos = $vehiculos->where('vehiculos.empresa','=',$request->b_empresa);
         if($request->b_marca != '')//Buscador por marca de vehiculo
             $vehiculos = $vehiculos->where('vehiculos.marca','=',$request->b_marca);
         if($request->b_comodato != '')//Buscador para vehiculos registrados en comodato
             $vehiculos = $vehiculos->where('vehiculos.comodato','=',$request->b_comodato);
         //En caso de no ser administrador
-        if(Auth::user()->usuario != 'marce.gaytan' && Auth::user()->usuario != 'karen.viramontes' 
+        if(Auth::user()->usuario != 'marce.gaytan' && Auth::user()->usuario != 'karen.viramontes'
             && Auth::user()->usuario != 'uriel.al' && Auth::user()->usuario != 'shady'
         ) $vehiculos = $vehiculos->where('vehiculos.responsable_id','=',Auth::user()->id);//Mostrara solo los vehiculos registraods a quien hace la busqueda
-            
+
         $vehiculos = $vehiculos->orderBy('vehiculos.empresa','asc')
                 ->orderBy('vehiculos.marca','asc')
                 ->orderBy('vehiculos.vehiculo','asc')
@@ -105,14 +106,14 @@ class VehiculosController extends Controller
         $vehiculo->empresa = $request->empresa;
         $vehiculo->save();
     }
-    //Funcion para obtener lso vehiculos en comodato 
+    //Funcion para obtener lso vehiculos en comodato
     public function getComoDato(Request $request){
         if(!$request->ajax())return redirect('/');
         //Query principal
         $vehiculos = Vehiculo::join('personal','vehiculos.responsable_id','=','personal.id')
                 ->select('vehiculos.id','vehiculos.vehiculo','vehiculos.marca', 'vehiculos.modelo','personal.nombre','personal.apellidos')
                 ->where('comodato','=',1);//Filtro para mostrar en comodato
-        if(Auth::user()->rol_id != 1 && Auth::user()->usuario != 'zaira.valt') 
+        if(Auth::user()->rol_id != 1 && Auth::user()->usuario != 'zaira.valt')
             $vehiculos = $vehiculos->where('responsable_id','=',Auth::user()->id);//Se muestran solo los vehiculos de quien realiza la busqueda
         $vehiculos = $vehiculos->get();
         return $vehiculos;
@@ -165,7 +166,7 @@ class VehiculosController extends Controller
         DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }         
+        }
     }
     //Función para actualizar la solicitud.
     public function updateSolicitud(Request $request){
@@ -192,7 +193,7 @@ class VehiculosController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }         
+        }
     }
     //Función que retorna todas las solicitudes de mantenimiento generadas
     public function getSolicitudes(Request $request){
@@ -222,7 +223,7 @@ class VehiculosController extends Controller
     //Función que retorna todas las solicitudes de mantenimiento generadas en excel
     public function getSolicitudesExcel(Request $request){
         //Llamada a la función privada que retorna la query principal
-        $solicitudes = $this->getQuerySolic($request);        
+        $solicitudes = $this->getQuerySolic($request);
         $solicitudes = $solicitudes->orderBy('mant_vehiculos.id','desc')->paginate(10);
 
         if(sizeOf($solicitudes)){
@@ -242,12 +243,12 @@ class VehiculosController extends Controller
             }
         }
         //Creación y retorno de los resultados en excel.
-        return Excel::create('Solicitudes de Mant. Comodato', 
+        return Excel::create('Solicitudes de Mant. Comodato',
                     function($excel) use ($solicitudes){
                         $excel->sheet('Solicitudes', function($sheet) use ($solicitudes){
-                            
+
                             $sheet->row(1, [
-                                'Vehiculo', 'Solicitante' ,'Servicio', 'Importe total', 'Aportación compañero', 'Monto retenido', 
+                                'Vehiculo', 'Solicitante' ,'Servicio', 'Importe total', 'Aportación compañero', 'Monto retenido',
                                 'Fecha de solic.', 'Status', 'RH'
                             ]);
 
@@ -266,16 +267,16 @@ class VehiculosController extends Controller
                                 $cells->setAlignment('center');
                             });
 
-                            
+
                             $cont=1;
-                            
+
                             $sheet->setColumnFormat(array(
                                 'D' => '$#,##0.00',
                                 'E' => '$#,##0.00',
                                 'F' => '$#,##0.00'
                             ));
 
-                            
+
 
                             foreach($solicitudes as $index => $solicitud) {
                                 if($solicitud->recep_rh == NULL){
@@ -300,18 +301,18 @@ class VehiculosController extends Controller
                                         break;
                                     }
                                 }
-                                
+
                                 $sheet->row($index+2, [
-                                    $solicitud->marca.' '.$solicitud->auto.' '.$solicitud->modelo, 
+                                    $solicitud->marca.' '.$solicitud->auto.' '.$solicitud->modelo,
                                     $solicitud->solicitante,
                                     $solicitud->reparacion,
-                                    $solicitud->importe_total, 
-                                    $solicitud->monto_comp, 
+                                    $solicitud->importe_total,
+                                    $solicitud->monto_comp,
                                     $solicitud->totalRetenido,
                                     $solicitud->created_at,
                                     $solicitud->status,
                                     $solicitud->recep_rh
-                                ]);	
+                                ]);
                             }
 
 
@@ -319,9 +320,9 @@ class VehiculosController extends Controller
                             $sheet->setBorder($num, 'thin');
                             $sheet->cells('S1:S'.$cont, function($cells) {
 
-                                
+
                                 $cells->setFontColor('#ff4040');
-                            
+
                             });
                         });
                     }
@@ -361,7 +362,7 @@ class VehiculosController extends Controller
             //Se crea observación indicando la liquidación.
             $this->guardarObs($pago->mantenimiento_id, 'La solicitud ha sido liquidada');
             $solicitud->save();
-        }   
+        }
     }
     //Función privada que retorna la query principal para obtener las solicitudes de mantenimiento
     private function getQuerySolic(Request $request){
@@ -377,7 +378,7 @@ class VehiculosController extends Controller
 
                 if($fecha1 != '' && $fecha2)//Busqueda por fecha de solicitud
                     $solicitudes = $solicitudes->whereBetween('mant_vehiculos.created_at',[$fecha1, $fecha2.' 23:59:59']);
-                if($status != '')//Busqueda por estatus de la solicitud 
+                if($status != '')//Busqueda por estatus de la solicitud
                                 // 0: Cancelado, 1: Pendiente, 2: Aprobado y 3: Liquidado.
                     $solicitudes = $solicitudes->where('mant_vehiculos.status','=',$status);
                 if($buscar != '')//Busqueda general por nombre, marca y modelo del vehiculo.
@@ -491,12 +492,12 @@ class VehiculosController extends Controller
             $solicitud->status = 3;
             $this->guardarObs($pago->mantenimiento_id, 'La solicitud ha sido liquidada');
             $solicitud->save();
-        }   
+        }
     }
     //Función para eliminar una retención.
     public function eliminarRetencion(Request $request){
         $pago = Mant_retencion::findOrFail($request->id);
         $pago->delete();
     }
-    
+
 }

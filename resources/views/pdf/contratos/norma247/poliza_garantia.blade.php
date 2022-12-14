@@ -1158,7 +1158,7 @@
                         @endif
                     </b>
                     LA CUAL SE ENCUENTRA TOTALMENTE TERMINADA Y EN CONDICIONES DE HABITARSE, POR LO QUE EL COMPRADOR LA RECIBE A SU ENTERA
-                    SATISFACCIÓN CON TODA LA DOCUMENTACIÓN QUE A CONTINUACIÓN SE ENUMERA.
+                    SATISFACCIÓN CON TODA LA DOCUMENTACIÓN QUE A CONTINUACIÓN SE ENLISTAN.
                 </p>
             <br><br>
 
@@ -1181,6 +1181,7 @@
                         <p class="text-table2"></p>
                     </div>
                 </div>
+                @if($contrato->etapa != 'ZEREZ')
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
                         <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">COPIA DE FACTIBILIDAD DE AGUA</p></li>
@@ -1189,6 +1190,7 @@
                         <p class="text-table2"></p>
                     </div>
                 </div>
+                @endif
                 <div class="table-row2">
                     <div colspan="4" class="table-cell2">
                         <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">
@@ -1277,7 +1279,7 @@
                         <p class="text-table2"></p>
                     </div>
                 </div>
-                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ')
+                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ' && $contrato->etapa != 'ZEREZ')
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
                             <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">2 MARBETES DE IDENTIFICACIÓN VEHICULAR</p></li>
@@ -1307,7 +1309,7 @@
                         </div>
                     </div>
                 @endif
-                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ')
+                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ' && $contrato->etapa != 'ZEREZ')
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
                             <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">CARTA BIENVENIDA DE LA ADMINISTRACIÓN</p></li>

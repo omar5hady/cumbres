@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProvCuentasTable extends Migration
+class CreateSpObservacionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateProvCuentasTable extends Migration
      */
     public function up()
     {
-        Schema::create('prov_cuentas', function (Blueprint $table) {
+        Schema::create('sp_observacions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('proveedor_id');
-            $table->string('banco',80);
-            $table->string('num_cuenta',80);
-            $table->string('clabe',80);
+            $table->integer('solicitud_id');
+            $table->text('comentario');
+            $table->string('usuario');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateProvCuentasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('prov_cuentas');
+        Schema::dropIfExists('sp_observacions');
     }
 }

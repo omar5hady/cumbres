@@ -66,7 +66,7 @@ class IniObraController extends Controller
         //Llamada a la función privada que devuelve la query principal
         $ini_obra = $this->getQueryAvisos($request);
         $ini_obra = $ini_obra->orderBy('ini_obras.id', 'desc')->paginate(8);
-        //Retorno de información 
+        //Retorno de información
         return [
             'pagination' => [
                 'total'        => $ini_obra->total(),
@@ -130,7 +130,7 @@ class IniObraController extends Controller
                         setlocale(LC_TIME, 'es_MX.utf8');
                         $tiempo = new Carbon($lote->f_fin);
                         $lote->f_fin = $tiempo->formatLocalized('%d de %B de %Y');
-                        
+
 
                         $sheet->row($index + 2, [
                             $lote->clave,
@@ -153,7 +153,7 @@ class IniObraController extends Controller
     //Función que retorna los datos principales de un Aviso de obra
     public function obtenerCabecera(Request $request){
         if (!$request->ajax()) return redirect('/');
- 
+
         $id = $request->id;
         //Query principal
         $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
@@ -167,7 +167,7 @@ class IniObraController extends Controller
             'ini_obras.iva','ini_obras.tipo','ini_obras.total_superficie')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
-         
+
         return ['ini_obra' => $ini_obra];
     }
 
@@ -184,10 +184,10 @@ class IniObraController extends Controller
             'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.lote', 'desc')->get();
-         
+
         return ['detalles' => $detalles];
     }
- 
+
     //Función para registrar un nuevo aviso de obra.
     public function store(Request $request)
     {
@@ -195,9 +195,9 @@ class IniObraController extends Controller
         $fecha_ini = $request->f_ini;
         $fecha_fin = $request->f_fin;
         $lotes = $request->data;//Array de detalles
- 
+
         try{
-            DB::beginTransaction(); 
+            DB::beginTransaction();
             //Se crea el registro para la Tabla ini_obras
             $ini_obra = new Ini_obra();
             $ini_obra->fraccionamiento_id = $request->fraccionamiento_id;
@@ -227,8 +227,8 @@ class IniObraController extends Controller
             $ini_obra->num_torres = $request->num_torres;
             $ini_obra->num_casas = sizeof($lotes);
             $ini_obra->save();
-            
-            
+
+
             //Recorro todos los elementos del array
             foreach($lotes as $ep=>$det)
             {
@@ -241,7 +241,7 @@ class IniObraController extends Controller
                 $lotes->construccion = $det['superficie'];
                 $lotes->costo_directo = $det['costo_directo'];
                 $lotes->costo_indirecto = $det['costo_indirecto'];
-                $lotes->importe = $det['importe'];       
+                $lotes->importe = $det['importe'];
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
@@ -251,6 +251,8 @@ class IniObraController extends Controller
                     //Se accede al registro en la tabla de lotes
                     //Para actualizar la información correspondiente al contrato de obra
                     $lote = Lote::findOrFail($det['lote_id']);
+                    $ini_obra->num_casas = $ini_obra->num_casas - 1;
+                    $ini_obra->save();
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
@@ -270,8 +272,8 @@ class IniObraController extends Controller
                     }
                     $lote->save();
                 }
-            }          
- 
+            }
+
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
@@ -345,7 +347,7 @@ class IniObraController extends Controller
         //Se obtienen los lotes que corresponden al aviso de obra
         $lotes = Ini_obra_lote::select('lote_id')
                                 ->where('ini_obra_id','=',$request->id)->get();
-        //Se recorre el arreglo de lotes 
+        //Se recorre el arreglo de lotes
         foreach($lotes as $ep=>$det){
             if($det->lote_id > 0){
                 $lote = Lote::findOrFail($det->lote_id);
@@ -367,7 +369,7 @@ class IniObraController extends Controller
         $lotes = $request->data;//Array de detalles
 
         try{
-            DB::beginTransaction(); 
+            DB::beginTransaction();
             //Se accede al registro del aviso de obra.
             $ini_obra = Ini_obra::findOrFail($request->id);
             $ini_obra->fraccionamiento_id = $request->fraccionamiento_id;
@@ -409,7 +411,7 @@ class IniObraController extends Controller
                 $lotes->construccion = $det['construccion'];
                 $lotes->costo_directo = $det['costo_directo'];
                 $lotes->costo_indirecto = $det['costo_indirecto'];
-                $lotes->importe = $det['importe'];       
+                $lotes->importe = $det['importe'];
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
@@ -418,6 +420,8 @@ class IniObraController extends Controller
                 if($det['lote_id']>0){
                     //Se accede al registro del lote y se actualiza información
                     $lote = Lote::findOrFail($det['lote_id']);
+                    $ini_obra->num_casas = $ini_obra->num_casas - 1;
+                    $ini_obra->save();
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
@@ -437,7 +441,7 @@ class IniObraController extends Controller
                     }
                     $lote->save();
                 }
-            }          
+            }
 
             DB::commit();
         } catch (Exception $e){
@@ -474,7 +478,7 @@ class IniObraController extends Controller
         $lotes->construccion = $request->superficie;
         $lotes->costo_directo = $request->costo_directo;
         $lotes->costo_indirecto = $request->costo_indirecto;
-        $lotes->importe = $request->importe;       
+        $lotes->importe = $request->importe;
         $lotes->descripcion = $request->descripcion;
         $lotes->lote_id= $request->lote_id;
         $lotes->save();
@@ -559,7 +563,7 @@ class IniObraController extends Controller
         //Creación y retorno de Excel
         return Excel::create('Pre_'.$relacion[0]->proyecto , function($excel) use ($relacion, $detalles){
         $excel->sheet($relacion[0]->clave, function($sheet) use ($relacion, $detalles){
-            
+
             $sheet->mergeCells('A1:G1');
             $sheet->mergeCells('A3:G3');
             $sheet->mergeCells('A5:G5');
@@ -585,7 +589,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(32);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
             if($relacion[0]->emp_constructora == 'CONCRETANIA');
                 $sheet->cell('A1', function($cell) {
@@ -596,10 +600,10 @@ class IniObraController extends Controller
                     $cell->setFontSize(32);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
-            
-            
+
+
             $sheet->row(3, [
                 'Relacion de viviendas en '.'"'.$relacion[0]->proyecto.'"'
             ]);
@@ -611,7 +615,7 @@ class IniObraController extends Controller
                 $cell->setFontSize(18);
                 $cell->setFontWeight('bold');
                 $cell->setAlignment('center');
-            
+
             });
 
 
@@ -619,7 +623,7 @@ class IniObraController extends Controller
                 $relacion[0]->contratista
             ]);
 
-            
+
             $sheet->cell('A5', function($cell) {
 
                 // manipulate the cell
@@ -627,7 +631,7 @@ class IniObraController extends Controller
                 $cell->setFontSize(14);
                 $cell->setFontWeight('bold');
                 $cell->setAlignment('center');
-            
+
             });
 
 
@@ -651,7 +655,7 @@ class IniObraController extends Controller
                 $cells->setAlignment('center');
             });
 
-            
+
             $cont=7;
 
             $sheet->setColumnFormat(array(
@@ -659,24 +663,24 @@ class IniObraController extends Controller
                 'E' => '$#,##0.00',
                 'F' => '$#,##0.00'
             ));
-            
+
             foreach($detalles as $index => $detalle) {
-                $cont++;       
-                
+                $cont++;
+
                 $sheet->row($index+8, [
-                    $detalle->descripcion, 
-                    $detalle->manzana, 
-                    $detalle->lote.' '.$detalle->sublote, 
-                    $detalle->construccion, 
+                    $detalle->descripcion,
+                    $detalle->manzana,
+                    $detalle->lote.' '.$detalle->sublote,
+                    $detalle->construccion,
                     $detalle->costo_directo,
                     $detalle->costo_indirecto,
                     $detalle->importe,
-                ]);	
-                
-                
-            
+                ]);
+
+
+
             }
-    
+
                 $contador = $cont+1;
                 $contador0 = $contador+2;
                 $contador01 = $contador+3;
@@ -694,11 +698,11 @@ class IniObraController extends Controller
                 $cells->setFontWeight('bold');
                 $cells->setAlignment('center');
             });
-            
 
-            $sheet->setCellValue('G'.$contador, $relacion[0]->total_importe); 
-            $sheet->setCellValue('F'.$contador, $relacion[0]->total_costo_indirecto); 
-            $sheet->setCellValue('E'.$contador, $relacion[0]->total_costo_directo); 
+
+            $sheet->setCellValue('G'.$contador, $relacion[0]->total_importe);
+            $sheet->setCellValue('F'.$contador, $relacion[0]->total_costo_indirecto);
+            $sheet->setCellValue('E'.$contador, $relacion[0]->total_costo_directo);
 
             $sheet->setColumnFormat(array(
                 'G'.$contador0 => '0.00',
@@ -706,10 +710,10 @@ class IniObraController extends Controller
 
             $sheet->cell('G'.$contador01, function ($cell) {
                 // Set font weight to bold
-                
+
                 $cell->setAlignment('left');
             });
-            
+
 
             $sheet->setCellValue('F'.$contador0, 'Anticipo');
             $sheet->setCellValue('F'.$contador01, 'Total anticipo');
@@ -720,58 +724,58 @@ class IniObraController extends Controller
                 // manipulate the cell
                 $cell->setFontFamily('Arial Narrow');
                 $cell->setAlignment('right');
-            
+
             });
             $sheet->cell('A'.$contador2, function($cell) {
                 // manipulate the cell
                 $cell->setFontFamily('Arial Narrow');
                 $cell->setAlignment('right');
-            
+
             });
             $sheet->cell('A'.$contador3, function($cell) {
                 // manipulate the cell
                 $cell->setFontFamily('Arial Narrow');
                 $cell->setAlignment('right');
-            
+
             });
             $sheet->cell('A'.$contador4, function($cell) {
                 // manipulate the cell
                 $cell->setFontFamily('Arial Narrow');
                 $cell->setAlignment('right');
-            
-            });
-                
-                $sheet->setCellValue('A'.$contador1,'Fecha de inicio de obra '); 
-                $sheet->setCellValue('A'.$contador2,'Fecha de termino de obra '); 
-                $sheet->setCellValue('A'.$contador3,'Clave '); 
-                $sheet->setCellValue('A'.$contador4,'Contratista'); 
 
-                $sheet->setCellValue('C'.$contador1,$relacion[0]->f_ini); 
-                $sheet->setCellValue('C'.$contador2,$relacion[0]->f_fin); 
-                $sheet->setCellValue('C'.$contador3,$relacion[0]->clave); 
-                $sheet->setCellValue('C'.$contador4,$relacion[0]->contratista); 
+            });
+
+                $sheet->setCellValue('A'.$contador1,'Fecha de inicio de obra ');
+                $sheet->setCellValue('A'.$contador2,'Fecha de termino de obra ');
+                $sheet->setCellValue('A'.$contador3,'Clave ');
+                $sheet->setCellValue('A'.$contador4,'Contratista');
+
+                $sheet->setCellValue('C'.$contador1,$relacion[0]->f_ini);
+                $sheet->setCellValue('C'.$contador2,$relacion[0]->f_fin);
+                $sheet->setCellValue('C'.$contador3,$relacion[0]->clave);
+                $sheet->setCellValue('C'.$contador4,$relacion[0]->contratista);
 
                 $sheet->cell('A'.$contador5, function($cell) {
                     // manipulate the cell
                     $cell->setFontColor('#ff0000');
                     $cell->setFontFamily('Arial Narrow');
                     $cell->setAlignment('center');
-                
+
                 });
-            
-                $sheet->setCellValue('A'.$contador5,'Datos de la obra'); 
-                $sheet->setCellValue('A'.$contador6,$relacion[0]->calleFracc); 
-                $sheet->setCellValue('A'.$contador7,$relacion[0]->coloniaFracc . ' C.P. '.$relacion[0]->cpFracc); 
-            
-            
+
+                $sheet->setCellValue('A'.$contador5,'Datos de la obra');
+                $sheet->setCellValue('A'.$contador6,$relacion[0]->calleFracc);
+                $sheet->setCellValue('A'.$contador7,$relacion[0]->coloniaFracc . ' C.P. '.$relacion[0]->cpFracc);
+
+
 
             $num='A7:G' . $cont;
             $sheet->setBorder($num, 'thin');
         });
         }
-        
+
         )->download('xls');
-    
+
     }
     ////////////////////////////////////////////////////////////////////////////////
     //Función para registrar y almacenar en el servidor el archivo del contrato.
@@ -867,7 +871,7 @@ class IniObraController extends Controller
         $this->validate($request, array(
             'file'      => 'required'
         ));
- 
+
         if($request->hasFile('file')){
             //Se obtiene la extensión del archivo
             $extension = File::extension($request->file->getClientOriginalName());
@@ -876,7 +880,7 @@ class IniObraController extends Controller
                 //Se obtienen la cantidad de lotes correspondientes al aviso de obra
                 $lotes = Ini_obra_lote::select('ini_obra_id')
                 ->where('ini_obra_id','=',$request->contrato)
-                ->where('lote','!=',NULL)->count();   
+                ->where('lote','!=',NULL)->count();
                 //Se actualiza el registro del aviso de obra con los datos capturados
                 $contrato = Ini_obra::findOrFail($request->contrato);
                 $contrato->num_casas = $lotes;
@@ -891,22 +895,22 @@ class IniObraController extends Controller
                 })->get();
 
                 if(!empty($data) && $data->count()){
-                    //Se recorren los datos obtenidos 
+                    //Se recorren los datos obtenidos
                     foreach ($data as $key => $value) {
-                        //En un arreglo se van almacenando los datos 
+                        //En un arreglo se van almacenando los datos
                         $insert[] = [
                             'aviso_id' => $request->contrato,
                             'partida' => $value->partida,
                             'pu_prorrateado' => $value->pu_prorrateado
                         ];
                     }
-                    
+
                     if(!empty($insert)){
                         //Se cargan las partidas para la estimacion
                         $insertData = DB::table('estimaciones')->insert($insert);
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
-                        }else {                        
+                        }else {
                             Session::flash('error', 'Error inserting the data..');
                             return back();
                         }
@@ -942,7 +946,7 @@ class IniObraController extends Controller
 
         if($request->fin_estimaciones != '')
             $ini_obra = $ini_obra->where('ini_obras.fin_estimaciones','=',$request->fin_estimaciones);
-        
+
         if($buscar != ''){
             $ini_obra = $ini_obra
             //Busqueda por clave de contrato
@@ -968,13 +972,13 @@ class IniObraController extends Controller
                     $obra->total_anticipo = 0;
                     $obra->total_anticipo = $anticipoT->total;
                 }
-                    
+
 
                 if($obra->total_importe != 0)
                     $obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
             }
-        
-         
+
+
         return [
             'pagination' => [
                 'total'        => $ini_obra->total(),
@@ -1049,7 +1053,7 @@ class IniObraController extends Controller
         }
 
         $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
-        
+
 
         if(sizeof($est) == 0){
             $total_estimacion = 0;
@@ -1079,7 +1083,7 @@ class IniObraController extends Controller
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
-            
+
         $num = $num_est + 1;
 
         if(sizeof($act) == 0)
@@ -1111,7 +1115,7 @@ class IniObraController extends Controller
                     ->where('estimacion_id','=',$estimacion->id)
                     ->where('num_estimacion','<=',$num_est)
                     ->get();
-                
+
                 //Se asignan los totales a la partida
                 if( $acum[0]->volumen > 0 ){
                     $estimacion->acumVol = $acum[0]->volumen;
@@ -1144,7 +1148,7 @@ class IniObraController extends Controller
             $anticipo = round(($total_anticipo/$request->total_importe)*100,3);
 
         return [
-            'estimaciones' => $estimaciones, 
+            'estimaciones' => $estimaciones,
             'total_estimacion' => $total_estimacion,
             'num_est' => $num ,
             'numero' => $num_est,
@@ -1191,7 +1195,7 @@ class IniObraController extends Controller
             $est = $est->where('num_estimacion','<=',$request->numero);
 
         $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
-        
+
 
         if(sizeof($est) == 0){
             $total_estimacion = 0;
@@ -1218,7 +1222,7 @@ class IniObraController extends Controller
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
-            
+
         $num = $num_est + 1;
 
         (sizeof($act) == 0) ? $actual = 0 : $actual = $act[0]->num_estimacion;
@@ -1245,7 +1249,7 @@ class IniObraController extends Controller
                     ->where('estimacion_id','=',$estimacion->id)
                     ->where('num_estimacion','<=',$num_est)
                     ->get();
-                
+
                 //Se asignan los totales a la partida
                 if( $acum[0]->volumen > 0 ){
                     $estimacion->acumVol = $acum[0]->volumen;
@@ -1278,7 +1282,7 @@ class IniObraController extends Controller
             $anticipo = round(($total_anticipo/$request->total_importe)*100,3);
 
         return [
-            'estimaciones' => $estimaciones, 
+            'estimaciones' => $estimaciones,
             'total_estimacion' => $total_estimacion,
             'num_est' => $num ,
             'numero' => $num_est,
@@ -1349,7 +1353,7 @@ class IniObraController extends Controller
             $contrato[0]->total_anticipo = $anticipoT->total;
             //$obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
         $contrato[0]->anticipo = round(($contrato[0]->total_anticipo/$contrato[0]->total_importe)*100,3);
-        
+
         //Filtro para numero de estimacion a buscar
         if($request->numero != ''){
             $est = $est->where('num_estimacion','<=',$request->numero);
@@ -1366,7 +1370,7 @@ class IniObraController extends Controller
             $num_est = $est[0]->num_estimacion;
             $total_estimacion = $est[0]->total_estimacion;
         }
-        
+
 
         if(sizeof($est) == 0)
             $num_est = 0;
@@ -1398,7 +1402,7 @@ class IniObraController extends Controller
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
-        
+
         //Se recorren las partidas de las estimaciones
         foreach($estimaciones as $index => $estimacion){
             $estimacion->num_estimacion = 0;
@@ -1450,18 +1454,18 @@ class IniObraController extends Controller
 
         //return $contrato;
         //Creación y retorno de Excel
-        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
+        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones,
                 $num_est, $contrato, $num_casas , $totalEstimacionAnt , $observaciones,
                 $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
-            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est, 
+            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est,
                     $contrato, $num_casas , $totalEstimacionAnt, $observaciones,
                     $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
-                
+
                 $sheet->mergeCells('A1:L1');
                 $sheet->mergeCells('A3:L3');
                 $sheet->mergeCells('A4:L4');
                 $sheet->mergeCells('A5:L5');
-                
+
                 $sheet->mergeCells('E7:F7');
                 $sheet->mergeCells('G7:H7');
                 $sheet->mergeCells('I7:J7');
@@ -1476,7 +1480,7 @@ class IniObraController extends Controller
                 $sheet->setSize('E7', 20, 20);
                 $sheet->setSize('F7', 20, 20);
                 $sheet->setSize('G7', 20, 20);
-    
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
                     $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
@@ -1494,7 +1498,7 @@ class IniObraController extends Controller
                         $cell->setFontSize(32);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                 if($contrato[0]->emp_constructora == 'CONCRETANIA');
                     $sheet->cell('A1', function($cell) {
@@ -1505,14 +1509,14 @@ class IniObraController extends Controller
                         $cell->setFontSize(20);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-                    
+
                 $sheet->row(3, [
-                    'Control de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                    'Control de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave
                 ]);
                 $sheet->row(4, [
-                    'Contratista '.$contrato[0]->contratista 
+                    'Contratista '.$contrato[0]->contratista
                 ]);
 
                 $sheet->cell('A3', function($cell) {
@@ -1522,7 +1526,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A4', function($cell) {
 
@@ -1531,10 +1535,10 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                    // $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
-                
+
                 $sheet->cell('A5', function($cell) {
 
                     // manipulate the cell
@@ -1542,7 +1546,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($estimaciones[0]->ini);
@@ -1551,13 +1555,13 @@ class IniObraController extends Controller
                     $fecha2 = new Carbon($estimaciones[0]->fin);
                     $estimaciones[0]->fin = $fecha2->formatLocalized('%d de %B de %Y');
 
-                
+
                 $sheet->row(6, [
                     'Periodo: ', $estimaciones[0]->ini. ' al '.$estimaciones[0]->fin
                 ]);
-        
+
                 $sheet->row(7, [
-                    'No.', 'Paquete', 'P.U. Prorrateado', 'No. de Viviendas', 'Estimación No.'.$num_est,'', 
+                    'No.', 'Paquete', 'P.U. Prorrateado', 'No. de Viviendas', 'Estimación No.'.$num_est,'',
                     'Cantidad Tope','','Acumulado','',
                     'Por Estimar',''
                 ]);
@@ -1576,7 +1580,7 @@ class IniObraController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-                    
+
                 $cont=8;
 
                 $sheet->setColumnFormat(array(
@@ -1588,12 +1592,12 @@ class IniObraController extends Controller
                 ));
 
                 $suma0 = $suma1 = $suma2 = $suma3 = $suma4 = $suma5 = 0;
-                
+
                 foreach($estimaciones as $index => $detalle) {
-                    $cont++;       
+                    $cont++;
 
                     $montoTope = $volAcum = $montoAcum = $volPorEstimar = $montoPorEstimar = 0;
-                    
+
 
                     $montoTope = $detalle->pu_prorrateado * $detalle->num_casas;
                     $volAcum = $detalle->acumVol + $detalle->num_estimacion;
@@ -1607,10 +1611,10 @@ class IniObraController extends Controller
                     $suma5+=$montoPorEstimar;
 
                     $sheet->row($cont, [
-                        $index+1, 
-                        $detalle->partida, 
-                        $detalle->pu_prorrateado, 
-                        $detalle->num_casas, 
+                        $index+1,
+                        $detalle->partida,
+                        $detalle->pu_prorrateado,
+                        $detalle->num_casas,
                         $detalle->vol,
                         $detalle->costoA,
                         $detalle->num_casas,
@@ -1619,15 +1623,15 @@ class IniObraController extends Controller
                         $montoAcum,
                         $volPorEstimar,
                         $montoPorEstimar,
-                    ]);	  
-                    
+                    ]);
+
                 }
                 $cont++;
                 $sheet->row($cont, [
-                    '', 
-                    'Gran Total:', 
-                    $suma0, 
-                    '', 
+                    '',
+                    'Gran Total:',
+                    $suma0,
+                    '',
                     '',
                     '',
                     $num_casas,
@@ -1636,9 +1640,9 @@ class IniObraController extends Controller
                     $suma3,
                     '',
                     $suma5,
-                ]);	 
+                ]);
                 $num='A7:L' . $cont;
-                $sheet->setBorder($num, 'thin'); 
+                $sheet->setBorder($num, 'thin');
 
                 $total_acum_actual = $totalEstimacionAnt + $total_estimacion;
                 $total_por_estimar = $contrato[0]->total_importe - $total_acum_actual;
@@ -1672,7 +1676,7 @@ class IniObraController extends Controller
 
                 $cont2 = $cont+4;
                 $num='C'.$cont.':G' . $cont2;
-                $sheet->setBorder($num, 'thin'); 
+                $sheet->setBorder($num, 'thin');
 
                 $sheet->setColumnFormat(array(
                     'A'.$cont.':G'.$cont2 => '$#,##0.00'
@@ -1688,7 +1692,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->setColumnFormat(array(
                     'A'.$cont2.':G'.$cont2 => '$#,##0.00'
@@ -1697,28 +1701,28 @@ class IniObraController extends Controller
                 ///////////// ANTICIPOS
 
                 $sheet->row($cont2+1, ['','Anticipo', $contrato[0]->total_anticipo]);
-            
+
                 $cont2+=1;
                 $cont3=$cont2;
                 $totalAnticipo = 0;
                 foreach($anticipos as $index => $anticipo) {
                     $cont2++;
-                    $sheet->row($cont2, 
+                    $sheet->row($cont2,
                         ['','Pago de Anticipo de Vivienda ('.$anticipo->fecha_anticipo.')', $anticipo->monto_anticipo]
                     );
                     $totalAnticipo += $anticipo->monto_anticipo;
                 }
                 $cont2+=1;
-                $sheet->row($cont2, 
+                $sheet->row($cont2,
                         ['','', $totalAnticipo]
                     );
-                
+
                 $num='B'.$cont3.':C' . $cont2;
-                $sheet->setBorder($num, 'thin'); 
+                $sheet->setBorder($num, 'thin');
                 $sheet->setColumnFormat(array(
                     'C'.$cont3.':C'.$cont2 => '$#,##0.00'
                 ));
-            
+
             ///////////// FONDOS G.
                 $sheet->row($cont2+2, ['','Fondo de Garantia']);
 
@@ -1727,18 +1731,18 @@ class IniObraController extends Controller
                 $totalGarantia = 0;
                 foreach($fondos as $index => $fondo) {
                     $cont2++;
-                    $sheet->row($cont2, 
+                    $sheet->row($cont2,
                         ['','Pago de '.$fondo->cantidad.' FG ('.$fondo->fecha_fg.')',$fondo->cantidad,$fondo->monto_fg]
                     );
                     $totalGarantia += $fondo->monto_fg;
                 }
                 $cont2+=1;
-                $sheet->row($cont2, 
+                $sheet->row($cont2,
                         ['','','', $totalGarantia]
                     );
-                
+
                 $num='B'.$cont3.':D' . $cont2;
-                $sheet->setBorder($num, 'thin'); 
+                $sheet->setBorder($num, 'thin');
                 $sheet->setColumnFormat(array(
                     'D'.$cont3.':D'.$cont2 => '$#,##0.00',
                     'C'.$cont3.':C'.$cont2 => '#,##0.00'
@@ -1747,41 +1751,41 @@ class IniObraController extends Controller
 
             ///////////// OBRAS EXTRA
                 $cont2+=2;
-                
+
                 $cont3=$cont2;
                 if(sizeof($importesExtra)){
                     $saldoExtra = $importesExtra[0]->impExtra;
-                    $sheet->row($cont2, 
+                    $sheet->row($cont2,
                         ['','Obra extra:',$importesExtra[0]->impExtra]
                     );
                 }
                 else{
                     $saldoExtra = 0;
-                    $sheet->row($cont2, 
+                    $sheet->row($cont2,
                         ['','Obra extra:',0]
                     );
                 }
-                
+
                 $cont2++;
-                $sheet->row($cont2, 
+                $sheet->row($cont2,
                         ['','Concepto','Importe','Fecha']
                     );
                 foreach($conceptosExtra as $index => $concepto) {
                     $cont2++;
-                    
-                    $sheet->row($cont2, 
+
+                    $sheet->row($cont2,
                         ['',$concepto->concepto,$concepto->importe,$concepto->fecha]
                     );
                     $saldoExtra -= $concepto->importe;
                 }
                 $cont2+=2;
-                $sheet->row($cont2, 
+                $sheet->row($cont2,
                         ['','Saldo',$saldoExtra]
                     );
-                
+
                 $num='B'.$cont3.':D' . $cont2;
-                $sheet->setBorder($num, 'thin'); 
-            
+                $sheet->setBorder($num, 'thin');
+
             });
         })->download('xls');
     }
@@ -1815,7 +1819,7 @@ class IniObraController extends Controller
                                 'contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$request->clave)->get();
 
-        
+
         //Filtro para numero de estimacion a buscar
         if($request->numero != ''){
             $est = $est->where('num_estimacion','<=',$request->numero);
@@ -1832,7 +1836,7 @@ class IniObraController extends Controller
             $num_est = $est[0]->num_estimacion;
             $total_estimacion = $est[0]->total_estimacion;
         }
-        
+
 
         if(sizeof($est) == 0)
             $num_est = 0;
@@ -1864,7 +1868,7 @@ class IniObraController extends Controller
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
         }
-        
+
         //Se recorren las partidas de las estimaciones
         foreach($estimaciones as $index => $estimacion){
             $estimacion->num_estimacion = 0;
@@ -1912,18 +1916,18 @@ class IniObraController extends Controller
 
         //return $contrato;
         //Creación y retorno de Excel
-        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
+        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones,
                 $num_est, $contrato, $num_casas , $totalEstimacionAnt , $observaciones,
                 $total_estimacion ){
-            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est, 
+            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est,
                     $contrato, $num_casas , $totalEstimacionAnt, $observaciones,
                     $total_estimacion ){
-                
+
                 $sheet->mergeCells('A1:L1');
                 $sheet->mergeCells('A3:L3');
                 $sheet->mergeCells('A4:L4');
                 $sheet->mergeCells('A5:L5');
-                
+
                 $sheet->mergeCells('E7:F7');
                 $sheet->mergeCells('G7:H7');
                 $sheet->mergeCells('I7:J7');
@@ -1938,7 +1942,7 @@ class IniObraController extends Controller
                 $sheet->setSize('E7', 20, 20);
                 $sheet->setSize('F7', 20, 20);
                 $sheet->setSize('G7', 20, 20);
-    
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
                     $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
@@ -1956,7 +1960,7 @@ class IniObraController extends Controller
                         $cell->setFontSize(32);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                 if($contrato[0]->emp_constructora == 'CONCRETANIA');
                     $sheet->cell('A1', function($cell) {
@@ -1967,14 +1971,14 @@ class IniObraController extends Controller
                         $cell->setFontSize(20);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-                    
+
                 $sheet->row(3, [
-                    'Control de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                    'Control de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave
                 ]);
                 $sheet->row(4, [
-                    'Contratista '.$contrato[0]->contratista 
+                    'Contratista '.$contrato[0]->contratista
                 ]);
 
                 $sheet->cell('A3', function($cell) {
@@ -1984,7 +1988,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A4', function($cell) {
 
@@ -1993,10 +1997,10 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                    // $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
-                
+
                 $sheet->cell('A5', function($cell) {
 
                     // manipulate the cell
@@ -2004,7 +2008,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($estimaciones[0]->ini);
@@ -2013,13 +2017,13 @@ class IniObraController extends Controller
                     $fecha2 = new Carbon($estimaciones[0]->fin);
                     $estimaciones[0]->fin = $fecha2->formatLocalized('%d de %B de %Y');
 
-                
+
                 $sheet->row(6, [
                     'Periodo: ', $estimaciones[0]->ini. ' al '.$estimaciones[0]->fin
                 ]);
-        
+
                 $sheet->row(7, [
-                    'No.', 'Paquete', 'Importe', '%', 'Estimación No.'.$num_est,'', 
+                    'No.', 'Paquete', 'Importe', '%', 'Estimación No.'.$num_est,'',
                     'Cantidad Tope','','Acumulado','',
                     'Por Estimar',''
                 ]);
@@ -2038,7 +2042,7 @@ class IniObraController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-                    
+
                 $cont=8;
 
                 $sheet->setColumnFormat(array(
@@ -2051,12 +2055,12 @@ class IniObraController extends Controller
 
                 $suma0 = $suma1 = $suma2 = $suma3 = $suma4 = $suma5 = 0;
                 $iSuma0 = $iSuma1 = $iSuma2 = $iSuma3 = $iSuma4 = $iSuma5 = 0;
-                
+
                 foreach($estimaciones as $index => $detalle) {
-                    $cont++;       
+                    $cont++;
 
                     $montoTope = $volAcum = $montoAcum = $volPorEstimar = $montoPorEstimar = 0;
-                    
+
 
                     $montoTope = $detalle->pu_prorrateado * ($detalle->num_casas/100);
                     $volAcum = $detalle->acumVol + $detalle->num_estimacion;
@@ -2070,10 +2074,10 @@ class IniObraController extends Controller
                     $suma5+=$montoPorEstimar;
 
                     $sheet->row($cont, [
-                        $index+1, 
-                        $detalle->partida, 
-                        $detalle->pu_prorrateado, 
-                        $detalle->porc.' %', 
+                        $index+1,
+                        $detalle->partida,
+                        $detalle->pu_prorrateado,
+                        $detalle->porc.' %',
                         $detalle->vol.' %',
                         $detalle->costoA,
                         $detalle->num_casas.'%',
@@ -2082,15 +2086,15 @@ class IniObraController extends Controller
                         $montoAcum,
                         $volPorEstimar.' %',
                         $montoPorEstimar,
-                    ]);	  
-                    
+                    ]);
+
                 }
                 $cont+=2;
                 $sheet->row($cont, [
-                    '', 
-                    'Costo fabricación:', 
-                    $suma0, 
-                    '', 
+                    '',
+                    'Costo fabricación:',
+                    $suma0,
+                    '',
                     '',
                     '',
                     100,
@@ -2099,7 +2103,7 @@ class IniObraController extends Controller
                     $suma3,
                     '',
                     $suma5,
-                ]);	 
+                ]);
 
                 $iSuma0 = $suma0 * ($contrato[0]->costo_indirecto_porcentaje / 100);
                 $iSuma1 = $suma1 * ($contrato[0]->costo_indirecto_porcentaje / 100);
@@ -2108,10 +2112,10 @@ class IniObraController extends Controller
 
                 $cont++;
                 $sheet->row($cont, [
-                    '', 
-                    'Indirectos y garantias:', 
-                    $iSuma0, 
-                    '', 
+                    '',
+                    'Indirectos y garantias:',
+                    $iSuma0,
+                    '',
                     '',
                     '',
                     '',
@@ -2120,14 +2124,14 @@ class IniObraController extends Controller
                     $iSuma3,
                     '',
                     $iSuma5,
-                ]);	 
+                ]);
 
                 $cont++;
                 $sheet->row($cont, [
-                    '', 
-                    'Gran Total:', 
-                    $suma0 + $iSuma0, 
-                    '', 
+                    '',
+                    'Gran Total:',
+                    $suma0 + $iSuma0,
+                    '',
                     '',
                     '',
                     '',
@@ -2136,9 +2140,9 @@ class IniObraController extends Controller
                     $suma3 + $iSuma3,
                     '',
                     $suma5 + $iSuma5,
-                ]);	 
+                ]);
                 $num='A7:L' . $cont;
-                $sheet->setBorder($num, 'thin'); 
+                $sheet->setBorder($num, 'thin');
 
                 $total_estimacion = $total_estimacion + ($total_estimacion * ($contrato[0]->costo_indirecto_porcentaje / 100));
                 $totalEstimacionAnt = $totalEstimacionAnt + ($totalEstimacionAnt  * ($contrato[0]->costo_indirecto_porcentaje / 100));
@@ -2175,7 +2179,7 @@ class IniObraController extends Controller
 
                 $cont2 = $cont+4;
                 $num='C'.$cont.':G' . $cont2;
-                $sheet->setBorder($num, 'thin'); 
+                $sheet->setBorder($num, 'thin');
 
                 $sheet->setColumnFormat(array(
                     'A'.$cont.':G'.$cont2 => '$#,##0.00'
@@ -2191,12 +2195,12 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->setColumnFormat(array(
                     'A'.$cont2.':G'.$cont2 => '$#,##0.00'
                 ));
-            
+
             });
         })->download('xls');
     }
@@ -2254,7 +2258,7 @@ class IniObraController extends Controller
                     ->where('nivel','=',$request->nivel)
                     ->where('comun','=',0)
                     ->first();
-        
+
         return round($estimaciones->total,2);
     }
 
@@ -2273,10 +2277,10 @@ class IniObraController extends Controller
             return round($actual->total,2);
 
         }
-            
+
         return 0;
 
-        
+
     }
 
     private function totalActualComun(Request $request){
@@ -2298,7 +2302,7 @@ class IniObraController extends Controller
                     ->where('estimaciones.aviso_id','=',$request->clave)
                     ->where('comun','=',1)
                     ->first();
-        
+
         return round($estimaciones->total,2);
     }
 
@@ -2339,7 +2343,7 @@ class IniObraController extends Controller
             $estimacion->save();
         }
 
-        
+
         if($request->tipo_proyecto == 2)
             $this->updateAvace($request);
     }
@@ -2352,7 +2356,7 @@ class IniObraController extends Controller
         $anticipo->monto_anticipo = $request->monto_anticipo;
         $anticipo->save();
     }
-    
+
     //Funciíon para registrar un Fondo de Garantia
     public function storeFG(Request $request){
         $anticipo = new Fg_estimacion();
@@ -2382,8 +2386,8 @@ class IniObraController extends Controller
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
                 'ini_obras.total_importe',
                 'ini_obras.total_superficie',
-                'ini_obras.emp_constructora', 
-                'ini_obras.calle1', 
+                'ini_obras.emp_constructora',
+                'ini_obras.calle1',
                 'ini_obras.calle2',
                 'contratistas.nombre as contratista',
                 'fraccionamientos.nombre as proyecto',
@@ -2399,7 +2403,7 @@ class IniObraController extends Controller
         //Creación y retorno del archivo excel.
         return Excel::create('SIROC '.$aviso[0]->clave , function($excel) use ($aviso){
             $excel->sheet($aviso[0]->clave, function($sheet) use ($aviso){
-                
+
                 /////////// MergeCells
                     $sheet->mergeCells('A1:H1'); $sheet->setBorder('A1:H1', 'thick');
                     $sheet->mergeCells('A6:H6'); $sheet->setBorder('A6:H6', 'thick');
@@ -2408,17 +2412,17 @@ class IniObraController extends Controller
                     $sheet->mergeCells('A38:H38'); $sheet->setBorder('A38:H38', 'thick');
                     $sheet->mergeCells('A39:H44'); $sheet->setBorder('A39:H44', 'thin');
 
-                   
+
 
                     $sheet->mergeCells('A3:B3'); $sheet->setBorder('C3:C4', 'thin');
-                    $sheet->mergeCells('A4:B4'); 
+                    $sheet->mergeCells('A4:B4');
 
                     $sheet->mergeCells('A8:B8'); $sheet->setBorder('C8:C12', 'thin');
                     $sheet->mergeCells('A9:B9');
                     $sheet->mergeCells('A10:B10');
                     $sheet->mergeCells('A11:B11');
                     $sheet->mergeCells('A12:B12');
-                    
+
 
                     $sheet->mergeCells('A18:B18');  $sheet->setBorder('C16:C18', 'thin');
                     $sheet->mergeCells('A16:B16');
@@ -2453,8 +2457,8 @@ class IniObraController extends Controller
                     $sheet->setBorder('D27', 'thick');
                     $sheet->setBorder('F27', 'thick');
                     $sheet->setBorder('H27', 'thick');
-                    
-                    
+
+
                     $sheet->setSize('A1', 35, 20);
                     $sheet->setSize('C1', 20, 20);
                     $sheet->setSize('D1', 4, 20);
@@ -2463,7 +2467,7 @@ class IniObraController extends Controller
                     $sheet->setSize('H1', 4, 20);
                     $sheet->setSize('G1', 25, 20);
 
-    
+
                 $sheet->cell('A1', function($cell) {
                     // manipulate the cell
                     $cell->setValue(  'SIROC');
@@ -2508,61 +2512,61 @@ class IniObraController extends Controller
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
                 });
-                
+
                 $ciudad = $aviso[0]->ciudad.', '.$aviso[0]->estado;
-    
-                $sheet->setCellValue('A3', 'NOMBRE CONTRATISTA: ' ); 
-                $sheet->setCellValue('A4', 'REFERENCIA CONTRATO: ' ); 
-                $sheet->setCellValue('A8', 'CALLE:' ); 
-                $sheet->setCellValue('A9', 'NUMERO INT/EXT: ' ); 
-                $sheet->setCellValue('A10', 'COLONIA: ' ); 
-                $sheet->setCellValue('A11', 'CIUDAD/EDO: ' ); 
-                $sheet->setCellValue('A12', 'CODIGO POSTAL: ' ); 
-                $sheet->setCellValue('A16', 'ENTRE CALLE: ' ); 
-                $sheet->setCellValue('A17', 'ENTRE CALLE: ' ); 
-                $sheet->setCellValue('A18', 'ENTRE CALLE: ' ); 
 
-                $sheet->setCellValue('A22', 'CLASE DE OBRA: ' ); 
-                $sheet->setCellValue('A24', 'TIPO DE OBRA: ' ); 
-                $sheet->setCellValue('A26', 'TIPO DE PATRON: ' ); 
-                $sheet->setCellValue('A29', 'MONTO DE LA OBRA: ' ); 
-                $sheet->setCellValue('A33', 'SUPERFICIE DE CONSTRUCCIÓN: ' ); 
-                $sheet->setCellValue('A36', 'FECHA DE INICIO: ' );  
+                $sheet->setCellValue('A3', 'NOMBRE CONTRATISTA: ' );
+                $sheet->setCellValue('A4', 'REFERENCIA CONTRATO: ' );
+                $sheet->setCellValue('A8', 'CALLE:' );
+                $sheet->setCellValue('A9', 'NUMERO INT/EXT: ' );
+                $sheet->setCellValue('A10', 'COLONIA: ' );
+                $sheet->setCellValue('A11', 'CIUDAD/EDO: ' );
+                $sheet->setCellValue('A12', 'CODIGO POSTAL: ' );
+                $sheet->setCellValue('A16', 'ENTRE CALLE: ' );
+                $sheet->setCellValue('A17', 'ENTRE CALLE: ' );
+                $sheet->setCellValue('A18', 'ENTRE CALLE: ' );
 
-                $sheet->setCellValue('C3', strtoupper($aviso[0]->contratista) ); 
-                $sheet->setCellValue('C4', strtoupper($aviso[0]->clave) ); 
-                $sheet->setCellValue('C8', strtoupper($aviso[0]->calle) ); 
-                $sheet->setCellValue('C9', 'NO. '.$aviso[0]->numero); 
-                $sheet->setCellValue('C10', strtoupper($aviso[0]->colonia) ); 
-                $sheet->setCellValue('C11', strtoupper($ciudad) ); 
-                $sheet->setCellValue('C12', strtoupper($aviso[0]->cp) ); 
+                $sheet->setCellValue('A22', 'CLASE DE OBRA: ' );
+                $sheet->setCellValue('A24', 'TIPO DE OBRA: ' );
+                $sheet->setCellValue('A26', 'TIPO DE PATRON: ' );
+                $sheet->setCellValue('A29', 'MONTO DE LA OBRA: ' );
+                $sheet->setCellValue('A33', 'SUPERFICIE DE CONSTRUCCIÓN: ' );
+                $sheet->setCellValue('A36', 'FECHA DE INICIO: ' );
+
+                $sheet->setCellValue('C3', strtoupper($aviso[0]->contratista) );
+                $sheet->setCellValue('C4', strtoupper($aviso[0]->clave) );
+                $sheet->setCellValue('C8', strtoupper($aviso[0]->calle) );
+                $sheet->setCellValue('C9', 'NO. '.$aviso[0]->numero);
+                $sheet->setCellValue('C10', strtoupper($aviso[0]->colonia) );
+                $sheet->setCellValue('C11', strtoupper($ciudad) );
+                $sheet->setCellValue('C12', strtoupper($aviso[0]->cp) );
 
                 if($aviso[0]->calle1 != null && $aviso[0]->calle2 != null){
-                    $sheet->setCellValue('C16', strtoupper($aviso[0]->calle1) ); 
-                    $sheet->setCellValue('C17', strtoupper($aviso[0]->calle2) ); 
+                    $sheet->setCellValue('C16', strtoupper($aviso[0]->calle1) );
+                    $sheet->setCellValue('C17', strtoupper($aviso[0]->calle2) );
                 }
 
-                $sheet->setCellValue('C22', 'PRIVADA' ); 
-                $sheet->setCellValue('D22', 'X' ); 
-                $sheet->setCellValue('E22', 'PUBLICA' ); 
-                
-                $sheet->setCellValue('C25', 'EDIFICACION DE '.strtoupper($aviso[0]->tipo) ); 
+                $sheet->setCellValue('C22', 'PRIVADA' );
+                $sheet->setCellValue('D22', 'X' );
+                $sheet->setCellValue('E22', 'PUBLICA' );
 
-                $sheet->setCellValue('C27', 'PROPIETARIO' ); 
-                $sheet->setCellValue('D27', 'X' ); 
-                $sheet->setCellValue('E27', 'CONTRATISTA' ); 
+                $sheet->setCellValue('C25', 'EDIFICACION DE '.strtoupper($aviso[0]->tipo) );
+
+                $sheet->setCellValue('C27', 'PROPIETARIO' );
+                $sheet->setCellValue('D27', 'X' );
+                $sheet->setCellValue('E27', 'CONTRATISTA' );
                 $sheet->setCellValue('G27', 'SUBCONTRATISTA' );
 
                 $sheet->setCellValue('D31', '$' );
                 $sheet->setCellValue('E31',  $aviso[0]->total_importe);
 
-                $sheet->setCellValue('C34', $aviso[0]->total_superficie ); 
+                $sheet->setCellValue('C34', $aviso[0]->total_superficie );
                 $sheet->setCellValue('E34', 'm2' );
 
-                $sheet->setCellValue('C36', $aviso[0]->f_ini ); 
-                $sheet->setCellValue('E36', 'FECHA DE TERMINO: ' ); 
-                $sheet->setCellValue('G36', $aviso[0]->f_fin ); 
-                
+                $sheet->setCellValue('C36', $aviso[0]->f_ini );
+                $sheet->setCellValue('E36', 'FECHA DE TERMINO: ' );
+                $sheet->setCellValue('G36', $aviso[0]->f_fin );
+
                 $sheet->setColumnFormat(array(
                     'E31' => '#,##0.00',
                 ));
@@ -2570,20 +2574,20 @@ class IniObraController extends Controller
                 $sheet->setColumnFormat(array(
                     'C34' => '#,##0.00',
                 ));
-    
+
                 // $sheet->cell('G'.$contador01, function ($cell) {
                 //     // Set font weight to bold
-                    
+
                 //     $cell->setAlignment('left');
                 // });
-                
-    
+
+
                 // $sheet->setBorder($num, 'thin');
             });
             }
-            
+
             )->download('xls');
-            
+
     }
     //Función para actualizar el importe total del aviso de obra
     public function updateImporTotal(Request $request){
@@ -2700,15 +2704,15 @@ class IniObraController extends Controller
             $contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG , $totalEst, $conceptosExtra, $totalExtra
             ){
             $excel->sheet($contrato[0]->clave, function($sheet) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG, $totalEst, $conceptosExtra, $totalExtra){
-                
+
                 $sheet->mergeCells('A1:J1');
                 $sheet->mergeCells('A3:J3');
                 $sheet->mergeCells('A4:J4');
                 $sheet->mergeCells('A5:J5');
 
                 $sheet->mergeCells('A6:B6');
-                
-                
+
+
                 $sheet->setSize('A1', 20, 60);
                 $sheet->setSize('B1', 20, 60);
                 $sheet->setSize('C1', 20, 20);
@@ -2716,9 +2720,9 @@ class IniObraController extends Controller
                 $sheet->setColumnFormat(array(
                     'C' => '$#,##0.00',
                     'B' => 'dd-mm-yyyy'
-                    
+
                 ));
-    
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
                     $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
@@ -2736,7 +2740,7 @@ class IniObraController extends Controller
                         $cell->setFontSize(18);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                 if($contrato[0]->emp_constructora == 'CONCRETANIA');
                     $sheet->cell('A1', function($cell) {
@@ -2747,14 +2751,14 @@ class IniObraController extends Controller
                         $cell->setFontSize(18);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-                    
+
                 $sheet->row(3, [
-                    'Resumen de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                    'Resumen de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave
                 ]);
                 $sheet->row(4, [
-                    'Contratista: '.$contrato[0]->contratista 
+                    'Contratista: '.$contrato[0]->contratista
                 ]);
 
                 $sheet->cell('A3', function($cell) {
@@ -2764,7 +2768,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
                 $sheet->cell('A4', function($cell) {
 
@@ -2773,7 +2777,7 @@ class IniObraController extends Controller
                     $cell->setFontSize(14);
                    // $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
-                
+
                 });
 
 
@@ -2784,11 +2788,11 @@ class IniObraController extends Controller
                     $cells->setFontSize(12);
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
-                
+
                 });
 
 
-                
+
                 $sheet->row(8, [
                     'Importe total: ', '',$contrato[0]->total_importe
                 ]);
@@ -2797,21 +2801,21 @@ class IniObraController extends Controller
 
                 if(sizeof($anticipos)){
                     $sheet->row($renglon, [
-                        'Anticipos: ', 
+                        'Anticipos: ',
                     ]);
-    
+
                     $renglon ++;
-    
-                    foreach($anticipos as $index => $ant) {     
-    
+
+                    foreach($anticipos as $index => $ant) {
+
                         $sheet->row($renglon, [
                             '',
                             $ant->fecha_anticipo,
                             $ant->monto_anticipo
-                        ]);	  
+                        ]);
                         $renglon++;
                     }
-    
+
                     $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('right');
@@ -2820,8 +2824,8 @@ class IniObraController extends Controller
                         '',
                         'TOTAL:',
                         $totalAnt
-                    ]);	 
-    
+                    ]);
+
                     $renglon+=2;
 
                 }
@@ -2834,25 +2838,25 @@ class IniObraController extends Controller
                         $cell->setFontSize(12);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-    
+
                     $sheet->row($renglon, [
-                        'Fondos de Garantia: ', 
+                        'Fondos de Garantia: ',
                     ]);
-    
+
                     $renglon++;
-    
-                    foreach($fg as $index => $f) {     
-    
+
+                    foreach($fg as $index => $f) {
+
                         $sheet->row($renglon, [
                             '',
                             $f->fecha_fg,
                             $f->monto_fg
-                        ]);	  
+                        ]);
                         $renglon++;
                     }
-    
+
                     $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('right');
@@ -2862,7 +2866,7 @@ class IniObraController extends Controller
                         'TOTAL:',
                         $totalFG
                     ]);
-    
+
                     $renglon+=2;
                 }
 
@@ -2874,28 +2878,28 @@ class IniObraController extends Controller
                         $cell->setFontSize(12);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-    
+
                     $sheet->row($renglon, [
-                        'Estimaciones: ', 
+                        'Estimaciones: ',
                     ]);
-    
+
                     $renglon++;
-    
-                    foreach($number_est as $index => $est) {     
+
+                    foreach($number_est as $index => $est) {
                         $fecha = $est->fin;
                         if($est->fecha_pago != NULL)
                             $fecha = $est->fecha_pago;
-    
+
                         $sheet->row($renglon, [
                             $est->num_estimacion,
                             $fecha,
                             $est->total_pagado
-                        ]);	  
+                        ]);
                         $renglon++;
                     }
-    
+
                     $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('right');
@@ -2905,7 +2909,7 @@ class IniObraController extends Controller
                         'TOTAL:',
                         $totalEst
                     ]);
-    
+
                     $renglon+=2;
                 }
 
@@ -2921,9 +2925,9 @@ class IniObraController extends Controller
                     'SALDO',
                     '',
                     $saldo
-                    
+
                 ]);
-                
+
                 if(sizeof($conceptosExtra)){
                     $renglon+=2;
                     $sheet->cell('A'.$renglon, function($cell) {
@@ -2933,25 +2937,25 @@ class IniObraController extends Controller
                         $cell->setFontSize(12);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-    
+
                     $sheet->row($renglon, [
-                        'Obra extra: ', 
+                        'Obra extra: ',
                     ]);
-    
+
                     $renglon++;
-    
-                    foreach($conceptosExtra as $index => $cext) {     
-    
+
+                    foreach($conceptosExtra as $index => $cext) {
+
                         $sheet->row($renglon, [
                             $cext->concepto,
                             $cext->fecha,
                             $cext->importe
-                        ]);	  
+                        ]);
                         $renglon++;
                     }
-    
+
                     $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('right');
@@ -2961,12 +2965,12 @@ class IniObraController extends Controller
                         'TOTAL:',
                         $totalExtra
                     ]);
-    
+
                     $renglon+=2;
                 }
 
 
-            
+
             });
         })->download('xls');
     }
