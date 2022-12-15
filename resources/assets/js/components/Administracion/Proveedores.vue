@@ -655,6 +655,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso=false;
                 });
             },
             registrarEquipamiento(){
@@ -762,6 +763,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso=false;
                 });
             },
             eliminarEquipamiento(data =[]){

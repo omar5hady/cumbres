@@ -51,7 +51,7 @@
                             <div class="col-md-10" v-if="criterio=='lotes.fraccionamiento_id'">
                                 <div class="input-group">
 
-                                    <select class="form-control" v-model="b_etapa"> 
+                                    <select class="form-control" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -68,11 +68,11 @@
                             </div>
                         </div>
 
-                        
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th># Ref</th>
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
@@ -88,11 +88,11 @@
                                         <th>Status</th>
                                         <th>Fecha entrega (obra)</th>
                                         <th>Solicitar</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" @dblclick="historial = 1, 
+                                    <tr v-for="contratos in arrayContratos" @dblclick="historial = 1,
                                     listarHistorial(1,contratos.folio,'','','','contratos.id');" :key="contratos.folio" title="Doble click">
                                         <template>
                                             <td class="td2" v-text="contratos.folio"></td>
@@ -130,12 +130,12 @@
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                             </td>
-                                           
+
                                         </template>
-                                        
+
                                     </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -172,7 +172,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -183,7 +183,7 @@
                                         <option value="proveedores.proveedor">Proveedor</option>
                                     </select>
 
-                                    
+
                                     <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @change="selectEtapa(buscar2)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
@@ -194,13 +194,13 @@
                             </div>
                             <div class="col-md-10">
                                 <div class="input-group">
-                                    
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2"> 
+
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2">
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
 
-                                    
+
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_manzana2" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
                                 </div>
@@ -219,11 +219,11 @@
                                 </div>
                             </div>
                         </div>
-                       
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th></th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
@@ -247,7 +247,7 @@
                                         <th>Comp. de pago 2</th>
                                         <th>Imprimir Recepción</th>
                                         <th>Observaciones</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -287,7 +287,7 @@
                                                 <td v-else-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==1" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
                                                 <td @click="abrirModal('anticipo', equipamientos)" v-else class="td2">
                                                     <a href="#" v-text="'Sin anticipo'"></a>
-                                                </td>    
+                                                </td>
                                                 <td class="text-center">
                                                     <button @click="generalId = equipamientos.id, upType = 1" data-toggle="modal" data-target="#cargaPago1" class="btn btn-sm btn-info" title="Subir archivo">
                                                         <i class="fa fa-cloud-upload"></i>
@@ -303,11 +303,11 @@
                                                 </td>
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2">
                                                     <a href="#" v-text="'Sin fecha'"></a>
-                                                </td>    
+                                                </td>
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td v-else class="td2" v-text="'Sin fecha'"></td>    
+                                                <td v-else class="td2" v-text="'Sin fecha'"></td>
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.status == '0'" class="td2">
@@ -324,10 +324,10 @@
                                                 </td>
                                                 <td v-if="equipamientos.status == '4'" class="td2">
                                                     <span class="badge badge-success">Aprobado</span>
-                                                </td>  
+                                                </td>
                                                 <td v-if="equipamientos.status == '5'" class="td2">
                                                     <span class="badge badge-danger">Cancelado</span>
-                                                </td>    
+                                                </td>
                                             </template>
                                             <td v-if="!equipamientos.fin_instalacion && equipamientos.fecha_anticipo || equipamientos.fin_instalacion && equipamientos.fecha_anticipo && equipamientos.status != '4'">
                                                 <span class="badge badge-warning" v-text="equipamientos.diferenciaIni"></span>
@@ -344,11 +344,11 @@
                                                 <td v-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 0"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 1" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.status == 4">
-                                                    <button title="Realizar recepcion" type="button" 
+                                                    <button title="Realizar recepcion" type="button"
                                                         @click="abrirModal('liquidacion', equipamientos)" class="btn btn-success pull-right">
                                                         <i class="fa fa-check-square-o"></i> Generar
                                                     </button>
-                                                </td>    
+                                                </td>
                                                 <td v-else v-text="'Sin Liquidación'"></td>
                                                 <td class="text-center">
                                                     <button @click="generalId = equipamientos.id, upType = 2" data-toggle="modal" data-target="#cargaPago1" class="btn btn-sm btn-info" title="Subir archivo">
@@ -370,18 +370,18 @@
                                                     <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">Ver Recepción</a>
                                                 </td>
                                                 <td v-else>
-                                                    
+
                                                 </td>
                                             </template>
-                                            <td> 
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                            <td>
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                     @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
-                                                </button> 
+                                                </button>
                                             </td>
                                         </template>
                                     </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -410,7 +410,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
 
             <!--Inicio del modal para mostrar los datos del cliente -->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
@@ -469,11 +469,11 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th>Opciones</th> 
+                                            <th>Opciones</th>
                                             <th>Proveedor</th>
                                             <th>Equipamiento</th>
                                             <th>Fecha de solicitud</th>
-                                            
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -488,9 +488,9 @@
                                                 <td class="td2" v-text="equipamientos.fecha_solicitud"></td>
                                         </tr>
                                     </tbody>
-                                </table>  
+                                </table>
                             </div>
-                                    
+
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
@@ -562,7 +562,7 @@
                                     </div>
                                 </div>
 
-                                
+
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
@@ -604,7 +604,7 @@
 
                                 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                    
+
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
@@ -615,14 +615,14 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                
+
                                                 <td v-text="observacion.usuario" ></td>
                                                 <td v-text="observacion.comentario" ></td>
                                                 <td v-text="observacion.created_at"></td>
-                                            </tr>                               
+                                            </tr>
                                         </tbody>
                                     </table>
-                                    
+
                                 </form>
                             </div>
                             <!-- Botones del modal -->
@@ -656,7 +656,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <select class="form-control" v-model="contEtapa"> 
+                                        <select class="form-control" v-model="contEtapa">
                                             <option value="">Etapa</option>
                                             <option v-for="etapa in arrayEtapas3" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                         </select>
@@ -699,11 +699,11 @@
                                                 <td class="td2" v-text="contReasig.manzana"></td>
                                                 <td class="td2" v-text="contReasig.num_lote"></td>
                                                 <td class="td2" v-text="'Paquete: ' + contReasig.paquete + ' Promo: '+ contReasig.promocion"></td>
-                                            </tr>                               
+                                            </tr>
                                         </tbody>
                                     </table>
 
-                                
+
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
@@ -733,7 +733,7 @@
                                 <label for="upFile" class="col-sm-2">Archivo</label>
                                 <input type="file" name="upFile" id="upFile" class="form-control col-sm-8" required>
                             </div>
-                            
+
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Subir</button>
@@ -743,7 +743,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -760,29 +760,29 @@
                              podrían aplicar a una instalación de equipamiento.
                         </p>
                         <p>
-                            <strong>Saber si un lote requiere una solicitud de equipamiento</strong>, debe observar dentro de 
-                            la columna “Equipamiento”, podrá observar una descripción que le indicará que equipos 
+                            <strong>Saber si un lote requiere una solicitud de equipamiento</strong>, debe observar dentro de
+                            la columna “Equipamiento”, podrá observar una descripción que le indicará que equipos
                             deberá solicitar para su instalación.
                         </p>
                         <p>
-                            <strong>Solicitar equipamiento</strong>, para solicitar el equipamiento debe dar clic sobre el botón con 
-                            la leyenda de “Solicitar”, a continuación, aparecerá una ventana donde se le 
-                            permitirá seleccionar un proveedor, así como el artículo que se debe instalar, 
-                            debe dar clic sobre el botón de “Solicitar”, ahora la solicitud estará creada 
-                            (podrá realizar tantas solitudes como sean necesarias, en caso de que no se encuentre 
+                            <strong>Solicitar equipamiento</strong>, para solicitar el equipamiento debe dar clic sobre el botón con
+                            la leyenda de “Solicitar”, a continuación, aparecerá una ventana donde se le
+                            permitirá seleccionar un proveedor, así como el artículo que se debe instalar,
+                            debe dar clic sobre el botón de “Solicitar”, ahora la solicitud estará creada
+                            (podrá realizar tantas solitudes como sean necesarias, en caso de que no se encuentre
                             el equipamiento o el proveedor dentro de la lista ve a el módulo <strong>“Administración -> Proveedores”</strong>).
                         </p>
                         <p>
-                            <strong>Una vez solicitados los equipamientos</strong> a instalar puede dar doble clic sobre el registro 
-                            y podrá agregar el costo total del equipamiento a instalar, también podrá colocar una 
-                            “Fecha programada“ para la instalación, ver el estatus de la instalación, ver los saldos 
-                            pendientes, generar la liquidación (solo en caso de que ya esté terminado), 
-                            “Imprimir la recepción” (solo en caso de que ya esté terminado) y agregar observaciones 
+                            <strong>Una vez solicitados los equipamientos</strong> a instalar puede dar doble clic sobre el registro
+                            y podrá agregar el costo total del equipamiento a instalar, también podrá colocar una
+                            “Fecha programada“ para la instalación, ver el estatus de la instalación, ver los saldos
+                            pendientes, generar la liquidación (solo en caso de que ya esté terminado),
+                            “Imprimir la recepción” (solo en caso de que ya esté terminado) y agregar observaciones
                             si así se requiere.
                         </p>
                         <p>
-                            <strong>Nota:</strong> tome en cuenta que el proveedor también podrá editar las fechas tentativas de 
-                            instalación, así como las fechas definitivas de instalación si así lo requiere 
+                            <strong>Nota:</strong> tome en cuenta que el proveedor también podrá editar las fechas tentativas de
+                            instalación, así como las fechas definitivas de instalación si así lo requiere
                             (vea el modulo de “Proveedores -> Seguimiento de instalación”).
                         </p>
                     </div>
@@ -832,9 +832,9 @@
                 lote_id: 0,
                 contrato_id: 0,
                 solicitud_id: 0,
-           
+
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -842,7 +842,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
@@ -859,14 +859,14 @@
 
                 // Criterios para historial de equipamientos
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio2 : 'lotes.fraccionamiento_id', 
+                criterio2 : 'lotes.fraccionamiento_id',
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',
@@ -897,7 +897,7 @@
                             timer:1500,
                         })
                     }
-                },             
+                },
             }
         },
         computed:{
@@ -959,14 +959,14 @@
 
         },
 
-        
+
         methods : {
 
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 me.historial = 0;
-                var url = '/equipamiento/indexContrato?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                var url = '/equipamiento/indexContrato?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa +
                     '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -974,7 +974,7 @@
                     me.pagination = respuesta.pagination;
 
                     for(var i=0;i<me.pagination.total;i++){
-                       
+
                         if(me.arrayContratos[i].paquete == null || me.arrayContratos[i].paquete == ""){
                             me.arrayContratos[i].paquete= 'Sin paquete';
                         }
@@ -982,25 +982,25 @@
                             me.arrayContratos[i].promocion = 'Sin promoción';
                         }
                     }
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             listarHistorial(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 me.historial = 1;
-                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
-                    '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&status=' + 
+                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa +
+                    '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&status=' +
                     me.status +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorialEquipamientos = respuesta.equipamientos.data;
                     me.pagination2 = respuesta.pagination;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1029,13 +1029,13 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 me.arrayFraccionamientos2=[];
                 var url = '/select_fraccionamiento';
@@ -1052,7 +1052,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.b_etapa=""
-                
+
                 me.arrayEtapas=[];
                 me.arrayEtapas2=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
@@ -1068,7 +1068,7 @@
 
             selectEtapa2(buscar){
                 let me = this;
-                
+
                 me.arrayEtapas3=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -1082,7 +1082,7 @@
 
             selectProveedores(){
                 let me = this;
-                
+
                 me.arrayProveedores=[];
                 var url = '/select_proveedor';
                 axios.get(url).then(function (response) {
@@ -1097,7 +1097,7 @@
             selectEquipamiento(proveedor){
                 let me = this;
                 me.equipamiento=""
-                
+
                 me.arrayEquipamientos=[];
                 var url = '/select_equipamientos?buscar=' + proveedor;
                 axios.get(url).then(function (response) {
@@ -1108,7 +1108,7 @@
                     console.log(error);
                 });
             },
-            
+
             cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1146,7 +1146,7 @@
                     'contrato_id':this.contrato_id,
                     'lote_id' : this.lote_id,
                     'equipamiento_id': this.equipamiento
-                    
+
                 }).then(function (response){
                     me.proveedor ='';
                     me.equipamiento ='';
@@ -1182,7 +1182,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/equipamiento/lote/eliminar', 
+                axios.delete('/equipamiento/lote/eliminar',
                         {params: {'id': this.solicitud_id,'contrato_id':this.contrato_id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -1213,7 +1213,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.put('/equipamiento/terminarSolicitud', 
+                axios.put('/equipamiento/terminarSolicitud',
                          {'id': this.contrato_id}).then(function (response){
                         swal(
                         'Hecho!',
@@ -1235,7 +1235,7 @@
                     'fecha_anticipo':this.fecha_anticipo,
                     'costo' : costo,
                     'id':id,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1262,7 +1262,7 @@
                     'fecha_anticipo':this.fecha_anticipo,
                     'anticipo' : this.anticipo,
                     'id':this.solicitud_id,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1289,7 +1289,7 @@
                     'id':this.solicitud_id,
                     'contrato_id' : this.id_reasig,
                     'lote_id':this.lote_reasignar,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1316,7 +1316,7 @@
                     'fecha_liquidacion':this.fecha_liquidacion,
                     'liquidacion' : this.liquidacion,
                     'id':this.solicitud_id,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1342,7 +1342,7 @@
                 axios.post('/equipamiento/registrarObservacion',{
                     'comentario' : this.observacion,
                     'solic_id':this.solicitud_id,
-                    
+
                 }).then(function (response){
                     me.listarObservacion(1,me.solicitud_id);
                     //window.alert("Cambios guardados correctamente");
@@ -1368,7 +1368,7 @@
                     'fecha_colocacion':this.fecha_colocacion,
                     'comentario' : this.observacion,
                     'id':this.solicitud_id,
-                    
+
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
@@ -1399,7 +1399,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             formatNumber(value) {
@@ -1506,7 +1506,7 @@
                 formData.append('id', this.generalId);
                 formData.append('file', e.target.upFile.files[0]);
 
-                if(this.upType == 1) 
+                if(this.upType == 1)
                     url = '/equipamiento/indexHistorial/upfile1';
                 else
                     url = '/equipamiento/indexHistorial/upfile2';
@@ -1521,7 +1521,7 @@
                 ).catch(error => console.log(error));
             },
         },
-       
+
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
@@ -1553,7 +1553,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -1602,5 +1602,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

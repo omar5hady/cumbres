@@ -331,10 +331,10 @@
             <seguimiento-ruv rol-id="{{ Auth::user()->rol_id }}"></seguimiento-ruv>
         </template>
         <template v-if="menu==236">
-            <generar-solipago></generar-solipago>
+            <solicitud-crear></solicitud-crear>
         </template>
         <template v-if="menu==237">
-            <solicitud-pagos rol-id="{{ Auth::user()->rol_id }}"></solicitud-pagos>
+
         </template>
         <template v-if="menu==238">
             <rep-lotes></rep-lotes>

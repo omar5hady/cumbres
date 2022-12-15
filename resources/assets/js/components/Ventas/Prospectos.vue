@@ -424,7 +424,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">No. Pasaporte</label>
-                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte" placeholder="Pasaporte">
+                                        <input type="text" maxlength="11" class="form-control" v-model="num_pasaporte" placeholder="Pasaporte">
                                     </div>
                                 </div>
 
@@ -792,7 +792,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">No. Pasaporte</label>
-                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte" placeholder="Pasaporte">
+                                        <input type="text" maxlength="11" class="form-control" v-model="num_pasaporte" placeholder="Pasaporte">
                                     </div>
                                 </div>
                             </div>
@@ -1108,7 +1108,7 @@
                         </div>
                         <label class="col-md-2 form-control-label" for="text-input">Pasaporte </label>
                         <div class="col-md-3">
-                            <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte_coa" placeholder="No. Passaporte">
+                            <input type="text" maxlength="11" class="form-control" v-model="num_pasaporte_coa" placeholder="No. Passaporte">
                         </div>
                     </div>
 

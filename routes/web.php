@@ -359,27 +359,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/ruv/storeComentarios','RuvController@storeComentarios');
 
     ///////////////// RUTAS SOLICITUDES DE PAGO ////////////////////
-        Route::get('/solic_pago/indexSolicitudes','SolicitudPagosController@indexSolicitudes');
-        Route::get('/solic_pago/indexComentarios','SolicitudPagosController@indexComentarios');
-        Route::post('/solic_pago/storeComentarios','SolicitudPagosController@storeComentarios');
-        Route::post('/solic_pago/storeSinOrden/{concepto}','SolicitudPagosController@storeSinOrden');
-        Route::post('/solic_pago/storeConOrden/{concepto}','SolicitudPagosController@storeConOrden');
-        Route::post('/solic_pago/putSolicCheque/{id}','SolicitudPagosController@putSolicCheque');
-        Route::post('/solic_pago/putCotizacion/{id}','SolicitudPagosController@putCotizacion');
-        Route::post('/solic_pago/putPagoPartes/{id}','SolicitudPagosController@putPagoPartes');
-        Route::post('/solic_pago/putFactura/{id}','SolicitudPagosController@putFactura');
-        Route::post('/solic_pago/putOrden/{id}','SolicitudPagosController@putOrden');
-        Route::post('/solic_pago/putCheque/{id}','SolicitudPagosController@putCheque');
-        Route::post('/solic_pago/storeDocumento/{id}/{nombre}','SolicitudPagosController@storeDocumento');
-        Route::get('/solic_pago/getDocumentos', 'SolicitudPagosController@getDocumentos');
-        Route::delete('/solic_pago/deleteArchivo', 'SolicitudPagosController@deleteArchivo');
-
-        Route::post('/solic_pago/autorizarOrden','SolicitudPagosController@autorizarOrden');
-        Route::post('/solic_pago/autorizarSolicitud','SolicitudPagosController@autorizarSolicitud');
-        Route::post('/solic_pago/vistoBuenoSolicitud','SolicitudPagosController@vistoBuenoSolicitud');
-        Route::post('/solic_pago/vistoBuenoOrden','SolicitudPagosController@vistoBuenoOrden');
-        Route::post('/solic_pago/pagarSolicitud','SolicitudPagosController@pagarSolicitud');
-        Route::post('/solic_pago/cancelarSolicitud','SolicitudPagosController@cancelarSolicitud');
 
     ///////////////////// RUTAS INGRESOS CONCRETANIA
         Route::get('/ingresosConcretania/pendeintesIngresar','DepositoController@pendeintesIngresar');

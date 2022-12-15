@@ -10,188 +10,251 @@
             <!-- Ejemplo de tabla Listado -->
             <div class="card scroll-box">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Planos Proyectos
-                    <button v-if="lotes_ini.length" class="btn btn-success"
-                        @click="abrirModal('planos')"
-                    >
-                        <i class="icon-plus"></i>&nbsp;Añadir planos
+                    <i class="fa fa-align-justify"></i> Solicitud de Pago
+                    <button class="btn btn-success" @click="vistaFormulario('nuevo')" v-if="vista == 0">
+                        <i class="icon-plus"></i>&nbsp;Nueva solicitud
                     </button>
-                    <button v-if="b_proyecto != ''" class="btn btn-scarlet"
-                        @click="abrirModal('planos_fracc')"
-                    >
-                        <i class="icon-plus"></i>&nbsp;Añadir planos por Proyecto
+                    <button class="btn btn-light" @click="cerrarFormulario()" v-if="vista == 1">
+                        <i class="icon-close"></i>&nbsp;Regresar
                     </button>
                 </div>
                 <div class="card-body">
-                    <div class="form-group row">
-                        <select class="form-control col-md-4"
-                            v-model="b_proyecto"
-                            @change="$root.selectEtapa(b_proyecto),
-                                    $root.selectModelo(b_proyecto)"
-                        >
-                            <option value="">Fraccionamiento</option>
-                            <option
-                                v-for="proyecto in $root.$data.proyectos"
-                                :key="proyecto.id"
-                                :value="proyecto.id"
-                                v-text="proyecto.nombre"
-                            ></option>
-                        </select>
-                        <select class="form-control col-md-3" v-model="b_etapa">
-                            <option value="">Etapa</option>
-                            <option
-                                v-for="etapa in $root.$data.etapas"
-                                :key="etapa.id"
-                                :value="etapa.id"
-                                v-text="etapa.num_etapa"
-                            ></option>
-                        </select>
-                        <select
-                            class="form-control col-md-4"
-                            v-model="b_modelo"
-                        >
-                            <option value="">Modelo</option>
-                            <option
-                                v-for="modelo in $root.$data.modelos"
-                                :key="modelo.id"
-                                :value="modelo.id"
-                                v-text="modelo.nombre"
-                            ></option>
-                        </select>
-
-                        <input type="text" class="col-md-4 form-control"
-                            v-model="b_manzana" placeholder="Manzana"
-                        />
-                        <input type="text" class="col-md-3 form-control"
-                            v-model="b_inicio" placeholder="Num. Inicio"
-                        />
-
-                        <div class="input-group">
-                            <button type="submit"
-                                @click="indexLotes(1)" class="btn btn-primary"
-                            >
-                                <i class="fa fa-search"></i> Buscar
-                            </button>
+                    <template v-if="vista == 0">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control col-md-2" disabled placeholder="Proveedor:">
+                                    <select class="form-control col-md-7" v-model="b_proveedor">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="proveedor in arrayProveedores" :key="proveedor.id" :value="proveedor.id" v-text="proveedor.proveedor"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control col-md-2" disabled placeholder="Solicitante">
+                                    <input type="text" class="form-control col-md-6" placeholder="Solicitante a buscar">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control col-md-2" disabled placeholder="Fecha:">
+                                    <input type="date" class="form-control col-md-4">
+                                    <input type="date" class="form-control col-md-4">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="form-control col-md-5" v-model="b_status">
+                                        <option value="">Status</option>
+                                        <option value="0">Pendiente</option>
+                                        <option value="1">En Proceso</option>
+                                        <option value="2">Revisadas</option>
+                                        <option value="3">Aprobadas</option>
+                                        <option value="4">Pagados</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <button class="btn btn-primary">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                    <a class="btn btn-success" href="#">
+                                        <i class="fa fa-file-text"></i>&nbsp; Excel
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <TableComponent :cabecera="[
-                        'Proyecto',
-                        'Etapa',
-                        'Manzana',
-                        '# Lote',
-                        'Modelo',
-                        'Num Inicio',
-                        ''
-                    ]">
-                        <template v-slot:tbody>
-                            <tr v-for="lote in arrayLotes.data" :key="lote.id">
-                                <td class="td2" v-text="lote.proyecto"></td>
-                                <td class="td2" v-text="lote.etapa"></td>
-                                <td class="td2" v-text="lote.manzana"></td>
-                                <td class="td2" v-text="lote.num_lote"></td>
-                                <td class="td2" v-text="lote.modelo"></td>
-                                <td class="td2" v-text="lote.num_inicio"></td>
-                                <td>
-                                    <template  v-if="lote.planos.length">
-                                        <button
-                                            @click="abrirModal('ver',lote)"
-                                            title="Ver planos" type="button" class="btn btn-dark btn-sm"
-                                        >
-                                            <i class="fa fa-map-o"></i>
-                                        </button>
-                                    </template>
-                                    <template v-else>
-                                        <span class="badge badge-light">Sin planos</span>
-                                    </template>
+                        <TableComponent :cabecera="[
+                            '',
+                            'Proveedor',
+                            'Solicitante',
+                            'Fecha solic',
+                            'Importe',
+                            'Forma de pago',
+                            ' '
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                    <td class="td2" v-text="solic.proyecto"></td>
+                                    <td class="td2" v-text="solic.etapa"></td>
+                                    <td class="td2" v-text="solic.manzana"></td>
+                                    <td class="td2" v-text="solic.num_lote"></td>
+                                    <td class="td2" v-text="solic.modelo"></td>
+                                    <td class="td2" v-text="solic.num_inicio"></td>
+                                    <td>
+                                        <template  v-if="solic.planos.length">
+                                            <button
+                                                @click="abrirModal('ver',solic)"
+                                                title="Ver planos" type="button" class="btn btn-dark btn-sm"
+                                            >
+                                                <i class="fa fa-map-o"></i>
+                                            </button>
+                                        </template>
+                                        <template v-else>
+                                            <span class="badge badge-light">Sin planos</span>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page > 5"
+                                    @click="indexLotes(1)"
+                                >
+                                    <a class="page-link" href="#">Inicio</a>
+                                </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page > 1"
+                                    @click="indexLotes(arraySolic.current_page - 1)"
+                                >
+                                    <a class="page-link" href="#">Ant</a>
+                                </li>
 
-                                </td>
-                            </tr>
-                        </template>
-                    </TableComponent>
-                    <nav>
-                        <!--Botones de paginacion -->
-                        <!--Botones de paginacion -->
-                        <ul class="pagination">
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page > 5"
-                                @click="indexLotes(1)"
-                            >
-                                <a class="page-link" href="#">Inicio</a>
-                            </li>
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page > 1"
-                                @click="indexLotes(arrayLotes.current_page - 1)"
-                            >
-                                <a class="page-link" href="#">Ant</a>
-                            </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page - 3 >= 1"
+                                    @click="indexLotes(arraySolic.current_page - 3)"
+                                >
+                                    <a class="page-link" href="#"
+                                        v-text="arraySolic.current_page - 3"
+                                    ></a>
+                                </li>
+                                <li
+                                    class="page-item" v-if="arraySolic.current_page - 2 >= 1"
+                                    @click="indexLotes(arraySolic.current_page - 2)"
+                                >
+                                    <a class="page-link" href="#"
+                                        v-text="arraySolic.current_page - 2"
+                                    ></a>
+                                </li>
+                                <li class="page-item" v-if="arraySolic.current_page - 1 >= 1"
+                                    @click="indexLotes(arraySolic.current_page - 1)"
+                                >
+                                    <a class="page-link" href="#"
+                                        v-text="arraySolic.current_page - 1"
+                                    ></a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#"
+                                        v-text="arraySolic.current_page"
+                                    ></a>
+                                </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page + 1 <= arraySolic.last_page"
+                                >
+                                    <a class="page-link" href="#"
+                                        @click="indexLotes(arraySolic.current_page + 1)"
+                                        v-text="arraySolic.current_page + 1"
+                                    ></a>
+                                </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page + 2 <=arraySolic.last_page"
+                                >
+                                    <a class="page-link" href="#"
+                                        @click="indexLotes(arraySolic.current_page + 2)"
+                                        v-text="arraySolic.current_page + 2"
+                                    ></a>
+                                </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page + 3 <= arraySolic.last_page"
+                                >
+                                    <a class="page-link" href="#"
+                                        @click="indexLotes(arraySolic.current_page + 3)"
+                                        v-text="arraySolic.current_page + 3"
+                                    ></a>
+                                </li>
 
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page - 3 >= 1"
-                                @click="indexLotes(arrayLotes.current_page - 3)"
-                            >
-                                <a class="page-link" href="#"
-                                    v-text="arrayLotes.current_page - 3"
-                                ></a>
-                            </li>
-                            <li
-                                class="page-item" v-if="arrayLotes.current_page - 2 >= 1"
-                                @click="indexLotes(arrayLotes.current_page - 2)"
-                            >
-                                <a class="page-link" href="#"
-                                    v-text="arrayLotes.current_page - 2"
-                                ></a>
-                            </li>
-                            <li class="page-item" v-if="arrayLotes.current_page - 1 >= 1"
-                                @click="indexLotes(arrayLotes.current_page - 1)"
-                            >
-                                <a class="page-link" href="#"
-                                    v-text="arrayLotes.current_page - 1"
-                                ></a>
-                            </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#"
-                                    v-text="arrayLotes.current_page"
-                                ></a>
-                            </li>
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page + 1 <= arrayLotes.last_page"
-                            >
-                                <a class="page-link" href="#"
-                                    @click="indexLotes(arrayLotes.current_page + 1)"
-                                    v-text="arrayLotes.current_page + 1"
-                                ></a>
-                            </li>
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page + 2 <=arrayLotes.last_page"
-                            >
-                                <a class="page-link" href="#"
-                                    @click="indexLotes(arrayLotes.current_page + 2)"
-                                    v-text="arrayLotes.current_page + 2"
-                                ></a>
-                            </li>
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page + 3 <= arrayLotes.last_page"
-                            >
-                                <a class="page-link" href="#"
-                                    @click="indexLotes(arrayLotes.current_page + 3)"
-                                    v-text="arrayLotes.current_page + 3"
-                                ></a>
-                            </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page < arraySolic.last_page"
+                                    @click="indexLotes(arraySolic.current_page + 1)"
+                                >
+                                    <a class="page-link" href="#">Sig</a>
+                                </li>
+                                <li class="page-item"
+                                    v-if="arraySolic.current_page < 5 && arraySolic.last_page > 5"
+                                    @click="indexLotes(arraySolic.last_page)"
+                                >
+                                    <a class="page-link" href="#">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </template>
+                    <template v-if="vista == 1">
 
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page < arrayLotes.last_page"
-                                @click="indexLotes(arrayLotes.current_page + 1)"
-                            >
-                                <a class="page-link" href="#">Sig</a>
-                            </li>
-                            <li class="page-item"
-                                v-if="arrayLotes.current_page < 5 && arrayLotes.last_page > 5"
-                                @click="indexLotes(arrayLotes.last_page)"
-                            >
-                                <a class="page-link" href="#">Ultimo</a>
-                            </li>
-                        </ul>
-                    </nav>
+                        <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Proveedor </label>
+                                    <v-select
+                                        :on-search="selectProveedores"
+                                        label="proveedor"
+                                        :options="proveedoresForm"
+                                        placeholder="Buscar contratista..."
+                                        :onChange="getDatosProveedor"
+                                    >
+                                    </v-select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label> Forma de pago </label>
+                                <select class="form-control" v-model="solicitudData.tipo_pago" @click="selectLotes(manzana,fraccionamiento_id)">
+                                    <option value="0">Caja Fuerte</option>
+                                    <option value="1">Bancario</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label> Importe </label>
+                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                    type="text" v-model="solicitudData.importe">
+                            </div>
+
+                             <div class="col-md-3" v-if="solicitudData.importe > 0">
+                                <label>&nbsp;</label>
+                                <h6 class="form-control">$ {{$root.formatNumber(solicitudData.importe)}}</h6>
+                            </div>
+                        </div>
+
+                        <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;">
+                            <div class="col-md-12">
+                                <center>
+                                    <h6 style="color:#"> Detalle de la solicitud </h6>
+                                </center>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="">Obra</label>
+                                <input type="text" name="obra" list="obraname" class="form-control"
+                                    v-model="datosDetalle.obra" @keyup="getProyectos(datosDetalle.obra)" @change="selectEtapa(datosDetalle.obra)">
+                                <datalist id="obraname">
+                                    <option value="">Seleccione</option>
+                                    <option value="OFICINA">OFICINA</option>
+                                    <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
+                                </datalist>
+                            </div>
+
+                            <div class="col-md-3" v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
+                                <label for="">&nbsp;</label>
+                                <select class="form-control" v-model="datosDetalle.sub_obra">
+                                    <option value="">Etapa</option>
+                                    <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
+                                </select>
+                            </div>
+
+                            <div v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''" class="col-md-5"></div>
+                            <div v-else class="col-md-8"></div>
+
+                            <div class="col-md-4">
+                                <label for="">Cargo</label>
+                            </div>
+                        </div>
+
+                    </template>
                 </div>
 
                 <ModalComponent
@@ -302,25 +365,32 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-import ModalComponent from "../../Componentes/ModalComponent.vue";
-import TableComponent from "../../Componentes/TableComponent.vue";
+import ModalComponent from "../Componentes/ModalComponent.vue";
+import TableComponent from "../Componentes/TableComponent.vue";
+import vSelect from 'vue-select';
 
 export default {
     components: {
         ModalComponent,
-        TableComponent
+        TableComponent,
+        vSelect
     },
     props: {},
     data() {
         return {
-            arrayLotes: [],
-            b_proyecto: "",
-            b_etapa: "",
-            b_modelo: "",
-            b_manzana: "",
-            b_inicio: "",
-
+            arraySolic: [],
             planos: [],
+            arrayProveedores : [],
+            proveedoresForm : [],
+            arrayProyectos : [],
+            arrayEtapas : [],
+
+            solicitudData:{},
+            datosDetalle:{},
+
+            b_proveedor : '',
+            b_status : '',
+            loading : false,
 
             modal: 0,
             tituloModal: "",
@@ -328,7 +398,9 @@ export default {
             proyectoSel:'',
             etapaSel:'',
             tipoAccion:1,
-            cargando:0
+            cargando:0,
+
+            vista:0
         };
     },
     computed: {},
@@ -373,6 +445,49 @@ export default {
                 this.cargando = 0;
             });
         },
+        limpiarFormularioDetalle(){
+            this.datosDetalle = {
+                obra: '',
+                sub_obra: '',
+                cargo : '',
+                concepto : '',
+                observacion : '',
+                tipo_mov : 0,
+                total : 0,
+                pago : 0,
+                saldo : 0
+            }
+        },
+        vistaFormulario(accion,data=[]){
+            this.vista = 1;
+            this.limpiarFormularioDetalle();
+
+            switch(accion){
+                case 'nuevo':{
+                    this.tipoAccion = 1;
+                    this.solicitudData={
+                        id : '',
+                        empresa_solic : '',
+                        proveedor_id : '',
+                        importe : 0,
+                        tipo_pago : 0,
+                        fecha_compra: '',
+                        banco : '',
+                        num_cuenta : '',
+                        clabe : '',
+                        num_factura : '',
+                        detalle : []
+                    }
+                    this.
+                    break;
+                }
+            }
+        },
+        cerrarFormulario(){
+            this.vista = 0;
+            this.solicitudData = {};
+            this.indexLotes(this.arraySolic.current_page);
+        },
 
         deleteFile(id){
             let me = this;
@@ -402,27 +517,80 @@ export default {
             let me = this;
             var url =
                 "/planos-proyectos?page=" +
-                page +
-                "&b_proyecto=" +
-                me.b_proyecto +
-                "&b_etapa=" +
-                me.b_etapa +
-                "&b_manzana=" +
-                me.b_manzana +
-                "&b_modelo=" +
-                me.b_modelo +
-                "&b_inicio=" +
-                me.b_inicio;
+                page;
             axios
                 .get(url)
                 .then(function(response) {
                     var respuesta = response.data;
-                    me.arrayLotes = respuesta;
+                    me.arraySolic = respuesta;
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
         },
+        getProveedores(){
+            let me = this;
+            me.arrayProveedores=[];
+            var url = '/select_proveedor?proveedor';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayProveedores = respuesta.proveedor;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        getProyectos(search){
+            let me = this;
+            me.arrayProyectos = [];
+            var url = '/select_fraccionamiento2?filtro='+search;
+            axios.get(url).then(function (response) {
+                const respuesta = response.data;
+                me.arrayProyectos = respuesta.fraccionamientos;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        selectEtapa(buscar){
+            let me = this;
+            me.datosDetalle.sub_obra = '';
+            me.arrayEtapas=[];
+            var url = '/select_etapa?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEtapas = respuesta.etapas;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        selectProveedores(search,loading){
+            let me = this;
+            loading(true)
+            me.proveedoresForm=[];
+            var url = '/select_proveedor?proveedor='+search;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                q: search
+                me.proveedoresForm = respuesta.proveedor;
+                loading(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+                loading(false)
+            });
+        },
+
+        getDatosProveedor(val1){
+                let me = this;
+                //me.loading = true;
+                me.solicitudData.proveedor_id = val1.id;
+                me.solicitudData.proveedor = val1.proveedor;
+            },
 
         cerrarModal() {
             this.modal = 0;
@@ -431,7 +599,7 @@ export default {
             this.lotes_ini = [];
             this.proyectoSel = '';
             this.etapaSel = '';
-            this.indexLotes(this.arrayLotes.current_page)
+            this.indexLotes(this.arraySolic.current_page)
             this.cargando = 0;
         },
 
@@ -478,6 +646,7 @@ export default {
     },
     mounted() {
         this.indexLotes(1);
+        this.getProveedores();
         this.$root.selectFraccionamientos();
     }
 };

@@ -203,7 +203,13 @@ class ProveedorController extends Controller
     }
 
     public function selectProveedor(Request $request){
-        $proveedor = Proveedor::select('id','proveedor')->get();
+        $proveedor = Proveedor::select('id','proveedor');
+        if($request->proveedor != '')
+            $proveedor = $proveedor->where('proveedor','like','%'.$request->proveedor.'%')
+            ->limit(10);
+
+        $proveedor = $proveedor->get();
+
 
         return ['proveedor' => $proveedor];
     }

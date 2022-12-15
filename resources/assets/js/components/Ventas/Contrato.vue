@@ -635,7 +635,7 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">Pasaporte</label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_pasaporte" placeholder="No. Pasaporte">
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" class="form-control" v-model="num_pasaporte" placeholder="No. Pasaporte">
                                             </div>
                                         </div>
 

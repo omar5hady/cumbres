@@ -15,7 +15,9 @@ class CreateSpSolicitudsTable extends Migration
     {
         Schema::create('sp_solicituds', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('empresa_solic');
             $table->integer('solicitante_id');
+            $table->string('departamento',100);
             $table->integer('proveedor_id');
             $table->double('importe')->default(0);
             $table->integer('tipo_pago')->default(0);  //? 0:CF, 1:B

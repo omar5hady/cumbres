@@ -193,8 +193,8 @@ Vue.component('comision-asesores', require('./components/Comisiones/ComisionesVe
 Vue.component('comision-bonos', require('./components/Comisiones/BonosVentas.vue'));
 
 //Pagos Internos
-Vue.component('solicitud-pagos', require('./components/PagosInternos/SolicPago.vue'));
-Vue.component('generar-solipago', require('./components/PagosInternos/GenerarSolicitud.vue'));
+Vue.component('solicitud-crear', require('./components/PagosInternos/CreateSolicitud.vue'));
+
 
 //Cotizador de lotes
 Vue.component('cotizador-lote', require('./components/Cotizador/Cotizador.vue'));

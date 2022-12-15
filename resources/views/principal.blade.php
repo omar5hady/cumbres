@@ -157,7 +157,7 @@
                         @endif
 
                 <!-- Modulo pagos internos --->
-                        @if(Auth::user()->rol_id != 2 && Auth::user()->rol_id != 10 && Auth::user()->rol_id != 13)
+                        @if(Auth::user()->rol_id == 1)
                             @include('sidebars.pagosinternos')
                         @endif
                 <!-- Fin pago internos -->
