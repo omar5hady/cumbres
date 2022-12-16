@@ -216,11 +216,11 @@
 
                              <div class="col-md-3" v-if="solicitudData.importe > 0">
                                 <label>&nbsp;</label>
-                                <h6 class="form-control">$ {{$root.formatNumber(solicitudData.importe)}}</h6>
+                                <h6 class="form-control">${{$root.formatNumber(solicitudData.importe)}}</h6>
                             </div>
                         </div>
 
-                        <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;">
+                        <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;" v-if="solicitudData.importe > 0">
                             <div class="col-md-12">
                                 <center>
                                     <h6 style="color:#"> Detalle de la solicitud </h6>
@@ -249,8 +249,50 @@
                             <div v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''" class="col-md-5"></div>
                             <div v-else class="col-md-8"></div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <label for="">Cargo</label>
+                                <select class="form-control" v-model="datosDetalle.cargo" @change="getConceptos(datosDetalle.cargo), datosDetalle.concepto = ''">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="cargo in arrayCargos" :key="cargo.cargo" :value="cargo.cargo" v-text="cargo.cargo"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="">Concepto</label>
+                                <select class="form-control" v-model="datosDetalle.concepto">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="concepto in arrayConceptos" :key="concepto.id" :value="concepto.concepto" v-text="concepto.concepto"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">Tipo de Mov.</label>
+                                <select class="form-control" v-model="datosDetalle.tipo_mov">
+                                    <option value="0">Anticipo</option>
+                                    <option value="1">Liquidación</option>
+                                    <option value="2">Pago Cta</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="">Importe total</label>
+                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                    type="text" v-model="datosDetalle.total">
+                            </div>
+                            <div class="col-md-2" v-if="datosDetalle.total > 0">
+                                <label for="">&nbsp;</label>
+                                <label class="form-control">${{$root.formatNumber(datosDetalle.total)}}</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="">Este pago</label>
+                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                    @change="verificarMonto()"
+                                    type="text" v-model="datosDetalle.pago">
+                            </div>
+                            <div class="col-md-2" v-if="datosDetalle.pago > 0">
+                                <label for="">&nbsp;</label>
+                                <label class="form-control">${{$root.formatNumber(datosDetalle.pago)}}</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">&nbsp;</label>
+                                <button class="btn btn-success" @click="addDetalle()" title="Añadir"><i class="icon-plus"></i></button>
                             </div>
                         </div>
 
@@ -376,6 +418,7 @@ export default {
         vSelect
     },
     props: {},
+    computed:{},
     data() {
         return {
             arraySolic: [],
@@ -384,6 +427,8 @@ export default {
             proveedoresForm : [],
             arrayProyectos : [],
             arrayEtapas : [],
+            arrayCargos: [],
+            arrayConceptos: [],
 
             solicitudData:{},
             datosDetalle:{},
@@ -445,6 +490,23 @@ export default {
                 this.cargando = 0;
             });
         },
+        addDetalle(){
+            console.log("OSO")
+            if(this.verificarCaptura())
+                window.alert("OSO")
+
+        },
+        verificarCaptura(){
+            let me = this;
+            let res = true;
+            if( me.datosDetalle.obra != ''
+                && me.datosDetalle.cargo != ''
+                && me.datosDetalle.concepto != ''
+                && me.datosDetalle.total > 0
+                && me.datosDetalle.pago > 0
+            )res = false;
+            return res;
+        },
         limpiarFormularioDetalle(){
             this.datosDetalle = {
                 obra: '',
@@ -460,6 +522,7 @@ export default {
         },
         vistaFormulario(accion,data=[]){
             this.vista = 1;
+            this.getCargos();
             this.limpiarFormularioDetalle();
 
             switch(accion){
@@ -470,6 +533,7 @@ export default {
                         empresa_solic : '',
                         proveedor_id : '',
                         importe : 0,
+                        saldo : 0,
                         tipo_pago : 0,
                         fecha_compra: '',
                         banco : '',
@@ -548,6 +612,45 @@ export default {
             axios.get(url).then(function (response) {
                 const respuesta = response.data;
                 me.arrayProyectos = respuesta.fraccionamientos;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        verificarMonto(){
+            let me = this;
+
+            if(parseFloat(me.datosDetalle.total) < parseFloat(me.datosDetalle.pago))
+                me.datosDetalle.pago = me.datosDetalle.total
+
+            me.saldo = parseFloat(me.solicitudData.importe);
+            me.solicitudData.detalle.forEach(e => {
+                me.saldo -= parseFloat(e.pago);
+            });
+
+            if(me.saldo < me.datosDetalle.pago)
+                me.datosDetalle.pago = me.saldo;
+        },
+
+        getCargos(){
+            let me = this;
+            me.arrayCargos=[];
+            var url = '/sp/getCargos';
+            axios.get(url).then(function (response) {
+                me.arrayCargos = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        getConceptos(cargo){
+            let me = this;
+            me.arrayConceptos=[];
+            var url = '/sp/getConceptos?cargo='+cargo;
+            axios.get(url).then(function (response) {
+                me.arrayConceptos = response.data;
             })
             .catch(function (error) {
                 console.log(error);

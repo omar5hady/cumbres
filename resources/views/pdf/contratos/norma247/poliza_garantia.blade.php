@@ -264,11 +264,13 @@
                 CON DOMICILIO EN MANUEL GUTIÉRREZ NÁJERA NO. 190 COL. TEQUISQUIAPAN CP. 78230  DE LA
                 CIUDAD DE SAN LUIS POTOSÍ S.L.P. CON TELÉFONO 444 833-46-83,
                 A FAVOR DE {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }},
-                EN LO SUCESIVO <b>“EL PROPIETARIO,</b> RESPECTO A LA VIVIENDA UBICADA EN EL
-                LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
-                DE LA MANZANA {{mb_strtoupper($contrato->manzana)}} DE LA
-                CALLE {{mb_strtoupper($contrato->calle_lote)}}
-                #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}} DE EL FRACCIONAMIENTO HABITACIONAL
+                EN LO SUCESIVO <b>“EL PROPIETARIO,</b> RESPECTO A LA VIVIENDA UBICADA EN
+                @if($contrato->tipo_modelo != 2)
+                    EL LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                    DE LA MANZANA {{mb_strtoupper($contrato->manzana)}} DE
+                @endif
+                LA CALLE {{mb_strtoupper($contrato->calle_lote)}}
+                #{{$contrato->num_oficial}} {{ ($contrato->interior ? 'Int. '.$contrato->interior : '')}} DE EL FRACCIONAMIENTO HABITACIONAL
                 @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
                     {{ mb_strtoupper( str_replace('FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto)) }}
                 @else
@@ -383,10 +385,12 @@
                         @else
                             {{mb_strtoupper($contrato->proyecto)}}
                         @endif
-                    MNZA: {{mb_strtoupper($contrato->manzana)}}
-                    LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                    @if($contrato->tipo_modelo != 2)
+                        MNZA: {{mb_strtoupper($contrato->manzana)}}
+                        LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                    @endif
                     CALLE: {{mb_strtoupper($contrato->calle_lote)}}
-                    #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}.
+                    #{{$contrato->num_oficial}} {{ ($contrato->interior ? 'Int. '.$contrato->interior : '')}}.
                     {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
                 </p>
             </center>
@@ -1146,10 +1150,13 @@
                         <b>CONCRETANIA, S.A. DE C.V.</b>
                     @endif
                     Y POR OTRA PARTE EL SR.(A) <b>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}</b>
-                    PROPIETARIO(A) Y POR SU PROPIO DERECHO DE FORMALIZAR LA ENTREGA DE LA VIVIENDA UBICADA EN EL
-                    <b>LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
-                    MANZANA {{mb_strtoupper($contrato->manzana)}} DE LA CALLE {{mb_strtoupper($contrato->calle_lote)}}
-                    #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}
+                    PROPIETARIO(A) Y POR SU PROPIO DERECHO DE FORMALIZAR LA ENTREGA DE LA VIVIENDA UBICADA EN
+                    @if($contrato->tipo_modelo != 2)
+                        EL <b>LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                        MANZANA {{mb_strtoupper($contrato->manzana)}} DE
+                    @endif
+                    LA CALLE {{mb_strtoupper($contrato->calle_lote)}}
+                    #{{$contrato->num_oficial}} {{ ($contrato->interior ? 'Int. '.$contrato->interior : '')}}
                     DEL FRACCIONAMIENTO
                         @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
                             {{ mb_strtoupper( str_replace(' FRACCIONAMIENTO RESIDENCIAL', '', $contrato->proyecto))}};
@@ -1393,10 +1400,12 @@
                     @else
                         {{mb_strtoupper($contrato->proyecto)}}
                     @endif
-                MNZA: {{mb_strtoupper($contrato->manzana)}}
-                LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                @if($contrato->tipo_modelo != 2)
+                    MNZA: {{mb_strtoupper($contrato->manzana)}}
+                    LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                @endif
                 CALLE: {{mb_strtoupper($contrato->calle_lote)}}
-                #{{$contrato->num_oficial}} {{ ($contrato->interior ? $contrato->interior : '')}}.
+                #{{$contrato->num_oficial}} {{ ($contrato->interior ? 'Int. '.$contrato->interior : '')}}.
                 {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
             </p>
         </center>

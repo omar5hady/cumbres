@@ -30,10 +30,11 @@ class DocumentosController extends Controller
         return Credito::join('personal as p','creditos.prospecto_id','=','p.id')
             ->leftJoin('entregas','creditos.id','=','entregas.id')
             ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('fraccionamientos as proyecto', 'lotes.fraccionamiento_id','=','proyecto.id')
             ->select('p.nombre','p.apellidos','creditos.fraccionamiento as proyecto','creditos.etapa',
                 'creditos.manzana','lotes.num_lote','lotes.sublote', 'lotes.calle','lotes.numero',
-                'lotes.emp_constructora',
+                'lotes.emp_constructora', 'modelos.tipo as tipo_modelo',
                 'lotes.interior','proyecto.delegacion','proyecto.estado as estado_proy',
                 'entregas.fecha_program as entrega_program', 'entregas.fecha_entrega_real as entrega_real',
                 'proyecto.ciudad as ciudad_proy',

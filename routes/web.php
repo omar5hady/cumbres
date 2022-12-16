@@ -359,6 +359,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/ruv/storeComentarios','RuvController@storeComentarios');
 
     ///////////////// RUTAS SOLICITUDES DE PAGO ////////////////////
+    Route::get('/sp/getCargos','solicPagos\SolicitudesController@getCargos');
+    Route::get('/sp/getConceptos','solicPagos\SolicitudesController@getConceptos');
 
     ///////////////////// RUTAS INGRESOS CONCRETANIA
         Route::get('/ingresosConcretania/pendeintesIngresar','DepositoController@pendeintesIngresar');

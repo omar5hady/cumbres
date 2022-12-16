@@ -1101,7 +1101,7 @@
         <p>
             <strong>DÉCIMA CUARTA.- FALLECIMIENTO DE “EL PROMITENTE COMPRADOR”.</strong> En caso de fallecimiento de
             <strong>
-                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                @if($contrato->coacreditado == 1)
                     “LOS PROMITENTES COMPRADORES”
                 @else
                     “EL PROMITENTE COMPRADOR”

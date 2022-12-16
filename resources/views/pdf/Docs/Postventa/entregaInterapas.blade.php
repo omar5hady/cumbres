@@ -130,9 +130,12 @@
 
     <div class="contenido info">
         <p>RECIBí DE ENTERA CONFORMIDAD POR PARTE DE <strong>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</strong>
-            LA VIVIENDA UBICADA EN EL LOTE {{$contrato->num_lote}}{{($contrato->sublote)?'-'.$contrato->sublote:''}}
-            DE LA MANZANA {{ mb_strtoupper($contrato->manzana) }}
-            DE LA CALLE {{mb_strtoupper($contrato->calle)}}
+            LA VIVIENDA UBICADA EN
+            @if($contrato->tipo_modelo != 2)
+                EL LOTE {{$contrato->num_lote}}{{($contrato->sublote)?'-'.$contrato->sublote:''}}
+                DE LA MANZANA {{ mb_strtoupper($contrato->manzana) }} DE
+            @endif
+            LA CALLE {{mb_strtoupper($contrato->calle)}}
             No. {{$contrato->numero}}{{($contrato->interior)?' Int.'.$contrato->interior:''}}
             DEL FRACCIONAMIENTO
             @if(str_contains($contrato->proyecto, 'FRACCIONAMIENTO RESIDENCIAL'))
@@ -163,10 +166,12 @@
                     @else
                         {{mb_strtoupper($contrato->proyecto)}}
                     @endif
-                MNZA: {{mb_strtoupper($contrato->manzana)}}
-                LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                @if($contrato->tipo_modelo != 2)
+                    MNZA: {{mb_strtoupper($contrato->manzana)}}
+                    LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
+                @endif
                 CALLE: {{mb_strtoupper($contrato->calle_lote)}}
-                #{{$contrato->numero}} {{ ($contrato->interior ? $contrato->interior : '')}}.
+                #{{$contrato->numero}} {{ ($contrato->interior ? 'Int. '.$contrato->interior : '')}}.
                 {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
             </p>
         </center>

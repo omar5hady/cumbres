@@ -4432,9 +4432,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
             },
         },
         created(){
-            this.selectEcotecnologias();
+
         },
         mounted() {
+            this.selectEcotecnologias();
             this.listarContratos(1,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
             this.$root.selectFraccionamientos();
             this.selectAsesores();
