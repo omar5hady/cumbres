@@ -7,6 +7,8 @@ use App\Http\Controllers\NotificacionesAvisosController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use App\Notificacion_aviso;
+use App\Cliente_observacion;
+use App\Cliente;
 use Carbon\Carbon;
 use App\Pago_renta;
 use App\User;
@@ -127,5 +129,41 @@ class NotificacionPeriodica extends Command
                 $p->status = 0;
                 $p->save();
             }
+    }
+
+    private function pruebaDesc(){
+        //id Descartado = 104
+        setlocale(LC_TIME, 'es_MX.utf8');
+
+        $clientes = Cliente::select('id')->where('vendedor_id','!=',104)
+            ->where('clasificacion','!=',1)
+            ->where('clasificacion','!=',5)
+            ->where('clasificacion','!=',6)
+            ->where('clasificacion','!=',7)
+            ->get();
+
+        //Se recorre a los clientes y se busca la fecha del ultimo comentario. Despues se calcula el tiempo que ha pasado.
+        foreach($clientes as $index => $persona){
+            $now = Carbon::now();
+            $persona->diferencia = 16;
+            $ultimoCom = Cliente_observacion::select('created_at')->where('cliente_id','=',$persona->id)->orderBy('id','desc')->get();
+            if(sizeof($ultimoCom)){
+                $date = Carbon::parse($ultimoCom[0]->created_at);
+                $persona->diferencia = $date->diffInDays($now);
+            }
+
+            if($persona->diferencia > 16){
+                $c = Cliente::findOrFail($persona->id);
+                $c->vendedor_id = 104;
+                $c->clasificacion = 1;
+                $c->save();
+
+                $ob = new Cliente_observacion();
+                $ob->cliente_id = $persona->id;
+                $ob->comentario = 'Se retira prospecto por falta de seguimiento';
+                $ob->usuario = 'Sii Cumbres';
+                $ob->save();
+            }
+        }
     }
 }
