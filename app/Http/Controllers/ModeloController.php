@@ -64,13 +64,13 @@ class ModeloController extends Controller
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $m = Modelo::select('nombre','ficha_tecnica')->where('nombre','=',$request->nombre)->first();
+        $m = Modelo::select('nombre','ficha_tecnica')->where('nombre','=',$request->nombre)->get();
 
         $modelo = new Modelo();
         $modelo->nombre = $request->nombre;
         $modelo->tipo = $request->tipo;
-        if($m->ficha_tecnia != NULL)
-            $modelo->ficha_tecnica = $m->ficha_tecnica;
+        if(sizeof($m))
+            $modelo->ficha_tecnica = $m[0]->ficha_tecnica;
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;

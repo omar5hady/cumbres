@@ -23,6 +23,7 @@ use App\PlanoProyecto;
 use App\User;
 use Carbon\Carbon;
 use NumerosEnLetras;
+use File;
 use Excel;
 use Auth;
 use DB;

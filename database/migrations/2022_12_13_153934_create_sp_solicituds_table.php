@@ -13,6 +13,7 @@ class CreateSpSolicitudsTable extends Migration
      */
     public function up()
     {
+        /* Creating a table called sp_solicituds */
         Schema::create('sp_solicituds', function (Blueprint $table) {
             $table->increments('id');
             $table->string('empresa_solic');
@@ -20,7 +21,8 @@ class CreateSpSolicitudsTable extends Migration
             $table->string('departamento',100);
             $table->integer('proveedor_id');
             $table->double('importe')->default(0);
-            $table->integer('tipo_pago')->default(0);  //? 0:CF, 1:B
+            $table->boolean('tipo_pago')->default(0);  //? 0:CF, 1:B
+            $table->boolean('forma_pago')->nullable();
             $table->boolean('status')->default(0);
             $table->boolean('vb_gerente')->default(0);
             $table->boolean('vb_direccion')->default(0);

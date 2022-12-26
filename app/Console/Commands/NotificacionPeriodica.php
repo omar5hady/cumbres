@@ -52,6 +52,7 @@ class NotificacionPeriodica extends Command
         $this->getNotificacionesAviso($today);
         $this->getPagosPorVencer();
         $this->cambiarPagoAVencido();
+        $this->sendDescartado();
     }
 
     private function getNotificacionesAviso($today){
@@ -131,7 +132,7 @@ class NotificacionPeriodica extends Command
             }
     }
 
-    private function pruebaDesc(){
+    private function sendDescartado(){
         //id Descartado = 104
         setlocale(LC_TIME, 'es_MX.utf8');
 

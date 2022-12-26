@@ -1272,6 +1272,10 @@ Route::group(['middleware' => ['auth']],function(){
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/equip-lotes', Lotes\EquipLoteController::class);
 
+        //////////////////// RUTAS SOLICITUD DE PAGOS
+        Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
+        Route::delete('/solic-pagos/deleteDetalle','solicPagos\SolicitudesController@deleteDetalle');
+
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');
         Route::post('/equip-lotes/storeObservacion','Lotes\EquipLoteController@storeObservacion');
         Route::post('/equip-lotes/fileSubmit','Lotes\EquipLoteController@fileSubmit');

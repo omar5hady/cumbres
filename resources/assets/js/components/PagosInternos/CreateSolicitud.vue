@@ -24,16 +24,13 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <input type="text" class="form-control col-md-2" disabled placeholder="Proveedor:">
-                                    <select class="form-control col-md-7" v-model="b_proveedor">
-                                        <option value="">Seleccione</option>
-                                        <option v-for="proveedor in arrayProveedores" :key="proveedor.id" :value="proveedor.id" v-text="proveedor.proveedor"></option>
-                                    </select>
+                                    <input type="text" class="form-control col-md-6" v-model="b_proveedor" placeholder="Proveedor a buscar">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <input type="text" class="form-control col-md-2" disabled placeholder="Solicitante">
-                                    <input type="text" class="form-control col-md-6" placeholder="Solicitante a buscar">
+                                    <input type="text" class="form-control col-md-6" v-model="b_solicitante" placeholder="Solicitante a buscar">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -57,7 +54,9 @@
                             </div>
                             <div class="col-md-10">
                                 <div class="input-group">
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary"
+                                        @click="indexSolicitudes(1)"
+                                    >
                                         <i class="fa fa-search"></i> Buscar
                                     </button>
                                     <a class="btn btn-success" href="#">
@@ -72,29 +71,31 @@
                             'Solicitante',
                             'Fecha solic',
                             'Importe',
-                            'Forma de pago',
-                            ' '
+                            'Tipo de pago',
+                            ''
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="solic in arraySolic.data" :key="solic.id">
-                                    <td class="td2" v-text="solic.proyecto"></td>
-                                    <td class="td2" v-text="solic.etapa"></td>
-                                    <td class="td2" v-text="solic.manzana"></td>
-                                    <td class="td2" v-text="solic.num_lote"></td>
-                                    <td class="td2" v-text="solic.modelo"></td>
+                                    <td class="td2">
+                                        <button class="btn btn-warning" title="Editar">
+                                            <i class="icon-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-danger" title="Eliminar">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td class="td2" v-text="solic.proveedor"></td>
+                                    <td class="td2" v-text="solic.solicitante"></td>
+                                    <td class="td2" v-text="solic.created_at"></td>
+                                    <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
+                                    <td class="td2">
+                                        {{ solic.tipo_pago == 0 ? 'Caja Fuerte' : 'Bancario' }}
+                                    </td>
                                     <td class="td2" v-text="solic.num_inicio"></td>
                                     <td>
-                                        <template  v-if="solic.planos.length">
-                                            <button
-                                                @click="abrirModal('ver',solic)"
-                                                title="Ver planos" type="button" class="btn btn-dark btn-sm"
-                                            >
-                                                <i class="fa fa-map-o"></i>
-                                            </button>
-                                        </template>
-                                        <template v-else>
-                                            <span class="badge badge-light">Sin planos</span>
-                                        </template>
+                                        <button class="btn btn-light" title="Ver Observaciones">
+                                            Observaciones
+                                        </button>
                                     </td>
                                 </tr>
                             </template>
@@ -105,20 +106,20 @@
                             <ul class="pagination">
                                 <li class="page-item"
                                     v-if="arraySolic.current_page > 5"
-                                    @click="indexLotes(1)"
+                                    @click="indexSolicitudes(1)"
                                 >
                                     <a class="page-link" href="#">Inicio</a>
                                 </li>
                                 <li class="page-item"
                                     v-if="arraySolic.current_page > 1"
-                                    @click="indexLotes(arraySolic.current_page - 1)"
+                                    @click="indexSolicitudes(arraySolic.current_page - 1)"
                                 >
                                     <a class="page-link" href="#">Ant</a>
                                 </li>
 
                                 <li class="page-item"
                                     v-if="arraySolic.current_page - 3 >= 1"
-                                    @click="indexLotes(arraySolic.current_page - 3)"
+                                    @click="indexSolicitudes(arraySolic.current_page - 3)"
                                 >
                                     <a class="page-link" href="#"
                                         v-text="arraySolic.current_page - 3"
@@ -126,14 +127,14 @@
                                 </li>
                                 <li
                                     class="page-item" v-if="arraySolic.current_page - 2 >= 1"
-                                    @click="indexLotes(arraySolic.current_page - 2)"
+                                    @click="indexSolicitudes(arraySolic.current_page - 2)"
                                 >
                                     <a class="page-link" href="#"
                                         v-text="arraySolic.current_page - 2"
                                     ></a>
                                 </li>
                                 <li class="page-item" v-if="arraySolic.current_page - 1 >= 1"
-                                    @click="indexLotes(arraySolic.current_page - 1)"
+                                    @click="indexSolicitudes(arraySolic.current_page - 1)"
                                 >
                                     <a class="page-link" href="#"
                                         v-text="arraySolic.current_page - 1"
@@ -148,7 +149,7 @@
                                     v-if="arraySolic.current_page + 1 <= arraySolic.last_page"
                                 >
                                     <a class="page-link" href="#"
-                                        @click="indexLotes(arraySolic.current_page + 1)"
+                                        @click="indexSolicitudes(arraySolic.current_page + 1)"
                                         v-text="arraySolic.current_page + 1"
                                     ></a>
                                 </li>
@@ -156,7 +157,7 @@
                                     v-if="arraySolic.current_page + 2 <=arraySolic.last_page"
                                 >
                                     <a class="page-link" href="#"
-                                        @click="indexLotes(arraySolic.current_page + 2)"
+                                        @click="indexSolicitudes(arraySolic.current_page + 2)"
                                         v-text="arraySolic.current_page + 2"
                                     ></a>
                                 </li>
@@ -164,20 +165,20 @@
                                     v-if="arraySolic.current_page + 3 <= arraySolic.last_page"
                                 >
                                     <a class="page-link" href="#"
-                                        @click="indexLotes(arraySolic.current_page + 3)"
+                                        @click="indexSolicitudes(arraySolic.current_page + 3)"
                                         v-text="arraySolic.current_page + 3"
                                     ></a>
                                 </li>
 
                                 <li class="page-item"
                                     v-if="arraySolic.current_page < arraySolic.last_page"
-                                    @click="indexLotes(arraySolic.current_page + 1)"
+                                    @click="indexSolicitudes(arraySolic.current_page + 1)"
                                 >
                                     <a class="page-link" href="#">Sig</a>
                                 </li>
                                 <li class="page-item"
                                     v-if="arraySolic.current_page < 5 && arraySolic.last_page > 5"
-                                    @click="indexLotes(arraySolic.last_page)"
+                                    @click="indexSolicitudes(arraySolic.last_page)"
                                 >
                                     <a class="page-link" href="#">Ultimo</a>
                                 </li>
@@ -185,12 +186,22 @@
                         </nav>
                     </template>
                     <template v-if="vista == 1">
-
                         <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="">Empresa solicitante </label>
+                                    <select class="form-control" v-model="solicitudData.empresa_solic">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Proveedor </label>
-                                    <v-select
+                                    <v-select v-if="tipoAccion == 1"
                                         :on-search="selectProveedores"
                                         label="proveedor"
                                         :options="proveedoresForm"
@@ -198,14 +209,26 @@
                                         :onChange="getDatosProveedor"
                                     >
                                     </v-select>
+                                    <input type="text" class="form-control" v-if="tipoAccion == 2"
+                                        v-model="solicitudData.proveedor" disabled>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label> Forma de pago </label>
-                                <select class="form-control" v-model="solicitudData.tipo_pago" @click="selectLotes(manzana,fraccionamiento_id)">
+                                <select class="form-control" v-model="solicitudData.tipo_pago" @change="solicitudData.forma_pago = ''">
                                     <option value="0">Caja Fuerte</option>
                                     <option value="1">Bancario</option>
                                 </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group" v-if="solicitudData.tipo_pago == 1">
+                                    <label for="">&nbsp;</label>
+                                    <select class="form-control" v-model="solicitudData.forma_pago">
+                                        <option value="">Metodo de pago</option>
+                                        <option value="0">Transferencia</option>
+                                        <option value="1">Cheque</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="col-md-3">
@@ -228,7 +251,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label for="">Obra</label>
+                                <label for="">Obra <span style="color:red;" v-show="datosDetalle.obra == ''">(*)</span></label>
                                 <input type="text" name="obra" list="obraname" class="form-control"
                                     v-model="datosDetalle.obra" @keyup="getProyectos(datosDetalle.obra)" @change="selectEtapa(datosDetalle.obra)">
                                 <datalist id="obraname">
@@ -249,15 +272,15 @@
                             <div v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''" class="col-md-5"></div>
                             <div v-else class="col-md-8"></div>
 
-                            <div class="col-md-5">
-                                <label for="">Cargo</label>
+                            <div class="col-md-6">
+                                <label for="">Cargo <span style="color:red;" v-show="datosDetalle.cargo == ''">(*)</span></label>
                                 <select class="form-control" v-model="datosDetalle.cargo" @change="getConceptos(datosDetalle.cargo), datosDetalle.concepto = ''">
                                     <option value="">Seleccione</option>
                                     <option v-for="cargo in arrayCargos" :key="cargo.cargo" :value="cargo.cargo" v-text="cargo.cargo"></option>
                                 </select>
                             </div>
-                            <div class="col-md-5">
-                                <label for="">Concepto</label>
+                            <div class="col-md-6">
+                                <label for="">Concepto <span style="color:red;" v-show="datosDetalle.concepto == ''">(*)</span></label>
                                 <select class="form-control" v-model="datosDetalle.concepto">
                                     <option value="">Seleccione</option>
                                     <option v-for="concepto in arrayConceptos" :key="concepto.id" :value="concepto.concepto" v-text="concepto.concepto"></option>
@@ -271,8 +294,13 @@
                                     <option value="2">Pago Cta</option>
                                 </select>
                             </div>
+                            <div class="col-md-7">
+                                <label for="">Observación</label>
+                                <textarea rows="3" class="form-control" v-model="datosDetalle.observacion"></textarea>
+                            </div>
+                            <div class="col-md-3"></div>
                             <div class="col-md-3">
-                                <label for="">Importe total</label>
+                                <label for="">Importe total <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
                                 <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
                                     type="text" v-model="datosDetalle.total">
                             </div>
@@ -281,7 +309,7 @@
                                 <label class="form-control">${{$root.formatNumber(datosDetalle.total)}}</label>
                             </div>
                             <div class="col-md-3">
-                                <label for="">Este pago</label>
+                                <label for="">Este pago <span style="color:red;" v-show="datosDetalle.pago <= 0">(*)</span></label>
                                 <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
                                     @change="verificarMonto()"
                                     type="text" v-model="datosDetalle.pago">
@@ -290,9 +318,68 @@
                                 <label for="">&nbsp;</label>
                                 <label class="form-control">${{$root.formatNumber(datosDetalle.pago)}}</label>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <label for="">&nbsp;</label>
-                                <button class="btn btn-success" @click="addDetalle()" title="Añadir"><i class="icon-plus"></i></button>
+                                <button class="btn btn-success form-control" @click="addDetalle()" title="Añadir"><i class="icon-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="form-group row border"
+                            v-if="solicitudData.detalle.length > 0"
+                            style="padding-top:5px; padding-bottom:8px;">
+                            <div class="col-md-12">
+                                <center>
+                                    <TableComponent :cabecera="[
+                                        '','Obra', 'Cargo', 'Subconcepto', 'Obs.', 'Tipo Mov.', 'Este pago'
+                                    ]">
+                                        <template v-slot:tbody>
+                                            <tr v-for="det in solicitudData.detalle" :key="det.id">
+                                                <td>
+                                                    <button class="btn btn-danger" title="Eliminar"
+                                                        @click="removeDetalle(det)"
+                                                    >
+                                                        <i class="icon-trash"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="td2">{{det.obra}} {{det.sub_obra }}</td>
+                                                <td class="td2">{{det.cargo}}</td>
+                                                <td class="td2">{{det.concepto}}</td>
+                                                <td>{{det.observacion}}</td>
+                                                <td class="td2">
+                                                    {{
+                                                        (det.tipo_mov == 0) ? 'Anticipo'
+                                                        : (det.tipo_mov == 1) ? 'Liquidación'
+                                                        : 'Pago Cta'
+                                                    }}
+                                                </td>
+                                                <td class="td2">
+                                                    ${{$root.formatNumber(det.pago)}}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6"></td>
+                                                <th>$ {{$root.formatNumber(solicitudData.saldo = sumaDet)}}</th>
+                                            </tr>
+                                        </template>
+                                    </TableComponent>
+                                </center>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <button class="btn btn-success" @click="store()"
+                                    v-if="solicitudData.importe > 0
+                                        && solicitudData.importe == solicitudData.saldo
+                                        && tipoAccion == 1">
+                                    Guardar Solicitud
+                                </button>
+                                <button class="btn btn-success" @click="store()"
+                                    v-if="solicitudData.importe > 0
+                                        && solicitudData.importe == solicitudData.saldo
+                                        && tipoAccion == 2">
+                                    Actualizar Solicitud
+                                </button>
                             </div>
                         </div>
 
@@ -418,11 +505,11 @@ export default {
         vSelect
     },
     props: {},
-    computed:{},
     data() {
         return {
             arraySolic: [],
             planos: [],
+            empresas: [],
             arrayProveedores : [],
             proveedoresForm : [],
             arrayProyectos : [],
@@ -434,6 +521,7 @@ export default {
             datosDetalle:{},
 
             b_proveedor : '',
+            b_solicitante : '',
             b_status : '',
             loading : false,
 
@@ -448,9 +536,15 @@ export default {
             vista:0
         };
     },
-    computed: {},
+    computed: {
+        sumaDet: function(){
+            let me = this;
+            let total = 0.0;
+            me.solicitudData.detalle.forEach( e => total += Math.round(e.pago) )
+            return Math.round(total);
+        },
+    },
     methods: {
-
         onChangeFile(e){
             this.newArchivo.file = e.target.files[0];
             this.newArchivo.nom_archivo = e.target.files[0].name;
@@ -490,21 +584,59 @@ export default {
                 this.cargando = 0;
             });
         },
+        removeDetalle(det){
+            let me = this;
+            me.solicitudData.detalle;
+
+            if(det.id){
+                //Función para eliminar el registro
+            }
+
+            me.solicitudData.detalle = me.solicitudData.detalle.filter(
+                    a => a != det
+            )
+            //Se muestra mensaje Success
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+                });
+                toast({
+                type: 'success',
+                title: 'Detalle removido'
+            })
+        },
         addDetalle(){
-            console.log("OSO")
-            if(this.verificarCaptura())
-                window.alert("OSO")
+            let me = this;
+            if(me.verificarCaptura()){
+                me.solicitudData.detalle.push(me.datosDetalle);
+                me.limpiarFormularioDetalle();
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+                    toast({
+                    type: 'success',
+                    title: 'Detalle agregado'
+                })
+            }
+            else{
+                window.alert("Verifica los campos faltantes");
+            }
 
         },
         verificarCaptura(){
             let me = this;
-            let res = true;
+            let res = false;
             if( me.datosDetalle.obra != ''
                 && me.datosDetalle.cargo != ''
                 && me.datosDetalle.concepto != ''
                 && me.datosDetalle.total > 0
                 && me.datosDetalle.pago > 0
-            )res = false;
+            )res = true;
             return res;
         },
         limpiarFormularioDetalle(){
@@ -535,6 +667,7 @@ export default {
                         importe : 0,
                         saldo : 0,
                         tipo_pago : 0,
+                        forma_pago : '',
                         fecha_compra: '',
                         banco : '',
                         num_cuenta : '',
@@ -550,7 +683,7 @@ export default {
         cerrarFormulario(){
             this.vista = 0;
             this.solicitudData = {};
-            this.indexLotes(this.arraySolic.current_page);
+            this.indexSolicitudes(this.arraySolic.current_page);
         },
 
         deleteFile(id){
@@ -559,7 +692,7 @@ export default {
                 params: {'id': id}
             }).then(function (response){
                 me.planos = me.planos.filter( e => e.id !== id)
-                me.indexLotes(me.pagination.current_page);
+                me.indexSolicitudes(me.pagination.current_page);
                 //Se muestra mensaje Success
                 const toast = Swal.mixin({
                     toast: true,
@@ -576,11 +709,33 @@ export default {
             });
         },
 
-        /**Metodo para mostrar los registros */
-        indexLotes(page) {
+        /**Metodo para registrar  */
+        store(){
             let me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/solic-pagos',{
+                'solicitud': me.solicitudData,
+            }).then(function (response){
+                me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                me.cerrarFormulario();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Solicitud creada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+            });
+        },
+
+        /**Metodo para mostrar los registros */
+        indexSolicitudes(page) {
+            let me = this;
+            me.arraySolic = [];
             var url =
-                "/planos-proyectos?page=" +
+                "/solic-pagos?page=" +
                 page;
             axios
                 .get(url)
@@ -602,6 +757,17 @@ export default {
             })
             .catch(function (error) {
                 console.log(error);
+            });
+        },
+        getEmpresa(){
+            let me = this;
+            me.empresas=[];
+            var url = '/lotes/empresa/select';
+            axios.get(url).then(function (response) {
+                var respuesta = response;
+                me.empresas = respuesta.data.empresas;
+            })
+            .catch(function (error) {
             });
         },
 
@@ -689,11 +855,11 @@ export default {
         },
 
         getDatosProveedor(val1){
-                let me = this;
-                //me.loading = true;
-                me.solicitudData.proveedor_id = val1.id;
-                me.solicitudData.proveedor = val1.proveedor;
-            },
+            let me = this;
+            //me.loading = true;
+            me.solicitudData.proveedor_id = val1.id;
+            me.solicitudData.proveedor = val1.proveedor;
+        },
 
         cerrarModal() {
             this.modal = 0;
@@ -702,7 +868,7 @@ export default {
             this.lotes_ini = [];
             this.proyectoSel = '';
             this.etapaSel = '';
-            this.indexLotes(this.arraySolic.current_page)
+            this.indexSolicitudes(this.arraySolic.current_page)
             this.cargando = 0;
         },
 
@@ -748,7 +914,8 @@ export default {
         }
     },
     mounted() {
-        this.indexLotes(1);
+        this.indexSolicitudes(1);
+        this.getEmpresa();
         this.getProveedores();
         this.$root.selectFraccionamientos();
     }
