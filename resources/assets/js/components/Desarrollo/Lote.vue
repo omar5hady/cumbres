@@ -245,6 +245,26 @@
                         <hr>
 
                         <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Area de Jardin (mts&sup2;)</label>
+                            <div class="col-md-2" >
+                                <input type="text"  v-model="area_jardin" class="form-control" placeholder="Terreno">
+                            </div>
+                            <label class="col-md-3 form-control-label" for="text-input">Area de estacionamiento (mts&sup2;)</label>
+                            <div class="col-md-2">
+                                <input type="text" v-model="area_estacionamiento" class="form-control" placeholder="Construccion">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input"># Cajón de estacionamiento</label>
+                            <div class="col-md-9" >
+                                <input type="number"  v-model="num_estacionamiento" class="form-control" placeholder="# Cajón">
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Colindancias</label>
                             <div class="col-md-9" >
                                 <textarea class="form-control" v-model="colindancias" id="" cols="45" rows="5"></textarea>
@@ -491,6 +511,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 casa_muestra: 0,
                 lote_comercial: 0,
                 comentarios: '',
+                num_estacionamiento : '',
+                area_estacionamiento : 0,
+                area_jardin : 0,
                 datosEscritura:{},
 
                 file: '',
@@ -783,6 +806,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'num_notario' : this.datosEscritura.num_notario,
                     'distrito_notario' : this.datosEscritura.distrito_notario,
                     'folio_registro' : this.datosEscritura.folio_registro,
+                    'area_jardin' : this.area_jardin,
+                    'area_estacionamiento' : this.area_estacionamiento,
+                    'num_estacionamiento' : this.num_estacionamiento
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -855,6 +881,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                             'num_notario' : me.datosEscritura.num_notario,
                             'distrito_notario' : me.datosEscritura.distrito_notario,
                             'folio_registro' : me.datosEscritura.folio_registro,
+                            'area_jardin' : me.area_jardin,
+                            'area_estacionamiento' : me.area_estacionamiento,
+                            'num_estacionamiento' : me.num_estacionamiento
 
                         }).then(function (response){
                             me.cerrarModal();
@@ -1035,6 +1064,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.indivisos = 0;
                                 this.paso = 1;
                                 this.datosEscritura = {};
+                                this.num_estacionamiento = '';
+                                this.area_estacionamiento = 0;
+                                this.area_jardin = 0;
                                 break;
                             }
                             case 'actualizar':
@@ -1062,6 +1094,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.comentarios=data['comentarios'];
                                 this.indivisos = data['indivisos'];
                                 this.colindancias = data['colindancias'];
+                                this.num_estacionamiento =  data['num_estacionamiento'];
+                                this.area_estacionamiento = data['area_estacionamiento'];
+                                this.area_jardin = data['area_jardin'];
 
                                 this.datosEscritura={
                                     num_escritura: data['num_escritura'],

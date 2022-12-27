@@ -33,7 +33,7 @@ class SolicitudesController extends Controller
         return $solicitudes;
     }
 
-    public function deleteDetalle($id){
+    public function deleteDetalle( $id){
         $detalle = SpDetalle::findOrFail($id);
         $detalle->delete();
     }
@@ -76,24 +76,44 @@ class SolicitudesController extends Controller
 
     private function storeDetalle($id, $detalles){
         foreach($detalles as $det){
-            $detalle = new SpDetalle();
-            $detalle->solic_id  = $id;
-            $detalle->obra      = $det['obra'];
-            $detalle->sub_obra  = $det['sub_obra'];
-            $detalle->cargo     = $det['cargo'];
-            $detalle->concepto  = $det['concepto'];
-            $detalle->observacion = $det['observacion'];
-            $detalle->tipo_mov  = $det['tipo_mov'];
-            $detalle->total     = $det['total'];
-            $detalle->pago      = $det['pago'];
-            $detalle->saldo     = $det['saldo'];
-            if($detalle->saldo == 0)
-                $detalle->status = 0;
-            else
-                $detalle->status = 1;
-            $detalle->cargo     = $det['cargo'];
-            $detalle->save();
+            if($det['id'] == '')
+            {
+                $detalle = new SpDetalle();
+                $detalle->solic_id  = $id;
+                $detalle->obra      = $det['obra'];
+                $detalle->sub_obra  = $det['sub_obra'];
+                $detalle->cargo     = $det['cargo'];
+                $detalle->concepto  = $det['concepto'];
+                $detalle->observacion = $det['observacion'];
+                $detalle->tipo_mov  = $det['tipo_mov'];
+                $detalle->total     = $det['total'];
+                $detalle->pago      = $det['pago'];
+                $detalle->saldo     = $det['saldo'];
+                if($detalle->saldo == 0)
+                    $detalle->status = 0;
+                else
+                    $detalle->status = 1;
+                $detalle->cargo     = $det['cargo'];
+                $detalle->save();
+            }
         }
+    }
+
+    private function updateSolicitud($solicitud){
+        $prov = Proveedor::findOrFail($solicitud['proveedor_id']);
+
+        $solic = SpSolicitud::findOrFail($solicitud['id']);
+        $solic->empresa_solic   = $solicitud['empresa_solic'];
+        $solic->proveedor_id    = $prov->id;
+        $solic->importe         = $solicitud['importe'];
+        $solic->tipo_pago       = $solicitud['tipo_pago'];
+        $solic->forma_pago      = $solicitud['forma_pago'];
+        $solic->banco           = $prov->banco;
+        $solic->num_cuenta      = $prov->num_cuenta;
+        $solic->clabe           = $prov->clabe;
+        $solic->save();
+
+        return $solic->id;
     }
 
     private function createObs($solicitud_id, $observacion){
@@ -112,6 +132,21 @@ class SolicitudesController extends Controller
             $id = $this->storeSolicitud($solicitud);
             $this->storeDetalle($id, $solicitud['detalle']);
             $this->createObs($id, "Solicitud creada.");
+
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+    }
+
+    public function update(Request $request){
+        try{
+            DB::beginTransaction();
+
+            $solicitud = $request->solicitud;
+            $id = $this->updateSolicitud($solicitud);
+            $this->storeDetalle($id, $solicitud['detalle']);
+            $this->createObs($id, "Solicitud actualizada.");
 
             DB::commit();
         } catch (Exception $e){

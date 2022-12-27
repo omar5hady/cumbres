@@ -77,7 +77,9 @@
                             <template v-slot:tbody>
                                 <tr v-for="solic in arraySolic.data" :key="solic.id">
                                     <td class="td2">
-                                        <button class="btn btn-warning" title="Editar">
+                                        <button class="btn btn-warning" title="Editar"
+                                            @click="vistaFormulario('actualizar', solic)"
+                                        >
                                             <i class="icon-pencil"></i>
                                         </button>
                                         <button class="btn btn-danger" title="Eliminar">
@@ -93,7 +95,9 @@
                                     </td>
                                     <td class="td2" v-text="solic.num_inicio"></td>
                                     <td>
-                                        <button class="btn btn-light" title="Ver Observaciones">
+                                        <button class="btn btn-light" title="Ver Observaciones"
+                                            @click="verObs(solic)"
+                                        >
                                             Observaciones
                                         </button>
                                     </td>
@@ -333,7 +337,8 @@
                                         '','Obra', 'Cargo', 'Subconcepto', 'Obs.', 'Tipo Mov.', 'Este pago'
                                     ]">
                                         <template v-slot:tbody>
-                                            <tr v-for="det in solicitudData.detalle" :key="det.id">
+                                            <tr v-for="det in solicitudData.detalle"
+                                                :key="det.id+det.obra+det.sub_obra+det.cargo+det.concepto+det.pago">
                                                 <td>
                                                     <button class="btn btn-danger" title="Eliminar"
                                                         @click="removeDetalle(det)"
@@ -368,17 +373,17 @@
 
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <button class="btn btn-success" @click="store()"
+                                <button class="btn btn-success" @click="storeSolic()"
                                     v-if="solicitudData.importe > 0
                                         && solicitudData.importe == solicitudData.saldo
                                         && tipoAccion == 1">
                                     Guardar Solicitud
                                 </button>
-                                <button class="btn btn-success" @click="store()"
+                                <button class="btn btn-success" @click="updateSolicitud()"
                                     v-if="solicitudData.importe > 0
                                         && solicitudData.importe == solicitudData.saldo
                                         && tipoAccion == 2">
-                                    Actualizar Solicitud
+                                    Guardar Cambios
                                 </button>
                             </div>
                         </div>
@@ -458,6 +463,40 @@
                     </template>
                 </ModalComponent>
 
+                <!--Inicio del modal observaciones-->
+                <ModalComponent v-if="modal==1"
+                    :titulo="tituloModal"
+                    @closeModal="cerrarModal()"
+                >
+                    <template v-slot:body>
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Observacion</label>
+                            <div class="col-md-7">
+                                    <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Fecha para recordatorio</label>
+                            <div class="col-md-3">
+                                    <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
+                            </div>
+                        </div>
+                        <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                            <template v-slot:tbody>
+                                <tr v-for="observacion in arrayObs.data" :key="observacion.id">
+                                    <td v-text="observacion.usuario" ></td>
+                                    <td v-text="observacion.comentario" ></td>
+                                    <td v-text="observacion.created_at"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </template>
+                </ModalComponent>
+
                 <ModalComponent v-if="modal == 2"
                     :titulo="tituloModal"
                     @closeModal="cerrarModal"
@@ -516,6 +555,7 @@ export default {
             arrayEtapas : [],
             arrayCargos: [],
             arrayConceptos: [],
+            arrayObs : [],
 
             solicitudData:{},
             datosDetalle:{},
@@ -549,11 +589,9 @@ export default {
             this.newArchivo.file = e.target.files[0];
             this.newArchivo.nom_archivo = e.target.files[0].name;
         },
-
         onSelectPlano(){
             this.$refs.fileSelector.click()
         },
-
         formSubmitPlano(e) {
             e.preventDefault();
             let currentObj = this;
@@ -584,28 +622,50 @@ export default {
                 this.cargando = 0;
             });
         },
+        deleteDetalle(id){
+            axios.delete(`/solic-pagos/deleteDetalle/${id}`,
+                {params: {'id': this.id}}).then(function (response){
+            }).catch(function (error){
+                console.log(error);
+            });
+        },
         removeDetalle(det){
             let me = this;
-            me.solicitudData.detalle;
 
-            if(det.id){
-                //Función para eliminar el registro
-            }
+            swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    if(det.id != null)
+                        me.deleteDetalle(det.id);
 
-            me.solicitudData.detalle = me.solicitudData.detalle.filter(
-                    a => a != det
-            )
-            //Se muestra mensaje Success
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000
-                });
-                toast({
-                type: 'success',
-                title: 'Detalle removido'
+                    me.solicitudData.detalle = me.solicitudData.detalle.filter(
+                            a => a != det
+                    )
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Detalle removido'
+                    })
+                }
             })
+        },
+        cerrarModal(){
+            this.modal = 0;
+            this.tituloModal = '';
         },
         addDetalle(){
             let me = this;
@@ -641,6 +701,7 @@ export default {
         },
         limpiarFormularioDetalle(){
             this.datosDetalle = {
+                id  : '',
                 obra: '',
                 sub_obra: '',
                 cargo : '',
@@ -675,7 +736,11 @@ export default {
                         num_factura : '',
                         detalle : []
                     }
-                    this.
+                    break;
+                }
+                case 'actualizar':{
+                    this.tipoAccion = 2;
+                    this.solicitudData = data;
                     break;
                 }
             }
@@ -685,7 +750,6 @@ export default {
             this.solicitudData = {};
             this.indexSolicitudes(this.arraySolic.current_page);
         },
-
         deleteFile(id){
             let me = this;
             axios.delete(`/planos-proyectos/${id}`, {
@@ -708,9 +772,8 @@ export default {
                 console.log(error);
             });
         },
-
         /**Metodo para registrar  */
-        store(){
+        storeSolic(){
             let me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/solic-pagos',{
@@ -729,7 +792,25 @@ export default {
             }).catch(function (error){
             });
         },
-
+        updateSolicitud(){
+            let me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.put(`/solic-pagos/${me.solicitudData.id}`,{
+                'solicitud': me.solicitudData,
+            }).then(function (response){
+                me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                me.cerrarFormulario();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Solicitud actualizada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+            });
+        },
         /**Metodo para mostrar los registros */
         indexSolicitudes(page) {
             let me = this;
@@ -770,7 +851,6 @@ export default {
             .catch(function (error) {
             });
         },
-
         getProyectos(search){
             let me = this;
             me.arrayProyectos = [];
@@ -783,7 +863,6 @@ export default {
                 console.log(error);
             });
         },
-
         verificarMonto(){
             let me = this;
 
@@ -798,7 +877,6 @@ export default {
             if(me.saldo < me.datosDetalle.pago)
                 me.datosDetalle.pago = me.saldo;
         },
-
         getCargos(){
             let me = this;
             me.arrayCargos=[];
@@ -810,7 +888,6 @@ export default {
                 console.log(error);
             });
         },
-
         getConceptos(cargo){
             let me = this;
             me.arrayConceptos=[];
@@ -822,7 +899,6 @@ export default {
                 console.log(error);
             });
         },
-
         selectEtapa(buscar){
             let me = this;
             me.datosDetalle.sub_obra = '';
@@ -836,7 +912,6 @@ export default {
                 console.log(error);
             });
         },
-
         selectProveedores(search,loading){
             let me = this;
             loading(true)
@@ -853,14 +928,12 @@ export default {
                 loading(false)
             });
         },
-
         getDatosProveedor(val1){
             let me = this;
             //me.loading = true;
             me.solicitudData.proveedor_id = val1.id;
             me.solicitudData.proveedor = val1.proveedor;
         },
-
         cerrarModal() {
             this.modal = 0;
             this.planos = [];
@@ -871,7 +944,6 @@ export default {
             this.indexSolicitudes(this.arraySolic.current_page)
             this.cargando = 0;
         },
-
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
         abrirModal(accion, data = []) {
             switch (accion) {
@@ -911,6 +983,12 @@ export default {
                     this.etapaSel = this.b_etapa;
                 }
             }
+        },
+        verObs(solicitud){
+            let me = this;
+            me.arrayObs = solicitud.obs;
+            me.modal = 1;
+            me.tituloModal = 'Observaciones';
         }
     },
     mounted() {

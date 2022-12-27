@@ -295,6 +295,10 @@ class LoteController extends Controller
                 $lote->etapa_servicios = $request ->etapa_servicios;
                 $lote->arquitecto_id = 1;
                 $lote->indivisos = $request->indivisos;
+
+                $lote->area_jardin = $request->area_jardin;
+                $lote->area_estacionamiento = $request->area_estacionamiento;
+                $lote->num_estacionamiento = $request->num_estacionamiento;
                 $lote->save();
                 //Se crea el nuevo registro para la tabla licencias
                 $licencia = new Licencia();
@@ -339,6 +343,10 @@ class LoteController extends Controller
         $lote->clv_catastral = $request->clv_catastral;
         $lote->etapa_servicios = $request ->etapa_servicios;
         $lote->indivisos = $request->indivisos;
+
+        $lote->area_jardin = $request->area_jardin;
+        $lote->area_estacionamiento = $request->area_estacionamiento;
+        $lote->num_estacionamiento = $request->num_estacionamiento;
         $lote->save();
 
         $licencia = Licencia::findOrFail($request->id);

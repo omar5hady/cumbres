@@ -622,7 +622,7 @@ class EntregaController extends Controller
 
         // Query principal
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-            ->join('expedientes','contratos.id','expedientes.id')
+            ->leftJoin('expedientes','contratos.id','expedientes.id')
             ->join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')

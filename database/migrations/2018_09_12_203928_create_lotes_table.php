@@ -61,21 +61,23 @@ class CreateLotesTable extends Migration
             $table->string('nombre_archivo')->nullable();
             $table->string('colindancias')->nullable();
             $table->float('indivisos',8,2)->default(0);
+            //////// Datos para departamentos
+            $table->float('area_jardin',8,2)->default(0);
+            $table->float('area_estacionamiento',8,2)->default(0);
+            $table->integer('num_estacionamiento')->nullable();
 
+            //////////
             $table->date('fecha_entrega_obra')->nullable();
-
             $table->integer('num_inicio')->default(0);
-
             $table->string('paq_ruv',50)->nullable();
-
             $table->boolean('gas_nat')->default(0);
             $table->boolean('cambio_esp')->default(0);
-
 
             ///////// Datos para precio //////////////////
             $table->double('precio_base')->default(0);
             $table->double('excedente_terreno')->default(0);
             $table->double('sobreprecio')->default(0);
+            ///////////
 
             $table->integer('puente_id')->nullable();
             $table->string('condiciones',100)->default('Nueva');
