@@ -19,6 +19,7 @@ use App\Credito;
 use App\Entrega;
 use App\Avaluo;
 use App\Bono_recomendado;
+use App\PlanoProyecto;
 use App\Obs_exp_entregado;
 use App\Http\Controllers\BonoRecomendadoController;
 use App\Mail\NotificationReceived;
@@ -27,6 +28,8 @@ use App\Personal;
 use App\Tipo_credito;
 use App\Notifications\NotifyAdmin;
 use App\User;
+
+use App\Http\Resources\PlanoResource;
 
 class ExpedienteController extends Controller
 {
@@ -37,6 +40,10 @@ class ExpedienteController extends Controller
             return !$date->isWeekend();
         }, $dt2);
 
+    }
+
+    private function getPlanos($lote_id){
+        return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
     }
 
     // Funcion que retorna los contratos para la integración de expedientes.
@@ -52,6 +59,8 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             // Se recorren los registros para obtener fecha de pago del ultimo pagare y datos del avaluo.
             foreach($contratos as $index => $contrato){
+
+                $contrato->planos = $this->getPlanos($contrato->lote_id);
 
                 $credito_sel = Tipo_credito::where('nombre','=',$contrato->tipo_credito)->where('institucion_fin','=',$contrato->institucion)->first();
 
@@ -273,6 +282,7 @@ class ExpedienteController extends Controller
                 'creditos.manzana',
                 'creditos.num_lote',
                 'creditos.modelo',
+                'creditos.lote_id',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
                 'licencias.foto_lic',

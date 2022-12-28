@@ -503,10 +503,10 @@
                                  <!-- listado para seguimiento de pagos -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">
-                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-laptop"></i> <input v-model="seg_pago" type="checkbox" value="1"/> Pagos Internos</a>
-                                                <ul class="nav-dropdown-items" v-if="seg_pago==1">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-laptop"></i>Solic. Pagos</a>
+                                                <ul class="nav-dropdown-items">
                                                     <li class="nav-item">
-                                                        <a class="nav-link" ><i class="icon-user-following"></i> <input v-model="seg_pago" type="checkbox" value="1"/> Seguimiento de pago</a>
+                                                        <a class="nav-link" ><i class="icon-user-following"></i> <input v-model="seg_pago" type="checkbox" value="1"/>Encargado Pagos</a>
                                                     </li>
                                                 </ul>
                                     </div>

@@ -331,7 +331,7 @@
             <seguimiento-ruv rol-id="{{ Auth::user()->rol_id }}"></seguimiento-ruv>
         </template>
         <template v-if="menu==236">
-            <solicitud-crear></solicitud-crear>
+            <solicitud-crear encargado="{{Auth::user()->seg_pago}}" usuario="{{Auth::user()->usuario}}"></solicitud-crear>
         </template>
         <template v-if="menu==237">
 

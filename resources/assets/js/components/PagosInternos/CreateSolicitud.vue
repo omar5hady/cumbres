@@ -24,25 +24,25 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <input type="text" class="form-control col-md-2" disabled placeholder="Proveedor:">
-                                    <input type="text" class="form-control col-md-6" v-model="b_proveedor" placeholder="Proveedor a buscar">
+                                    <input @keyup.enter="indexSolicitudes(1)" type="text" class="form-control col-md-6" v-model="b_proveedor" placeholder="Proveedor a buscar">
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12" v-if="encargado == 1 || admin == 1">
                                 <div class="input-group">
                                     <input type="text" class="form-control col-md-2" disabled placeholder="Solicitante">
-                                    <input type="text" class="form-control col-md-6" v-model="b_solicitante" placeholder="Solicitante a buscar">
+                                    <input type="text" @keyup.enter="indexSolicitudes(1)" class="form-control col-md-6" v-model="b_solicitante" placeholder="Solicitante a buscar">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="input-group">
-                                    <input type="text" class="form-control col-md-2" disabled placeholder="Fecha:">
-                                    <input type="date" class="form-control col-md-4">
-                                    <input type="date" class="form-control col-md-4">
+                                    <input type="text" class="form-control col-md-2" disabled placeholder="Fecha de solicitud:">
+                                    <input type="date" v-model="b_fecha1" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)">
+                                    <input type="date" v-model="b_fecha2" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <select class="form-control col-md-5" v-model="b_status">
+                                    <select class="form-control col-md-5" v-model="b_status" @change="indexSolicitudes(1)">
                                         <option value="">Status</option>
                                         <option value="0">Pendiente</option>
                                         <option value="1">En Proceso</option>
@@ -65,6 +65,15 @@
                                 </div>
                             </div>
                         </div>
+
+                        <ul class="nav nav-tabs" id="myTab1" role="tablist" v-if="arraySolic.total > 0">
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                @click="indexSolicitudes(1)" v-bind:class="{ 'text-primary active': vista==0}"
+                                role="tab" v-text="'Total: '+ arraySolic.total"></a>
+                            </li>
+                        </ul>
+
                         <TableComponent :cabecera="[
                             '',
                             'Proveedor',
@@ -82,7 +91,9 @@
                                         >
                                             <i class="icon-pencil"></i>
                                         </button>
-                                        <button class="btn btn-danger" title="Eliminar">
+                                        <button class="btn btn-danger" title="Eliminar"
+                                            @click="deleteSolic(solic.id)"
+                                        >
                                             <i class="icon-trash"></i>
                                         </button>
                                     </td>
@@ -213,7 +224,7 @@
                                         :onChange="getDatosProveedor"
                                     >
                                     </v-select>
-                                    <input type="text" class="form-control" v-if="tipoAccion == 2"
+                                    <input type="text" class="form-control" v-if="tipoAccion > 1"
                                         v-model="solicitudData.proveedor" disabled>
                                 </div>
                             </div>
@@ -348,7 +359,7 @@
                                                 </td>
                                                 <td class="td2">{{det.obra}} {{det.sub_obra }}</td>
                                                 <td class="td2">{{det.cargo}}</td>
-                                                <td class="td2">{{det.concepto}}</td>
+                                                <td>{{det.concepto}}</td>
                                                 <td>{{det.observacion}}</td>
                                                 <td class="td2">
                                                     {{
@@ -394,7 +405,7 @@
                 <ModalComponent
                     @closeModal="cerrarModal()"
                     :titulo="tituloModal"
-                    v-if="modal == 1"
+                    v-if="modal == 5"
                 >
                     <template v-slot:body>
                         <div class="modal-body">
@@ -469,25 +480,9 @@
                     @closeModal="cerrarModal()"
                 >
                     <template v-slot:body>
-                        <div class="form-group row">
-                            <label class="col-md-2 form-control-label" for="text-input">Observacion</label>
-                            <div class="col-md-7">
-                                    <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Fecha para recordatorio</label>
-                            <div class="col-md-3">
-                                    <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
-                            </div>
-                        </div>
                         <TableComponent :cabecera="['Usuario','Observación','Fecha']">
                             <template v-slot:tbody>
-                                <tr v-for="observacion in arrayObs.data" :key="observacion.id">
+                                <tr v-for="observacion in arrayObs" :key="observacion.id">
                                     <td v-text="observacion.usuario" ></td>
                                     <td v-text="observacion.comentario" ></td>
                                     <td v-text="observacion.created_at"></td>
@@ -543,9 +538,23 @@ export default {
         TableComponent,
         vSelect
     },
-    props: {},
+    props: {
+        encargado:{type: String},
+        usuario:{type: String},
+    },
     data() {
         return {
+            arrayGerentes:[
+                'eli_hdz',
+                'sajid.m',
+                'bd_raul',
+                'lucy.hdz',
+                'cp.martin',
+                'ing_david',
+                'meza.marco60',
+                'guadalupe.ff',
+                'shady'
+            ],
             arraySolic: [],
             planos: [],
             empresas: [],
@@ -563,7 +572,11 @@ export default {
             b_proveedor : '',
             b_solicitante : '',
             b_status : '',
+            b_fecha1 : '',
+            b_fecha2 : '',
             loading : false,
+            id : '',
+            comentario : '',
 
             modal: 0,
             tituloModal: "",
@@ -573,7 +586,9 @@ export default {
             tipoAccion:1,
             cargando:0,
 
-            vista:0
+            vista:0,
+            admin:0,
+            gerente: null,
         };
     },
     computed: {
@@ -666,6 +681,7 @@ export default {
         cerrarModal(){
             this.modal = 0;
             this.tituloModal = '';
+            this.arrayObs = [];
         },
         addDetalle(){
             let me = this;
@@ -710,7 +726,8 @@ export default {
                 tipo_mov : 0,
                 total : 0,
                 pago : 0,
-                saldo : 0
+                saldo : 0,
+                pendiente_id : null
             }
         },
         vistaFormulario(accion,data=[]){
@@ -750,27 +767,41 @@ export default {
             this.solicitudData = {};
             this.indexSolicitudes(this.arraySolic.current_page);
         },
-        deleteFile(id){
+        deleteSolic(id){
             let me = this;
-            axios.delete(`/planos-proyectos/${id}`, {
-                params: {'id': id}
-            }).then(function (response){
-                me.planos = me.planos.filter( e => e.id !== id)
-                me.indexSolicitudes(me.pagination.current_page);
-                //Se muestra mensaje Success
-                const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
+            swal({
+                title: '¿Desea eliminar esta soliciutd?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    axios.delete(`/solic-pagos/${id}`, {
+                            params: {'id': id}
+                    }).then(function (response){
+                        me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                        toast({
+                            type: 'success',
+                            title: 'Solicitud eliminada correctamente'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
                     });
-                    toast({
-                    type: 'success',
-                    title: 'Archivo eliminado correctamente'
-                })
-            }).catch(function (error){
-                console.log(error);
-            });
+                }
+            })
+
+
         },
         /**Metodo para registrar  */
         storeSolic(){
@@ -811,18 +842,27 @@ export default {
             }).catch(function (error){
             });
         },
+        checkGerente(){
+            let me = this;
+            me.gerente = me.arrayGerentes.find(element => element == me.usuario)
+        },
         /**Metodo para mostrar los registros */
         indexSolicitudes(page) {
             let me = this;
             me.arraySolic = [];
             var url =
-                "/solic-pagos?page=" +
-                page;
+                "/solic-pagos?page=" + page
+                + '&b_proveedor=' + me.b_proveedor
+                + '&b_solicitante=' + me.b_solicitante
+                + '&b_fecha1=' + me.b_fecha1
+                + '&b_fecha2=' + me.b_fecha2
+                + '&b_status=' + me.b_status;
             axios
                 .get(url)
                 .then(function(response) {
                     var respuesta = response.data;
-                    me.arraySolic = respuesta;
+                    me.arraySolic = respuesta.solicitudes;
+                    me.admin = respuesta.admin;
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -987,12 +1027,15 @@ export default {
         verObs(solicitud){
             let me = this;
             me.arrayObs = solicitud.obs;
+            me.id = solicitud.id;
+            me.comentario = '';
             me.modal = 1;
             me.tituloModal = 'Observaciones';
         }
     },
     mounted() {
         this.indexSolicitudes(1);
+        this.checkGerente();
         this.getEmpresa();
         this.getProveedores();
         this.$root.selectFraccionamientos();
