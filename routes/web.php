@@ -1274,6 +1274,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////// RUTAS SOLICITUD DE PAGOS
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
+        Route::resource('/files-solic', solicPagos\ArchivosController::class);
         Route::delete('/solic-pagos/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
 
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');

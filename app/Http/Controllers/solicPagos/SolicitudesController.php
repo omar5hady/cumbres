@@ -4,12 +4,14 @@ namespace App\Http\Controllers\solicPagos;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DocSolicPagosResource;
 use App\SpCatalogo;
 use App\SpDetalle;
 use App\SpSolicitud;
 use App\SpObservacion;
 use App\Personal;
 use App\Proveedor;
+use App\SpFile;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -42,6 +44,9 @@ class SolicitudesController extends Controller
         foreach($solicitudes as $solicitud){
             $solicitud->detalle = SpDetalle::where('solic_id','=',$solicitud->id)->get();
             $solicitud->obs = SpObservacion::where('solicitud_id','=',$solicitud->id)->get();
+            $solicitud->files = DocSolicPagosResource::collection(
+                    SpFile::where('solic_id','=',$solicitud->id)->get()
+                );
         }
 
         return [

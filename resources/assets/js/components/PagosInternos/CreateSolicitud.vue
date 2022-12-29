@@ -81,17 +81,24 @@
                             'Fecha solic',
                             'Importe',
                             'Tipo de pago',
-                            ''
+                            ' '
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="solic in arraySolic.data" :key="solic.id">
                                     <td class="td2">
                                         <button class="btn btn-warning" title="Editar"
+                                            v-if="solic.status == 0"
                                             @click="vistaFormulario('actualizar', solic)"
                                         >
                                             <i class="icon-pencil"></i>
                                         </button>
+                                         <button class="btn btn-primary" title="Ver Solicitud"
+                                            @click="vistaFormulario('ver', solic)"
+                                        >
+                                            <i class="icon-eye"></i>
+                                        </button>
                                         <button class="btn btn-danger" title="Eliminar"
+                                            v-if="solic.status == 0"
                                             @click="deleteSolic(solic.id)"
                                         >
                                             <i class="icon-trash"></i>
@@ -201,185 +208,329 @@
                         </nav>
                     </template>
                     <template v-if="vista == 1">
-                        <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;">
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="">Empresa solicitante </label>
-                                    <select class="form-control" v-model="solicitudData.empresa_solic">
-                                        <option value="">Seleccione</option>
-                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                    </select>
+                        <div id="accordion" role="tablist">
+                            <div class="card mb-0">
+                                <div class="card-header" id="headingOne" role="tab">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseOne" aria-expanded="false"
+                                            aria-controls="collapseOne" class="collapsed"
+                                            >Solicitud
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div class="collapse" id="collapseOne" role="tabpanel"
+                                    aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="">Empresa solicitante </label>
+                                                <select class="form-control" v-model="solicitudData.empresa_solic" :disabled="tipoAccion == 3">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Proveedor </label>
+                                                <v-select v-if="tipoAccion == 1"
+                                                    :on-search="selectProveedores"
+                                                    label="proveedor"
+                                                    :options="proveedoresForm"
+                                                    placeholder="Buscar contratista..."
+                                                    :onChange="getDatosProveedor"
+                                                >
+                                                </v-select>
+                                                <input type="text" class="form-control" v-if="tipoAccion > 1"
+                                                    v-model="solicitudData.proveedor" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label> Forma de pago </label>
+                                            <select class="form-control" v-model="solicitudData.tipo_pago" :disabled="tipoAccion == 3"
+                                                @change="solicitudData.forma_pago = ''">
+                                                <option value="0">Caja Fuerte</option>
+                                                <option value="1">Bancario</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group" v-if="solicitudData.tipo_pago == 1">
+                                                <label for="">&nbsp;</label>
+                                                <select class="form-control" v-model="solicitudData.forma_pago"
+                                                    :disabled="tipoAccion == 3"
+                                                >
+                                                    <option value="">Metodo de pago</option>
+                                                    <option value="0">Transferencia</option>
+                                                    <option value="1">Cheque</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label> Importe </label>
+                                            <input class="form-control" pattern="\d*" maxlength="10"
+                                                v-if="tipoAccion != 3"
+                                                v-on:keypress="$root.isNumber($event)"
+                                                type="text" v-model="solicitudData.importe">
+                                            <h6 v-if="tipoAccion == 3" class="form-control">${{$root.formatNumber(solicitudData.importe)}}</h6>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="solicitudData.importe > 0 && tipoAccion != 3">
+                                            <label>&nbsp;</label>
+                                            <h6 class="form-control">${{$root.formatNumber(solicitudData.importe)}}</h6>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-7">
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Proveedor </label>
-                                    <v-select v-if="tipoAccion == 1"
-                                        :on-search="selectProveedores"
-                                        label="proveedor"
-                                        :options="proveedoresForm"
-                                        placeholder="Buscar contratista..."
-                                        :onChange="getDatosProveedor"
-                                    >
-                                    </v-select>
-                                    <input type="text" class="form-control" v-if="tipoAccion > 1"
-                                        v-model="solicitudData.proveedor" disabled>
+                             <div class="card mb-0" v-if="solicitudData.importe > 0">
+                                <div class="card-header" id="headingTwo" role="tab">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseTwo" aria-expanded="false"
+                                            aria-controls="collapseTwo" class="collapsed"
+                                            >Detalle
+                                        </a>
+                                    </h5>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label> Forma de pago </label>
-                                <select class="form-control" v-model="solicitudData.tipo_pago" @change="solicitudData.forma_pago = ''">
-                                    <option value="0">Caja Fuerte</option>
-                                    <option value="1">Bancario</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" v-if="solicitudData.tipo_pago == 1">
-                                    <label for="">&nbsp;</label>
-                                    <select class="form-control" v-model="solicitudData.forma_pago">
-                                        <option value="">Metodo de pago</option>
-                                        <option value="0">Transferencia</option>
-                                        <option value="1">Cheque</option>
-                                    </select>
-                                </div>
-                            </div>
+                                <div class="collapse" id="collapseTwo" role="tabpanel"
+                                    aria-labelledby="headingTwo" data-parent="#accordion">
 
-                            <div class="col-md-3">
-                                <label> Importe </label>
-                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
-                                    type="text" v-model="solicitudData.importe">
-                            </div>
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px; padding-bottom: 10px;" >
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <center>
+                                                <h6 style="color:#"> Detalle de la solicitud </h6>
+                                            </center>
+                                        </div>
 
-                             <div class="col-md-3" v-if="solicitudData.importe > 0">
-                                <label>&nbsp;</label>
-                                <h6 class="form-control">${{$root.formatNumber(solicitudData.importe)}}</h6>
-                            </div>
-                        </div>
-
-                        <div class="form-group row border" style="padding-top:5px; padding-bottom:8px;" v-if="solicitudData.importe > 0">
-                            <div class="col-md-12">
-                                <center>
-                                    <h6 style="color:#"> Detalle de la solicitud </h6>
-                                </center>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="">Obra <span style="color:red;" v-show="datosDetalle.obra == ''">(*)</span></label>
-                                <input type="text" name="obra" list="obraname" class="form-control"
-                                    v-model="datosDetalle.obra" @keyup="getProyectos(datosDetalle.obra)" @change="selectEtapa(datosDetalle.obra)">
-                                <datalist id="obraname">
-                                    <option value="">Seleccione</option>
-                                    <option value="OFICINA">OFICINA</option>
-                                    <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
-                                </datalist>
-                            </div>
-
-                            <div class="col-md-3" v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
-                                <label for="">&nbsp;</label>
-                                <select class="form-control" v-model="datosDetalle.sub_obra">
-                                    <option value="">Etapa</option>
-                                    <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
-                                </select>
-                            </div>
-
-                            <div v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''" class="col-md-5"></div>
-                            <div v-else class="col-md-8"></div>
-
-                            <div class="col-md-6">
-                                <label for="">Cargo <span style="color:red;" v-show="datosDetalle.cargo == ''">(*)</span></label>
-                                <select class="form-control" v-model="datosDetalle.cargo" @change="getConceptos(datosDetalle.cargo), datosDetalle.concepto = ''">
-                                    <option value="">Seleccione</option>
-                                    <option v-for="cargo in arrayCargos" :key="cargo.cargo" :value="cargo.cargo" v-text="cargo.cargo"></option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="">Concepto <span style="color:red;" v-show="datosDetalle.concepto == ''">(*)</span></label>
-                                <select class="form-control" v-model="datosDetalle.concepto">
-                                    <option value="">Seleccione</option>
-                                    <option v-for="concepto in arrayConceptos" :key="concepto.id" :value="concepto.concepto" v-text="concepto.concepto"></option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">Tipo de Mov.</label>
-                                <select class="form-control" v-model="datosDetalle.tipo_mov">
-                                    <option value="0">Anticipo</option>
-                                    <option value="1">Liquidación</option>
-                                    <option value="2">Pago Cta</option>
-                                </select>
-                            </div>
-                            <div class="col-md-7">
-                                <label for="">Observación</label>
-                                <textarea rows="3" class="form-control" v-model="datosDetalle.observacion"></textarea>
-                            </div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-3">
-                                <label for="">Importe total <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
-                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
-                                    type="text" v-model="datosDetalle.total">
-                            </div>
-                            <div class="col-md-2" v-if="datosDetalle.total > 0">
-                                <label for="">&nbsp;</label>
-                                <label class="form-control">${{$root.formatNumber(datosDetalle.total)}}</label>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="">Este pago <span style="color:red;" v-show="datosDetalle.pago <= 0">(*)</span></label>
-                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
-                                    @change="verificarMonto()"
-                                    type="text" v-model="datosDetalle.pago">
-                            </div>
-                            <div class="col-md-2" v-if="datosDetalle.pago > 0">
-                                <label for="">&nbsp;</label>
-                                <label class="form-control">${{$root.formatNumber(datosDetalle.pago)}}</label>
-                            </div>
-                            <div class="col-md-1">
-                                <label for="">&nbsp;</label>
-                                <button class="btn btn-success form-control" @click="addDetalle()" title="Añadir"><i class="icon-plus"></i></button>
-                            </div>
-                        </div>
-
-                        <div class="form-group row border"
-                            v-if="solicitudData.detalle.length > 0"
-                            style="padding-top:5px; padding-bottom:8px;">
-                            <div class="col-md-12">
-                                <center>
-                                    <TableComponent :cabecera="[
-                                        '','Obra', 'Cargo', 'Subconcepto', 'Obs.', 'Tipo Mov.', 'Este pago'
-                                    ]">
-                                        <template v-slot:tbody>
-                                            <tr v-for="det in solicitudData.detalle"
-                                                :key="det.id+det.obra+det.sub_obra+det.cargo+det.concepto+det.pago">
-                                                <td>
-                                                    <button class="btn btn-danger" title="Eliminar"
-                                                        @click="removeDetalle(det)"
-                                                    >
-                                                        <i class="icon-trash"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="td2">{{det.obra}} {{det.sub_obra }}</td>
-                                                <td class="td2">{{det.cargo}}</td>
-                                                <td>{{det.concepto}}</td>
-                                                <td>{{det.observacion}}</td>
-                                                <td class="td2">
-                                                    {{
-                                                        (det.tipo_mov == 0) ? 'Anticipo'
-                                                        : (det.tipo_mov == 1) ? 'Liquidación'
-                                                        : 'Pago Cta'
-                                                    }}
-                                                </td>
-                                                <td class="td2">
-                                                    ${{$root.formatNumber(det.pago)}}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="6"></td>
-                                                <th>$ {{$root.formatNumber(solicitudData.saldo = sumaDet)}}</th>
-                                            </tr>
+                                        <template v-if="tipoAccion < 3">
+                                            <div class="col-md-4">
+                                                <label for="">Obra <span style="color:red;" v-show="datosDetalle.obra == ''">(*)</span></label>
+                                                <input type="text" name="obra" list="obraname" class="form-control"
+                                                    v-model="datosDetalle.obra" @keyup="getProyectos(datosDetalle.obra)" @change="selectEtapa(datosDetalle.obra)">
+                                                <datalist id="obraname">
+                                                    <option value="">Seleccione</option>
+                                                    <option value="OFICINA">OFICINA</option>
+                                                    <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
+                                                </datalist>
+                                            </div>
+                                            <div class="col-md-3" v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
+                                                <label for="">&nbsp;</label>
+                                                <select class="form-control" v-model="datosDetalle.sub_obra">
+                                                    <option value="">Etapa</option>
+                                                    <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
+                                                </select>
+                                            </div>
+                                            <div v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''" class="col-md-5"></div>
+                                            <div v-else class="col-md-8"></div>
+                                            <div class="col-md-6">
+                                                <label for="">Cargo <span style="color:red;" v-show="datosDetalle.cargo == ''">(*)</span></label>
+                                                <select class="form-control" v-model="datosDetalle.cargo" @change="getConceptos(datosDetalle.cargo), datosDetalle.concepto = ''">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="cargo in arrayCargos" :key="cargo.cargo" :value="cargo.cargo" v-text="cargo.cargo"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="">Concepto <span style="color:red;" v-show="datosDetalle.concepto == ''">(*)</span></label>
+                                                <select class="form-control" v-model="datosDetalle.concepto">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="concepto in arrayConceptos" :key="concepto.id" :value="concepto.concepto" v-text="concepto.concepto"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label for="">Tipo de Mov.</label>
+                                                <select class="form-control" v-model="datosDetalle.tipo_mov">
+                                                    <option value="0">Anticipo</option>
+                                                    <option value="1">Liquidación</option>
+                                                    <option value="2">Pago Cta</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <label for="">Observación</label>
+                                                <textarea rows="3" class="form-control" v-model="datosDetalle.observacion"></textarea>
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-3">
+                                                <label for="">Importe total <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
+                                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                                    type="text" v-model="datosDetalle.total">
+                                            </div>
+                                            <div class="col-md-2" v-if="datosDetalle.total > 0">
+                                                <label for="">&nbsp;</label>
+                                                <label class="form-control">${{$root.formatNumber(datosDetalle.total)}}</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="">Este pago <span style="color:red;" v-show="datosDetalle.pago <= 0">(*)</span></label>
+                                                <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                                    @change="verificarMonto()"
+                                                    type="text" v-model="datosDetalle.pago">
+                                            </div>
+                                            <div class="col-md-2" v-if="datosDetalle.pago > 0">
+                                                <label for="">&nbsp;</label>
+                                                <label class="form-control">${{$root.formatNumber(datosDetalle.pago)}}</label>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label for="">&nbsp;</label>
+                                                <button class="btn btn-success form-control" @click="addDetalle()" title="Añadir"><i class="icon-plus"></i></button>
+                                            </div>
                                         </template>
-                                    </TableComponent>
-                                </center>
-                            </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <center>
+                                                <TableComponent :cabecera="[
+                                                    '','Obra', 'Cargo', 'Subconcepto', 'Obs.', 'Tipo Mov.', 'Este pago'
+                                                ]">
+                                                    <template v-slot:tbody>
+                                                        <tr v-for="det in solicitudData.detalle"
+                                                            :key="det.id+det.obra+det.sub_obra+det.cargo+det.concepto+det.pago">
+                                                            <td>
+                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion != 3"
+                                                                    @click="removeDetalle(det)"
+                                                                >
+                                                                    <i class="icon-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td class="td2">{{det.obra}} {{det.sub_obra }}</td>
+                                                            <td class="td2">{{det.cargo}}</td>
+                                                            <td>{{det.concepto}}</td>
+                                                            <td>{{det.observacion}}</td>
+                                                            <td class="td2">
+                                                                {{
+                                                                    (det.tipo_mov == 0) ? 'Anticipo'
+                                                                    : (det.tipo_mov == 1) ? 'Liquidación'
+                                                                    : 'Pago Cta'
+                                                                }}
+                                                            </td>
+                                                            <td class="td2">
+                                                                ${{$root.formatNumber(det.pago)}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="6"></td>
+                                                            <th>$ {{$root.formatNumber(solicitudData.saldo = sumaDet)}}</th>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
+                                            </center>
+                                        </div>
+
+                                    </div>
+                                </div>
+                             </div>
+
+                             <div class="card mb-0" v-if="tipoAccion > 1">
+                                <div class="card-header" id="headingThree" role="tab">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseThree" aria-expanded="false"
+                                            aria-controls="collapseThree" class="collapsed"
+                                            >Archivos Adjuntos
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div class="collapse" id="collapseThree" role="tabpanel"
+                                    aria-labelledby="headingTwo" data-parent="#accordion">
+
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px; padding-bottom: 10px;" >
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+
+                                        <template v-if="tipoAccion == 2">
+                                            <div class="form-sub">
+                                                <form method="post" @submit="formSubmitFile"
+                                                    enctype="multipart/form-data"
+                                                >
+                                                    <div class="form-opc">
+                                                        <div class="form-archivo">
+                                                            <input ref="fileSelector"
+                                                                v-show="false"
+                                                                type="file" accept="application/pdf"
+                                                                v-on:change="onChangeFile"
+                                                            />
+
+                                                            <label class="label-button" @click="onSelectFile">
+                                                                Elige el archivo a cargar
+                                                                <i class="fa fa-upload"></i>
+                                                            </label>
+                                                            <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
+                                                                ? 'text-file-hide' : 'text-file'"
+                                                                v-text="newArchivo.nom_archivo"
+                                                            ></div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="form-group row">
+                                                                <label class="col-md-3 form-control-label" for="text-input">Tipo de Archivo</label>
+                                                                <div class="col-md-9">
+                                                                    <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Archivo">
+                                                                    <datalist id="categoria">
+                                                                        <option value="FACTURA">FACTURA</option>
+                                                                        <option value="COTIZACION">COTIZACIÓN</option>
+                                                                        <option value="VENTANILLA PAGO">VENTANILLA PAGO</option>
+                                                                        <option value="RECEPCION">RECEPCIÓN DE TRABAJO</option>
+                                                                    </datalist>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="boton-modal" v-if="cargando==0">
+                                                            <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
+                                                                type="submit" class="btn btn-scarlet"
+                                                            >
+                                                                Subir Archivo
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+
+                                        <div class="col-md-12" v-if="solicitudData.files.length">
+                                            <center>
+                                                <TableComponent :cabecera="[
+                                                    '','Tipo','Archivo', ' '
+                                                ]">
+                                                    <template v-slot:tbody>
+                                                        <tr v-for="p in solicitudData.files"
+                                                            :key="p.id">
+                                                            <td>
+                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion != 3"
+                                                                    @click="deleteFile(p.id)"
+                                                                >
+                                                                    <i class="icon-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td class="td2">{{p.tipo}}</td>
+                                                            <td class="td2">{{p.file.name}}</td>
+                                                            <td class="td2">
+                                                                <a :href="p.file.public_url"
+                                                                target="_blank" class="btn btn-success"
+                                                                    title="Ver Archivo"
+                                                                ><i class="fa fa-download"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
+                                            </center>
+                                        </div>
+
+                                    </div>
+                                </div>
+                             </div>
                         </div>
 
                         <div class="form-group row">
@@ -398,81 +549,8 @@
                                 </button>
                             </div>
                         </div>
-
                     </template>
                 </div>
-
-                <ModalComponent
-                    @closeModal="cerrarModal()"
-                    :titulo="tituloModal"
-                    v-if="modal == 5"
-                >
-                    <template v-slot:body>
-                        <div class="modal-body">
-                            <div class="contenedor-modal">
-                                <div class="form-sub">
-                                    <form method="post" @submit="formSubmitPlano"
-                                        enctype="multipart/form-data"
-                                    >
-                                        <div class="form-opc">
-                                            <div class="form-archivo">
-                                                <input ref="fileSelector"
-                                                    v-show="false"
-                                                    type="file" accept="application/pdf"
-                                                    v-on:change="onChangeFile"
-                                                />
-
-                                                <label class="label-button" @click="onSelectPlano">
-                                                    Elige el plano a cargar
-                                                    <i class="fa fa-upload"></i>
-                                                </label>
-                                                <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
-                                                    ? 'text-file-hide' : 'text-file'"
-                                                    v-text="newArchivo.nom_archivo"
-                                                ></div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de plano</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" name="categoria" list="categoria" class="form-control" v-model="newArchivo.tipo" placeholder="Tipo de Plano">
-                                                        <datalist id="categoria" v-if="tipoAccion == 1">
-                                                            <option value="OBRA EXTRA">OBRA EXTRA</option>
-                                                            <option value="LICENCIA">LICENCIA</option>
-                                                            <option value="AUTORIZACIÓN">AUTORIZACION</option>
-                                                        </datalist>
-                                                        <datalist id="categoria" v-if="tipoAccion == 2">
-                                                            <option value="TERRENO">TERRENO</option>
-                                                            <option value="LOCALIZACIÓN Y UBICACION">LOCALIZACIÓN Y UBICACION</option>
-                                                            <option value="URBANIZACIÓN">URBANIZACIÓN</option>
-                                                            <option value="AUTORIZACIÓN">AUTORIZACION</option>
-                                                            <option value="LOTIFICACIÓN, EQUIPAMIENTO BASICO">LOTIFICACIÓN, EQUIPAMIENTO BÁSICO Y DE CONSUMO</option>
-                                                        </datalist>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
-                                                    <div class="col-md-9">
-                                                        <textarea class="form-control" v-model="newArchivo.description" rows="3" cols="40" placeholder="Descripción del plano"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="boton-modal" v-if="cargando==0">
-                                                <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
-                                                    type="submit" class="btn btn-success boton-modal"
-                                                >
-                                                    Subir Archivo
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </ModalComponent>
 
                 <!--Inicio del modal observaciones-->
                 <ModalComponent v-if="modal==1"
@@ -489,32 +567,6 @@
                                 </tr>
                             </template>
                         </TableComponent>
-                    </template>
-                </ModalComponent>
-
-                <ModalComponent v-if="modal == 2"
-                    :titulo="tituloModal"
-                    @closeModal="cerrarModal"
-                >
-                    <template v-slot:body>
-                        <div class="col-md-12">
-                            <TableComponent :cabecera="['','Tipo','Descripcion','']">
-                                <template v-slot:tbody>
-                                    <tr v-for="p in planos" :key="p.id">
-                                        <td>
-                                            <button title="Eliminar archivo" type="button" @click="deleteFile(p.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="p.tipo"></td>
-                                        <td class="td2" v-text="p.description"></td>
-                                        <td class="td2">
-                                            <a :href="p.file.public_url" target="_blank" class="btn btn-success">Ver Plano</a>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </TableComponent>
-                        </div>
                     </template>
                 </ModalComponent>
             </div>
@@ -556,7 +608,6 @@ export default {
                 'shady'
             ],
             arraySolic: [],
-            planos: [],
             empresas: [],
             arrayProveedores : [],
             proveedoresForm : [],
@@ -604,34 +655,30 @@ export default {
             this.newArchivo.file = e.target.files[0];
             this.newArchivo.nom_archivo = e.target.files[0].name;
         },
-        onSelectPlano(){
+        onSelectFile(){
             this.$refs.fileSelector.click()
         },
-        formSubmitPlano(e) {
+        formSubmitFile(e) {
             e.preventDefault();
             let currentObj = this;
             this.cargando = 1;
 
             let formData = new FormData();
             formData.append('file', this.newArchivo.file);
-            formData.append('ids', this.lotes_ini);
-            formData.append('description', this.newArchivo.description);
+            formData.append('id', this.solicitudData.id);
             formData.append('tipo', this.newArchivo.tipo);
-            formData.append('proyecto', this.proyectoSel);
-            formData.append('etapa', this.etapaSel);
             let me = this;
-            axios.post('/planos-proyectos', formData)
+            axios.post('/files-solic', formData)
             .then(function (response) {
                 me.cargando = 0;
+                me.solicitudData.files = response.data.data;
                 swal({
                     position: 'top-end',
                     type: 'success',
-                    title: 'Plano guardado correctamente',
+                    title: 'Archivo guardado correctamente',
                     showConfirmButton: false,
                     timer: 2000
-                    })
-                me.cerrarModal();
-
+                })
             }).catch(function (error) {
                 currentObj.output = error;
                 this.cargando = 0;
@@ -643,6 +690,44 @@ export default {
             }).catch(function (error){
                 console.log(error);
             });
+        },
+        deleteFile(id){
+            let me = this;
+
+            swal({
+                title: '¿Desea eliminar el archivo?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+
+                    axios.delete(`/files-solic/${id}`,
+                        {params: {'id': id}}).then(function (response){
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+
+                    me.solicitudData.files = me.solicitudData.files.filter(
+                            a => a.id != id
+                    )
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Archivo removido'
+                    })
+                }
+            })
         },
         removeDetalle(det){
             let me = this;
@@ -756,7 +841,19 @@ export default {
                     break;
                 }
                 case 'actualizar':{
+                    this.newArchivo = {
+                        description: "",
+                        tipo: "",
+                        file: "",
+                        nom_archivo: 'Seleccione Archivo'
+                    };
                     this.tipoAccion = 2;
+                    this.solicitudData = data;
+                    this.cargando = 0;
+                    break;
+                }
+                case 'ver':{
+                    this.tipoAccion = 3;
                     this.solicitudData = data;
                     break;
                 }
@@ -770,7 +867,7 @@ export default {
         deleteSolic(id){
             let me = this;
             swal({
-                title: '¿Desea eliminar esta soliciutd?',
+                title: '¿Desea eliminar esta solicitud?',
                 text: "Esta acción no se puede revertir!",
                 type: 'warning',
                 showCancelButton: true,
@@ -987,12 +1084,11 @@ export default {
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
         abrirModal(accion, data = []) {
             switch (accion) {
-                case "planos": {
+                case "archivos": {
                     this.modal = 1;
                     this.tituloModal = "Nuevo plano";
 
                     this.newArchivo = {
-                        description: "",
                         tipo: "",
                         file: "",
                         nom_archivo: 'Seleccione Archivo'
@@ -1013,7 +1109,6 @@ export default {
                     this.tituloModal = "Nuevo plano por Proyecto";
 
                     this.newArchivo = {
-                        description: "",
                         tipo: "",
                         file: "",
                         nom_archivo: 'Seleccione Archivo'
@@ -1043,7 +1138,7 @@ export default {
 };
 </script>
 <style>
-.text-formfile{
+    .text-formfile{
         color: grey;
         display:flex;
         padding-top: 13px;
@@ -1103,8 +1198,6 @@ export default {
         font-weight: bold;
         width: 300px;
         padding: 15px;
-
-
     }
     .boton-modal{
         margin-top: 15px;
