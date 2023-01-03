@@ -10,8 +10,10 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte acumulado mensual &nbsp;&nbsp;
 
-                        <a v-if="mes != '' && anio != ''" :href="'/reprotes/excelEscrituras?mes=' + mes + '&anio=' + anio + '&empresa=' + emp_constructora"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
-                       
+                        <a v-if="mes != '' && anio != ''"
+                            :href="'/reprotes/excelEscrituras?mes=' + mes + '&anio=' + anio + '&empresa=' + emp_constructora + '&notaria=' + b_notaria + '&proyecto=' + b_proyecto + '&etapa=' + b_etapa"
+                            class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
+
                     </div>
                     <div class="card-body">
                          <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
@@ -21,6 +23,33 @@
                         </ul>
 
                         <div>
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <select class="form-control"
+                                            v-model="b_proyecto"
+                                            @change="$root.selectEtapa(b_proyecto), b_etapa = ''"
+                                        >
+                                            <option value="">Fraccionamiento</option>
+                                            <option
+                                                v-for="proyecto in $root.$data.proyectos"
+                                                :key="proyecto.id"
+                                                :value="proyecto.id"
+                                                v-text="proyecto.nombre"
+                                            ></option>
+                                        </select>
+                                        <select class="form-control" v-model="b_etapa">
+                                            <option value="">Etapa</option>
+                                            <option
+                                                v-for="etapa in $root.$data.etapas"
+                                                :key="etapa.id"
+                                                :value="etapa.id"
+                                                v-text="etapa.num_etapa"
+                                            ></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <div class="col-md-10">
                                     <div class="input-group">
@@ -58,6 +87,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                       <input type="text" class="form-control" v-model="b_notaria" placeholder="Notaria">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
                                         <select class="form-control col-md-7" v-model="emp_constructora">
@@ -70,7 +106,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
 
                         <div class="tab-content" id="myTab1Content">
 
@@ -123,9 +159,9 @@
                                                 <td class="td2" v-text="escrituras.manzana"></td>
                                                 <td class="td2" v-text="escrituras.num_lote"></td>
                                                 <td class="td2" v-text="escrituras.tipo_credito+' ('+escrituras.institucion+')'"></td>
-                                                <td class="td2" v-if="emp_constructora == 'CONCRETANIA'" 
+                                                <td class="td2" v-if="emp_constructora == 'CONCRETANIA'"
                                                     v-text="'$'+formatNumber(escrituras.valor_terreno)"></td>
-                                                <td class="td2" v-if="emp_constructora == 'CONCRETANIA'" 
+                                                <td class="td2" v-if="emp_constructora == 'CONCRETANIA'"
                                                     v-text="'$'+formatNumber(escrituras.valor_escrituras-escrituras.valor_terreno)"></td>
                                                 <td class="td2" v-text="escrituras.fecha_firma_esc"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(escrituras.valor_escrituras)"></td>
@@ -134,8 +170,8 @@
                                                 <td class="td2">
                                                     <button class="btn btn-primary" @click="comentarios(escrituras.id)">Ver Comentarios</button>
                                                 </td>
-                                                
-                                            </tr>                             
+
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -181,7 +217,7 @@
                                                 <td class="td2">
                                                     <button class="btn btn-primary" @click="comentarios(contadoSinEsc.id)">Ver Comentarios</button>
                                                 </td>
-                                            </tr>                             
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -191,7 +227,7 @@
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
-            </div>     
+            </div>
 
             <!-- Modal para la carga pdf -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
@@ -219,12 +255,12 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             </div>
-                    </div> 
+                    </div>
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            <!--Fin del modal-->     
+            <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
@@ -252,7 +288,7 @@
 
                                 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                    
+
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
@@ -263,14 +299,14 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                
+
                                                 <td v-text="observacion.usuario" ></td>
                                                 <td v-text="observacion.observacion" ></td>
                                                 <td v-text="observacion.created_at"></td>
-                                            </tr>                               
+                                            </tr>
                                         </tbody>
                                     </table>
-                                    
+
                                 </form>
                             </div>
                             <!-- Botones del modal -->
@@ -282,7 +318,7 @@
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
-            <!--Fin del modal-->   
+            <!--Fin del modal-->
 
         </main>
 </template>
@@ -302,6 +338,10 @@
                 mes:'',
                 anio:'',
                 emp_constructora:'',
+                b_notaria : '',
+                b_proyecto : '',
+                b_etapa : '',
+
 
                 id:'',
                 archivo:'',
@@ -318,11 +358,14 @@
             listarReporte(){
                 let me = this;
 
-               
+
                 me.arrayEscrituras = [];
                 me.arraycontadoSinEscrituras = [];
-               
-                var url = '/reprotes/reporteAcumulado?mes=' + me.mes + '&anio=' + me.anio + '&empresa=' + me.emp_constructora  + '&opcion=Escrituras';
+
+                var url = '/reprotes/reporteAcumulado?mes=' + me.mes
+                        + '&anio=' + me.anio + '&empresa=' + me.emp_constructora
+                        + '&notaria=' + me.b_notaria + '&proyecto=' + me.b_proyecto
+                        + '&etapa=' + me.b_etapa+ '&opcion=Escrituras';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEscrituras = respuesta.escrituras;
@@ -365,13 +408,13 @@
                 let me = this;
 
                 let currentObj = this;
-            
+
                 let formData = new FormData();
-           
+
                 formData.append('archivo', this.archivo);
                 axios.post('expediente/formSubmitEscrituras/'+this.id, formData)
                 .then(function (response) {
-                   
+
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -393,7 +436,7 @@
 
             },
 
-            
+
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -417,7 +460,7 @@
                 axios.post('/contratos/storeObsExpEntregado',{
                     'observacion' : this.observacion,
                     'id':this.id,
-                    
+
                 }).then(function (response){
                     me.listarReporte();
                     me.cerrarModal();
@@ -437,9 +480,10 @@
                 });
             },
 
-        
+
         },
         mounted() {
+            this.$root.selectFraccionamientos();
         }
     }
 </script>
@@ -489,5 +533,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>
