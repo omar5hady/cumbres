@@ -1462,7 +1462,10 @@ class ReportesController extends Controller
                 break;
             }
             case 'Escrituras':{
-                $escrituras = $this->getEscriturasRep($mes, $anio, $empresa);//Ventas con escrituras firmadas en el periodo seleccionado.
+                $notaria = $request->notaria;
+                $fraccionamiento = $request->proyecto;
+                $etapa = $request->etapa;
+                $escrituras = $this->getEscriturasRep($mes, $anio, $empresa, $fraccionamiento, $etapa, $notaria);//Ventas con escrituras firmadas en el periodo seleccionado.
                 $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);//Ventas directas liquidadas sin firma de escrituras.
                 return [
                     'escrituras'=>$escrituras,
@@ -1784,10 +1787,13 @@ class ReportesController extends Controller
     public function excelEscrituras(Request $request){
         $mes = $request->mes;
         $anio = $request->anio;
+        $notaria = $request->notaria;
+        $fraccionamiento = $request->proyecto;
+        $etapa = $request->etapa;
 
         $empresa = $request->empresa;
         //Ventas escrituradas en el periodo seleccionado
-        $escrituras = $this->getEscriturasRep($mes, $anio, $empresa);
+        $escrituras = $this->getEscriturasRep($mes, $anio, $empresa, $fraccionamiento, $etapa, $notaria);
         //Ventas liquidadas pendientes por escriturar
         $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);
         //Creación y retorno de los resultados en excel
@@ -2111,7 +2117,7 @@ class ReportesController extends Controller
         return $expContado;
     }
     //Función privada que retoran las Ventas por financiamiento bancario con escrituras firmadas en el periodo seleccionado.
-    private function getEscriturasRep($mes, $anio, $empresa){
+    private function getEscriturasRep($mes, $anio, $empresa, $fraccionamiento, $etapa, $notaria){
         //Query principal
         $escrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
@@ -2132,6 +2138,12 @@ class ReportesController extends Controller
                 ->whereYear('expedientes.fecha_firma_esc',$anio);//Venta escriturada en el año seleccionado
                 if($empresa != '')//Filtro para empresa constructora
                     $escrituras = $escrituras->where('lotes.emp_constructora','=',$empresa);
+                if($fraccionamiento != '')//Filtro para empresa constructora
+                    $escrituras = $escrituras->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                if($etapa != '')//Filtro para empresa constructora
+                    $escrituras = $escrituras->where('lotes.etapa_id','=',$etapa);
+                if($notaria != '')
+                    $escrituras = $escrituras->where('expedientes.notaria','like','%'.$notaria.'%');
             $escrituras = $escrituras->orderBy('expedientes.fecha_firma_esc','desc')->get();
         return $escrituras;
     }
