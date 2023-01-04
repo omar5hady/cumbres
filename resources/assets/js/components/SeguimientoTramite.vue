@@ -954,7 +954,8 @@
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
 
                                                 <td class="td2">
-                                                    <button title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
+                                                    <button v-if="programacion.entrega == 0"
+                                                        title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
                                                         @click="abrirModal('solic_entrega',programacion)">Solicitar entrega
                                                     </button>
                                                 </td>

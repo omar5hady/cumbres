@@ -100,6 +100,19 @@ class SolicitudesController extends Controller
         return $solicitudes;
     }
 
+    public function changeVbGerente(Request $request, $id){
+        $solic = SpSolicitud::findOrFail($request->id);
+        $solic->vb_gerente = $request->estado;
+        if($solic->vb_gerente == 2)
+            $solic->status = 1;
+        $solic->save();
+
+        if($request->estado == 1)
+            $this->createObs($id, "La solicitud ha sido revisada.");
+        if($request->estado == 2)
+            $this->createObs($id, "Solicitud autorizada por gerente.");
+    }
+
     private function storeSolicitud($solicitud){
         $p = Personal::findOrFail(Auth::user()->id);
         $prov = Proveedor::findOrFail($solicitud['proveedor_id']);
