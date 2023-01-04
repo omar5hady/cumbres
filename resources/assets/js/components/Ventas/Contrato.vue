@@ -1490,8 +1490,15 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3 || tipo_credito=='Alia2' && listado==4 && btn_actualizar==1 || tipo_credito=='Respalda2' && listado==4 && btn_actualizar==1 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==3 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==4 && btn_actualizar==1 ">
-                                                        <div class="form-group">
+
+                                                    <div class="col-md-3"
+                                                        v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                        <div class="form-group"
+                                                        v-if="tipo_credito=='Alia2'
+                                                        || tipo_credito=='Respalda2'
+                                                        || tipo_credito=='Alia2'
+                                                        || tipo_credito=='Fovissste para todos'
+                                                        || tipo_credito=='INFONAVIT-FOVISSSTE'">
                                                             <label for="">Fovissste</label>
                                                             <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>

@@ -8,10 +8,10 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Reporte acumulado mensual &nbsp;&nbsp;
+                        <i class="fa fa-align-justify"></i> Reporte de Escrituras &nbsp;&nbsp;
 
-                        <a v-if="mes != '' && anio != ''"
-                            :href="'/reprotes/excelEscrituras?mes=' + mes + '&anio=' + anio + '&empresa=' + emp_constructora + '&notaria=' + b_notaria + '&proyecto=' + b_proyecto + '&etapa=' + b_etapa"
+                        <a v-if="fecha_1 != '' && fecha_2 != ''"
+                            :href="'/reprotes/excelEscrituras?fecha1=' + fecha_1 + '&fecha2=' + fecha_2 + '&empresa=' + emp_constructora + '&notaria=' + b_notaria + '&proyecto=' + b_proyecto + '&etapa=' + b_etapa"
                             class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
 
                     </div>
@@ -53,36 +53,8 @@
                             <div class="form-group row">
                                 <div class="col-md-10">
                                     <div class="input-group">
-                                        <select class="form-control col-md-5" v-model="mes">
-                                            <option value="">Seleccione mes</option>
-                                            <option value="01">Enero</option>
-                                            <option value="02">Febrero</option>
-                                            <option value="03">Marzo</option>
-                                            <option value="04">Abril</option>
-                                            <option value="05">Mayo</option>
-                                            <option value="06">Junio</option>
-                                            <option value="07">Julio</option>
-                                            <option value="08">Agosto</option>
-                                            <option value="09">Septiembre</option>
-                                            <option value="10">Octubre</option>
-                                            <option value="11">Noviembre</option>
-                                            <option value="12">Diciembre</option>
-                                        </select>
-                                        <select class="form-control col-md-5" @keyup.enter="listarReporte()" v-model="anio">
-                                            <option value="">Seleccione año</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2020">2020</option>
-                                            <option value="2021">2021</option>
-                                            <option value="2022">2022</option>
-                                            <option value="2023">2023</option>
-                                            <option value="2024">2024</option>
-                                            <option value="2025">2025</option>
-                                            <option value="2026">2026</option>
-                                            <option value="2027">2027</option>
-                                            <option value="2028">2028</option>
-                                            <option value="2029">2029</option>
-                                        </select>
+                                        <input type="date" class="form-control col-md-5" v-model="fecha_1" @keyup.enter="listarReporte()">
+                                        <input type="date" class="form-control col-md-5" v-model="fecha_2" @keyup.enter="listarReporte()">
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +89,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="12" class="text-center"> Reporte Mensual de Escrituras Ventas de Crédito </th>
+                                                <th colspan="12" class="text-center"> Reporte de Escrituras Ventas de Crédito </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
@@ -335,8 +307,8 @@
                 arrayEscrituras:[],
                 arraycontadoSinEscrituras:[],
 
-                mes:'',
-                anio:'',
+                fecha_1:'',
+                fecha_2:'',
                 emp_constructora:'',
                 b_notaria : '',
                 b_proyecto : '',
@@ -362,8 +334,8 @@
                 me.arrayEscrituras = [];
                 me.arraycontadoSinEscrituras = [];
 
-                var url = '/reprotes/reporteAcumulado?mes=' + me.mes
-                        + '&anio=' + me.anio + '&empresa=' + me.emp_constructora
+                var url = '/reprotes/reporteAcumulado?fecha1=' + me.fecha_1
+                        + '&fecha2=' + me.fecha_2 + '&empresa=' + me.emp_constructora
                         + '&notaria=' + me.b_notaria + '&proyecto=' + me.b_proyecto
                         + '&etapa=' + me.b_etapa+ '&opcion=Escrituras';
                 axios.get(url).then(function (response) {
