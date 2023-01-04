@@ -1108,6 +1108,10 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             //Se recorren los registros encontrados
             foreach($contratos as $index => $contrato){
+                $contrato->entrega = 0;
+                $entregas = Entrega::select('id')->where('id','=',$contrato->folio)->get();
+                if(sizeof($entregas))
+                    $contrato->entrega = 1;
                 // Se obtienen los datos del ultimo pagare
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
                 // Se obtienen los datos del avaluo solicitado

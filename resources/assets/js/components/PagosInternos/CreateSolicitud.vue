@@ -40,7 +40,7 @@
                                     <input type="date" v-model="b_fecha2" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)">
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control col-md-5" v-model="b_status" @change="indexSolicitudes(1)">
                                         <option value="">Status</option>
@@ -51,7 +51,7 @@
                                         <option value="4">Pagados</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <button class="btn btn-primary"
@@ -66,62 +66,174 @@
                             </div>
                         </div>
 
-                        <ul class="nav nav-tabs" id="myTab1" role="tablist" v-if="arraySolic.total > 0">
+                        <ul class="nav nav-tabs" id="myTab1" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="indexSolicitudes(1)" v-bind:class="{ 'text-primary active': vista==0}"
-                                role="tab" v-text="'Total: '+ arraySolic.total"></a>
+                                @click="b_status = 0, indexSolicitudes(1)" v-bind:class="{ 'text-primary active': b_status==0}"
+                                role="tab">{{ (b_status == 0) ? `Nuevos: ${arraySolic.total ? arraySolic.total : 0}` : 'Nuevos' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                @click="b_status = 1, indexSolicitudes(1)" v-bind:class="{ 'text-primary active': b_status==1}"
+                                role="tab">{{ (b_status == 1) ? `En Proceso: ${arraySolic.total}` : 'En Proceso' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                @click="b_status = 2, indexSolicitudes(1)" v-bind:class="{ 'text-primary active': b_status==2}"
+                                role="tab">{{ (b_status == 2) ? `Aprobadas: ${arraySolic.total}` : 'Aprobadas' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                @click="b_status = 3, indexSolicitudes(1)" v-bind:class="{ 'text-primary active': b_status==3}"
+                                role="tab">{{ (b_status == 3) ? `Pagadas: ${arraySolic.total}` : 'Pagadas' }}</a>
                             </li>
                         </ul>
 
-                        <TableComponent :cabecera="[
-                            '',
-                            'Proveedor',
-                            'Solicitante',
-                            'Fecha solic',
-                            'Importe',
-                            'Tipo de pago',
-                            ' '
-                        ]">
-                            <template v-slot:tbody>
-                                <tr v-for="solic in arraySolic.data" :key="solic.id">
-                                    <td class="td2">
-                                        <button class="btn btn-warning" title="Editar"
-                                            v-if="solic.status == 0"
-                                            @click="vistaFormulario('actualizar', solic)"
-                                        >
-                                            <i class="icon-pencil"></i>
-                                        </button>
-                                         <button class="btn btn-primary" title="Ver Solicitud"
-                                            @click="vistaFormulario('ver', solic)"
-                                        >
-                                            <i class="icon-eye"></i>
-                                        </button>
-                                        <button class="btn btn-danger" title="Eliminar"
-                                            v-if="solic.status == 0"
-                                            @click="deleteSolic(solic.id)"
-                                        >
-                                            <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td class="td2" v-text="solic.proveedor"></td>
-                                    <td class="td2" v-text="solic.solicitante"></td>
-                                    <td class="td2" v-text="solic.created_at"></td>
-                                    <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
-                                    <td class="td2">
-                                        {{ solic.tipo_pago == 0 ? 'Caja Fuerte' : 'Bancario' }}
-                                    </td>
-                                    <td class="td2" v-text="solic.num_inicio"></td>
-                                    <td>
-                                        <button class="btn btn-light" title="Ver Observaciones"
-                                            @click="verObs(solic)"
-                                        >
-                                            Observaciones
-                                        </button>
-                                    </td>
-                                </tr>
-                            </template>
-                        </TableComponent>
+                        <div class="tab-content" id="myTab1Content">
+                            <!-- Listado por Nuevas solicitudes -->
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status==0 }" v-if="b_status == 0">
+                                <TableComponent :cabecera="[
+                                    '',
+                                    'Proveedor',
+                                    'Solicitante',
+                                    'Fecha solic',
+                                    'Importe',
+                                    'Tipo de pago',
+                                    '  ',
+                                    ' '
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                            <td class="td2">
+                                                <button class="btn btn-warning" title="Editar"
+                                                    v-if="solic.vb_gerente == 0"
+                                                    @click="vistaFormulario('actualizar', solic)"
+                                                >
+                                                    <i class="icon-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-primary" title="Ver Solicitud"
+                                                    @click="vistaFormulario('ver', solic)"
+                                                >
+                                                    <i class="icon-eye"></i>
+                                                </button>
+                                                <button class="btn btn-danger" title="Eliminar"
+                                                    v-if="solic.vb_gerente == 0"
+                                                    @click="deleteSolic(solic.id)"
+                                                >
+                                                    <i class="icon-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2" v-text="solic.solicitante"></td>
+                                            <td class="td2"
+                                                v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
+                                            </td>
+                                            <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
+                                            <td class="td2">
+                                                {{ solic.tipo_pago == 0 ? 'Caja Fuerte' : 'Bancario' }}
+                                            </td>
+                                            <td class="td2">
+
+                                                <template v-if="encargado == 0 && !gerente">
+                                                        {{ (solic.vb_gerente == 0)
+                                                            ? 'Solicitud pendiente de revisar'
+                                                            : 'Solicitd pendiente de autorizar'
+                                                        }}
+                                                </template>
+                                                <template v-else>
+                                                    <button class="btn btn-primary" v-if="solic.vb_gerente == 0"
+                                                        title="Validar revisión de solicitud"
+                                                        @click="changeVbGerente(solic.id,1)"
+                                                    >
+                                                        Revisar
+                                                    </button>
+                                                    <button class="btn btn-scarlet" v-if="solic.vb_gerente < 2 && gerente"
+                                                        title="Autorizar solicitud"
+                                                        @click="changeVbGerente(solic.id,2)"
+                                                    >
+                                                        Autorizar Solicitud
+                                                    </button>
+                                                </template>
+
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-light" title="Ver Observaciones"
+                                                    @click="verObs(solic)"
+                                                >
+                                                    Observaciones
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                            <!-- Listado por En Proceso -->
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status==0 }" v-if="b_status == 0">
+                                <TableComponent :cabecera="[
+                                    '',
+                                    'Proveedor',
+                                    'Solicitante',
+                                    'Fecha solic',
+                                    'Importe',
+                                    'Tipo de pago',
+                                    '  ',
+                                    ' '
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                            <td class="td2">
+                                                <button class="btn btn-primary" title="Ver Solicitud"
+                                                    @click="vistaFormulario('ver', solic)"
+                                                >
+                                                    <i class="icon-eye"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2" v-text="solic.solicitante"></td>
+                                            <td class="td2"
+                                                v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
+                                            </td>
+                                            <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
+                                            <td class="td2">
+                                                {{ solic.tipo_pago == 0 ? 'Caja Fuerte' : 'Bancario' }}
+                                            </td>
+                                            <td class="td2">
+
+                                                <template v-if="admin == 0">
+                                                        {{ (solic.vb_gerente == 0)
+                                                            ? 'Solicitud pendiente de revisar'
+                                                            : 'Solicitd pendiente de autorizar'
+                                                        }}
+                                                </template>
+                                                <template v-else>
+                                                    <button class="btn btn-primary" v-if="solic.vb_gerente == 0"
+                                                        title="Validar revisión de solicitud"
+                                                        @click="changeVbGerente(solic.id,1)"
+                                                    >
+                                                        Revisar
+                                                    </button>
+                                                    <button class="btn btn-scarlet" v-if="solic.vb_gerente < 2 && gerente"
+                                                        title="Autorizar solicitud"
+                                                        @click="changeVbGerente(solic.id,2)"
+                                                    >
+                                                        Autorizar Solicitud
+                                                    </button>
+                                                </template>
+
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-light" title="Ver Observaciones"
+                                                    @click="verObs(solic)"
+                                                >
+                                                    Observaciones
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                        </div>
+
                         <nav>
                             <!--Botones de paginacion -->
                             <!--Botones de paginacion -->
@@ -605,7 +717,7 @@ export default {
                 'ing_david',
                 'meza.marco60',
                 'guadalupe.ff',
-                'shady'
+                // 'shady'
             ],
             arraySolic: [],
             empresas: [],
@@ -622,7 +734,7 @@ export default {
 
             b_proveedor : '',
             b_solicitante : '',
-            b_status : '',
+            b_status : 0,
             b_fecha1 : '',
             b_fecha2 : '',
             loading : false,
@@ -654,6 +766,50 @@ export default {
         onChangeFile(e){
             this.newArchivo.file = e.target.files[0];
             this.newArchivo.nom_archivo = e.target.files[0].name;
+        },
+        changeVbGerente(id,estado){
+            let me = this;
+
+            let titulo = '¿Seguro de revisar esta solicitud?';
+            if(estado == 2)
+                titulo = '¿Seguro de autorizar esta solicitud?';
+
+
+            swal({
+                title: titulo,
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, continuar'
+                }).then((result) => {
+                if (result.value) {
+                    axios.put(`/solic-pagos/changeVbGerente/${id}`,{
+                        'id': id,
+                        'estado' : estado
+                    }).then(function (response){
+                        me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Solicitud actualizada'
+                        })
+                    }).catch(function (error){
+                    });
+                }
+            })
+
+
+
+
         },
         onSelectFile(){
             this.$refs.fileSelector.click()
