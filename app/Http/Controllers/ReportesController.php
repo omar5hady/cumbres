@@ -272,6 +272,7 @@ class ReportesController extends Controller
             $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->where('licencias.avance','>',97)
                                 ->where('lotes.contrato','=',0)
+                                ->where('lotes.casa_renta','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId);
@@ -284,6 +285,7 @@ class ReportesController extends Controller
                                 ->whereBetween('licencias.avance', [1, 97]) //Avance entre 1 al 97 %
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
+                                ->where('lotes.casa_renta','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId);
                 if($empresa != '')//Filtro para empresa constructora
@@ -295,6 +297,7 @@ class ReportesController extends Controller
                                 ->where('licencias.avance','=',0)
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
+                                ->where('lotes.casa_renta','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId);
                 if($empresa != '')//Filtro para empresa constructora
@@ -1465,8 +1468,8 @@ class ReportesController extends Controller
                 $notaria = $request->notaria;
                 $fraccionamiento = $request->proyecto;
                 $etapa = $request->etapa;
-                $escrituras = $this->getEscriturasRep($mes, $anio, $empresa, $fraccionamiento, $etapa, $notaria);//Ventas con escrituras firmadas en el periodo seleccionado.
-                $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);//Ventas directas liquidadas sin firma de escrituras.
+                $escrituras = $this->getEscriturasRep($fecha1, $fecha2, $empresa, $fraccionamiento, $etapa, $notaria);//Ventas con escrituras firmadas en el periodo seleccionado.
+                $contadoSinEscrituras = $this->getContadoSinEscrituras($fecha1, $fecha2, $empresa);//Ventas directas liquidadas sin firma de escrituras.
                 return [
                     'escrituras'=>$escrituras,
                     'contadoSinEscrituras'=>$contadoSinEscrituras
@@ -1785,17 +1788,17 @@ class ReportesController extends Controller
     }
     //Función para retornar los datos de reporte acumulado de escrituras en Excel
     public function excelEscrituras(Request $request){
-        $mes = $request->mes;
-        $anio = $request->anio;
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
         $notaria = $request->notaria;
         $fraccionamiento = $request->proyecto;
         $etapa = $request->etapa;
 
         $empresa = $request->empresa;
         //Ventas escrituradas en el periodo seleccionado
-        $escrituras = $this->getEscriturasRep($mes, $anio, $empresa, $fraccionamiento, $etapa, $notaria);
+        $escrituras = $this->getEscriturasRep($fecha1, $fecha2, $empresa, $fraccionamiento, $etapa, $notaria);
         //Ventas liquidadas pendientes por escriturar
-        $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);
+        $contadoSinEscrituras = $this->getContadoSinEscrituras($fecha1, $fecha2, $empresa);
         //Creación y retorno de los resultados en excel
         return Excel::create('Reporte mensual de escrituras', function($excel) use ($escrituras,$contadoSinEscrituras,$empresa){
             $excel->sheet('Ventas de crédito', function($sheet) use ($escrituras,$empresa){
@@ -2117,7 +2120,7 @@ class ReportesController extends Controller
         return $expContado;
     }
     //Función privada que retoran las Ventas por financiamiento bancario con escrituras firmadas en el periodo seleccionado.
-    private function getEscriturasRep($mes, $anio, $empresa, $fraccionamiento, $etapa, $notaria){
+    private function getEscriturasRep($fecha1, $fecha2, $empresa, $fraccionamiento, $etapa, $notaria){
         //Query principal
         $escrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
@@ -2133,9 +2136,9 @@ class ReportesController extends Controller
                         'expedientes.fecha_firma_esc','expedientes.valor_escrituras','expedientes.notaria')
                 ->where('contratos.status','=',3)//Contrato firmado
                 ->where('ins.elegido','=',1)
-                ->where('expedientes.fecha_firma_esc','!=',NULL)
-                ->whereMonth('expedientes.fecha_firma_esc',$mes)//Venta escriturada en el mes seleccionado
-                ->whereYear('expedientes.fecha_firma_esc',$anio);//Venta escriturada en el año seleccionado
+                ->where('expedientes.fecha_firma_esc','!=',NULL);
+                if($fecha1 != '' && $fecha2 != '')
+                    $escrituras = $escrituras->whereBetween('expedientes.fecha_firma_esc',[$fecha1, $fecha2]);//Venta escriturada en el mes seleccionado
                 if($empresa != '')//Filtro para empresa constructora
                     $escrituras = $escrituras->where('lotes.emp_constructora','=',$empresa);
                 if($fraccionamiento != '')//Filtro para empresa constructora
@@ -3843,7 +3846,8 @@ class ReportesController extends Controller
                 )
                 ->where('lotes.contrato','=',0)
                 ->where('lotes.habilitado','=',$habilitado)
-                ->where('lotes.casa_muestra','=',$muestra);
+                ->where('lotes.casa_muestra','=',$muestra)
+                ->where('lotes.casa_renta','=',0);
 
             if($muestra == 0){
                 if($avance == 95)
