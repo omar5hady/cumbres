@@ -1275,6 +1275,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/docs-proyectos', Lotes\DocsController::class);
+        Route::get('/docs/getDocsByProyecto','Lotes\DocsController@getDocsByProyecto');
+        Route::delete('/docs/deleteDocByProyecto','Lotes\DocsController@deleteDocByProyecto');
+
 
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/equip-lotes', Lotes\EquipLoteController::class);

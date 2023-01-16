@@ -69,6 +69,27 @@ class DocsController extends Controller
         return $lotes;
     }
 
+    public function getDocsByProyecto(Request $request){
+        $lotes = Lote::select('id')->where('fraccionamiento_id','=',$request->proyecto)->get();
+
+        return DocProyecto::join('dropbox_files as d','d.id','=','doc_proyectos.file_id')
+            ->select('doc_proyectos.file_id','doc_proyectos.carpeta','doc_proyectos.tipo', 'd.public_url')
+            ->whereIn('lote_id',$lotes)->distinct()->get();
+    }
+
+    public function deleteDocByProyecto(Request $request){
+
+        $docs = DocProyecto::where('file_id','=',$request->file_id)->get();
+        if(sizeof($docs)){
+            $this->deleteDropBoxFile($docs[0]->carpeta,$docs[0]->file_id);
+
+            foreach($docs as $d){
+                $doc = DocProyecto::findOrFail($d->id);
+                $doc->delete();
+            }
+        }
+    }
+
     public function store(Request $request){
         $fileID = $this->storeFile($request);
 
