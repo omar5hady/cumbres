@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Proveedores
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button @click="abrirModal('registrar')"
+                            :btnClass="'btn-secondary'" :icon="'icon-plus'"
+                        >Nuevo</Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -25,8 +25,10 @@
                                         <option value="contacto">Contacto</option>
                                     </select>
 
-                                    <input type="text" v-model="buscar" @keyup.enter="listarProveedores(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarProveedores(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarProveedores(1)" class="form-control" placeholder="Texto a buscar">
+                                    <Button @click="listarProveedores(1)" title="Nuevo Proveedor"
+                                        :btnClass="'btn-primary'" :icon="'fa fa-search'"
+                                    >Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -35,12 +37,14 @@
                             <template v-slot:tbody>
                                 <tr v-for="proveedor in arrayProveedores" :key="proveedor.id">
                                     <td class="td2" style="width:10%">
-                                        <button type="button" @click="abrirModal('actualizar',proveedor)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-dark btn-sm" @click="abrirModal2(proveedor), listarEquipamiento(1, proveedor.id)" title="Asignar equipamiento">
-                                        <i class="icon-share"></i>
-                                        </button>
+                                        <Button @click="abrirModal('actualizar',proveedor)"
+                                            title="Actualizar"
+                                            :btnClass="'btn-warning'" :icon="'icon-pencil'" :size="'btn-sm'"
+                                        ></Button>
+                                        <Button @click="abrirModal2(proveedor), listarEquipamiento(1, proveedor.id)"
+                                            title="Asignar equipamiento"
+                                            :btnClass="'btn-dark'" :icon="'icon-share'" :size="'btn-sm'"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="proveedor.proveedor" ></td>
                                     <td class="td2" v-text="proveedor.contacto" ></td>
@@ -50,28 +54,18 @@
                                     <td class="td2" v-text="proveedor.email" ></td>
                                     <td class="td2" v-text="proveedor.poliza" ></td>
                                     <td class="td2">
-                                        <button class="btn" :class="[proveedor.const_fisc ? 'btn-success' : 'btn-default']"
+                                        <Button :btnClass="proveedor.const_fisc ? 'btn-success' : 'btn-default'"
+                                                :icon="'icon-cloud-upload'"
                                                 title="Cargar constancia" @click="abrirModal('constancia',proveedor)">
-                                            <i class="icon-cloud-upload"></i>
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav @changePage="cambiarPagina"
+                            :current="pagination.current_page ? pagination.current_page : 1"
+                            :last="pagination.last_page ? pagination.last_page : 1">
+                        </Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -88,108 +82,70 @@
                     </ul>
                     <template v-if="vista == 0">
                         <div style="padding-top:10px;">
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Proveedor</label>
-                                <div class="col-md-6">
-                                    <input type="text" v-model="proveedor" class="form-control" placeholder="Proveedor">
-                                </div>
-                            </div>
+                            <RowModal :clsRow1="'col-md-6'" :label1="'Proveedor'">
+                                <input type="text" placeholder="Proveedor" v-model="proveedor" class="form-control">
+                            </RowModal>
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Contacto</label>
-                                <div class="col-md-4">
-                                    <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
-                                </div>
-                                <label  v-if="tipoAccion==1" class="col-md-1 form-control-label" for="text-input">RFC</label>
-                                <div class="col-md-4"  v-if="tipoAccion==1">
-                                    <input type="text" v-model="rfc" maxlength="13" class="form-control" placeholder="RFC">
-                                </div>
-                            </div>
+                            <RowModal :label1="'Contacto'" :clsRow2="'col-md-4'" :label2="tipoAccion==1?'RFC':''">
+                                <input type="text" placeholder="Contacto" v-model="contacto" class="form-control">
+                                <template v-slot:input2  v-if="tipoAccion==1">
+                                    <input type="text" placeholder="RFC" v-model="rfc" maxlength="13" class="form-control">
+                                </template>
+                            </RowModal>
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Direccion</label>
-                                <div class="col-md-5">
-                                    <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
-                                </div>
-                                 <label class="col-md-1 form-control-label" for="text-input">Colonia</label>
-                                <div class="col-md-4">
-                                    <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
-                                </div>
-                            </div>
+                            <RowModal :clsRow1="'col-md-5'" :label1="'Dirección'" :clsRow2="'col-md-4'" :label2="'Colonia'">
+                                <input type="text" placeholder="Dirección" v-model="direccion" class="form-control">
+                                <template v-slot:input2>
+                                    <input type="text" placeholder="Colonia" v-model="colonia" class="form-control">
+                                </template>
+                            </RowModal>
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Telefono</label>
-                                <div class="col-md-4">
-                                    <input type="text" maxlength="10" pattern="\d*" v-model="telefono" class="form-control" placeholder="Telefono" v-on:keypress="$root.isNumber($event)">
-                                </div>
-                            </div>
+                            <RowModal :label1="'Teléfono'">
+                                <input type="text" placeholder="Teléfono" v-model="telefono" class="form-control" @keypress="$root.isNumber($event)">
+                            </RowModal>
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Email</label>
-                                <div class="col-md-4">
-                                    <input type="text" v-model="email" class="form-control" placeholder="Correo electronico">
-                                </div>
-                                <label class="col-md-2 form-control-label" for="text-input">Email (Opcional)</label>
-                                <div class="col-md-4">
-                                    <input type="text" v-model="email2" class="form-control" placeholder="Correo electronico">
-                                </div>
-                            </div>
+                            <RowModal :label1="'Email'" :clsRow2="'col-md-4'" :label2="'Email (Opcional)'">
+                                <input type="email" placeholder="Correo electronico" v-model="email" class="form-control">
+                                <template v-slot:input2>
+                                    <input type="email" placeholder="Correo electronico" v-model="email2" class="form-control">
+                                </template>
+                            </RowModal>
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Cuenta Bancaria</label>
-                                <div class="col-md-4">
-                                    <input type="text" v-model="num_cuenta" pattern="\d*" v-on:keypress="$root.isNumber($event)"
-                                        class="form-control" placeholder="Num. Cuenta" :disabled="tipoAccion == 2">
-                                </div>
-                                <label class="col-md-2 form-control-label" for="text-input">Banco</label>
-                                <div class="col-md-4">
+                            <RowModal :label1="'Cuenta Bancaria'" :clsRow2="'col-md-4'" :label2="'Banco'">
+                                <input  class="form-control" type="text" placeholder="Num. Cuenta" v-model="num_cuenta" :disabled="tipoAccion == 2" @keypress="$root.isNumber($event)">
+                                 <template v-slot:input2>
                                     <select class="form-control" v-model="banco" :disabled="tipoAccion == 2">
                                         <option value="">Seleccione</option>
                                         <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Clabe interbancaria</label>
-                                <div class="col-md-4">
-                                    <input type="text" v-model="clabe" pattern="\d*" v-on:keypress="$root.isNumber($event)"
-                                        class="form-control" placeholder="Clabe" :disabled="tipoAccion == 2">
-                                </div>
-                            </div>
-                            <div class="form-group row" v-if="tipoAccion == 2">
-                                <div class="col-md-4">
-                                    <button class="btn btn-success" title="Nueva cuenta" @click="abrirModal('banco')">
-                                        <i class="icon-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
+                                </template>
+                            </RowModal>
 
-                            <div class="form-group row">
-                                <label class="col-md-2 form-control-label" for="text-input">Tipo</label>
-                                <div class="col-md-4">
-                                    <select class="form-control" v-model="tipo">
-                                        <option value="0">Interno</option>
-                                        <option value="1">Externo</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <RowModal :label1="'Clabe interbancaria'">
+                                <input  class="form-control" type="text" placeholder="Clabe" v-model="clabe" :disabled="tipoAccion == 2" @keypress="$root.isNumber($event)">
+                            </RowModal>
+
+                            <RowModal :label1="''" v-if="tipoAccion == 2">
+                                <Button :btnClass="'btn-success'" title="Nueva cuenta" :icon="'icon-plus'" @click="abrirModal('banco')">Nueva Cuenta</Button>
+                            </RowModal>
+
+                            <RowModal :label1="'Tipo'">
+                                <select class="form-control" v-model="tipo">
+                                    <option value="0">Interno</option>
+                                    <option value="1">Externo</option>
+                                </select>
+                            </RowModal>
                         </div>
                     </template>
                     <template v-if="vista == 1">
                         <div style="padding-top:10px;">
-                            <div class="form-group row" v-if="tipoAccion==1">
-                                <label class="col-md-2 form-control-label" for="text-input">Usuario</label>
-                                <div class="col-md-6">
-                                    <input type="text" v-model="usuario" class="form-control" placeholder="User">
-                                </div>
-                            </div>
+                            <RowModal :label1="'Usuario'" v-if="tipoAccion==1" :clsRow1="'col-md-6'">
+                                <input class="form-control" type="text" placeholder="User" v-model="usuario">
+                            </RowModal>
 
-                            <div class="form-group row" v-if="tipoAccion==1">
-                                <label class="col-md-2 form-control-label" for="text-input">Contraseña</label>
-                                <div class="col-md-6">
-                                    <input type="password" v-model="password" class="form-control" placeholder="Password">
-                                </div>
-                            </div>
+                            <RowModal :clsRow1="'col-md-6'" :label1="'Contraseña'" v-if="tipoAccion==1">
+                                <input type="password" v-model="password" class="form-control" placeholder="Password">
+                            </RowModal>
                         </div>
                     </template>
 
@@ -202,8 +158,8 @@
                 </template>
                 <template v-slot:buttons-footer>
                     <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarProveedores()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarProveedores()">Actualizar</button>
+                    <Button :btnClass="'btn-success'" :icon="'icon-check'" titulo="Guardar" v-if="tipoAccion==1" @click="registrarProveedores()">Guardar</Button>
+                    <Button :btnClass="'btn-success'" :icon="'icon-check'" titulo="Guardar cambios" v-if="tipoAccion==2" @click="actualizarProveedores()">Actualizar</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -213,34 +169,26 @@
                 @closeModal="modal = 1"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-2 form-control-label" for="text-input">Num Cuenta</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="n_cuenta" pattern="\d*" v-on:keypress="$root.isNumber($event)"
-                                class="form-control" placeholder="Num. Cuenta">
-                        </div>
-                        <label class="col-md-2 form-control-label" for="text-input">Banco</label>
-                        <div class="col-md-4">
+                    <RowModal :clsRow1="'col-md-3'" :label1="'Num Cuenta'" :label2="'Banco'" :clsRow2="'col-md-4'">
+                        <input type="text" class="form-control" v-model="n_cuenta" placeholder="Num. Cuenta" @keypress="$root.isNumber($event)">
+                        <template v-slot:input2>
                             <select class="form-control" v-model="n_banco">
                                 <option value="">Banco</option>
                                 <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 form-control-label" for="text-input">Clabe interbancaria</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="n_clabe" pattern="\d*" v-on:keypress="$root.isNumber($event)"
-                                class="form-control" placeholder="Clabe interbancaria">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-4">
-                            <button class="btn btn-primary" title="Guardar Cuenta" @click="storeCuenta()">
-                                Guardar cuenta &nbsp;<i class="icon-plus"></i>
-                            </button>
-                        </div>
-                    </div>
+                        </template>
+                    </RowModal>
+
+                    <RowModal :label1="'Clabe interbancaria'">
+                        <input type="text" class="form-control" v-model="n_clabe" placeholder="Clabe interbancaria" @keypress="$root.isNumber($event)">
+                    </RowModal>
+
+                    <RowModal :label1="''">
+                        <Button :btnClass="'btn-primary'" title="Guardar cuenta" :icon="'icon-plus'" @click="storeCuenta()">
+                            Guardar cuenta
+                        </Button>
+                    </RowModal>
+
 
                     <div class="modal-header" style="background-color: #EC008C; padding:5px;">
                         <h5 class="modal-title"> Cuentas agregadas </h5>
@@ -251,13 +199,12 @@
                             <template v-slot:tbody>
                                 <tr v-for="cuenta in arrayCuentas" :key="cuenta.id">
                                     <td class="td2" style="width:10%">
-                                        <button type="button" @click="eliminar(cuenta.id)" class="btn btn-danger btn-sm">
-                                            <i class="icon-trash"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-success btn-sm"
-                                            @click="seleccionarCuenta(cuenta)" title="Seleccionar cuenta">
-                                            <i class="fa fa-check"></i>
-                                        </button>
+                                        <Button :btnClass="'btn-danger btn-sm'" :icon="'icon-trash'"
+                                            @click="eliminar(cuenta.id)">
+                                        </Button>
+                                        <Button :btnClass="'btn-success btn-sm'" :icon="'fa fa-check'"
+                                            @click="seleccionarCuenta(cuenta)"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="cuenta.banco" ></td>
                                     <td class="td2" v-text="cuenta.num_cuenta" ></td>
@@ -289,7 +236,6 @@
                                 Seleccionar Constancia Fiscal
                                 <i class="fa fa-upload"></i>
                             </button>
-
                         </div>
 
                         <div class="col-md-7" v-else>
@@ -317,39 +263,32 @@
             </ModalComponent>
             <!--Fin del modal-->
 
-
             <!--Inicio del modal asignar equipamiento-->
             <ModalComponent v-if="modal2" :titulo="tituloModal2"
                 @closeModal="cerrarModal2()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Equipamiento</label>
-                        <div class="col-md-6">
-                            <input type="text" name="city3" list="cityname3" class="form-control" v-model="equipamiento">
-                            <datalist id="cityname3">
-                                <option value="">Seleccione</option>
-                                <option value="Espejos de baño">Espejos de baño</option>
-                                <option value="Closets">Closets</option>
-                                <option value="Vestidores">Vestidores</option>
-                                <option value="Muebles">Muebles</option>
-                            </datalist>
-                        </div>
-                    </div>
+                    <RowModal :label1="'Equipamiento'" :clsRow1="'col-md-6'">
+                        <input type="text" name="city3" list="cityname3" class="form-control" v-model="equipamiento">
+                        <datalist id="cityname3">
+                            <option value="">Seleccione</option>
+                            <option value="Espejos de baño">Espejos de baño</option>
+                            <option value="Closets">Closets</option>
+                            <option value="Vestidores">Vestidores</option>
+                            <option value="Muebles">Muebles</option>
+                        </datalist>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Recepcion de documentos</label>
-                        <div class="col-md-5">
-                            <select class="form-control" v-model="tipoRecepcion">
-                                <option value="0">General</option>
-                                <option value="1">Recepción de cocina</option>
-                                <option value="2">Recepción de vestidores</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-success" @click="registrarEquipamiento()">Añadir</button>
-                        </div>
-                    </div>
+                    <RowModal :label1="'Recepción de documentos'" :clsRow1="'col-md-5'" :clsRow2="'col-md-3'" :label2="' '">
+                        <select class="form-control" v-model="tipoRecepcion">
+                            <option value="0">General</option>
+                            <option value="1">Recepción de cocina</option>
+                            <option value="2">Recepción de vestidores</option>
+                        </select>
+                        <template v-slot:input2>
+                            <Button :btnClass="'btn-success'" @click="registrarEquipamiento()" :icon="'icon-plus'">Añadir</Button>
+                        </template>
+                    </RowModal>
 
                     <!-- Div para mostrar los errores que mande validerPaquete -->
                     <div v-show="errorEquipamiento" class="form-group row div-error">
@@ -362,41 +301,22 @@
                         <div class="modal-header" style="background-color: #EC008C;">
                             <h5 class="modal-title"> Equipamiento</h5>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Equipamiento</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <TableComponent :cabecera="['Opciones','Equipamiento']">
+                            <template v-slot:tbody>
                                 <tr v-for="equipamiento in arrayEquipamientos" :key="equipamiento.id">
                                     <td style="width:25%">
-                                        <button type="button" v-if="equipamiento.activo == 1" class="btn btn-dark btn-sm" @click="eliminarEquipamiento(equipamiento)">
-                                        <i class="fa fa-check"></i>
-                                        </button>
-                                        <button type="button" v-if="equipamiento.activo == 0" class="btn btn-danger btn-sm" @click="activarEquipamiento(equipamiento)">
-                                        <i class="fa fa-remove"></i>
-                                        </button>
+                                        <Button  v-if="equipamiento.activo == 1" :btnClass="'btn-dark'"  title="Desactivar equipamiento"
+                                            :size="'btn-sm'" :icon="'fa fa-check'" @click="eliminarEquipamiento(equipamiento)">
+                                        </Button>
+                                        <Button  v-if="equipamiento.activo == 0" :btnClass="'btn-danger'"  title="Activar equipamiento"
+                                            :size="'btn-sm'" :icon="'fa fa-remove'" @click="activarEquipamiento(equipamiento)">
+                                        </Button>
                                     </td>
                                     <td v-text="equipamiento.equipamiento" ></td>
                                 </tr>
-                            </tbody>
-                        </table>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                            </template>
+                        </TableComponent>
+                        <Nav @changePage="cambiarPagina2" :current="pagination2.current_page" :last="pagination2.last_page"></Nav>
                     </template>
                 </template>
             </ModalComponent>
@@ -412,11 +332,17 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import Nav from "../Componentes/NavComponent.vue"
+import Button from "../Componentes/ButtonComponent.vue";
+import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            RowModal,
+            TableComponent,
+            Button,
+            Nav
         },
         data(){
             return{
@@ -602,19 +528,19 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProveedores(page,buscar,criterio);
+                me.listarProveedores(page,me.buscar,me.criterio);
             },
-            cambiarPagina2(page, buscar){
+            cambiarPagina2(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarEquipamiento(page,buscar);
+                me.listarEquipamiento(page,me.id);
             },
             /**Metodo para registrar  */
             registrarProveedores(){
@@ -942,6 +868,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.email2 = data['email2'];
                         this.tipo = data['tipo'];
                         this.banco = data['banco'];
+                        this.clabe = data['clabe'];
                         this.num_cuenta = data['num_cuenta'];
                         this.arrayCuentas = data['cuentas'];
                         break;

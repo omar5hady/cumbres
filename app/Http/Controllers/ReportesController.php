@@ -2793,12 +2793,14 @@ class ReportesController extends Controller
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->where('licencias.avance','>=',90)
                 ->where('lotes.contrato','=',0)
+                ->where('lotes.casa_renta','=',0)
                 ->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
                 //Lotes en proceso
                 $dispProc = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->where('licencias.avance','<',90)
                 ->where('lotes.contrato','=',0)
+                ->where('lotes.casa_renta','=',0)
                 ->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
                 if($fraccionamiento != ''){//Filtro por proyecto
                     $dispTerm = $dispTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);

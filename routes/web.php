@@ -932,6 +932,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/proveedor/submitProveedorConst','ProveedorController@submitProveedorConst');
         Route::put('/proveedor/actualizar','ProveedorController@update');
         Route::get('/select_proveedor','ProveedorController@selectProveedor');
+        Route::get('/proveedor/getCuentasProv','ProveedorController@getCuentasProv');
 
     ////////////////////// RUTAS EQUIPAMIENTO
         Route::get('/equipamiento','EquipamientoController@index');
@@ -1283,6 +1284,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/files-solic', solicPagos\ArchivosController::class);
         Route::delete('/solic-pagos/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
         Route::put('/solic-pagos/changeVbGerente/{id}','solicPagos\SolicitudesController@changeVbGerente');
+        Route::put('/solic-pagos/changeCuenta/{id}','solicPagos\SolicitudesController@changeCuenta');
 
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');
         Route::post('/equip-lotes/storeObservacion','Lotes\EquipLoteController@storeObservacion');

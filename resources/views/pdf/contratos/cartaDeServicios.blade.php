@@ -8,6 +8,9 @@
     <title>Carta de servicios</title>
 </head>
 <style type="text/css">
+    @page{
+        margin: 0px;
+    }
     @font-face {
         font-family: 'Gotham-Book';
         font-style: Book;
@@ -36,22 +39,26 @@
     .table-cell {
         display: table-cell;
         padding: 0em;
-        font-size: 9pt;
+        font-size: 8pt;
     }
 </style>
 
 <body>
     <div style="width: 100%; position: fixed; text-align: center;">
         @if ($datos[0]->modelo == 'Terreno')
-            <img style="margin-top: -20px;"
-                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios2 }}" width="794"
+            <img
+                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios2 }}" width="105%"
                 height="1020">
         @else
-            <img style="margin-top: -20px;"
-                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}" width="794"
+            <img
+                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}" width="105%"
                 height="1020">
         @endif
-        <div style="margin-top: 200px; position: absolute; width: 100%; left:60px; right:60px;">
+        @if($datos[0]->proyecto != 'PRIVADA NEDEN')
+        <div style="margin-top: 200px; position: absolute; width: 100%; left:80px; right:80px;">
+        @else
+            <div style="margin-top: 200px; position: absolute; width: 100%; left:200px; right:60px;">
+        @endif
 
             <p align="right">México, San Luis Potosí, S.L.P, a <u>{{ $datos[0]->fecha_hoy }}</u></p>
             @if ($datos[0]->emp_constructora == 'CONCRETANIA')
@@ -123,7 +130,6 @@
             <br>
 
             <p align="center">Atentamente.</p>
-            <br>
             <br>
             <br>
             <br>

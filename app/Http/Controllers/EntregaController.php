@@ -388,6 +388,7 @@ class EntregaController extends Controller
         if($contrato->plano != NULL){
             Mail::to($contrato->email)->send(new WelcomeNotification($contrato));
             Mail::to('0m4r5h4dy@gmail.com')->send(new WelcomeNotification($contrato));
+            Mail::to('omar_vazquez_7@hotmail.com')->send(new WelcomeNotification($contrato));
         }
     }
 
