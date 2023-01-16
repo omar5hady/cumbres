@@ -22,6 +22,15 @@ class SolicitudesController extends Controller
         return SpCatalogo::select('cargo')->distinct()->get();
     }
 
+    public function changeCuenta(Request $request){
+        $solicitud = SpSolicitud::findOrFail($request->id);
+        $solicitud->banco = $request->banco;
+        $solicitud->num_cuenta = $request->num_cuenta;
+        $solicitud->clabe = $request->clabe;
+        $solicitud->save();
+
+    }
+
     public function getConceptos(Request $request){
         return SpCatalogo::select('id','concepto')->where('cargo','=',$request->cargo)->get();
     }

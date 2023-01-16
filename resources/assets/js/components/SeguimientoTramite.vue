@@ -1427,8 +1427,15 @@
                                         <div class="col-md-2">
                                             <h6 v-text="'$'+formatNumber(valor_escrituras)"></h6>
                                         </div>
-
                                     </div>
+
+                                    <div class="form-group row" v-if="intereses_terreno>0">
+                                        <label class="col-md-2 form-control-label" for="text-input">Intereses</label>
+                                        <div class="col-md-3">
+                                            <h6 v-text="'$'+formatNumber(intereses_terreno)"></h6>
+                                        </div>
+                                    </div>
+
 
                                     <div v-if="arrayGastos.length">
                                         <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
@@ -1558,19 +1565,6 @@
                                         </div>
                                     </div>
 
-                                    <!--<div class="form-group row line-separator" v-if="total_liquidar != 0"></div>
-
-                                    <div class="form-group row" v-if="total_liquidar != 0">
-                                        <label class="col-md-2 form-control-label" for="text-input">Fecha a liquidar</label>
-                                        <div class="col-md-3">
-                                            <input type="date" class="form-control" v-model="fecha_pagarefin">
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <h6 v-text="'$'+formatNumber(total_liquidar)"></h6>
-                                        </div>
-
-                                    </div>-->
 
 
 
@@ -2265,6 +2259,7 @@
                 fecha_ingreso:'',
                 valor_escrituras:'',
                 valor_venta:'',
+                intereses_terreno : 0,
                 totalGastos:0,
                 totalIntOrd:0,
                 rest_real: 0,
@@ -2382,7 +2377,7 @@
             },
             totalLiquidar: function(){
                 var neto_credito =0;
-                    neto_credito = parseFloat(this.valor_venta) - parseFloat(this.descuento) + parseFloat(this.totalGastos) - parseFloat(this.monto_credito) -
+                    neto_credito = parseFloat(this.valor_venta) + parseFloat(this.intereses_terreno) - parseFloat(this.descuento) + parseFloat(this.totalGastos) - parseFloat(this.monto_credito) -
                     parseFloat(this.infonavit) - parseFloat(this.fovissste) - parseFloat(this.pagos);
                 return neto_credito;
             },
@@ -3448,6 +3443,7 @@
                         this.lote=data['num_lote'];
                         this.valor_escrituras = data['valor_escrituras'];
                         this.valor_venta = data['precio_venta'];
+                        this.intereses_terreno = data['intereses_terreno'];
                         this.descuento = 0;
                         this.totalEnganghe=0;
                         this.pagado=0;

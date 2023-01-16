@@ -342,7 +342,7 @@ class DigitalLeadController extends Controller
                     'menu' => 250,
                 ]
             ];
-            User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+            //User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
 
         }
 
@@ -370,7 +370,7 @@ class DigitalLeadController extends Controller
         }
 
 
-        User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+        //User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
 
 
         //return $request;

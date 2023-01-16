@@ -170,7 +170,7 @@
                     MNZA: {{mb_strtoupper($contrato->manzana)}}
                     LOTE: {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}
                 @endif
-                CALLE: {{mb_strtoupper($contrato->calle_lote)}}
+                CALLE: {{mb_strtoupper($contrato->calle)}}
                 #{{$contrato->numero}} {{ ($contrato->interior ? 'Int. '.$contrato->interior : '')}}.
                 {{mb_strtoupper($contrato->ciudad_proy)}}, {{mb_strtoupper($contrato->estado_proy)}}
             </p>

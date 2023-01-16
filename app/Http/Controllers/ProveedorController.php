@@ -111,6 +111,10 @@ class ProveedorController extends Controller
 
     }
 
+    public function getCuentasProv(Request $request){
+        return ProvCuenta::where('proveedor_id','=',$request->id)->get();
+    }
+
     public function storeCuenta(Request $request){
         $cuenta = new ProvCuenta();
         $cuenta->num_cuenta = $request->num_cuenta;

@@ -11,9 +11,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Mis Asesores
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-success">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-success'" :icon="'icon-plus'" @click="abrirModal('Personal','registrar')">
+                            Nuevo
+                        </Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -27,8 +27,7 @@
                                       <option value="vendedores.tipo">Tipo</option>
                                       <option value="vendedores.inmobiliaria">Inmobiliaria</option>
                                     </select>
-                                    
-                                 
+
                                     <select class="form-control"  v-if="criterio=='vendedores.tipo'" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" >
                                         <option value="0" >Interno</option>
                                         <option value="1" >Externo</option>
@@ -38,12 +37,10 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                     </select>
-
-                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                   
+                                    <input class="form-control" v-else type="text" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)">
                                 </div>
                                 <div class="input-group">
-                                    
-                                    <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="listarPersonal(1,buscar,criterio)">Buscar</Button>
                                     <a :href="'/asesores/excel?buscar=' + buscar + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>&nbsp;Excel</a>
                                 </div>
                             </div>
@@ -51,52 +48,38 @@
                         <!--Tabla para Asesores-->
                         <TableComponent :cabecera="['Opciones','Nombre','Usuario','Rol','Tipo','Inmobiliaria','Esquema','Status']">
                             <template v-slot:tbody>
-                                <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)" >
+                                <tr v-for="p in arrayPersonal" :key="p.id"  @dblclick="mostrarProspectos(p.nombre, p.id)" >
                                     <td class="td2">
-                                        <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button>
-                                        <template v-if="Personal.condicion">
-                                            <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
-                                                <i class="fa fa-user-times"></i>
-                                            </button>
-                                        </template>
-                                        <template v-else>
-                                            <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                        </template>
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('Personal','actualizar',p)">
+                                        </Button>
+                                        <Button v-if="p.condicion" :btnClass="'btn-danger'" :size="'btn-sm'"
+                                            :icon="'fa fa-user-times'" @click="desactivarPersonal(p.id)">
+                                        </Button>
+                                        <Button v-else @click="activarPersonal(p.id)" :btnClass="'btn-success'" :size="'btn-sm'"
+                                            :icon="'icon-check'">
+                                        </Button>
                                     </td>
                                     <td class="td2" title="Ver prospectos">
-                                        <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                        <a href="#" v-text="p.nombre + ' ' + p.apellidos"></a>
                                     </td>
-                                    <td class="td2" v-text="Personal.usuario"></td>
-                                    <td class="td2" v-text="Personal.rol"></td>
-                                    <td class="td2" v-if="Personal.tipo==0" v-text="'Interno'"></td>
+                                    <td class="td2" v-text="p.usuario"></td>
+                                    <td class="td2" v-text="p.rol"></td>
+                                    <td class="td2" v-if="p.tipo==0" v-text="'Interno'"></td>
                                     <td class="td2" v-else v-text="'Externo'"></td>
-                                    <td class="td2" v-text="Personal.inmobiliaria"></td>
-                                    <td class="td2" v-text="Personal.esquema+'%'"></td>
+                                    <td class="td2" v-text="p.inmobiliaria"></td>
+                                    <td class="td2" v-text="p.esquema+'%'"></td>
                                     <td class="td2">
-                                        <span v-if="Personal.condicion==1" class="badge badge-success">Activo</span>
-                                        <span v-if="Personal.condicion==0" class="badge badge-danger">Inactivo</span>
-                                    </td>             
+                                        <span v-if="p.condicion==1" class="badge badge-success">Activo</span>
+                                        <span v-if="p.condicion==0" class="badge badge-danger">Inactivo</span>
+                                    </td>
                                 </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page ? pagination.current_page : 1"
+                            :last="pagination.last_page ? pagination.last_page : 1"
+                            @changePage="cambiarPagina">
+                        </Nav>
                     </div>
                     <button @click="manual=1" class="btn btn-sm btn-default">Manual</button>
                 </div>
@@ -107,7 +90,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> 
+                        <i class="fa fa-align-justify"></i>
                         <strong><label v-text="'  Prospectos de: '+ asesor"></label></strong>
                         <!--   Boton Nuevo    -->
                         &nbsp;
@@ -143,10 +126,10 @@
                                             <option value="3">Tipo B</option>
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                            <option value="7">Coacreditado</option>  
+                                            <option value="6">Cancelado</option>
+                                            <option value="7">Coacreditado</option>
                                         </select>
-                                        
+
                                     </div>
                                     <div class="input-group">
                                         <button type="submit" @click="listarProspectos(1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -189,25 +172,16 @@
                                             <td class="td2" v-if="Personal.clasificacion==7" > Coacreditado</td>
                                             <td class="td2" v-text="this.moment(Personal.created_at).locale('es').format('DD/MMM/YYYY')" > Coacreditado</td>
                                         <td class="td2">
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button>
                                         </td>
                                     </tr>
                                 </template>
                             </TableComponent>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination2.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" v-text="page"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                            <Nav :current="pagination2.current_page ? pagination2.current_page : 1"
+                                :last="pagination2.last_page ? pagination2.last_page : 1"
+                                @changePage="cambiarPagina2"
+                            >
+                            </Nav>
                         </div>
                     </template>
                 </div>
@@ -220,33 +194,25 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row" v-if="tipoAccion > 1">
-                        <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" >
-                        </div>
-                    </div>
-                        <div class="form-group row" v-if="tipoAccion > 1">
-                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                        <div class="col-md-9">
-                            <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" >
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion > 1">
-                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                        <div class="col-md-6">
-                            <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" >
-                        </div>
-                    </div>
-                            <div class="form-group row" v-if="tipoAccion > 1">
-                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                        <div class="col-md-4">
-                            <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" >
-                        </div>
-                        <div class="col-md-4" >
-                            <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" >
-                        </div>
-                    </div>
+                    <template v-if="tipoAccion > 1">
+                        <RowModal :clsRow1="'col-md-9'" :label1="'Apellidos'">
+                            <Input :placeholder="'Apellidos'" :max="25" :value="apellidos" v-model="apellidos"/>
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-9'" :label1="'Nombre'">
+                            <Input :placeholder="'Nombre'" :value="nombre" :max="25" v-model="nombre"/>
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-6'" :label1="'Fecha de nacimiento'">
+                            <Input :tipo="'date'" :value="f_nacimiento" v-model="f_nacimiento"/>
+                        </RowModal>
+                        <RowModal :clsRow2="'col-md-4'" :label1="'RFC'" :label2="'Homoclave'">
+                            <Input :max="13" :value="rfc" v-model="rfc" :placeholder="'rfc'" style="text-transform:uppercase"/>
+                            <template v-slot:input2>
+                                <Input :max="3" :value="homoclave" v-model="homoclave" :placeholder="'Homoclave'" style="text-transform:uppercase"/>
+                            </template>
+                        </RowModal>
+
+                    </template>
+
 
                     <div class="form-group row" v-if="tipoAccion > 1">
                         <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
@@ -254,7 +220,6 @@
                             <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
                         </div>
                     </div>
-
                     <div class="form-group row" v-if="tipoAccion > 1">
                         <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                         <div class="col-md-6">
@@ -284,7 +249,7 @@
                             <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
                         </div>
                     </div>
-                
+
                     <div class="form-group row" v-if="tipoAccion > 1">
                         <label class="col-md-3 form-control-label" for="text-input">Celular</label>
                         <div class="col-md-5">
@@ -307,7 +272,7 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
                         <div class="col-md-4">
@@ -404,7 +369,7 @@
             </ModalComponent>
             <!--Fin del modal-->
 
-            <!--Inicio del modal observaciones-->     
+            <!--Inicio del modal observaciones-->
             <ModalComponent v-if="modal3 == 1"
                 :titulo="tituloModal3"
                 @closeModal="cerrarModal3()"
@@ -427,7 +392,7 @@
                                 <td class="td2" v-text="observacion.usuario" ></td>
                                 <td class="td2" v-text="observacion.comentario" ></td>
                                 <td class="td2" v-text="observacion.created_at"></td>
-                            </tr> 
+                            </tr>
                         </template>
                     </TableComponent>
                 </template>
@@ -449,7 +414,7 @@
                             <input type="text" :disabled="tipoAccion==2" v-model="nombreProspecto" class="form-control" placeholder="Apellidos" >
                         </div>
                     </div>
-                        
+
                     <div class="form-group row">
                         <label class="col-md-2 form-control-label" for="text-input">Clasificación</label>
                         <div class="col-md-3">
@@ -459,7 +424,7 @@
                                 <option value="3">Tipo B</option>
                                 <option value="4">Tipo C</option>
                                 <option value="5">Ventas</option>
-                                <option value="6">Cancelado</option>                               
+                                <option value="6">Cancelado</option>
                             </select>
                         </div>
                         <label class="col-md-1 form-control-label" for="text-input">Sexo</label>
@@ -483,7 +448,7 @@
                     </div>
 
                     <div class="form-group row">
-                        
+
                         <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
                         <div class="col-md-4">
                             <select :disabled="tipoAccion==2" class="form-control" v-model="coloniaProspecto" >
@@ -542,26 +507,26 @@
                             <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="11" style="text-transform:uppercase" v-model="nssProspecto" class="form-control" placeholder="Homoclave" >
                         </div>
                     </div>
-                
+
                     <div class="form-group row">
                         <label class="col-md-2 form-control-label" for="text-input">Edo. Civil</label>
                         <div class="col-md-4">
                             <select :disabled="tipoAccion==2" class="form-control" v-model="e_civilProspecto" >
-                                <option value="0">Seleccione</option> 
-                                <option value="1">Casado - separacion de bienes</option> 
-                                <option value="2">Casado - sociedad conyugal</option> 
-                                <option value="3">Divorciado</option> 
-                                <option value="4">Soltero</option> 
+                                <option value="0">Seleccione</option>
+                                <option value="1">Casado - separacion de bienes</option>
+                                <option value="2">Casado - sociedad conyugal</option>
+                                <option value="3">Divorciado</option>
+                                <option value="4">Soltero</option>
                                 <option value="5">Union libre</option>
-                                <option value="6">Viudo</option> 
-                                <option value="7">Otro</option>    
+                                <option value="6">Viudo</option>
+                                <option value="7">Otro</option>
                             </select>
                         </div>
 
                         <label class="col-md-2 form-control-label" for="text-input">Vive en casa</label>
                         <div class="col-md-4">
                             <select :disabled="tipoAccion==2" class="form-control" v-model="tipo_casaProspecto" >
-                                <option value="0">Seleccione</option>  
+                                <option value="0">Seleccione</option>
                                 <option value="De familiares">De familiares</option>
                                 <option value="Prestada">Prestada</option>
                                 <option value="Propia">Propia</option>
@@ -586,7 +551,7 @@
                         <div class="col-md-4">
                             <select :disabled="tipoAccion==2" class="form-control" v-model="publicidad_id" >
                                 <option value="0">Seleccione</option>
-                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                             </select>
                         </div>
                     </div>
@@ -611,7 +576,7 @@
                                     <form  method="post" @submit="formSubmitIne" enctype="multipart/form-data">
                                         <div class="form-group row">
                                             <label class="col-md-3 form-control-label" for="text-input"> <strong>INE</strong> </label>
-                                            
+
                                             <div class="col-md-5">
                                                 <input type="file" class="form-control" v-on:change="onImageChangeIne">
                                             </div>
@@ -626,7 +591,7 @@
                                     <form  method="post" @submit="formSubmitComprobante" enctype="multipart/form-data">
                                         <div class="form-group row">
                                             <label class="col-md-3 form-control-label" for="text-input"> <strong>Comprobante de domicilio</strong> </label>
-                                            
+
                                             <div class="col-md-5">
                                                 <input type="file" class="form-control" v-on:change="onImageChangeComprobante">
                                             </div>
@@ -641,7 +606,7 @@
                                     <form  method="post" @submit="formSubmitCV" enctype="multipart/form-data">
                                         <div class="form-group row">
                                             <label class="col-md-3 form-control-label" for="text-input"> <strong>Curriculum</strong> </label>
-                                            
+
                                             <div class="col-md-5">
                                                 <input type="file" class="form-control" v-on:change="onImageChangeCV">
                                             </div>
@@ -653,14 +618,14 @@
                                 </th></tr>
                             </template>
                         </TableComponent>
-                            
+
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <TableComponent :cabecera="['','Archivo']">
                                     <template v-slot:tbody>
                                         <tr v-if="doc_ine != null">
                                             <td style="width:12%">
-                                                
+
                                             </td>
                                             <td>
                                                 <a v-bind:href="'/asesores/downloadFile/'+ doc_ine"> INE</a>
@@ -668,7 +633,7 @@
                                         </tr>
                                         <tr v-if="doc_comprobante != null">
                                             <td style="width:12%">
-                                                
+
                                             </td>
                                             <td>
                                                 <a v-bind:href="'/asesores/downloadFile/'+ doc_comprobante"> Comprobante de domicilio</a>
@@ -676,7 +641,7 @@
                                         </tr>
                                         <tr v-if="curriculum != null">
                                             <td style="width:12%">
-                                                
+
                                             </td>
                                             <td>
                                                 <a v-bind:href="'/asesores/downloadFile/'+ curriculum"> Curriculum vitae</a>
@@ -698,11 +663,11 @@
             >
                 <template v-slot:body>
                     <div class="modal-body">
-                        <p><strong>El usuario “Descartado”</strong> es un asesor por defecto donde se almacenarán todos los usuarios que se 
+                        <p><strong>El usuario “Descartado”</strong> es un asesor por defecto donde se almacenarán todos los usuarios que se
                             han descartado y por lo tanto no son un buen candidato para una venta.
                         </p>
                         <p>
-                            <strong>Doble clic: </strong>Recuerde que puede hacer doble clic sobre el renglón o el nombre del asesor para ver o 
+                            <strong>Doble clic: </strong>Recuerde que puede hacer doble clic sobre el renglón o el nombre del asesor para ver o
                             editar los clientes y coacreditados que se le han asignado.
                         </p>
                         <p>
@@ -721,11 +686,16 @@
 <script>
     import TableComponent from '../Componentes/TableComponent.vue'
     import ModalComponent from '../Componentes/ModalComponent.vue'
+    import Nav from "../Componentes/NavComponent.vue"
+    import Button from "../Componentes/ButtonComponent.vue";
+    import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
 
     export default {
         components:{
             TableComponent,
-            ModalComponent
+            ModalComponent,
+            Nav, Button,
+            RowModal
         },
         data(){
             return{
@@ -755,7 +725,7 @@
                 ext: 0,
                 celular: 0,
                 email: '',
-                activo: 1, 
+                activo: 1,
                 tipo_vendedor:0,
                 contador:0,
                 archivoINE:'',
@@ -812,7 +782,7 @@
                 errorPersonal : 0,
                 errorMostrarMsjPersonal : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -820,7 +790,7 @@
                     'to' : 0,
                 },
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -828,7 +798,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'personal.id', 
+                criterio : 'personal.id',
                 buscar : '',
                 buscar2 : '',
                 buscar3: '',
@@ -896,7 +866,7 @@
                 return pagesArray;
             }
         },
-        
+
         methods : {
             onImageChangeComprobante(e){
 
@@ -1064,7 +1034,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
             selectColonias(buscar){
                 let me = this;
@@ -1113,7 +1083,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             limpiarBusqueda(){
                 let me=this;
@@ -1131,21 +1101,22 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPersonal(page,buscar,criterio);
+                me.listarPersonal(page,me.buscar,me.criterio);
             },
-             cambiarPagina2(page, buscar,buscar2, b_clasificacion,coacreditados ,criterio,id_vendedor){
+            cambiarPagina2(page){
                 let me = this;
+
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,buscar2,b_clasificacion,coacreditados,criterio,id_vendedor);
+                me.listarProspectos(page,me.buscar2,me.buscar3,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
             },
             mostrarProspectos(nombre,id){
                 this.id_vendedor = id;
@@ -1196,7 +1167,7 @@
                     'esquema': this.esquema,
                     'isr':this.isr,
                     'retencion':this.retencion
-                    
+
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -1225,7 +1196,7 @@
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/clientes/storeObservacion',{
                     'cliente_id':this.prospecto_id,
-                    'observacion':this.observacion                 
+                    'observacion':this.observacion
                 }).then(function (response){
                     me.listarObservacion(1,me.prospecto_id);
                     me.observacion='';
@@ -1330,7 +1301,7 @@
                     me.proceso=false;
                     me.cerrarModal4();
                     me.listarProspectos(1,me.buscar2,me.buscar3,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
-                    
+
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1372,15 +1343,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
             asignarProspecto(asesor,prospecto){
                swal({
@@ -1413,15 +1384,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
             activarPersonal(id){
                swal({
@@ -1452,15 +1423,15 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
+
+
                 } else if (
                     // Read more about handling dismissals
                     result.dismiss === swal.DismissReason.cancel
                 ) {
-                    
+
                 }
-                }) 
+                })
             },
             eliminarPersonal(data =[]){
                 this.id=data['id'];
@@ -1491,7 +1462,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/personal/eliminar', 
+                axios.delete('/personal/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -1514,13 +1485,13 @@
 
                 if(!this.email)
                     this.errorMostrarMsjPersonal.push("El correo no debe ir vacio");
-                
+
                 if(!this.rfc || this.rfc.length<10)
                     this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
-                
+
                 if(!this.celular || this.celular.length<10)
                     this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
-                
+
                 if(!this.direccion)
                     this.errorMostrarMsjPersonal.push("La direccion no puede ir vacio");
 
@@ -1532,7 +1503,7 @@
 
                 if(!this.usuario)
                     this.errorMostrarMsjPersonal.push("Ingresar nombre de usuario");
-                
+
                 if(!this.password)
                     this.errorMostrarMsjPersonal.push("Ingresar contraseña");
 
@@ -1578,7 +1549,7 @@
                 this.tipo_vendedor=0;
                 this.tituloModal2='';
                 this.modal2=0;
-            
+
 
             },
             cerrarModal3(){
@@ -1588,7 +1559,7 @@
                 this.archivoComprobante = '';
                 this.archivoCV = '';
                 this.modalArchivos = 0;
-            
+
             },
             cerrarModal4(){
                 this.modal4=0;
@@ -1700,18 +1671,18 @@
                     case "prospecto":
                     {
                         switch(accion){
-                         
+
                             case 'ver_todo':
                             {
                                 this.modal3 =1;
                                 this.tituloModal3='Consulta Observaciones';
                                 this.prospecto_id = id;
-                                break;  
+                                break;
                             }
-                            
+
                         }
                     }
-                 
+
              }
             },
             abrirModalCambio(data=[]){
@@ -1761,7 +1732,7 @@
                     }
                 }
             }
-            
+
         },
         mounted() {
             this.listarPersonal(1,this.buscar,this.criterio);
@@ -1803,13 +1774,13 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-   margin: 0;  
-} 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+   margin: 0;
+}
 
 
 </style>

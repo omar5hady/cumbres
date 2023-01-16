@@ -797,6 +797,20 @@ class ExpedienteController extends Controller
                     $contrato->pdf = '';
                 }
 
+                $contrato->intereses_terreno = 0;
+
+                if($contrato->modelo == 'Terreno'){
+                    // Se obtienen los pagos del contrato con los interes correspondientes a cada pagare
+                    $pagos = Pago_contrato::join('pagos_lotes','pagos_contratos.id','=','pagos_lotes.pagare_id')
+                                ->select('pagos_lotes.interes_monto')
+                                ->where('pagos_contratos.contrato_id','=',$contrato->folio)->get();
+
+                    foreach ($pagos as $key => $pago) {
+                        // Se suma el total de intereses por cada pagare.
+                        $contrato->intereses_terreno += $pago->interes_monto;
+                    }
+                }
+
                 if(sizeof($lastPagare))
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 else

@@ -10,11 +10,11 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte por modelo de casas &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                        
+
                         <!---->
                     </div>
                     <div class="card-body">
-                        
+
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
@@ -23,7 +23,7 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="b_etapa"> 
+                                    <select class="form-control" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -43,9 +43,9 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <button type="submit" @click="listarReporte(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" 
-                                    v-bind:href="'/reportes/excelReporteModelos?fraccionamiento=' + proyecto + 
-                                    '&etapa=' + b_etapa + 
+                                    <a class="btn btn-success"
+                                    v-bind:href="'/reportes/excelReporteModelos?fraccionamiento=' + proyecto +
+                                    '&etapa=' + b_etapa +
                                     '&fecha1=' + fecha1 + '&fecha2=' + fecha2">
                                         <i class="fa fa-file-text"></i>&nbsp; Excel
                                     </a>
@@ -62,7 +62,7 @@
                                     <tr class="tr2">
                                         <th class="th2"></th>
                                         <th class="th2">Modelo</th>
-                                        <th class="th2">Total de casas</th>
+                                        <th class="th2">,Total de casas</th>
                                         <th class="th2">Individualizadas</th>
                                         <th class="th2">Vendidas Proceso</th>
                                         <th class="th2">Vendidas Terminadas</th>
@@ -73,7 +73,7 @@
                                         <th class="th2">Disponibles</th>
                                         <th class="th2">Inventario</th>
                                         <th class="th2" v-if="meses != 0">Promedio mensual de venta</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,20 +92,31 @@
                                             <td class="td2 text-center" v-text="lote.disponible"></td>
                                             <td class="td2 text-center" v-text="(lote.disponible + lote.vendida)"></td>
                                             <td v-if="meses != 0" class="td2 text-center"> {{((lote.vendida + lote.indiv)/meses).toFixed(2)}} </td>
-                                            
                                         </template>
-                                        
-                                    </tr>                             
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <th class="text-center">{{totalLotes}}</th>
+                                        <th class="text-center">{{individualizadas}}</th>
+                                        <th class="text-center">{{vendidaProc}}</th>
+                                        <th class="text-center">{{vendidaTerm}}</th>
+                                        <th class="text-center">{{vendidas}}</th>
+                                        <th class="text-center">{{total_vendidas}}</th>
+                                        <th class="text-center">{{disponibleProc}}</th>
+                                        <th class="text-center">{{disponibleTerm}}</th>
+                                        <th class="text-center">{{disponible}}</th>
+                                        <th class="text-center">{{disponible+vendidas}}</th>
+                                    </tr>
                                 </tbody>
-                                
-                                
+
+
                             </table>
                         </div>
-                        
+
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
-            </div>          
+            </div>
 
         </main>
 </template>
@@ -118,36 +129,114 @@
     export default {
         data(){
             return{
-               
                 arrayLotes : [],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 meses : 0,
-               
+
                 fecha:'',
                 fecha1:'',
                 fecha2:'',
                 proyecto:'',
                 b_etapa:'',
-                
             }
         },
         computed:{
-            
+            totalLotes: function(){
 
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.total
+                    })
+                return suma;
+            },
+            individualizadas : function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.indiv
+                    })
+                return suma;
+            },
+            vendidaProc : function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.vendidaProc
+                    })
+                return suma;
+            },
+            vendidaTerm : function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.vendidaTerm
+                    })
+                return suma;
+            },
+            vendidas: function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.vendida
+                    })
+                return suma;
+            },
+            total_vendidas: function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.total_vendidas
+                    })
+                return suma;
+            },
+            disponibleProc: function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.disponibleProc
+                    })
+                return suma;
+            },
+            disponibleTerm: function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.disponibleTerm
+                    })
+                return suma;
+            },
+            disponible: function(){
+                let me = this;
+                let suma = 0;
+                if(me.arrayLotes.length)
+                    me.arrayLotes.forEach(el => {
+                        suma += el.disponible
+                    })
+                return suma;
+            },
         },
         methods : {
             /**Metodo para mostrar los registros */
             listarReporte(page){
                 let me = this;
-                var url = '/reportes/reporteModelos?fraccionamiento=' + this.proyecto + '&etapa=' + this.b_etapa + 
+                var url = '/reportes/reporteModelos?fraccionamiento=' + this.proyecto + '&etapa=' + this.b_etapa +
                     '&fecha1=' + this.fecha1 + '&fecha2=' + this.fecha2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.modelos;
 
                     me.meses = respuesta.diferencia;
-                   
+
                     me.fecha = moment().locale('es').format('DD-MMMM-YYYY');
 
                     me.arrayLotes.sort((b, a) => a.total_vendidas - b.total_vendidas);
@@ -161,7 +250,7 @@
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -176,7 +265,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.b_etapa=""
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -188,12 +277,12 @@
                 });
             },
 
-            
+
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-        
+
         },
         mounted() {
             this.listarReporte(1);
@@ -235,7 +324,7 @@
         height: 400px;
     }
 
-    .thead2 .tr2 .th2 { 
+    .thead2 .tr2 .th2 {
         position: sticky;
         top: 0;
         z-index: 10;
@@ -259,5 +348,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>
