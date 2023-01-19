@@ -1,6 +1,6 @@
 <template>
   <div class="modal mostrar animated fadeIn"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-primary" :class="size"    role="document"> 
+            <div class="modal-dialog modal-primary" :class="size"    role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" v-text="titulo"></h5>

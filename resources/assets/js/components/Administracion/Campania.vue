@@ -1,210 +1,150 @@
 <template>
-            <main class="main">
-            <!-- Breadcrumb -->
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
-            </ol>
-            <div class="container-fluid">
-                <!-- Ejemplo de tabla Listado -->
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Campañas publicitarias
-                        <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
-                        <!---->
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <input type="text" v-model="buscar" @keyup.enter="listarCampania(1)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarCampania(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
+    <main class="main">
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
+        </ol>
+        <div class="container-fluid">
+            <!-- Ejemplo de tabla Listado -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Campañas publicitarias
+                    <Button :btnClass="'btn-secondary'" :icon="'icon-plus'" @click="abrirModal('registrar')">
+                        Nuevo
+                    </Button>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" v-model="buscar" @keyup.enter="listarCampania(1)" class="form-control" placeholder="Texto a buscar">
+                                <Button   :icon="'fa fa-search'" @click="listarCampania(1)">
+                                    Buscar
+                                </Button>
                             </div>
                         </div>
-                        <TableComponent :cabecera="['Opciones','Campaña','Medio Digital','Inicio','Termino','Presupuesto']">
-                            <template v-slot:tbody>
-                                <tr v-for="campania in arrayCampanias.data" :key="campania.id">
-                                    <td class="td2" style="width:15%">
-                                        <button title="Editar" type="button" @click="abrirModal('actualizar',campania)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarCampania(campania)">
-                                            <i class="icon-trash"></i>
-                                        </button>
+                    </div>
+                    <TableComponent :cabecera="['Opciones','Campaña','Medio Digital','Inicio','Termino','Presupuesto']">
+                        <template v-slot:tbody>
+                            <tr v-for="campania in arrayCampanias.data" :key="campania.id">
+                                <td class="td2" style="width:15%">
+                                    <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'" title="Editar"
+                                        @click="abrirModal('actualizar',campania)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'" title="Eliminar"
+                                        @click="eliminarCampania(campania)"
+                                    ></Button>
+                                </td>
+                                <td class="td2" v-text="campania.nombre_campania"></td>
+                                <td class="td2" v-text="campania.medio_digital"></td>
+                                <td class="td2" v-text="this.moment(campania.fecha_ini).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2" v-text="this.moment(campania.fecha_fin).locale('es').format('DD/MMM/YYYY')"></td>
+                                <td class="td2" v-text="'$'+$root.formatNumber(campania.presupuesto)"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <Nav :current="arrayCampanias.current_page"
+                        :last="arrayCampanias.last_page"
+                        @changePage="listarCampania"
+                    ></Nav>
+                </div>
+            </div>
+            <!-- Fin ejemplo de tabla Listado -->
+        </div>
+
+        <!--Inicio del modal agregar/actualizar-->
+        <ModalComponent v-if="modal"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <RowModal :clsRow1="'col-md-9'" :label1="'Nombre de la campaña'">
+                    <input type="text" v-model="nombre" class="form-control" placeholder="Campaña">
+                </RowModal>
+                <RowModal :label1="'Presupuesto'" :clsRow2="'col-md-4'">
+                    <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                v-model="presupuesto" class="form-control" placeholder="Presupuesto">
+                    <template v-slot:input2>
+                        <p class="form-control"> ${{ $root.formatNumber(presupuesto) }}</p>
+                    </template>
+                </RowModal>
+                <RowModal :clsRow1="'col-md-3'" :label1="'Fecha de inicio'" :clsRow2="'col-md-3'" :label2="'Fin'">
+                    <input type="date" v-model="fecha_ini" class="form-control" placeholder="Fecha de inicio">
+                    <template v-slot:input2>
+                        <input type="date" v-model="fecha_fin" class="form-control" placeholder="Fecha de finalización">
+                    </template>
+                </RowModal>
+
+                <template v-if="tipoAccion==1">
+                    <RowModal :clsRow1="'col-md-6'" :label1="'Medio publicitario'" :clsRow2="'col-md-3'">
+                        <input type="text" name="city" list="cityname" class="form-control" v-model="medio_digital" @keyup.enter="addMedio(medio_digital)" placeholder="Medio de publicidad">
+                        <datalist id="cityname">
+                            <option value="">Seleccione</option>
+                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.nombre" v-text="medios.nombre"></option>
+                        </datalist>
+                        <template v-slot:input2>
+                            <Button :btnClass="'btn-success'" :icon="'icon-plus'" title="Añadir"
+                                @click="addMedio(medio_digital)"
+                            ></Button>
+                        </template>
+                    </RowModal>
+
+                    <div>
+                        <div class="modal-header" v-if="medios">
+                            <h5 class="modal-title"> Medios elegidos </h5>
+                        </div>
+                        <table class="table table-bordered table-striped table-sm">
+                            <tbody>
+                                <tr v-for="(medioD,index) in medios" :key="medioD">
+                                    <td style="width:25%">
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"
+                                            @click="quitarMedio(index)" title="Quitar medio publicitario"
+                                        ></Button>
                                     </td>
-                                    <td class="td2" v-text="campania.nombre_campania"></td>
-                                    <td class="td2" v-text="campania.medio_digital"></td>
-                                    <td class="td2" v-text="this.moment(campania.fecha_ini).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <td class="td2" v-text="this.moment(campania.fecha_fin).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <td class="td2" v-text="'$'+$root.formatNumber(campania.presupuesto)"></td>
+                                    <td v-text="medioD" ></td>
                                 </tr>
-                            </template>
-                        </TableComponent>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item">
-                                            <a class="page-link" href="#" @click="listarCampania(1)">Inicio</a>
-                                        </li>
-                                        <li v-if="arrayCampanias.current_page-3 >= 1">
-                                            <a class="page-link" href="#"
-                                            @click="listarCampania(arrayCampanias.current_page-3)"
-                                            v-text="arrayCampanias.current_page-3" ></a>
-                                        </li>
-                                        <li v-if="arrayCampanias.current_page-2 >= 1">
-                                            <a class="page-link" href="#"
-                                            @click="listarCampania(arrayCampanias.current_page-2)"
-                                            v-text="arrayCampanias.current_page-2" ></a>
-                                        </li>
-                                        <li v-if="arrayCampanias.current_page-1 >= 1">
-                                            <a class="page-link" href="#"
-                                            @click="listarCampania(arrayCampanias.current_page-1)"
-                                            v-text="arrayCampanias.current_page-1" ></a>
-                                        </li>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
 
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#" v-text="arrayCampanias.current_page" ></a>
-                                        </li>
+                <template v-if="tipoAccion==2">
+                    <RowModal :clsRow1="'col-md-6'" :label1="'Medio publicitario'">
+                        <input type="text" name="city" list="cityname" class="form-control" v-model="medio_digital" laceholder="Medio de publicidad">
+                        <datalist id="cityname">
+                            <option value="">Seleccione</option>
+                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.nombre" v-text="medios.nombre"></option>
+                        </datalist>
+                    </RowModal>
+                </template>
 
-                                        <li v-if="arrayCampanias.current_page+1 <= arrayCampanias.last_page">
-                                            <a class="page-link" href="#"
-                                            @click="listarCampania(arrayCampanias.current_page+1)"
-                                            v-text="arrayCampanias.current_page+1" ></a>
-                                        </li>
-                                        <li v-if="arrayCampanias.current_page+2 <= arrayCampanias.last_page">
-                                            <a class="page-link" href="#"
-                                            @click="listarCampania(arrayCampanias.current_page+2)"
-                                            v-text="arrayCampanias.current_page+2" ></a>
-                                        </li>
-                                        <li v-if="arrayCampanias.current_page+3 <= arrayCampanias.last_page">
-                                            <a class="page-link" href="#"
-                                            @click="listarCampania(arrayCampanias.current_page+3)"
-                                            v-text="arrayCampanias.current_page+3" ></a>
-                                        </li>
-
-                                        <li class="page-item">
-                                            <a class="page-link" href="#" @click="listarCampania(arrayCampanias.last_page)">Ultimo</a>
-                                        </li>
-                            </ul>
-                        </nav>
+                <div v-show="errorCampania" class="form-group row div-error">
+                    <div class="text-center text-error">
+                        <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
                     </div>
                 </div>
-                <!-- Fin ejemplo de tabla Listado -->
-            </div>
-
-            <!--Inicio del modal agregar/actualizar-->
-            <ModalComponent v-if="modal"
-                :titulo="tituloModal"
-                @closeModal="cerrarModal()"
-            >
-                <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Nombre de la campaña</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="nombre" class="form-control" placeholder="Campaña">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Presupuesto</label>
-                        <div class="col-md-4">
-                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
-                                 v-model="presupuesto" class="form-control" placeholder="Presupuesto">
-                        </div>
-                        <div class="col-md-4">
-                            <p class="form-control"> ${{ $root.formatNumber(presupuesto) }}</p>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
-                        <div class="col-md-3">
-                            <input type="date" v-model="fecha_ini" class="form-control" placeholder="Fecha de inicio">
-                        </div>
-                        <label class="col-md-3 form-control-label" for="text-input">Fecha de finalización</label>
-                        <div class="col-md-3">
-                            <input type="date" v-model="fecha_fin" class="form-control" placeholder="Fecha de inicio">
-                        </div>
-                    </div>
-
-                    <template v-if="tipoAccion==1">
-                        <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Medio publicitario</label>
-                            <div class="col-md-6">
-                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_digital" @keyup.enter="addMedio(medio_digital)" placeholder="Medio de publicidad">
-                                <datalist id="cityname">
-                                    <option value="">Seleccione</option>
-                                    <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.nombre" v-text="medios.nombre"></option>
-                                </datalist>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="button" class="btn btn-success btn-sm" @click="addMedio(medio_digital)">
-                                    <i class="icon-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="modal-header" v-if="medios">
-                                <h5 class="modal-title"> Medios elegidos </h5>
-                            </div>
-                            <table class="table table-bordered table-striped table-sm">
-
-                                <tbody>
-                                    <tr v-for="(medioD,index) in medios" :key="medioD">
-                                        <td style="width:25%">
-                                            <button type="button" class="btn btn-danger btn-sm" @click="quitarMedio(index)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="medioD" ></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </template>
-
-                    <template v-if="tipoAccion==2">
-                        <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Medio publicitario</label>
-                            <div class="col-md-6">
-                                <input type="text" name="city" list="cityname" class="form-control" v-model="medio_digital" laceholder="Medio de publicidad">
-                                <datalist id="cityname">
-                                    <option value="">Seleccione</option>
-                                    <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.nombre" v-text="medios.nombre"></option>
-                                </datalist>
-                            </div>
-                        </div>
-                    </template>
-
-
-                    <div v-show="errorCampania" class="form-group row div-error">
-                        <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsj" :key="error" v-text="error">
-
-                            </div>
-                        </div>
-                    </div>
-                </template>
-                <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCampania()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCampania()">Actualizar</button>
-                </template>
-            </ModalComponent>
-            <!--Fin del modal-->
-        </main>
+            </template>
+            <template v-slot:buttons-footer>
+                <Button   v-if="tipoAccion==1" :icon="'icon-check'" @click="registrarCampania()">Guardar</Button>
+                <Button   v-if="tipoAccion==2" :icon="'icon-check'" @click="actualizarCampania()">Guardar cambios</Button>
+            </template>
+        </ModalComponent>
+        <!--Fin del modal-->
+    </main>
 </template>
 
 <script>
     import ModalComponent from '../Componentes/ModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue'
+    import Button from '../Componentes/ButtonComponent.vue'
+    import Nav from '../Componentes/NavComponent.vue'
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Button, Nav, RowModal
         },
         data (){
             return {

@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Notarias
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('notaria','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-secondary'" :icon="'icon-plus'" @click="abrirModal('notaria','registrar')">
+                            Nuevo
+                        </Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -27,7 +27,7 @@
                                     </select>
 
                                     <input type="text"  v-model="buscar" @keyup.enter="listarNotaria(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarNotaria(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :icon="'fa fa-search'" click="listarNotaria(1,buscar,criterio)">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -35,12 +35,12 @@
                             <template v-slot:tbody>
                                 <tr v-for="notaria in arrayNotaria" :key="notaria.id">
                                     <td class="td2">
-                                        <button type="button" @click="abrirModal('notaria','actualizar',notaria)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarNotaria(notaria)">
-                                        <i class="icon-trash"></i>
-                                        </button>
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar" :icon="'icon-pencil'"
+                                            @click="abrirModal('notaria','actualizar',notaria)"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar" :icon="'icon-trash'"
+                                            @click="eliminarNotaria(notaria)"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="notaria.notaria"></td>
                                     <td class="td2" v-text="notaria.titular"></td>
@@ -49,23 +49,13 @@
                                     <td class="td2" v-text="notaria.colonia"></td>
                                     <td class="td2" v-text="notaria.estado"></td>
                                     <td class="td2" v-text="notaria.ciudad"></td>
-                                </tr>       
+                                </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page"
+                            :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -76,105 +66,73 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Notaria</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="notaria" class="form-control" placeholder="Nombre de la notaria">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Titular</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="titular" class="form-control" placeholder="Nombre del titular">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input" >Telefono 1</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="telefono_1" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono 1">
-                        </div>
-                        <label class="col-md-3 form-control-label"  for="text-input">Telefono 2</label>
-                        <div class="col-md-3">
+                    <RowModal :label1="'Notaria'">
+                        <input type="text" v-model="notaria" class="form-control" placeholder="Nombre de la notaria">
+                    </RowModal>
+                    <RowModal :label1="'Titular'" :clsRow1="'col-md-7'">
+                        <input type="text" v-model="titular" class="form-control" placeholder="Nombre del titular">
+                    </RowModal>
+                    <RowModal :label1="'Teléfono 1'" :clsRow2="'col-md-4'" :label2="'Teléfono 2'">
+                        <input type="text" v-model="telefono_1" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono 1">
+                        <template v-slot:input2>
                             <input type="text" v-model="telefono_2" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono 2">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Telefono 3</label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="telefono_3" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono 3">
-                        </div>
-                        <label class="col-md-3 form-control-label" for="text-input">Telefono 4</label>
-                        <div class="col-md-3">
+                        </template>
+                    </RowModal>
+                    <RowModal :label1="'Teléfono 3'" :clsRow2="'col-md-4'" :label2="'Teléfono 4'">
+                        <input type="text" v-model="telefono_3" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono 3">
+                        <template v-slot:input2>
                             <input type="text" v-model="telefono_4" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono 4">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                        <div class="col-md-4">
-                            <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
-                        </div>
-                        <label class="col-md-2 form-control-label" for="text-input">Codigo postal</label>
-                        <div class="col-md-3">
+                        </template>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-6'" :label1="'Dirección'">
+                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                    </RowModal>
+                    <RowModal :label1="'Colonia'" :clsRow2="'col-md-4'" :label2="'Código postal'">
+                        <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                        <template v-slot:input2>
                             <input type="text" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" class="form-control" placeholder="Codigo postal">
-                        </div>
-                    </div>
+                        </template>
+                    </RowModal>
+                    <RowModal :label1="'Estado'" :clsRow1="'col-md-8'">
+                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                            <option value="San Luis Potosí">San Luis Potosí</option>
+                            <option value="Baja California">Baja California</option>
+                            <option value="Baja California Sur">Baja California Sur</option>
+                            <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                            <option value="Colima">Colima</option>
+                            <option value="Chiapas">Chiapas</option>
+                            <option value="Chihuahua">Chihuahua</option>
+                            <option value="Ciudad de México">Ciudad de México</option>
+                            <option value="Durango">Durango</option>
+                            <option value="Guanajuato">Guanajuato</option>
+                            <option value="Guerrero">Guerrero</option>
+                            <option value="Hidalgo">Hidalgo</option>
+                            <option value="Jalisco">Jalisco</option>
+                            <option value="México">México</option>
+                            <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                            <option value="Morelos">Morelos</option>
+                            <option value="Nayarit">Nayarit</option>
+                            <option value="Nuevo León">Nuevo León</option>
+                            <option value="Oaxaca">Oaxaca</option>
+                            <option value="Puebla">Puebla</option>
+                            <option value="Querétaro">Querétaro</option>
+                            <option value="Quintana Roo">Quintana Roo</option>
+                            <option value="Sinaloa">Sinaloa</option>
+                            <option value="Sonora">Sonora</option>
+                            <option value="Tabasco">Tabasco</option>
+                            <option value="Tamaulipas">Tamaulipas</option>
+                            <option value="Tlaxcala">Tlaxcala</option>
+                            <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                            <option value="Yucatán">Yucatán</option>
+                            <option value="Zacatecas">Zacatecas</option>
+                        </select>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-8'" :label1="'Ciudad'">
+                        <select class="form-control" v-model="ciudad">
+                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                        </select>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
-                                <option value="San Luis Potosí">San Luis Potosí</option>
-                                <option value="Baja California">Baja California</option>
-                                <option value="Baja California Sur">Baja California Sur</option>
-                                <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
-                                <option value="Colima">Colima</option>
-                                <option value="Chiapas">Chiapas</option>
-                                <option value="Chihuahua">Chihuahua</option>
-                                <option value="Ciudad de México">Ciudad de México</option>
-                                <option value="Durango">Durango</option>
-                                <option value="Guanajuato">Guanajuato</option>
-                                <option value="Guerrero">Guerrero</option>
-                                <option value="Hidalgo">Hidalgo</option>
-                                <option value="Jalisco">Jalisco</option>
-                                <option value="México">México</option>
-                                <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
-                                <option value="Morelos">Morelos</option>
-                                <option value="Nayarit">Nayarit</option>
-                                <option value="Nuevo León">Nuevo León</option>
-                                <option value="Oaxaca">Oaxaca</option>
-                                <option value="Puebla">Puebla</option>
-                                <option value="Querétaro">Querétaro</option>
-                                <option value="Quintana Roo">Quintana Roo</option>
-                                <option value="Sinaloa">Sinaloa</option>
-                                <option value="Sonora">Sonora</option>
-                                <option value="Tabasco">Tabasco</option>
-                                <option value="Tamaulipas">Tamaulipas</option>
-                                <option value="Tlaxcala">Tlaxcala</option>
-                                <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
-                                <option value="Yucatán">Yucatán</option>
-                                <option value="Zacatecas">Zacatecas</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="ciudad">
-                                <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                            </select>
-                        </div>
-                    </div>
-                        
-                    
                     <!-- Div para mostrar los errores que mande validerNotaria -->
                     <div v-show="errorNotaria" class="form-group row div-error">
                         <div class="text-center text-error">
@@ -183,8 +141,8 @@
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarNotaria()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarNotaria()">Actualizar</button>
+                    <Button :icon="'icon-check'" v-if="tipoAccion==1" @click="registrarNotaria()">Guardar</Button>
+                    <Button :icon="'icon-check'" v-if="tipoAccion==2" @click="actualizarNotaria()">Guardar cambios</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -198,11 +156,15 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import Button from '../Componentes/ButtonComponent.vue'
+import Nav from '../Componentes/NavComponent.vue'
+import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Nav, Button, RowModal
         },
         data(){
             return{
@@ -226,7 +188,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorNotaria : 0,
                 errorMostrarMsjNotaria : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -234,7 +196,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'notaria', 
+                criterio : 'notaria',
                 buscar : '',
                 arrayCiudades : []
             }
@@ -293,12 +255,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarNotaria(page,buscar,criterio);
+                me.listarNotaria(page,me.buscar,me.criterio);
             },
             /**Metodo para registrar  */
             registrarNotaria(){
@@ -342,12 +304,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
             actualizarNotaria(){
-              
+
                 if(this.validarNotaria()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-               
+
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/notaria/actualizar',{
@@ -364,7 +326,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'cp' : this.cp,
                     'id' : this.id
                 }).then(function (response){
-                    
+
                     me.cerrarModal();
                     me.listarNotaria(1,'','notaria');
                     //window.alert("Cambios guardados correctamente");
@@ -381,7 +343,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             },
             eliminarNotaria(data =[]){
                 this.id=data['id'];
-                
+
                 //console.log(this.fraccionamiento_id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -396,7 +358,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/notaria/eliminar', 
+                axios.delete('/notaria/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -456,7 +418,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 this.errorNotaria = 0;
                 this.errorMostrarMsjNotaria = [];
             },
-            
+
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){

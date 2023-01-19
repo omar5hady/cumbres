@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
 
 class TwilioSmsController extends Controller
 {
     // Herramienta para administracion de mensajes
     public function sendMessage(Request $request){
-        $this->createSMS("SMS Prueba desde SII Cumbres", "+524444605232");
+        Mail::to('0m4r5h4dy@gmail.com')->send(new NotificationReceived('OSO PARDO'));
+        Mail::to('omar.ramos@grupocumbres.com')->send(new NotificationReceived('OSO PARDO'));
+        Mail::to('omar_vazquez_7@hotmail.com')->send(new NotificationReceived('OSO PARDO'));
+        //$this->createSMS("SMS Prueba desde SII Cumbres", "+524444605232");
     }
 
     private function createSMS($message, $recipients)

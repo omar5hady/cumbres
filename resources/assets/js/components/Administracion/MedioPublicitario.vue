@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Medios Publicitarios
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('medio','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-secondary'" :icon="'icon-plus'"
+                            @click="abrirModal('registrar')">Nuevo
+                        </Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -20,7 +20,9 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <input type="text" v-model="buscar" @keyup.enter="listarMedios(1,buscar,'nombre')" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarMedios(1,buscar,'nombre')" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :icon="'fa fa-search'"
+                                        @click="listarMedios(1,buscar,'nombre')">Buscar
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -28,31 +30,22 @@
                             <template v-slot:tbody>
                                 <tr v-for="medio in arrayMedios" :key="medio.id">
                                     <td class="td2" style="width:15%">
-                                        <button title="Editar" type="button" @click="abrirModal('medio','actualizar',medio)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                        </button>  
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarMedio(medio)">
-                                            <i class="icon-trash"></i>
-                                        </button>                                       
+                                        <Button title="Editar" :btnClass="'btn-warning'" :icon="'icon-pencil'" :size="'btn-sm'"
+                                            @click="abrirModal('actualizar',medio)"
+                                        ></Button>
+                                        <Button title="Eliminar" :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'"
+                                            @click="eliminarMedio(medio)"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="medio.nombre"></td>
-                                </tr>   
+                                </tr>
                             </template>
 
                         </TableComponent>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page"
+                            :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -63,24 +56,19 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                   <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Medio Publicitario</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="nombre" class="form-control" placeholder="Medio de publicidad">
-                        </div>
-                    </div>
-                    
+                    <RowModal :clsRow1="'col-md-7'" :label1="'Medio publicitario'">
+                        <input type="text" v-model="nombre" class="form-control" placeholder="Medio de publicidad">
+                    </RowModal>
+
                     <div v-show="errorPublicidad" class="form-group row div-error">
                         <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjPublicidad" :key="error" v-text="error">
-
-                            </div>
+                            <div v-for="error in errorMostrarMsjPublicidad" :key="error" v-text="error"/>
                         </div>
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarMedio()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarMedio()">Actualizar</button>
+                    <Button v-if="tipoAccion==1" :icon="'icon-check'" @click="registrarMedio()">Guardar</Button>
+                    <Button v-if="tipoAccion==2" :icon="'icon-check'" @click="actualizarMedio()">Guardar cambios</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -90,11 +78,15 @@
 <script>
     import ModalComponent from '../Componentes/ModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue'
+    import Nav from '../Componentes/NavComponent.vue'
+    import Button from '../Componentes/ButtonComponent.vue'
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Nav, Button, RowModal
         },
         data (){
             return {
@@ -129,23 +121,23 @@
                 if(!this.pagination.to) {
                     return [];
                 }
-                
-                var from = this.pagination.current_page - this.offset; 
+
+                var from = this.pagination.current_page - this.offset;
                 if(from < 1) {
                     from = 1;
                 }
 
-                var to = from + (this.offset * 2); 
+                var to = from + (this.offset * 2);
                 if(to >= this.pagination.last_page){
                     to = this.pagination.last_page;
-                }  
+                }
 
                 var pagesArray = [];
                 while(from <= to) {
                     pagesArray.push(from);
                     from++;
                 }
-                return pagesArray;             
+                return pagesArray;
 
             }
         },
@@ -162,12 +154,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page,buscar,criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarMedios(page,buscar,criterio);
+                me.listarMedios(page,me.buscar,me.criterio);
             },
             /**Metodo para registrar  */
             registrarMedio(){
@@ -242,7 +234,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/medio_publicitario/eliminar', 
+                axios.delete('/medio_publicitario/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -277,31 +269,26 @@
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(medio, accion,data =[]){
-                switch(medio){
-                    case "medio":
+            abrirModal(accion,data =[]){
+                switch(accion){
+                    case 'registrar':
                     {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Medio Publicitario';
-                                this.departamento ='';
-                                this.user_alta ='1';
-                                this.tipoAccion = 1;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar Medio Publicitario';
-                                this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.nombre=data['nombre'];
-                                break;
-                            }
-                        }
+                        this.modal = 1;
+                        this.tituloModal = 'Registrar Medio Publicitario';
+                        this.departamento ='';
+                        this.user_alta ='1';
+                        this.tipoAccion = 1;
+                        break;
+                    }
+                    case 'actualizar':
+                    {
+                        //console.log(data);
+                        this.modal =1;
+                        this.tituloModal='Actualizar Medio Publicitario';
+                        this.tipoAccion=2;
+                        this.id=data['id'];
+                        this.nombre=data['nombre'];
+                        break;
                     }
                 }
             }
@@ -311,7 +298,7 @@
         }
     }
 </script>
-<style>    
+<style>
     .div-error{
         display: flex;
         justify-content: center;
