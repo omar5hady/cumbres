@@ -10,9 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Cuentas
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-secondary'" :icon="'icon-plus'" @click="abrirModal('registrar')">Nuevo</Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -30,7 +28,7 @@
                                         <option v-for="bancos in arrayBancos" @keyup.enter="listarCuentas(1,buscar,criterio)" :key="bancos.id" :value="bancos.nombre" v-text="bancos.nombre"></option>
                                     </select>
                                     <input type="text" v-else v-model="buscar" @keyup.enter="listarCuentas(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarCuentas(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="listarCuentas(1,buscar,criterio)">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -38,34 +36,23 @@
                             <template v-slot:tbody>
                                 <tr v-for="cuenta in arrayCuentas" :key="cuenta.id">
                                     <td class="td2" style="width:20%">
-                                        <button type="button" @click="abrirModal('actualizar',cuenta)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarCuenta(cuenta)">
-                                        <i class="icon-trash"></i>
-                                        </button>
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('actualizar',cuenta)" title="Actualizar"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"
+                                            @click="eliminarCuenta(cuenta)" title="Eliminar"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="cuenta.num_cuenta"></td>
                                     <td class="td2" v-text="cuenta.sucursal"></td>
                                     <td class="td2" v-text="cuenta.banco"></td>
                                     <td class="td2" v-text="cuenta.empresa"></td>
-                                </tr>    
+                                </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page" :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -76,36 +63,24 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input"># Cuenta</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="num_cuenta" maxlength="50" class="form-control" placeholder="Numero de cuenta">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Sucursal</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="sucursal" maxlength="50" class="form-control" placeholder="Sucursal">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Banco</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="banco">
-                                <option value="">Seleccione</option>
-                                <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="empresa" >
-                                <option value="">Empresa</option>
-                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal :clsRow1="'col-md-5'" :label1="'# Cuenta'">
+                        <input type="text" v-model="num_cuenta" maxlength="50" class="form-control" placeholder="Numero de cuenta">
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-5'" :label1="'Sucursal'">
+                        <input type="text" v-model="sucursal" maxlength="50" class="form-control" placeholder="Sucursal">
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-6'" :label1="'Banco'">
+                        <select class="form-control" v-model="banco">
+                            <option value="">Seleccione</option>
+                            <option v-for="banco in arrayBancos" :key="banco.id" :value="banco.nombre" v-text="banco.nombre"></option>
+                        </select>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-6'" :label1="'Empresa'">
+                        <select class="form-control" v-model="empresa" >
+                            <option value="">Empresa</option>
+                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                        </select>
+                    </RowModal>
                     <!-- Div para mostrar los errores que mande validerDepartamento -->
                     <div v-show="errorCuenta" class="form-group row div-error">
                         <div class="text-center text-error">
@@ -115,13 +90,11 @@
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCuenta()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCuenta()">Actualizar</button>
+                    <Button v-if="tipoAccion==1" :btnClass="'btn-primary'" :icon="'icon-check'" @click="registrarCuenta()">Guardar</Button>
+                    <Button v-if="tipoAccion==2" :btnClass="'btn-primary'" :icon="'icon-check'" @click="actualizarCuenta()">Guardar cambios</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
-            
-
         </main>
 </template>
 
@@ -132,11 +105,15 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import Nav from '../Componentes/NavComponent.vue'
+import Button from '../Componentes/ButtonComponent.vue'
+import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Nav, Button, RowModal
         },
         data(){
             return{
@@ -155,7 +132,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorCuenta : 0,
                 errorMostrarMsjCuenta : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -163,7 +140,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'num_cuenta', 
+                criterio : 'num_cuenta',
                 buscar : ''
             }
         },
@@ -209,12 +186,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarCuentas(page,buscar,criterio);
+                me.listarCuentas(page,me.buscar,me.criterio);
             },
             getEmpresa(){
                 let me = this;
@@ -326,7 +303,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/cuenta/eliminar', 
+                axios.delete('/cuenta/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -349,7 +326,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                 if(!this.sucursal) //Si la variable departamento esta vacia
                     this.errorMostrarMsjCuenta.push("La sucursal no puede ir vacia.");
-                
+
                 if(this.banco == '') //Si la variable departamento esta vacia
                     this.errorMostrarMsjCuenta.push("El banco no puede ir vacio.");
 
@@ -422,7 +399,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
     }
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
     .div-error{
         display:flex;
         justify-content: center;

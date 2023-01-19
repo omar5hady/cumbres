@@ -8,23 +8,19 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify" v-if="verificadora == 0"></i> 
-                        <button type="button" v-if="verificadora == 0" @click="verificadora = 1" class="btn btn-primary">
-                            Empresas
-                        </button>
-                        <button type="button" v-if="verificadora == 1" @click="verificadora = 0" class="btn btn-success">
-                            Empresas verificadoras
-                        </button>
+                        <i class="fa fa-align-justify" v-if="verificadora == 0"></i>
+                        <Button v-if="verificadora == 0" @click="verificadora = 1">Empresas</Button>
+                        <Button v-if="verificadora == 1" @click="verificadora = 0">Empresas verificadoras</Button>
                         <!--   Boton Nuevo    -->
-                        <button type="button" v-if="verificadora == 0" @click="abrirModal('empresa','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nueva Empresa
-                        </button>
-                        <!---->
+                        <Button :icon="'icon-plus'" :btnClass="'btn-secondary'"
+                            v-if="verificadora == 0" @click="abrirModal('empresa','registrar')">
+                            Nueva Empresa
+                        </Button>
                         <!--   Boton Nuevo    -->
-                        <button type="button" v-if="verificadora == 1" @click="abrirModal('empresaVerif','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nueva Empresa Verificadora
-                        </button>
-                        <!---->
+                        <Button :icon="'icon-plus'" :btnClass="'btn-secondary'"
+                            v-if="verificadora == 1" @click="abrirModal('empresaVerif','registrar')">
+                            Nueva Empresa Verificadora
+                        </Button>
                     </div>
                     <div class="card-body" v-if="verificadora == 0">
                         <div class="form-group row">
@@ -34,46 +30,34 @@
                                     <select class="form-control col-md-5" v-model="criterio">
                                       <option value="nombre">Empresa</option>
                                     </select>
-                                    
+
                                     <input type="text" v-model="buscar" @keyup.enter="listarEmpresa(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarEmpresa(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :icon="'fa fa-search'" @click="listarEmpresa(1,buscar,criterio)">Buscar</Button>
                                 </div>
                             </div>
                         </div>
                         <TableComponent :cabecera="['Opciones','Empresa','Direccion','Colonia','CP','Teléfono']">
                             <template v-slot:tbody>
                                 <tr v-for="empresa in arrayEmpresa" :key="empresa.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('empresa','actualizar',empresa)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresa(empresa)">
-                                        <i class="icon-trash"></i>
-                                        </button>
+                                    <td class="td2">
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('empresa','actualizar',empresa)" title="Editar"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"
+                                            @click="eliminarEmpresa(empresa)" title="Eliminar"
+                                        ></Button>
                                     </td>
                                     <td v-text="empresa.nombre"></td>
                                     <td v-text="empresa.direccion"></td>
                                     <td v-text="empresa.colonia"></td>
                                     <td v-text="empresa.cp"></td>
                                     <td v-text="empresa.telefono"></td>
-                                </tr>       
+                                </tr>
                             </template>
                         </TableComponent>
-
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page" :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
 
                     <div class="card-body" v-if="verificadora == 1">
@@ -81,7 +65,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <input type="text" v-model="buscar" @keyup.enter="listarEmpresaVerificadora(1)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarEmpresaVerificadora(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :icon="'fa fa-search'" @click="listarEmpresaVerificadora(1)">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -89,80 +73,55 @@
                             <template v-slot:tbody>
                                 <tr v-for="empresa in arrayEmpresaVerificadora" :key="empresa.id">
                                     <td class="td2">
-                                        <button type="button" @click="abrirModal('empresaVerif','actualizar',empresa)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresaVerif(empresa)">
-                                        <i class="icon-trash"></i>
-                                        </button>
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" @click="abrirModal('empresaVerif','actualizar',empresa)"
+                                            :icon="'icon-pencil'"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" @click="eliminarEmpresaVerif(empresa)"
+                                            :icon="'icon-trash'"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="empresa.empresa"></td>
                                     <td class="td2" v-text="empresa.contacto"></td>
                                     <td class="td2" v-text="empresa.telefono"></td>
-                                </tr>     
+                                </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination2.current_page"
+                            :last="pagination2.last_page"
+                            @changePage="cambiarPagina2"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            
+
             <!--Inicio del modal agregar/actualizar-->
             <ModalComponent v-if="modal"
                 :titulo="tituloModal"
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de la empresa">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion < 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="direccion" class="form-control" placeholder="Calle">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion > 2">
-                        <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion < 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
-                        <div class="col-md-6">
-                            <input type="text" maxlength="5" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion < 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                        <div class="col-md-6">
+                    <RowModal :clsRow1="'col-md-9'" :label1="'Empresa'">
+                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de la empresa">
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-9'" :label1="'Dirección'" v-if="tipoAccion < 3">
+                        <input type="text" v-model="direccion" class="form-control" placeholder="Calle">
+                    </RowModal>
+                    <RowModal v-if="tipoAccion > 2" :clsRow1="'col-md-9'" :label1="'Contacto'">
+                        <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
+                    </RowModal>
+                    <template v-if="tipoAccion < 3">
+                        <RowModal :label1="'Codigo Postal'">
+                            <input type="text" v-on:keypress="$root.isNumber($event)" maxlength="5"
+                                v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
+                        </RowModal>
+                        <RowModal :label1="'Colonia'">
                             <select class="form-control" v-model="colonia">
                                 <option value="0">Seleccione</option>
-                                <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                <option v-for="c in arrayColonias" :key="c.colonia" :value="c.colonia" v-text="c.colonia"></option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion < 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                        <div class="col-md-9">
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-9'" :label1="'Estado'">
                             <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
                                 <option value="San Luis Potosí">San Luis Potosí</option>
                                 <option value="Baja California">Baja California</option>
@@ -195,43 +154,33 @@
                                 <option value="Yucatán">Yucatán</option>
                                 <option value="Zacatecas">Zacatecas</option>
                             </select>
-                            <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion < 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                        <div class="col-md-9">
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-9'" :label1="'Ciudad'">
                             <select class="form-control" v-model="ciudad">
-                                <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                <option v-for="c in arrayCiudades" :key="c.municipio" :value="c.municipio" v-text="c.municipio"></option>
                             </select>
-                            <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                        <div class="col-md-5">
-                            <input type="text" maxlength="10" v-model="telefono" class="form-control" placeholder="Telefono">
-                        </div>
-                    </div>
-                    <div class="form-group row" v-if="tipoAccion < 3">
-                        <label class="col-md-3 form-control-label" for="text-input">Extension</label>
-                        <div class="col-md-3">
-                            <input type="text" maxlength="5" v-model="ext" class="form-control" placeholder="Ext">
-                        </div>
-                    </div>
+                        </RowModal>
+                    </template>
+                    <RowModal :label1="'Teléfono'">
+                        <input type="text" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                            v-model="telefono" class="form-control" placeholder="Telefono">
+                    </RowModal>
+                    <RowModal v-if="tipoAccion < 3" :clsRow1="'col-md-3'" :label1="'Extensión'">
+                        <input type="text" maxlength="5" v-on:keypress="$root.isNumber($event)"
+                            v-model="ext" class="form-control" placeholder="Ext">
+                    </RowModal>
                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                     <div v-show="errorEmpresa" class="form-group row div-error">
                         <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjEmpresa" :key="error" v-text="error">
-                            </div>
+                            <div v-for="error in errorMostrarMsjEmpresa" :key="error" v-text="error"></div>
                         </div>
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEmpresa()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarEmpresaVerificadora()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
-                    <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="actualizarEmpresaVerif()">Actualizar</button>
+                    <Button v-if="tipoAccion==1" @click="registrarEmpresa()" :icon="'icon-check'">Guardar</Button>
+                    <Button v-if="tipoAccion==2" @click="actualizarEmpresa()" :icon="'icon-check'">Guardar cambios</Button>
+                    <Button v-if="tipoAccion==3" @click="registrarEmpresaVerificadora()" :icon="'icon-check'">Guardar</Button>
+                    <Button v-if="tipoAccion==4" @click="actualizarEmpresaVerif()" :icon="'icon-check'">Guardar cambios</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -244,14 +193,17 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-
     import ModalComponent from '../Componentes/ModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue'
+    import Nav from '../Componentes/NavComponent.vue'
+    import Button from '../Componentes/ButtonComponent.vue'
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Nav, Button, RowModal
         },
         data(){
             return{
@@ -275,7 +227,7 @@
                 errorEmpresa : 0,
                 errorMostrarMsjEmpresa : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -283,7 +235,7 @@
                     'to' : 0,
                 },
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -291,7 +243,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'nombre',
                 buscar : '',
                 arrayCiudades : [],
                 arrayColonias : []
@@ -401,12 +353,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarEmpresa(page,buscar,criterio);
+                me.listarEmpresa(page,me.buscar,me.criterio);
             },
             cambiarPagina2(page){
                 let me = this;
@@ -424,7 +376,7 @@
                 {
                     return;
                 }
-                
+
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -461,7 +413,7 @@
                 {
                     return;
                 }
-                
+
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -579,7 +531,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/empresa/eliminar', 
+                axios.delete('/empresa/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -608,7 +560,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/empresa/destroyVerificadora', 
+                axios.delete('/empresa/destroyVerificadora',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -752,5 +704,5 @@
     }
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
 </style>

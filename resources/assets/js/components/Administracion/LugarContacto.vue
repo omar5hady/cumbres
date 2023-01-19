@@ -10,17 +10,16 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Lugares de Contacto
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('lugar','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
-                        <!---->
+                        <Button :btnClass="'btn-secondary'" @click="abrirModal('registrar')" :icon="'icon-plus'">
+                            Nuevo
+                        </Button>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <input type="text" v-model="buscar" @keyup.enter="listarLugares(1,buscar,'nombre')" class="form-control" placeholder="Texto a buscar">
-                                    <button type="button" @click="listarLugares(1,buscar,'nombre')" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button @click="listarLugares(1,buscar,'nombre')" :icon="'fa fa-search'">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -28,31 +27,20 @@
                             <template v-slot:tbody>
                                 <tr v-for="lugar in arrayLugares" :key="lugar.id">
                                     <td class="td2" style="width:15%">
-                                        <button title="Editar" type="button" @click="abrirModal('lugar','actualizar',lugar)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                        </button>  
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarLugarContacto(lugar)">
-                                            <i class="icon-trash"></i>
-                                        </button>                                       
+                                        <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('actualizar',lugar)"
+                                        ></Button>
+                                        <Button title="Eliminar" :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"
+                                            @click="eliminar(lugar)"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="lugar.nombre"></td>
-                                </tr>    
+                                </tr>
                             </template>
                         </TableComponent>
-                        
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page" :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -60,26 +48,23 @@
             <!--Inicio del modal agregar/actualizar-->
             <ModalComponent v-if="modal"
                 :titulo="tituloModal"
+                :size="'modal-md'"
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Lugar de contacto</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="nombre" class="form-control" placeholder="Lugar de contacto">
-                        </div>
-                    </div>
-                    
+                    <RowModal :label1="'Lugar de contacto'" :clsRow1="'col-md-8'">
+                        <input type="text" v-model="nombre" class="form-control" placeholder="Lugar de contacto">
+                    </RowModal>
+
                     <div v-show="errorLugarContacto" class="form-group row div-error">
                         <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjLugar" 
-                                :key="error" v-text="error"></div>
+                            <div v-for="error in errorMostrarMsjLugar" :key="error" v-text="error"></div>
                         </div>
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarLugar()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLugar()">Actualizar</button>
+                    <Button v-if="tipoAccion==1" @click="registrarLugar()">Guardar</Button>
+                    <Button v-if="tipoAccion==2" @click="actualizarLugar()">Guardar cambios</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -89,11 +74,15 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import Nav from '../Componentes/NavComponent.vue'
+import Button from '../Componentes/ButtonComponent.vue'
+import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Nav, RowModal, Button
         },
         data (){
             return {
@@ -128,23 +117,23 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if(!this.pagination.to) {
                     return [];
                 }
-                
-                var from = this.pagination.current_page - this.offset; 
+
+                var from = this.pagination.current_page - this.offset;
                 if(from < 1) {
                     from = 1;
                 }
 
-                var to = from + (this.offset * 2); 
+                var to = from + (this.offset * 2);
                 if(to >= this.pagination.last_page){
                     to = this.pagination.last_page;
-                }  
+                }
 
                 var pagesArray = [];
                 while(from <= to) {
                     pagesArray.push(from);
                     from++;
                 }
-                return pagesArray;             
+                return pagesArray;
 
             }
         },
@@ -161,18 +150,18 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            cambiarPagina(page,buscar,criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarLugares(page,buscar,criterio);
+                me.listarLugares(page,me.buscar,me.criterio);
             },
             /**Metodo para registrar  */
             registrarLugar(){
                 if (this.proceso === true) {
                     return;
-                } 
+                }
                 if(this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
@@ -202,7 +191,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
             actualizarLugar(){
                 if (this.proceso === true) {
                     return;
-                } 
+                }
                 if(this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
@@ -230,7 +219,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            eliminarLugarContacto(data =[]){
+            eliminar(data =[]){
                 this.id=data['id'];
                 this.nombre=data['nombre'];
                 swal({
@@ -246,7 +235,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/lugar_contacto/eliminar', 
+                axios.delete('/lugar_contacto/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -281,32 +270,27 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(lugar, accion,data =[]){
-                switch(lugar){
-                    case "lugar":
+            abrirModal(accion,data =[]){
+                switch(accion){
+                    case 'registrar':
                     {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Lugar de contacto';
-                                this.departamento ='';
-                                this.tipoAccion = 1;
-                                this.proceso=false;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar Lugar de contacto';
-                                this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.nombre=data['nombre'];
-                                this.proceso=false;
-                                break;
-                            }
-                        }
+                        this.modal = 1;
+                        this.tituloModal = 'Registrar Lugar de contacto';
+                        this.departamento ='';
+                        this.tipoAccion = 1;
+                        this.proceso=false;
+                        break;
+                    }
+                    case 'actualizar':
+                    {
+                        //console.log(data);
+                        this.modal =1;
+                        this.tituloModal='Actualizar Lugar de contacto';
+                        this.tipoAccion=2;
+                        this.id=data['id'];
+                        this.nombre=data['nombre'];
+                        this.proceso=false;
+                        break;
                     }
                 }
             }
@@ -316,7 +300,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
         }
     }
 </script>
-<style>    
+<style>
     .div-error{
         display: flex;
         justify-content: center;

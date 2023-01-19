@@ -109,7 +109,7 @@
                                             </td>
                                             <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                             <td class="td2">
-                                                {{ solic.tipo_pago == 0 ? 'Caja Fuerte' : 'Bancario' }}
+                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
                                             </td>
                                             <td class="td2">
                                                 <template v-if="encargado == 0 && !gerente">
@@ -168,7 +168,7 @@
                                             </td>
                                             <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                             <td class="td2">
-                                                {{ solic.tipo_pago == 0 ? 'Caja Fuerte' : 'Bancario' }}
+                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
                                             </td>
                                             <td class="td2">
                                                 <template v-if="admin == 0">
@@ -255,8 +255,8 @@
                                             <label> Forma de pago </label>
                                             <select class="form-control" v-model="solicitudData.tipo_pago" :disabled="tipoAccion == 3 && admin < 2"
                                                 @change="solicitudData.forma_pago = ''">
-                                                <option value="0">Caja Fuerte</option>
-                                                <option value="1">Bancario</option>
+                                                <option value="0">C.F.</option>
+                                                <option value="1">Bancos</option>
                                             </select>
                                         </div>
                                         <div class="col-md-3">
@@ -295,7 +295,7 @@
                                         </template>
 
                                         <div class="col-md-3">
-                                            <label> Importe </label>
+                                            <label> Importe de la solicitud</label>
                                             <input class="form-control" pattern="\d*" maxlength="10"
                                                 v-if="tipoAccion != 3"
                                                 v-on:keypress="$root.isNumber($event)"
@@ -380,7 +380,7 @@
                                         </div>
                                         <div class="col-md-3"></div>
                                         <div class="col-md-3">
-                                            <label for="">Importe total <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
+                                            <label for="">Importe a contratar <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
                                             <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
                                                 type="text" v-model="datosDetalle.total">
                                         </div>

@@ -11,7 +11,8 @@ export default {
     props:{
         btnClass:{
             type: String,
-            required: false
+            required: false,
+            default: 'btn-primary'
         },
         icon:{
             type: String,

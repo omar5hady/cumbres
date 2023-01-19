@@ -14,9 +14,8 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    
                                     <input type="text" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarFraccionamiento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button   @click="listarFraccionamiento(1,buscar,criterio)" :icon="'fa fa-search'">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -24,28 +23,17 @@
                             <template v-slot:tbody>
                                 <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
                                         <td class="td2">
-                                           <button type="button" @click="abrirModal(fraccionamiento)" class="btn btn-info btn-sm">
-                                            <i class="icon-eye"></i>
-                                            </button> &nbsp;
+                                            <Button :btnClass="'btn-info'" @click="abrirModal(fraccionamiento)" title="Ver asesores asignados"
+                                                :icon="'icon-eye'" :size="'btn-sm'">
+                                            </Button>
                                         </td>
                                         <td class="td2" v-text="fraccionamiento.nombre"></td>
-                                    </tr> 
+                                    </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page" :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -57,27 +45,18 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                        <div class="col-md-9">
-                            <input type="text" disabled v-model="proyecto" class="form-control" placeholder="Proyecto">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Asesores</label>
-                        <div class="col-md-6">
-                            <select class="form-control" v-model="asesor_id">
-                                <option value="">Seleccione</option>
-                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+asesor.apellidos"></option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-success btn-sm" @click="addAsesor()">
-                                <i class="icon-plus"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <RowModal :clsRow1="'col-md-7'" :label1="'Proyecto'">
+                        <input type="text" disabled v-model="proyecto" class="form-control" placeholder="Proyecto">
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-6'" :label1="'Asesores'" :clsRow2="'col-md-3'">
+                        <select class="form-control" v-model="asesor_id">
+                            <option value="">Seleccione</option>
+                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+asesor.apellidos"></option>
+                        </select>
+                        <template v-slot:input2>
+                            <Button :btnClass="'btn-success'" :icon="'icon-plus'" @click="addAsesor()" title="Añadir asesor"></Button>
+                        </template>
+                    </RowModal>
 
                     <div>
                         <div class="modal-header" v-if="arraySelecAsesores.length">
@@ -87,24 +66,18 @@
                             <template v-slot:tbody>
                                 <tr v-for="selectA in arraySelecAsesores" :key="selectA.id">
                                     <td class="td2" style="width:25%">
-                                        <button type="button" class="btn btn-danger btn-sm" @click="quitarAsesor(selectA.id)">
-                                        <i class="icon-trash"></i>
-                                        </button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn.sm'" :title="'Quitar asesor'"
+                                            :icon="'icon-trash'" @click="quitarAsesor(selectA.id)"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="selectA.nombre + ' ' + selectA.apellidos" ></td>
-                                </tr>   
+                                </tr>
                             </template>
                         </TableComponent>
                     </div>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
-        
-            
-           
-
-
-
         </main>
 </template>
 
@@ -115,18 +88,22 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import Nav from '../Componentes/NavComponent.vue'
+import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
+import Button from '../Componentes/ButtonComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            RowModal,
+            Button,
+            Nav
         },
         data(){
             return{
                 proceso:false,
                 id:0,
-               
-               
                 arrayFraccionamiento : [],
                 arraySelecAsesores :[],
                 arrayAsesores:[],
@@ -135,7 +112,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 proyecto:'',
                 proyecto_id:'',
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -143,10 +120,10 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'nombre',
                 buscar : '',
                 modal:0,
-              
+
             }
         },
         computed:{
@@ -193,7 +170,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 });
             },
 
-            addAsesor(){       
+            addAsesor(){
                 this.proceso=true;
 
                 let me = this;
@@ -231,7 +208,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/asesores/deleteAsignarProy', 
+                axios.delete('/asesores/deleteAsignarProy',
                         {params: {'id': id}}).then(function (response){
                         swal(
                         'Hecho!',
@@ -246,14 +223,14 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 })
             },
 
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarFraccionamiento(page,buscar,criterio);
+                me.listarFraccionamiento(page,me.buscar,me.criterio);
             },
-            
+
              limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
@@ -286,7 +263,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
 
             getAsesoresProyecto(id){
@@ -300,7 +277,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
 
         },
@@ -328,7 +305,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
     .div-error{
         display:flex;
         justify-content: center;

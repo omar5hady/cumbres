@@ -10,9 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Departamentos
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('departamento','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-secondary'" :icon="'icon-plus'" @click="abrirModal('departamento','registrar')">Nuevo</Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -24,7 +22,7 @@
                                       <option value="departamento">Departamento</option>
                                     </select>
                                     <input type="text" v-model="buscar" @keyup.enter="listarDepartamento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarDepartamento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :icon="'fa fa-search'" @click="listarDepartamento(1,buscar,criterio)">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -32,35 +30,24 @@
                             <template v-slot:tbody>
                                 <tr v-for="departamento in arrayDepartamento" :key="departamento.id_departamento">
                                     <td class="td2" style="width:20%">
-                                        <button type="button" @click="abrirModal('departamento','actualizar',departamento)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarDepartamento(departamento)">
-                                        <i class="icon-trash"></i>
-                                        </button>
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('departamento','actualizar',departamento)" title="Editar"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"
+                                            @click="eliminarDepartamento(departamento)" title="Eliminar"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="departamento.departamento" style="width:60%"></td>
                                     <td class="td2">
                                         <span class="badge badge-success">Activo</span>
                                     </td>
-                                </tr>       
+                                </tr>
                             </template>
                         </TableComponent>
-                        
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page"
+                            :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -72,30 +59,25 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="departamento" class="form-control" placeholder="Nombre de departamento">
-                        </div>
-                    </div>
+                    <RowModal :label1="'Departamento'" :clsRow1="'col-md-9'">
+                        <input type="text" v-model="departamento" class="form-control" placeholder="Nombre de departamento">
+                    </RowModal>
 
                     <!-- Div para mostrar los errores que mande validerDepartamento -->
                     <div v-show="errorDepartamento" class="form-group row div-error">
                         <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjDepartamento" 
+                            <div v-for="error in errorMostrarMsjDepartamento"
                                 :key="error" v-text="error">
                             </div>
                         </div>
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarDepartamento()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarDepartamento()">Actualizar</button>
+                    <Button v-if="tipoAccion==1" :icon="'icon-check'" @click="registrarDepartamento()">Guardar</Button>
+                    <Button v-if="tipoAccion==2" :icon="'icon-check'" @click="actualizarDepartamento()">Guardar cambios</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
-            
-
         </main>
 </template>
 
@@ -106,11 +88,15 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
+import Nav from '../Componentes/NavComponent.vue'
+import Button from '../Componentes/ButtonComponent.vue'
+import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Nav, Button, RowModal
         },
         data(){
             return{
@@ -125,7 +111,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 errorDepartamento : 0,
                 errorMostrarMsjDepartamento : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -133,7 +119,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'departamento', 
+                criterio : 'departamento',
                 buscar : ''
             }
         },
@@ -179,12 +165,12 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarDepartamento(page,buscar,criterio);
+                me.listarDepartamento(page,me.buscar,me.criterio);
             },
             /**Metodo para registrar  */
             registrarDepartamento(){
@@ -271,7 +257,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/departamento/eliminar', 
+                axios.delete('/departamento/eliminar',
                         {params: {'id_departamento': this.departamento_id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -365,5 +351,5 @@ import TableComponent from '../Componentes/TableComponent.vue'
     }
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
 </style>

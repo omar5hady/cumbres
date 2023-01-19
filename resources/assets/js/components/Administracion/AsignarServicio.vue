@@ -25,7 +25,10 @@
                                     <input type="date" v-if="criterio=='f_fin'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha inicio" >
                                     <input type="date" v-if="criterio=='f_fin'" v-model="buscar2"  @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha fin" >
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarEtapa(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :btnClass="'btn-primary'" :icon="'fa fa-search'"
+                                        @click="listarEtapa(1,buscar,buscar2,criterio)">
+                                        Buscar
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -33,31 +36,20 @@
                             <template v-slot:tbody>
                                 <tr v-for="etapa in arrayEtapa" :key="etapa.id">
                                     <td class="td2" style="width:10%">
-                                        <button type="button" @click="abrirModal('etapa','actualizar',etapa)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('etapa','actualizar',etapa)" title="Editar"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="etapa.fraccionamiento"></td>
                                     <td class="td2" v-text="etapa.num_etapa"></td>
                                     <td class="td2" v-text="etapa.f_ini"></td>
                                     <td class="td2" v-text="etapa.f_fin"></td>
-                                </tr>    
+                                </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page" :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -68,48 +60,36 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                        <div class="col-md-4">
-                            <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Servicios</label>
-                        <div class="col-md-8">
-                            <select class="form-control" v-model="servicio_id" >
-                                <option value="0">Seleccione</option>
-                                <option v-for="servicio in arrayServicios" :key="servicio.id" :value="servicio.id" v-text="servicio.descripcion"></option>      
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal :label1="'Número de etapa'">
+                        <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-8'" :label1="'Servicios'">
+                        <select class="form-control" v-model="servicio_id" >
+                            <option value="0">Seleccione</option>
+                            <option v-for="servicio in arrayServicios" :key="servicio.id" :value="servicio.id" v-text="servicio.descripcion"></option>
+                        </select>
+                    </RowModal>
 
                     <div class="modal-body" v-if="arrayServicioEtapa.length">
-                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <TableComponent :cabecera="['','Servicio']">
-                                <template v-slot:tbody>
-                                    <tr v-for="servicio in arrayServicioEtapa" :key="servicio.id">
-                                        
-                                        <td class="td2" >
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarServicio(servicio.id)">
-                                                <i class="icon-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="servicio.descripcion" ></td>
-                                    </tr> 
-                                </template>
-                            </TableComponent>
-                        </form>
+                        <TableComponent :cabecera="['','Servicio']">
+                            <template v-slot:tbody>
+                                <tr v-for="servicio in arrayServicioEtapa" :key="servicio.id">
+                                    <td class="td2" >
+                                        <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'"
+                                            @click="eliminarServicio(servicio.id)" title="Eliminar servicio"
+                                        ></Button>
+                                    </td>
+                                    <td class="td2" v-text="servicio.descripcion" ></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" :disabled="servicio_id==0" class="btn btn-primary" @click="registrarServEtapa()">Guardar</button>
+                    <Button :btnClass="'btn-primary'" @click="registrarServEtapa()" :disabled="servicio_id==0">Guardar</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
-            
-
         </main>
 </template>
 
@@ -120,11 +100,17 @@
 <script>
     import ModalComponent from '../Componentes/ModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue'
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
+    import Nav from '../Componentes/NavComponent.vue'
+    import Button from '../Componentes/ButtonComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            RowModal,
+            Nav,
+            Button
         },
         data(){
             return{
@@ -138,7 +124,7 @@
                 tituloModal : '',
                 tipoAccion: 0,
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -146,7 +132,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
+                criterio : 'fraccionamientos.nombre',
                 buscar : '',
                 buscar2: '',
                 arrayFraccionamientos : [],
@@ -220,19 +206,19 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, buscar2, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarEtapa(page,buscar,buscar2,criterio);
+                me.listarEtapa(page,me.buscar,me.buscar2,me.criterio);
             },
             /**Metodo para registrar  */
             registrarServEtapa(){
                 if(this.proceso==true){
                     return;
                 }
-                
+
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -275,7 +261,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/servicio_etapa/eliminar', 
+                axios.delete('/servicio_etapa/eliminar',
                         {params: {'id': this.servEtapaId}}).then(function (response){
                         swal(
                         'Borrado!',

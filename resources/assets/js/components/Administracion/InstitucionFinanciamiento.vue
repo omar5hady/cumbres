@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Instituciones de Financiamiento
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('institucion','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-secondary'" :icon="'icon-plus'" @click="abrirModal('registrar')" title="Nuevo">
+                            Nuevo
+                        </Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -20,7 +20,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <input type="text" v-model="buscar" @keyup.enter="listarInstituciones(1,buscar,'nombre')" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarInstituciones(1,buscar,'nombre')" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button :icon="'fa fa-search'" @click="listarInstituciones(1,buscar,'nombre')">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -28,33 +28,21 @@
                             <template v-slot:thead>
                                 <tr v-for="institucion in arrayInstituciones" :key="institucion.id">
                                     <td class="td2" style="width:15%">
-                                        <button title="Editar" type="button" @click="abrirModal('institucion','actualizar',institucion)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                        </button>  
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarInstitucion(institucion)">
-                                            <i class="icon-trash"></i>
-                                        </button>                                       
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                            @click="abrirModal('actualizar',institucion)"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"
+                                            @click="eliminarInstitucion(institucion)"
+                                        ></Button>
                                     </td>
                                     <td class="td2" v-text="institucion.nombre"></td>
-                                    <td class="td2" v-if="lic == 0"> Licencia antes</td>
-                                    <td class="td2" v-if="lic == 1"> Licencia despues</td>
-                                </tr> 
+                                    <td class="td2"> Licencia {{ lic == 0 ? 'antes' : 'despues' }}</td>
+                                </tr>
                             </template>
                         </TableComponent>
-                        
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page" :last="pagination.last_page"
+                            @changePage="cambiarPagina"
+                        ></Nav>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -65,21 +53,15 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Institucion</label>
-                        <div class="col-md-9">
-                            <input type="text" v-model="nombre" class="form-control" placeholder="Institucion de Financiamiento">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Licencia</label>
-                        <div class="col-md-4">
-                            <select class="form-control" v-model="lic">
-                                <option value="0">Antes</option>
-                                <option value="1">Despues</option>
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal :clsRow1="'col-md-7'" :label1="'Institución'">
+                        <input type="text" v-model="nombre" class="form-control" placeholder="Institución de Financiamiento">
+                    </RowModal>
+                    <RowModal :label1="'Licencia'">
+                        <select class="form-control" v-model="lic">
+                            <option value="0">Antes</option>
+                            <option value="1">Despues</option>
+                        </select>
+                    </RowModal>
                     <div v-show="errorInstitucion" class="form-group row div-error">
                         <div class="text-center text-error">
                             <div v-for="error in errorMostrarMsjInstitucion" :key="error" v-text="error"></div>
@@ -87,10 +69,9 @@
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarInstitucion()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarInstitucion()">Actualizar</button>
+                    <Button v-if="tipoAccion==1" @click="registrarInstitucion()" :icon="'icon-check'">Guardar</Button>
+                    <Button v-else @click="actualizarInstitucion()" :icon="'icon-check'">Guardar cambios</Button>
                 </template>
-
             </ModalComponent>
             <!--Fin del modal-->
         </main>
@@ -99,11 +80,15 @@
 <script>
     import ModalComponent from '../Componentes/ModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue'
+    import Nav from '../Componentes/NavComponent.vue'
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
+    import Button from '../Componentes/ButtonComponent.vue'
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            Button, RowModal, Nav
         },
         data (){
             return {
@@ -139,23 +124,23 @@
                 if(!this.pagination.to) {
                     return [];
                 }
-                
-                var from = this.pagination.current_page - this.offset; 
+
+                var from = this.pagination.current_page - this.offset;
                 if(from < 1) {
                     from = 1;
                 }
 
-                var to = from + (this.offset * 2); 
+                var to = from + (this.offset * 2);
                 if(to >= this.pagination.last_page){
                     to = this.pagination.last_page;
-                }  
+                }
 
                 var pagesArray = [];
                 while(from <= to) {
                     pagesArray.push(from);
                     from++;
                 }
-                return pagesArray;             
+                return pagesArray;
 
             }
         },
@@ -172,12 +157,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page,buscar,criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarInstituciones(page,buscar,criterio);
+                me.listarInstituciones(page,me.buscar,me.criterio);
             },
             /**Metodo para registrar  */
             registrarInstitucion(){
@@ -253,7 +238,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/institucion_financiamiento/eliminar', 
+                axios.delete('/institucion_financiamiento/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -289,33 +274,27 @@
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(institucion, accion,data =[]){
-                switch(institucion){
-                    case "institucion":
+            abrirModal(accion,data =[]){
+                this.modal = 1;
+                switch(accion){
+                    case 'registrar':
                     {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Institucion de Financiamiento';
-                                this.nombre ='';
-                                this.lic = 0;
-                                this.tipoAccion = 1;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar Institucion de Financiamiento';
-                                this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.nombre=data['nombre'];
-                                this.pagina_web = data['pagina_web'];
-                                this.lic = data['lic'];
-                                break;
-                            }
-                        }
+                        this.tituloModal = 'Registrar Institucion de Financiamiento';
+                        this.nombre ='';
+                        this.lic = 0;
+                        this.tipoAccion = 1;
+                        break;
+                    }
+                    case 'actualizar':
+                    {
+                        //console.log(data);
+                        this.tituloModal='Actualizar Institucion de Financiamiento';
+                        this.tipoAccion=2;
+                        this.id=data['id'];
+                        this.nombre=data['nombre'];
+                        this.pagina_web = data['pagina_web'];
+                        this.lic = data['lic'];
+                        break;
                     }
                 }
             }
@@ -325,7 +304,7 @@
         }
     }
 </script>
-<style>    
+<style>
     .div-error{
         display: flex;
         justify-content: center;
