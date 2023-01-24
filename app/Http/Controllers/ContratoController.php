@@ -2161,7 +2161,9 @@ class ContratoController extends Controller
                     if($terrenoExcedenteOld > 0)
                         $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
                     //Se asigna el precio de base actual del lote.
-                    $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
+                    $lote_ant->precio_base = 0;
+                    if(sizeof($precioBaseOld))
+                        $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
                     //Se asigna el valor de sobreprecio actual.
                     if($sobrepreciosOld[0]->sobreprecios != NULL)
                         $lote_ant->sobreprecio = $sobrepreciosOld[0]->sobreprecios;

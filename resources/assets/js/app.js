@@ -304,6 +304,20 @@ const app = new Vue({
             .catch(function (error) {
             });
         },
+        selectManzanas(fraccionamiento, etapa){
+            let me = this;
+            me.b_manzana="";
+
+            me.arrayAllManzanas=[];
+            var url = '/select_manzanas_etapa?buscar=' + fraccionamiento + '&buscar1='+ etapa;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayAllManzanas = respuesta.manzana;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         /* Formatting the number to have commas in the thousands place. */
         formatNumber(value) {
             return new Intl.NumberFormat('es-MX', { maximumFractionDigits: 2 }).format(value);

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSpFilesTable extends Migration
+class CreateSpDetLotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateSpFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sp_files', function (Blueprint $table) {
+        Schema::create('sp_det_lotes', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('solic_id');
-            $table->integer('file_id');
-            $table->string('carpeta');
-            $table->string('tipo');
-            $table->boolean('vb')->default(1);// 1 Sin revisar 0 Rechazado 2 Aprobado
+            $table->integer('detalle_id');
+            $table->integer('lote_id');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateSpFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sp_files');
+        Schema::dropIfExists('sp_det_lotes');
     }
 }

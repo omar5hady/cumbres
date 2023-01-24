@@ -28,6 +28,7 @@ class BonoVentaController extends Controller
                             ->join('lotes','creditos.lote_id','=','lotes.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                            ->join('users', 'vendedores.id', '=', 'users.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->join('pagos_contratos as pc','contratos.id','=','pc.contrato_id')
                             ->join('personal as v', 'vendedores.id', '=', 'v.id')
@@ -42,11 +43,11 @@ class BonoVentaController extends Controller
                                         'creditos.precio_venta',
                                         'pc.num_pago','pc.fecha_pago','pc.pagado',
                                         'vendedores.tipo'
-                            ); 
+                            );
 
             /*
                 Los campos a considerar son:
-                    Primer pagare (apartado) abonado o pagado, 
+                    Primer pagare (apartado) abonado o pagado,
                     el vendedor es interno
                     el expediente debe estar entregado y el contrato firmado.
             */
@@ -57,6 +58,7 @@ class BonoVentaController extends Controller
                         ->where('contratos.exp_bono','=',1)
                         ->where('contratos.status','=',3)
                         ->where('creditos.bono','=',0)
+                        ->where('users.condicion','=',1)
                         ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%');
                         if($request->b_proyecto != '')
                             $contratos = $contratos->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
@@ -69,6 +71,7 @@ class BonoVentaController extends Controller
                         ->where('pc.tipo_pagare','=',0)
                         ->where('contratos.exp_bono','=',1)
                         ->where('vendedores.tipo','=',0)
+                        ->where('users.condicion','=',1)
                         ->where('creditos.bono','=',0)
                         ->where('contratos.status','=',3)
                         ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%');
@@ -78,13 +81,13 @@ class BonoVentaController extends Controller
                             $contratos = $contratos->where('lotes.etapa_id','=',$request->b_etapa);
                         if($asesor != '')
                             $contratos = $contratos->where('creditos.vendedor_id','=',$asesor);
-                                        
+
 
             $contratos = $contratos
                             ->orderBy('contratos.id','desc')
                             ->paginate(8);
 
-        return [ 
+        return [
             'pagination' => [
                 'total'         => $contratos->total(),
                 'current_page'  => $contratos->currentPage(),
@@ -117,7 +120,7 @@ class BonoVentaController extends Controller
 
     // Función para retornar los bonos creados.
     public function indexBonos(Request $request){
-        
+
         $bonos = Bono_venta::join('contratos','bonos_ventas.contrato_id','=','contratos.id')
                                 ->join('creditos','contratos.id','=','creditos.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -155,7 +158,7 @@ class BonoVentaController extends Controller
         if($request->b_manzana != ''){
             $bonos = $bonos->where('lotes.manzana','like', '%'.$request->b_manzana.'%');
         }
-        
+
         if($request->b_lote != ''){
             $bonos = $bonos->where('lotes.num_lote','=',$request->b_lote);
         }
@@ -171,7 +174,7 @@ class BonoVentaController extends Controller
         $bonos = $bonos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                             ->orderBy('bonos_ventas.fecha_pago','desc')->paginate(8);
 
-        //Se verifica que el bono se pueda duplicar 
+        //Se verifica que el bono se pueda duplicar
         if(sizeOf($bonos)){
             foreach($bonos as $index => $bono){
                 $fechaIni = $bono->year.'-'.$bono->month.'-01';
@@ -192,7 +195,7 @@ class BonoVentaController extends Controller
                             ->whereYear('contratos.fecha',$bono->year)
                             ->where('creditos.vendedor_id','=',$bono->vendedor_id)
                             ->where('contratos.status','=',3)->count();
-                
+
                 $bono->ventaQuincena = Contrato::join('creditos','contratos.id','=','creditos.id')
                                     ->select('contratos.id')
                                     ->whereBetween('contratos.fecha', [$fechaIni, $fechaFin])
@@ -206,7 +209,7 @@ class BonoVentaController extends Controller
                                     ->whereYear('contratos.fecha',$anioAnt)
                                     ->where('creditos.vendedor_id','=',$bono->vendedor_id)
                                     ->where('contratos.status','=',3)->count();
-                
+
             }
         }
 

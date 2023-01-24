@@ -39,15 +39,16 @@ class SolicitudesController extends Controller
         $admin = 0;
         $usuario = Auth::user()->usuario;
         if( $usuario == 'shady'
-            || $usuario == 'jorge.diaz'
-            || $usuario == 'alejandro.pe'
-            || $usuario == 'ing_david'
             || $usuario == 'uriel.al'
         )$admin = 1;
+        if( $usuario == 'shady'
+            || $usuario == 'alejandro.pe'
+            || $usuario == 'ing_david'
+        )$admin = 2;
         if(
             $usuario == 'jorge.diaz'
             || $usuario == 'dora.m'
-        )$admin = 2;
+        )$admin = 3;
 
         $solicitudes = $this->querySolicitudes($request,$admin);
         foreach($solicitudes as $solicitud){
@@ -75,6 +76,10 @@ class SolicitudesController extends Controller
         $b_status = $request->b_status;
         $b_fecha1 = $request->b_fecha1;
         $b_fecha2 = $request->b_fecha2;
+        $b_vbgerente = $request->b_vbgerente;
+        $b_vbdireccion = $request->b_vbdireccion;
+        $b_rechazado = $request->b_rechazado;
+        $b_empresa = $request->b_empresa;
 
         $encargado = Auth::user()->seg_pago;
         $dep = Personal::findOrFail(Auth::user()->id);
@@ -85,6 +90,8 @@ class SolicitudesController extends Controller
             ->select('sp_solicituds.*', 'prov.proveedor','pv.rfc as rfc_prov', 'prov.const_fisc',
                 DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante")
             );
+            if($b_empresa != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.empresa_solic','=',$b_empresa);
             if($b_proveedor != '')
                 $solicitudes = $solicitudes->where('prov.proveedor','like','%'.$b_proveedor.'%');
             if($b_solicitante != '')
@@ -95,11 +102,21 @@ class SolicitudesController extends Controller
                 );
             if($b_status != '')
                 $solicitudes = $solicitudes->where('sp_solicituds.status','=', $b_status);
+            if($b_vbgerente != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.vb_gerente','=', $b_vbgerente);
+            if($b_vbdireccion != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.vb_direccion','=', $b_vbdireccion);
             if($admin == 0){
                 if($encargado == 0)
                     $solicitudes = $solicitudes->where('sp_solicituds.solicitante_id','=',Auth::user()->id);
                 if($encargado == 1)
                     $solicitudes = $solicitudes->where('sp_solicituds.departamento','=',$dep->departamento_id);
+            }
+            if($b_rechazado != ''){
+                $solicitudes = $solicitudes->where('sp_solicituds.rechazado','=', 1);
+            }
+            else{
+                $solicitudes = $solicitudes->where('sp_solicituds.rechazado','=', 0);
             }
 
             $solicitudes = $solicitudes->orderBy('sp_solicituds.status','asc')
@@ -182,6 +199,7 @@ class SolicitudesController extends Controller
         $solic->banco           = $prov->banco;
         $solic->num_cuenta      = $prov->num_cuenta;
         $solic->clabe           = $prov->clabe;
+        $solic->rechazado       = 0;
         $solic->save();
 
         return $solic->id;
@@ -233,5 +251,39 @@ class SolicitudesController extends Controller
         foreach($detalles as $det){
             $this->deleteDetalle($det->id);
         }
+    }
+
+    public function changeVbTesoreria(Request $request){
+        $solic = SpSolicitud::findOrFail($request->id);
+        if($request->estado == 1){
+            $solic->vb_tesoreria = $request->estado;
+            $solic->status = 2;
+        }
+        else{
+            $solic->rechazado = 1;
+            $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
+
+        }
+        $solic->save();
+    }
+    public function changeVbDireccion(Request $request){
+        $solic = SpSolicitud::findOrFail($request->id);
+        if($request->estado == 1){
+            $solic->vb_direccion = $request->estado;
+            $this->createObs($solic->id, "Solicitud revisada para autorización de dirección");
+            $solic->status = 2;
+        }
+        else{
+            $solic->rechazado = 1;
+            $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
+        }
+        $solic->save();
+    }
+
+    public function autorizarDireccion(Request $request){
+        $solic = SpSolicitud::findOrFail($request->id);
+        $solic->status = 3;
+        $this->createObs($solic->id, "Solicitud Autorizada por Dirección");
+        $solic->save();
     }
 }
