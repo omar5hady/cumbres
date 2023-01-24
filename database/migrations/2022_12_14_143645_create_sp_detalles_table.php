@@ -26,7 +26,9 @@ class CreateSpDetallesTable extends Migration
             $table->double('pago',10,2)->default(0);
             $table->double('saldo',10,2)->default(0);
             $table->boolean('status')->default(1); //1 Pendiente 0 Liquidado
+            $table->boolean('vb')->default(1);// 1 Sin revisar 0 Rechazado 2 Aprobado
             $table->integer('pendiente_id')->nullable();
+            $table->integer('contrato_id')->nullable();//Campo para enlazar un contrato en caso de ser necesario
             $table->timestamps();
         });
     }

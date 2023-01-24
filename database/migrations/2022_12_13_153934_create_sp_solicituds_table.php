@@ -35,6 +35,7 @@ class CreateSpSolicitudsTable extends Migration
             $table->string('num_factura')->nullable();
             $table->date('fecha_pago')->nullable();
             $table->double('monto_aut')->default(0);
+            $table->boolean('rechazado')->default(0);
             $table->timestamps();
         });
     }

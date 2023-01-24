@@ -8,6 +8,6 @@ class SpDetalle extends Model
 {
     protected $fillable = [
         'solic_id','obra','sub_obra','cargo','concepto','observacion',
-        'tipo_mov','total','pago','saldo','status','pendiente_id'
+        'tipo_mov','total','pago','saldo','status','pendiente_id','vb','contrato_id'
     ];
 }

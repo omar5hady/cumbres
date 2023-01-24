@@ -816,6 +816,30 @@ class LoteController extends Controller
         return ['manzana' => $manzana];
 
     }
+    //Funcion para retornar las manzanas de una etapa buscando por nombre de proyecto y nombre de etapa
+    public function getManzanas(Request $request){
+        // if(!$request->ajax())return redirect('/');
+        return Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->select('lotes.manzana')
+            ->where('fraccionamientos.nombre','=',$request->proyecto)
+            ->where('etapas.num_etapa','=',$request->etapa)
+            ->orderBy('lotes.manzana','asc')
+            ->distinct()
+            ->get();
+    }
+    //Funcion para retornar las manzanas de una etapa buscando por nombre de proyecto y nombre de etapa
+    public function searchLotes(Request $request){
+        // if(!$request->ajax())return redirect('/');
+        return Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->select('lotes.id','lotes.num_lote','lotes.sublote')
+            ->where('fraccionamientos.nombre','=',$request->proyecto)
+            ->where('etapas.num_etapa','=',$request->etapa)
+            ->where('lotes.manzana','=',$request->manzana)
+            ->orderBy('lotes.manzana','asc')
+            ->get();
+    }
     //Función que retorna los lotes por manzana.
     public function select_lote_manzana (Request $request){
         if(!$request->ajax())return redirect('/');

@@ -1281,6 +1281,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/files-solic', solicPagos\ArchivosController::class);
         Route::delete('/solic-pagos/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
         Route::put('/solic-pagos/changeVbGerente/{id}','solicPagos\SolicitudesController@changeVbGerente');
+        Route::put('/solic-pagos/changeVbTesoreria/{id}','solicPagos\SolicitudesController@changeVbTesoreria');
+        Route::put('/solic-pagos/changeVbDireccion/{id}','solicPagos\SolicitudesController@changeVbDireccion');
+        Route::put('/solic-pagos/autorizarDireccion/{id}','solicPagos\SolicitudesController@autorizarDireccion');
         Route::put('/solic-pagos/changeCuenta/{id}','solicPagos\SolicitudesController@changeCuenta');
 
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');
@@ -1293,6 +1296,9 @@ Route::group(['middleware' => ['auth']],function(){
 
 
     ///////////////////       RUTAS SELECT    ////////////////////////////////////
+        Route::get('/lotes/getManzanas','LoteController@getManzanas');
+        Route::get('/lotes/searchLotes','LoteController@searchLotes');
+
         Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
         Route::get('/select_colonias','CiudadController@selectColonias');
         Route::get('/select_colonias_vue','CiudadController@selectColoniasVue');
