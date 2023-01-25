@@ -22,7 +22,7 @@ class CreateSpSolicitudsTable extends Migration
             $table->integer('proveedor_id');
             $table->double('importe')->default(0);
             $table->boolean('tipo_pago')->default(0);  //? 0:CF, 1:B
-            $table->boolean('forma_pago')->nullable();
+            $table->boolean('forma_pago')->nullable();//? 0:Transferencia, 1:Cheque
             $table->boolean('status')->default(0);
             $table->boolean('vb_gerente')->default(0);
             $table->boolean('vb_direccion')->default(0);
@@ -36,6 +36,12 @@ class CreateSpSolicitudsTable extends Migration
             $table->date('fecha_pago')->nullable();
             $table->double('monto_aut')->default(0);
             $table->boolean('rechazado')->default(0);
+
+            $table->date('entrega_pago')->nullable();
+            $table->string('comprobante_pago')->nullable();
+
+            $table->string('cuenta_pago')->nullable();
+            $table->boolean('beneficiario')->default(0);//? Abono a cuenta de beneficiario? 0: NO, 1:Si
             $table->timestamps();
         });
     }

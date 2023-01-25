@@ -99,6 +99,13 @@
                                 v-bind:class="{ 'text-primary active': b_status === 3}"
                                 role="tab">{{ (b_status === 3) ? `Por Pagar: ${arraySolic.total}` : 'Por Pagar' }}</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                @click="b_status = 4, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = ''
+                                    indexSolicitudes(1)"
+                                v-bind:class="{ 'text-primary active': b_status === 4}"
+                                role="tab">{{ (b_status === 4) ? `Pagados: ${arraySolic.total ? arraySolic.total : ''}` : 'Pagados' }}</a>
+                            </li>
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
@@ -435,13 +442,19 @@
                                     'Fecha solic',
                                     'Importe',
                                     'Tipo de pago',
+                                    '  ',
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
                                         <tr v-for="solic in arraySolic.data" :key="solic.id">
                                             <td class="td2">
-                                                <Button :btnClass="'btn-primary'" title="Ver solicitd" :size="'btn-sm'"
+                                                <Button
+                                                    title="Ver solicitud" :size="'btn-sm'"
                                                     @click="vistaFormulario('ver', solic)" :icon="'icon-eye'"
+                                                ></Button>
+                                                <Button v-if="solic.fecha_pago"
+                                                    :btnClass="'btn-success'" :size="'btn-sm'" :title="'Ver Pago'"
+                                                    @click="abrirModal('verPago',solic)" :icon="'fa fa-money'"
                                                 ></Button>
                                             </td>
                                             <td class="td2" v-text="solic.proveedor"></td>
@@ -452,6 +465,65 @@
                                             <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                             <td class="td2">
                                                 {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                            </td>
+                                            <td class="td2">
+                                                <Button v-if="solic.fecha_pago && !solic.comprobante_pago"
+                                                    :btnClass="'btn-info'" :size="'btn-sm'" :title="'Cargar comprobante de Pago'"
+                                                    @click="abrirModal('comprobante', solic)" :icon="'fa fa-upload'"
+                                                ></Button>
+                                            </td>
+                                            <td>
+                                                <Button :btnClass="'btn-light'" title="Ver Observaciones"
+                                                    @click="verObs(solic)"
+                                                >Observaciones
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
+                            <!-- Listado por Pagar -->
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 4 }" v-if="b_status === 4">
+                                <TableComponent :cabecera="[
+                                    '',
+                                    'Proveedor',
+                                    'Solicitante',
+                                    'Fecha solic',
+                                    'Importe',
+                                    'Tipo de pago',
+                                    '  ',
+                                    ' '
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                            <td class="td2">
+                                                <Button
+                                                    title="Ver solicitud" :size="'btn-sm'"
+                                                    @click="vistaFormulario('ver', solic)" :icon="'icon-eye'"
+                                                ></Button>
+                                                <Button v-if="solic.fecha_pago"
+                                                    :btnClass="'btn-success'" :size="'btn-sm'" :title="'Ver Pago'"
+                                                    @click="abrirModal('verPago',solic)" :icon="'fa fa-money'"
+                                                ></Button>
+                                            </td>
+                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2" v-text="solic.solicitante"></td>
+                                            <td class="td2"
+                                                v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
+                                            </td>
+                                            <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
+                                            <td class="td2">
+                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                            </td>
+                                            <td class="td2">
+                                                <Button v-if="solic.fecha_pago && !solic.comprobante_pago"
+                                                    :btnClass="'btn-info'" :size="'btn-sm'" :title="'Cargar comprobante de Pago'"
+                                                    @click="abrirModal('comprobante', solic)" :icon="'fa fa-upload'"
+                                                ></Button>
+                                                <Button v-if="solic.fecha_pago && solic.comprobante_pago"
+                                                    :btnClass="'btn-scarlet'" :size="'btn-sm'" :title="'Ver comprobante de Pago'"
+                                                    @click="abrirModal('comprobante', solic)" :icon="'fa fa-download'"
+                                                ></Button>
                                             </td>
                                             <td>
                                                 <Button :btnClass="'btn-light'" title="Ver Observaciones"
@@ -539,7 +611,7 @@
                                             </div>
                                         </div>
 
-                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1">
+                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1 && solicitudData.status < 2">
                                             <div class="col-md-3">
                                                 <label for="">Banco</label>
                                                 <input type="text" class="form-control"
@@ -557,7 +629,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label for="">&nbsp;</label>
-                                                <button class="btn btn-warning form-control" @click="abrirModal('banco', solicitudData)">Cambiar Cuenta</button>
+                                                <button class="btn btn-warning form-control" @click="abrirModal('banco')">Cambiar Cuenta</button>
                                             </div>
                                         </template>
 
@@ -742,7 +814,7 @@
                                             <div class="form-group"><center><h3></h3></center></div>
                                         </div>
 
-                                        <template v-if="tipoAccion == 2">
+                                        <template v-if="tipoAccion >= 2">
                                             <div class="form-sub">
                                                 <form method="post" @submit="formSubmitFile"
                                                     enctype="multipart/form-data"
@@ -772,7 +844,6 @@
                                                                     <datalist id="categoria">
                                                                         <option value="FACTURA">FACTURA</option>
                                                                         <option value="COTIZACION">COTIZACIÓN</option>
-                                                                        <option value="VENTANILLA PAGO">VENTANILLA PAGO</option>
                                                                         <option value="RECEPCION">RECEPCIÓN DE TRABAJO</option>
                                                                     </datalist>
                                                                 </div>
@@ -804,7 +875,7 @@
                                                         <tr v-for="p in solicitudData.files"
                                                             :key="p.id">
                                                             <td>
-                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion != 3"
+                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion >= 2 && solicitudData.status < 3"
                                                                     @click="deleteFile(p.id)"
                                                                 >
                                                                     <i class="icon-trash"></i>
@@ -873,6 +944,12 @@
                                         Autorizar solicitud
                                     </Button>
                                 </template>
+                                <Button v-if="admin === 3 && solicitudData.status == 3 && solicitudData.fecha_pago == null
+                                    || usuario == 'shady' && solicitudData.status == 3 && solicitudData.fecha_pago == null"
+                                    :icon="'fa fa-money'"
+                                    @click="abrirModal('pagar')">
+                                    Generar pago
+                                </Button>
                             </div>
                         </div>
                     </template>
@@ -943,6 +1020,93 @@
                         </Button>
                     </template>
                 </ModalComponent>
+
+                <ModalComponent :titulo="tituloModal"
+                    v-if="modal == 4"
+                    @closeModal="cerrarModal()"
+                >
+                    <template v-slot:body>
+                        <RowModal :label1="'Fecha de pago'">
+                            <input :disabled="tipoAccion==2" type="date" class="form-control" v-model="solicitudData.fecha_pago">
+                        </RowModal>
+                        <RowModal :label1="'Importe a pagar'">
+                            <h6>${{$root.formatNumber(solicitudData.importe)}}</h6>
+                        </RowModal>
+                        <RowModal v-if="solicitudData.tipo_pago == 0
+                            || solicitudData.tipo_pago == 1 && solicitudData.forma_pago == 0" :label1="'Folio'">
+                            <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="solicitudData.num_factura">
+                        </RowModal>
+                        <template v-if="solicitudData.tipo_pago == 1">
+                            <RowModal :clsRow1="'col-md-6'" :label1="'Cuenta de salida'">
+                                <select :disabled="tipoAccion==2" class="form-control" v-model="solicitudData.cuenta_pago">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="c in arrayCuentasPago" :key="c.id" :value="c.num_cuenta + '-' + c.banco" v-text="c.num_cuenta + '-' + c.banco"></option>
+                                </select>
+                            </RowModal>
+                            <RowModal v-if="solicitudData.forma_pago == 1"
+                                :label1="'Número de Cheque:'" :clsRow2="'col-md-4'" :label2="'A Beneficiario?'">
+                                <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="solicitudData.num_factura">
+                                <template v-slot:input2>
+                                    <select :disabled="tipoAccion==2" class="form-control" v-model="solicitudData.beneficiario">
+                                        <option value="0">No</option>
+                                        <option value="1">Si</option>
+                                    </select>
+                                </template>
+                            </RowModal>
+                        </template>
+                    </template>
+                    <template v-slot:buttons-footer>
+                        <Button
+                            v-if="solicitudData.fecha_pago != '' && solicitudData.num_factura != '' && tipoAccion == 1"
+                            :btnClass="'btn-success'" :icon="'fa fa-money'"
+                            @click="generarPago()"
+                        >Crear pago</Button>
+                    </template>
+                </ModalComponent>
+
+                <ModalComponent :titulo="tituloModal"
+                    v-if="modal == 5"
+                    @closeModal="cerrarModal()"
+                >
+                    <template v-slot:body>
+                        <form method="post" @submit="formSubmitFile" enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <input ref="fileSelector"
+                                    v-show="false"
+                                    type="file" accept="application/pdf"
+                                    v-on:change="onChangeFile"
+                                />
+
+                                <label class="label-button" @click="onSelectFile">
+                                    Elige el archivo a cargar
+                                    <i class="fa fa-upload"></i>
+                                </label>
+                                <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
+                                    ? 'text-file-hide' : 'text-file'"
+                                    v-text="newArchivo.nom_archivo"
+                                ></div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="boton-modal" v-if="cargando==0">
+                                    <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
+                                        type="submit" class="btn btn-scarlet"
+                                    >
+                                        Subir Archivo
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </template>
+                    <template v-slot:buttons-footer>
+                        <a v-if="solicitudData.comprobante_pago" :href="solicitudData.comprobante_pago"
+                            class="btn btn-primary"
+                            title="Ver Comprobante de pago"
+                            target="_blank"
+                        >
+                            <i class="icon-eye"></i>
+                        </a>
+                    </template>
+                </ModalComponent>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -995,6 +1159,7 @@ export default {
             arrayConceptos: [],
             arrayObs : [],
             arrayCuentas : [],
+            arrayCuentasPago : [],
 
             solicitudData:{},
             datosDetalle:{},
@@ -1024,6 +1189,8 @@ export default {
             vista:0,
             admin:0,
             gerente: null,
+
+            archivo: '',
         };
     },
     computed: {
@@ -1035,6 +1202,18 @@ export default {
         },
     },
     methods: {
+        selectCuenta(empresa){
+            let me = this;
+            me.arrayCuentas=[];
+            var url = '/select_cuenta?empresa='+empresa;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayCuentasPago = respuesta.cuentas;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         onChangeFile(e){
             this.newArchivo.file = e.target.files[0];
             this.newArchivo.nom_archivo = e.target.files[0].name;
@@ -1202,6 +1381,46 @@ export default {
                 }
             })
         },
+        generarPago(){
+            let me = this;
+            const titulo = '¿Seguro de generar el pago para esta solicitud?';
+            swal({
+                title: titulo,
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, continuar'
+                }).then((result) => {
+                if (result.value) {
+                    axios.put(`/solic-pagos/generarPago/${me.solicitudData.id}`,{
+                        'id': me.solicitudData.id,
+                        'fecha_pago' : me.solicitudData.fecha_pago,
+                        'num_factura' : me.solicitudData.num_factura,
+                        'cuenta_pago' : me.solicitudData.cuenta_pago,
+                        'beneficiario' : me.solicitudData.beneficiario
+                    }).then(function (response){
+                        me.cerrarModal();
+                        me.cerrarFormulario();
+                        me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Pago creado correctamente'
+                        })
+                    }).catch(function (error){
+                    });
+                }
+            })
+        },
         onSelectFile(){
             this.$refs.fileSelector.click()
         },
@@ -1217,6 +1436,7 @@ export default {
             let me = this;
             axios.post('/files-solic', formData)
             .then(function (response) {
+                me.cerrarModal();
                 me.cargando = 0;
                 me.solicitudData.files = response.data.data;
                 swal({
@@ -1228,7 +1448,7 @@ export default {
                 })
             }).catch(function (error) {
                 currentObj.output = error;
-                this.cargando = 0;
+                me.cargando = 0;
             });
         },
         deleteDetalle(id){
@@ -1673,7 +1893,7 @@ export default {
             this.cargando = 0;
         },
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-        abrirModal(accion, data = []) {
+        abrirModal(accion, data=[]) {
             let me = this;
             switch (accion) {
                 case 'banco':{
@@ -1686,6 +1906,37 @@ export default {
                     me.comentario = ''
                     me.modal = 3;
                     me.tituloModal = 'Solicitud rechazada'
+                    break;
+                }
+                case 'pagar':{
+                    me.selectCuenta(me.solicitudData.empresa_solic);
+                    me.solicitudData.fecha_pago = '';
+                    me.solicitudData.cuenta_pago = '';
+                    me.solicitudData.num_factura = '';
+                    me.solicitudData.beneficiario = 0;
+                    me.modal = 4;
+                    me.tituloModal = 'Generar pago'
+                    me.tipoAccion = 1;
+                    break;
+                }
+                case 'verPago':{
+                    me.solicitudData = data;
+                    me.selectCuenta(me.solicitudData.empresa_solic);
+                    me.modal = 4;
+                    me.tituloModal = 'Pago'
+                    me.tipoAccion = 2;
+                    break;
+                }
+                case 'comprobante':{
+                    me.solicitudData = data;
+                    me.modal = 5;
+                    me.tituloModal = 'Comprobante de pago'
+                    this.newArchivo = {
+                        description: "COMPROBANTE DE PAGO",
+                        tipo: "COMPROBANTE DE PAGO",
+                        file: "",
+                        nom_archivo: 'Seleccione Archivo'
+                    };
                     break;
                 }
             }
