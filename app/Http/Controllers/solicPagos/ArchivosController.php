@@ -12,6 +12,7 @@ use App\Http\Resources\DocSolicPagosResource;
 
 use App\SpSolicitud;
 use App\SpFile;
+use Carbon\Carbon;
 
 use DB;
 use Auth;
@@ -32,6 +33,14 @@ class ArchivosController extends Controller
         $solicitud->solic_id = $request->id;
         $solicitud->file_id = $fileID;
         $solicitud->tipo = $request->tipo;
+        if($solicitud->tipo == 'COMPROBANTE DE PAGO'){
+            $solic = SpSolicitud::findOrFail($request->id);
+            $solic->status = 4;
+            $solic->entrega_pago = Carbon::now();
+            $file = DropboxFiles::findOrFail($fileID);
+            $solic->comprobante_pago = $file->public_url;
+            $solic->save();
+        }
         $solicitud->carpeta = 'Adjuntos';
         $solicitud->save();
 

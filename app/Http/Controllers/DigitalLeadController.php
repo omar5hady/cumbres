@@ -362,12 +362,11 @@ class DigitalLeadController extends Controller
         $personal = User::select('id')
             ->orWhere('rol_id','=',8)
             ->where('digital_lead','=',1)
-            ->orWhere('rol_id','=',1)
             ->get();
 
-        foreach($personal as $persona){
-            User::findOrFail($persona->id)->notify(new NotifyAdmin($arregloAceptado));
-        }
+        // foreach($personal as $persona){
+        //     User::findOrFail($persona->id)->notify(new NotifyAdmin($arregloAceptado));
+        // }
 
 
         //User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));

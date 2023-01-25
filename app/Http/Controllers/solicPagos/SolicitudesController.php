@@ -166,22 +166,22 @@ class SolicitudesController extends Controller
             if($det['id'] == '')
             {
                 $detalle = new SpDetalle();
-                $detalle->solic_id  = $id;
-                $detalle->obra      = $det['obra'];
-                $detalle->sub_obra  = $det['sub_obra'];
-                $detalle->cargo     = $det['cargo'];
-                $detalle->concepto  = $det['concepto'];
-                $detalle->observacion = $det['observacion'];
-                $detalle->tipo_mov  = $det['tipo_mov'];
-                $detalle->total     = $det['total'];
-                $detalle->pago      = $det['pago'];
-                $detalle->saldo     = $det['saldo'];
+                $detalle->solic_id      = $id;
+                $detalle->obra          = $det['obra'];
+                $detalle->sub_obra      = $det['sub_obra'];
+                $detalle->cargo         = $det['cargo'];
+                $detalle->concepto      = $det['concepto'];
+                $detalle->observacion   = $det['observacion'];
+                $detalle->tipo_mov      = $det['tipo_mov'];
+                $detalle->total         = $det['total'];
+                $detalle->pago          = $det['pago'];
+                $detalle->saldo         = $det['saldo'];
                 if($detalle->saldo == 0)
                     $detalle->status = 0;
                 else
                     $detalle->status = 1;
-                $detalle->cargo     = $det['cargo'];
-                $detalle->pendiente_id     = $det['pendiente_id'];
+                $detalle->cargo         = $det['cargo'];
+                $detalle->pendiente_id  = $det['pendiente_id'];
                 $detalle->save();
             }
         }
@@ -285,5 +285,43 @@ class SolicitudesController extends Controller
         $solic->status = 3;
         $this->createObs($solic->id, "Solicitud Autorizada por Dirección");
         $solic->save();
+    }
+
+    public function generarPago(Request $request){
+        $solic = SpSolicitud::findOrFail($request->id);
+        $solic->fecha_pago = $request->fecha_pago;
+        $solic->num_factura = $request->num_factura;
+        $solic->cuenta_pago = $request->cuenta_pago;
+        $solic->beneficiario = $request->beneficiario;
+        if($solic->forma_pago == 0 && $solic->tipo_pago == 1){
+            $solic->status = 4;
+            $solic->entrega_pago = Carbon::now();
+            $this->liberaDetalles($request->id);
+        }
+        $solic->save();
+    }
+
+    private function liberaDetalles($id){
+        $detalles = SpDetalle::select('id')->where('solic_id','=',$id)->get();
+
+        if(sizeof($detalles))
+            foreach($detalles as $det){
+                $detalle = SpDetalle::findOrFail($det->id);
+                if($detalle->tipo_mov != 0){
+                    $detalle->saldo = 0;
+                    $detalle->status = 0;
+                    if($detalle->pendiente_id != NULL){
+                        $det2 = SpDetalle::findOrFail($detalle->id);
+                        $det2->status = 0;
+                        $det2->saldo = 0;
+                        $det2->save();
+                    }
+                }
+                else{
+                    $detalle->saldo = $detalle->total - $detalle->pago;
+                    $detalle->status = 1;
+                }
+                $detalle->save();
+            }
     }
 }
