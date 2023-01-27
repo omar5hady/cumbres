@@ -29,6 +29,7 @@ class CreateSpDetallesTable extends Migration
             $table->boolean('vb')->default(1);// 1 Sin revisar 0 Rechazado 2 Aprobado
             $table->integer('pendiente_id')->nullable();
             $table->integer('contrato_id')->nullable();//Campo para enlazar un contrato en caso de ser necesario
+            $table->integer('lote_id')->nullable();//Campo para enlazar un lote en caso de ser necesario
             $table->timestamps();
         });
     }

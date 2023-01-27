@@ -2975,4 +2975,13 @@ class ContratoController extends Controller
         $pathtoFile = public_path() . '/files/datosFisc/constancias/' . $fileName;
         return response()->file($pathtoFile);
     }
+
+    public function searchContrato(Request $request){
+        return $contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->join('personal','creditos.prospecto_id','=','personal.id')
+            ->select('contratos.id','personal.nombre','personal.apellidos')
+            ->where('contratos.status','=',3)
+            ->where('creditos.lote_id','=',$request->lote_id)
+            ->get();
+    }
 }

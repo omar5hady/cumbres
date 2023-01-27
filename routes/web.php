@@ -1304,7 +1304,9 @@ Route::group(['middleware' => ['auth']],function(){
 
     ///////////////////       RUTAS SELECT    ////////////////////////////////////
         Route::get('/lotes/getManzanas','LoteController@getManzanas');
+        Route::get('/lote/getDatosLote','LoteController@getDatosLote');
         Route::get('/lotes/searchLotes','LoteController@searchLotes');
+        Route::get('/contratos/searchContrato','ContratoController@searchContrato');
 
         Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
         Route::get('/select_colonias','CiudadController@selectColonias');

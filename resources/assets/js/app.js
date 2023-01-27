@@ -237,6 +237,8 @@ const app = new Vue({
         proyectos : [],
         modelos : [],
         etapas: [],
+        manzanas:[],
+        lotes:[],
         buscar:''
     },
 
@@ -306,13 +308,40 @@ const app = new Vue({
         },
         selectManzanas(fraccionamiento, etapa){
             let me = this;
-            me.b_manzana="";
 
             me.arrayAllManzanas=[];
             var url = '/select_manzanas_etapa?buscar=' + fraccionamiento + '&buscar1='+ etapa;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayAllManzanas = respuesta.manzana;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        //Busqueda de manzanas por nombre de proyecto y nombre de etapa
+        getManzanas(proyecto, etapa){
+            let me = this;
+
+            me.manzanas = [];
+            var url = '/lotes/getManzanas?proyecto=' + proyecto + '&etapa='+ etapa;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.manzanas = respuesta;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        //Busqueda de lotes por nombre de proyecto, nombre de etapa y manzana
+        searchLotes(proyecto, etapa, manzana){
+            let me = this;
+
+            me.lotes = [];
+            var url = '/lotes/searchLotes?proyecto=' + proyecto + '&etapa='+ etapa + '&manzana=' + manzana;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.lotes = respuesta;
             })
             .catch(function (error) {
                 console.log(error);

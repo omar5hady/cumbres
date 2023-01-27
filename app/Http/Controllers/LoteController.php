@@ -828,6 +828,10 @@ class LoteController extends Controller
             ->distinct()
             ->get();
     }
+    public function getDatosLote(Request $request){
+        // if(!$request->ajax())return redirect('/');
+        return Lote::where('id','=',$request->lote_id)->first();
+    }
     //Funcion para retornar las manzanas de una etapa buscando por nombre de proyecto y nombre de etapa
     public function searchLotes(Request $request){
         // if(!$request->ajax())return redirect('/');
@@ -2255,7 +2259,7 @@ class LoteController extends Controller
     //Función que retorna las empresas constructoras
     public function selectEmpresaConstructora(Request $request){
         if(!$request->ajax())return redirect('/');
-        $empresas = ['Grupo Constructor Cumbres','CONCRETANIA','SER CUMBRES'];
+        $empresas = ['Grupo Constructor Cumbres','CONCRETANIA','SER CUMBRES', 'MAGNACASA'];
 
         return ['empresas'=>$empresas];
     }
