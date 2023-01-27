@@ -89,14 +89,8 @@
                         @if(Auth::user()->administracion == 1)
                             @include('sidebars.administracion')
                         @endif
-
                 <!-- RH -->
-
                             @include('sidebars.rh')
-
-
-
-
                 <!-- Oficina -->
                         @if(Auth::user()->inventarios == 1 || Auth::user()->prov_inventarios == 1)
                             @include('sidebars.oficina')
@@ -157,9 +151,7 @@
                         @endif
 
                 <!-- Modulo pagos internos --->
-                        @if(Auth::user()->rol_id == 1)
-                            @include('sidebars.pagosinternos')
-                        @endif
+                        @include('sidebars.pagosinternos')
                 <!-- Fin pago internos -->
 
                 <!-- Modulo Comisiones ---->

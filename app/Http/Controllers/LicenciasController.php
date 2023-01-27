@@ -51,8 +51,8 @@ class LicenciasController extends Controller
                     'modelos.archivo',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
                     DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito")
-                )
-                ->where('modelos.nombre','!=','Terreno');
+                );
+                //->where('modelos.nombre','!=','Terreno');
         //Criterios de busqueda
         if ($buscar != '') {
             switch($criterio){

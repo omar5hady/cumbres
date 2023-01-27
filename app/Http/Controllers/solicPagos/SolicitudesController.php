@@ -50,9 +50,15 @@ class SolicitudesController extends Controller
             || $usuario == 'dora.m'
         )$admin = 3;
 
+        $total = 0;
+
         $solicitudes = $this->querySolicitudes($request,$admin);
         foreach($solicitudes as $solicitud){
-            $solicitud->detalle = SpDetalle::where('solic_id','=',$solicitud->id)->get();
+            $total += $solicitud->importe;
+            $solicitud->detalle = SpDetalle::leftJoin('creditos','sp_detalles.contrato_id','=','creditos.id')
+                ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
+                ->select('sp_detalles.*','lotes.manzana','lotes.num_lote','lotes.sublote','creditos.id as folio')
+                ->where('sp_detalles.solic_id','=',$solicitud->id)->get();
             $solicitud->obs = SpObservacion::where('solicitud_id','=',$solicitud->id)->get();
             $solicitud->files = DocSolicPagosResource::collection(
                     SpFile::where('solic_id','=',$solicitud->id)->get()
@@ -61,7 +67,8 @@ class SolicitudesController extends Controller
 
         return [
             'solicitudes' => $solicitudes,
-            'admin' => $admin
+            'admin' => $admin,
+            'total' => $total
         ];
     }
 
@@ -80,6 +87,8 @@ class SolicitudesController extends Controller
         $b_vbdireccion = $request->b_vbdireccion;
         $b_rechazado = $request->b_rechazado;
         $b_empresa = $request->b_empresa;
+        $b_tipo_pago = $request->b_tipo_pago;
+        $b_forma_pago = $request->b_forma_pago;
 
         $encargado = Auth::user()->seg_pago;
         $dep = Personal::findOrFail(Auth::user()->id);
@@ -117,6 +126,13 @@ class SolicitudesController extends Controller
             }
             else{
                 $solicitudes = $solicitudes->where('sp_solicituds.rechazado','=', 0);
+            }
+
+            if($b_tipo_pago != ''){
+                $solicitudes = $solicitudes->where('sp_solicituds.tipo_pago','=',$b_tipo_pago);
+            }
+            if($b_forma_pago != ''){
+                $solicitudes = $solicitudes->where('sp_solicituds.forma_pago','=',$b_forma_pago);
             }
 
             $solicitudes = $solicitudes->orderBy('sp_solicituds.status','asc')
@@ -182,6 +198,8 @@ class SolicitudesController extends Controller
                     $detalle->status = 1;
                 $detalle->cargo         = $det['cargo'];
                 $detalle->pendiente_id  = $det['pendiente_id'];
+                $detalle->lote_id       = $det['lote_id'];
+                $detalle->contrato_id   = $det['contrato_id'];
                 $detalle->save();
             }
         }

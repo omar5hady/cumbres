@@ -38,6 +38,21 @@
                             </div>
                             <div class="col-md-12" v-if="encargado == 1 || admin > 0">
                                 <div class="input-group">
+                                    <input class="form-control col-md-2" type="text" disabled placeholder="Tipo Pago:">
+                                    <select class="form-control col-md-4" v-model="b_tipo_pago" @change="b_forma_pago = ''">
+                                        <option value="">Tipo Pago</option>
+                                        <option value="0">CF</option>
+                                        <option value="1">Banco</option>
+                                    </select>
+                                    <select class="form-control col-md-4" v-if="b_tipo_pago == 1" v-model="b_forma_pago">
+                                        <option value="">Forma de pago</option>
+                                        <option value="0">Transferencia</option>
+                                        <option value="1">Cheque</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group">
                                     <input class="form-control col-md-2" type="text" disabled placeholder="Solicitante:">
                                     <input type="text" class="form-control col-md-6" @keyup.enter="indexSolicitudes(1)" v-model="b_solicitante" placeholder="Solicitante a buscar">
                                 </div>
@@ -55,9 +70,9 @@
                                     <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="indexSolicitudes(1)">
                                         Buscar
                                     </Button>
-                                    <a class="btn btn-success" href="#">
+                                    <!-- <a class="btn btn-success" href="#">
                                         <i class="fa fa-file-text"></i>&nbsp; Excel
-                                    </a>
+                                    </a> -->
                                 </div>
                             </div>
                         </div>
@@ -479,10 +494,14 @@
                                                 </Button>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <th colspan="4">Total</th>
+                                            <th v-text="'$'+$root.formatNumber(total)"></th>
+                                        </tr>
                                     </template>
                                 </TableComponent>
                             </div>
-                            <!-- Listado por Pagar -->
+                            <!-- Listado Pagados -->
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 4 }" v-if="b_status === 4">
                                 <TableComponent :cabecera="[
                                     '',
@@ -676,7 +695,12 @@
                                             </div>
                                             <div class="col-md-3" v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
                                                 <label for="">&nbsp;</label>
-                                                <select class="form-control" v-model="datosDetalle.sub_obra" @change="getManzanas()">
+                                                <select class="form-control"
+                                                    v-model="datosDetalle.sub_obra"
+                                                    @change="$root.getManzanas(datosDetalle.obra, datosDetalle.sub_obra),
+                                                        datosDetalle.manzana = '',
+                                                        datosDetalle.lote_id = ''"
+                                                    >
                                                     <option value="">Etapa</option>
                                                     <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
                                                 </select>
@@ -684,16 +708,32 @@
                                             <template v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
                                                 <div class="col-md-3">
                                                     <label for="">&nbsp;</label>
-                                                    <select class="form-control" v-model="datosDetalle.manzana">
+                                                    <select class="form-control" v-model="datosDetalle.manzana"
+                                                        @change="$root.searchLotes(datosDetalle.obra, datosDetalle.sub_obra, datosDetalle.manzana),
+                                                        datosDetalle.lote_id = '',
+                                                        datosDetalle.num_lote = '', datosDetalle.sublote = ''"
+                                                    >
                                                         <option value="">Manzana</option>
-                                                        <option v-for="m in arrayManzanas" :key="m.manzana" :value="m.manzana" v-text="m.manzana"></option>
+                                                        <option v-for="m in $root.$data.manzanas" :key="m.manzana" :value="m.manzana" v-text="m.manzana"></option>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <label for="">Lotes</label>
-                                                    <select class="form-control" multiple v-model="datosDetalle.lotes">
-                                                        <option v-for="l in arrayLotes" :key="l.id" :value="l.id" v-text="l.sublote ? `${l.num_lote} ${l.sublote}` : l.num_lote"></option>
-                                                    </select>
+                                                    <template v-if="datosDetalle.manzana != ''">
+                                                        <label for="">Lotes</label>
+                                                        <select class="form-control" v-model="datosDetalle.lote_id" @change="searchContrato(datosDetalle.lote_id), setLote(datosDetalle.lote_id)">
+                                                            <option value="">Lote</option>
+                                                            <option v-for="l in $root.$data.lotes" :key="l.id" :value="l.id" v-text="l.sublote ? `${l.num_lote} ${l.sublote}` : l.num_lote"></option>
+                                                        </select>
+                                                    </template>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <template v-if="contratoVenta.length">
+                                                        <label for="">¿Añadir a contrato?</label>
+                                                        <select class="form-control" v-model="datosDetalle.contrato_id">
+                                                            <option value="">No</option>
+                                                            <option :value="contratoVenta[0].id">{{`${contratoVenta[0].id}. ${contratoVenta[0].nombre} ${contratoVenta[0].apellidos}`}}</option>
+                                                        </select>
+                                                    </template>
                                                 </div>
                                             </template>
                                             <div v-else class="col-md-8"></div>
@@ -715,9 +755,9 @@
                                             <div class="col-md-2">
                                                 <label for="">Tipo de Mov.</label>
                                                 <select class="form-control" v-model="datosDetalle.tipo_mov">
-                                                    <option value="0">Anticipo</option>
-                                                    <option value="1">Liquidación</option>
-                                                    <option value="2">Pago Cta</option>
+                                                    <option :value="0">Anticipo</option>
+                                                    <option :value="1">Liquidación</option>
+                                                    <option :value="2">Pago Cta</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-7">
@@ -757,7 +797,7 @@
                                         <div class="col-md-12">
                                             <center>
                                                 <TableComponent :cabecera="[
-                                                    '','Obra', 'Cargo', 'Subconcepto', 'Obs.', 'Tipo Mov.', 'Este pago'
+                                                    '','Obra', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Este pago'
                                                 ]">
                                                     <template v-slot:tbody>
                                                         <tr v-for="det in solicitudData.detalle"
@@ -769,14 +809,23 @@
                                                                     <i class="icon-trash"></i>
                                                                 </button>
                                                             </td>
-                                                            <td class="td2">{{det.obra}} {{det.sub_obra }}</td>
+                                                            <td class="td2">
+                                                                {{det.obra}} {{det.sub_obra }}
+                                                            </td>
+                                                            <td class="td2">
+                                                                {{ det.contrato_id ? 'Contrato: ' + det.contrato_id +'. ' : ''}}
+                                                                {{ det.lote_id ?
+                                                                    det.sublote ? 'Lote: ' + det.num_lote + ' ' + det.sublote
+                                                                    : 'Lote: ' + det.num_lote : ''
+                                                                }}
+                                                                </td>
                                                             <td class="td2">{{det.cargo}}</td>
                                                             <td>{{det.concepto}}</td>
                                                             <td>{{det.observacion}}</td>
                                                             <td class="td2">
                                                                 {{
-                                                                    (det.tipo_mov == 0) ? 'Anticipo'
-                                                                    : (det.tipo_mov == 1) ? 'Liquidación'
+                                                                    (det.tipo_mov === 0) ? 'Anticipo'
+                                                                    : (det.tipo_mov === 1) ? 'Liquidación'
                                                                     : 'Pago Cta'
                                                                 }}
                                                             </td>
@@ -785,7 +834,7 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td colspan="6"></td>
+                                                            <td colspan="7"></td>
                                                             <th>$ {{$root.formatNumber(solicitudData.saldo = sumaDet)}}</th>
                                                         </tr>
                                                     </template>
@@ -944,8 +993,10 @@
                                         Autorizar solicitud
                                     </Button>
                                 </template>
-                                <Button v-if="admin === 3 && solicitudData.status == 3 && solicitudData.fecha_pago == null
-                                    || usuario == 'shady' && solicitudData.status == 3 && solicitudData.fecha_pago == null"
+                                <Button v-if="(admin === 3 && solicitudData.status == 3
+                                        && (solicitudData.fecha_pago == null || solicitudData.fecha_pago == ''))
+                                        || (usuario == 'shady' && solicitudData.status == 3
+                                        && (solicitudData.fecha_pago == null || solicitudData.fecha_pago == ''))"
                                     :icon="'fa fa-money'"
                                     @click="abrirModal('pagar')">
                                     Generar pago
@@ -1027,27 +1078,27 @@
                 >
                     <template v-slot:body>
                         <RowModal :label1="'Fecha de pago'">
-                            <input :disabled="tipoAccion==2" type="date" class="form-control" v-model="solicitudData.fecha_pago">
+                            <input :disabled="solicitudData.accionPago==2" type="date" class="form-control" v-model="solicitudData.fecha_pago">
                         </RowModal>
                         <RowModal :label1="'Importe a pagar'">
                             <h6>${{$root.formatNumber(solicitudData.importe)}}</h6>
                         </RowModal>
                         <RowModal v-if="solicitudData.tipo_pago == 0
                             || solicitudData.tipo_pago == 1 && solicitudData.forma_pago == 0" :label1="'Folio'">
-                            <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="solicitudData.num_factura">
+                            <input :disabled="solicitudData.accionPago==2" type="text" class="form-control" v-model="solicitudData.num_factura">
                         </RowModal>
                         <template v-if="solicitudData.tipo_pago == 1">
                             <RowModal :clsRow1="'col-md-6'" :label1="'Cuenta de salida'">
-                                <select :disabled="tipoAccion==2" class="form-control" v-model="solicitudData.cuenta_pago">
+                                <select :disabled="solicitudData.accionPago==2" class="form-control" v-model="solicitudData.cuenta_pago">
                                     <option value="">Seleccione</option>
                                     <option v-for="c in arrayCuentasPago" :key="c.id" :value="c.num_cuenta + '-' + c.banco" v-text="c.num_cuenta + '-' + c.banco"></option>
                                 </select>
                             </RowModal>
                             <RowModal v-if="solicitudData.forma_pago == 1"
                                 :label1="'Número de Cheque:'" :clsRow2="'col-md-4'" :label2="'A Beneficiario?'">
-                                <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="solicitudData.num_factura">
+                                <input :disabled="solicitudData.accionPago==2" type="text" class="form-control" v-model="solicitudData.num_factura">
                                 <template v-slot:input2>
-                                    <select :disabled="tipoAccion==2" class="form-control" v-model="solicitudData.beneficiario">
+                                    <select :disabled="solicitudData.accionPago==2" class="form-control" v-model="solicitudData.beneficiario">
                                         <option value="0">No</option>
                                         <option value="1">Si</option>
                                     </select>
@@ -1057,7 +1108,7 @@
                     </template>
                     <template v-slot:buttons-footer>
                         <Button
-                            v-if="solicitudData.fecha_pago != '' && solicitudData.num_factura != '' && tipoAccion == 1"
+                            v-if="solicitudData.fecha_pago != '' && solicitudData.num_factura != '' && solicitudData.accionPago == 1"
                             :btnClass="'btn-success'" :icon="'fa fa-money'"
                             @click="generarPago()"
                         >Crear pago</Button>
@@ -1149,6 +1200,7 @@ export default {
                 'guadalupe.ff',
                 'shady'
             ],
+            contratoVenta:{},
             arraySolic: [],
             empresas: [],
             arrayProveedores : [],
@@ -1174,6 +1226,7 @@ export default {
             b_rechazado: '',
             b_empresa : '',
             b_tipo_pago : '',
+            b_forma_pago : '',
             loading : false,
             id : '',
             comentario : '',
@@ -1188,6 +1241,7 @@ export default {
 
             vista:0,
             admin:0,
+            total:0,
             gerente: null,
 
             archivo: '',
@@ -1202,6 +1256,20 @@ export default {
         },
     },
     methods: {
+        setLote(id){
+            let me = this;
+            me.datosDetalle.num_lote = '';
+            me.datosDetalle.sublote = '';
+            var url = '/lote/getDatosLote?lote_id=' + id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.datosDetalle.num_lote = respuesta.num_lote;
+                me.datosDetalle.sublote = respuesta.sublote;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         selectCuenta(empresa){
             let me = this;
             me.arrayCuentas=[];
@@ -1424,6 +1492,21 @@ export default {
         onSelectFile(){
             this.$refs.fileSelector.click()
         },
+        //Busqueda de lotes por nombre de proyecto, nombre de etapa y manzana
+        searchContrato(lote_id){
+            let me = this;
+
+            me.contratoVenta = {};
+            me.datosDetalle.contrato_id = '';
+            var url = '/contratos/searchContrato?lote_id=' + lote_id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.contratoVenta = respuesta;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         formSubmitFile(e) {
             e.preventDefault();
             let currentObj = this;
@@ -1564,7 +1647,8 @@ export default {
         addDetalle(){
             let me = this;
             if(me.verificarCaptura()){
-                me.solicitudData.detalle.push(me.datosDetalle);
+                const detalle = {...me.datosDetalle}
+                me.solicitudData.detalle.push(detalle);
                 me.limpiarFormularioDetalle();
                 const toast = Swal.mixin({
                     toast: true,
@@ -1594,7 +1678,9 @@ export default {
             return res;
         },
         limpiarFormularioDetalle(){
-            this.datosDetalle = {
+            let me = this;
+            me.contratoVenta = {};
+            me.datosDetalle = {
                 id  : '',
                 obra: '',
                 sub_obra: '',
@@ -1607,8 +1693,8 @@ export default {
                 saldo : 0,
                 pendiente_id : null,
                 manzana: '',
-                lotes : [],
-                contrato_id : null
+                lote_id: '',
+                contrato_id : ''
             }
         },
         vistaFormulario(accion,data=[]){
@@ -1753,6 +1839,8 @@ export default {
                 + '&b_fecha1=' + me.b_fecha1
                 + '&b_fecha2=' + me.b_fecha2
                 + '&b_rechazado=' + me.b_rechazado
+                + '&b_tipo_pago=' + me.b_tipo_pago
+                + '&b_forma_pago=' + me.b_forma_pago
                 + '&b_status=' + me.b_status;
             axios
                 .get(url)
@@ -1760,6 +1848,7 @@ export default {
                     var respuesta = response.data;
                     me.arraySolic = respuesta.solicitudes;
                     me.admin = respuesta.admin;
+                    me.total = respuesta.total;
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -1816,14 +1905,6 @@ export default {
 
             if(parseFloat(me.datosDetalle.total) < parseFloat(me.datosDetalle.pago))
                 me.datosDetalle.pago = me.datosDetalle.total
-
-            // me.saldo = parseFloat(me.solicitudData.importe);
-            // me.solicitudData.detalle.forEach(e => {
-            //     me.saldo -= parseFloat(e.pago);
-            // });
-
-            // if(me.saldo < me.datosDetalle.pago)
-            //     me.datosDetalle.pago = me.saldo;
         },
         getCargos(){
             let me = this;
@@ -1916,7 +1997,7 @@ export default {
                     me.solicitudData.beneficiario = 0;
                     me.modal = 4;
                     me.tituloModal = 'Generar pago'
-                    me.tipoAccion = 1;
+                    me.solicitudData.accionPago = 1;
                     break;
                 }
                 case 'verPago':{
@@ -1924,7 +2005,7 @@ export default {
                     me.selectCuenta(me.solicitudData.empresa_solic);
                     me.modal = 4;
                     me.tituloModal = 'Pago'
-                    me.tipoAccion = 2;
+                    me.solicitudData.accionPago = 2;
                     break;
                 }
                 case 'comprobante':{
