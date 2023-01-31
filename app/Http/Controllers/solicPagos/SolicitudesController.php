@@ -94,9 +94,10 @@ class SolicitudesController extends Controller
         $dep = Personal::findOrFail(Auth::user()->id);
 
         $solicitudes = SpSolicitud::join('personal as pv','sp_solicituds.proveedor_id','=','pv.id')
-            ->join('proveedores as prov','pv.id','=','prov.id')
+            ->join('personal as prov','pv.id','=','prov.id')
             ->join('personal as user','sp_solicituds.solicitante_id','=','user.id')
-            ->select('sp_solicituds.*', 'prov.proveedor','pv.rfc as rfc_prov', 'prov.const_fisc',
+            ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
+                'pv.rfc as rfc_prov',
                 DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante")
             );
             if($b_empresa != '')
@@ -157,21 +158,24 @@ class SolicitudesController extends Controller
 
     private function storeSolicitud($solicitud){
         $p = Personal::findOrFail(Auth::user()->id);
-        $prov = Proveedor::findOrFail($solicitud['proveedor_id']);
+        $prov = Proveedor::where('id','=',$solicitud['proveedor_id'])->get();
 
         $solic = new SpSolicitud();
         $solic->empresa_solic   = $solicitud['empresa_solic'];
         $solic->solicitante_id  = $p->id;
         $solic->departamento    = $p->departamento_id;
-        $solic->proveedor_id    = $prov->id;
+        $solic->proveedor_id    = $solicitud['proveedor_id'];
         $solic->importe         = $solicitud['importe'];
         $solic->tipo_pago       = $solicitud['tipo_pago'];
         $solic->forma_pago      = $solicitud['forma_pago'];
         $solic->status          = 0;
         $solic->fecha_compra    = Carbon::now();
-        $solic->banco           = $prov->banco;
-        $solic->num_cuenta      = $prov->num_cuenta;
-        $solic->clabe           = $prov->clabe;
+        if(sizeof($prov))
+        {
+            $solic->banco           = $prov[0]->banco;
+            $solic->num_cuenta      = $prov[0]->num_cuenta;
+            $solic->clabe           = $prov[0]->clabe;
+        }
         $solic->save();
 
         return $solic->id;
@@ -206,18 +210,21 @@ class SolicitudesController extends Controller
     }
 
     private function updateSolicitud($solicitud){
-        $prov = Proveedor::findOrFail($solicitud['proveedor_id']);
+        $prov = Proveedor::where('id','=',$solicitud['proveedor_id'])->get();
 
         $solic = SpSolicitud::findOrFail($solicitud['id']);
-        $solic->empresa_solic   = $solicitud['empresa_solic'];
-        $solic->proveedor_id    = $prov->id;
-        $solic->importe         = $solicitud['importe'];
-        $solic->tipo_pago       = $solicitud['tipo_pago'];
-        $solic->forma_pago      = $solicitud['forma_pago'];
-        $solic->banco           = $prov->banco;
-        $solic->num_cuenta      = $prov->num_cuenta;
-        $solic->clabe           = $prov->clabe;
-        $solic->rechazado       = 0;
+        $solic->empresa_solic       = $solicitud['empresa_solic'];
+        $solic->proveedor_id        = $solicitud['proveedor_id'];
+        $solic->importe             = $solicitud['importe'];
+        $solic->tipo_pago           = $solicitud['tipo_pago'];
+        $solic->forma_pago          = $solicitud['forma_pago'];
+        if(sizeof($prov))
+        {
+            $solic->banco           = $prov[0]->banco;
+            $solic->num_cuenta      = $prov[0]->num_cuenta;
+            $solic->clabe           = $prov[0]->clabe;
+        }
+        $solic->rechazado           = 0;
         $solic->save();
 
         return $solic->id;
