@@ -1504,8 +1504,11 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Cofinavit' && listado==3 || tipo_credito=='Cofinavit' && listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
+                                                    <div class="col-md-3"
+                                                        v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                        <div class="form-group"
+                                                            v-if="tipo_credito=='Cofinavit'
+                                                                || tipo_credito=='COFINAVIT I.A'">
                                                             <label for="">Infonavit</label>
                                                             <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>

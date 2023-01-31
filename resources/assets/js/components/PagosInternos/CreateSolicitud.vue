@@ -51,7 +51,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12" v-if="admin > 0 || encargado == 1">
                                 <div class="input-group">
                                     <input class="form-control col-md-2" type="text" disabled placeholder="Solicitante:">
                                     <input type="text" class="form-control col-md-6" @keyup.enter="indexSolicitudes(1)" v-model="b_solicitante" placeholder="Solicitante a buscar">
@@ -630,7 +630,7 @@
                                             </div>
                                         </div>
 
-                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1 && solicitudData.status < 2">
+                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1 && solicitudData.status > 1">
                                             <div class="col-md-3">
                                                 <label for="">Banco</label>
                                                 <input type="text" class="form-control"
@@ -648,7 +648,10 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label for="">&nbsp;</label>
-                                                <button class="btn btn-warning form-control" @click="abrirModal('banco')">Cambiar Cuenta</button>
+                                                <button v-if="admin == 3 || usuario == 'shady'"
+                                                    class="btn btn-warning form-control"
+                                                    @click="abrirModal('banco')"
+                                                >Cambiar Cuenta</button>
                                             </div>
                                         </template>
 
@@ -872,7 +875,7 @@
                                                         <div class="form-archivo">
                                                             <input ref="fileSelector"
                                                                 v-show="false"
-                                                                type="file" accept="application/pdf"
+                                                                type="file"
                                                                 v-on:change="onChangeFile"
                                                             />
 
@@ -1072,6 +1075,7 @@
                     </template>
                 </ModalComponent>
 
+                <!-- Modal para generar el pago -->
                 <ModalComponent :titulo="tituloModal"
                     v-if="modal == 4"
                     @closeModal="cerrarModal()"
@@ -1082,6 +1086,16 @@
                         </RowModal>
                         <RowModal :label1="'Importe a pagar'">
                             <h6>${{$root.formatNumber(solicitudData.importe)}}</h6>
+                        </RowModal>
+                        <RowModal :label1="'Proveedor'" :clsRow1="'col-md-6'">
+                            <input disabled type="text" class="form-control" v-model="solicitudData.proveedor">
+                        </RowModal>
+                        <RowModal :label1="'Cuenta'" :clsRow2="'col-md-4'" :label2="'Clabe'"
+                            v-if="solicitudData.tipo_pago == 1 && solicitudData.forma_pago == 0">
+                                <label class="form-control">{{solicitudData.banco}} - {{solicitudData.num_cuenta}}</label>
+                            <template v-slot:input2>
+                                <label class="form-control">{{solicitudData.clabe}}</label>
+                            </template>
                         </RowModal>
                         <RowModal v-if="solicitudData.tipo_pago == 0
                             || solicitudData.tipo_pago == 1 && solicitudData.forma_pago == 0" :label1="'Folio'">
@@ -1115,6 +1129,7 @@
                     </template>
                 </ModalComponent>
 
+                <!-- Modal para subir comprobante de pago -->
                 <ModalComponent :titulo="tituloModal"
                     v-if="modal == 5"
                     @closeModal="cerrarModal()"
@@ -1860,7 +1875,8 @@ export default {
             var url = '/select_proveedor?proveedor';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
-                me.arrayProveedores = respuesta.proveedor;
+                const data = [...respuesta.proveedor, ...respuesta.usuarios, ...respuesta.clientes]
+                me.arrayProveedores = data;
             })
             .catch(function (error) {
                 console.log(error);
@@ -1949,7 +1965,8 @@ export default {
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 q: search
-                me.proveedoresForm = respuesta.proveedor;
+                const data = [...respuesta.proveedor, ...respuesta.usuarios, ...respuesta.clientes]
+                me.proveedoresForm = data;
                 loading(false)
             })
             .catch(function (error) {

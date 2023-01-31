@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Proveedor;
 use App\Personal;
+use App\Cliente;
 use App\User;
 use App\ProvCuenta;
 use Auth;
@@ -208,13 +209,35 @@ class ProveedorController extends Controller
 
     public function selectProveedor(Request $request){
         $proveedor = Proveedor::select('id','proveedor');
-        if($request->proveedor != '')
+        $usuarios = User::join('personal','users.id','=','personal.id')
+            ->select('users.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
+            ->where('users.condicion','=',1)
+            ->where('users.rol_id','!=',10);
+        $clientes = Cliente::join('personal','clientes.id','=','personal.id')
+                ->select('clientes.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
+                ->where('clientes.clasificacion','!=',6)
+                ->where('clientes.clasificacion','!=',7);
+
+        if($request->proveedor != ''){
             $proveedor = $proveedor->where('proveedor','like','%'.$request->proveedor.'%')
             ->limit(10);
 
+            $usuarios = $usuarios->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->proveedor . '%')
+            ->limit(10);
+
+            $clientes = $clientes->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"),'like','%'.$request->proveedor.'%')
+            ->limit(10);
+        }
+
         $proveedor = $proveedor->get();
+        $usuarios = $usuarios->get();
+        $clientes = $clientes->get();
 
 
-        return ['proveedor' => $proveedor];
+        return [
+                    'proveedor' => $proveedor,
+                    'usuarios' => $usuarios,
+                    'clientes' => $clientes,
+                ];
     }
 }
