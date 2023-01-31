@@ -367,6 +367,7 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////// RUTAS SOLICITUDES DE PAGO ////////////////////
     Route::get('/sp/getCargos','solicPagos\SolicitudesController@getCargos');
     Route::get('/sp/getConceptos','solicPagos\SolicitudesController@getConceptos');
+    Route::get('/sp/getDetallesPendientes','solicPagos\SolicitudesController@getDetallesPendientes');
 
     ///////////////////// RUTAS INGRESOS CONCRETANIA
         Route::get('/ingresosConcretania/pendeintesIngresar','DepositoController@pendeintesIngresar');

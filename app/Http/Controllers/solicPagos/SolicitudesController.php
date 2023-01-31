@@ -196,12 +196,16 @@ class SolicitudesController extends Controller
                 $detalle->total         = $det['total'];
                 $detalle->pago          = $det['pago'];
                 $detalle->saldo         = $det['saldo'];
-                if($detalle->saldo == 0)
-                    $detalle->status = 0;
-                else
-                    $detalle->status = 1;
+                $detalle->status = 0;
                 $detalle->cargo         = $det['cargo'];
                 $detalle->pendiente_id  = $det['pendiente_id'];
+
+                if($detalle->pendiente_id != ''){
+                    $det2 = SpDetalle::findOrFail($detalle->pendiente_id );
+                    $det2->status = 2;
+                    $det2->save();
+                }
+
                 $detalle->lote_id       = $det['lote_id'];
                 $detalle->contrato_id   = $det['contrato_id'];
                 $detalle->save();
@@ -321,8 +325,8 @@ class SolicitudesController extends Controller
         if($solic->forma_pago == 0 && $solic->tipo_pago == 1){
             $solic->status = 4;
             $solic->entrega_pago = Carbon::now();
-            $this->liberaDetalles($request->id);
         }
+        $this->liberaDetalles($request->id);
         $solic->save();
     }
 
@@ -332,21 +336,34 @@ class SolicitudesController extends Controller
         if(sizeof($detalles))
             foreach($detalles as $det){
                 $detalle = SpDetalle::findOrFail($det->id);
-                if($detalle->tipo_mov != 0){
+                if($detalle->tipo_mov == 1){
                     $detalle->saldo = 0;
                     $detalle->status = 0;
-                    if($detalle->pendiente_id != NULL){
-                        $det2 = SpDetalle::findOrFail($detalle->id);
-                        $det2->status = 0;
-                        $det2->saldo = 0;
-                        $det2->save();
-                    }
                 }
                 else{
                     $detalle->saldo = $detalle->total - $detalle->pago;
                     $detalle->status = 1;
                 }
+                if($detalle->pendiente_id != NULL){
+                    $det2 = SpDetalle::findOrFail($detalle->id);
+                    $det2->saldo = $det2->saldo - $detalle->pago;
+                    if($det2->saldo == 0)
+                        $det2->status = 0;
+                    else
+                        $det2->status = 1;
+                    $det2->save();
+                }
                 $detalle->save();
             }
+    }
+
+    public function getDetallesPendientes(Request $request){
+        return SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
+            ->select('sp_detalles.*')
+            ->where('solic.solicitante_id','=',Auth::user()->id)
+            ->where('solic.proveedor_id','=',$request->proveedor_id)
+            ->where('sp_detalles.saldo','>',0)
+            ->where('sp_detalles.status','=',1)
+            ->get();
     }
 }
