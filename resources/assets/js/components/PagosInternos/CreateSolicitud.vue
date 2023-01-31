@@ -195,9 +195,9 @@
                                                         <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar" v-if="solic.vb_gerente == 0"
                                                             @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
                                                         ></Button>
-                                                        <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
+                                                        <!-- <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                                 :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
-                                                        ></Button>
+                                                        ></Button> -->
                                                         <Button :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar" v-if="solic.vb_gerente == 0"
                                                                 :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                         ></Button>
@@ -613,8 +613,8 @@
                                             <label> Forma de pago </label>
                                             <select class="form-control" v-model="solicitudData.tipo_pago" :disabled="tipoAccion == 3 && admin < 3"
                                                 @change="solicitudData.forma_pago = ''">
-                                                <option value="0">C.F.</option>
-                                                <option value="1">Bancos</option>
+                                                <option :value="0">C.F.</option>
+                                                <option :value="1">Bancos</option>
                                             </select>
                                         </div>
                                         <div class="col-md-3">
@@ -624,13 +624,13 @@
                                                     :disabled="tipoAccion == 3 && admin < 3"
                                                 >
                                                     <option value="">Metodo de pago</option>
-                                                    <option value="0">Transferencia</option>
-                                                    <option value="1">Cheque</option>
+                                                    <option :value="0">Transferencia</option>
+                                                    <option :value="1">Cheque</option>
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1 && solicitudData.status > 1">
+                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1 && solicitudData.status >= 1">
                                             <div class="col-md-3">
                                                 <label for="">Banco</label>
                                                 <input type="text" class="form-control"
@@ -663,7 +663,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card mb-0">
+                            <div class="card mb-0"
+                                v-show="solicitudData.proveedor_id != '' && solicitudData.empresa_solic != ''
+                                    && (solicitudData.tipo_pago === 0
+                                    || solicitudData.tipo_pago === 1 && (solicitudData.forma_pago === 0 || solicitudData.forma_pago === 1))">
                                 <div class="card-header" id="headingTwo" role="tab">
                                     <h5 class="mb-0">
                                         <a data-toggle="collapse" href="#collapseTwo" aria-expanded="false"
@@ -679,9 +682,55 @@
                                         <div class="col-md-12">
                                             <div class="form-group"><center><h3></h3></center></div>
                                         </div>
-                                        <div class="col-md-12">
+
+
+                                        <template v-if="arrayPendientes.length && tipoAccion == 1">
+                                            <div class="col-md-12">
+                                                <center>
+                                                    <h6 style="color:#"> Cargos pendientes por pagar. </h6>
+                                                </center>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <TableComponent :cabecera="[
+                                                    '','Obra', ' ', 'Cargo', 'Subconcepto','Obs.', 'Saldo pendiente',
+                                                ]">
+                                                    <template v-slot:tbody>
+                                                        <tr v-for="det in arrayPendientes"
+                                                            :key="det.id">
+                                                            <td>
+                                                                <button class="btn btn-primary" title="Agregar"
+                                                                    @click="añadirPendiente(det)"
+                                                                >
+                                                                    <i class="icon-plus"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td class="td2">
+                                                                {{det.obra}} {{det.sub_obra }}
+                                                            </td>
+                                                            <td class="td2">
+                                                                {{ det.contrato_id ? 'Contrato: ' + det.contrato_id +'. ' : ''}}
+                                                                {{ det.lote_id ?
+                                                                    det.sublote ? 'Lote: ' + det.num_lote + ' ' + det.sublote
+                                                                    : 'Lote: ' + det.num_lote : ''
+                                                                }}
+                                                                </td>
+                                                            <td class="td2">{{det.cargo}}</td>
+                                                            <td>{{det.concepto}}</td>
+                                                            <td>{{det.observacion}}</td>
+                                                            <td class="td2">
+                                                                ${{$root.formatNumber(det.saldo)}}
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
+                                            </div>
+                                        </template>
+
+                                         <div class="col-md-12">
+                                            <hr>
                                             <center>
-                                                <h6 style="color:#"> Detalle de la solicitud </h6>
+                                                <h6 style="color:#"> Nuevo Detalle </h6>
                                             </center>
                                         </div>
 
@@ -771,7 +820,7 @@
                                             <div class="col-md-3">
                                                 <label for="">Importe a contratar <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
                                                 <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
-                                                    type="text" v-model="datosDetalle.total">
+                                                    type="text" v-model="datosDetalle.total" @change="datosDetalle.tipo_mov == 1 ? datosDetalle.pago = datosDetalle.total : datosDetalle.pago = 0">
                                             </div>
                                             <div class="col-md-2" v-if="datosDetalle.total > 0">
                                                 <label for="">&nbsp;</label>
@@ -793,8 +842,16 @@
                                             </div>
                                         </template>
 
+                                        <hr>
+
                                         <div class="col-md-12">
                                             <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+
+                                         <div class="col-md-12">
+                                            <center>
+                                                <h5 style="color:#"> Detalle de la solicitud </h5>
+                                            </center>
                                         </div>
 
                                         <div class="col-md-12">
@@ -902,7 +959,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="boton-modal" v-if="cargando==0">
+                                                        <div class="boton-modal" v-if="cargando==0 && newArchivo.tipo != ''">
                                                             <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
                                                                 type="submit" class="btn btn-scarlet"
                                                             >
@@ -1215,6 +1272,7 @@ export default {
                 'guadalupe.ff',
                 'shady'
             ],
+            arrayPendientes:[],
             contratoVenta:{},
             arraySolic: [],
             empresas: [],
@@ -1681,6 +1739,41 @@ export default {
             }
 
         },
+        añadirPendiente(det){
+            let me = this;
+            const detalle = {
+                id : '',
+                solic_id  : det.id,
+                obra: det.obra,
+                sub_obra: det.sub_obra,
+                cargo : det.cargo,
+                concepto : det.concepto,
+                observacion : 'Monto pendiente: ' + det.observacion,
+                tipo_mov : 1,
+                total : det.saldo,
+                pago : det.saldo,
+                saldo : 0,
+                pendiente_id : det.id,
+                manzana: '',
+                lote_id: det.lote_id,
+                contrato_id : det.contrato_id
+            }
+                me.solicitudData.detalle.push(detalle);
+                me.arrayPendientes = me.arrayPendientes.filter(
+                        a => a != det
+                )
+
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+                    toast({
+                    type: 'success',
+                    title: 'Detalle agregado'
+                })
+        },
         verificarCaptura(){
             let me = this;
             let res = false;
@@ -1933,6 +2026,17 @@ export default {
                 console.log(error);
             });
         },
+        getDetallesPendientes(id){
+            let me = this;
+            me.arrayPendientes=[];
+            var url = '/sp/getDetallesPendientes?proveedor_id='+id;
+            axios.get(url).then(function (response) {
+                me.arrayPendientes = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         getConceptos(cargo){
             let me = this;
             me.arrayConceptos=[];
@@ -1979,6 +2083,7 @@ export default {
             //me.loading = true;
             me.solicitudData.proveedor_id = val1.id;
             me.solicitudData.proveedor = val1.proveedor;
+            me.getDetallesPendientes(val1.id);
         },
         cerrarModal() {
             this.modal = 0;

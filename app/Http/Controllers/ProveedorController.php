@@ -215,7 +215,6 @@ class ProveedorController extends Controller
             ->where('users.rol_id','!=',10);
         $clientes = Cliente::join('personal','clientes.id','=','personal.id')
                 ->select('clientes.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
-                ->where('clientes.clasificacion','!=',6)
                 ->where('clientes.clasificacion','!=',7);
 
         if($request->proveedor != ''){
