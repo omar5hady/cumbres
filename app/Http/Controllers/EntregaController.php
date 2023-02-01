@@ -380,14 +380,14 @@ class EntregaController extends Controller
 
         $contrato->plano = PlanoProyecto::join('dropbox_files as dp','plano_proyectos.file_id','=','dp.id')
         ->select('dp.public_url')
-        ->where('plano_proyectos.tipo','=','LICENCIA')
+        ->where('plano_proyectos.tipo','like','%LICENCIA%')
         ->where('plano_proyectos.lote_id','=',$contrato->id)
         ->orderBy('plano_proyectos.id','desc')->first();
         //return $contrato;
 
         if($contrato->plano != NULL){
             Mail::to($contrato->email)->send(new WelcomeNotification($contrato));
-            // Mail::to('0m4r5h4dy@gmail.com')->send(new WelcomeNotification($contrato));
+            Mail::to('alejandra.hernandez@grupocumbres.com')->send(new WelcomeNotification($contrato));
             // Mail::to('omar_vazquez_7@hotmail.com')->send(new WelcomeNotification($contrato));
         }
     }
