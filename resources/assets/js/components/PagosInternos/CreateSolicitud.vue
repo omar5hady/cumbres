@@ -51,6 +51,12 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-12" v-if="admin > 0">
+                                <div class="input-group">
+                                    <input class="form-control col-md-2" type="text" disabled placeholder="Cuenta de salida:">
+                                    <input type="text" class="form-control col-md-6" @keyup.enter="indexSolicitudes(1)" v-model="b_cuenta_pago" placeholder="# Cuenta de salida">
+                                </div>
+                            </div>
                             <div class="col-md-12" v-if="admin > 0 || encargado == 1">
                                 <div class="input-group">
                                     <input class="form-control col-md-2" type="text" disabled placeholder="Solicitante:">
@@ -70,9 +76,20 @@
                                     <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="indexSolicitudes(1)">
                                         Buscar
                                     </Button>
-                                    <!-- <a class="btn btn-success" href="#">
+                                    <a class="btn btn-success" :href="'/sp/printExcel?b_proveedor=' + b_proveedor
+                                        + '&b_empresa=' + b_empresa
+                                        + '&b_solicitante=' + b_solicitante
+                                        + '&b_vbgerente=' + b_vbgerente
+                                        + '&b_vbdireccion=' + b_vbdireccion
+                                        + '&b_fecha1=' + b_fecha1
+                                        + '&b_fecha2=' + b_fecha2
+                                        + '&b_rechazado=' + b_rechazado
+                                        + '&b_tipo_pago=' + b_tipo_pago
+                                        + '&b_forma_pago=' + b_forma_pago
+                                        + '&b_cuenta_pago=' + b_cuenta_pago
+                                        + '&b_status=' + b_status">
                                         <i class="fa fa-file-text"></i>&nbsp; Excel
-                                    </a> -->
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -280,6 +297,10 @@
                                                         </Button>
                                                     </td>
                                                 </tr>
+                                                 <tr>
+                                                    <th colspan="4">Total</th>
+                                                    <th v-text="'$'+$root.formatNumber(total)"></th>
+                                                </tr>
                                             </template>
                                         </TableComponent>
                                     </div>
@@ -319,6 +340,10 @@
                                                 >Observaciones
                                                 </Button>
                                             </td>
+                                        </tr>
+                                         <tr>
+                                            <th colspan="4">Total</th>
+                                            <th v-text="'$'+$root.formatNumber(total)"></th>
                                         </tr>
                                     </template>
                                 </TableComponent>
@@ -392,6 +417,10 @@
                                                         </Button>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <th colspan="4">Total</th>
+                                                    <th v-text="'$'+$root.formatNumber(total)"></th>
+                                                </tr>
                                             </template>
                                         </TableComponent>
                                     </div>
@@ -441,6 +470,10 @@
                                                         >Observaciones
                                                         </Button>
                                                     </td>
+                                                </tr>
+                                                 <tr>
+                                                    <th colspan="4">Total</th>
+                                                    <th v-text="'$'+$root.formatNumber(total)"></th>
                                                 </tr>
                                             </template>
                                         </TableComponent>
@@ -551,10 +584,13 @@
                                                 </Button>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <th colspan="4">Total</th>
+                                            <th v-text="'$'+$root.formatNumber(total)"></th>
+                                        </tr>
                                     </template>
                                 </TableComponent>
                             </div>
-
 
                         </div>
                         <Nav :current="arraySolic.current_page ? arraySolic.current_page : 1"
@@ -653,6 +689,18 @@
                                                     @click="abrirModal('banco')"
                                                 >Cambiar Cuenta</button>
                                             </div>
+
+                                            <div class="col-md-6">
+                                                <label for="">Cuenta de salida: </label>
+                                                <select class="form-control" v-model="solicitudData.cuenta_pago" :disabled="solicitudData.status > 1">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="c in arrayCuentasPago" :key="c.id" :value="c.num_cuenta + '-' + c.banco" v-text="c.num_cuenta + '-' + c.banco"></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                            </div>
+
                                         </template>
 
                                         <div class="col-md-3">
@@ -1300,6 +1348,7 @@ export default {
             b_empresa : '',
             b_tipo_pago : '',
             b_forma_pago : '',
+            b_cuenta_pago : '',
             loading : false,
             id : '',
             comentario : '',
@@ -1420,7 +1469,7 @@ export default {
                 if (result.value) {
                     axios.put(`/solic-pagos/autorizarDireccion/${me.solicitudData.id}`,{
                         'id': me.solicitudData.id,
-                        'estado' : estado
+                        'estado' : estado,
                     }).then(function (response){
                         me.cerrarFormulario();
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
@@ -1460,7 +1509,8 @@ export default {
                     axios.put(`/solic-pagos/changeVbTesoreria/${me.solicitudData.id}`,{
                         'id': me.solicitudData.id,
                         'estado' : estado,
-                        'motivo' : me.comentario
+                        'motivo' : me.comentario,
+                        'cuenta_pago' : me.solicitudData.cuenta_pago
                     }).then(function (response){
                         me.cerrarModal();
                         me.cerrarFormulario();
@@ -1844,6 +1894,8 @@ export default {
                 case 'ver':{
                     this.solicitudData = data;
                     this.tipoAccion = 3;
+                    if(this.solicitudData.status >= 1 && this.solicitudData.tipo_pago == 1)
+                        this.selectCuenta(this.solicitudData.empresa_solic);
                     break;
                 }
             }
@@ -1949,6 +2001,7 @@ export default {
                 + '&b_rechazado=' + me.b_rechazado
                 + '&b_tipo_pago=' + me.b_tipo_pago
                 + '&b_forma_pago=' + me.b_forma_pago
+                + '&b_cuenta_pago=' + me.b_cuenta_pago
                 + '&b_status=' + me.b_status;
             axios
                 .get(url)
@@ -2114,7 +2167,6 @@ export default {
                 case 'pagar':{
                     me.selectCuenta(me.solicitudData.empresa_solic);
                     me.solicitudData.fecha_pago = '';
-                    me.solicitudData.cuenta_pago = '';
                     me.solicitudData.num_factura = '';
                     me.solicitudData.beneficiario = 0;
                     me.modal = 4;

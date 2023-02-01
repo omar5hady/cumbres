@@ -14,6 +14,7 @@ use App\Proveedor;
 use App\SpFile;
 use Carbon\Carbon;
 use Auth;
+use Excel;
 use DB;
 
 class SolicitudesController extends Controller
@@ -53,6 +54,8 @@ class SolicitudesController extends Controller
         $total = 0;
 
         $solicitudes = $this->querySolicitudes($request,$admin);
+        $solicitudes = $solicitudes->paginate(12);
+
         foreach($solicitudes as $solicitud){
             $total += $solicitud->importe;
             $solicitud->detalle = SpDetalle::leftJoin('creditos','sp_detalles.contrato_id','=','creditos.id')
@@ -72,8 +75,119 @@ class SolicitudesController extends Controller
         ];
     }
 
+    public function printExcel(Request $request){
+        $admin = 0;
+        $usuario = Auth::user()->usuario;
+        if( $usuario == 'shady'
+            || $usuario == 'uriel.al'
+        )$admin = 1;
+        if( $usuario == 'shady'
+            || $usuario == 'alejandro.pe'
+            || $usuario == 'ing_david'
+        )$admin = 2;
+        if(
+            $usuario == 'jorge.diaz'
+            || $usuario == 'dora.m'
+        )$admin = 3;
+
+        $total = 0;
+
+        $solicitudes = $this->querySolicitudes($request,$admin);
+        $solicitudes = $solicitudes->get();
+
+        $title = 'Solicitudes';
+        if($request->b_status == 0)
+            $title = $title.' Nuevas';
+        if($request->b_status == 1)
+            $title = $title.' En Proceso';
+        if($request->b_status == 2)
+            $title = $title.' Aprobadas';
+        if($request->b_status == 3)
+            $title = $title.' Por Pagar';
+        if($request->b_status == 4)
+            $title = $title.' Pagadas';
+
+        return Excel::create('Solicitudes de Pago', function($excel) use ($solicitudes,$title){
+            $excel->sheet($title, function($sheet) use ($solicitudes){
+
+                $sheet->row(1, [
+                    'Empresa', 'Proveedor', 'Solicitante',
+                    'Fecha de solicitud', 'Importe', 'Tipo de pago', 'Forma',
+                    'Cuenta de salida', 'Cuenta destino', 'Folio/Num Cheque',
+                    'Fecha de pago'
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'E' => '$#,##0.00',
+                ));
+
+
+                $sheet->cells('A1:K1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Helvetica');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+
+                $cont=1;
+
+                foreach($solicitudes as $index => $s) {
+                    $cont++;
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $s->fecha_compra = new Carbon($s->fecha_compra);
+                    $s->fecha_compra = $s->fecha_compra->formatLocalized('%d de %B de %Y');
+
+                    if($s->fecha_pago){
+                        $s->fecha_pago = new Carbon($s->fecha_pago);
+                        $s->fecha_ava_sol = $s->fecha_pago->formatLocalized('%d de %B de %Y');
+                    }
+
+                    $tipo_pago = 'C.F.';
+                    $forma_pago = '';
+                    if($s->tipo_pago == 1)
+                        $tipo_pago = 'Bancos';
+
+                    if($s->forma_pago == 1)
+                        $forma_pago = 'Cheque';
+                    if($s->forma_pago == 0 && $s->tipo_pago == 1)
+                        $forma_pago = 'Transferencia';
+
+                    $sheet->row($index+2, [
+                        $s->empresa_solic,
+                        $s->proveedor,
+                        $s->solicitante,
+                        $s->fecha_compra,
+                        $s->importe,
+                        $tipo_pago,
+                        $forma_pago,
+                        $s->cuenta_pago,
+                        $s->num_factura,
+                        $s->fecha_pago
+                    ]);
+                }
+                $num='A1:R' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+    )->download('xls');
+    }
+
     public function deleteDetalle( $id){
         $detalle = SpDetalle::findOrFail($id);
+        if($detalle->pendiente_id != null){
+            $det = SpDetalle::findOrFail($detalle->pendiente_id);
+            $det->status = 1;
+            $det->save();
+        }
         $detalle->delete();
     }
 
@@ -89,6 +203,7 @@ class SolicitudesController extends Controller
         $b_empresa = $request->b_empresa;
         $b_tipo_pago = $request->b_tipo_pago;
         $b_forma_pago = $request->b_forma_pago;
+        $b_cuenta_pago = $request->b_cuenta_pago;
 
         $encargado = Auth::user()->seg_pago;
         $dep = Personal::findOrFail(Auth::user()->id);
@@ -103,7 +218,7 @@ class SolicitudesController extends Controller
             if($b_empresa != '')
                 $solicitudes = $solicitudes->where('sp_solicituds.empresa_solic','=',$b_empresa);
             if($b_proveedor != '')
-                $solicitudes = $solicitudes->where('prov.proveedor','like','%'.$b_proveedor.'%');
+                $solicitudes = $solicitudes->where(DB::raw("CONCAT(prov.nombre,' ',prov.apellidos)"),'like','%'.$b_proveedor.'%');
             if($b_solicitante != '')
                 $solicitudes = $solicitudes->where(DB::raw("CONCAT(user.nombre,' ',user.apellidos)"), 'like', '%'. $b_solicitante . '%');
             if($b_fecha1 != '' && $b_fecha2 != '')
@@ -128,17 +243,16 @@ class SolicitudesController extends Controller
             else{
                 $solicitudes = $solicitudes->where('sp_solicituds.rechazado','=', 0);
             }
-
-            if($b_tipo_pago != ''){
+            if($b_tipo_pago != '')
                 $solicitudes = $solicitudes->where('sp_solicituds.tipo_pago','=',$b_tipo_pago);
-            }
-            if($b_forma_pago != ''){
+            if($b_forma_pago != '')
                 $solicitudes = $solicitudes->where('sp_solicituds.forma_pago','=',$b_forma_pago);
-            }
+            if($b_cuenta_pago != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.cuenta_pago','like','%'.$b_cuenta_pago.'%');
 
             $solicitudes = $solicitudes->orderBy('sp_solicituds.status','asc')
-            ->orderBy('sp_solicituds.id','asc')
-            ->paginate(12);
+            ->orderBy('sp_solicituds.id','asc');
+
 
         return $solicitudes;
     }
@@ -291,7 +405,9 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
-
+        }
+        if($request->cuenta_pago != ''){
+            $solic->cuenta_pago = $request->cuenta_pago;
         }
         $solic->save();
     }
@@ -342,7 +458,10 @@ class SolicitudesController extends Controller
                 }
                 else{
                     $detalle->saldo = $detalle->total - $detalle->pago;
-                    $detalle->status = 1;
+                    if($detalle->saldo == 0)
+                        $detalle->status = 0;
+                    else
+                        $detalle->status = 1;
                 }
                 if($detalle->pendiente_id != NULL){
                     $det2 = SpDetalle::findOrFail($detalle->id);
