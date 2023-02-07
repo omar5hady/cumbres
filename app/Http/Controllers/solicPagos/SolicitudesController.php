@@ -13,7 +13,9 @@ use App\Personal;
 use App\Proveedor;
 use App\SpFile;
 use Carbon\Carbon;
+use NumerosEnLetras;
 use Auth;
+use File;
 use Excel;
 use DB;
 
@@ -41,6 +43,7 @@ class SolicitudesController extends Controller
         $usuario = Auth::user()->usuario;
         if( $usuario == 'shady'
             || $usuario == 'uriel.al'
+            || $usuario == 'lomelin'
         )$admin = 1;
         if( $usuario == 'shady'
             || $usuario == 'alejandro.pe'
@@ -49,12 +52,13 @@ class SolicitudesController extends Controller
         if(
             $usuario == 'jorge.diaz'
             || $usuario == 'dora.m'
+            || $usuario == 'jeremias'
         )$admin = 3;
 
         $total = 0;
 
         $solicitudes = $this->querySolicitudes($request,$admin);
-        $solicitudes = $solicitudes->paginate(12);
+        $solicitudes = $solicitudes->paginate(30);
 
         foreach($solicitudes as $solicitud){
             $total += $solicitud->importe;
@@ -80,6 +84,7 @@ class SolicitudesController extends Controller
         $usuario = Auth::user()->usuario;
         if( $usuario == 'shady'
             || $usuario == 'uriel.al'
+            || $usuario == 'lomelin'
         )$admin = 1;
         if( $usuario == 'shady'
             || $usuario == 'alejandro.pe'
@@ -371,6 +376,7 @@ class SolicitudesController extends Controller
         }
     }
 
+
     public function update(Request $request){
         try{
             DB::beginTransaction();
@@ -484,5 +490,28 @@ class SolicitudesController extends Controller
             ->where('sp_detalles.saldo','>',0)
             ->where('sp_detalles.status','=',1)
             ->get();
+    }
+
+    public function printComprobante(Request $request){
+        $solicitud = SpSolicitud::join('personal as pv','sp_solicituds.proveedor_id','=','pv.id')
+            ->join('personal as prov','pv.id','=','prov.id')
+            ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
+                'pv.rfc as rfc_prov'
+            )
+            ->where('sp_solicituds.id','=',$request->id)->first();
+
+        $solicitud->importe_letra = NumerosEnLetras::convertir($solicitud->importe, 'Pesos', false, 'Centavos');
+
+        $solicitud->det = SpDetalle::select('observacion')->where('solic_id','=',$request->id)->get();
+
+
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $solicitud->fecha_pago = new Carbon();
+        $solicitud->fecha_pago = $solicitud->fecha_pago->formatLocalized('%d de %B de %Y');
+
+        // if($solicitud->tipo_pago == 0)
+            $pdf = \PDF::loadview('pdf.PagosInternos.reciboCF', ['solicitud' => $solicitud]);
+
+        return $pdf->stream('comprobante.pdf');
     }
 }

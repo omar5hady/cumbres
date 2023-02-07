@@ -1056,6 +1056,44 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="card mb-0" v-if="tipoAccion > 1">
+                                <div class="card-header" id="headingFour" role="tab">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseFour" aria-expanded="false"
+                                            aria-controls="collapseFour" class="collapsed"
+                                            >Observaciones
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div class="collapse" id="collapseFour" role="tabpanel"
+                                    aria-labelledby="headingTwo" data-parent="#accordion">
+
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px; padding-bottom: 10px;" >
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3></h3></center></div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <center>
+                                                <TableComponent :cabecera="[
+                                                    'Usuario','Observación','Fecha'
+                                                ]">
+                                                    <template v-slot:tbody>
+                                                        <tr v-for="ob in solicitudData.obs"
+                                                            :key="ob.id">
+                                                            <td>{{ob.usuario}}</td>
+                                                            <td>{{ob.comentario}}</td>
+                                                            <td>{{ob.created_at}}</td>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
+                                            </center>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group row">
@@ -1231,6 +1269,10 @@
                             :btnClass="'btn-success'" :icon="'fa fa-money'"
                             @click="generarPago()"
                         >Crear pago</Button>
+                        <a class="btn btn-scarlet"
+                            v-if="solicitudData.accionPago == 2 && solicitudData.tipo_pago == 0"
+                            target="_blank"
+                            :href="'/sp/printComprobante?id='+solicitudData.id">Imprimir</a>
                     </template>
                 </ModalComponent>
 
@@ -2306,3 +2348,4 @@ export default {
        border-right: none;
     }
 </style>
+

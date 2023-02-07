@@ -671,7 +671,7 @@
 
         <p>
             En caso de retraso en la entrega del bien inmueble acordado en el presente contrato, dará lugar a la aplicación de la pena convencional
-            establecida en la Cláusula Décima Cuarta o al reclamo de daños y perjuicios; lo anterior, salvo causas debidamente justificadas e imputables a
+            establecida en la Cláusula Décima Tercera o al reclamo de daños y perjuicios; lo anterior, salvo causas debidamente justificadas e imputables a
             <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”
