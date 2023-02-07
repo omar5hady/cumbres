@@ -349,7 +349,8 @@ const app = new Vue({
         },
         /* Formatting the number to have commas in the thousands place. */
         formatNumber(value) {
-            return new Intl.NumberFormat('es-MX', { maximumFractionDigits: 2 }).format(value);
+            let val = (value/1).toFixed(2)
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         /* Checking if the key pressed is a number or not. */
         isNumber: function(evt) {

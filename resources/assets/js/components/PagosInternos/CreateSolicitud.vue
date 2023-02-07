@@ -153,7 +153,7 @@
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                             <td class="td2">
                                                 <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar"
                                                     @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
@@ -207,7 +207,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar" v-if="solic.vb_gerente == 0"
                                                             @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
@@ -229,16 +229,7 @@
                                                         {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
                                                     </td>
                                                     <td class="td2">
-                                                        <template v-if="encargado == 0 && !gerente">
-                                                            Solicitud pendiente de revisar
-                                                        </template>
-                                                        <template v-else>
-                                                            <Button :btnClass="'btn-primary'" v-if="solic.vb_gerente == 0"
-                                                                title="Validar revisión de solicitud" :icon="'icon-check'"
-                                                                @click="changeVbGerente(solic.id,1)"
-                                                            >Revisar
-                                                            </Button>
-                                                        </template>
+                                                        Solicitud pendiente de revisar
                                                     </td>
                                                     <td>
                                                         <Button :btnClass="'btn-light'" title="Ver Observaciones"
@@ -263,7 +254,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
@@ -279,16 +270,7 @@
                                                         {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
                                                     </td>
                                                     <td class="td2">
-                                                        <template v-if="!gerente">
-                                                            Solicitud pendiente de autorizar
-                                                        </template>
-                                                        <template v-else>
-                                                            <Button :btnClass="'btn-scarlet'" v-if="solic.vb_gerente < 2 && gerente"
-                                                                title="Autorizar solicitud" @click="changeVbGerente(solic.id,2)" :icon="'icon-check'"
-                                                            >Autorizar Solicitud
-                                                            </Button>
-                                                        </template>
-
+                                                        Solicitud pendiente de autorizar
                                                     </td>
                                                     <td>
                                                         <Button :btnClass="'btn-light'" title="Ver Observaciones"
@@ -319,7 +301,7 @@
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                             <td class="td2">
                                                 <Button :btnClass="'btn-primary'" title="Ver solicitd" :size="'btn-sm'"
                                                     @click="vistaFormulario('ver', solic)" :icon="'icon-eye'"
@@ -377,7 +359,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar" v-if="solic.vb_gerente == 0"
                                                             @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
@@ -437,7 +419,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
@@ -494,7 +476,7 @@
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                             <td class="td2">
                                                 <Button
                                                     title="Ver solicitud" :size="'btn-sm'"
@@ -547,7 +529,7 @@
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                             <td class="td2">
                                                 <Button
                                                     title="Ver solicitud" :size="'btn-sm'"
@@ -615,6 +597,15 @@
                                         <div class="col-md-12">
                                             <div class="form-group"><center><h3></h3></center></div>
                                         </div>
+                                        <template v-if="tipoAccion > 1">
+                                            <div class="col-md-5"></div>
+                                            <div class="col-md-7">
+                                                <template v-if="tipoAccion > 1">
+                                                    <label for="">Fecha de elaboración </label>
+                                                    <h5>{{solicitudData.created_at}}</h5>
+                                                </template>
+                                            </div>
+                                        </template>
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label for="">Empresa solicitante </label>
@@ -624,10 +615,13 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-7">
-                                            <template v-if="tipoAccion > 1">
-                                                <label for="">Fecha de elaboración </label>
-                                                <h5>{{solicitudData.created_at}}</h5>
+                                        <div class="col-md-6">
+                                            <template v-if="encargado || gerente || admin>0">
+                                                <label for="">¿Solicitud Extraordinaria?</label>
+                                                <select class="form-control" v-model="solicitudData.extraordinario" :disabled="tipoAccion == 3">
+                                                    <option :value="0">No</option>
+                                                    <option :value="1">SI</option>
+                                                </select>
                                             </template>
                                         </div>
                                         <div class="col-md-6">
@@ -1108,6 +1102,23 @@
                                         && tipoAccion == 2">
                                     Guardar Cambios
                                 </button>
+                                <template v-if="solicitudData.status == 0 && solicitudData.rechazado == 0">
+                                    <Button :btnClass="'btn-primary'" v-if="solicitudData.vb_gerente == 0 && encargado"
+                                        title="Validar revisión de solicitud" :icon="'icon-check'"
+                                        @click="changeVbGerente(solicitudData.id,1)"
+                                    >Revisar
+                                    </Button>
+                                    <Button :btnClass="'btn-primary'" v-if="solicitudData.vb_gerente < 2 && gerente"
+                                        title="Autorizar solicitud" @click="changeVbGerente(solicitudData.id,2)" :icon="'icon-check'"
+                                    >Autorizar Solicitud
+                                    </Button>
+                                    <Button v-if="gerente || encargado"
+                                        :icon="'fa fa-times'"
+                                        :btnClass="'btn-danger'"
+                                        @click="abrirModal('rechazo')">
+                                        Rechazar solicitud
+                                    </Button>
+                                </template>
                                 <template v-if="solicitudData.status == 1 && solicitudData.rechazado == 0">
                                     <Button v-if="admin == 3 || usuario == 'shady'" :icon="'fa fa-times'" :btnClass="'btn-danger'" @click="abrirModal('rechazo')">
                                         Rechazar solicitud
@@ -1474,6 +1485,7 @@ export default {
                         'estado' : estado
                     }).then(function (response){
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        me.cerrarFormulario();
                         //Se muestra mensaje Success
                         const toast = Swal.mixin({
                             toast: true,
@@ -1917,6 +1929,7 @@ export default {
                         num_cuenta : '',
                         clabe : '',
                         num_factura : '',
+                        extraordinario : 0,
                         detalle : [],
                     }
                     break;

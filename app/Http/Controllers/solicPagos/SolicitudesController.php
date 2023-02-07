@@ -287,6 +287,7 @@ class SolicitudesController extends Controller
         $solic->importe         = $solicitud['importe'];
         $solic->tipo_pago       = $solicitud['tipo_pago'];
         $solic->forma_pago      = $solicitud['forma_pago'];
+        $solic->extraordinario  = $solicitud['extraordinario'];
         $solic->status          = 0;
         $solic->fecha_compra    = Carbon::now();
         if(sizeof($prov))
@@ -341,6 +342,7 @@ class SolicitudesController extends Controller
         $solic->importe             = $solicitud['importe'];
         $solic->tipo_pago           = $solicitud['tipo_pago'];
         $solic->forma_pago          = $solicitud['forma_pago'];
+        $solic->extraordinario      = $solicitud['extraordinario'];
         if(sizeof($prov))
         {
             $solic->banco           = $prov[0]->banco;
