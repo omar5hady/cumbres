@@ -1281,6 +1281,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
         Route::resource('/files-solic', solicPagos\ArchivosController::class);
         Route::get('/sp/printExcel/','solicPagos\SolicitudesController@printExcel');
+        Route::get('/sp/printComprobante/','solicPagos\SolicitudesController@printComprobante');
         Route::delete('/solic-pagos/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
         Route::put('/solic-pagos/changeVbGerente/{id}','solicPagos\SolicitudesController@changeVbGerente');
         Route::put('/solic-pagos/changeVbTesoreria/{id}','solicPagos\SolicitudesController@changeVbTesoreria');
