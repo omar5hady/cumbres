@@ -383,8 +383,11 @@ class SolicitudesController extends Controller
                 $detalle->tipo_mov      = $det['tipo_mov'];
                 $detalle->total         = $det['total'];
                 $detalle->pago          = $det['pago'];
-                $detalle->saldo         = $det['saldo'];
-                $detalle->status = 0;
+                $detalle->saldo         = $det['total'] - $det['pago'];
+                if($detalle->saldo > 0)
+                    $detalle->status = 1;
+                else
+                    $detalle->status = 0;
                 $detalle->cargo         = $det['cargo'];
                 $detalle->pendiente_id  = $det['pendiente_id'];
 
