@@ -934,7 +934,7 @@
                                         <div class="col-md-12">
                                             <center>
                                                 <TableComponent :cabecera="[
-                                                    '','Obra', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Este pago'
+                                                    '','Obra', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo'
                                                 ]">
                                                     <template v-slot:tbody>
                                                         <tr v-for="det in solicitudData.detalle"
@@ -967,7 +967,13 @@
                                                                 }}
                                                             </td>
                                                             <td class="td2">
-                                                                ${{$root.formatNumber(det.pago)}}
+                                                                ${{$root.formatNumber(det.total)}}
+                                                            </td>
+                                                            <td class="td2">
+                                                                <strong>${{$root.formatNumber(det.pago)}}</strong>
+                                                            </td>
+                                                            <td class="td2">
+                                                                ${{$root.formatNumber(det.total - det.pago)}}
                                                             </td>
                                                         </tr>
                                                         <tr>
