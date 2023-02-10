@@ -78,10 +78,10 @@
             @endforeach
         </div>
         <div class="firma1">
-            OSO PARDOS EN LA PRADERA DE JUANITO CORTEZ SA
+
         </div>
         <div class="firma2">
-            OSO PARDOS EN LA PRADERA DE JUANITO CORTEZ SA
+            {{$solicitud->proveedor}}
         </div>
     </body>
 </html>

@@ -930,6 +930,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/proveedor','ProveedorController@index');
         Route::post('/proveedor/registrar','ProveedorController@store');
         Route::post('/proveedor/storeCuenta','ProveedorController@storeCuenta');
+        Route::delete('/proveedor/deleteCuenta','ProveedorController@deleteCuenta');
         Route::post('/proveedor/submitProveedorConst','ProveedorController@submitProveedorConst');
         Route::put('/proveedor/actualizar','ProveedorController@update');
         Route::get('/select_proveedor','ProveedorController@selectProveedor');
@@ -1287,6 +1288,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
         Route::resource('/files-solic', solicPagos\ArchivosController::class);
         Route::get('/sp/printExcel/','solicPagos\SolicitudesController@printExcel');
+        Route::post('/sp/storeObs/','solicPagos\SolicitudesController@storeObs');
         Route::get('/sp/printComprobante/','solicPagos\SolicitudesController@printComprobante');
         Route::delete('/solic-pagos/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
         Route::put('/solic-pagos/changeVbGerente/{id}','solicPagos\SolicitudesController@changeVbGerente');

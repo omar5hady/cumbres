@@ -424,7 +424,7 @@
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             actualizarPaquetes(){
                 if(this.validarPaquetes() || this.proceso==true) //Se verifica si hay un error (campo vacio)
