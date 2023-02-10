@@ -97,21 +97,21 @@
                         <ul class="nav nav-tabs" id="myTab1" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_status = '', b_vbgerente = '',  b_rechazado = 1, b_vbdireccion = ''
+                                @click="b_status = '', b_vbgerente = '',  b_rechazado = 1, b_vbdireccion = '', solicCheck = [],
                                     indexSolicitudes(1)"
                                 v-bind:class="{ 'btn-danger text-info': b_status === ''}"
                                 role="tab">{{ (b_status === '') ? `Rechazados: ${arraySolic.total ? arraySolic.total : ''}` : 'Rechazados' }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_status = 0, b_vbgerente = 0,  b_rechazado = '', b_vbdireccion = ''
+                                @click="b_status = 0, b_vbgerente = 0,  b_rechazado = '', b_vbdireccion = '', solicCheck = [],
                                     indexSolicitudes(1)"
                                 v-bind:class="{ 'text-primary active': b_status === 0}"
                                 role="tab">{{ (b_status === 0) ? `Nuevos: ${arraySolic.total ? arraySolic.total : 0}` : 'Nuevos' }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                    @click="b_status = 1, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = ''
+                                    @click="b_status = 1, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = '', solicCheck = [],
                                         indexSolicitudes(1)"
                                     v-bind:class="{ 'text-primary active': b_status === 1}"
                                     role="tab">{{ (b_status === 1) ? `En Proceso: ${arraySolic.total}` : 'En Proceso' }}
@@ -119,21 +119,21 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_status = 2, b_vbgerente = '', b_vbdireccion = 0,  b_rechazado = '',
+                                @click="b_status = 2, b_vbgerente = '', b_vbdireccion = 0,  b_rechazado = '', solicCheck = [],
                                     indexSolicitudes(1)"
                                 v-bind:class="{ 'text-primary active': b_status === 2}"
                                 role="tab">{{ (b_status === 2) ? `Aprobadas: ${arraySolic.total}` : 'Aprobadas' }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_status = 3, b_vbgerente = '', b_rechazado = '',  b_vbdireccion = '',
+                                @click="b_status = 3, b_vbgerente = '', b_rechazado = '',  b_vbdireccion = '', solicCheck = [],
                                     indexSolicitudes(1)"
                                 v-bind:class="{ 'text-primary active': b_status === 3}"
                                 role="tab">{{ (b_status === 3) ? `Por Pagar: ${arraySolic.total}` : 'Por Pagar' }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_status = 4, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = ''
+                                @click="b_status = 4, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = '', solicCheck = [],
                                     indexSolicitudes(1)"
                                 v-bind:class="{ 'text-primary active': b_status === 4}"
                                 role="tab">{{ (b_status === 4) ? `Pagados: ${arraySolic.total ? arraySolic.total : ''}` : 'Pagados' }}</a>
@@ -157,6 +157,9 @@
                                             <td class="td2">
                                                 <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar"
                                                     @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
+                                                ></Button>
+                                                <Button :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar"
+                                                        :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>
                                             </td>
                                             <td class="td2" v-text="solic.proveedor"></td>
@@ -465,18 +468,33 @@
                             </div>
                             <!-- Listado por Pagar -->
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 3 }" v-if="b_status === 3">
-                                <TableComponent :cabecera="[
-                                    '',
-                                    'Proveedor',
-                                    'Solicitante',
-                                    'Fecha solic',
-                                    'Importe',
-                                    'Tipo de pago',
-                                    '  ',
-                                    ' '
-                                ]">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr v-if="admin === 3 || usuario == 'shady'">
+                                            <th colspan="8" class="text-center" v-if="solicCheck.length>0">
+                                                <Button :btnClass="'btn-scarlet'" :icon="'fa fa-credit-card-alt'"
+                                                    @click="abrirModal('pagoMasa', solicCheck[0])"
+                                                    title="Pagar Seleccion">Pagar solicitudes seleccionadas</Button>
+                                            </th>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Proveedor</th>
+                                            <th>Solicitante</th>
+                                            <th>Fecha solic</th>
+                                            <th>Importe</th>
+                                            <th>Tipo de pago</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </template>
                                     <template v-slot:tbody>
                                         <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                            <td>
+                                                <input type="checkbox" v-if="solic.tipo_pago == 1 && solic.forma_pago == 0"
+                                                    :id="solic.id" :value="solic"
+                                                    v-model="solicCheck" >
+                                            </td>
                                             <td class="td2">
                                                 <Button
                                                     title="Ver solicitud" :size="'btn-sm'"
@@ -510,7 +528,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th colspan="4">Total</th>
+                                            <th colspan="5">Total</th>
                                             <th v-text="'$'+$root.formatNumber(total)"></th>
                                         </tr>
                                     </template>
@@ -518,18 +536,34 @@
                             </div>
                             <!-- Listado Pagados -->
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 4 }" v-if="b_status === 4">
-                                <TableComponent :cabecera="[
-                                    '',
-                                    'Proveedor',
-                                    'Solicitante',
-                                    'Fecha solic',
-                                    'Importe',
-                                    'Tipo de pago',
-                                    '  ',
-                                    ' '
-                                ]">
+                                <TableComponent>
+                                    <template v-slot:thead>
+                                        <tr v-if="admin === 3 || usuario == 'shady'">
+                                            <th colspan="8" class="text-center" v-if="solicCheck.length>0">
+                                                <Button :btnClass="'btn-scarlet'" :icon="'fa fa-credit-card-alt'"
+                                                    @click="abrirModal('comprobanteMasa')"
+                                                    title="Pagar Seleccion">Cargar comprobante de pago para solicitudes seleccionadas</Button>
+                                            </th>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Proveedor</th>
+                                            <th>Solicitante</th>
+                                            <th>Fecha solic</th>
+                                            <th>Importe</th>
+                                            <th>Tipo de pago</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </template>
                                     <template v-slot:tbody>
                                         <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                            <td>
+                                                <input type="checkbox" v-if="solic.tipo_pago == 1 && solic.forma_pago == 0"
+                                                    :id="solic.id" :value="solic.id"
+                                                    :icon="'fa fa-upload'"
+                                                    v-model="solicCheck" >
+                                            </td>
                                             <td class="td2">
                                                 <Button
                                                     title="Ver solicitud" :size="'btn-sm'"
@@ -567,7 +601,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th colspan="4">Total</th>
+                                            <th colspan="5">Total</th>
                                             <th v-text="'$'+$root.formatNumber(total)"></th>
                                         </tr>
                                     </template>
@@ -862,6 +896,7 @@
                                             <div class="col-md-3">
                                                 <label for="">Importe a contratar <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
                                                 <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                                    :disabled="datosDetalle.pendiente_id"
                                                     type="text" v-model="datosDetalle.total" @change="datosDetalle.tipo_mov == 1 ? datosDetalle.pago = datosDetalle.total : datosDetalle.pago = 0">
                                             </div>
                                             <div class="col-md-2" v-if="datosDetalle.total > 0">
@@ -1026,7 +1061,7 @@
                                                         <tr v-for="p in solicitudData.files"
                                                             :key="p.id">
                                                             <td>
-                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion >= 2 && solicitudData.status < 3"
+                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion >= 2 && solicitudData.status < 3 || usuario == 'shady'"
                                                                     @click="deleteFile(p.id)"
                                                                 >
                                                                     <i class="icon-trash"></i>
@@ -1136,14 +1171,16 @@
                                         Rechazar solicitud
                                     </Button>
                                     <Button v-if="solicitudData.vb_direccion == 0 && admin === 1
-                                        || solicitudData.vb_direccion == 0 && usuario == 'shady'"
+                                        || solicitudData.vb_direccion == 0 && usuario == 'shady'
+                                        || solicitudData.vb_direccion == 1 && usuario == 'cp.martin' && solicitudData.extraordinario == 1"
                                         :icon="'icon-check'"
                                         :btnClass="'btn-success'"
                                         @click="changeVbDireccion(1)">
                                         Aprobar solicitud
                                     </Button>
                                     <Button v-if="solicitudData.vb_direccion == 1 && admin === 2
-                                        || solicitudData.vb_direccion == 1 && usuario == 'shady'"
+                                        || solicitudData.vb_direccion == 1 && usuario == 'shady'
+                                        || solicitudData.vb_direccion == 1 && usuario == 'cp.martin' && solicitudData.extraordinario == 1"
                                         :icon="'icon-check'"
                                         :btnClass="'btn-success'"
                                         @click="autorizarDireccion(1)">
@@ -1169,6 +1206,13 @@
                     @closeModal="cerrarModal()"
                 >
                     <template v-slot:body>
+                        <RowModal :label1="'Observacion'" :clsRow1="'col-md-6'" :clsRow2="'col-md-3'">
+                            <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                            <template v-slot:input2>
+                                <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs()" title="Guardar observación"></Button>
+                            </template>
+                        </RowModal>
+
                         <TableComponent :cabecera="['Usuario','Observación','Fecha']">
                             <template v-slot:tbody>
                                 <tr v-for="observacion in arrayObs" :key="observacion.id">
@@ -1216,6 +1260,11 @@
                         </RowModal>
                     </template>
                     <template v-slot:buttons-footer>
+                        <Button v-if="comentario != '' && solicitudData.status == 0"
+                            :icon="'fa fa-times'" :btnClass="'btn-danger'"
+                            @click="changeVbGerente(solicitudData.id,0)">
+                            Rechazar
+                        </Button>
                         <Button v-if="comentario != '' && solicitudData.status == 1"
                             :icon="'fa fa-times'" :btnClass="'btn-danger'"
                             @click="changeVbTesoreria(0)">
@@ -1280,6 +1329,11 @@
                             :btnClass="'btn-success'" :icon="'fa fa-money'"
                             @click="generarPago()"
                         >Crear pago</Button>
+                        <Button
+                            v-if="solicitudData.fecha_pago != '' && solicitudData.num_factura != '' && solicitudData.accionPago == 3"
+                            :btnClass="'btn-success'" :icon="'fa fa-money'"
+                            @click="generarPagoMasa()"
+                        >Crear pago</Button>
                         <a class="btn btn-scarlet"
                             v-if="solicitudData.accionPago == 2 && solicitudData.tipo_pago == 0"
                             target="_blank"
@@ -1289,46 +1343,79 @@
 
                 <!-- Modal para subir comprobante de pago -->
                 <ModalComponent :titulo="tituloModal"
-                    v-if="modal == 5"
+                    v-if="modal >= 5"
                     @closeModal="cerrarModal()"
                 >
                     <template v-slot:body>
-                        <form method="post" @submit="formSubmitFile" enctype="multipart/form-data">
-                            <div class="form-group row">
-                                <input ref="fileSelector"
-                                    v-show="false"
-                                    type="file" accept="application/pdf"
-                                    v-on:change="onChangeFile"
-                                />
+                        <template v-if="modal == 5">
+                            <form method="post" @submit="formSubmitFile" enctype="multipart/form-data">
+                                <div class="form-group row">
+                                    <input ref="fileSelector"
+                                        v-show="false"
+                                        type="file" accept="application/pdf"
+                                        v-on:change="onChangeFile"
+                                    />
 
-                                <label class="label-button" @click="onSelectFile">
-                                    Elige el archivo a cargar
-                                    <i class="fa fa-upload"></i>
-                                </label>
-                                <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
-                                    ? 'text-file-hide' : 'text-file'"
-                                    v-text="newArchivo.nom_archivo"
-                                ></div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="boton-modal" v-if="cargando==0">
-                                    <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
-                                        type="submit" class="btn btn-scarlet"
-                                    >
-                                        Subir Archivo
-                                    </button>
+                                    <label class="label-button" @click="onSelectFile">
+                                        Elige el archivo a cargar
+                                        <i class="fa fa-upload"></i>
+                                    </label>
+                                    <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
+                                        ? 'text-file-hide' : 'text-file'"
+                                        v-text="newArchivo.nom_archivo"
+                                    ></div>
                                 </div>
-                            </div>
-                        </form>
+                                <div class="form-group row">
+                                    <div class="boton-modal" v-if="cargando==0">
+                                        <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
+                                            type="submit" class="btn btn-scarlet"
+                                        >
+                                            Subir Archivo
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </template>
+                        <template v-if="modal == 6">
+                            <form method="post" @submit="formSubmitMasa" enctype="multipart/form-data">
+                                <div class="form-group row">
+                                    <input ref="fileSelector"
+                                        v-show="false"
+                                        type="file" accept="application/pdf"
+                                        v-on:change="onChangeFile"
+                                    />
+
+                                    <label class="label-button" @click="onSelectFile">
+                                        Elige el archivo a cargar
+                                        <i class="fa fa-upload"></i>
+                                    </label>
+                                    <div :class="(newArchivo.nom_archivo == 'Seleccione Archivo')
+                                        ? 'text-file-hide' : 'text-file'"
+                                        v-text="newArchivo.nom_archivo"
+                                    ></div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="boton-modal" v-if="cargando==0">
+                                        <button v-show="newArchivo.nom_archivo !='Seleccione Archivo' && newArchivo.tipo != ''"
+                                            type="submit" class="btn btn-scarlet"
+                                        >
+                                            Subir Archivo
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </template>
                     </template>
                     <template v-slot:buttons-footer>
-                        <a v-if="solicitudData.comprobante_pago" :href="solicitudData.comprobante_pago"
-                            class="btn btn-primary"
-                            title="Ver Comprobante de pago"
-                            target="_blank"
-                        >
-                            <i class="icon-eye"></i>
-                        </a>
+                        <template v-if="modal == 5">
+                            <a v-if="solicitudData.comprobante_pago" :href="solicitudData.comprobante_pago"
+                                class="btn btn-primary"
+                                title="Ver Comprobante de pago"
+                                target="_blank"
+                            >
+                                <i class="icon-eye"></i>
+                            </a>
+                        </template>
                     </template>
                 </ModalComponent>
             </div>
@@ -1363,16 +1450,17 @@ export default {
     data() {
         return {
             arrayGerentes:[
-                'eli_hdz',
-                'sajid.m',
-                'bd_raul',
-                'lucy.hdz',
-                'cp.martin',
-                'ing_david',
-                'meza.marco60',
-                'guadalupe.ff',
+                'eli_hdz', //Comercializacion 9
+                'sajid.m', //Postventa 4
+                'bd_raul', //Proyectos 3
+                'lucy.hdz',//Presupuestos 5
+                'cp.martin',//Administracion 7
+                'ing_david',//Direccion 1
+                'meza.marco60',//Contabilidad 6
+                'guadalupe.ff',// Obra 2
                 'shady'
             ],
+            solicCheck:[],
             arrayPendientes:[],
             contratoVenta:{},
             arraySolic: [],
@@ -1426,8 +1514,8 @@ export default {
         sumaDet: function(){
             let me = this;
             let total = 0.0;
-            me.solicitudData.detalle.forEach( e => total += Math.round(e.pago) )
-            return Math.round(total);
+            me.solicitudData.detalle.forEach( e => total += Math.round(e.pago*100)/100 )
+            return Math.round(total*100)/100;
         },
     },
     methods: {
@@ -1468,6 +1556,8 @@ export default {
             if(estado == 2)
                 titulo = '¿Seguro de autorizar esta solicitud?';
 
+            if(estado == 0)
+                titulo = '¿Seguro de rechazar esta solicitud?';
 
             swal({
                 title: titulo,
@@ -1482,10 +1572,12 @@ export default {
                 if (result.value) {
                     axios.put(`/solic-pagos/changeVbGerente/${id}`,{
                         'id': id,
-                        'estado' : estado
+                        'estado' : estado,
+                        'motivo' : me.comentario,
                     }).then(function (response){
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
                         me.cerrarFormulario();
+                        me.cerrarModal();
                         //Se muestra mensaje Success
                         const toast = Swal.mixin({
                             toast: true,
@@ -1501,9 +1593,6 @@ export default {
                     });
                 }
             })
-
-
-
 
         },
         autorizarDireccion(estado){
@@ -1626,6 +1715,48 @@ export default {
                 }
             })
         },
+        generarPagoMasa(){
+            let me = this;
+            const titulo = '¿Seguro de generar el pago para las solicitudes seleccionadas?';
+            swal({
+                title: titulo,
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, continuar'
+                }).then((result) => {
+                if (result.value) {
+                    me.solicCheck.forEach(e => {
+                        axios.put(`/solic-pagos/generarPago/${e.id}`,{
+                            'id': e.id,
+                            'fecha_pago' : me.solicitudData.fecha_pago,
+                            'num_factura' : me.solicitudData.num_factura,
+                            'cuenta_pago' : me.solicitudData.cuenta_pago,
+                            'beneficiario' : me.solicitudData.beneficiario
+                        }).then(function (response){
+                            me.cerrarModal();
+                            me.cerrarFormulario();
+                            me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                            //Se muestra mensaje Success
+                            const toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                                });
+                                toast({
+                                type: 'success',
+                                title: 'Pago creado correctamente'
+                            })
+                        }).catch(function (error){
+                        });
+                    })
+                }
+            })
+        },
         generarPago(){
             let me = this;
             const titulo = '¿Seguro de generar el pago para esta solicitud?';
@@ -1683,6 +1814,35 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+        },
+        formSubmitMasa(e) {
+            e.preventDefault();
+            let currentObj = this;
+            this.cargando = 1;
+
+            this.solicCheck.forEach(e => {
+                let formData = new FormData();
+                formData.append('file', this.newArchivo.file);
+                formData.append('id', e);
+                formData.append('tipo', this.newArchivo.tipo);
+                let me = this;
+                axios.post('/files-solic', formData)
+                .then(function (response) {
+                    me.cerrarModal();
+                    me.cargando = 0;
+                    me.indexSolicitudes(me.arraySolic.current_page);
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }).catch(function (error) {
+                    currentObj.output = error;
+                    me.cargando = 0;
+                });
+            })
         },
         formSubmitFile(e) {
             e.preventDefault();
@@ -1845,7 +2005,10 @@ export default {
         },
         añadirPendiente(det){
             let me = this;
-            const detalle = {
+            me.selectEtapa(det.obra)
+            me.$root.getManzanas(det.obra, det.sub_obra)
+            me.searchContrato(det.lote_id)
+            me.datosDetalle = {
                 id : '',
                 solic_id  : det.id,
                 obra: det.obra,
@@ -1860,23 +2023,25 @@ export default {
                 pendiente_id : det.id,
                 manzana: '',
                 lote_id: det.lote_id,
-                contrato_id : det.contrato_id
+                contrato_id : det.contrato_id,
+                num_lote : det.num_lote,
+                sublote : det.sublote
             }
-                me.solicitudData.detalle.push(detalle);
+                // me.solicitudData.detalle.push(detalle);
                 me.arrayPendientes = me.arrayPendientes.filter(
                         a => a != det
                 )
 
-                const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                    });
-                    toast({
-                    type: 'success',
-                    title: 'Detalle agregado'
-                })
+                // const toast = Swal.mixin({
+                //     toast: true,
+                //     position: 'top-end',
+                //     showConfirmButton: false,
+                //     timer: 3000
+                //     });
+                //     toast({
+                //     type: 'success',
+                //     title: 'Detalle agregado'
+                // })
         },
         verificarCaptura(){
             let me = this;
@@ -1998,6 +2163,27 @@ export default {
 
         },
         /**Metodo para registrar  */
+        storeObs(){
+            let me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/sp/storeObs/',{
+                'solicitud_id': me.id,
+                'comentario' : me.comentario
+            }).then(function (response){
+                me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                me.cerrarModal();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Observación creada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+            });
+        },
+        /**Metodo para registrar  */
         storeSolic(){
             let me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
@@ -2073,7 +2259,7 @@ export default {
         getProveedores(){
             let me = this;
             me.arrayProveedores=[];
-            var url = '/select_proveedor?proveedor';
+            var url = '/select_proveedor?proveedor=';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 const data = [...respuesta.proveedor, ...respuesta.usuarios, ...respuesta.clientes]
@@ -2229,8 +2415,16 @@ export default {
                     me.solicitudData.accionPago = 1;
                     break;
                 }
+                case 'pagoMasa':{
+                    me.selectCuenta('');
+                    me.solicitudData = {...data};
+                    me.modal =  4;
+                    me.tituloModal = 'Generar pago'
+                    me.solicitudData.accionPago = 3;
+                    break;
+                }
                 case 'verPago':{
-                    me.solicitudData = data;
+                    me.solicitudData = {...data};
                     me.selectCuenta(me.solicitudData.empresa_solic);
                     me.modal = 4;
                     me.tituloModal = 'Pago'
@@ -2238,8 +2432,19 @@ export default {
                     break;
                 }
                 case 'comprobante':{
-                    me.solicitudData = data;
+                    me.solicitudData = {...data};
                     me.modal = 5;
+                    me.tituloModal = 'Comprobante de pago'
+                    this.newArchivo = {
+                        description: "COMPROBANTE DE PAGO",
+                        tipo: "COMPROBANTE DE PAGO",
+                        file: "",
+                        nom_archivo: 'Seleccione Archivo'
+                    };
+                    break;
+                }
+                case 'comprobanteMasa':{
+                    me.modal = 6;
                     me.tituloModal = 'Comprobante de pago'
                     this.newArchivo = {
                         description: "COMPROBANTE DE PAGO",
@@ -2264,7 +2469,7 @@ export default {
         this.indexSolicitudes(1);
         this.checkGerente();
         this.getEmpresa();
-        this.getProveedores();
+        // this.getProveedores();
         this.$root.selectFraccionamientos();
     }
 };

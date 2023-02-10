@@ -200,7 +200,7 @@
                                 <tr v-for="cuenta in arrayCuentas" :key="cuenta.id">
                                     <td class="td2" style="width:10%">
                                         <Button :btnClass="'btn-danger btn-sm'" :icon="'icon-trash'"
-                                            @click="eliminar(cuenta.id)">
+                                            @click="deleteCuenta(cuenta.id)">
                                         </Button>
                                         <Button :btnClass="'btn-success btn-sm'" :icon="'fa fa-check'"
                                             @click="seleccionarCuenta(cuenta)"
@@ -496,9 +496,9 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
                 });
             },
             /**Metodo para mostrar los registros */
-            listarProveedores(page, buscar, criterio){
+            listarProveedores(page){
                 let me = this;
-                var url = '/proveedor?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/proveedor?page=' + page + '&buscar=' + me.buscar + '&criterio=' + me.criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProveedores = respuesta.proveedores.data;
@@ -533,7 +533,7 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProveedores(page,me.buscar,me.criterio);
+                me.listarProveedores(page);
             },
             cambiarPagina2(page){
                 let me = this;
@@ -678,7 +678,7 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarProveedores(me.pagination.current_page,me.buscar,me.criterio);
+                    me.listarProveedores(me.pagination.current_page);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -691,6 +691,43 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
                     console.log(error);
                     me.proceso=false;
                 });
+            },
+            deleteCuenta(id){
+                //console.log(this.departamento_id);
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/proveedor/deleteCuenta',{
+                                params: {'id': id}
+                            }).then(function (response){
+                        me.modal = 1; //al guardar el registro se cierra el modal
+                        me.arrayCuentas = me.arrayCuentas.filter(
+                            a => a.id != id
+                    )
+                        //Se muestra mensaje Success
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Cuenta agregada correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                }
+                })
             },
             eliminarEquipamiento(data =[]){
                 this.equipamientoId=data['id'];
@@ -816,7 +853,7 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
                 this.errorProveedor = 0;
                 this.errorMostrarMsjProveedor = [];
                 this.lotes_promo = [];
-                this.listarProveedores(this.pagination.current_page,this.buscar,this.criterio);
+                this.listarProveedores(this.pagination.current_page);
 
             },
             cerrarModal2(){
@@ -827,7 +864,7 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
                 this.errorMostrarMsjEquipamiento = [];
                 this.mostrar = 0;
                 this.arrayLotes = [];
-                this.listarProveedores(this.pagination.current_page,this.buscar,this.criterio);
+                this.listarProveedores(this.pagination.current_page);
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -898,7 +935,7 @@ import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue"
             }
         },
         mounted() {
-            this.listarProveedores(1,this.buscar,this.criterio);
+            this.listarProveedores(1);
             this.selectBancos();
         }
     }

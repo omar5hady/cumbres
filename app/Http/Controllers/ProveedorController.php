@@ -125,6 +125,11 @@ class ProveedorController extends Controller
         $cuenta->save();
     }
 
+    public function deleteCuenta(Request $request){
+        $cuenta = ProvCuenta::findOrFail($request->id);
+        $cuenta->delete();
+    }
+
     // crea un nuevo registro en las tablas de personal y en la tabla de proveedor
     public function store(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -204,6 +209,7 @@ class ProveedorController extends Controller
         $proveedor->tipo=$request->tipo;
         $proveedor->num_cuenta = $request->num_cuenta;
         $proveedor->banco = $request->banco;
+        $proveedor->clabe = $request->clabe;
         $proveedor->save();
     }
 

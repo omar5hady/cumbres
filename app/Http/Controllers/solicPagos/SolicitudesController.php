@@ -5,6 +5,9 @@ namespace App\Http\Controllers\solicPagos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DocSolicPagosResource;
+use Illuminate\Support\Facades\Mail;
+// use App\Notifications\NotifyAdmin;
+use App\Mail\NotificationReceived;
 use App\SpCatalogo;
 use App\SpDetalle;
 use App\SpSolicitud;
@@ -53,6 +56,7 @@ class SolicitudesController extends Controller
             $usuario == 'jorge.diaz'
             || $usuario == 'dora.m'
             || $usuario == 'jeremias'
+            || $usuario == 'carlos.dom'
         )$admin = 3;
 
         $total = 0;
@@ -93,6 +97,7 @@ class SolicitudesController extends Controller
         if(
             $usuario == 'jorge.diaz'
             || $usuario == 'dora.m'
+            || $usuario == 'cp.martin'
         )$admin = 3;
 
         $total = 0;
@@ -175,6 +180,7 @@ class SolicitudesController extends Controller
                         $tipo_pago,
                         $forma_pago,
                         $s->cuenta_pago,
+                        $s->banco.'-'.$s->num_cuenta,
                         $s->num_factura,
                         $s->fecha_pago
                     ]);
@@ -264,15 +270,77 @@ class SolicitudesController extends Controller
 
     public function changeVbGerente(Request $request, $id){
         $solic = SpSolicitud::findOrFail($request->id);
-        $solic->vb_gerente = $request->estado;
-        if($solic->vb_gerente == 2)
-            $solic->status = 1;
+        if($request->estado != 0){
+            $solic->vb_gerente = $request->estado;
+            if($solic->vb_gerente == 1){
+                if($solic->extraordinario == 1)
+                    $this->sendNotifGerente($solic->departamento);
+            }
+            if($solic->vb_gerente == 2){
+                $solic->status = 1;
+                if($solic->extraordinario == 1){
+                    $msj = 'Tienes pendiente una solicitud de pago extraordinaria por revisar';
+                    $encargado = Personal::findOrFail(26546);
+                    //Mail::to($encargado->email)->send(new NotificationReceived($msj));
+                }
+            }
+        }
+        else{
+            $solic->rechazado = 1;
+            $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
+        }
         $solic->save();
 
         if($request->estado == 1)
             $this->createObs($id, "La solicitud ha sido revisada.");
         if($request->estado == 2)
             $this->createObs($id, "Solicitud autorizada por gerente.");
+    }
+
+    private function sendNotifGerente($departamento){
+        $msj = 'Tienes pendiente una solicitud de pago extraordinaria por autorizar';
+        // 'eli_hdz', //Comercializacion 9
+        //         'sajid.m', //Postventa 4
+        //         'bd_raul', //Proyectos 3
+        //         'lucy.hdz',//Presupuestos 5
+        //         'cp.martin',//Administracion 7
+        //         'ing_david',//Direccion 1
+        //         'meza.marco60',//Contabilidad 6
+        //         'guadalupe.ff',// Obra 2
+        switch($departamento){
+            case 9:
+                $gerente = Personal::findOrFail(10);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 4:
+                $gerente = Personal::findOrFail(25695);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 3:
+                $gerente = Personal::findOrFail(23679);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 5:
+                $gerente = Personal::findOrFail(23684);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 7:
+                $gerente = Personal::findOrFail(26546);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 1:
+                $gerente = Personal::findOrFail(26310);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 6:
+                $gerente = Personal::findOrFail(33300);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+            case 2:
+                $gerente = Personal::findOrFail(24100);
+                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                break;
+        }
     }
 
     private function storeSolicitud($solicitud){
@@ -355,6 +423,10 @@ class SolicitudesController extends Controller
         return $solic->id;
     }
 
+    public function storeObs(Request $request){
+        $this->createObs($request->solicitud_id, $request->comentario);
+    }
+
     private function createObs($solicitud_id, $observacion){
         $obs = new SpObservacion();
         $obs->comentario = $observacion;
@@ -408,6 +480,11 @@ class SolicitudesController extends Controller
         $solic = SpSolicitud::findOrFail($request->id);
         if($request->estado == 1){
             $solic->vb_tesoreria = $request->estado;
+            if($solic->extraordinario == 1){
+                $msj = 'Tienes pendiente una solicitud de pago extraordinaria por revisar';
+                $encargado = Personal::findOrFail(25816);
+                //Mail::to($encargado->email)->send(new NotificationReceived($msj));
+            }
             $solic->status = 2;
         }
         else{
@@ -486,7 +563,8 @@ class SolicitudesController extends Controller
 
     public function getDetallesPendientes(Request $request){
         return SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
-            ->select('sp_detalles.*')
+            ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
+            ->select('sp_detalles.*','lotes.num_lote','lotes.sublote')
             ->where('solic.solicitante_id','=',Auth::user()->id)
             ->where('solic.proveedor_id','=',$request->proveedor_id)
             ->where('sp_detalles.saldo','>',0)
