@@ -162,7 +162,14 @@
                                                         :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>
                                             </td>
-                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2">
+                                                <template v-if="solic.const_fisc">
+                                                    <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                </template>
+                                                <template v-else>
+                                                    {{solic.proveedor}}
+                                                </template>
+                                            </td>
                                             <td class="td2" v-text="solic.solicitante"></td>
                                             <td class="td2"
                                                 v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -222,7 +229,14 @@
                                                                 :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                         ></Button>
                                                     </td>
-                                                    <td class="td2" v-text="solic.proveedor"></td>
+                                                    <td class="td2">
+                                                        <template v-if="solic.const_fisc">
+                                                            <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                        </template>
+                                                        <template v-else>
+                                                            {{solic.proveedor}}
+                                                        </template>
+                                                    </td>
                                                     <td class="td2" v-text="solic.solicitante"></td>
                                                     <td class="td2"
                                                         v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -263,7 +277,14 @@
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                         ></Button>
                                                     </td>
-                                                    <td class="td2" v-text="solic.proveedor"></td>
+                                                    <td class="td2">
+                                                        <template v-if="solic.const_fisc">
+                                                            <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                        </template>
+                                                        <template v-else>
+                                                            {{solic.proveedor}}
+                                                        </template>
+                                                    </td>
                                                     <td class="td2" v-text="solic.solicitante"></td>
                                                     <td class="td2"
                                                         v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -310,7 +331,14 @@
                                                     @click="vistaFormulario('ver', solic)" :icon="'icon-eye'"
                                                 ></Button>
                                             </td>
-                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2">
+                                                <template v-if="solic.const_fisc">
+                                                    <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                </template>
+                                                <template v-else>
+                                                    {{solic.proveedor}}
+                                                </template>
+                                            </td>
                                             <td class="td2" v-text="solic.solicitante"></td>
                                             <td class="td2"
                                                 v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -374,7 +402,14 @@
                                                                 :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                         ></Button>
                                                     </td>
-                                                    <td class="td2" v-text="solic.proveedor"></td>
+                                                    <td class="td2">
+                                                        <template v-if="solic.const_fisc">
+                                                            <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                        </template>
+                                                        <template v-else>
+                                                            {{solic.proveedor}}
+                                                        </template>
+                                                    </td>
                                                     <td class="td2" v-text="solic.solicitante"></td>
                                                     <td class="td2"
                                                         v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -428,7 +463,14 @@
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                         ></Button>
                                                     </td>
-                                                    <td class="td2" v-text="solic.proveedor"></td>
+                                                    <td class="td2">
+                                                        <template v-if="solic.const_fisc">
+                                                            <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                        </template>
+                                                        <template v-else>
+                                                            {{solic.proveedor}}
+                                                        </template>
+                                                    </td>
                                                     <td class="td2" v-text="solic.solicitante"></td>
                                                     <td class="td2"
                                                         v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -505,7 +547,14 @@
                                                     @click="abrirModal('verPago',solic)" :icon="'fa fa-money'"
                                                 ></Button>
                                             </td>
-                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2">
+                                                <template v-if="solic.const_fisc">
+                                                    <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                </template>
+                                                <template v-else>
+                                                    {{solic.proveedor}}
+                                                </template>
+                                            </td>
                                             <td class="td2" v-text="solic.solicitante"></td>
                                             <td class="td2"
                                                 v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -574,7 +623,14 @@
                                                     @click="abrirModal('verPago',solic)" :icon="'fa fa-money'"
                                                 ></Button>
                                             </td>
-                                            <td class="td2" v-text="solic.proveedor"></td>
+                                            <td class="td2">
+                                                <template v-if="solic.const_fisc">
+                                                    <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                </template>
+                                                <template v-else>
+                                                    {{solic.proveedor}}
+                                                </template>
+                                            </td>
                                             <td class="td2" v-text="solic.solicitante"></td>
                                             <td class="td2"
                                                 v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
@@ -616,6 +672,7 @@
                     </template>
                     <template v-if="vista == 1">
                         <div id="accordion" role="tablist">
+                            <!-- Cabecera de la solicitud -->
                             <div class="card mb-0">
                                 <div class="card-header" id="headingOne" role="tab">
                                     <h5 class="mb-0">
@@ -673,23 +730,36 @@
                                                     v-model="solicitudData.proveedor" disabled>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label> Forma de pago </label>
                                             <select class="form-control" v-model="solicitudData.tipo_pago" :disabled="tipoAccion == 3 && admin < 3"
-                                                @change="solicitudData.forma_pago = ''">
+                                                @change="solicitudData.forma_pago = '', solicitudData.caja_chica = 0">
                                                 <option :value="0">C.F.</option>
                                                 <option :value="1">Bancos</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group" v-if="solicitudData.tipo_pago == 1">
                                                 <label for="">&nbsp;</label>
                                                 <select class="form-control" v-model="solicitudData.forma_pago"
+                                                    @change="solicitudData.caja_chica = 0"
                                                     :disabled="tipoAccion == 3 && admin < 3"
                                                 >
                                                     <option value="">Metodo de pago</option>
                                                     <option :value="0">Transferencia</option>
                                                     <option :value="1">Cheque</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group" v-if="solicitudData.forma_pago == 1">
+                                                <label for="">Caja chicha?</label>
+                                                <select class="form-control" v-model="solicitudData.caja_chica"
+                                                    :disabled="tipoAccion == 3 && admin < 3"
+                                                >
+                                                    <option :value="0">No</option>
+                                                    <option :value="1">Si</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -739,6 +809,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Detalles -->
                             <div class="card mb-0"
                                 v-show="solicitudData.proveedor_id != '' && solicitudData.empresa_solic != ''
                                     && (solicitudData.tipo_pago === 0
@@ -888,11 +959,23 @@
                                                     <option :value="2">Pago Cta</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-7">
+                                            <div class="col-md-5">
                                                 <label for="">Observación</label>
                                                 <textarea rows="3" class="form-control" v-model="datosDetalle.observacion"></textarea>
                                             </div>
-                                            <div class="col-md-3"></div>
+                                            <div class="col-md-5">
+                                                <div class="form-group" v-if="solicitudData.caja_chica == 1">
+                                                    <label for="">Proveedor </label>
+                                                    <v-select
+                                                        :on-search="getProveedores"
+                                                        label="proveedor"
+                                                        :options="arrayProveedores"
+                                                        placeholder="Buscar contratista..."
+                                                        :onChange="getDatosProveedorDet"
+                                                    >
+                                                    </v-select>
+                                                </div>
+                                            </div>
                                             <div class="col-md-3">
                                                 <label for="">Importe a contratar <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
                                                 <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
@@ -934,7 +1017,7 @@
                                         <div class="col-md-12">
                                             <center>
                                                 <TableComponent :cabecera="[
-                                                    '','Obra', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo'
+                                                    '','Obra', '   ', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo'
                                                 ]">
                                                     <template v-slot:tbody>
                                                         <tr v-for="det in solicitudData.detalle"
@@ -948,6 +1031,14 @@
                                                             </td>
                                                             <td class="td2">
                                                                 {{det.obra}} {{det.sub_obra }}
+                                                            </td>
+                                                            <td class="td2">
+                                                                <template v-if="det.const_fisc">
+                                                                    <a :href="det.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{det.proveedor}}</a>
+                                                                </template>
+                                                                <template v-else>
+                                                                    {{ det.proveedor ? det.proveedor : '' }}
+                                                                </template>
                                                             </td>
                                                             <td class="td2">
                                                                 {{ det.contrato_id ? 'Contrato: ' + det.contrato_id +'. ' : ''}}
@@ -977,7 +1068,7 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td colspan="7"></td>
+                                                            <td colspan="9"></td>
                                                             <th>$ {{$root.formatNumber(solicitudData.saldo = sumaDet)}}</th>
                                                         </tr>
                                                     </template>
@@ -988,7 +1079,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <!-- Documentos anexos -->
                             <div class="card mb-0" v-if="tipoAccion > 1">
                                 <div class="card-header" id="headingThree" role="tab">
                                     <h5 class="mb-0">
@@ -1091,7 +1182,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <!-- Observaciones -->
                             <div class="card mb-0" v-if="tipoAccion > 1">
                                 <div class="card-header" id="headingFour" role="tab">
                                     <h5 class="mb-0">
@@ -2077,7 +2168,8 @@ export default {
                 pendiente_id : null,
                 manzana: '',
                 lote_id: '',
-                contrato_id : ''
+                contrato_id : '',
+                proveedor_id : ''
             }
         },
         vistaFormulario(accion,data=[]){
@@ -2102,6 +2194,7 @@ export default {
                         num_factura : '',
                         extraordinario : 0,
                         detalle : [],
+                        caja_chica : 0
                     }
                     break;
                 }
@@ -2262,17 +2355,21 @@ export default {
                     console.log(error);
                 });
         },
-        getProveedores(){
+        getProveedores(search,loading){
             let me = this;
+            loading(true)
             me.arrayProveedores=[];
-            var url = '/select_proveedor?proveedor=';
+            var url = '/select_proveedor?proveedor='+search;
             axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                const data = [...respuesta.proveedor, ...respuesta.usuarios, ...respuesta.clientes]
+                const respuesta = response.data;
+                q: search
+                const data = [...respuesta.proveedor]
                 me.arrayProveedores = data;
+                loading(false)
             })
             .catch(function (error) {
                 console.log(error);
+                loading(false)
             });
         },
         getEmpresa(){
@@ -2384,6 +2481,12 @@ export default {
             me.solicitudData.proveedor_id = val1.id;
             me.solicitudData.proveedor = val1.proveedor;
             me.getDetallesPendientes(val1.id);
+        },
+        getDatosProveedorDet(val1){
+            let me = this;
+            //me.loading = true;
+            me.datosDetalle.proveedor_id = val1.id;
+            me.datosDetalle.proveedor = val1.proveedor;
         },
         cerrarModal() {
             this.modal = 0;
