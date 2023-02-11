@@ -218,7 +218,8 @@ class ProveedorController extends Controller
         $usuarios = User::join('personal','users.id','=','personal.id')
             ->select('users.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
             ->where('users.condicion','=',1)
-            ->where('users.rol_id','!=',10);
+            ->where('users.rol_id','!=',10)
+            ->whereNotIn('users.usuario',['yasmin_ventas', 'ALEJANDROT','descartado', 'oficina', 'e_preciado', 'may_jaz']);
         $clientes = Cliente::join('personal','clientes.id','=','personal.id')
                 ->select('clientes.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
                 ->where('clientes.clasificacion','!=',7);

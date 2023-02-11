@@ -23,6 +23,7 @@ class CreateSpSolicitudsTable extends Migration
             $table->double('importe')->default(0);
             $table->boolean('tipo_pago')->default(0);  //? 0:CF, 1:B
             $table->boolean('forma_pago')->nullable();//? 0:Transferencia, 1:Cheque
+            $table->boolean('caja_chica')->default(0)->nullable();
             $table->boolean('status')->default(0);
             $table->boolean('vb_gerente')->default(0);
             $table->boolean('vb_direccion')->default(0);

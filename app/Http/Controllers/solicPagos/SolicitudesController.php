@@ -68,7 +68,10 @@ class SolicitudesController extends Controller
             $total += $solicitud->importe;
             $solicitud->detalle = SpDetalle::leftJoin('creditos','sp_detalles.contrato_id','=','creditos.id')
                 ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
-                ->select('sp_detalles.*','lotes.manzana','lotes.num_lote','lotes.sublote','creditos.id as folio')
+                ->leftJoin('proveedores','sp_detalles.proveedor_id','=','proveedores.id')
+                ->select('sp_detalles.*','lotes.manzana','lotes.num_lote','lotes.sublote','creditos.id as folio',
+                    'proveedores.proveedor','proveedores.const_fisc'
+                )
                 ->where('sp_detalles.solic_id','=',$solicitud->id)->get();
             $solicitud->obs = SpObservacion::where('solicitud_id','=',$solicitud->id)->get();
             $solicitud->files = DocSolicPagosResource::collection(
@@ -221,9 +224,10 @@ class SolicitudesController extends Controller
 
         $solicitudes = SpSolicitud::join('personal as pv','sp_solicituds.proveedor_id','=','pv.id')
             ->join('personal as prov','pv.id','=','prov.id')
+            ->leftJoin('proveedores','sp_solicituds.proveedor_id','=','proveedores.id')
             ->join('personal as user','sp_solicituds.solicitante_id','=','user.id')
             ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
-                'pv.rfc as rfc_prov',
+                'pv.rfc as rfc_prov', 'proveedores.const_fisc',
                 DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante")
             );
             if($b_empresa != '')
@@ -355,6 +359,7 @@ class SolicitudesController extends Controller
         $solic->importe         = $solicitud['importe'];
         $solic->tipo_pago       = $solicitud['tipo_pago'];
         $solic->forma_pago      = $solicitud['forma_pago'];
+        $solic->caja_chica      = $solicitud['caja_chica'];
         $solic->extraordinario  = $solicitud['extraordinario'];
         $solic->status          = 0;
         $solic->fecha_compra    = Carbon::now();
@@ -399,6 +404,7 @@ class SolicitudesController extends Controller
 
                 $detalle->lote_id       = $det['lote_id'];
                 $detalle->contrato_id   = $det['contrato_id'];
+                $detalle->proveedor_id   = $det['proveedor_id'];
                 $detalle->save();
             }
         }
