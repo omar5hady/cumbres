@@ -334,7 +334,7 @@
             <solicitud-crear encargado="{{Auth::user()->seg_pago}}" usuario="{{Auth::user()->usuario}}"></solicitud-crear>
         </template>
         <template v-if="menu==237">
-
+            <solicitud-pendiente></solicitud-pendiente>
         </template>
         <template v-if="menu==238">
             <rep-lotes></rep-lotes>

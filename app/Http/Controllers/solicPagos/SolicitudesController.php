@@ -459,7 +459,6 @@ class SolicitudesController extends Controller
         }
     }
 
-
     public function update(Request $request){
         try{
             DB::beginTransaction();
@@ -570,15 +569,80 @@ class SolicitudesController extends Controller
             }
     }
 
-    public function getDetallesPendientes(Request $request){
-        return SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
+    public function indexPendientes(Request $request){
+        $admin = 0;
+        $usuario = Auth::user()->usuario;
+        if( $usuario == 'shady'
+            || $usuario == 'uriel.al'
+            || $usuario == 'lomelin'
+        )$admin = 1;
+        if( $usuario == 'shady'
+            || $usuario == 'alejandro.pe'
+            || $usuario == 'ing_david'
+        )$admin = 2;
+        if(
+            $usuario == 'jorge.diaz'
+            || $usuario == 'dora.m'
+            || $usuario == 'jeremias'
+            || $usuario == 'carlos.dom'
+        )$admin = 3;
+
+        $encargado = Auth::user()->seg_pago;
+
+        $detalles = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
             ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
-            ->select('sp_detalles.*','lotes.num_lote','lotes.sublote')
-            ->where('solic.solicitante_id','=',Auth::user()->id)
-            ->where('solic.proveedor_id','=',$request->proveedor_id)
-            ->where('sp_detalles.saldo','>',0)
+            ->join('personal as prov','solic.proveedor_id','=','prov.id')
+            ->join('personal as user','solic.solicitante_id','=','user.id')
+            ->select('sp_detalles.*', 'lotes.num_lote', 'lotes.sublote',
+                DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
+                DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante"),
+                'solic.created_at'
+            );
+            if($admin == 0 && $encargado == 0)
+                $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);
+            if($request->proveedor != '')
+                $detalles = $detalles->where(DB::raw("CONCAT(prov.nombre,' ',prov.apellidos)"), 'like', '%'. $request->proveedor . '%');
+            if($request->empresa)
+                $detalles = $detalles->where('solic.empresa_solic','=',$request->empresa);
+            $detalles = $detalles->where('sp_detalles.saldo','>',0)
+            ->where('sp_detalles.status','=',1)
+            ->paginate(10);
+
+        return $detalles;
+    }
+
+    public function getDetallesPendientes(Request $request){
+        $admin = 0;
+        $usuario = Auth::user()->usuario;
+        if( $usuario == 'shady'
+            || $usuario == 'uriel.al'
+            || $usuario == 'lomelin'
+        )$admin = 1;
+        if( $usuario == 'shady'
+            || $usuario == 'alejandro.pe'
+            || $usuario == 'ing_david'
+        )$admin = 2;
+        if(
+            $usuario == 'jorge.diaz'
+            || $usuario == 'dora.m'
+            || $usuario == 'jeremias'
+            || $usuario == 'carlos.dom'
+        )$admin = 3;
+
+        $encargado = Auth::user()->seg_pago;
+
+        $detalles = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
+            ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
+            ->select('sp_detalles.*','lotes.num_lote','lotes.sublote');
+            if($admin == 0 && $encargado == 0)
+                $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);
+            if($request->proveedor_id != '')
+                $detalles = $detalles->where('solic.proveedor_id','=',$request->proveedor_id);
+            $detalles = $detalles->where('sp_detalles.saldo','>',0)
             ->where('sp_detalles.status','=',1)
             ->get();
+
+        return $detalles;
     }
 
     public function printComprobante(Request $request){

@@ -4,10 +4,8 @@
         <li @click="menu=236" class="nav-item">
             <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Solicitud de pago</a>
         </li>
-        @if(Auth::user()->seg_pago == 1)
-            <li @click="menu=237" class="nav-item">
-
-            </li>
-        @endif
+        <li @click="menu=237" class="nav-item">
+            <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Pagos pendientes</a>
+        </li>
     </ul>
 </li>
