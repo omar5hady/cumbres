@@ -194,6 +194,7 @@ Vue.component('comision-bonos', require('./components/Comisiones/BonosVentas.vue
 
 //Pagos Internos
 Vue.component('solicitud-crear', require('./components/PagosInternos/CreateSolicitud.vue'));
+Vue.component('solicitud-pendiente', require('./components/PagosInternos/PendientesSaldo.vue'));
 
 
 //Cotizador de lotes
