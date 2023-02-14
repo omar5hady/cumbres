@@ -121,8 +121,6 @@ class ClienteController extends Controller
                         $personas = $personas->whereBetween($criterio, [$buscar, $buscar2]);
                         if($buscar3 != '')
                             $personas = $personas->where('fraccionamientos.id','=',$buscar3);
-                        if($publicidad != '')
-                            $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
 
                         break;
                     }
@@ -143,6 +141,9 @@ class ClienteController extends Controller
 
         if($request->b_advertising != '')
             $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
+
+        if($publicidad != '')
+            $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
@@ -1021,8 +1022,6 @@ class ClienteController extends Controller
                 case 'clientes.created_at':
                 {
                     $personas = $personas->whereBetween($criterio, [$buscar, $buscar2]);
-                    if($publicidad != '')
-                        $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
                     if($buscar3 != '')
                         $personas = $personas->where('fraccionamientos.id','=',$buscar3);
                     break;
@@ -1033,6 +1032,9 @@ class ClienteController extends Controller
                     break;
                 }
             }
+
+        if($publicidad != '')
+            $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
