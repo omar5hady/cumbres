@@ -801,7 +801,7 @@
 
                                         </template>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-3" v-show="tipoAccion != 1">
                                             <label> Importe de la solicitud</label>
                                             <h6 class="form-control">${{$root.formatNumber(solicitudData.importe = sumaDet)}}</h6>
                                         </div>
@@ -2265,7 +2265,7 @@ export default {
         storeObs(){
             let me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
-            axios.post('/sp/storeObs/',{
+            axios.post('/sp/storeObs',{
                 'solicitud_id': me.id,
                 'comentario' : me.comentario
             }).then(function (response){

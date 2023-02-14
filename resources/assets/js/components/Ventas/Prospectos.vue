@@ -46,10 +46,6 @@
                                             <option value="">Seleccione</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
-                                        <select class="form-control" v-model="b_publicidad">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
-                                        </select>
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-model="b_clasificacion" >
@@ -114,6 +110,16 @@
                                         <select class="form-control" v-model="b_aux" >
                                             <option value="">No</option>
                                             <option value="1">Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" disabled value="Medio de publicidad:" placeholder="Medio de publicidad">
+                                        <select class="form-control" v-model="b_publicidad">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
