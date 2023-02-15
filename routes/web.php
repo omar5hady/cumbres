@@ -779,7 +779,7 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/reporteAsesoresClasificacion','DigitalLeadController@reporteAsesoresClasificacion');
             Route::get('/excel/reportes/prospectos','DigitalLeadController@excelReportesProspectos');
 
-            Route::get('/leads/obsPrueba','DigitalLeadController@pruebaObs');
+            Route::get('/leads/pruebaDescartLead','DigitalLeadController@pruebaDescartLead');
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');

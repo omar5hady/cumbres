@@ -44,6 +44,7 @@ class Digital_lead extends Model
         'enganche',
         'fecha_update',
         'fecha_asign',
+        'fecha_contacto',
         'messenger_id',
         'name_user',
         'last_name_user',

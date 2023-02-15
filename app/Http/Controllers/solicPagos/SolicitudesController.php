@@ -488,6 +488,7 @@ class SolicitudesController extends Controller
         $solic = SpSolicitud::findOrFail($request->id);
         if($request->estado == 1){
             $solic->vb_tesoreria = $request->estado;
+            $this->createObs($solic->id, "Solicitud revisada");
             if($solic->extraordinario == 1){
                 $msj = 'Tienes pendiente una solicitud de pago extraordinaria por revisar';
                 $encargado = Personal::findOrFail(25816);
@@ -531,7 +532,7 @@ class SolicitudesController extends Controller
         $solic->num_factura = $request->num_factura;
         $solic->cuenta_pago = $request->cuenta_pago;
         $solic->beneficiario = $request->beneficiario;
-        if($solic->forma_pago == 0 && $solic->tipo_pago == 1){
+        if($solic->tipo_pago == 0 || $solic->forma_pago == 0 && $solic->tipo_pago == 1){
             $solic->status = 4;
             $solic->entrega_pago = Carbon::now();
         }
@@ -593,10 +594,10 @@ class SolicitudesController extends Controller
             ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
             ->join('personal as prov','solic.proveedor_id','=','prov.id')
             ->join('personal as user','solic.solicitante_id','=','user.id')
-            ->select('sp_detalles.*', 'lotes.num_lote', 'lotes.sublote',
+            ->select('sp_detalles.*', 'lotes.num_lote', 'lotes.sublote', 'lotes.manzana',
                 DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
                 DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante"),
-                'solic.created_at'
+                'solic.created_at', 'solic.status', 'solic.fecha_pago'
             );
             if($admin == 0 && $encargado == 0)
                 $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);

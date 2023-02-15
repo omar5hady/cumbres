@@ -588,7 +588,7 @@
                                 <TableComponent>
                                     <template v-slot:thead>
                                         <tr v-if="admin === 3 || usuario == 'shady'">
-                                            <th colspan="8" class="text-center" v-if="solicCheck.length>0">
+                                            <th colspan="9" class="text-center" v-if="solicCheck.length>0">
                                                 <Button :btnClass="'btn-scarlet'" :icon="'fa fa-credit-card-alt'"
                                                     @click="abrirModal('comprobanteMasa')"
                                                     title="Pagar Seleccion">Cargar comprobante de pago para solicitudes seleccionadas</Button>
@@ -601,6 +601,7 @@
                                             <th>Fecha solic</th>
                                             <th>Importe</th>
                                             <th>Tipo de pago</th>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                         </tr>
@@ -654,6 +655,10 @@
                                                     @click="verObs(solic)"
                                                 >Observaciones
                                                 </Button>
+                                            </td>
+                                            <td>
+                                                <Button :btnClass="'btn-dark'" title="Ver detalle"
+                                                    @click="abrirModal('detalles',solic)" :icon="'fa fa-database'"></Button>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1043,10 +1048,10 @@
                                                             <td class="td2">
                                                                 {{ det.contrato_id ? 'Contrato: ' + det.contrato_id +'. ' : ''}}
                                                                 {{ det.lote_id ?
-                                                                    det.sublote ? 'Lote: ' + det.num_lote + ' ' + det.sublote
-                                                                    : 'Lote: ' + det.num_lote : ''
+                                                                    det.sublote ? 'Mnz: ' + det.manzana + ' Lote: ' + det.num_lote + ' ' + det.sublote
+                                                                    : 'Mnz: ' + det.manzana + ' Lote: ' + det.num_lote : ''
                                                                 }}
-                                                                </td>
+                                                            </td>
                                                             <td class="td2">{{det.cargo}}</td>
                                                             <td>{{det.concepto}}</td>
                                                             <td>{{det.observacion}}</td>
@@ -1515,6 +1520,61 @@
                         </template>
                     </template>
                 </ModalComponent>
+
+                <!--Inicio del modal Detalles-->
+                <ModalComponent v-if="modal == 7"
+                    :titulo="tituloModal"
+                    @closeModal="cerrarModal()"
+                >
+                    <template v-slot:body>
+                        <TableComponent :cabecera="[
+                            'Obra', '   ', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo'
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="det in solicitudData.detalle"
+                                    :key="det.id+det.obra+det.sub_obra+det.cargo+det.concepto+det.pago">
+                                    <td class="td2">
+                                        {{det.obra}} {{det.sub_obra }}
+                                    </td>
+                                    <td class="td2">
+                                        <template v-if="det.const_fisc">
+                                            <a :href="det.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{det.proveedor}}</a>
+                                        </template>
+                                        <template v-else>
+                                            {{ det.proveedor ? det.proveedor : '' }}
+                                        </template>
+                                    </td>
+                                    <td class="td2">
+                                        {{ det.contrato_id ? 'Contrato: ' + det.contrato_id +'. ' : ''}}
+                                        {{ det.lote_id ?
+                                            det.sublote ? 'Mnz: ' + det.manzana + ' Lote: ' + det.num_lote + ' ' + det.sublote
+                                            : 'Mnz: ' + det.manzana + ' Lote: ' + det.num_lote : ''
+                                        }}
+                                    </td>
+                                    <td class="td2">{{det.cargo}}</td>
+                                    <td class="td2">{{det.concepto}}</td>
+                                    <td class="td2">{{det.observacion}}</td>
+                                    <td class="td2">
+                                        {{
+                                            (det.tipo_mov === 0) ? 'Anticipo'
+                                            : (det.tipo_mov === 1) ? 'Liquidación'
+                                            : 'Pago Cta'
+                                        }}
+                                    </td>
+                                    <td class="td2">
+                                        ${{$root.formatNumber(det.total)}}
+                                    </td>
+                                    <td class="td2">
+                                        <strong>${{$root.formatNumber(det.pago)}}</strong>
+                                    </td>
+                                    <td class="td2">
+                                        ${{$root.formatNumber(det.total - det.pago)}}
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </template>
+                </ModalComponent>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -1555,6 +1615,7 @@ export default {
                 'ing_david',//Direccion 1
                 'meza.marco60',//Contabilidad 6
                 'guadalupe.ff',// Obra 2
+                'uriel.al',
                 'shady'
             ],
             solicCheck:[],
@@ -2561,6 +2622,12 @@ export default {
                         file: "",
                         nom_archivo: 'Seleccione Archivo'
                     };
+                    break;
+                }
+                case 'detalles':{
+                    me.modal = 7;
+                    me.tituloModal = 'Detalles'
+                    me.solicitudData = { ...data }
                     break;
                 }
             }

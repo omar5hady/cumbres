@@ -8,6 +8,7 @@ use App\Http\Controllers\ClienteController;
 use App\Cliente_observacion;
 use App\Medio_publicitario;
 use App\Digital_lead;
+use App\AsesorCastigo;
 use App\Obs_lead;
 use App\Personal;
 use App\User;
@@ -527,7 +528,6 @@ class DigitalLeadController extends Controller
         $lead->descripcion = $request->descripcion;
         $lead->direccion = $request->direccion;
         if($request->vendedor_asign!= 0){
-
             if($lead->vendedor_asign != $request->vendedor_asign){// Si se asigno un asesor diferente al registrado anteriormente
                 $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
                 $fecha = Carbon::now();
@@ -551,6 +551,8 @@ class DigitalLeadController extends Controller
                 User::findOrFail($request->vendedor_asign)->notify(new NotifyAdmin($arreglo));
             }
             $lead->vendedor_asign = $request->vendedor_asign;
+            if($lead->fecha_contacto == NULL && Auth::user()->id == $lead->vendedor_asign)
+                $lead->fecha_contacto = $fecha;
         }
 
         /////////////// PASO 2 ////////////////
@@ -735,6 +737,8 @@ class DigitalLeadController extends Controller
         // Se actualiza el lead para indicar la fecha de actualización.
         $lead = Digital_lead::findOrFail($request->lead_id);
         $lead->fecha_update = $fecha;
+        if($lead->fecha_contacto == NULL && Auth::user()->id == $lead->vendedor_asign)
+            $lead->fecha_contacto = $fecha;
         $lead->save();
         // Se registra notificiación
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
@@ -804,11 +808,15 @@ class DigitalLeadController extends Controller
     // Funcion para asignar un lead de manera aleatoria.
     public function asignarLead(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $this->setVendedorAleatorio($request->id);
+    }
+
+    private function setVendedorAleatorio($lead_id){
         $fecha = Carbon::now(); // Fecha actual.
         try{
             DB::beginTransaction();
             // Se accede al registro del lead.
-            $lead = Digital_lead::findOrFail($request->id);
+            $lead = Digital_lead::findOrFail($lead_id);
             // Nuevo Cliente controller.
             $cliente = new ClienteController();
             if($lead->proyecto_interes == 0 ) // Lead sin proyecto de interes
@@ -821,6 +829,7 @@ class DigitalLeadController extends Controller
             $lead->vendedor_asign = $vendedor_asign['vendedor_elegido'];
             $lead->status = 2;// Se cambia estus para indicar que es un cliente potencial.
             $lead->fecha_asign = $fecha;
+            $lead->fecha_contacto = NULL;
             $lead->save();
 
             $vendedor = Vendedor::findOrFail($vendedor_asign['vendedor_elegido']);
@@ -831,7 +840,7 @@ class DigitalLeadController extends Controller
             $obs->lead_id = $lead->id;
             $obs->comentario = 'Aviso!, se le ha asignado un nuevo lead para seguimiento,
                                 favor de ingresar al modulo de Digital Leads para mas información. ';
-            $obs->usuario = Auth::user()->usuario;
+            $obs->usuario = 'Sistema';
             $obs->save();
             DB::commit();
         } catch (Exception $e){
@@ -1491,21 +1500,47 @@ class DigitalLeadController extends Controller
 
     }
 
-    public function pruebaObs(Request $request){
-        $obs = Obs_lead::join('digital_leads','obs_leads.lead_id','digital_leads.id')
-            ->select('obs_leads.lead_id','obs_leads.created_at')
-            ->where('comentario','like', '%Aviso!, se le ha asignado un nuevo lead%')
-            ->where('digital_leads.vendedor_asign','!=',NULL)->get();
+    public function pruebaDescartLead(){
 
-        foreach($obs as $ob){
-            $ob->vendedor = User::join('digital_leads','users.id','=','digital_leads.vendedor_asign')
-                        ->select('usuario')->where('digital_leads.id','=',$ob->lead_id)
-                        ->first();
+        $now = Carbon::now();
+        $fin_castigo = Carbon::now()->addDay(30);
 
-            $ob->atencion = Obs_lead::select('created_at')->where('usuario','=',$ob->vendedor->usuario)->first();
-        }
+        $leads = Digital_lead::select('id','fecha_asign','vendedor_asign')
+            ->where('fecha_asign', '!=', NULL)
+            ->where('fecha_contacto','=',NULL)
+            ->orderBy('fecha_asign','desc')
+            ->get();
 
-        return $obs;
+        if(sizeOf($leads))
+            foreach($leads as $lead){
+                $fechaSeg = Carbon::parse($lead->fecha_asign);
+                $lead->horas = $fechaSeg->diffInHours($now);
+
+                if($lead->horas >= 24){
+                    $castigo = new AsesorCastigo();
+                    $castigo->asesor_id = $lead->vendedor_asign;
+                    $castigo->f_ini = $now;
+                    $castigo->f_fin = $fin_castigo;
+                    $castigo->lead_id = $lead->id;
+                    $castigo->save();
+
+                    $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
+                    $obs->lead_id = $lead->id;
+                    $obs->comentario = 'Lead removido!, se ha cambiado de asesor por falta de seguimiento inmediato. ';
+                    $obs->usuario = 'Sistema';
+                    $obs->save();
+
+                    $this->setVendedorAleatorio($lead->id);
+                }
+            }
+
+        // return [
+        //     'leads' => $leads,
+        //     'now' => $now,
+        //     'fin_castigo' => $fin_castigo
+        // ];
+
+
     }
 
 

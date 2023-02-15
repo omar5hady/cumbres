@@ -9,6 +9,7 @@ use App\Mail\NotificationReceived;
 use App\Notificacion_aviso;
 use App\Cliente_observacion;
 use App\Cliente;
+use App\Http\Controllers\DigitalLeadController;
 use Carbon\Carbon;
 use App\Pago_renta;
 use App\User;
@@ -53,6 +54,9 @@ class NotificacionPeriodica extends Command
         $this->getPagosPorVencer();
         $this->cambiarPagoAVencido();
         $this->sendDescartado();
+
+        $leadController = new DigitalLeadController();
+        $leadController->pruebaDescartLead();
     }
 
     private function getNotificacionesAviso($today){

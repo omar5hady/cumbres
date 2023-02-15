@@ -42,11 +42,14 @@
                     <TableComponent :cabecera="[
                         'Proveedor',
                         'Solicitante',
+                        'Obra',
+                        '',
                         'Cargo',
                         'Subconcepto',
                         'Obs.',
                         'Fecha solic',
                         'Saldo pendiente',
+                        'Status'
                     ]">
                         <template v-slot:tbody>
                             <tr v-for="solic in arrayPendientes.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
@@ -54,13 +57,33 @@
                                     {{solic.proveedor}}
                                 </td>
                                 <td class="td2" v-text="solic.solicitante"></td>
+                                <td>
+                                    {{solic.sub_obra ? solic.obra + ' ' + solic.sub_obra : solic.obra}}
+                                </td>
+                                <td class="td2">
+                                    {{ solic.contrato_id ? 'Contrato: ' + solic.contrato_id +'. ' : ''}}
+                                    {{ solic.lote_id ?
+                                        solic.sublote ? 'Mnz: ' + solic.manzana + ' Lote: ' + solic.num_lote + ' ' + solic.sublote
+                                        : 'Mnz: ' + solic.manzana + ' Lote: ' + solic.num_lote : ''
+                                    }}
+                                </td>
+
                                 <td class="td2" v-text="solic.cargo"></td>
                                 <td class="td2" v-text="solic.concepto"></td>
                                 <td class="td2" v-text="solic.observacion"></td>
                                 <td class="td2"
                                     v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
                                 </td>
-                                <td class="td2" v-text="'$'+$root.formatNumber(solic.saldo)"></td>
+                                <th class="td2" v-text="'$'+$root.formatNumber(solic.saldo)"></th>
+                                <td>
+                                    {{
+                                        solic.status == 0 ? 'Nueva'
+                                        : solic.status == 1 ? 'En Proceso'
+                                        : solic.status == 2 ? 'Aprobada'
+                                        : solic.status == 3 ? 'Por Pagar'
+                                        : 'Pagada: ' + solic.fecha_pago
+                                    }}
+                                </td>
                             </tr>
                         </template>
                     </TableComponent>
