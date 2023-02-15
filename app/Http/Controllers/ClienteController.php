@@ -10,6 +10,7 @@ use App\Cliente;
 use App\User;
 use App\Calendar;
 Use App\Asign_proyecto;
+use App\AsesorCastigo;
 use App\Personal;
 use App\Credito;
 use App\Vendedor;
@@ -1269,6 +1270,11 @@ class ClienteController extends Controller
         //Fecha actual.
         $current = Carbon::now();
 
+        $castigados = AsesorCastigo::select('asesor_id')
+            ->where('f_ini', '>', $current)
+            ->where('f_fin', '<=', $current)
+            ->get();
+
         //Busqueda de eventos en el calendario
         $calendario = Calendar::select('user_id')
                 ->where('event_name','!=','Guardia')
@@ -1306,6 +1312,7 @@ class ClienteController extends Controller
             ->where('users.usuario','!=','oficina')
             //Que no se encuentren en el calendario de eventos.
             ->whereNotIn('users.id',$cal)
+            ->whereNotIn('users.id',$castigados)
             ->whereNotIn('users.usuario',[
                 'may_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
@@ -1339,6 +1346,7 @@ class ClienteController extends Controller
                     ->where('users.usuario','!=','oficina')
                     ->whereIn('users.id',$as)
                     ->whereNotIn('users.id',$cal)
+                    ->whereNotIn('users.id',$castigados)
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
                         'ALEJANDROT',
@@ -1360,6 +1368,7 @@ class ClienteController extends Controller
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
                     ->whereNotIn('users.id',$cal)
+                    ->whereNotIn('users.id',$castigados)
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
                         'Guadalupe', 'ALEJANDROT',
