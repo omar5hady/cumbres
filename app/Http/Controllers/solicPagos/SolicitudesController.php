@@ -105,7 +105,7 @@ class SolicitudesController extends Controller
 
         $total = 0;
 
-        $solicitudes = $this->querySolicitudes($request,$admin);
+        $solicitudes = $this->queryExcel($request,$admin);
         $solicitudes = $solicitudes->get();
 
         $title = 'Solicitudes';
@@ -125,17 +125,17 @@ class SolicitudesController extends Controller
 
                 $sheet->row(1, [
                     'Empresa', 'Proveedor', 'Solicitante',
-                    'Fecha de solicitud', 'Importe', 'Tipo de pago', 'Forma',
+                    'Fecha de solicitud', 'Obra', '','Cargo','Concepto','Obs.','Importe', 'Tipo de pago', 'Forma',
                     'Cuenta de salida', 'Cuenta destino', 'Folio/Num Cheque',
                     'Fecha de pago'
                 ]);
 
                 $sheet->setColumnFormat(array(
-                    'E' => '$#,##0.00',
+                    'J' => '$#,##0.00',
                 ));
 
 
-                $sheet->cells('A1:K1', function ($cells) {
+                $sheet->cells('A1:P1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -164,6 +164,15 @@ class SolicitudesController extends Controller
                         $s->fecha_ava_sol = $s->fecha_pago->formatLocalized('%d de %B de %Y');
                     }
 
+                    if($s->sub_obra)
+                        $s->obra = $s->obra.' '.$s->sub_obra;
+
+                    $lote = '';
+                    if($s->num_lote)
+                        $lote = 'Mnz: '.$s->manzana.' Lote: '.$s->num_lote;
+                    if($s->sublote)
+                        $lote = $lote.' '.$s->num_lote;
+
                     $tipo_pago = 'C.F.';
                     $forma_pago = '';
                     if($s->tipo_pago == 1)
@@ -179,7 +188,12 @@ class SolicitudesController extends Controller
                         $s->proveedor,
                         $s->solicitante,
                         $s->fecha_compra,
-                        $s->importe,
+                        $s->obra,
+                        $lote,
+                        $s->cargo,
+                        $s->concepto,
+                        $s->observacion,
+                        $s->pago,
                         $tipo_pago,
                         $forma_pago,
                         $s->cuenta_pago,
@@ -188,7 +202,7 @@ class SolicitudesController extends Controller
                         $s->fecha_pago
                     ]);
                 }
-                $num='A1:R' . $cont;
+                $num='A1:P' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             }
@@ -228,6 +242,78 @@ class SolicitudesController extends Controller
             ->join('personal as user','sp_solicituds.solicitante_id','=','user.id')
             ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
                 'pv.rfc as rfc_prov', 'proveedores.const_fisc',
+                DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante")
+            );
+            if($b_empresa != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.empresa_solic','=',$b_empresa);
+            if($b_proveedor != '')
+                $solicitudes = $solicitudes->where(DB::raw("CONCAT(prov.nombre,' ',prov.apellidos)"),'like','%'.$b_proveedor.'%');
+            if($b_solicitante != '')
+                $solicitudes = $solicitudes->where(DB::raw("CONCAT(user.nombre,' ',user.apellidos)"), 'like', '%'. $b_solicitante . '%');
+            if($b_fecha1 != '' && $b_fecha2 != '')
+                $solicitudes = $solicitudes->whereBetween(
+                    'sp_solicituds.created_at',[$b_fecha1.' 00:00:00',$b_fecha2.' 23:59:59']
+                );
+            if($b_status != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.status','=', $b_status);
+            if($b_vbgerente != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.vb_gerente','=', $b_vbgerente);
+            if($b_vbdireccion != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.vb_direccion','=', $b_vbdireccion);
+            if($admin == 0){
+                if($encargado == 0)
+                    $solicitudes = $solicitudes->where('sp_solicituds.solicitante_id','=',Auth::user()->id);
+                if($encargado == 1)
+                    $solicitudes = $solicitudes->where('sp_solicituds.departamento','=',$dep->departamento_id);
+            }
+            if($b_rechazado != ''){
+                $solicitudes = $solicitudes->where('sp_solicituds.rechazado','=', 1);
+            }
+            else{
+                $solicitudes = $solicitudes->where('sp_solicituds.rechazado','=', 0);
+            }
+            if($b_tipo_pago != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.tipo_pago','=',$b_tipo_pago);
+            if($b_forma_pago != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.forma_pago','=',$b_forma_pago);
+            if($b_cuenta_pago != '')
+                $solicitudes = $solicitudes->where('sp_solicituds.cuenta_pago','like','%'.$b_cuenta_pago.'%');
+
+            $solicitudes = $solicitudes->orderBy('sp_solicituds.status','asc')
+            ->orderBy('sp_solicituds.id','asc');
+
+
+        return $solicitudes;
+    }
+
+    private function queryExcel(Request $request, $admin){
+        $b_proveedor = $request->b_proveedor;
+        $b_solicitante = $request->b_solicitante;
+        $b_status = $request->b_status;
+        $b_fecha1 = $request->b_fecha1;
+        $b_fecha2 = $request->b_fecha2;
+        $b_vbgerente = $request->b_vbgerente;
+        $b_vbdireccion = $request->b_vbdireccion;
+        $b_rechazado = $request->b_rechazado;
+        $b_empresa = $request->b_empresa;
+        $b_tipo_pago = $request->b_tipo_pago;
+        $b_forma_pago = $request->b_forma_pago;
+        $b_cuenta_pago = $request->b_cuenta_pago;
+
+        $encargado = Auth::user()->seg_pago;
+        $dep = Personal::findOrFail(Auth::user()->id);
+
+        $solicitudes = SpSolicitud::join('personal as pv','sp_solicituds.proveedor_id','=','pv.id')
+            ->join('personal as prov','pv.id','=','prov.id')
+            ->join('sp_detalles', 'sp_solicituds.id','=', 'sp_detalles.solic_id')
+            ->leftJoin('creditos','sp_detalles.contrato_id','=','creditos.id')
+            ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
+            ->leftJoin('proveedores','sp_solicituds.proveedor_id','=','proveedores.id')
+            ->join('personal as user','sp_solicituds.solicitante_id','=','user.id')
+            ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
+                'lotes.manzana','lotes.num_lote','lotes.sublote','creditos.id as folio',
+                'sp_detalles.obra', 'sp_detalles.sub_obra', 'sp_detalles.cargo',
+                'sp_detalles.concepto', 'sp_detalles.observacion', 'sp_detalles.pago',
                 DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante")
             );
             if($b_empresa != '')
