@@ -285,7 +285,7 @@ class SolicitudesController extends Controller
                 if($solic->extraordinario == 1){
                     $msj = 'Tienes pendiente una solicitud de pago extraordinaria por revisar';
                     $encargado = Personal::findOrFail(26546);
-                    //Mail::to($encargado->email)->send(new NotificationReceived($msj));
+                    Mail::to($encargado->email)->send(new NotificationReceived($msj));
                 }
             }
         }
@@ -314,35 +314,35 @@ class SolicitudesController extends Controller
         switch($departamento){
             case 9:
                 $gerente = Personal::findOrFail(10);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 4:
                 $gerente = Personal::findOrFail(25695);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 3:
                 $gerente = Personal::findOrFail(23679);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 5:
                 $gerente = Personal::findOrFail(23684);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 7:
                 $gerente = Personal::findOrFail(26546);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 1:
                 $gerente = Personal::findOrFail(26310);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 6:
                 $gerente = Personal::findOrFail(33300);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
             case 2:
                 $gerente = Personal::findOrFail(24100);
-                //Mail::to($gerente->email)->send(new NotificationReceived($msj));
+                Mail::to($gerente->email)->send(new NotificationReceived($msj));
                 break;
         }
     }
@@ -492,7 +492,7 @@ class SolicitudesController extends Controller
             if($solic->extraordinario == 1){
                 $msj = 'Tienes pendiente una solicitud de pago extraordinaria por revisar';
                 $encargado = Personal::findOrFail(25816);
-                //Mail::to($encargado->email)->send(new NotificationReceived($msj));
+                Mail::to($encargado->email)->send(new NotificationReceived($msj));
             }
             $solic->status = 2;
         }
