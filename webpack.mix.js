@@ -29,4 +29,5 @@ mix.styles([
     'resources/assets/plantilla/js/template.js',
     'resources/assets/plantilla/js/sweetalert2.all.js'
    ], 'public_html/js/plantilla.js')
-   .js(['resources/assets/js/app.js'],'public_html/js/app.js');
+   .js(['resources/assets/js/app.js'],'public_html/js/app.js')
+   .js(['resources/assets/js/helper.js'],'public_html/js/helper.js');
