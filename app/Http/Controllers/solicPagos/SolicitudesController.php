@@ -589,6 +589,7 @@ class SolicitudesController extends Controller
         )$admin = 3;
 
         $encargado = Auth::user()->seg_pago;
+        $dep = Personal::findOrFail(Auth::user()->id);
 
         $detalles = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
             ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
@@ -601,6 +602,8 @@ class SolicitudesController extends Controller
             );
             if($admin == 0 && $encargado == 0)
                 $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);
+            if($encargado == 1)
+                $detalles = $detalles->where('solic.departamento','=',$dep->departamento_id);
             if($request->proveedor != '')
                 $detalles = $detalles->where(DB::raw("CONCAT(prov.nombre,' ',prov.apellidos)"), 'like', '%'. $request->proveedor . '%');
             if($request->empresa)
@@ -631,12 +634,15 @@ class SolicitudesController extends Controller
         )$admin = 3;
 
         $encargado = Auth::user()->seg_pago;
+        $dep = Personal::findOrFail(Auth::user()->id);
 
         $detalles = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
             ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
             ->select('sp_detalles.*','lotes.num_lote','lotes.sublote');
             if($admin == 0 && $encargado == 0)
                 $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);
+            if($encargado == 1)
+                $detalles = $detalles->where('solic.departamento','=',$dep->departamento_id);
             if($request->proveedor_id != '')
                 $detalles = $detalles->where('solic.proveedor_id','=',$request->proveedor_id);
             $detalles = $detalles->where('sp_detalles.saldo','>',0)
@@ -667,5 +673,11 @@ class SolicitudesController extends Controller
             $pdf = \PDF::loadview('pdf.PagosInternos.reciboCF', ['solicitud' => $solicitud]);
 
         return $pdf->stream('comprobante.pdf');
+    }
+
+    public function setRevOpc(Request $request){
+        $solic = SpSolicitud::findOrFail($request->id);
+        $solic->rev_op = 1;
+        $solic->save();
     }
 }

@@ -16,6 +16,6 @@ class SpSolicitud extends Model
         'entrega_pago',
         'comprobante_pago',
         'cuenta_pago',
-        'beneficiario', 'extraordinaria'
+        'beneficiario', 'extraordinaria', 'rev_op'
     ];
 }
