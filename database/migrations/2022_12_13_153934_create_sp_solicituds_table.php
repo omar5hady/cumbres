@@ -45,6 +45,8 @@ class CreateSpSolicitudsTable extends Migration
             $table->boolean('beneficiario')->default(0);//? Abono a cuenta de beneficiario? 0: NO, 1:Si
 
             $table->boolean('extraordinario')->default(0);//?  0: NO, 1:Si
+
+            $table->boolean('rev_op')->default(0);
             $table->timestamps();
         });
     }

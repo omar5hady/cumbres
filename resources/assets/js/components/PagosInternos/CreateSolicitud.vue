@@ -392,14 +392,13 @@
                                             <template v-slot:tbody>
                                                 <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                                     <td class="td2">
-                                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar" v-if="solic.vb_gerente == 0"
-                                                            @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
+                                                        <Button :btnClass="'btn-warning'" :icon="'icon-check'" title="Indicar revision previa"
+                                                            v-if="solic.rev_op == 0 && (admin == 1 || usuario == 'shady')"
+                                                            @click="setRevOpc(solic.id)"
                                                         ></Button>
+
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                                 :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
-                                                        ></Button>
-                                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar" v-if="solic.vb_gerente == 0"
-                                                                :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                         ></Button>
                                                     </td>
                                                     <td class="td2">
@@ -1856,6 +1855,41 @@ export default {
                     }).then(function (response){
                         me.cerrarModal();
                         me.cerrarFormulario();
+                        me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Solicitud actualizada'
+                        })
+                    }).catch(function (error){
+                    });
+                }
+            })
+        },
+        setRevOpc(id){
+            let me = this;
+
+            const titulo = '¿Seguro de marcar como revisada esta solicitud?';
+            swal({
+                title: titulo,
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, continuar'
+                }).then((result) => {
+                if (result.value) {
+                    axios.put('/sp/setRevOpc/',{
+                        'id': id,
+                    }).then(function (response){
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
                         //Se muestra mensaje Success
                         const toast = Swal.mixin({
