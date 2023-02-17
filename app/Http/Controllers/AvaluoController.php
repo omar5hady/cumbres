@@ -36,7 +36,7 @@ class AvaluoController extends Controller
         $contrato->avaluo_preventivo = $request->fecha_solicitud;
         $contrato->save();
 
-        //Se crea la notificación 
+        //Se crea la notificación
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
                 $msj = "Nueva solicitud de avaluo para el contrato #" . $request->folio;
@@ -56,7 +56,7 @@ class AvaluoController extends Controller
                 //User::findOrFail(23680)->notify(new NotifyAdmin($arregloAceptado));
     }
 
-    /*  Función para indicar que el contrato no requiere avaluo, para esto se 
+    /*  Función para indicar que el contrato no requiere avaluo, para esto se
         almacena una fecha default en el campo correspondiente
     */
     public function noAplicaAvaluo(Request $request){
@@ -95,7 +95,7 @@ class AvaluoController extends Controller
 
         );
 
-        /*Validacion de status a filtrar: 
+        /*Validacion de status a filtrar:
             * Pendiente
             * Revisión
             * Reconsideración
@@ -144,14 +144,14 @@ class AvaluoController extends Controller
             $avaluos= $avaluos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-                   
+
         $avaluos = $avaluos ->where('inst_seleccionadas.elegido','=','1')
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
                         ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
-        
+
         return [
             'pagination' => [
             'total'         => $avaluos->total(),
@@ -165,7 +165,7 @@ class AvaluoController extends Controller
 
     //// FUNCIONES PARA HISTORIAL DE AVALUOS
         private function getHistorial($buscar, $b_etapa, $b_manzana, $b_lote, $criterio){
-            
+
             $query = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -214,7 +214,7 @@ class AvaluoController extends Controller
             }
 
             return $avaluos;
-            
+
         }
 
         public function indexHistorial(Request $request){
@@ -229,7 +229,7 @@ class AvaluoController extends Controller
 
             $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
-            
+
             return [
                 'pagination' => [
                 'total'         => $avaluos->total(),
@@ -252,12 +252,12 @@ class AvaluoController extends Controller
 
             $avaluos = $avaluos->where('avaluos.fecha_recibido','!=',NULL)->orderBy('avaluos.fecha_recibido','asc')
                         ->get();
-            
+
             return Excel::create('Avaluos', function($excel) use ($avaluos){
                     $excel->sheet('Avaluos', function($sheet) use ($avaluos){
-                        
+
                         $sheet->row(1, [
-                            '# Contrato', 'Cliente','Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo', 
+                            '# Contrato', 'Cliente','Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo',
                             'Avance de obra', 'Fecha de Solicitud (Ventas)', 'Valor Solicitado', 'Fecha de solicitud de avaluo', 'Fecha de visita',
                             'Estatus','Fecha concluido', 'Seguro de calidad','Valor concluido', 'Costo', 'Fecha enviado a ventas'
                         ]);
@@ -283,7 +283,7 @@ class AvaluoController extends Controller
                             $cells->setAlignment('center');
                         });
 
-                        
+
                         $cont=1;
 
                         foreach($avaluos as $index => $avaluo) {
@@ -316,9 +316,9 @@ class AvaluoController extends Controller
                             if($avaluo->sublote == NULL)
                                 $lote = $avaluo->num_lote.' '.$avaluo->sublote;
                             $sheet->row($index+2, [
-                                $avaluo->folio, 
+                                $avaluo->folio,
                                 $avaluo->nombre.' '.$avaluo->apellidos,
-                                $avaluo->fraccionamiento, 
+                                $avaluo->fraccionamiento,
                                 $avaluo->etapa,
                                 $avaluo->manzana,
                                 $lote,
@@ -335,7 +335,7 @@ class AvaluoController extends Controller
                                 $avaluo->costo,
                                 $avaluo->fecha_recibido
 
-                            ]);	
+                            ]);
                         }
                         $num='A1:R' . $cont;
                         $sheet->setBorder($num, 'thin');
@@ -368,7 +368,7 @@ class AvaluoController extends Controller
 
         try{
             DB::beginTransaction();
-            
+
             $avaluo=Avaluo::findOrFail($avaluo_id);
 
             if($request->costo >0 && $avaluo->costo == 0){
@@ -386,11 +386,11 @@ class AvaluoController extends Controller
             $avaluo->resultado = $request->resultado;
             $avaluo->save();
 
-            
+
 
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo = round($contrato->saldo + $request->costo,2);
-            $contrato->save(); 
+            $contrato->save();
 
             if($request->observacion != ''){
                 $observacion = new Obs_expediente();
@@ -402,7 +402,7 @@ class AvaluoController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     public function updateFechaConcluido(Request $request){
@@ -420,26 +420,25 @@ class AvaluoController extends Controller
             $avaluo->resultado = $request->resultado;
             $avaluo->save();
 
-            if($request->costo > 0 && $costo_ant != 0){
-                $gasto = Gasto_admin::findOrFail($request->gasto_id);
-                $costo_ant = $gasto->costo;
-                $gasto->costo = $request->costo;
-                $gasto->fecha = $request->fecha_concluido;
-                $gasto->save();
-            }
-            elseif($request->costo > 0 && $costo_ant == 0){
-                $gasto = new Gasto_admin();
-                $gasto->contrato_id = $contrato_id;
-                $gasto->concepto = 'Avaluo';
-                $gasto->costo = $request->costo;
-                $gasto->fecha = $request->fecha_concluido;
-                $gasto->observacion = '';
-                $gasto->save();
+            if($request->costo > 0){
+                $antAvaluo = Gasto_admin::select('id')->where('contrato_id','=',$contrato_id)
+                    ->where('concepto','=','Avaluo')->get();
+                    if(sizeof($antAvaluo)){
+                        $g = Gasto_admin::findOrFail($antAvaluo[0]->id);
+                        $g->delete();
+                    }
+                    $gasto = new Gasto_admin();
+                    $gasto->contrato_id = $contrato_id;
+                    $gasto->concepto = 'Avaluo';
+                    $gasto->costo = $request->costo;
+                    $gasto->fecha = $request->fecha_concluido;
+                    $gasto->observacion = '';
+                    $gasto->save();
             }
 
             $contrato = Contrato::findOrFail($contrato_id);
             $contrato->saldo = round($contrato->saldo - $costo_ant + $request->costo,2);
-            $contrato->save(); 
+            $contrato->save();
 
             if($request->observacion != ''){
                 $observacion = new Obs_expediente();
@@ -448,11 +447,11 @@ class AvaluoController extends Controller
                 $observacion->usuario = Auth::user()->usuario;
                 $observacion->save();
             }
-            
+
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
     public function enviarVentas(Request $request){
