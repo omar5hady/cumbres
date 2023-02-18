@@ -18,6 +18,11 @@ Route::get('/clientes/upApp','ClienteController@upApp');
 Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 Route::post('/leads/importFromBot', 'DigitalLeadController@importFromBot');
 Route::get('/mailPrueba', 'EntregaController@sendPlanos');
+Route::put('datosPremio/completa','Premios\PremiosController@compPremio');
+Route::post('premios/store','Premios\PremiosController@storePremio');
+Route::get('/premios/cuponPDF','Premios\PremiosController@cuponPDF');
+Route::get('/ruleta','Premios\PremiosController@ruleta');
+Route::put('/premios/reg_corr_whats','Premios\PremiosController@regCorrWhats');
 // Route::post('/mailPrueba', function () {
 //     return view('mails/welcome');
 // });
@@ -30,6 +35,7 @@ Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
     Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
+
 
 
 
