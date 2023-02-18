@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Notifications\NotifyAdmin;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\NotificacionesAvisosController;
 use App\Cliente_observacion;
 use App\Medio_publicitario;
 use App\Digital_lead;
