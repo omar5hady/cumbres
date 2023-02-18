@@ -1271,8 +1271,8 @@ class ClienteController extends Controller
         $current = Carbon::now();
 
         $castigados = AsesorCastigo::select('asesor_id')
-            ->where('f_ini', '>', $current)
-            ->where('f_fin', '<=', $current)
+            ->where('f_ini', '<', $current)
+            ->where('f_fin', '>', $current)
             ->get();
 
         //Busqueda de eventos en el calendario
