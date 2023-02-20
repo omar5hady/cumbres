@@ -10,17 +10,13 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Digital Leads
                     &nbsp;
-                    <button v-if="rolId != 2 && rolId != 12 && rolId != 3" type="button" @click="abrirModal('nuevo')" class="btn btn-success">
-                        <i class="icon-people"></i>&nbsp;Nuevo
-                    </button>
-
-                    <button v-if="b_motivo == 1" type="button" class="btn btn-scarlet" @click="abrirModal('inventario')">
-                        Inventario
-                    </button>
-
-                    <button v-if="rolId == 1" type="button" class="btn btn-dark" @click="sms()">
+                    <Button :btnClass="'btn-success'" :icon="'icon-people'" @click="abrirModal('nuevo')" v-if="rolId != 2 && rolId != 12 && rolId != 3">
+                        Nuevo
+                    </Button>
+                    <Button v-if="b_motivo == 1" :btnClass="'btn-scarlet'" @click="abrirModal('inventario')">Inventario</Button>
+                    <!-- <button v-if="rolId == 1" type="button" class="btn btn-dark" @click="sms()">
                         PRUEBA SMS
-                    </button>
+                    </button> -->
                     &nbsp;
                 </div>
                 <LoadingComponent v-if="loading"></LoadingComponent>
@@ -28,7 +24,6 @@
                     <div class="form-group row">
                         <div class="col-md-5">
                             <div class="input-group">
-
                                 <select @change="changeMotivo()" v-if="rolId != 2 && rolId != 12 && rolId != 3" class="form-control col-sm-5" v-model="b_motivo">
                                     <option value="1">Ventas</option>
                                     <option value="5">Recomendados</option>
@@ -133,11 +128,18 @@
                                     <option value="3">Enviado a prospectos</option>
                                 </select>
                             </div>
+                            <div class="input-group" v-if="b_motivo == 1 && rolId != 2">
+                                <input type="text" readonly placeholder="Pendiente de envio de cupon:" class="form-control col-sm-4">
+                                <select class="form-control" v-model="b_cupon">
+                                    <option value="">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                            </div>
+                        </div>
 
+                        <div class="col-md-8">
                             <div class="input-group">
-                                <button @click="listarLeads(1)" class="btn btn-primary">
-                                    <i class="fa fa-search"></i> Buscar
-                                </button>
+                                <Button :icon="'fa fa-search'" @click="listarLeads(1)">Buscar</Button>
                                 <a v-if="b_motivo == 1" class="btn btn-success" v-bind:href="'/campanias/excelLeads'+
                                         '?buscar='+ b_cliente+'&campania='+ b_campania+
                                         '&status='+ b_status+'&asesor='+ b_asesor+
@@ -162,7 +164,7 @@
                     <br>
                     <TableComponent v-if="b_motivo == 1"
                         :cabecera="[
-                            '','Avance','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
+                            '','Avance', ' ','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
                             'Presupuesto','Modelo recomendado','Estatus','Vendedor asignado',
                             'Fecha de alta','Observaciones'
                         ]"
@@ -170,24 +172,37 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
-                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                    <button type="button" v-if="lead.vendedor_asign == null" @click="asignarVendedor(lead.id)" class="btn btn-primary btn-sm">
-                                        <i class="fa fa-exchange"></i>
-                                    </button>
-                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
-                                        title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                        <i class="icon-close"></i>
-                                    </button>
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button title="Asignar vendedor aleatorio" :size="'btn-sm'" :icon="'fa fa-exchange'" v-if="lead.vendedor_asign == null"
+                                        @click="asignarVendedor(lead.id)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                 </td>
                                 <td>
                                     <div class="clearfix">
                                         <div class="float-left"><strong>{{lead.progress}}%</strong></div>
                                     </div>
                                     <div class="progress progress-xs">
-                                        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
+                                </td>
+                                <td class="td2">
+                                    <Button v-if="lead.premio.length == 0"
+                                        :btnClass="'btn-success'" :icon="'fa fa-gift'" @click="premioPaste(`https://siicumbres.com/ruleta?gc=${lead.id}&d=${lead.name_user}`)"></Button>
+                                    <template v-else>
+                                        <a target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
+                                                '?gc='+ lead.id+'&d='+ lead.name_user">
+                                            <i class="fa fa-gift"></i>&nbsp;
+                                        </a>
+
+                                        <Button v-if="lead.envio_cupon == null" :btnClass="'btn-warning'"
+                                            :icon="'icon-check'" title="Indicar envio de cupón" @click="setCuponEnviado(lead.id)">
+                                        </Button>
+                                    </template>
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" >{{ lead.nombre + ' ' + lead.apellidos }}</span>
@@ -195,7 +210,7 @@
                                     <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                 </td>
                                 <td class="td2">
-                                    <a  v-if="lead.celular != null" title="Enviar whatsapp"
+                                    <a v-if="lead.celular != null" title="Enviar whatsapp"
                                         class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
                                         <i class="fa fa-whatsapp fa-lg"></i>
                                     </a>
@@ -225,8 +240,7 @@
                                 <td class="td2" v-text="lead.vendedor"></td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                        @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
@@ -240,15 +254,15 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
-                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                        <i class="icon-close"></i>
-                                    </button>
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button :btnClass="'btn-success'" :size="'btn-sm'" :icon="'icon-check'" v-if="lead.status == 1" title="Finalizar"
+                                        @click="changeStatus(lead.id)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
@@ -279,8 +293,7 @@
                                 </td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
@@ -293,15 +306,15 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
-                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                        <i class="icon-close"></i>
-                                    </button>
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button title="Finalizar" :size="'btn-sm'" :icon="'icon-check'" v-if="lead.status == 1"
+                                        @click="changeStatus(lead.id)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                 </td>
                                 <td>
                                     <span v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos"></span>
@@ -336,8 +349,7 @@
                                 </td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
@@ -351,15 +363,15 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
-                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                        <i class="icon-close"></i>
-                                    </button>
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button title="Finalizar" :size="'btn-sm'" :icon="'icon-check'" v-if="lead.status == 1"
+                                        @click="changeStatus(lead.id)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
@@ -394,8 +406,7 @@
                                 </td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
@@ -408,6 +419,12 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                     <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                         <i class="icon-pencil"></i>
                                     </button>
@@ -440,8 +457,7 @@
                                 <td v-text="lead.descripcion"></td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
@@ -455,15 +471,15 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
-                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                        <i class="icon-close"></i>
-                                    </button>
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button title="Finalizar" :size="'btn-sm'" :icon="'icon-check'" v-if="lead.status == 1"
+                                        @click="changeStatus(lead.id)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
@@ -491,8 +507,7 @@
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td v-text="lead.descripcion"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
@@ -505,15 +520,15 @@
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
                                 <td class="td2" style="width:10%">
-                                    <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
-                                        <i class="icon-pencil"></i>
-                                    </button>
-                                    <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                    <button v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
-                                        <i class="icon-close"></i>
-                                    </button>
+                                    <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
+                                        @click="abrirModal('actualizar',lead)">
+                                    </Button>
+                                    <Button title="Finalizar" :size="'btn-sm'" :icon="'icon-check'" v-if="lead.status == 1"
+                                        @click="changeStatus(lead.id)"
+                                    ></Button>
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                        title="Eliminar"  @click="eliminar(lead.id)">
+                                    </Button>
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.diferencia < 7" v-text="lead.nombre + ' ' + lead.apellidos"></span>
@@ -543,59 +558,15 @@
                                 </td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
-                                    <button title="Ver observaciones" type="button" class="btn btn-info pull-right"
-                                    @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button>
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
                                 </td>
                             </tr>
                         </template>
                     </TableComponent>
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" @click="listarLeads(1)">Inicio</a>
-                            </li>
-                            <li v-if="arrayLeads.current_page-3 >= 1">
-                                <a class="page-link" href="#"
-                                @click="listarLeads(arrayLeads.current_page-3)"
-                                v-text="arrayLeads.current_page-3" ></a>
-                            </li>
-                            <li v-if="arrayLeads.current_page-2 >= 1">
-                                <a class="page-link" href="#"
-                                @click="listarLeads(arrayLeads.current_page-2)"
-                                v-text="arrayLeads.current_page-2" ></a>
-                            </li>
-                            <li v-if="arrayLeads.current_page-1 >= 1">
-                                <a class="page-link" href="#"
-                                @click="listarLeads(arrayLeads.current_page-1)"
-                                v-text="arrayLeads.current_page-1" ></a>
-                            </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#" v-text="arrayLeads.current_page" ></a>
-                            </li>
-                            <li v-if="arrayLeads.current_page+1 <= arrayLeads.last_page">
-                                <a class="page-link" href="#"
-                                @click="listarLeads(arrayLeads.current_page+1)"
-                                v-text="arrayLeads.current_page+1" ></a>
-                            </li>
-                            <li v-if="arrayLeads.current_page+2 <= arrayLeads.last_page">
-                                <a class="page-link" href="#"
-                                @click="listarLeads(arrayLeads.current_page+2)"
-                                v-text="arrayLeads.current_page+2" ></a>
-                            </li>
-                            <li v-if="arrayLeads.current_page+3 <= arrayLeads.last_page">
-                                <a class="page-link" href="#"
-                                @click="listarLeads(arrayLeads.current_page+3)"
-                                v-text="arrayLeads.current_page+3" ></a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" @click="listarLeads(arrayLeads.last_page)">Ultimo</a>
-                            </li>
-                            <li></li>
-                            <li>
-                                <input class="page-link" type="text" placeholder="Pagina a buscar" v-model="pagina" @keyup.enter="listarLeads(pagina)">
-                            </li>
-                        </ul>
-                    </nav>
+                    <Nav :current="arrayLeads.current_page ? arrayLeads.current_page : 1"
+                        :last="arrayLeads.last_page ? arrayLeads.last_page : 1"
+                        @changePage="listarLeads">
+                    </Nav>
                 </div>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
@@ -1465,18 +1436,16 @@
             </template>
             <template v-slot:buttons-footer>
                 <template v-if="motivo == 1">
-                    <button type="button"
-                        v-if="(tipoAccion == 2 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
-                        class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos
-                    </button>
-                    <button type="button"
-                        v-if="(tipoAccion == 2 && status !=0)"
-                        class="btn btn-danger" @click="descartar()">Descartar
-                    </button>
+                    <Button v-if="(tipoAccion == 2 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
+                        @click="sendProspecto()" :btnClass="'btn-success'" title="Registrar lead en prospectos" :icon="'fa fa-paper-plane'"
+                    >Enviar a prospectos</Button>
+                    <Button v-if="(tipoAccion == 2 && status !=0)" :btnClass="'btn-danger'" @click="descartar()" title="Descartar lead" :icon="'icon-close'">
+                        Descartar
+                    </Button>
                 </template>
                     <div></div>
-                <button type="button" v-if="tipoAccion == 1 && motivo != 0" class="btn btn-success" @click="storeLead()">Registrar</button>
-                <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateLead()">Guardar cambios</button>
+                <Button v-if="tipoAccion == 1 && motivo != 0" @click="storeLead()">Registrar</Button>
+                <Button v-if="tipoAccion == 2" @click="updateLead()">Guardar cambios</Button>
             </template>
         </ModalComponent>
         <!--Fin del modal consulta-->
@@ -1500,7 +1469,7 @@
                             <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
                     </div>
                     <div class="col-md-2">
-                        <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
+                        <Button @click="storeObs()">Guardar</Button>
                     </div>
                 </div>
                 <TableComponent :cabecera="['Usuario','Observación','Fecha']">
@@ -1558,9 +1527,9 @@
                             <template v-slot:tbody>
                                 <tr v-for="lote in inventario" :key="lote.id">
                                     <td class="td2">
-                                        <button v-if="lote.ficha_tecnica != null" title="Ver ficha tecnica" type="button" @click="fichaTecnica(lote.ficha_tecnica)" class="btn btn-success btn-sm">
-                                            {{lote.modelo}}
-                                        </button>
+                                        <Button v-if="lote.ficha_tecnica != null" title="Ver ficha tecnica" :btnClass="'btn-success'" :size="'btn-sm'"
+                                            @click="fichaTecnica(lote.ficha_tecnica)"
+                                        > {{lote.modelo}} </Button>
                                         <p v-else>{{lote.modelo}}</p>
                                     </td>
                                     <td class="td2">{{lote.lote.manzana}}</td>
@@ -1588,9 +1557,7 @@
                                     <td class="td2">{{formatNumber(lote.terreno)}} m&sup2;</td>
                                     <td class="td2" v-text="'$'+ formatNumber(lote.p_venta)"></td>
                                     <td>
-                                        <button @click="mostrarPromo(lote.promocion)" v-if="lote.promocion != ''">
-                                            <i class="icon-eye"></i>
-                                        </button>
+                                        <Button @click="mostrarPromo(lote.promocion)" v-if="lote.promocion != ''" :icon="'icon-eye'"></Button>
                                     </td>
                                 </tr>
                             </template>
@@ -1607,6 +1574,8 @@ import vSelect from 'vue-select';
 import LoadingComponent from '../Componentes/LoadingComponent.vue';
 import TableComponent from '../Componentes/TableComponent.vue';
 import ModalComponent from '../Componentes/ModalComponent.vue';
+import Nav from '../Componentes/NavComponent.vue';
+import Button from '../Componentes/ButtonComponent.vue'
 
 export default {
     props:{
@@ -1651,6 +1620,7 @@ export default {
             b_user_name : '',
             b_user_lastname : '',
             b_contacto : '',
+            b_cupon: '',
             proceso : false,
             loading: false,
             buscadores:{},
@@ -1744,7 +1714,9 @@ export default {
         vSelect,
         ModalComponent,
         TableComponent,
-        LoadingComponent
+        LoadingComponent,
+        Nav,
+        Button
     },
     methods: {
         validarProspecto(){
@@ -1778,6 +1750,13 @@ export default {
                 this.errorProspecto = 1;
 
             return this.errorProspecto;
+        },
+        async premioPaste(url){
+            try {
+                await navigator.clipboard.writeText(url);
+                alert('URL copiada');
+            } catch($e) {
+            }
         },
         mostrarPromo(promo){
             Swal({
@@ -1917,6 +1896,19 @@ export default {
 
         },
 
+        setCuponEnviado(id){
+            let me = this;
+
+            axios.put('/leads/setCuponEnviado',{
+                'id': id,
+            }).then(
+                rsponse => {
+                    this.listarLeads(this.arrayLeads.current_page);
+                    return response.data;
+                }
+            ).catch(error => console.log(error));
+        },
+
         finalizar(){
 
             let me = this;
@@ -2007,6 +1999,7 @@ export default {
             this.b_prioridad='';
             this.b_modelo ='';
             this.b_contacto = '';
+            this.b_cupon = '';
 
             this.listarLeads(1);
         },
@@ -2104,6 +2097,7 @@ export default {
                 '&asesor='+me.b_asesor      + '&motivo='+me.b_motivo +
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
+                '&b_cupon='+me.b_cupon +
                 '&modelo='+me.b_modelo      + '&page=' + page + '&b_semaforo=' + me.b_semaforo +
                 '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname +
                 '&b_contacto='+me.b_contacto
@@ -2492,6 +2486,7 @@ export default {
         },
 
         abrirModal1(id,motivo){
+            this.listarObservacion(1,id)
             this.modal = 2;
             this.id = id;
             this.comentario = '';
@@ -2575,7 +2570,6 @@ export default {
                     this.detalle_casa = data['detalle_casa'];
                     this.perfil_cliente = data['perfil_cliente'];
                     this.prospecto = data['prospecto'];
-
                     this.status = data['status'];
 
                     break;
@@ -2659,8 +2653,6 @@ export default {
                     break;
                 }
             }
-
-
         },
 
         isNumber: function(evt) {
@@ -2677,7 +2669,6 @@ export default {
             let val = (value/1).toFixed(2)
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
-
 
         back(){
             this.editar = 0;

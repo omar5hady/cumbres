@@ -75,6 +75,8 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('curp',18)->nullable();
             $table->string('lugar_nacimiento',80)->nullable();
 
+            $table->date('envio_cupon')->nullable();
+
             $table->timestamps();
         });
     }
