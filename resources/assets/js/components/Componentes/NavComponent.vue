@@ -35,6 +35,9 @@
             <ListNav v-if="current < 5 && last > 5" @click="onClick(last)">
                 Último
             </ListNav>
+            <li v-if="last > 8">
+                <input class="page-link" type="text" placeholder="Pagina a buscar" v-model="pagina" @keyup.enter="onClick(pagina)">
+            </li>
         </ul>
     </nav>
 </template>
@@ -42,6 +45,11 @@
 <script>
 import ListNav from "../Componentes/ListNavComponent.vue";
 export default {
+    data(){
+        return{
+            pagina:'',
+        }
+    },
     components: {
         ListNav
     },

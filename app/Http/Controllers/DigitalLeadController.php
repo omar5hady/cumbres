@@ -15,6 +15,7 @@ use App\Personal;
 use App\User;
 use App\Cliente;
 use App\Vendedor;
+use App\Premios;
 use App\Campania;
 use App\Expediente;
 use Carbon\Carbon;
@@ -40,6 +41,8 @@ class DigitalLeadController extends Controller
             $persona->diferencia = $date->diffInDays($now);
             // Llama a la funcion privada que calcula el avance de progreso en el registro de información.
             $persona->progress = round($this->getProgress($persona),2);
+
+            $persona->premio = Premios::where('lead_id','=',$persona->id)->get();
         }
         return $leads; // Retorno de resultados.
     }
@@ -259,9 +262,8 @@ class DigitalLeadController extends Controller
                     $leads = $leads->where('digital_leads.name_user', 'like', '%'. $b_user . '%');
                 if($b_user_lastname != '') // Nombre de lead
                     $leads = $leads->where('digital_leads.last_name_user', 'like', '%'. $b_user_lastname . '%');
-                if($request->b_contacto != ''){
+                if($request->b_contacto != '')
                     $leads = $leads->where('digital_leads.medio_contacto', 'like', '%'. $request->b_contacto . '%');
-                }
                 if($status != '')
                     /* Estatus de lead:
                             1 = En Seguimiento
@@ -291,6 +293,11 @@ class DigitalLeadController extends Controller
                     if($b_semaforo == 3)
                         $leads = $leads->where('fecha_update','<',Carbon::now()->subDays(16));
                 }
+                if($request->b_cupon == 1){
+                    $cupones = Premios::select('lead_id as id')->get();
+                    $leads = $leads->whereIn('digital_leads.id',$cupones)
+                            ->where('digital_leads.envio_cupon','=',NULL);
+                }
             $leads = $leads->orderBy('nombre','asc')
             ->orderBy('apellidos','asc');
 
@@ -299,9 +306,7 @@ class DigitalLeadController extends Controller
 
     public function importFromBot(Request $request){
         $fecha = Carbon::now();
-
         $l = Digital_lead::select('id')->where('messenger_id','=',$request->user_id)->get();
-
 
         if(sizeof($l)){
             $obs = new Obs_lead();
@@ -586,9 +591,6 @@ class DigitalLeadController extends Controller
         $obs->usuario = Auth::user()->usuario;
         $obs->visto = $fecha;
         $obs->save();
-
-
-
     }
 
     public function findRFC(Request $request){
@@ -772,7 +774,6 @@ class DigitalLeadController extends Controller
             ->where('id', '=', 25511)
             ->orWhere('rol_id','=',8)
             ->where('digital_lead','=',1)
-
             ->orWhere('rol_id','=',12)
             ->where('digital_lead','=',1)
             ->orWhere('rol_id','=',1)
@@ -1006,7 +1007,6 @@ class DigitalLeadController extends Controller
                             $campania->descAsesor = $campania->descAsesor->where('proyecto_interes', '=',$proyecto);
                 $campania->descAsesor = $campania->descAsesor->count();
         }
-
         return $campanias;
     }
 
@@ -1084,7 +1084,6 @@ class DigitalLeadController extends Controller
             $asesor->nRojo = $asesor->rojo->count();
 
         }
-
         return $asesores;
     }
 
@@ -1151,13 +1150,11 @@ class DigitalLeadController extends Controller
                 'asesores' => $asesores,
                 'desc_ase' => $desc_ase,
                 'cont_desc' => $cont_desc,
-
             ];
         else{ // Retorno de resultado en Excel.
             return Excel::create('Rep Digital Leads', function($excel) use ($campanias, $cont_org, $asesor_org,
                                                                 $desc_ase, $cont_desc, $asesores){
                 $excel->sheet('Campaña', function($sheet) use ($campanias,  $cont_org, $asesor_org, $desc_ase, $cont_desc){
-
                     $sheet->row(1, [
                         'Campaña','','Fecha de Campaña', '# Leads', 'Descartado sin canalizar',
                         'Canalizados a asesor', 'Descartado por asesor'
@@ -1168,10 +1165,8 @@ class DigitalLeadController extends Controller
                         $cells->setFontColor('#ffffff');
                         // Set font family
                         $cells->setFontFamily('Calibri');
-
                         // Set font size
                         $cells->setFontSize(13);
-
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
@@ -1212,9 +1207,7 @@ class DigitalLeadController extends Controller
                 });
 
                 $excel->sheet('Asesor', function($sheet) use ($asesores){
-
                     $sheet->mergeCells('A1:C1');
-
                     $sheet->row(1, [
                         'Reporte por asesor'
                     ]);
@@ -1248,20 +1241,14 @@ class DigitalLeadController extends Controller
                     }
                     $num='A1:B' . $cont;
                     $sheet->setBorder($num, 'thin');
-
                     $sheet->mergeCells('A'.$cont.':D'.$cont);
-
-
-
                     $cont+=2;
                     $row = $cont;
 
                 });
             }
             )->download('xls');
-
         }
-
     }
 
     public function reporteAsesoresClasificacion(Request $request){
@@ -1420,12 +1407,8 @@ class DigitalLeadController extends Controller
                         unset($vendedores[$index]);
                         $varGerente='';
                     }
-
                 }
-
-
             return $vendedores;
-
     }
 
     public function reportesProspectos(Request $request){
@@ -1435,7 +1418,6 @@ class DigitalLeadController extends Controller
             return [
                 'vendedores' => $vendedores,
             ];
-
     }
 
     public function excelReportesProspectos(Request $request){
@@ -1443,12 +1425,9 @@ class DigitalLeadController extends Controller
         $vendedores=$this->getreportesProspectos($tipo);
 
         return Excel::create('Reporte Prospecto', function($excel) use ($vendedores){
-
-
                 $excel->sheet('Asesor', function($sheet) use ($vendedores){
 
                     $cont=0;
-
 
                     $num='A1:B' . $cont;
                     $sheet->setBorder($num, 'thin');
@@ -1544,5 +1523,16 @@ class DigitalLeadController extends Controller
 
     }
 
+    public function setCuponEnviado(Request $request){
+        $lead = Digital_lead::findOrFail($request->id);
+        $lead->envio_cupon = Carbon::now();
+        $lead->save();
+
+        $obs = new Obs_lead(); // Comentario al lead indicando el descarte.
+        $obs->lead_id = $lead->id;
+        $obs->comentario = 'Cupón por promoción enviado a lead';
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+    }
 
 }
