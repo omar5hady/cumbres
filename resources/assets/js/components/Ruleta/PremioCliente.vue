@@ -94,10 +94,18 @@ body{
 }
 .content_grid{
   display: grid;
-   grid-template-rows: repeat(30,1fr); /* bloques de 50 px  halto */
-  grid-template-columns: repeat(21,1fr); /* loques de 60px  ancho */
-  grid-auto-rows: minmax(100px, auto);
-  grid-auto-columns:minmax(100px, auto);
+   /* grid-template-rows: repeat(30,1fr);  */
+   /* bloques de 50 px  halto */
+  /* grid-template-columns: repeat(21,1fr); */
+   /* loques de 60px  ancho */
+  
+  
+  grid-template-columns: repeat(21, 60px);
+  grid-template-rows: repeat(30, 50px);
+
+  /* grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); */
+
+
   width: 100%;
   height: 100%;  
 }
