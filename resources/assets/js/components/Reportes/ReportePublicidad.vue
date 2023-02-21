@@ -8,10 +8,10 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> <strong>Reporte Medios Publicitarios</strong> 
+                        <i class="fa fa-align-justify"></i> <strong>Reporte Medios Publicitarios</strong>
                         <!--   Boton Nuevo    -->
                         &nbsp;&nbsp;
-                        <button 
+                        <button
                         v-if="listado == 1"
                         type="button" @click="listado = 0" class="btn btn-secondary">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
@@ -131,8 +131,8 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        
+
+
                     </div>
 
                     <div class="card-body"  v-if="listado == 1">
@@ -159,13 +159,13 @@
                                 </thead>
                                 <tbody>
                                     <template v-if="tipo == 2">
-                                        <tr v-for="cliente,index in clientes2" :key="cliente.nombre+'-'+cliente.apellidos+index">
+                                        <tr v-for="cliente,index in clientes" :key="cliente.nombre+'-'+cliente.apellidos+index">
                                             <td v-text="parseInt(index+1)"></td>
                                             <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
                                             <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
                                             <td class="td2" v-text="cliente.proyecto"></td>
-                                        </tr>      
-                                    </template>    
+                                        </tr>
+                                    </template>
                                     <template v-if="tipo == 1">
                                         <tr v-for="cliente,index in clientes" :key="cliente.id">
                                             <td v-text="parseInt(index+1)"></td>
@@ -177,8 +177,8 @@
                                             <td class="td2" v-text="cliente.institucion"></td>
                                             <td class="td2" v-text="cliente.tipo_credito"></td>
                                             <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
-                                        </tr>      
-                                    </template>                      
+                                        </tr>
+                                    </template>
                                 </tbody>
                             </table>
                         </div>
@@ -186,7 +186,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            
+
         </main>
 </template>
 
@@ -223,7 +223,7 @@
             }
         },
         computed:{
-            
+
         },
         methods : {
             formatNumber(value) {
@@ -246,7 +246,7 @@
             selectEtapas(buscar){
                 let me = this;
                 me.etapa_id="";
-                
+
                 me.arrayAllEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -269,7 +269,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
             verCliente(data, tipo){
                 this.listado = 1;
@@ -326,10 +326,10 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
 
-            
+
         },
         mounted() {
             //this.getDatos();
@@ -360,5 +360,5 @@
     .text-muted2 {
         color: #c2cfd6  !important;
     }
-    
+
 </style>

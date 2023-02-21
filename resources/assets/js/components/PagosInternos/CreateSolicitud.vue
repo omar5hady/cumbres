@@ -2051,6 +2051,12 @@ export default {
                 me.cerrarModal();
                 me.cargando = 0;
                 me.solicitudData.files = response.data.data;
+                me.newArchivo = {
+                    description: "",
+                    tipo: "",
+                    file: "",
+                    nom_archivo: 'Seleccione Archivo'
+                };
                 swal({
                     position: 'top-end',
                     type: 'success',

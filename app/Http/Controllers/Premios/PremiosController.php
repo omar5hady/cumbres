@@ -18,7 +18,7 @@ class PremiosController extends Controller
 
        $lead_id=$request->gc;
        $nombre=$request->d;
-       
+
 
        $con_premio=Premios::select('id','lead_id', 'premio', 'RFC', 'status','descripcion')->where('lead_id','=',$lead_id)->get();
 
@@ -52,7 +52,7 @@ class PremiosController extends Controller
        $nombres=$request->nombres;
        $apep=$request->apep;
        $apem=$request->apem;
-       $fenac=$request->fenac; 
+       $fenac=$request->fenac;
 
        $registrado='0';
 
@@ -60,6 +60,7 @@ class PremiosController extends Controller
        $lead->nombre = $nombres;
        $lead->apellidos = $apep . ' ' .$apem;
        $lead->f_nacimiento =$fenac;
+       $lead->rfc = $rfc;
        $lead->save();
 
 
@@ -68,10 +69,10 @@ class PremiosController extends Controller
         ->where('personal.rfc','=',$rfc)
         ->where('clientes.clasificacion','!=','1')
         ->where('clientes.vendedor_id','!=','104')
-        ->get();  // verificar 
+        ->get();  // verificar
 
 
-    
+
             if(sizeof($persona) !=0){
                 $registrado='1';
             }
@@ -89,17 +90,17 @@ class PremiosController extends Controller
 
         $lead_id=$request->gc;
         $nombre=$request->d;
-        
+
         $search = Digital_lead::join('premios','digital_leads.id','=','premios.lead_id')
         ->select('premios.id','digital_leads.nombre', 'digital_leads.apellidos', 'digital_leads.f_nacimiento', 'premios.premio','premios.created_at')
         ->where('digital_leads.id','=' ,$lead_id)
         ->where('digital_leads.name_user','=',$nombre)
         ->get();
 
-        
 
-       
-       
+
+
+
         if (sizeof($search)==1){
             $search[0]->folio = str_pad($search[0]->id, 6, "0", STR_PAD_LEFT);
 
@@ -117,8 +118,8 @@ class PremiosController extends Controller
         }else{
             return view('premios/InvalidURL');
         }
-        
-       
+
+
 
     }
 

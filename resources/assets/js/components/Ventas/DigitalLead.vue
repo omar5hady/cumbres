@@ -626,13 +626,20 @@
 
                         <div class="form-group row">
                             <label class="col-md-2 form-control-label" for="text-input">Campaña publicitaria</label>
-                            <div class="col-md-4">
-                                <select class="form-control" v-model="campania_id">
-                                    <option value="">Seleccione</option>
-                                    <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
-                                </select>
+                            <div class="col-md-8">
+                                <v-select
+                                        :on-search="campaniaSelect"
+                                        label="campania_comp"
+                                        :options="arrayCampanias"
+                                        :value="campania"
+                                        placeholder="Campaña"
+                                        :onChange="getCampania"
+                                    >
+                                    </v-select>
                             </div>
+                        </div>
 
+                        <div class="form-group row">
                             <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
                             <div class="col-md-4">
                                 <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
@@ -640,10 +647,10 @@
                                     <option value="">Seleccione</option>
                                     <option value="Facebook Cumbres">Facebook Cumbres</option>
                                     <option value="Facebook Sirenia">Facebook Sirenia</option>
-                                    <option value="Facebook Catara">Facebook Sirenia</option>
-                                    <option value="Facebook Valle Real">Facebook Sirenia</option>
+                                    <option value="Facebook Catara">Facebook Catara</option>
+                                    <option value="Facebook Valle Real">Facebook Valle Real</option>
                                     <option value="Facebook Andaluz">Facebook Andaluz</option>
-                                    <option value="Imperia">Facebook Sirenia</option>
+                                    <option value="Facebook Imperia">Facebook Imperia</option>
                                     <option value="Instagram">Instagram</option>
                                     <option value="Pagina web">Pagina web</option>
                                     <option value="Llamada Telefonica">Llamada Telefónica</option>
@@ -1644,6 +1651,7 @@ export default {
             medio_contacto: '',
             medio_publicidad: '',
             campania_id: '',
+            campania: '',
             nombre: '',
             apellidos: '',
             name_user : '',
@@ -2057,10 +2065,10 @@ export default {
 
 
         },
-        selectAsesores(){
+        selectAsesores(castigo = ''){
             let me = this;
             me.arrayAsesores=[];
-            var url = '/select/asesores?tipo=0&condicion=1';
+            var url = '/select/asesores?tipo=0&condicion=1&castigo='+castigo;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayAsesores = respuesta.personas;
@@ -2160,6 +2168,29 @@ export default {
                 console.log(error);
             });
         },
+
+
+        campaniaSelect(search, loading){
+            let me = this;
+            loading(true)
+
+            var url = '/campanias/campaniaActiva?buscar=1+&campania='+search;
+            axios.get(url).then(function (response) {
+                let respuesta = response.data;
+                q: search
+                me.arrayCampanias = respuesta;
+                loading(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        getCampania(val1){
+            let me = this;
+            me.campania_id = val1.id
+        },
+
         selectCampania(buscar){
             let me = this;
 
@@ -2253,6 +2284,7 @@ export default {
         cerrarModal(){
             this.datos = [];
             this.modal = 0;
+            this.selectCampania(1);
         },
 
         listarObservacion(page,id){
@@ -2504,6 +2536,7 @@ export default {
             switch(accion){
                 case 'actualizar':
                 {
+                    this.selectAsesores(1)
                     this.selectCampania(1);
                     this.tituloModal='Actualizar Lead';
                     this.paso = 1;
@@ -2525,6 +2558,9 @@ export default {
                     this.clv_lada = data['clv_lada'];
                     this.celular = data['celular'];
                     this.campania_id = data['campania_id'];
+                    this.campania = '';
+                    if(this.campania_id != null)
+                        this.campania = data['nombre_campania'] + '-' + data['medio_digital'];
                     this.medio_contacto = data['medio_contacto'];
                     this.proyecto_interes = data['proyecto_interes'];
                     this.zona_interes = data['zona_interes'];
@@ -2603,6 +2639,7 @@ export default {
                     this.vendedor_asign = 0;
                     this.vendedor = '';
                     this.prioridad = 'Baja';
+                    this.campania = '';
 
                     this.curp = '';
                     this.lugar_nacimiento = '';

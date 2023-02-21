@@ -13,6 +13,7 @@ use Excel;
 use Carbon\Carbon;
 use App\Cliente;
 Use App\Asign_proyecto;
+use App\AsesorCastigo;
 
 
 class UserController extends Controller
@@ -1106,6 +1107,15 @@ class UserController extends Controller
             // filtros de busqueda
             if($request->tipo != ''){
                 $personas = $personas->where('vendedores.tipo','=',$request->tipo);
+            }
+            if($request->castigo != ''){
+                $current = Carbon::now();
+                $castigados = AsesorCastigo::select('asesor_id')
+                    ->where('f_ini', '<', $current)
+                    ->where('f_fin', '>', $current)
+                    ->get();
+
+                $personas = $personas->whereNotIn('personal.id',$castigados);
             }
             if($request->condicion != ''){
                 $personas = $personas->where('users.condicion','=',1);

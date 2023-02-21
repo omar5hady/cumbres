@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Campania;
 use Auth;
+use DB;
 use Carbon\Carbon;
 
 // Controlador para campañas digitales.
@@ -61,11 +62,14 @@ class CampaniaController extends Controller
     // Función para retornar las campañas activas.
     public function campaniaActiva(Request $request){
         $current = Carbon::now()->toDateString();
-        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id','presupuesto');
+        $campanias = Campania::select(DB::raw("CONCAT(nombre_campania,'-',medio_digital) AS campania_comp"),
+                'nombre_campania','medio_digital','fecha_ini','fecha_fin','id','presupuesto');
                     if($request->buscar == ''){
                         $campanias = $campanias->whereDate('fecha_ini','<=',$current)
                         ->whereDate('fecha_fin','>=',$current);
                     }
+                    if($request->campania != '')
+                        $campanias = $campanias->where('nombre_campania','like','%'.$request->campania.'%');
 
                     $campanias = $campanias->orderBy('nombre_campania','asc')->get();
 
