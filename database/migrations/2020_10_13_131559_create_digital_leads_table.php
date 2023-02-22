@@ -77,6 +77,11 @@ class CreateDigitalLeadsTable extends Migration
 
             $table->date('envio_cupon')->nullable();
 
+            $table->date('ini_dormir')->nullable();
+            $table->date('fin_dormir')->nullable();
+            $table->date('f_audit')->nullable();
+            $table->text('obs_auditoria')->nullable();
+
             $table->timestamps();
         });
     }

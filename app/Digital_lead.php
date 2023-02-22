@@ -49,7 +49,12 @@ class Digital_lead extends Model
         'name_user',
         'last_name_user',
         'curp',
-        'lugar_nacimiento'
+        'lugar_nacimiento',
+
+        'ini_dormir',
+        'fin_dormir',
+        'f_audit',
+        'obs_auditoria'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function obs_leads(){

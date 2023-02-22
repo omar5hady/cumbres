@@ -178,7 +178,12 @@
                                     <Button title="Asignar vendedor aleatorio" :size="'btn-sm'" :icon="'fa fa-exchange'" v-if="lead.vendedor_asign == null"
                                         @click="asignarVendedor(lead.id)"
                                     ></Button>
-                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'" v-if="userId == 25511 || userId == 28669 || rolId == 1 || userId == 28270"
+                                    <Button :btnClass="'btn-danger'" :icon="'icon-trash'" :size="'btn-sm'"
+                                        v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 || rolId == 1"
                                         title="Eliminar"  @click="eliminar(lead.id)">
                                     </Button>
                                 </td>
@@ -723,13 +728,14 @@
                             <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
 
                             <select class="form-control"
-                                v-if="userId == 25511
-                                    || userId == 28669
-                                    || userId == 28270
-                                    || userId == 11
-                                    || userId == 28271
-                                    || userId == 29692
-                                    || userId == 13
+                                v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 11 //Yas
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 29692 //Alex Torres
+                                    || userId == 13 //Quique
+                                    || userId == 33095 //Dany muñoz
                                     || rolId == 1"  v-model="vendedor_asign" >
                                 <option value="">Vendedor asignado</option>
                                 <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
