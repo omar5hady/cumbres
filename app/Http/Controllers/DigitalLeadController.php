@@ -278,7 +278,7 @@ class DigitalLeadController extends Controller
                 if($proyecto != '') // Proyecto de interes
                     $leads = $leads->where('digital_leads.proyecto_interes','=',$proyecto);
                 if($campania != '') // Campaña de atención.
-                    $leads = $leads->where('digital_leads.campania_id','=',$campania);
+                    $leads = $leads->where('c.nombre_campania','like','%'.$campania.'%');
                 if($asesor != '') // Nombre de asesor asignado
                     $leads = $leads->where('digital_leads.vendedor_asign','=',$asesor);
                 if($prioridad != '') // Prioridad de atención. Baja, Media o Alta
@@ -298,6 +298,14 @@ class DigitalLeadController extends Controller
                     $leads = $leads->whereIn('digital_leads.id',$cupones)
                             ->where('digital_leads.envio_cupon','=',NULL);
                 }
+
+                if($request->hibernar == 1){
+                    $leads = $leads->where('ini_dormir','!=', NULL);
+                }
+                else{
+                    $leads = $leads->where('ini_dormir','=', NULL);
+                }
+
             $leads = $leads->orderBy('nombre','asc')
             ->orderBy('apellidos','asc');
 
@@ -1535,6 +1543,15 @@ class DigitalLeadController extends Controller
         $obs->save();
     }
 
+    public function hibernarLead(Request $request){
+        $this->changeHibernar(
+            $request->id,
+            $request->status,
+            $request->comentario,
+            $request->fin_dormir
+        );
+    }
+
     public function changeHibernar($lead_id, $status, $obs = '', $fin = ''){
         $lead = Digital_lead::findOrFail($lead_id);
 
@@ -1545,6 +1562,10 @@ class DigitalLeadController extends Controller
         if($status == 1){
             $lead->ini_dormir = Carbon::now();
             $lead->fin_dormir = $fin;
+            $lead->vendedor_asign = NULL;
+            $lead->fecha_asign = NULL;
+            $lead->fecha_contacto = NULL;
+            $lead->status = 1;
 
             $obs->comentario = 'Lead Hibernando: '.$obs;
         }

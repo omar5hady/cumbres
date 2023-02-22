@@ -62,10 +62,7 @@
                                     <option value="3">Finalizados</option>
                                 </select>
 
-                                <select v-if="b_motivo == 1" class="form-control col-sm-5" v-model="b_campania">
-                                    <option value="">Campaña publicitaria</option>
-                                    <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
-                                </select>
+                                <input type="text" v-if="b_motivo == 1" v-model="b_campania" @keyup.enter="listarLeads(1)" placeholder="Campaña publicitaria" class="form-control col-sm-6">
                                 <input type="text" v-if="b_motivo == 1" v-model="b_contacto" @keyup.enter="listarLeads(1)" placeholder="Medio de contacto" class="form-control col-sm-6">
                             </div>
                         </div>
@@ -137,6 +134,20 @@
                             </div>
                         </div>
 
+                        <div class="col-md-8" v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 || rolId == 1 || userId == 10">
+                            <div class="input-group" v-if="b_motivo == 1">
+                                <input type="text" readonly placeholder="Leads hibernando:" class="form-control col-sm-4">
+                                <select class="form-control" v-model="b_hibernar">
+                                    <option value="0">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-8">
                             <div class="input-group">
                                 <Button :icon="'fa fa-search'" @click="listarLeads(1)">Buscar</Button>
@@ -144,6 +155,7 @@
                                         '?buscar='+ b_cliente+'&campania='+ b_campania+
                                         '&status='+ b_status+'&asesor='+ b_asesor+
                                         '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
+										'&hibernar=' + b_hibernar +
                                         '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
                                     <i class="fa fa-file-text"></i>&nbsp; Excel
                                 </a>
@@ -151,6 +163,7 @@
                                         '?buscar='+ b_cliente+'&campania='+ b_campania+
                                         '&status='+ b_status+'&asesor='+ b_asesor+
                                         '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
+										'&hibernar=' + b_hibernar +
                                         '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
                                     <i class="fa fa-file-text"></i>&nbsp; Excel para Audiencia
                                 </a>
@@ -166,7 +179,7 @@
                         :cabecera="[
                             '','Avance', ' ','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
                             'Presupuesto','Modelo recomendado','Estatus','Vendedor asignado',
-                            'Fecha de alta','Observaciones'
+                            'Fecha de alta','Observaciones', '   '
                         ]"
                     >
                         <template v-slot:tbody>
@@ -199,10 +212,12 @@
                                     <Button v-if="lead.premio.length == 0"
                                         :btnClass="'btn-success'" :icon="'fa fa-gift'" @click="premioPaste(`https://siicumbres.com/ruleta?gc=${lead.id}&d=${lead.name_user}`)"></Button>
                                     <template v-else>
-                                        <a target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
+                                        <a v-if="lead.premio[0].premio > 0" target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
                                                 '?gc='+ lead.id+'&d='+ lead.name_user">
                                             <i class="fa fa-gift"></i>&nbsp;
                                         </a>
+
+                                        <label></label>
 
                                         <Button v-if="lead.envio_cupon == null" :btnClass="'btn-warning'"
                                             :icon="'icon-check'" title="Indicar envio de cupón" @click="setCuponEnviado(lead.id)">
@@ -246,6 +261,15 @@
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td class="td2">
                                     <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
+                                </td>
+                                <td class="td2" v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 || rolId == 1">
+                                    <template v-if="lead.ini_dormir == null">
+                                        <Button :btnClass="'btn-dark'" title="Hibernar lead" :icon="'fa fa-power-off'" @click="abrirModal('hibernar', lead)"></Button>
+                                    </template>
                                 </td>
                             </tr>
                         </template>
@@ -1579,6 +1603,29 @@
                 </div>
             </template>
         </ModalComponent>
+
+        <ModalComponent v-if="modal==4"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input"><strong>Fin de Hibernación</strong></label>
+                    <div class="col-md-6">
+                        <input type="date" class="form-control" v-model="fin_dormir" placeholder="Fin">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input"><strong>Motivo</strong></label>
+                    <div class="col-md-8">
+                        <textarea rows="3" cols="30" class="form-control" v-model="comentario"></textarea>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <Button v-if="fin_dormir != '' && comentario != ''" @click="hibernarLead()" :icon="'fa fa-power-off'"></Button>
+            </template>
+        </ModalComponent>
     </main>
 </template>
 
@@ -1634,6 +1681,7 @@ export default {
             b_user_lastname : '',
             b_contacto : '',
             b_cupon: '',
+            b_hibernar: 0,
             proceso : false,
             loading: false,
             buscadores:{},
@@ -1716,6 +1764,8 @@ export default {
             pagina : 0,
             fecha_aviso : '',
 
+            fin_dormir : '',
+
             errorMostrarMsjProspecto : [],
             errorProspecto : 0,
 
@@ -1767,7 +1817,7 @@ export default {
         },
         async premioPaste(url){
             try {
-                await navigator.clipboard.writeText(url);
+                await navigator.clipboard.writeText(url.split(' ').join('%20'));
                 alert('URL copiada');
             } catch($e) {
             }
@@ -1850,6 +1900,25 @@ export default {
                 }
             });
 
+        },
+
+        hibernarLead(){
+            let me = this;
+
+            axios.put('/leads/hibernarLead',{
+                'id': me.id,
+                'status':1,
+                'comentario': me.comentario,
+                'fin_dormir' : me.fin_dormir
+            }).then(
+                rsponse => {
+                    this.myAlerts.popAlert('Lead en hibernación');
+                    this.listarLeads(this.arrayLeads.current_page);
+                    this.cerrarModal();
+
+                    return response.data;
+                }
+            ).catch(error => console.log(error));
         },
 
         eliminar(id){
@@ -2111,7 +2180,7 @@ export default {
                 '&asesor='+me.b_asesor      + '&motivo='+me.b_motivo +
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
-                '&b_cupon='+me.b_cupon +
+                '&b_cupon='+me.b_cupon + '&hibernar=' + me.b_hibernar +
                 '&modelo='+me.b_modelo      + '&page=' + page + '&b_semaforo=' + me.b_semaforo +
                 '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname +
                 '&b_contacto='+me.b_contacto
@@ -2693,6 +2762,14 @@ export default {
                     this.inventarioFull = [];
                     this.tituloModal = 'Inventario';
                     this.modal = 3;
+                    break;
+                }
+                case 'hibernar':{
+                    this.id = data['id'];
+                    this.fin_dormir = '';
+                    this.comentario = '';
+                    this.modal = 4;
+                    this.tituloModal= 'Hibernar lead';
                     break;
                 }
             }

@@ -1150,6 +1150,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::put('/leads/update', 'DigitalLeadController@update');
         Route::put('/leads/changeStatus', 'DigitalLeadController@changeStatus');
+        Route::put('/leads/hibernarLead', 'DigitalLeadController@hibernarLead');
         Route::put('/leads/setCuponEnviado', 'DigitalLeadController@setCuponEnviado');
         Route::post('/leads/storeObs', 'DigitalLeadController@storeObs');
         Route::post('/leads/sendProspectos', 'DigitalLeadController@sendProspectos');
