@@ -14,7 +14,7 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-md-10" v-if="nuevo == 0">
-          <div class="row"> 
+          <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label >Proyecto de guardia: </label>
@@ -23,9 +23,9 @@
                     <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                 </select>
               </div>
-            </div>            
+            </div>
           </div>
-          <div class="row"> 
+          <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label >Tipo de Evento: </label>
@@ -40,7 +40,7 @@
               </div>
             </div>
           </div>
-          <div class="row"> 
+          <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <button type="button" @click="getEvents()" class="btn btn-secondary">
@@ -84,7 +84,7 @@
                   <datalist v-if="vista==1" id="usersName">
                       <option v-for="users in arrayUsers" :key="users.id" :value="users.id" v-text="users.nombre + ' '+ users.apellidos"></option>
                   </datalist>
-                  
+
                 </div>
               </div>
             </div>
@@ -96,7 +96,7 @@
                       <option value="0">Fraccionamiento</option>
                       <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                   </select>
-                  
+
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@
                 <div class="form-group">
                   <label for="start_date">Dia inicial</label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     id="start_date"
                     class="form-control"
                     v-model="newEvent.start_date"
@@ -115,7 +115,7 @@
               <div class="col-md-5">
                 <div class="form-group">
                   <label for="end_date">Dia final</label>
-                  <input type="date" id="end_date" class="form-control" v-model="newEvent.end_date">
+                  <input type="datetime-local" id="end_date" class="form-control" v-model="newEvent.end_date">
                 </div>
               </div>
 
@@ -125,11 +125,11 @@
                   <input type="color" id="color" class="control"  v-model="newEvent.color">
                 </div>
               </div>
-              
-              
+
+
             </div>
             <div class="row">
-              
+
               <template v-if="rolId != 2">
                 <div class="col-md-6 mb-4" v-if="addingMode && rolId">
                   <button class="btn btn-sm btn-primary" @click="addNewEvent">Guardar Evento</button>
@@ -141,9 +141,9 @@
                     <button class="btn btn-sm btn-secondary" @click="addingMode = !addingMode, vista = 1, resetForm()">Cancelar</button>
                   </div>
                 </template>
-                  
+
               </template>
-              
+
             </div>
           </form>
         </div>
@@ -186,9 +186,9 @@ export default {
         selectable:true,
         weekends: true,
 
-        
+
       },
-      
+
       events: "",
       newEvent: {
         event_name: "",
@@ -215,7 +215,7 @@ export default {
   },
   methods: {
     getNombre(id){
-      
+
       let me = this;
       var url = '/usuarios/getNombre?id=' + id;
       axios.get(url).then(function (response) {
@@ -229,7 +229,7 @@ export default {
     },
     selectUsuario(buscar){
     let me = this;
-      
+
       me.arrayUsers=[];
       var url = '/usuarios/selectUser?buscar=' + buscar;
       axios.get(url).then(function (response) {
@@ -274,7 +274,7 @@ export default {
           this.newEvent.color = '#000000'
           break;
         }
-          
+
       }
     },
     addNewEvent() {

@@ -1535,4 +1535,28 @@ class DigitalLeadController extends Controller
         $obs->save();
     }
 
+    public function changeHibernar($lead_id, $status, $obs = '', $fin = ''){
+        $lead = Digital_lead::findOrFail($lead_id);
+
+        $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
+        $obs->lead_id = $lead_id;
+        $obs->usuario = Auth::user()->usuario;
+
+        if($status == 1){
+            $lead->ini_dormir = Carbon::now();
+            $lead->fin_dormir = $fin;
+
+            $obs->comentario = 'Lead Hibernando: '.$obs;
+        }
+        else{
+            $lead->ini_dormir = NULL;
+            $lead->fin_dormir = NULL;
+
+            $obs->comentario = 'Lead Finaliza Hibernación';
+        }
+
+        $lead->save();
+        $obs->save();
+    }
+
 }
