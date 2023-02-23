@@ -35,7 +35,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-10">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Nombre" class="form-control col-sm-4">
                                 <input type="text"
@@ -88,7 +88,7 @@
 
                         <div class="col-md-6" v-if="b_motivo == 1">
                             <div class="input-group">
-                                <input type="text" readonly placeholder="Niv. Atención:" class="form-control col-sm-4">
+                                <input type="text" readonly placeholder="Semaforo Atención:" class="form-control col-sm-4">
                                 <select class="form-control"  v-model="b_semaforo" >
                                     <option value="">Todos</option>
                                     <option value="1">Al corriente</option>
@@ -125,24 +125,22 @@
                                     <option value="3">Enviado a prospectos</option>
                                 </select>
                             </div>
-                            <div class="input-group" v-if="b_motivo == 1 && rolId != 2">
-                                <input type="text" readonly placeholder="Pendiente de envio de cupon:" class="form-control col-sm-4">
-                                <select class="form-control" v-model="b_cupon">
-                                    <option value="">No</option>
-                                    <option value="1">Si</option>
-                                </select>
-                            </div>
                         </div>
 
-                        <div class="col-md-8" v-if="userId == 25511 //Adrian
+                        <div class="col-md-10" v-if="userId == 25511 //Adrian
                                     || userId == 28669 //Ashly
                                     || userId == 28271 //Alejandro Ort
                                     || userId == 28128 //Ale Escobar
                                     || userId == 33095 || rolId == 1 || userId == 10">
                             <div class="input-group" v-if="b_motivo == 1">
                                 <input type="text" readonly placeholder="Leads hibernando:" class="form-control col-sm-4">
-                                <select class="form-control" v-model="b_hibernar">
+                                <select class="form-control  col-sm-4" v-model="b_hibernar">
                                     <option value="0">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                                <input type="text" readonly placeholder="Pendiente de envio de cupon:" class="form-control col-sm-4">
+                                <select class="form-control" v-model="b_cupon">
+                                    <option value="">No</option>
                                     <option value="1">Si</option>
                                 </select>
                             </div>
@@ -159,7 +157,11 @@
                                         '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
                                     <i class="fa fa-file-text"></i>&nbsp; Excel
                                 </a>
-                                <a v-if="b_motivo == 1" class="btn btn-primary" v-bind:href="'/campanias/excelToImport'+
+                                <a v-if="(userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 || userId == 10) && b_motivo == 1" class="btn btn-primary" v-bind:href="'/campanias/excelToImport'+
                                         '?buscar='+ b_cliente+'&campania='+ b_campania+
                                         '&status='+ b_status+'&asesor='+ b_asesor+
                                         '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+

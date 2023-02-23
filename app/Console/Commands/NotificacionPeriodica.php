@@ -57,6 +57,7 @@ class NotificacionPeriodica extends Command
 
         $leadController = new DigitalLeadController();
         $leadController->pruebaDescartLead();
+        $leadController->despertar($today);
     }
 
     private function getNotificacionesAviso($today){

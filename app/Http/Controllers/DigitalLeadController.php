@@ -1552,28 +1552,51 @@ class DigitalLeadController extends Controller
         );
     }
 
-    public function changeHibernar($lead_id, $status, $obs = '', $fin = ''){
+    public function despertar($hoy){
+        $leads = Digital_lead::select('id')->where('fin_dormir','=', $hoy)->get();
+
+        if(sizeof($leads)){
+            foreach($leads as $l){
+                $this->changeHibernar($l->id,0);
+            }
+        }
+    }
+
+    public function changeHibernar($lead_id, $status, $comentario = '', $fin = ''){
         $lead = Digital_lead::findOrFail($lead_id);
 
-        $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
+        $obs = new Obs_lead(); // Nuevo comentario al lead
         $obs->lead_id = $lead_id;
-        $obs->usuario = Auth::user()->usuario;
+
 
         if($status == 1){
             $lead->ini_dormir = Carbon::now();
+
             $lead->fin_dormir = $fin;
             $lead->vendedor_asign = NULL;
             $lead->fecha_asign = NULL;
             $lead->fecha_contacto = NULL;
             $lead->status = 1;
-
-            $obs->comentario = 'Lead Hibernando: '.$obs;
+            $obs->usuario = Auth::user()->usuario;
+            $obs->comentario = 'Lead Hibernando: '.$comentario;
         }
         else{
             $lead->ini_dormir = NULL;
             $lead->fin_dormir = NULL;
-
+            $obs->usuario = 'Sistema';
             $obs->comentario = 'Lead Finaliza Hibernación';
+
+            //Se crea notificación
+            $msj = 'El lead '.$lead->nombre.' '.$lead->apellidos.' ha finalizado su hibernación';
+            $aviso = new NotificacionesAvisosController();
+            $usuarios = User::select('id') //La notificación se mandara a todos los administradores del modulo.
+                                ->whereIn('usuario',['shady',
+                                    'dani.muñoz', 'edaly.z', 'alejandro.ort', 'ale.escobar', 'adrian.lop'
+                                ])
+                                ->get();
+            foreach ($usuarios as $index => $user) {
+                $aviso->store($user->id,$msj);
+            }
         }
 
         $lead->save();
