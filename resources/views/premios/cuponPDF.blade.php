@@ -10,7 +10,7 @@
       @page {
            margin: 0px;
         }
-      
+
         @font-face {
         font-family: 'Gotham-Book';
         font-size:12;
@@ -28,8 +28,8 @@
             background-position: center;
 
         }
-   
-   
+
+
         .img-back{
             background-image: url('img/ruleta/CuponDigitalBase.png');
             background-repeat: no-repeat;
@@ -46,10 +46,10 @@
             width: 70px;
             height: 20px;
             position: absolute;
-            
+
         }
         .datos{
-            
+
             width: 400px; height: 100px;
             top: 280px;
             left: 200px;
@@ -61,7 +61,7 @@
             font-weight: bold;
             align-items: center;
             text-align: center;
-            
+
         }
         .texto{
             width: 200;
@@ -73,9 +73,9 @@
             position: absolute;
         }
         .premio{
-            
+
             /* background-color: violet; */
-            top: 410px; 
+            top: 410px;
             left: 230px;
             position: absolute;
         }
@@ -95,35 +95,35 @@
                 </div>
 
                     @switch($lead[0]->premio)
-                   
+
                         @case(3000)
                             <div class="premio" >
-                                <img src="img/ruleta/C3mil.png" alt=""  width="350px" height="300px" > 
+                                <img src="img/ruleta/C3mil.png" alt=""  width="350px" height="300px" >
                             </div>
                             @break
                         @case(5000)
                             <div class="premio" >
-                                <img src="img/ruleta/C5mil.png" alt=""  width="350px" height="300px" > 
+                                <img src="img/ruleta/C5mil.png" alt=""  width="350px" height="300px" >
                             </div>
                             @break
                         @case(8000)
                             <div class="premio" >
-                                <img src="img/ruleta/C8mil.png" alt=""  width="350px" height="300px" > 
+                                <img src="img/ruleta/C8mil.png" alt=""  width="350px" height="300px" >
                             </div>
                             @break
                         @case(10000)
                             <div class="premio" >
-                                <img src="img/ruleta/C10mil.png" alt=""  width="350px" height="300px" > 
+                                <img src="img/ruleta/C10mil.png" alt=""  width="350px" height="300px" >
                             </div>
-                            
+
                             @break
                         @case(15000)
                             <div class="premio" >
-                                <img src="img/ruleta/C15mil.png" alt=""  width="350px" height="300px" > 
+                                <img src="img/ruleta/C15mil.png" alt=""  width="350px" height="300px" >
                             </div>
                             @break
                         @default
-                            
+
                     @endswitch
 
 
@@ -131,7 +131,7 @@
                         <ul>
                             <li>
                               <template style="color: deeppink"> Válido </template> en la compra de tu casa o departamento, una vez hayas firmado las escrituras de esta.
-                
+
                             </li>
                             <li>
                                 Este cupón aplica <template style="color: deeppink"> únicamente </template>en la compra de una casa o depa.
@@ -148,25 +148,25 @@
                                 </ul>
                             </li>
                             <li>
-                                Cupón<template style="color: deeppink"> adicional </template>   a cualquier pormoción vigente.
+                                Cupón<template style="color: deeppink"> adicional </template>   a cualquier promoción vigente.
                             </li>
                             <li>
-                                Cupón<template style="color: deeppink"> No tranferible </template>  (válido únicamente para el(la) titular al quien está emitido).
+                                Cupón<template style="color: deeppink"> No transferible </template>  (válido únicamente para el(la) titular al quien está emitido).
                             </li>
                             <li>
                                 Cupón válido hasta esta fecha: {{$lead[0]->f_caducidad}}, preséntalo y hazlo válido en la firma de tu contrato de promesa de compra-venta.
                             </li>
                         </ul>
                     </div>
-               
-         
-            </div>
-       
-                   
 
-                
-       
-       
-    
+
+            </div>
+
+
+
+
+
+
+
 </body>
 </html>

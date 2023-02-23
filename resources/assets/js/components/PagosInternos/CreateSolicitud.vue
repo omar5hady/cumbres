@@ -158,7 +158,8 @@
                                                 <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar"
                                                     @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
                                                 ></Button>
-                                                <Button :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar"
+                                                <Button v-if="solic.vb_gerente == 0"
+                                                        :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar"
                                                         :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>
                                             </td>
@@ -758,7 +759,7 @@
 
                                         <div class="col-md-2">
                                             <div class="form-group" v-if="solicitudData.forma_pago == 1">
-                                                <label for="">Caja chicha?</label>
+                                                <label for="">Caja chica?</label>
                                                 <select class="form-control" v-model="solicitudData.caja_chica"
                                                     :disabled="tipoAccion == 3 && admin < 3"
                                                 >
@@ -2223,7 +2224,8 @@ export default {
                 lote_id: det.lote_id,
                 contrato_id : det.contrato_id,
                 num_lote : det.num_lote,
-                sublote : det.sublote
+                sublote : det.sublote,
+                proveedor_id : det.proveedor_id
             }
                 // me.solicitudData.detalle.push(detalle);
                 me.arrayPendientes = me.arrayPendientes.filter(
