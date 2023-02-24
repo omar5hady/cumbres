@@ -248,7 +248,7 @@ const app = new Vue({
             var v = this;
             setInterval(function () {
                 v.created();
-            }, 100000);
+            }, 1800000);
         },
         /* Listening to the channel and when it receives a notification it adds it to the notifications
         array. */

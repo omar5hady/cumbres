@@ -211,19 +211,25 @@
                                     </div>
                                 </td>
                                 <td class="td2">
-                                    <Button v-if="lead.premio.length == 0"
-                                        :btnClass="'btn-success'" :icon="'fa fa-gift'" @click="premioPaste(`https://siicumbres.com/ruleta?gc=${lead.id}&d=${lead.name_user}`)"></Button>
-                                    <template v-else>
-                                        <a v-if="lead.premio[0].premio > 0" target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
-                                                '?gc='+ lead.id+'&d='+ lead.name_user">
-                                            <i class="fa fa-gift"></i>&nbsp;
-                                        </a>
+                                    <template v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 || rolId == 1">
+                                        <Button v-if="lead.premio.length == 0"
+                                            :btnClass="'btn-success'" :icon="'fa fa-gift'" @click="premioPaste(`https://siicumbres.com/ruleta?gc=${lead.id}&d=${lead.name_user}`)"></Button>
+                                        <template v-else>
+                                            <a v-if="lead.premio[0].premio > 0" target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
+                                                    '?gc='+ lead.id+'&d='+ lead.name_user">
+                                                <i class="fa fa-gift"></i>&nbsp;
+                                            </a>
 
-                                        <label></label>
+                                            <label></label>
 
-                                        <Button v-if="lead.envio_cupon == null" :btnClass="'btn-warning'"
-                                            :icon="'icon-check'" title="Indicar envio de cupón" @click="setCuponEnviado(lead.id)">
-                                        </Button>
+                                            <Button v-if="lead.envio_cupon == null" :btnClass="'btn-warning'"
+                                                :icon="'icon-check'" title="Indicar envio de cupón" @click="setCuponEnviado(lead.id)">
+                                            </Button>
+                                        </template>
                                     </template>
                                 </td>
                                 <td class="td2">

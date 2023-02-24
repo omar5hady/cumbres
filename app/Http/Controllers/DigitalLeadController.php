@@ -555,9 +555,12 @@ class DigitalLeadController extends Controller
                         'menu' => 250,
                     ]
                 ];
+
+                $vendedorD = Personal::select('nombre','apellidos')->where('id','=',$request->vendedor_asign)->first();
+
                 $obs = new Obs_lead(); // Registra comentario con la asignación del lead.
                 $obs->lead_id = $lead->id;
-                $obs->comentario = 'Aviso!, se le ha asignado un nuevo lead para seguimiento,
+                $obs->comentario = 'Aviso!, lead asignado a '.$vendedorD->nombre.' '.$vendedorD->apellidos.' para seguimiento,
                                     favor de ingresar al modulo de Digital Leads para mas información. ';
                 $obs->usuario = Auth::user()->usuario;
                 $obs->save();
@@ -846,12 +849,33 @@ class DigitalLeadController extends Controller
             $vendedor->cont_leads++; // Conteo de #leads asignados al vendedor
             $vendedor->save();
 
+            $vendedorD = Personal::select('nombre','apellidos')->where('id','=',$lead->vendedor_asign)->first();
+
             $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
             $obs->lead_id = $lead->id;
-            $obs->comentario = 'Aviso!, se le ha asignado un nuevo lead para seguimiento,
-                                favor de ingresar al modulo de Digital Leads para mas información. ';
+            $obs->comentario = 'Aviso!, lead asignado a '.$vendedorD->nombre.' '.$vendedorD->apellidos.' para seguimiento,
+                                    favor de ingresar al modulo de Digital Leads para mas información. ';
+
             $obs->usuario = 'Sistema';
             $obs->save();
+
+
+            // Se envia notificación al vendedor.
+            $fecha = Carbon::now();
+            $msj = "Se le ha asignado el lead: " . $lead->nombre.' '.$lead->apellidos;
+            $arregloAceptado = [
+                'notificacion' => [
+                    'usuario' => 'Sistema',
+                    'foto' => 'default-image.gif',
+                    'fecha' => $fecha,
+                    'msj' => $msj,
+                    'titulo' => 'Lead asignado'
+                ]
+            ];
+
+            User::findOrFail($lead->vendedor_asign)->notify(new NotifyAdmin($arregloAceptado));
+
+
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();

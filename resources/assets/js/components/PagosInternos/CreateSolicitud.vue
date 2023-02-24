@@ -70,12 +70,21 @@
                                     <input type="date" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)" v-model="b_fecha2">
                                 </div>
                             </div>
+                            <div class="col-md-12" v-if="usuario == 'shady' || usuario == 'jorge.diaz'">
+                                <div class="input-group">
+                                    <input class="form-control col-md-2" type="text" disabled placeholder="Devoluciones?:">
+                                    <select class="form-control col-md-4" v-model="b_devolucion">
+                                        <option value="">No</option>
+                                        <option value="1">Si</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="indexSolicitudes(1)">
                                         Buscar
-                                    </Button>
+                                    </Button>&nbsp;
                                     <a class="btn btn-success" :href="'/sp/printExcel?b_proveedor=' + b_proveedor
                                         + '&b_empresa=' + b_empresa
                                         + '&b_solicitante=' + b_solicitante
@@ -87,9 +96,25 @@
                                         + '&b_tipo_pago=' + b_tipo_pago
                                         + '&b_forma_pago=' + b_forma_pago
                                         + '&b_cuenta_pago=' + b_cuenta_pago
+                                        + '&b_devolucion=' + b_devolucion
                                         + '&b_status=' + b_status">
                                         <i class="fa fa-file-text"></i>&nbsp; Excel
-                                    </a>
+                                    </a>&nbsp;
+
+                                    <a v-if="usuario == 'jeremias' || usuario == 'shady'" class="btn btn-success" :href="'/sp/printExcelDetalles?b_proveedor=' + b_proveedor
+                                        + '&b_empresa=' + b_empresa
+                                        + '&b_solicitante=' + b_solicitante
+                                        + '&b_vbgerente=' + b_vbgerente
+                                        + '&b_vbdireccion=' + b_vbdireccion
+                                        + '&b_fecha1=' + b_fecha1
+                                        + '&b_fecha2=' + b_fecha2
+                                        + '&b_rechazado=' + b_rechazado
+                                        + '&b_tipo_pago=' + b_tipo_pago
+                                        + '&b_forma_pago=' + b_forma_pago
+                                        + '&b_cuenta_pago=' + b_cuenta_pago
+                                        + '&b_status=' + b_status">
+                                        <i class="fa fa-file-text"></i>&nbsp; Excel Detalles
+                                    </a>&nbsp;
                                 </div>
                             </div>
                         </div>
@@ -346,7 +371,14 @@
                                             </td>
                                             <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                             <td class="td2">
-                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                                <template v-if="solic.tipo_pago == 0">
+                                                    C.F.
+                                                </template>
+                                                <template v-else>
+                                                    <span class="badge" :class="[solic.forma_pago == 1 ? 'badge-danger' : 'badge-primary']">
+                                                        {{ solic.forma_pago == 1 ? 'Cheques' : 'Transferencia' }}
+                                                    </span>
+                                                </template>
                                             </td>
                                             <td>
                                                 <Button :btnClass="'btn-light'" title="Ver Observaciones"
@@ -416,7 +448,14 @@
                                                     </td>
                                                     <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                                     <td class="td2">
-                                                        {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                                        <template v-if="solic.tipo_pago == 0">
+                                                            C.F.
+                                                        </template>
+                                                        <template v-else>
+                                                            <span class="badge" :class="[solic.forma_pago == 1 ? 'badge-danger' : 'badge-primary']">
+                                                                {{ solic.forma_pago == 1 ? 'Cheques' : 'Transferencia' }}
+                                                            </span>
+                                                        </template>
                                                     </td>
                                                     <td class="td2">
                                                         <template v-if="encargado == 0 && !gerente">
@@ -476,8 +515,15 @@
                                                         v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
                                                     </td>
                                                     <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
-                                                    <td class="td2">
-                                                        {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                                     <td class="td2">
+                                                        <template v-if="solic.tipo_pago == 0">
+                                                            C.F.
+                                                        </template>
+                                                        <template v-else>
+                                                            <span class="badge" :class="[solic.forma_pago == 1 ? 'badge-danger' : 'badge-primary']">
+                                                                {{ solic.forma_pago == 1 ? 'Cheques' : 'Transferencia' }}
+                                                            </span>
+                                                        </template>
                                                     </td>
                                                     <td class="td2">
                                                         <template v-if="!gerente">
@@ -561,7 +607,14 @@
                                             </td>
                                             <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                             <td class="td2">
-                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                                <template v-if="solic.tipo_pago == 0">
+                                                    C.F.
+                                                </template>
+                                                <template v-else>
+                                                    <span class="badge" :class="[solic.forma_pago == 1 ? 'badge-danger' : 'badge-primary']">
+                                                        {{ solic.forma_pago == 1 ? 'Cheques' : 'Transferencia' }}
+                                                    </span>
+                                                </template>
                                             </td>
                                             <td class="td2">
                                                 <Button v-if="solic.fecha_pago && !solic.comprobante_pago"
@@ -638,7 +691,14 @@
                                             </td>
                                             <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
                                             <td class="td2">
-                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                                <template v-if="solic.tipo_pago == 0">
+                                                    C.F.
+                                                </template>
+                                                <template v-else>
+                                                    <span class="badge" :class="[solic.forma_pago == 1 ? 'badge-danger' : 'badge-primary']">
+                                                        {{ solic.forma_pago == 1 ? 'Cheques' : 'Transferencia' }}
+                                                    </span>
+                                                </template>
                                             </td>
                                             <td class="td2">
                                                 <Button v-if="solic.fecha_pago && !solic.comprobante_pago"
@@ -889,15 +949,14 @@
                                         <template v-if="tipoAccion < 3">
                                             <div class="col-md-4">
                                                 <label for="">Obra <span style="color:red;" v-show="datosDetalle.obra == ''">(*)</span></label>
-                                                <input type="text" name="obra" list="obraname" class="form-control"
-                                                    v-model="datosDetalle.obra" @keyup="getProyectos(datosDetalle.obra)" @change="selectEtapa(datosDetalle.obra)">
-                                                <datalist id="obraname">
+                                                <select class="form-control" v-model="datosDetalle.obra" @change="selectEtapa(datosDetalle.obra)">
                                                     <option value="">Seleccione</option>
                                                     <option value="OFICINA">OFICINA</option>
-                                                    <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
-                                                </datalist>
+                                                    <option value="NUEVOS PROYECTOS">NUEVOS PROYECTOS</option>
+                                                    <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
+                                                </select>
                                             </div>
-                                            <div class="col-md-3" v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
+                                            <div class="col-md-3" v-if="(datosDetalle.obra != 'OFICINA' && datosDetalle.obra != 'NUEVOS PROYECTOS') && datosDetalle.obra != ''">
                                                 <label for="">&nbsp;</label>
                                                 <select class="form-control"
                                                     v-model="datosDetalle.sub_obra"
@@ -909,7 +968,7 @@
                                                     <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
                                                 </select>
                                             </div>
-                                            <template v-if="datosDetalle.obra != 'OFICINA' && datosDetalle.obra != ''">
+                                            <template v-if="(datosDetalle.obra != 'OFICINA' && datosDetalle.obra != 'NUEVOS PROYECTOS') && datosDetalle.obra != ''">
                                                 <div class="col-md-3">
                                                     <label for="">&nbsp;</label>
                                                     <select class="form-control" v-model="datosDetalle.manzana"
@@ -1052,9 +1111,28 @@
                                                                     : 'Mnz: ' + det.manzana + ' Lote: ' + det.num_lote : ''
                                                                 }}
                                                             </td>
-                                                            <td class="td2">{{det.cargo}}</td>
-                                                            <td>{{det.concepto}}</td>
-                                                            <td>{{det.observacion}}</td>
+                                                            <template v-if="tipoAccion == 2">
+                                                                <td class="td2">
+                                                                    <select class="form-control" v-model="det.cargo" @change="getConceptos(det.cargo), det.concepto = ''">
+                                                                        <option></option>
+                                                                        <option v-for="cargo in arrayCargos" :key="cargo.cargo" :value="cargo.cargo" v-text="cargo.cargo"></option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control" v-model="det.concepto">
+                                                                        <option v-if="det.concepto!=''" :value="det.concepto" v-text="det.concepto"></option>
+                                                                        <option v-for="concepto in arrayConceptos" :key="concepto.id" :value="concepto.concepto" v-text="concepto.concepto"></option>
+                                                                    </select>
+                                                                </td>
+                                                                <td class="td2">
+                                                                    <textarea v-model="det.observacion" cols="30" rows="3"></textarea>
+                                                                </td>
+                                                            </template>
+                                                            <template v-else>
+                                                                <td class="td2">{{det.cargo}}</td>
+                                                                <td>{{det.concepto}}</td>
+                                                                <td>{{det.observacion}}</td>
+                                                            </template>
                                                             <td class="td2">
                                                                 {{
                                                                     (det.tipo_mov === 0) ? 'Anticipo'
@@ -1205,13 +1283,21 @@
                                             <div class="form-group"><center><h3></h3></center></div>
                                         </div>
 
+                                        <div class="col-md-10">
+                                            <label for="">Nuevo Comentario</label>
+                                            <textarea rows="3" class="form-control" v-model="comentario"></textarea>
+                                            <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs(solicitudData.id)" title="Guardar comentario"></Button>
+                                        </div>
+
+
+
                                         <div class="col-md-12">
                                             <center>
                                                 <TableComponent :cabecera="[
                                                     'Usuario','Observación','Fecha'
                                                 ]">
                                                     <template v-slot:tbody>
-                                                        <tr v-for="ob in solicitudData.obs"
+                                                        <tr v-for="ob in arrayObs"
                                                             :key="ob.id">
                                                             <td>{{ob.usuario}}</td>
                                                             <td>{{ob.comentario}}</td>
@@ -1311,7 +1397,7 @@
                         <RowModal :label1="'Observacion'" :clsRow1="'col-md-6'" :clsRow2="'col-md-3'">
                             <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
                             <template v-slot:input2>
-                                <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs()" title="Guardar observación"></Button>
+                                <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs(id)" title="Guardar observación"></Button>
                             </template>
                         </RowModal>
 
@@ -1648,6 +1734,7 @@ export default {
             b_tipo_pago : '',
             b_forma_pago : '',
             b_cuenta_pago : '',
+            b_devolucion : '',
             loading : false,
             id : '',
             comentario : '',
@@ -2071,8 +2158,8 @@ export default {
             });
         },
         deleteDetalle(id){
-            axios.delete(`/solic-pagos/deleteDetalle/${id}`,
-                {params: {'id': this.id}}).then(function (response){
+            axios.delete(`/solic-detalles/deleteDetalle/${id}`,
+                {params: {'id': id}}).then(function (response){
             }).catch(function (error){
                 console.log(error);
             });
@@ -2309,12 +2396,14 @@ export default {
                         nom_archivo: 'Seleccione Archivo'
                     };
                     this.solicitudData = data;
+                    this.arrayObs = this.solicitudData.obs;
                     this.tipoAccion = 2;
                     this.cargando = 0;
                     break;
                 }
                 case 'ver':{
                     this.solicitudData = data;
+                    this.arrayObs = this.solicitudData.obs;
                     this.tipoAccion = 3;
                     if(this.solicitudData.status >= 1 && this.solicitudData.tipo_pago == 1)
                         this.selectCuenta(this.solicitudData.empresa_solic);
@@ -2365,15 +2454,17 @@ export default {
 
         },
         /**Metodo para registrar  */
-        storeObs(){
+        storeObs(id){
             let me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/sp/storeObs',{
-                'solicitud_id': me.id,
+                'solicitud_id': id,
                 'comentario' : me.comentario
             }).then(function (response){
                 me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
-                me.cerrarModal();
+                me.comentario = '';
+                me.arrayObs.push(response.data)
+                //me.cerrarModal();
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -2445,6 +2536,7 @@ export default {
                 + '&b_tipo_pago=' + me.b_tipo_pago
                 + '&b_forma_pago=' + me.b_forma_pago
                 + '&b_cuenta_pago=' + me.b_cuenta_pago
+                + '&b_devolucion=' + me.b_devolucion
                 + '&b_status=' + me.b_status;
             axios
                 .get(url)

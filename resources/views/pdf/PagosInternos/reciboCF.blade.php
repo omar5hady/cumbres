@@ -30,7 +30,12 @@
         position: absolute;
     }
     .importe-letra{
-        margin-top: 5.5cm;
+        margin-top: 5.7cm;
+        margin-left: 5cm;
+        position: absolute;
+    }
+    .paguese-a{
+        margin-top: 6.6cm;
         margin-left: 5cm;
         position: absolute;
     }
@@ -42,6 +47,7 @@
     .concepto{
         margin-top: 7.4cm;
         margin-left: 4.5cm;
+        margin-right: 1.5cm;
         position: absolute;
     }
     .firma1{
@@ -72,13 +78,16 @@
         <div class="importe-letra">
             {{$solicitud->importe_letra}}
         </div>
+        <div class="paguese-a">
+            {{$solicitud->proveedor}}
+        </div>
         <div class="concepto">
             @foreach ($solicitud->det as $det)
                 {{$det->observacion}}
             @endforeach
         </div>
         <div class="firma1">
-
+            DORA MARIA MARIN MEDELLIN
         </div>
         <div class="firma2">
             {{$solicitud->proveedor}}
