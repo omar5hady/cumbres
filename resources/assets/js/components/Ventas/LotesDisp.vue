@@ -872,7 +872,7 @@ import TableComponent from '../Componentes/TableComponent.vue';
                 });
             },
             fichaTecnica(archivo){
-                window.open('/files/modelos/'+archivo, '_blank')
+                window.open('/files/modelos/ficha/'+archivo, '_blank')
             },
             fichaTecnicaRenta(archivo){
                 window.open('/files/lotes/archivoRentas/'+archivo, '_blank')
