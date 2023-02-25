@@ -63,7 +63,7 @@
                                     <input type="text" class="form-control col-md-6" @keyup.enter="indexSolicitudes(1)" v-model="b_solicitante" placeholder="Solicitante a buscar">
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12" v-if="encargado == 1 || admin > 0">
                                 <div class="input-group">
                                     <input class="form-control col-md-2" type="text" disabled placeholder="Fecha de solicitud:">
                                     <input type="date" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)" v-model="b_fecha1">

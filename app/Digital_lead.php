@@ -54,7 +54,9 @@ class Digital_lead extends Model
         'ini_dormir',
         'fin_dormir',
         'f_audit',
-        'obs_auditoria'
+        'obs_auditoria',
+        's_email',
+        's_whats'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function obs_leads(){
