@@ -61,6 +61,8 @@ class PremiosController extends Controller
        $lead->apellidos = $apep . ' ' .$apem;
        $lead->f_nacimiento =$fenac;
        $lead->rfc = $rfc;
+       $lead->email = $request->correo;
+       $lead->celular = $request->celular;
        $lead->save();
 
 
@@ -128,11 +130,19 @@ class PremiosController extends Controller
         $lead_id=$request->lead_id;
         $reg_correo=$request->reg_correo;
         $reg_whts=$request->reg_whts;
+        
         $lead = Digital_lead::findOrFail($lead_id);
+        if($request->send == 'email'){
+            $lead->s_email=1;
+            $lead->s_whats=0;
+        }
+        if($request->send == 'whats'){
+            $lead->s_email=0;
+            $lead->s_whats=1;
+        }
         if($reg_correo !='' )
             $lead->email=$reg_correo;
         if($reg_whts !=''){
-            $lead->telefono=$reg_whts;
             $lead->celular=$reg_whts;
         }
         $lead->save();
