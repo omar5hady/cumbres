@@ -798,7 +798,8 @@
                                         <div class="col-md-2">
                                             <label> Forma de pago </label>
                                             <select class="form-control" v-model="solicitudData.tipo_pago" :disabled="tipoAccion == 3 && admin < 3"
-                                                @change="solicitudData.forma_pago = '', solicitudData.caja_chica = 0">
+                                                @change="solicitudData.forma_pago = '', solicitudData.caja_chica = 0,
+                                                solicitudData.convenio = '', solicitudData.referencia = ''">
                                                 <option :value="0">C.F.</option>
                                                 <option :value="1">Bancos</option>
                                             </select>
@@ -816,6 +817,25 @@
                                                 </select>
                                             </div>
                                         </div>
+
+
+                                        <template  v-if="solicitudData.tipo_pago == 1 && solicitudData.forma_pago === 0">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="">Covenio</label>
+                                                    <input type="text" class="form-control" v-on:keypress="$root.isNumber($event)"
+                                                        v-model="solicitudData.convenio" :disabled="tipoAccion == 3">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="">Referencia</label>
+                                                    <input type="text" class="form-control" v-on:keypress="$root.isNumber($event)"
+                                                        v-model="solicitudData.referencia" :disabled="tipoAccion == 3">
+                                                </div>
+                                            </div>
+                                        </template>
 
                                         <div class="col-md-2">
                                             <div class="form-group" v-if="solicitudData.forma_pago == 1">
@@ -2377,6 +2397,8 @@ export default {
                         saldo : 0,
                         tipo_pago : 0,
                         forma_pago : '',
+                        convenio : '',
+                        referencia : '',
                         fecha_compra: '',
                         banco : '',
                         num_cuenta : '',

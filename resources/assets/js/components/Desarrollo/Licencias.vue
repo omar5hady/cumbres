@@ -189,7 +189,7 @@
                                         <a href="#" v-text="licencias.num_etapa"></a>
                                     </td>
                                     <td class="td2" v-text="licencias.manzana"></td>
-                                    <td class="td2" v-text="licencias.num_lote"></td>
+                                    <td class="td2" >{{ licencias.sublote ? licencias.num_lote + ' ' +licencias.sublote  : licencias.num_lote }}</td>
                                     <td class="td2" v-text="formatNumber(licencias.terreno)"></td>
                                     <td class="td2" v-text="formatNumber(licencias.construccion)"></td>
                                     <!--Modelo-->

@@ -249,7 +249,8 @@ class SolicitudesController extends Controller
                 $sheet->row(1, [
                     'Empresa', 'Proveedor', 'Solicitante',
                     'Fecha de solicitud', 'Importe', 'Tipo de pago', 'Forma',
-                    'Cuenta de salida', 'Cuenta destino', 'Folio/Num Cheque',
+                    'Cuenta de salida', 'Cuenta destino', 'Clabe', 'Convenio',
+                    'Referencia', 'Folio/Num Cheque',
                     'Fecha de pago'
                 ]);
 
@@ -258,7 +259,7 @@ class SolicitudesController extends Controller
                 ));
 
 
-                $sheet->cells('A1:K1', function ($cells) {
+                $sheet->cells('A1:N1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -307,11 +308,14 @@ class SolicitudesController extends Controller
                         $forma_pago,
                         $s->cuenta_pago,
                         $s->banco.'-'.$s->num_cuenta,
+                        $s->clabe,
+                        $s->convenio,
+                        $s->referencia,
                         $s->num_factura,
                         $s->fecha_pago
                     ]);
                 }
-                $num='A1:R' . $cont;
+                $num='A1:N' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             }
@@ -562,6 +566,10 @@ class SolicitudesController extends Controller
         $solic->forma_pago      = $solicitud['forma_pago'];
         $solic->caja_chica      = $solicitud['caja_chica'];
         $solic->extraordinario  = $solicitud['extraordinario'];
+
+        $solic->convenio  = $solicitud['convenio'];
+        $solic->referencia  = $solicitud['referencia'];
+
         $solic->status          = 0;
         $solic->fecha_compra    = Carbon::now();
         if(sizeof($prov))
@@ -628,6 +636,10 @@ class SolicitudesController extends Controller
         $solic->tipo_pago           = $solicitud['tipo_pago'];
         $solic->forma_pago          = $solicitud['forma_pago'];
         $solic->extraordinario      = $solicitud['extraordinario'];
+
+        $solic->convenio  = $solicitud['convenio'];
+        $solic->referencia  = $solicitud['referencia'];
+
         if(sizeof($prov))
         {
             $solic->banco           = $prov[0]->banco;

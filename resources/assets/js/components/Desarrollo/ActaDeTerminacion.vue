@@ -431,8 +431,7 @@
                                 ></td>
                                 <td
                                     class="td2"
-                                    v-text="act_terminacion.num_lote"
-                                ></td>
+                                > {{ act_terminacion.sublote ? act_terminacion.num_lote + ' ' +act_terminacion.sublote  : act_terminacion.num_lote }} </td>
                                 <td
                                     class="td2"
                                     v-text="act_terminacion.terreno"
