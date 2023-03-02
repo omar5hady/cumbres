@@ -1060,6 +1060,19 @@
                                                     </v-select>
                                                 </div>
                                             </div>
+                                            <template v-if="solicitudData.caja_chica == 1">
+                                                <div class="col-md-3">
+                                                    <label for="">Fecha de factura <span style="color:red;" v-show="datosDetalle.fecha_factura == ''">(*)</span></label>
+                                                    <input class="form-control" type="date" v-model="datosDetalle.fecha_factura">
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <label for="">Folio fiscal <span style="color:red;" v-show="datosDetalle.folio_fisc == ''">(*)</span></label>
+                                                    <input class="form-control" type="text" v-model="datosDetalle.folio_fisc" pattern="\d*" maxlength="5" v-on:keypress="$root.isNumber($event)">
+                                                </div>
+
+                                                <div class="col-md-6"></div>
+                                            </template>
                                             <div class="col-md-3">
                                                 <label for="">Importe a contratar <span style="color:red;" v-show="datosDetalle.total <= 0">(*)</span></label>
                                                 <input class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
@@ -1101,7 +1114,10 @@
                                         <div class="col-md-12">
                                             <center>
                                                 <TableComponent :cabecera="[
-                                                    '','Obra', '   ', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo'
+                                                    '','Obra', '   ', ' ', 'Cargo', 'Subconcepto','Obs.',
+                                                    'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo',
+                                                    `${solicitudData.caja_chica == 1 ? 'Fecha factura' : '    '}`,
+                                                    `${solicitudData.caja_chica == 1 ? 'Folio fiscal' : '     '}`
                                                 ]">
                                                     <template v-slot:tbody>
                                                         <tr v-for="det in solicitudData.detalle"
@@ -1169,6 +1185,10 @@
                                                             <td class="td2">
                                                                 ${{$root.formatNumber(det.total - det.pago)}}
                                                             </td>
+                                                            <td>
+                                                                {{det.fecha_factura}}
+                                                            </td>
+                                                            <td>{{det.folio_fisc}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="9"></td>
@@ -2332,7 +2352,9 @@ export default {
                 contrato_id : det.contrato_id,
                 num_lote : det.num_lote,
                 sublote : det.sublote,
-                proveedor_id : det.proveedor_id
+                proveedor_id : det.proveedor_id,
+                fecha_factura : det.fecha_factura,
+                folio_fisc : det.folio_fisc
             }
                 // me.solicitudData.detalle.push(detalle);
                 me.arrayPendientes = me.arrayPendientes.filter(
@@ -2353,6 +2375,12 @@ export default {
         verificarCaptura(){
             let me = this;
             let res = false;
+            if(me.solicitudData.caja_chica == 1 && (
+                me.datosDetalle.proveedor_id == '' ||
+                me.datosDetalle.fecha_factura == '' ||
+                me.datosDetalle.folio_fisc == ''
+            )) return false;
+
             if( me.datosDetalle.obra != ''
                 && me.datosDetalle.cargo != ''
                 && me.datosDetalle.concepto != ''
@@ -2379,7 +2407,9 @@ export default {
                 manzana: '',
                 lote_id: '',
                 contrato_id : '',
-                proveedor_id : ''
+                proveedor_id : '',
+                fecha_factura : '',
+                folio_fisc : ''
             }
         },
         vistaFormulario(accion,data=[]){

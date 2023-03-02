@@ -131,7 +131,7 @@ class SolicitudesController extends Controller
                     'Empresa', 'Proveedor', 'Solicitante',
                     'Fecha de solicitud', 'Obra', '','Cargo','Concepto','Obs.','Importe', 'Tipo de pago', 'Forma',
                     'Cuenta de salida', 'Cuenta destino', 'Folio/Num Cheque',
-                    'Fecha de pago'
+                    'Fecha de pago','Fecha factura', 'Folio fiscal', 'Razon social'
                 ]);
 
                 $sheet->setColumnFormat(array(
@@ -139,7 +139,7 @@ class SolicitudesController extends Controller
                 ));
 
 
-                $sheet->cells('A1:P1', function ($cells) {
+                $sheet->cells('A1:S1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -203,10 +203,14 @@ class SolicitudesController extends Controller
                         $s->cuenta_pago,
                         $s->banco.'-'.$s->num_cuenta,
                         $s->num_factura,
-                        $s->fecha_pago
+                        $s->fecha_pago,
+                        $s->fecha_factura,
+                        $s->folio_fisc,
+                        $s->prov_det
+
                     ]);
                 }
-                $num='A1:P' . $cont;
+                $num='A1:S' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             }
@@ -432,11 +436,14 @@ class SolicitudesController extends Controller
             ->leftJoin('creditos','sp_detalles.contrato_id','=','creditos.id')
             ->leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
             ->leftJoin('proveedores','sp_solicituds.proveedor_id','=','proveedores.id')
+            ->leftJoin('personal as prov2','sp_detalles.proveedor_id','=','prov2.id')
             ->join('personal as user','sp_solicituds.solicitante_id','=','user.id')
             ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
                 'lotes.manzana','lotes.num_lote','lotes.sublote','creditos.id as folio',
                 'sp_detalles.obra', 'sp_detalles.sub_obra', 'sp_detalles.cargo',
+                'sp_detalles.folio_fisc', 'sp_detalles.fecha_factura',
                 'sp_detalles.concepto', 'sp_detalles.observacion', 'sp_detalles.pago',
+                DB::raw("CONCAT(prov2.nombre,' ',prov2.apellidos) AS prov_det"),
                 DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante")
             );
             if($b_empresa != '')
@@ -618,6 +625,8 @@ class SolicitudesController extends Controller
                 $detalle->lote_id       = $det['lote_id'];
                 $detalle->contrato_id   = $det['contrato_id'];
                 $detalle->proveedor_id   = $det['proveedor_id'];
+                $detalle->fecha_factura   = $det['fecha_factura'];
+                $detalle->folio_fisc   = $det['folio_fisc'];
                 $detalle->save();
             }
             else{
