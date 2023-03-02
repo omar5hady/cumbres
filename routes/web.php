@@ -652,6 +652,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/creditos_aprobados','ContratoController@indexCreditosAprobados');
         Route::get('/contratos/pagos','ContratoController@listarPagos');
         Route::get('/credito/datos_credito','ContratoController@getDatosCredito');
+        Route::get('/promocion/getLastPromo','PromocionController@getLastPromo');
         Route::post('/contrato/registrar','ContratoController@store');
         Route::put('/contrato/actualizarCredito','ContratoController@updateDatosCredito');
         Route::post('/contrato/pagos/agregar','ContratoController@agregarPago');
@@ -660,6 +661,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/contrato/actualizar','ContratoController@actualizarContrato');
         Route::put('/contrato/reasignar','ContratoController@reasignarCliente');
         Route::put('/contrato/reasignar2','ContratoController@reasignarCliente2');
+
+        Route::get('/premios/getPremio','Premios\PremiosController@getPremio');
 
         Route::post('/contratos/formSubmitFisc/{id}','ContratoController@formSubmitFisc');
         Route::post('/contratos/formSubmitConstFisc/{id}','ContratoController@formSubmitConstFisc');

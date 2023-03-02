@@ -51,6 +51,7 @@ class SolicitudesController extends Controller
         if( $usuario == 'shady'
             || $usuario == 'alejandro.pe'
             || $usuario == 'ing_david'
+            || $usuario == 'cp.martin'
         )$admin = 2;
         if(
             $usuario == 'jorge.diaz'
@@ -58,6 +59,9 @@ class SolicitudesController extends Controller
             || $usuario == 'jeremias'
             || $usuario == 'carlos.dom'
         )$admin = 3;
+        if(
+            $usuario == 'mendez.erika59'
+        )$admin = 4;
 
         $total = 0;
 
@@ -863,7 +867,7 @@ class SolicitudesController extends Controller
             ->select('sp_detalles.*','lotes.num_lote','lotes.sublote');
             if($admin == 0 && $encargado == 0)
                 $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);
-            if($encargado == 1)
+            if($encargado == 1 && $admin == 0)
                 $detalles = $detalles->where('solic.departamento','=',$dep->departamento_id);
             if($request->proveedor_id != '')
                 $detalles = $detalles->where('solic.proveedor_id','=',$request->proveedor_id);

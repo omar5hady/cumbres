@@ -71,12 +71,12 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('direccion',191)->nullable();
             $table->boolean('prospecto')->default(0);
             $table->string('messenger_id',255)->nullable();
-            
+
             $table->string('curp',18)->nullable();
             $table->string('lugar_nacimiento',80)->nullable();
-            
+
             $table->date('envio_cupon')->nullable();
-            
+
             $table->date('ini_dormir')->nullable();
             $table->date('fin_dormir')->nullable();
             $table->date('f_audit')->nullable();
@@ -85,11 +85,6 @@ class CreateDigitalLeadsTable extends Migration
             $table->boolean('s_whats')->default(0);
 
             $table->date('envio_cupon')->nullable();
-
-            $table->date('ini_dormir')->nullable();
-            $table->date('fin_dormir')->nullable();
-            $table->date('f_audit')->nullable();
-            $table->text('obs_auditoria')->nullable();
 
             $table->timestamps();
         });

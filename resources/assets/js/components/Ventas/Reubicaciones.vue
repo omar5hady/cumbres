@@ -23,7 +23,7 @@
             <!----------------- Listado Contratos ------------------------------>
                     <!-- Div Card Body para listar -->
                     <template v-if="listado == 0">
-                        <div class="card-body"> 
+                        <div class="card-body">
 
                             <div class="form-group row">
                                 <div class="col-md-8">
@@ -37,12 +37,12 @@
                                 <div class="col-md-8">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                         </select>
-                                                                               
+
                                         <input  v-if="criterio=='personal.nombre' || criterio=='v.nombre' || criterio=='creditos.id'" type="text" v-model="buscar" @keyup.enter="listarContratos(1)" class="form-control">
                                         <select class="form-control col-md-4" v-model="b_status">
                                             <option value="">Seleccionar Status</option>
@@ -53,14 +53,14 @@
                                         </select>
                                     </div>
                                     <button type="submit" @click="listarContratos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                   
+
                                 </div>
                             </div>
                             <div class="form-group row" v-if="criterio=='creditos.fraccionamiento'">
                                 <div class="col-md-8">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
@@ -75,7 +75,7 @@
                                             <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                         </select>
                                     </div>
-                                   
+
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -124,12 +124,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="contrato in arrayContratos" :key="contrato.id" @click="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
+                                        <tr v-for="contrato in arrayContratos.data" :key="contrato.id" @click="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
                                             <td class="td2" v-text="contrato.id"></td>
                                             <td class="td2">
-                                                <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></a>
+                                                <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase()"></a>
                                             </td>
-                                            <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
+                                            <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos"></td>
                                             <td class="td2" v-text="contrato.fraccionamiento"></td>
                                             <td class="td2" v-text="contrato.etapa"></td>
                                             <td class="td2" v-text="contrato.manzana"></td>
@@ -152,29 +152,19 @@
                                                 <span class="badge badge-success">Firmado</span>
                                                 <span v-if="contrato.status2 == 1" class="badge badge-dark"> INDIVIDUALIZADA </span>
                                             </td>
-                                        </tr>                               
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                            <Nav :current="arrayContratos.current_page ? arrayContratos.current_page : 1"
+                                :last="arrayContratos.last_page ? arrayContratos.last_page : 1"
+                                @changePage="listarContratos">
+                            </Nav>
                         </div>
                     </template>
 
                     <template v-if="listado == 1">
-                        <div class="card-body"> 
+                        <div class="card-body">
                             <div class="form-group row">
                                 <div class="col-md-3">
                                    <h6>Venta actual:</h6>
@@ -268,7 +258,7 @@
                                             <td>
                                                 <button title="Eliminar" type="button" @click="eliminar(reubicacion.id)" class="btn btn-danger btn-sm">
                                                     <i class="icon-trash"></i>
-                                                </button>  
+                                                </button>
                                             </td>
                                             <td class="td2" v-text="this.moment(reubicacion.fecha_reubicacion).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-text="reubicacion.fraccionamiento"></td>
@@ -282,13 +272,13 @@
                                             <td class="td2" v-text="reubicacion.institucion"></td>
                                             <td class="td2" v-text="reubicacion.promocion"></td>
                                             <td class="td2" v-text="reubicacion.observacion"></td>
-                                        </tr>                               
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </template>
-                    
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -304,7 +294,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                 
+
                       <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                             <div class="form-group row">
@@ -360,7 +350,7 @@
                                 <div class="col-md-4">
                                     <h6 v-text="'$'+formatNumber(valor_terreno)"></h6>
                                 </div>
-                                
+
                             </div>
 
                             <div class="form-group row">
@@ -372,7 +362,7 @@
                                         <option v-for="promocion in arrayPromociones" :key="promocion.id" :value="promocion.descripcion" v-text="promocion.descripcion"></option>
                                     </select>
                                 </div>
-                                
+
                             </div>
 
                             <div v-if="promocion != '' && promocion != 'Sin Promoción'" class="form-group row">
@@ -380,7 +370,7 @@
                                 <div class="col-md-9">
                                     <textarea v-model="promocion" cols="80" rows="4"></textarea>
                                 </div>
-                                
+
                             </div>
 
                             <div class="form-group row">
@@ -388,7 +378,7 @@
                                 <div class="col-md-4">
                                     <select class="form-control" v-model="tipo_credito" @change="selectInstitucion(tipo_credito)" >
                                         <option value="">Seleccione</option>
-                                        <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
+                                        <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
                                     </select>
                                 </div>
 
@@ -396,7 +386,7 @@
                                 <div class="col-md-3">
                                     <select class="form-control" v-model="institucion" >
                                         <option value="">Seleccione</option>
-                                        <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
+                                        <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>
                                     </select>
                                 </div>
                             </div>
@@ -414,7 +404,7 @@
                             <div class="form-group row">
                                 <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
                                 <div class="col-md-6">
-                                    <v-select 
+                                    <v-select
                                         :on-search="selectCliente"
                                         label="n_completo"
                                         :options="arrayClientes"
@@ -440,14 +430,14 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <button type="button" class="btn btn-primary" @click="storeReubicacion()">Guardar</button>
                          </div>
-                    </div> 
+                    </div>
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
 
-           
+
 
         </main>
 </template>
@@ -458,6 +448,7 @@
 
 <script>
     import vSelect from 'vue-select';
+    import Nav from '../Componentes/NavComponent.vue'
     export default {
         props:{
             rolId:{type: String}
@@ -481,15 +472,6 @@
                 arryaEmpresas:[],
                 empresas:[],
 
-                
-                pagination : {
-                    'total' : 0,         
-                    'current_page' : 0,
-                    'per_page' : 0,
-                    'last_page' : 0,
-                    'from' : 0,
-                    'to' : 0,
-                },
                 myAlerts:{
                     popAlert : function(title = 'Alert',type = "success", description =''){
                         swal({
@@ -501,7 +483,6 @@
                         })
                     }
                 },
-                offset : 3,
                 buscar : '',
                 buscar3 : '',
                 b_etapa: '',
@@ -548,48 +529,22 @@
             }
         },
         computed:{
-            isActived: function(){
-                return this.pagination.current_page;
-            },
-
-            //Calcula los elementos de la paginación
-            pagesNumber:function(){
-                if(!this.pagination.to){
-                    return [];
-                }
-
-                var from = this.pagination.current_page - this.offset;
-                if(from < 1){
-                    from = 1;
-                }
-
-                var to = from + (this.offset * 2);
-                if(to >= this.pagination.last_page){
-                    to = this.pagination.last_page;
-                }
-
-                var pagesArray = [];
-                while(from <= to){
-                    pagesArray.push(from);
-                    from++;
-                }
-                return pagesArray;
-            },
 
         },
         components:{
-            vSelect
+            vSelect,
+            Nav
         },
         methods : {
             listarContratos(page){
                 let me = this;
-                var url = '/contratos?page=' + page + '&buscar=' + me.buscar + '&buscar3=' + me.buscar3 + '&b_modelo=' + me.b_modelo + 
-                    '&b_etapa=' +me.b_etapa+ '&b_manzana=' + me.b_manzana + '&b_lote='+ me.b_lote + '&b_status='+ me.b_status 
+                var url = '/contratos?page=' + page + '&buscar=' + me.buscar + '&buscar3=' + me.buscar3 + '&b_modelo=' + me.b_modelo +
+                    '&b_etapa=' +me.b_etapa+ '&b_manzana=' + me.b_manzana + '&b_lote='+ me.b_lote + '&b_status='+ me.b_status
                     + '&criterio=' + me.criterio + '&f_ini=' + me.b_fecha + '&f_fin=' + me.b_fecha2 + '&publicidad=' + me.b_publicidad
                     +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayContratos = respuesta.contratos.data;
+                    me.arrayContratos = respuesta.contratos;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -606,11 +561,11 @@
             selectCliente(search, loading){
                 let me = this;
                 loading(true)
-                
+
                 var url = '/clientes?page=1&criterio=personal.nombre&b_clasificacion=&buscar='+search;
-                
+
                 axios.get(url).then(function (response) {
-                    
+
                     let respuesta = response.data;
                     q: search
                     me.arrayClientes = respuesta.personas.data;
@@ -636,14 +591,7 @@
                 })
             },
 
-            cambiarPagina(page){
-                let me = this;
-                //Actualiza la pagina actual
-                me.pagination.current_page = page;
-                //Envia la petición para visualizar la data de esta pagina
-                me.listarContratos(page);
-            },
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
@@ -667,7 +615,7 @@
                 me.etapa_id = '';
                 me.manzana ='';
                 me.lote_id = '';
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + fraccionamiento;
                 axios.get(url).then(function (response) {
@@ -723,7 +671,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-              
+
             },
 
             eliminar(id){
@@ -740,7 +688,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/reubicaciones/delete', 
+                axios.delete('/reubicaciones/delete',
                         {params: {'id': id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -759,7 +707,7 @@
             selectEmpresas(){
                 let me = this;
                 me.arryaEmpresas=[];
-                
+
                 var url = '/select_empresas';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -783,7 +731,7 @@
             },
 
             storeReubicacion(){
-                
+
                 let me = this;
                 //Con axios se llama el metodo store del controller
                 axios.post('/reubicaciones/store',{
@@ -805,7 +753,7 @@
                     console.log(error);
                 });
             },
-            
+
             abrirModal(){
                 this.modal = 1;
                 this.tituloModal = 'Registrar reubicación';
@@ -885,9 +833,9 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },    
+            },
         },
-        mounted() {          
+        mounted() {
             this.listarContratos(1);
             this.selectFraccionamientos();
             this.selectAsesores();
@@ -952,6 +900,6 @@
 
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
     }
 </style>

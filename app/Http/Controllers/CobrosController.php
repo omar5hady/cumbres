@@ -216,7 +216,7 @@ class CobrosController extends Controller
             'creditos.email_fisc','creditos.tel_fisc','creditos.col_fisc',
             'creditos.direccion_fisc','creditos.cp_fisc','creditos.rfc_fisc',
             'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
-            'contratos.fecha',
+            'contratos.fecha', 'c.email', 'c.telefono', 'c.direccion', 'c.colonia', 'c.rfc', 'c.homoclave', 'c.cp',
             'expedientes.fecha_firma_esc',
             'e.num_etapa as etapa',
             'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
@@ -524,29 +524,29 @@ class CobrosController extends Controller
 
                     $sheet->row($cont, [
                         'Correo Eléctronico: ',
-                        $integracion->email_fisc,
+                        $integracion->email,
                     ]);
                     $sheet->row($cont+1, [
                         'Teléfono: ',
-                        $integracion->tel_fisc,
+                        $integracion->telefono,
                     ]);
                     $sheet->row($cont+2, [
                         'Nombre: ',
-                        $integracion->nombre_fisc,
+                        $integracion->nombre_completo,
                     ]);
                     $sheet->row($cont+3, [
                         'Dirección: ',
-                        $integracion->direccion_fisc,
+                        $integracion->direccion,
                         'Colonia',
-                        $integracion->col_fisc,
+                        $integracion->colonia,
                     ]);
                     $sheet->row($cont+4, [
                         'CP: ',
-                        $integracion->cp_fisc,
+                        $integracion->cp,
                     ]);
                     $sheet->row($cont+4, [
                         'RFC: ',
-                        strtoupper($integracion->rfc_fisc),
+                        strtoupper($integracion->rfc.' '.$integracion->homoclave),
                     ]);
                     $sheet->row($cont+5, [
                         'Fecha de firma: ',
@@ -574,7 +574,7 @@ class CobrosController extends Controller
         ->select('int_cobros.*', 'contratos.infonavit','contratos.fovisste',
             'l.emp_constructora', 'l.emp_terreno',
             'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
-            'contratos.fecha',
+            'contratos.fecha', 'c.email', 'c.telefono', 'c.direccion', 'c.colonia', 'c.rfc', 'c.homoclave',
             'expedientes.fecha_firma_esc',
             'e.num_etapa as etapa', 'clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa',
             'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
@@ -667,7 +667,7 @@ class CobrosController extends Controller
         $contrato->creditoLetra = NumerosEnLetras::convertir($contrato->monto_credito, 'Pesos', true, 'Centavos');
         $contrato->monto_credito = number_format((float)$contrato->monto_credito, 2, '.', ',');
         $contrato->segnundocreditoLetra = NumerosEnLetras::convertir($contrato->segundo_credito, 'Pesos', true, 'Centavos');
-        //$contrato->segundo_credito = number_format((float)$contrato->segundo_credito, 2, '.', ',');
+        $contrato->segundo_credito = number_format((float)$contrato->segundo_credito, 2, '.', ',');
 
         $pdf = \PDF::loadview('pdf.contratos.contratoModificatorio', ['contrato' => $contrato]);
         return $pdf->stream('convenioModificatorio.pdf');

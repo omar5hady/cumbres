@@ -112,7 +112,12 @@
 
                         <div class="col-md-8">
                             <div class="input-group" v-if="b_motivo == 1">
-                                <select class="form-control"  v-model="b_asesor" >
+                                <select class="form-control"  v-model="b_asesor"
+                                        v-if="userId == 25511 //Adrian
+                                        || userId == 28669 //Ashly
+                                        || userId == 28271 //Alejandro Ort
+                                        || userId == 28128 //Ale Escobar
+                                        || userId == 33095 || rolId == 1">
                                     <option value="">Vendedor asignado</option>
                                     <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                 </select>
@@ -211,14 +216,15 @@
                                     </div>
                                 </td>
                                 <td class="td2">
-                                    <template v-if="userId == 25511 //Adrian
-                                    || userId == 28669 //Ashly
-                                    || userId == 28271 //Alejandro Ort
-                                    || userId == 28128 //Ale Escobar
-                                    || userId == 33095 || rolId == 1">
-                                        <Button v-if="lead.premio.length == 0"
-                                            :btnClass="'btn-success'" :icon="'fa fa-gift'" @click="premioPaste(`https://siicumbres.com/ruleta?gc=${lead.id}&d=${lead.name_user}`)"></Button>
-                                        <template v-else>
+                                        <template v-if="lead.premio.length == 0">
+                                            <Button v-if="userId == 25511 //Adrian
+                                                    || userId == 28669 //Ashly
+                                                    || userId == 28271 //Alejandro Ort
+                                                    || userId == 28128 //Ale Escobar
+                                                    || userId == 33095 || rolId == 1"
+                                                :btnClass="'btn-success'" :icon="'fa fa-gift'" @click="premioPaste(`https://siicumbres.com/ruleta?gc=${lead.id}&d=${lead.name_user}`)"></Button>
+                                        </template>
+                                        <template v-if="lead.premio.length > 0">
                                             <a v-if="lead.premio[0].premio > 0" target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
                                                     '?gc='+ lead.id+'&d='+ lead.name_user">
                                                 <i class="fa fa-gift"></i>&nbsp;
@@ -226,11 +232,14 @@
 
                                             <label></label>
 
-                                            <Button v-if="lead.envio_cupon == null" :btnClass="'btn-warning'"
+                                            <Button v-if="lead.envio_cupon == null && (userId == 25511 //Adrian
+                                                || userId == 28669 //Ashly
+                                                || userId == 28271 //Alejandro Ort
+                                                || userId == 28128 //Ale Escobar
+                                                || userId == 33095 || rolId == 1)" :btnClass="'btn-warning'"
                                                 :icon="'icon-check'" title="Indicar envio de cupón" @click="setCuponEnviado(lead.id)">
                                             </Button>
                                         </template>
-                                    </template>
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" >{{ lead.nombre + ' ' + lead.apellidos }}</span>
@@ -918,8 +927,8 @@
                             <label class="col-md-2 form-control-label" for="text-input">¿Coacreditado?</label>
                             <div class="col-md-2">
                             <select  v-model="coacreditado"  class="form-control" >
-                                    <option value="0">No</option>
-                                    <option value="1">Si</option>
+                                    <option :value="0">No</option>
+                                    <option :value="1">Si</option>
                                 </select>
                             </div>
                         </div>
@@ -1817,6 +1826,8 @@ export default {
                 this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
             if(this.medio_contacto=='')
                 this.errorMostrarMsjProspecto.push("Escribir medio de contacto.");
+            if(this.coacreditado === '' || this.coacreditado === null)
+                this.errorMostrarMsjProspecto.push("Indica si será crédito con coacreditado");
 
             if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
                 this.errorProspecto = 1;
@@ -1868,7 +1879,8 @@ export default {
                 ////////////// Paso 3 /////////////////
                 'coacreditado' : this.coacreditado,
             }).then(function (response){
-                me.cerrarModal();
+                //me.cerrarModal();
+                me.updateLead();
                 me.listarLeads(1);
                 //Se muestra mensaje Success
                 swal({

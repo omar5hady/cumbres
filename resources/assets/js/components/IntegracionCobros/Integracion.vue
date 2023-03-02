@@ -474,13 +474,13 @@
                                         <strong>Nombre:</strong>
                                     </label>
                                     <div class="col-md-6">
-                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.nombre_fisc" class="form-control" placeholder="Nombre">
+                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.nombre_completo" class="form-control" placeholder="Nombre">
                                     </div>
                                     <label class="col-md-1 form-control-label" for="text-input">
                                         <strong>RFC:</strong>
                                     </label>
                                     <div class="col-md-3">
-                                        <input :disabled="tipoAccion == 1" type="text"  style="text-transform:uppercase" v-model="datos.rfc_fisc" class="form-control" placeholder="RFC">
+                                        <input :disabled="tipoAccion == 1" type="text"  style="text-transform:uppercase" v-model="datos.rfc" class="form-control" placeholder="RFC">
                                     </div>
                                 </div>
                             </div>
@@ -491,13 +491,13 @@
                                         <strong>Correo eléctronico:</strong>
                                     </label>
                                     <div class="col-md-4">
-                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.email_fisc" class="form-control" placeholder="Email">
+                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.email" class="form-control" placeholder="Email">
                                     </div>
                                     <label class="col-md-2 form-control-label" for="text-input">
                                         <strong>Teléfono:</strong>
                                     </label>
                                     <div class="col-md-3">
-                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.tel_fisc" class="form-control">
+                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.telefono" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -508,7 +508,7 @@
                                         <strong>Dirección:</strong>
                                     </label>
                                     <div class="col-md-7">
-                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.direccion_fisc" class="form-control" placeholder="Dirección">
+                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.direccion" class="form-control" placeholder="Dirección">
                                     </div>
                                 </div>
                             </div>
@@ -519,13 +519,13 @@
                                         <strong>Colonia:</strong>
                                     </label>
                                     <div class="col-md-4">
-                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.col_fisc" class="form-control" placeholder="Colonia">
+                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.colonia" class="form-control" placeholder="Colonia">
                                     </div>
                                     <label class="col-md-1 form-control-label" for="text-input">
                                         <strong>C.P.:</strong>
                                     </label>
                                     <div class="col-md-2">
-                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.cp_fisc" class="form-control" placeholder="C.P.">
+                                        <input :disabled="tipoAccion == 1" type="text" v-model="datos.cp" class="form-control" placeholder="C.P.">
                                     </div>
                                 </div>
                             </div>

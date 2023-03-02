@@ -51,6 +51,11 @@ class CreateCreditosTable extends Migration
             $table->boolean('bono')->default(0)->nullable();
             $table->unsignedInteger('vendedor_id')->nullable();
 
+
+            $table->integer('descuento_id')->nullable();
+            $table->string('descuento_desc')->nullable();
+            $table->double('descuento_cant')->default(0);
+
             $table->double('costo_descuento')->default(0);
             $table->double('descuento_terreno')->default(0);
             $table->double('costo_alarma')->default(0);

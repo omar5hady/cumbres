@@ -247,7 +247,7 @@ body{
                     "Ese precio lo deberá pagar <strong>EL PROMITENTE COMPRADOR</strong> a <strong>LOS PROMITENTES</strong>
                     VENDEDORES de la siguiente manera: a).La cantidad de <strong>${{$contrato->creditoLetra}}</strong>, mediante el
                     crédito que le otorgara <strong>{{$contrato->institucion}}</strong>
-                    @if($contrato->infonavit > 0)
+                    @if($contrato->infonavit > 0 || $contrato->tipo_credito == 'INFONAVIT' || $contrato->tipo_credito == 'COFINAVIT I.A')
                         y la cantidad de <strong>${{strtoupper($contrato->segnundocreditoLetra)}}</strong> que le otorga
                         @if($contrato->tipo_credito == 'BANJERCITO')
                             BANJERCITO

@@ -120,10 +120,38 @@ class PromocionController extends Controller
     // selecciona un registro de la tabla filtrada por el id de lote y retorna la informacion
     public function selectPromocion(Request $request){
         $promociones = Promocion::join('lotes_promocion','promociones.id','=','lotes_promocion.promocion_id')
-                            ->select('promociones.id','promociones.descripcion','promociones.nombre','promociones.v_ini' ,'promociones.desc_equipamiento')
+                            ->select('promociones.id','promociones.descripcion','promociones.nombre','promociones.v_ini', 'promociones.desc_equipamiento')
                             ->where('lotes_promocion.lote_id','=',$request->lote)
                             ->get();
 
         return $promociones;
+    }
+
+    public function getLastPromo(Request $request){
+        $promocion = '';
+        $descripcionPromo = '';
+        $descuentoPromo = 0;
+
+        $promo = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                ->select('promociones.nombre','promociones.descripcion', 'promociones.descuento',
+                    'promociones.v_ini','promociones.v_fin','promociones.id')
+                ->where('lotes_promocion.lote_id','=',$request->lote)
+                ->where('promociones.v_ini','<=',Carbon::today()->format('ymd'))
+                ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))
+                ->orderBy('promociones.id','DESC')
+                ->get();
+
+        if(sizeof($promo)){
+            $promocion = $promo[0]->nombre;
+            $descripcionPromo = $promo[0]->descripcion;
+            $descuentoPromo = $promo[0]->descuento;
+        }
+
+        return [
+            'promocion' => $promocion,
+            'descripcionPromo' => $descripcionPromo,
+            'descuentoPromo' => $descuentoPromo
+        ];
+
     }
 }

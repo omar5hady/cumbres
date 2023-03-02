@@ -64,7 +64,7 @@ class ReportesController extends Controller
                     $proyecto->totalLotes = $proyecto->totalLotes->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
                 if($empresa_const != '')
                     $proyecto->totalLotes = $proyecto->totalLotes->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
-                $proyecto->totalLotes = $proyecto->totalLotes->count(); // cuenta el total de lotes del proyecto
+                $proyecto->totalLotes = $proyecto->totalLotes->get()->count(); // cuenta el total de lotes del proyecto
 
             //Query para obtener las ventas con escrituras firmadas en el periodo elegido.
             $firmadasAct = Expediente::join('contratos','expedientes.id','=','contratos.id')
@@ -100,7 +100,8 @@ class ReportesController extends Controller
                     $firmadasAnt = $firmadasAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                 $firmadasAnt = $firmadasAnt->distinct()->count();
             //Query para obtener las ventas con credito directo liquidadas en el periodo seleccionado
-            $contadoAct = Contrato::join('creditos','contratos.id','=','creditos.id')
+            $contadoAct = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                     ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
                     ->where('contratos.status','=',3)
@@ -115,7 +116,8 @@ class ReportesController extends Controller
                     $contadoAct = $contadoAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                 $contadoAct = $contadoAct->distinct()->count(); // cuenta los lotes con contrato en status firmado entre la fecha1 y fecha2
             //Query para obtener las ventas con credito directo liquidadas antes de las fechas seleccionadas.
-            $contadoAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
+            $contadoAnt = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                     ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
                     ->where('contratos.status','=',3)
@@ -126,7 +128,7 @@ class ReportesController extends Controller
                     ->where('lotes.etapa_id','=',$proyecto->id);
                 if($empresa_terreno != '')//Filtro por empresa de terreno
                     $contadoAnt = $contadoAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
-                if($empresa_terreno != '')//Filtro para empresa constructora
+                if($empresa_const != '')//Filtro para empresa constructora
                     $contadoAnt = $contadoAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
                     $contadoAnt = $contadoAnt->distinct()->count(); //cuenta los lotes con contrato en status firmado antes de la fecha1
 
@@ -134,6 +136,13 @@ class ReportesController extends Controller
             $proyecto->descAct = $firmadasAct + $contadoAct; // Sumatoria individualizadas actualmente.
             $proyecto->totalDescarga = $proyecto->descAnt + $proyecto->descAct; //Sumatoria total individualizadas
             $proyecto->inventario = $proyecto->totalLotes - $proyecto->totalDescarga; //Diferencia
+
+            $proyecto->firmadasAct = $firmadasAct;
+            $proyecto->firmadasAnt = $firmadasAnt;
+            $proyecto->contadoAct = $contadoAct;
+            $proyecto->contadoAnt = $contadoAnt;
+
+
         }
 
         return ['resumen'=>$proyectos];

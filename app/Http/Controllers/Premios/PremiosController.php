@@ -150,5 +150,14 @@ class PremiosController extends Controller
 
     }
 
+    public function getPremio(Request $request){
+        $fecha = Carbon::now()->subMonths(3);
+        return Premios::where('rfc','=', $request->rfc)
+                    ->where('status','=',0)
+                    ->where('premio','>',0)
+                    ->where('id','=',$request->folio)
+                    ->where('created_at','>',$fecha)->get();
+    }
+
 }
 

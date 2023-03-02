@@ -10,48 +10,37 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Contratos
                     <!--   Boton agregar    -->
-                    <button type="button" @click="mostrarCreditosAprobados()" class="btn btn-primary" v-if="listado==0 && rolId != 2">
-                        <i class="icon-plus"></i>&nbsp;Nuevo
-                    </button>
-                    <button type="button" @click="listado=0" class="btn btn-success" v-if="listado==1">
-                        <i class="fa fa-mail-reply"></i>&nbsp;Regresar
-                    </button>
+                    <Button :icon="'icon-plus'" v-if="listado==0 && rolId != 2" @click="mostrarCreditosAprobados()">Nuevo</Button>
+                    <Button :icon="'fa fa-mail-reply'" v-if="listado==1" @click="listado=0">Regresar</Button>
+
                     <!-- boton para cambiar a modo de actualizar -->
-                        <button type="button" v-if="listado == 4 && btn_actualizar == 0 && status==1 && rolId != 2 && detenido == 0" @click="btn_actualizar = 1" class="btn btn-warning">
-                        <i class="icon-pencil"></i>&nbsp;Vista actualizar
-                    </button>
-                    <button type="button" v-if="listado == 4 && btn_actualizar == 1 && status==1 && rolId != 2" @click="btn_actualizar = 0" class="btn btn-warning">
-                        <i class="icon-pencil"></i>&nbsp;Ocultar vista actualizar
-                    </button>
+                    <Button :icon="'icon-pencil'" :btnClass="'btn-warning'" @click="btn_actualizar = !btn_actualizar"
+                        v-if="listado == 4 && status==1 && rolId != 2 && detenido == 0">
+                        {{ btn_actualizar == 0 ? 'Vista actualizar' : 'Ocultar vista actualizar' }}
+                    </Button>
                 <!-- cambiar el status de los contratos -->
-                    <template v-if="listado == 4 && status == 1 && liquidado != 1 && rolId != 2 || listado == 4 && status == 3 && liquidado != 1 && rolId != 2">
+                    <template v-if="listado == 4 && (status == 1 || status == 3) && liquidado != 1 && rolId != 2">
                         <div style="text-align: right;" v-if="detenido == 0">
-                            <div>
-                                <div>
-                                    <label for="text-input"> <strong>Status</strong> </label>
-                                    <select v-model="status" @change="selectStatus(status)">
-                                        <option value="0">Cancelado</option>
-                                        <option value="1">Pendiente</option>
-                                        <option value="2">No firmado</option>
-                                        <option value="3">Firmado</option>
-                                    </select>
-                                </div>
-                            </div>
+                            <label for="text-input"> <strong>Status</strong> </label>
+                            <select v-model="status" @change="selectStatus(status)">
+                                <option value="0">Cancelado</option>
+                                <option value="1">Pendiente</option>
+                                <option value="2">No firmado</option>
+                                <option value="3">Firmado</option>
+                            </select>
                         </div>
                     </template>
-
                 </div>
 
         <!----------------- Listado Contratos ------------------------------>
                 <!-- Div Card Body para listar -->
                 <template v-if="listado == 0">
                     <div class="card-body">
-
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <select class="form-control" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
-                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    <option v-for="empresa in $root.$data.empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
                             </div>
                         </div>
@@ -64,14 +53,13 @@
                                     <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
                                         <option value="personal.nombre">Cliente</option>
-                                        <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
                                         <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
                                         <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                         <option value="contratos.fecha">Fecha</option>
                                         <option value="contratos.fecha_status">Fecha status</option>
                                     </select>
 
-                                    <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1)" class="form-control">
 
                                 </div>
 
@@ -84,7 +72,6 @@
                                     <select class="form-control col-md-3" v-model="criterio2" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
                                         <option value="personal.nombre">Cliente</option>
-                                        <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
                                         <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
                                         <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                         <option value="contratos.fecha">Fecha</option>
@@ -129,8 +116,8 @@
                                         Fecha:
                                     </label>
 
-                                    <input type="date" v-model="b_fecha" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input type="date" v-model="b_fecha" @keyup.enter="listarContratos(1)" class="form-control">
+                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarContratos(1)" class="form-control">
                                 </div>
 
                             </div>
@@ -142,18 +129,17 @@
                                     <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
                                         <option value="personal.nombre">Cliente</option>
-                                        <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
                                         <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
                                         <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                         <option value="contratos.fecha">Fecha</option>
                                         <option value="contratos.fecha_status">Fecha status</option>
                                     </select>
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @change="selectEtapas(buscar2), selectModelo(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @change="selectEtapas(buscar2), selectModelo(buscar2)" @keyup.enter="listarContratos(1)" v-model="buscar2" >
                                         <option value="">Proyecto</option>
                                         <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectManzanas(buscar2,b_etapa2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_etapa2" >
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectManzanas(buscar2,b_etapa2)" @keyup.enter="listarContratos(1)" v-model="b_etapa2" >
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
@@ -161,18 +147,18 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1)" v-model="b_manzana2" >
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
 
-                                    <input type="text" placeholder="Lote" v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input type="text" placeholder="Lote" v-model="b_lote2" @keyup.enter="listarContratos(1)" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_modelo" >
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1)" v-model="b_modelo" >
                                         <option value="">Modelo</option>
                                         <option v-for="modelo in arrayModelos" :key="modelo.id" :value="modelo.id" v-text="modelo.nombre"></option>
                                     </select>
@@ -186,9 +172,9 @@
                                         Medio publicitario:
                                     </label>
 
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_publicidad" >
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @keyup.enter="listarContratos(1)" v-model="b_publicidad" >
                                         <option value="">Publicidad</option>
-                                        <option v-for="publicidad in arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
+                                        <option v-for="publicidad in $root.$data.arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
                                     </select>
                                 </div>
                             </div>
@@ -200,8 +186,8 @@
                                         Fecha:
                                     </label>
 
-                                    <input type="date" v-model="b_fecha" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input type="date" v-model="b_fecha" @keyup.enter="listarContratos(1)" class="form-control">
+                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarContratos(1)" class="form-control">
 
                                 </div>
                             </div>
@@ -213,17 +199,16 @@
                                     <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                         <option value="creditos.id"># Folio</option>
                                         <option value="personal.nombre">Cliente</option>
-                                        <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
                                         <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
                                         <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                         <option value="contratos.fecha">Fecha</option>
                                         <option value="contratos.fecha_status">Fecha status</option>
                                     </select>
 
-                                    <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1)" class="form-control">
+                                    <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1)" class="form-control">
+                                    <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1)" class="form-control">
+                                    <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1)" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -231,8 +216,8 @@
                         <div class="form-group row">
                             <div class="col-md-8"  v-if="rolId!=2">
                                 <div class="input-group">
-                                    <input  type="text" placeholder="Institución bancaria" v-model="b_institucion" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                    <input  type="text" placeholder="Empresa trabajo" v-model="b_empresa_cliente" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                    <input  type="text" placeholder="Institución bancaria" v-model="b_institucion" @keyup.enter="listarContratos(1)" class="form-control">
+                                    <input  type="text" placeholder="Empresa trabajo" v-model="b_empresa_cliente" @keyup.enter="listarContratos(1)" class="form-control">
                                 </div>
                             </div>
 
@@ -244,7 +229,7 @@
                                     <option value="2">No firmado</option>
                                     <option value="3">Firmado</option>
                                 </select>
-                                <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                <Button :icon="'fa fa-search'" @click="listarContratos(1)">Buscar</Button>
                                 <a  :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+
                                             '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status +
                                             '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2
@@ -256,38 +241,17 @@
                             </div>
                         </div>
 
-                        <TableComponent>
-                            <template v-slot:thead>
-                                <tr>
-                                    <th># Contrato</th>
-                                    <th></th>
-                                    <th>Cliente</th>
-                                    <th>Vendedor</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Modelo</th>
-                                    <th>Tipo de credito</th>
-                                    <th>Institución</th>
-                                    <th>Precio de venta</th>
-                                    <th>Fecha del contrato</th>
-                                    <th>Status</th>
-                                    <th>Publicidad</th>
-                                    <th v-if="rolId!=2">Expediente</th>
-                                </tr>
-                            </template>
+                        <TableComponent :cabecera="[
+                                    '# Contrato','','Cliente','Vendedor','Proyecto','Etapa','Manzana','# Lote','Modelo',
+                                    'Tipo de credito','Institución','Precio de venta','Fecha del contrato','Status','Publicidad',' ']">
                             <template v-slot:tbody>
-                                <tr v-for="contrato in arrayContratos" :key="contrato.id"
+                                <tr v-for="contrato in arrayContratos.data" :key="contrato.id"
                                     @dblclick="verContrato(contrato)"
                                     :style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
                                         <td class="td2">
-                                             <button v-if="contrato.archivo_fisc != null"
-                                                type="button" @click="verImagen(contrato.archivo_fisc)" class="btn btn-dark btn-sm"
-                                                title="Ver Archivo Fiscal"
-                                            >
-                                                <i class="icon-eye"></i>
-                                            </button>
+                                            <Button v-if="contrato.archivo_fisc != null" @click="verImagen(contrato.archivo_fisc)"
+                                                title="Ver Archivo Fiscal" :btnClass="'btn-dark'" :size="'btn-sm'" :icon="'icon-eye'">
+                                            </Button>
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contrato.id}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                 <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
@@ -297,12 +261,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger" v-if="contrato.cambio_esp"
-                                                title="Enterado"
-                                                @click="enteradoEsp(contrato.lote_id)"
-                                            >
-                                                Cambio de especificaciones
-                                            </button>
+                                            <Button :btnClass="'btn-danger'" v-if="contrato.cambio_esp" title="Enterado"
+                                                @click="enteradoEsp(contrato.lote_id)">Cambio de especificaciones
+                                            </Button>
                                         </td>
                                         <td class="td2">
                                             <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase()"></a>
@@ -316,44 +277,33 @@
                                         <td class="td2" v-text="contrato.modelo"></td>
                                         <td class="td2" v-text="contrato.tipo_credito"></td>
                                         <td class="td2" v-text="contrato.institucion"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contrato.precio_venta)"></td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(contrato.precio_venta)"></td>
                                         <td class="td2" v-text="this.moment(contrato.fecha).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-if="contrato.status == '0' ">
-                                            <span class="badge badge-danger">Cancelado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}</span>
-                                        </td>
-                                        <td class="td2" v-if="contrato.status == '1'">
-                                            <span class="badge badge-warning">Pendiente</span>
-                                        </td>
-                                        <td class="td2" v-if="contrato.status == '2'">
-                                            <span class="badge badge-danger">No firmado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}</span>
-                                        </td>
-                                        <td class="td2" v-if="contrato.status == '3'">
-                                            <span class="badge badge-success">Firmado</span>
-                                            <span v-if="contrato.status2 == 1" class="badge badge-dark"> INDIVIDUALIZADA </span>
+                                        <td class="td2">
+                                            <span class="badge badge-danger" v-if="contrato.status == '0'">
+                                                Cancelado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}
+                                            </span>
+                                            <span v-if="contrato.status == '1'" class="badge badge-warning">Pendiente</span>
+                                            <span class="badge badge-danger" v-if="contrato.status == '2'">
+                                                No firmado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}
+                                            </span>
+                                            <span class="badge badge-success" v-if="contrato.status == '3'">Firmado</span>
+                                            <span v-if="contrato.status == '3' && contrato.status2 == 1" class="badge badge-dark"> INDIVIDUALIZADA </span>
                                         </td>
                                         <td class="td2" v-text="contrato.publicidad"></td>
                                         <td v-if="rolId!=2">
-                                            <button v-if="contrato.exp_bono == 0" title="Registrar Expediente" type="button" class="btn btn-primary pull-right"
-                                                    @click="entregarExp(contrato.id)">Expediente</button>
+                                            <Button v-if="contrato.exp_bono == 0" title="Registrar Expediente"
+                                                @click="entregarExp(contrato.id)">Expediente
+                                            </Button>
                                             <span v-else class="badge badge-success">Exp. Completo</span>
                                         </td>
                                     </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page2"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="arrayContratos.current_page ? arrayContratos.current_page : 1"
+                            :last="arrayContratos.last_page ? arrayContratos.last_page : 1"
+                            @changePage="listarContratos">
+                        </Nav>
                     </div>
                 </template>
 
@@ -373,28 +323,28 @@
                                         <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'"  @change="selectEtapas(buscar)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'"  @change="selectEtapas(buscar)" @keyup.enter="listarSimulaciones(1)" v-model="buscar" >
                                         <option value="">Seleccione</option>
                                         <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectManzanas(buscar,b_etapa)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_etapa" >
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectManzanas(buscar,b_etapa)" @keyup.enter="listarSimulaciones(1)" v-model="b_etapa" >
                                         <option value="">Seleccione</option>
                                         <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar,b_etapa,b_manzana)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar,b_etapa,b_manzana)" @keyup.enter="listarSimulaciones(1)" v-model="b_manzana" >
                                         <option value="">Seleccione</option>
                                         <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_lote" >
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @keyup.enter="listarSimulaciones(1)" v-model="b_lote" >
                                         <option value="">Seleccione</option>
                                         <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
                                     </select>
 
-                                    <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
-                                    <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1)" class="form-control">
+                                    <Button :icon="'fa fa-search'" @click="listarSimulaciones(1)">Buscar</Button>
                                 </div>
                             </div>
                         </div>
@@ -414,8 +364,8 @@
                                     <td class="td2" v-text="prospecto.manzana"></td>
                                     <td class="td2" v-text="prospecto.num_lote"></td>
                                     <td class="td2" v-text="prospecto.modelo"></td>
-                                    <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
-                                    <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
+                                    <td class="td2" v-text="'$'+$root.formatNumber(prospecto.precio_venta)"></td>
+                                    <td class="td2" v-text="'$'+$root.formatNumber(prospecto.credito_solic)"></td>
                                     <td class="td2" v-text="prospecto.plazo + ' años'"></td>
                                     <td class="td2" v-text="prospecto.institucion"></td>
                                     <td class="td2" v-text="prospecto.tipo_credito"></td>
@@ -425,20 +375,10 @@
                                 </tr>
                             </template>
                         </TableComponent>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <Nav :current="pagination.current_page ? pagination.current_page : 1"
+                            :last="pagination.last_page ? pagination.last_page : 1"
+                            @changePage="cambiarPagina">
+                        </Nav>
                     </div>
                 </template>
 
@@ -447,11 +387,13 @@
                 <template v-else-if="listado == 3 || listado == 4">
                     <div class="card-body">
                         <div class="col-md-12">
-                            <div class="form-group">
-                                <center> <h5 style="color:orange;" align="right" v-if="listado==4 && status==1" v-text="' Pendiente '"></h5> </center>
-                                <center> <h5 style="color:red;" align="right" v-if="listado==4 && status==0" v-text="' Cancelado '"></h5> </center>
-                                <center> <h5 style="color:red;" align="right" v-if="listado==4 && status==2" v-text="' No firmado '"></h5> </center>
-                                <center> <h5 style="color:green;" align="right" v-if="listado==4 && status==3" v-text="' Firmado '"></h5> </center>
+                            <div class="form-group" v-if="listado==4">
+                                <center>
+                                    <h5 style="color:orange;" align="right" v-if="status==1" v-text="' Pendiente '"></h5>
+                                    <h5 style="color:red;" align="right" v-if="status==0" v-text="' Cancelado '"></h5>
+                                    <h5 style="color:red;" align="right" v-if="status==2" v-text="' No firmado '"></h5>
+                                    <h5 style="color:green;" align="right" v-if="status==3" v-text="' Firmado '"></h5>
+                                </center>
                             </div>
                         </div>
                         <!-- Acordeon -->
@@ -462,80 +404,79 @@
                                         <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">Datos del Prospecto</a>
                                     </h5>
                                 </div>
-                                <div class="collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                                 <!--Datos Prospecto-->
-                                <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
+                                <div class="collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                            <center> <h3></h3> </center>
+                                                <center> <h3></h3> </center>
                                             </div>
                                         </div>
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                            <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
-                                            <input type="text" :readonly="listado==4 && btn_actualizar==0"  class="form-control" v-model="nombre" placeholder="Nombre">
+                                                <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
+                                                <input type="text" :readonly="listado==4 && btn_actualizar==0"  class="form-control" v-model="nombre" placeholder="Nombre">
                                             </div>
                                         </div>
 
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
+                                                <input type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="apellidos" placeholder="Apellidos">
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                            <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
-                                            <input type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="apellidos" placeholder="Apellidos">
-                                        </div>
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                            <label for="">Sexo <span style="color:red;" v-show="sexo==''">(*)</span></label>
-                                            <select :disabled="listado==4 && btn_actualizar==0" class="form-control" v-model="sexo" >
+                                                <label for="">Sexo <span style="color:red;" v-show="sexo==''">(*)</span></label>
+                                                <select :disabled="listado==4 && btn_actualizar==0" class="form-control" v-model="sexo" >
                                                     <option value="">Seleccione</option>
                                                     <option value="F">Femenino</option>
                                                     <option value="M">Masculino</option>
-                                            </select>
-                                        </div>
-                                        </div>
-
-                                            <div class="col-md-3">
-                                            <div class="form-group">
-                                            <label for="">Telefono </label>
-                                            <input  type="text" :readonly="listado==4 && btn_actualizar==0" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
-                                        </div>
-                                        </div>
-
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                            <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                            <div class="input-group">
-                                                <select :readonly="listado==4 && btn_actualizar==0" v-model="clv_lada"  class="form-control col-md-5" >
-                                                    <option value="">Clave lada</option>
-                                                    <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
                                                 </select>
-                                                <input  type="text" :readonly="listado==4 && btn_actualizar==0" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
                                             </div>
                                         </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                            <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
-                                            <input  type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="email" placeholder="E-mail">
-                                        </div>
-                                            </div>
 
                                         <div class="col-md-3">
-                                                <div class="form-group">
-                                            <label for="">Direccion<span style="color:red;" v-show="direccion==''">(*)</span></label>
-                                            <input type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control"  v-model="direccion" placeholder="Direccion">
+                                            <div class="form-group">
+                                                <label for="">Telefono </label>
+                                                <input  type="text" :readonly="listado==4 && btn_actualizar==0" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
+                                                <div class="input-group">
+                                                    <select :readonly="listado==4 && btn_actualizar==0" v-model="clv_lada"  class="form-control col-md-5" >
+                                                        <option value="">Clave lada</option>
+                                                        <option v-for="clave in $root.$data.arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                                    </select>
+                                                    <input  type="text" :readonly="listado==4 && btn_actualizar==0" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="$root.isNumber($event)" v-model="celular" placeholder="Celular">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
+                                                <input  type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="email" placeholder="E-mail">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Direccion<span style="color:red;" v-show="direccion==''">(*)</span></label>
+                                                <input type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control"  v-model="direccion" placeholder="Direccion">
                                             </div>
                                         </div>
 
                                         <div class="col-md-1">
-                                                <div class="form-group">
-                                            <label for="">C.P<span style="color:red;" v-show="cp==''">(*)</span></label>
-                                            <input type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp,0)"  v-model="cp" placeholder="C.Postal">
-                                        </div>
+                                            <div class="form-group">
+                                                <label for="">C.P<span style="color:red;" v-show="cp==''">(*)</span></label>
+                                                <input type="text" :readonly="listado==4 && btn_actualizar==0" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="$root.isNumber($event)" @keyup="selectColonias(cp,0)"  v-model="cp" placeholder="C.Postal">
+                                            </div>
                                         </div>
 
                                         <div class="col-md-2">
@@ -550,58 +491,51 @@
                                             </div>
                                         </div>
 
-
                                         <div class="col-md-3">
-                                                <div class="form-group">
-                                            <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
+                                            <div class="form-group">
+                                                <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
                                                 <select class="form-control" v-if="listado==3 || listado==4 && btn_actualizar==1" v-model="estado" @change="selectCiudades(estado,0)" >
                                                     <option value="">Seleccione</option>
                                                     <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
                                                 </select>
                                                 <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="estado">
-                                                </div>
                                             </div>
-
-
+                                        </div>
 
                                         <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="">Ciudad <span style="color:red;" v-show="ciudad==''">(*)</span></label>
-                                                    <select class="form-control" v-if="listado==3 || listado==4 && btn_actualizar==1" v-model="ciudad" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                                                    </select>
-                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="ciudad">
-                                                </div>
-                                            </div>
-
-                                            <!--------------------------------------------------------------------------------------------------
-                                            ------------------------------------------------>
-
-
-                                            <div class="col-md-2">
                                             <div class="form-group">
-                                            <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
-                                            <input :readonly="listado==4 && btn_actualizar==0" type="date" class="form-control"  v-model="fecha_nac" >
-                                        </div>
+                                                <label for="">Ciudad <span style="color:red;" v-show="ciudad==''">(*)</span></label>
+                                                <select class="form-control" v-if="listado==3 || listado==4 && btn_actualizar==1" v-model="ciudad" >
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                                </select>
+                                                <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="ciudad">
+                                            </div>
                                         </div>
 
                                         <div class="col-md-2">
-                                                <div class="form-group">
-                                            <label for="">Nacionalidad</label>
-                                            <select :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="nacionalidad" >
-                                                    <option value="0">Mexicana</option>
-                                                    <option value="1">Extranjera</option>
-                                            </select>
-                                        </div>
+                                            <div class="form-group">
+                                                <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="date" class="form-control"  v-model="fecha_nac" >
+                                            </div>
                                         </div>
 
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                            <label for="">CURP</label>
-                                            <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
-                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Nacionalidad</label>
+                                                <select :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="nacionalidad" >
+                                                        <option value="0">Mexicana</option>
+                                                        <option value="1">Extranjera</option>
+                                                </select>
                                             </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">CURP</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-2">
                                             <div class="form-group">
@@ -612,23 +546,22 @@
 
                                         <div align="left" class="col-md-1">
                                             <div class="form-group">
-                                            <label for="">Homoclave</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                                <label for="">Homoclave</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
                                             </div>
                                         </div>
-
 
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="nss" placeholder="NSS">
                                             </div>
                                         </div>
 
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">INE</label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="No. INE">
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="num_ine" placeholder="No. INE">
                                             </div>
                                         </div>
 
@@ -651,18 +584,17 @@
                                         </div>
 
                                     </div>
-                                <!-- Fin datos prospecto-->
-                                <!-------------------------------------- DATOS DE TRABAJO ------------------------------------->
+                                    <!-------------------------------------- DATOS DE TRABAJO ------------------------------------->
                                     <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
                                         <div class="col-md-12">
-                                                <div class="form-group">
+                                            <div class="form-group">
                                                 <center> <h5>Lugar de trabajo</h5> </center>
-                                                </div>
                                             </div>
+                                        </div>
 
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                            <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
+                                                <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
                                                 <select :disabled="listado==4 && btn_actualizar==0" class="form-control" v-model="tipo_economia" >
                                                     <option value="0">Seleccione</option>
                                                     <option value="Formal">Formal</option>
@@ -675,35 +607,35 @@
                                         <div class="col-md-6" v-if="tipo_economia!=0">
                                             <div class="form-group">
                                                 <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                    <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa" @change="getDatosEmpresa(empresa,0)">
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>
-                                                    </select>
-                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa">
+                                                <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa" @change="getDatosEmpresa(empresa,0)">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>
+                                                </select>
+                                                <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa">
                                             </div>
                                         </div>
 
-                                            <div class="col-md-3" v-if="tipo_economia=='Formal' ||tipo_economia=='Mixta'">
-                                                <div class="form-group">
-                                                    <label for="">Puesto <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="puesto">
-                                                </div>
+                                        <div class="col-md-3" v-if="tipo_economia=='Formal' ||tipo_economia=='Mixta'">
+                                            <div class="form-group">
+                                                <label for="">Puesto <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="puesto">
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-3" v-if="tipo_economia=='Informal'">
-                                                <div class="form-group">
-                                                    <label for="">Giro del negocio <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="puesto">
-                                                </div>
+                                        <div class="col-md-3" v-if="tipo_economia=='Informal'">
+                                            <div class="form-group">
+                                                <label for="">Giro del negocio <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="puesto">
                                             </div>
-
+                                        </div>
 
                                         <div class="col-md-3" v-if="tipo_economia!=0">
                                             <div class="form-group">
                                                 <label for="">Domicilio de empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa">
-                                                </div>
+                                                <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa">
+                                            </div>
                                         </div>
+
                                         <div class="col-md-1" v-if="tipo_economia!=0">
                                             <div class="form-group">
                                                 <label for="">CP <span style="color:red;" v-show="empresa==0">(*)</span></label>
@@ -754,238 +686,227 @@
                                             </div>
                                         </div>
                                     </div>
-                                <!-- Fin Lugar de trabajo-->
-                                <!--------------------------------------------  Apartado  de datos vive en casa , edo civil -------------------------------->
-                                                <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;" >
-                                                                <div class="col-md-3">
-                                                                        <div class="form-group">
-                                                                    <label for="">Medio donde se entero de nosotros </label>
-                                                                    <select disabled class="form-control" v-model="publicidad_id" >
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
-                                                                    </select>
-                                                                </div>
-                                                                </div>
+                                    <!-- Fin Lugar de trabajo-->
+                                    <!--------------------------------------------  Apartado  de datos vive en casa , edo civil -------------------------------->
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;" >
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Medio donde se entero de nosotros </label>
+                                                <select disabled class="form-control" v-model="publicidad_id" >
+                                                    <option value="0">Seleccione</option>
+                                                    <option v-for="medios in $root.$data.arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                                                <div class="col-md-4" v-if="publicidad_id == 1">
-                                                                        <div class="form-group">
-                                                                    <label for="">Nombre de la persona que te recomendo </label>
-                                                                        <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
-                                                                </div>
-                                                                </div>
+                                        <div class="col-md-4" v-if="publicidad_id == 1">
+                                            <div class="form-group">
+                                                <label for="">Nombre de la persona que te recomendo </label>
+                                                <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
+                                            </div>
+                                        </div>
 
-                                                        <div class="col-md-3">
-                                                        <div class="form-group">
-                                                        <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
-                                                            <select :disabled="listado==4 && btn_actualizar==0" class="form-control" v-model="e_civil" >
-                                                                <option value="0">Seleccione</option>
-                                                                <option value="1">Casado - separacion de bienes</option>
-                                                                <option value="2">Casado - sociedad conyugal</option>
-                                                                <option value="3">Divorciado</option>
-                                                                <option value="4">Soltero</option>
-                                                                <option value="5">Union libre</option>
-                                                                <option value="6">Viudo</option>
-                                                                <option value="7">Otro</option>
-                                                            </select>
-                                                        </div>
-                                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                            <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
+                                                <select :disabled="listado==4 && btn_actualizar==0" class="form-control" v-model="e_civil" >
+                                                    <option value="0">Seleccione</option>
+                                                    <option value="1">Casado - separacion de bienes</option>
+                                                    <option value="2">Casado - sociedad conyugal</option>
+                                                    <option value="3">Divorciado</option>
+                                                    <option value="4">Soltero</option>
+                                                    <option value="5">Union libre</option>
+                                                    <option value="6">Viudo</option>
+                                                    <option value="7">Otro</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                                        <div class="col-md-3">
-                                                            <div class="form-group">
-                                                                <label for=""># Dependientes económicos</label>
-                                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="dep_economicos">
-                                                            </div>
-                                                        </div>
-
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for=""># Dependientes económicos</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="dep_economicos">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <!--Fin Datos Prospecto-->
                             </div>
                             <div class="card mb-0"  v-if="coacreditado==true">
-                                <div class="card-header" id="headingTwo" role="tab"  v-if="coacreditado==true">
+                                <div class="card-header" id="headingTwo" role="tab" >
                                     <h5 class="mb-0">
                                         <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Cónyuge o Coacreditado</a>
                                     </h5>
                                 </div>
+                                <!--Datos Coacreditado-->
                                 <div class="collapse" id="collapseTwo" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-                                    <!--------------------------------  Apartado de datos del Conyuge o Coacreditado ----------------------------------------------->
-                                    <div class="form-group row border border-dark" style="margin-right:0px; margin-left:0px;" v-if="coacreditado==true" >
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                <center> <h3></h3> </center>
-                                                </div>
+                                    <div class="form-group row border border-dark" style="margin-right:0px; margin-left:0px;" >
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                            <center> <h3></h3> </center>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for=""> Nombre del conyuge </label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-if="nombre_coa != null" class="form-control" v-model="nombre_coa">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for=""> Nombre del conyuge </label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" v-if="nombre_coa != null" class="form-control" v-model="nombre_coa">
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Apellidos del conyuge </label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-if="apellidos_coa != null" class="form-control" v-model="apellidos_coa">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Apellidos del conyuge </label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" v-if="apellidos_coa != null" class="form-control" v-model="apellidos_coa">
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-2" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
                                                 <label for="">Parentesco </label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
                                             </div>
-                                            </div>
+                                        </div>
 
-
-                                            <div class="col-md-4" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
                                                 <label for="">Fecha de nacimiento </label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="date" class="form-control" v-model="fecha_nac_coa" placeholder="fecha de nacimiento">
                                             </div>
-                                            </div>
+                                        </div>
 
-
-                                            <div class="col-md-2" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
                                                 <label for="">RFC</label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="rfc_coa" placeholder="rfc">
                                             </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Homoclave</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="homoclave_coa" placeholder="homoclave">
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-2" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Homoclave</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="homoclave_coa" placeholder="homoclave">
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
                                                 <label for="">CURP </label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="18" class="form-control" v-model="curp_coa" placeholder="CURP">
                                             </div>
-                                            </div>
+                                        </div>
 
-
-                                            <div class="col-md-2" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
                                                 <label for="">NSS</label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="nss_coa" placeholder="NSS">
                                             </div>
-                                            </div>
+                                        </div>
 
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
                                                 <label for="">Nacionalidad</label>
                                                 <select :disabled="listado==4 && btn_actualizar==0" class="form-control" v-model="nacionalidad_coa" >
-                                                        <option value="">Seleccione</option>
-                                                        <option value="0">Mexicana</option>
-                                                        <option value="1">Extranjera</option>
+                                                    <option value="">Seleccione</option>
+                                                    <option value="0">Mexicana</option>
+                                                    <option value="1">Extranjera</option>
                                                 </select>
                                             </div>
-                                            </div>
+                                        </div>
 
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
                                                 <label for="">Direccion</label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="direccion_coa" placeholder="Direccion">
-                                                </div>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-1" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                        <div class="col-md-1">
+                                            <div class="form-group">
                                                 <label for="">C.P</label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa,1)"  v-model="cp_coa" placeholder="C.Postal">
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="$root.isNumber($event)" @keyup="selectColonias(cp_coa,1)"  v-model="cp_coa" placeholder="C.Postal">
                                             </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
+                                                <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="colonia_coa">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
+                                                </select>
+                                                <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="colonia_coa">
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-2" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
-                                                    <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="colonia_coa">
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
-                                                    </select>
-                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="colonia_coa">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
+                                                <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="estado_coa" @change="selectCiudades(estado_coa,1)" >
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="estado in arrayEstados" :key="estado.estado " :value="estado.estado" v-text="estado.estado"></option>
+                                                </select>
+                                                <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="estado_coa">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
-                                                    <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="estado_coa" @change="selectCiudades(estado_coa,1)" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="estado in arrayEstados" :key="estado.estado " :value="estado.estado" v-text="estado.estado"></option>
-                                                    </select>
-                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="estado_coa">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Ciudad <span style="color:red;" v-show="ciudad_coa==''">(*)</span></label>
+                                                <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="ciudad_coa" >
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="ciudades in arrayCiudadesCoa" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                                </select>
+                                                <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="ciudad_coa">
                                             </div>
+                                        </div>
 
-
-
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="">Ciudad <span style="color:red;" v-show="ciudad_coa==''">(*)</span></label>
-                                                    <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="ciudad_coa" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="ciudades in arrayCiudadesCoa" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                                                    </select>
-                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="ciudad_coa">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Celular</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Celular</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Telefono</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Telefono</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Email</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_coa" placeholder="Correo">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Email</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_coa" placeholder="Correo">
-                                                </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Email institucional</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_institucional_coa" placeholder="Correo institucional">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-3" v-if="coacreditado==true">
-                                                <div class="form-group">
-                                                    <label for="">Email institucional</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_institucional_coa" placeholder="Correo institucional">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Lugar de nacimiento</label>
+                                                <input :disabled="listado==4 && btn_actualizar==0" type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento_coa">
+                                                <datalist id="cityname3">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
+                                                </datalist>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Lugar de nacimiento</label>
-                                                    <input :disabled="listado==4 && btn_actualizar==0" type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento_coa">
-                                                    <datalist id="cityname3">
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
-                                                    </datalist>
-                                                </div>
-                                            </div>
-
-                                        <div class="col-md-12" v-if="coacreditado==true">
+                                        <div class="col-md-12">
                                             <div class="form-group">
                                                 <center> <h5>Lugar de trabajo</h5> </center>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6" v-if="coacreditado==true">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="">Empresa <span style="color:red;" v-show="empresa_coa==0">(*)</span></label>
                                                 <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa_coa" @change="getDatosEmpresa(empresa_coa,1)">
@@ -996,67 +917,65 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3" v-if="coacreditado==true">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Domicilio de empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa_coa">
                                             </div>
                                         </div>
-                                        <div class="col-md-2" v-if="coacreditado==true">
+
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">CP <span style="color:red;" v-show="empresa==0">(*)</span></label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa_coa">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2" v-if="coacreditado==true">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">Colonia <span style="color:red;" v-show="empresa==0">(*)</span></label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa_coa">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3" v-if="coacreditado==true">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Estado <span style="color:red;" v-show="empresa==0">(*)</span></label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa_coa">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3" v-if="coacreditado==true">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="">Ciudad <span style="color:red;" v-show="empresa==0">(*)</span></label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa_coa">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2" v-if="coacreditado==true">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="">Tel.  </label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="telefono_empresa_coa" placeholder="Telefono">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2" v-if="coacreditado==true">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for=""> Ext. </label>
                                                 <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="5" class="form-control" v-model="ext_empresa_coa" placeholder="Ext">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12" v-if="coacreditado==true && listado==4 && btn_actualizar==1">
+                                        <div class="col-md-12" v-if="listado==4 && btn_actualizar==1">
                                             <div class="form-group">
                                                 <center>
-                                                    <div class="col-md-1">
-                                                        <button type="button" class="btn btn-danger" @click="cambiarTitular()"> Cambiar titular </button>
-                                                    </div>
+                                                    <Button :btnClass="'btn-danger'"  @click="cambiarTitular()" :icon="'fa fa-exchange'">Cambiar titular</Button>
                                                 </center>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
+                                <!-- Fin Coacreditado -->
                             </div>
                             <div class="card mb-0">
                                 <div class="card-header" id="headingThree" role="tab">
@@ -1064,75 +983,71 @@
                                         <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Referencias familiares</a>
                                     </h5>
                                 </div>
+                                <!--Datos Referencias-->
                                 <div class="collapse" id="collapseThree" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-                                    <!--------------------------------  Apartado Referencias familiares ------------------------------->
                                     <div class="form-group row border border-warning" style="margin-right:0px; margin-left:0px;">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <center> <h3></h3> </center>
-                                                </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <center> <h3></h3> </center>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <center> <h5>Primera referencia</h5> </center>
-                                                </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <center> <h5>Primera referencia</h5> </center>
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Nombre <span style="color:red;" v-show="nombre_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Nombre <span style="color:red;" v-show="nombre_referencia1==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="$root.isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="$root.isNumber($event)" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <center> <h5>Segunda referencia</h5> </center>
-                                                </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <center> <h5>Segunda referencia</h5> </center>
                                             </div>
+                                        </div>
 
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Nombre <span style="color:red;" v-show="nombre_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Nombre <span style="color:red;" v-show="nombre_referencia2==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="$root.isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                             </div>
+                                        </div>
 
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="$root.isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
                                             </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <!--Fin Referencias-->
                             </div>
                             <div class="card mb-0">
                                 <div class="card-header" id="headingFour" role="tab">
@@ -1140,671 +1055,637 @@
                                         <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Datos económicos</a>
                                     </h5>
                                 </div>
+                                <!---- Datos Economicos --->
                                 <div class="collapse" id="collapseFour" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
-                                    <!--------------------------------  Apartado  de Datos economicos y tipo de credito ------------------------>
-                                        <div class="form-group row border border-danger" style="margin-right:0px; margin-left:0px;">
-
-                                                    <div class="col-md-12">
-                                                    <div class="form-group">
-                                                    <center> <h4>Datos de la propiedad</h4> </center>
-                                                    </div>
-                                                    </div>
-
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for=""><strong> Proyecto </strong> </label>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <p v-text="proyecto"></p>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-1">
-                                                    <div class="form-group">
-                                                        <label for=""><strong> Etapa </strong></label>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <p v-text="etapa"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12" >
-                                                    <h6></h6>
-                                                </div>
-
-
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label v-if="tipo_proyecto == 1" for=""><strong>Manzana</strong></label>
-                                                        <label v-if="tipo_proyecto == 2" for=""><strong>Nivel</strong></label>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <p v-text="manzana"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-1">
-                                                    <div class="form-group">
-                                                        <label v-if="tipo_proyecto == 1" for=""><strong>Lote</strong></label>
-                                                        <label v-if="tipo_proyecto == 2" for=""><strong>Departamento</strong></label>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <p v-text="lote"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-1" v-if="sublote != null">
-                                                    <div class="form-group">
-                                                        <p v-text="sublote"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-2" v-if="listado==3 || listado==4 && btn_actualizar==1">
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-default" @click="abrirModal('reasignar')">
-                                                            <i class="fa fa-street-view"></i> Reasignar cliente </button>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-12" >
-                                                    <h6></h6>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="modelo!=''">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Modelo </strong></label>
-                                                        <p v-text="modelo"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="precioBase!=''">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Precio base </strong></label>
-                                                        <p v-text="'$'+formatNumber(precioBase)"></p>
-                                                    </div>
-                                                </div>
-
-                                                <template v-if="modelo != 'Terreno' && tipo_proyecto == 1">
-                                                    <div class="col-md-3" v-if="precioBase!=''">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
-                                                            <p v-text="'$'+formatNumber(precioObraExtra)"></p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" v-if="precioBase!=''">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong>Sobreprecio</strong></label>
-                                                            <p v-text="'$'+formatNumber(sobreprecio)"></p>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-
-
-                                                    <div class="col-md-12" v-if="precioBase!=''">
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="superficie!=''">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Superficie terreno m&sup2;</strong></label>
-                                                        <p v-text="superficie"></p>
-                                                    </div>
-                                                </div>
-
-                                                <template v-if="modelo != 'Terreno' && tipo_proyecto == 1">
-                                                    <div class="col-md-3" v-if="superficie!='' || terreno_tam_excedente>0">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Terreno excedente m&sup2;</strong></label>
-                                                            <p v-text="terreno_tam_excedente"></p>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="col-md-3" v-if="precioExcedente!='' || terreno_tam_excedente>0">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Precio terreno excedente </strong></label>
-                                                            <p v-text="'$'+formatNumber(precioExcedente)"></p>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-                                                <div class="col-md-12" v-if="precioBase!=''">
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="promocion!='' && promocion != null">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Promocion </strong></label>
-                                                        <p v-text="promocion"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="descripcionPromo!='' && descripcionPromo != null" >
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Descripcion de la promocion </strong></label>
-                                                        <p v-text="descripcionPromo"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="descuentoPromo!=0 && descuentoPromo != null">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Descuento de la promocion </strong></label>
-                                                        <p v-text="'$'+formatNumber(descuentoPromo)"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12" >
-                                                    <h6></h6>
-                                                     <div class="form-group" v-if="totalEco > 0">
-                                                        <label style="color:#2271b3;" for=""><strong> Total Ecotecnologias </strong></label>
-                                                        <p v-text="'$'+formatNumber(totalEco)"></p>
-                                                    </div>
-                                                    <div class="form-group"  v-if="listado==3 || listado==4 && btn_actualizar==1">
-                                                        <button class="btn btn-success" @click="abrirModal('ecotecnologias')">
-                                                            <i class="fa fa-tree"></i>&nbsp;Añadir ecotecnologias
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="listado==3 || listado==4 && btn_actualizar==1">
-                                                    <div class="form-group">
-                                                        <label for="">Paquete</label>
-                                                        <select class="form-control" v-model="paquete_id" @change="datosPaquetes(paquete_id)">
-                                                                <option value="">Seleccione</option>
-                                                                <option value="0">Sin paquete</option>
-                                                                <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="descripcionPaquete!='' && descripcionPaquete != null">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Paquete </strong></label>
-                                                        <p v-text="paquete"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="descripcionPaquete!='' && descripcionPaquete != null">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Descripcion del paquete </strong></label>
-                                                        <p v-text="descripcionPaquete"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="costoPaquete!='' && costoPaquete != null">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong> Costo del paquete </strong></label>
-                                                        <p v-text="'$'+formatNumber(costoPaquete)"></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12" >
-                                                    <h6></h6>
-                                                </div>
-
-                                                <div class="col-md-2" >
-                                                    <h6></h6>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="precioVenta!=''">
-                                                    <div class="form-group">
-                                                        <h5 style="color:#2271b3;" for=""><strong> Valor Total de la Propiedad: </strong></h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3" v-if="precioVenta!=''">
-                                                    <div class="form-group">
-                                                        <h5 v-text="'$'+formatNumber(precioVenta)"></h5>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12" ><hr>
-                                                    <h6></h6>
-                                                </div>
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <center> <h4>Credito</h4> </center>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong>Tipo de credito </strong><span style="color:red;" v-show="tipo_credito==0">(*)</span></label>
-                                                        <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="tipo_credito"></p>
-                                                        <select v-if="change_credito==1" class="form-control" v-model="tipo_credito"
-                                                            @change="selectInstitucion(tipo_credito), inst_financiera='', infonavit = 0, fovissste = 0" >
-                                                            <option value="0">Seleccione</option>
-                                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <template>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
-                                                            <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
-                                                            <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
-                                                                <option value="">Seleccione</option>
-                                                                <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <h6 style="color:#2271b3;" for=""><strong> Credito Solicitado: </strong></h6>
-                                                        <h6 v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="'$'+formatNumber(monto_credito)"></h6>
-                                                        <input v-if="change_credito==1" type="text" pattern="\d*" v-model="monto_credito" maxlength="10" @keyup.enter="change_credito=0,actualizarContrato()" v-on:keypress="isNumber($event)" class="form-control" >
-                                                    </div>
-                                                </div>
-
-                                                    <div class="col-md-2" v-if="inst_financiera!=''">
-                                                    <div class="form-group">
-                                                        <label v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
-                                                        <label v-else style="color:#2271b3;" for=""><strong>Plazo (meses) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
-                                                        <p v-if="change_credito==0" v-text="plazo_credito"></p>
-                                                        <input v-if="change_credito==1" v-model="plazo_credito" type="number" @keyup.enter="change_credito=0,actualizarContrato()" class="form-control" >
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                <template v-if="modelo != 'Terreno'">
-                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
-                                                        <div class="form-group">
-                                                            <label for="">Comisión por apertura</label>
-                                                            <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" >
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Comisión por apertura </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(comision_apertura)"></h6>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-                                                <div class="col-md-3" v-if="inst_financiera!=''"><hr>
-                                                    <div class="form-group">
-                                                        <h5 v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')" style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
-                                                        <h5 v-else style="color:#2271b3;" for=""><strong> Credito Neto Concretania: </strong></h5>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="inst_financiera!=''"><hr>
-                                                    <div class="form-group">
-                                                        <h5><strong>${{ formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                <template v-if="modelo != 'Terreno'">
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
-                                                        <div class="form-group">
-                                                            <label for="">Investigación</label>
-                                                            <input type="text" pattern="\d*" v-model="investigacion" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Investigación </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(investigacion)"></h6>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="col-md-3"
-                                                        v-if="listado==3 || listado==4 && btn_actualizar==1">
-                                                        <div class="form-group"
-                                                        v-if="tipo_credito=='Alia2'
-                                                        || tipo_credito=='Respalda2'
-                                                        || tipo_credito=='Alia2'
-                                                        || tipo_credito=='Fovissste para todos'
-                                                        || tipo_credito=='INFONAVIT-FOVISSSTE'">
-                                                            <label for="">Fovissste</label>
-                                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3"
-                                                        v-if="listado==3 || listado==4 && btn_actualizar==1">
-                                                        <div class="form-group"
-                                                            v-if="tipo_credito=='Cofinavit'
-                                                                || tipo_credito=='COFINAVIT I.A'">
-                                                            <label for="">Infonavit</label>
-                                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" v-if="fovissste!=0">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Fovissste </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(fovissste)"></h6>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" v-if="infonavit!=0">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Infonavit </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(infonavit)"></h6>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <h6></h6>
-                                                        </div>
-                                                    </div>
-
-                                                </template>
-
-
-                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                            <label for="">Avaluo por parte del banco</label>
-                                                            <input type="text" pattern="\d*" v-model="avaluo" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" >
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo banco</strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(avaluo)"></h6>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-
-                                                <div class="col-md-3" v-if="inst_financiera!=''"><hr>
-                                                    <div class="form-group">
-                                                        <h5 style="color:#2271b3;" for=""><strong> Monto Neto Credito: </strong></h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3" v-if="inst_financiera!=''"><hr>
-                                                    <div class="form-group">
-                                                        <h5><strong>${{ formatNumber(monto_total_credito=netoCredito)}}</strong></h5>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-
-                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                            <label for="">Gastos de escrituración</label>
-                                                            <input type="text" pattern="\d*" v-model="escrituras" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(escrituras)"></h6>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-
-
-                                                <div class="col-md-3" v-if="inst_financiera!=''">
-                                                    <div class="form-group">
-                                                        <h4 style="color:#2271b3;" for=""><strong> Total a pagar: </strong></h4>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3" v-if="inst_financiera!=''">
-                                                    <div class="form-group">
-                                                        <h4><strong>${{ formatNumber(total_pagar=totalPagar)}}</strong></h4>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
-                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                        <!--<label for="">Prima unica</label>
-                                                            <input type="text" pattern="\d*" v-model="prima_unica" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >-->
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" >
-                                                        <div class="form-group">
-                                                        <!-- <h6 style="color:#2271b3;" for=""><strong> Prima unica </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(prima_unica)"></h6>-->
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1" ><hr>
-                                                        <div class="form-group">
-                                                            <label for="">Avaluo por parte del cliente</label>
-                                                            <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" v-if="avaluo_cliente"><hr>
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo cliente</strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(avaluo_cliente)"></h6>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-12"><hr>
-                                                        <div class="form-group">
-                                                            <h6></h6>
-                                                        </div>
-                                                    </div>
-                                                </template>
-
-
-                                                    <div class="col-md-3" >
-                                                    <h6></h6>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="inst_financiera!=''">
-                                                    <div class="form-group">
-                                                        <h4 style="color:#2271b3;" for=""><strong> Enganche total: </strong></h4>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3" v-if="inst_financiera!=''">
-                                                    <div class="form-group">
-                                                        <h4><strong>${{ formatNumber(enganche_total=totalEnganche)}}</strong></h4>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12"><hr>
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                    <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="">Fecha del contrato</label>
-                                                        <input :readonly="listado==4 && btn_actualizar==0" type="date" v-model="fecha_contrato" class="form-control" >
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-9">
-                                                    <div class="form-group">
-                                                        <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
-                                                        <textarea :readonly="listado==4 && btn_actualizar==0" rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12"><hr>
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6"> <hr>
-                                                    <div class="form-group">
-                                                        <center> <h4>Pagos</h4> </center>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6" v-if="listado==3 || listado==4 && btn_actualizar==1"> <hr>
-                                                    <div class="form-group">
-                                                        <center> <h6>Restante: </h6> </center>
-                                                        <center> <h6><strong>${{ formatNumber(restante=totalRestante)}}</strong></h6> </center>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!='' && listado==4 && btn_actualizar == 1">
-                                                    <div class="form-group">
-                                                        <label for="">Monto pago</label>
-                                                        <input type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-2" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
-                                                    <div class="form-group">
-                                                        <h6 style="color:#2271b3;" for=""><strong> Monto pago </strong></h6>
-                                                        <h6><strong>${{ formatNumber(monto_pago)}}</strong></h6>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-1" v-if="monto_pago!='' && listado==4 && btn_actualizar==1">
-                                                    <div class="form-group">
-                                                            <label for=""># de Pago</label>
-                                                        <input type="text" v-model="numero_pago" class="form-control" >
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
-                                                    <div class="form-group">
-                                                            <label for="">Fecha del pago</label>
-                                                        <input type="date" v-model="fecha_pago" class="form-control" >
-                                                    </div>
-                                                </div>
-
-
-
-                                                <div class="col-md-1" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
-                                                    <div class="form-group" v-if="restante>=0">
-                                                        <button v-if="listado==3" @click="agregarPago()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
-                                                        <button v-if="listado==4 && btn_actualizar==1" @click="agregarPagoBD()" class="btn btn-warning form-control btnagregar"><i class="icon-plus"></i></button>
-                                                    </div>
-                                                </div>
-
-                                                    <div class="col-md-12" v-if="listado==4 && btn_actualizar==0"><hr>
-                                                    <div class="form-group">
-                                                        <h6></h6>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-6">
-                                                    <div class="form-group row" v-if="arrayPagos.length">
-                                                        <div class="table-responsive col-md-12">
-                                                            <table class="table table-bordered table-striped table-sm">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th v-if="listado==3 || listado==4 && btn_actualizar==1">Opciones</th>
-                                                                        <th># Pago</th>
-                                                                        <th>Fecha de pago</th>
-                                                                        <th>Monto</th>
-                                                                        <th v-if="btn_actualizar == 1"></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody >
-                                                                    <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
-                                                                        <template v-if="listado==3 || listado==4 && btn_actualizar==1">
-                                                                            <td v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
-                                                                                <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
-                                                                                    <i class="icon-close"></i>
-                                                                                </button>
-                                                                                <button v-if="listado==4 && btn_actualizar==1 && pago.restante == pago.monto_pago" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
-                                                                                    <i class="icon-close"></i>
-                                                                                </button>
-                                                                            </td>
-                                                                            <td v-else></td>
-                                                                        </template>
-
-                                                                        <td v-text="'Pago no. ' + parseInt(index+1)"></td>
-                                                                        <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                                                        <td v-else>
-                                                                            <input
-                                                                                v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0
-                                                                                    || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
-                                                                                "
-                                                                                type="date" v-model="pago.fecha_pago">
-                                                                        </td>
-                                                                        <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno' && tipo_credito != 'Crediterreno'">
-                                                                            {{ pago.monto_pago | currency}}
-                                                                        </td>
-                                                                        <td v-else>
-                                                                            <input
-                                                                                v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')"
-                                                                                type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
-                                                                        </td>
-                                                                        <td v-if="
-                                                                            btn_actualizar == 1 && modelo != 'Terreno'
-                                                                            || btn_actualizar == 1 && (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
-                                                                            || btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
-                                                                            <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
-                                                                                <i class="icon-check"></i>
-                                                                            </button>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
+                                    <div class="form-group row border border-danger" style="margin-right:0px; margin-left:0px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <center> <h4>Datos de la propiedad</h4> </center>
+                                            </div>
                                         </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for=""><strong> Proyecto </strong> </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p v-text="proyecto"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label for=""><strong> Etapa </strong></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <p v-text="etapa"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                            <div class="form-group">
+                                                <Button :btnClass="'btn-default'" @click="getLastPromo()"
+                                                    :icon="'fa fa-refresh'"
+                                                > Actualizar Promoción </Button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" ><h6></h6></div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label v-if="tipo_proyecto == 1" for=""><strong>Manzana</strong></label>
+                                                <label v-if="tipo_proyecto == 2" for=""><strong>Nivel</strong></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <p v-text="manzana"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label v-if="tipo_proyecto == 1" for=""><strong>Lote</strong></label>
+                                                <label v-if="tipo_proyecto == 2" for=""><strong>Departamento</strong></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <p v-text="lote"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1" v-if="sublote != null">
+                                            <div class="form-group">
+                                                <p v-text="sublote"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                            <div class="form-group">
+                                                <Button :btnClass="'btn-default'" @click="abrirModal('reasignar')"
+                                                    :icon="'fa fa-street-view'"
+                                                > Reasignar cliente </Button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12"><h6></h6></div>
+
+                                        <div class="col-md-3" v-if="modelo!=''">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Modelo </strong></label>
+                                                <p v-text="modelo"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="precioBase!=''">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Precio base </strong></label>
+                                                <p v-text="'$'+$root.formatNumber(precioBase)"></p>
+                                            </div>
+                                        </div>
+
+                                        <template v-if="modelo != 'Terreno' && tipo_proyecto == 1">
+                                            <div class="col-md-3" v-if="precioBase!=''">
+                                                <div class="form-group">
+                                                    <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
+                                                    <p v-text="'$'+$root.formatNumber(precioObraExtra)"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3" v-if="precioBase!=''">
+                                                <div class="form-group">
+                                                    <label style="color:#2271b3;" for=""><strong>Sobreprecio</strong></label>
+                                                    <p v-text="'$'+$root.formatNumber(sobreprecio)"></p>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-12" v-if="precioBase!=''">
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="superficie!=''">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Superficie terreno m&sup2;</strong></label>
+                                                <p v-text="superficie"></p>
+                                            </div>
+                                        </div>
+
+                                        <template v-if="modelo != 'Terreno' && tipo_proyecto == 1">
+                                            <div class="col-md-3" v-if="superficie!='' || terreno_tam_excedente>0">
+                                                <div class="form-group">
+                                                    <label style="color:#2271b3;" for=""><strong> Terreno excedente m&sup2;</strong></label>
+                                                    <p v-text="terreno_tam_excedente"></p>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-3" v-if="precioExcedente!='' || terreno_tam_excedente>0">
+                                                <div class="form-group">
+                                                    <label style="color:#2271b3;" for=""><strong> Precio terreno excedente </strong></label>
+                                                    <p v-text="'$'+$root.formatNumber(precioExcedente)"></p>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-12" v-if="precioBase!=''">
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="promocion!='' && promocion != null">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Promocion </strong></label>
+                                                <p v-text="promocion"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="descripcionPromo!='' && descripcionPromo != null" >
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Descripcion de la promocion </strong></label>
+                                                <p v-text="descripcionPromo"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="descuentoPromo!=0 && descuentoPromo != null">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Descuento de la promocion </strong></label>
+                                                <p v-text="'$'+$root.formatNumber(descuentoPromo)"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" >
+                                            <div class="form-group" v-if="totalEco > 0">
+                                                <label style="color:#2271b3;" for=""><strong> Total Ecotecnologias </strong></label>
+                                                <p v-text="'$'+$root.formatNumber(totalEco)"></p>
+                                            </div>
+                                            <div class="form-group"  v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                <Button :btnClass="'btn-success'" :icon="'fa fa-tree'" @click="abrirModal('ecotecnologias')">Añadir ecotecnologias</Button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                            <div class="form-group">
+                                                <label for="">Paquete</label>
+                                                <select class="form-control" v-model="paquete_id" @change="datosPaquetes(paquete_id)">
+                                                    <option value="">Seleccione</option>
+                                                    <option value="0">Sin paquete</option>
+                                                    <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="descripcionPaquete!='' && descripcionPaquete != null">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Paquete </strong></label>
+                                                <p v-text="paquete"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="descripcionPaquete!='' && descripcionPaquete != null">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Descripcion del paquete </strong></label>
+                                                <p v-text="descripcionPaquete"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="costoPaquete!='' && costoPaquete != null">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong> Costo del paquete </strong></label>
+                                                <p v-text="'$'+$root.formatNumber(costoPaquete)"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" ><h6></h6></div>
+
+                                        <template v-if="datosCupon.descuento_id === null">
+
+                                            <div class="col-md-4" ><h6></h6></div>
+
+                                            <div class="col-md-4">
+                                                <center>
+                                                    <div class="form-group row" v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                        <label style="color:#2271b3;" for=""><strong> Cupón </strong></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="number" class="form-control" @keyup.enter="getPremio()"  v-model="b_cupon" placeholder="Ingrese Folio de cupón">
+                                                        <!-- <Button :icon="'fa fa-search'" title="Buscar" @click="getPremio()"></Button> -->
+                                                    </div>
+                                                </center>
+                                            </div>
+
+                                            <div class="col-md-4" ><h6></h6></div>
+                                        </template>
+
+                                        <template v-if="datosCupon.descuento_id != null">
+
+                                            <div class="col-md-4">
+                                                <label style="color:#2271b3;" for=""><strong> Cupón: </strong></label>
+                                                <p v-text="datosCupon.descuento_desc"></p>
+                                            </div>
+
+                                            <div class="col-md-3" v-if="datosCupon.descuento_cant > 0">
+                                                <div class="form-group">
+                                                    <label style="color:#2271b3;" for=""><strong> Monto aplicado: </strong></label>
+                                                    <p v-text="'$'+$root.formatNumber(datosCupon.descuento_cant)"></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-5"></div>
+                                        </template>
+
+
+                                        <div class="col-md-2"><h6></h6></div>
+
+                                        <div class="col-md-3" v-if="precioVenta!=''">
+                                            <div class="form-group">
+                                                <h5 style="color:#2271b3;" for=""><strong> Valor Total de la Propiedad: </strong></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="precioVenta!=''">
+                                            <div class="form-group">
+                                                <h5 v-text="'$'+$root.formatNumber(precioVenta)"></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" ><hr><h6></h6></div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <center> <h4>Credito</h4> </center>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong>Tipo de credito </strong><span style="color:red;" v-show="tipo_credito==0">(*)</span></label>
+                                                <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="tipo_credito"></p>
+                                                <select v-if="change_credito==1" class="form-control" v-model="tipo_credito"
+                                                    @change="selectInstitucion(tipo_credito), inst_financiera='', infonavit = 0, fovissste = 0" >
+                                                    <option value="0">Seleccione</option>
+                                                    <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
+                                                <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
+                                                <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <h6 style="color:#2271b3;" for=""><strong> Credito Solicitado: </strong></h6>
+                                                <h6 v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="'$'+$root.formatNumber(monto_credito)"></h6>
+                                                <input v-if="change_credito==1" type="text" pattern="\d*" v-model="monto_credito" maxlength="10" @keyup.enter="change_credito=0,actualizarContrato()" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" v-if="inst_financiera!=''">
+                                            <div class="form-group">
+                                                <label v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                <label v-else style="color:#2271b3;" for=""><strong>Plazo (meses) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                <p v-if="change_credito==0" v-text="plazo_credito"></p>
+                                                <input v-if="change_credito==1" v-model="plazo_credito" type="number" @keyup.enter="change_credito=0,actualizarContrato()" class="form-control" >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <template v-if="modelo != 'Terreno'">
+                                            <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
+                                                <div class="form-group">
+                                                    <label for="">Comisión por apertura</label>
+                                                    <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3" >
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Comisión por apertura </strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(comision_apertura)"></h6>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                            <div class="form-group">
+                                                <h5 v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')" style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                <h5 v-else style="color:#2271b3;" for=""><strong> Credito Neto Concretania: </strong></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                            <div class="form-group">
+                                                <h5><strong>${{ $root.formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <template v-if="modelo != 'Terreno'">
+                                            <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
+                                                <div class="form-group">
+                                                    <label for="">Investigación</label>
+                                                    <input type="text" pattern="\d*" v-model="investigacion" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Investigación </strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(investigacion)"></h6>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-3"
+                                                v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                <div class="form-group"
+                                                v-if="tipo_credito=='Alia2'
+                                                || tipo_credito=='Respalda2'
+                                                || tipo_credito=='Alia2'
+                                                || tipo_credito=='Fovissste para todos'
+                                                || tipo_credito=='INFONAVIT-FOVISSSTE'">
+                                                    <label for="">Fovissste</label>
+                                                    <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3"
+                                                v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                <div class="form-group"
+                                                    v-if="tipo_credito=='Cofinavit'
+                                                        || tipo_credito=='COFINAVIT I.A'">
+                                                    <label for="">Infonavit</label>
+                                                    <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3" v-if="fovissste!=0">
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Fovissste </strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(fovissste)"></h6>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3" v-if="infonavit!=0">
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Infonavit </strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(infonavit)"></h6>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group"><h6></h6></div>
+                                            </div>
+                                        </template>
+
+                                        <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                            <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
+                                                <div class="form-group">
+                                                    <label for="">Avaluo por parte del banco</label>
+                                                    <input type="text" pattern="\d*" v-model="avaluo" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3" >
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Avaluo banco</strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(avaluo)"></h6>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                            <div class="form-group">
+                                                <h5 style="color:#2271b3;" for=""><strong> Monto Neto Credito: </strong></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                            <div class="form-group">
+                                                <h5><strong>${{ $root.formatNumber(monto_total_credito=netoCredito)}}</strong></h5>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                            <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
+                                                <div class="form-group">
+                                                    <label for="">Gastos de escrituración</label>
+                                                    <input type="text" pattern="\d*" v-model="escrituras" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(escrituras)"></h6>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''">
+                                            <div class="form-group">
+                                                <h4 style="color:#2271b3;" for=""><strong> Total a pagar: </strong></h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''">
+                                            <div class="form-group">
+                                                <h4><strong>${{ $root.formatNumber(total_pagar=totalPagar)}}</strong></h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                            <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
+                                                <div class="form-group"></div>
+                                            </div>
+
+                                            <div class="col-md-3" >
+                                                <div class="form-group"></div>
+                                            </div>
+
+                                            <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1" ><hr>
+                                                <div class="form-group">
+                                                    <label for="">Avaluo por parte del cliente</label>
+                                                    <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3" v-if="avaluo_cliente"><hr>
+                                                <div class="form-group">
+                                                    <h6 style="color:#2271b3;" for=""><strong> Avaluo cliente</strong></h6>
+                                                    <h6 v-text="'$'+$root.formatNumber(avaluo_cliente)"></h6>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12"><hr>
+                                                <div class="form-group"><h6></h6></div>
+                                            </div>
+                                        </template>
+
+                                        <div class="col-md-3" ><h6></h6></div>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''">
+                                            <div class="form-group">
+                                                <h4 style="color:#2271b3;" for=""><strong> Enganche total: </strong></h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="inst_financiera!=''">
+                                            <div class="form-group">
+                                                <h4><strong>${{ $root.formatNumber(enganche_total=totalEnganche)}}</strong></h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12"><hr>
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Fecha del contrato</label>
+                                                <input :readonly="listado==4 && btn_actualizar==0" type="date" v-model="fecha_contrato" class="form-control" >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
+                                                <textarea :readonly="listado==4 && btn_actualizar==0" rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12"><hr>
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <div class="col-md-6"> <hr>
+                                            <div class="form-group">
+                                                <center> <h4>Pagos</h4> </center>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6" v-if="listado==3 || listado==4 && btn_actualizar==1"> <hr>
+                                            <div class="form-group">
+                                                <center> <h6>Restante: </h6> </center>
+                                                <center> <h6><strong>${{ $root.formatNumber(restante=totalRestante)}}</strong></h6> </center>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!='' && listado==4 && btn_actualizar == 1">
+                                            <div class="form-group">
+                                                <label for="">Monto pago</label>
+                                                <input type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
+                                            <div class="form-group">
+                                                <h6 style="color:#2271b3;" for=""><strong> Monto pago </strong></h6>
+                                                <h6><strong>${{ $root.formatNumber(monto_pago)}}</strong></h6>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1" v-if="monto_pago!='' && listado==4 && btn_actualizar==1">
+                                            <div class="form-group">
+                                                    <label for=""># de Pago</label>
+                                                <input type="text" v-model="numero_pago" class="form-control" >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
+                                            <div class="form-group">
+                                                    <label for="">Fecha del pago</label>
+                                                <input type="date" v-model="fecha_pago" class="form-control" >
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
+                                            <div class="form-group" v-if="restante>=0">
+                                                <button v-if="listado==3" @click="agregarPago()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                                <button v-if="listado==4 && btn_actualizar==1" @click="agregarPagoBD()" class="btn btn-warning form-control btnagregar"><i class="icon-plus"></i></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" v-if="listado==4 && btn_actualizar==0"><hr>
+                                            <div class="form-group"><h6></h6></div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group" v-if="arrayPagos.length">
+                                                <TableComponent :cabecera="[
+                                                    '','# Pago','Fecha de pago','Monto',' '
+                                                ]">
+                                                    <template v-slot:tbody>
+                                                        <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
+                                                            <template v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                                <td v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                                                    <Button v-if="listado==3" @click="eliminarPago(index)"
+                                                                        :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"></Button>
+                                                                    <Button v-if="listado==4 && pago.restante == pago.monto_pago" @click="eliminarPagoBD(pago.id)"
+                                                                        :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'"></Button>
+                                                                </td>
+                                                            </template>
+                                                            <td v-else></td>
+                                                            <td v-text="'Pago no. ' + parseInt(index+1)"></td>
+                                                            <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                            <td v-else>
+                                                                <input
+                                                                    v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0
+                                                                        || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')"
+                                                                    type="date" v-model="pago.fecha_pago">
+                                                            </td>
+                                                            <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno' && tipo_credito != 'Crediterreno'">
+                                                                {{ pago.monto_pago | currency}}
+                                                            </td>
+                                                            <td v-else>
+                                                                <input
+                                                                    v-if="modelo != 'Terreno' || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')"
+                                                                    type="text" pattern="\d*" v-on:keypress="$root.isNumber($event)" v-model="pago.monto_pago">
+                                                            </td>
+                                                            <td v-if="
+                                                                btn_actualizar == 1 && modelo != 'Terreno'
+                                                                || btn_actualizar == 1 && (modelo == 'Terreno' && tipo_credito == 'Crediterreno')
+                                                                || btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
+                                                                <Button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)"
+                                                                    :btnClass="'btn-success'" :size="'btn-sm'" :icon="'icon-check'"></Button>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </TableComponent>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <!---- FIN Datos Economicos --->
                             </div>
                             <!--- Botones y div para errores -->
                             <div class="card-body">
@@ -1819,9 +1700,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <button type="button" class="btn btn-secondary" @click="cerrarDetalle()"> Cerrar </button>
-                                        <button type="button" v-if="listado==3" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
-                                        <button type="button" v-if="listado==4 && btn_actualizar==1" class="btn btn-success" @click="actualizarContrato()"> Actualizar </button>
+                                        <Button :btnClass="'btn-secondary'" :icon="'icon-close'"  @click="cerrarDetalle()">Cerrar</Button>
+                                        <Button :icon="'icon-check'" v-if="listado==3" @click="crearContrato()">Guardar</Button>
+                                        <Button :icon="'icon-check'" v-if="listado==4 && btn_actualizar==1" @click="actualizarContrato()">Guardar cambios</Button>
                                     </div>
                                 </div>
 
@@ -1829,22 +1710,22 @@
                                     <div style="text-align: right" class="capsule col-md-12">
                                         <h6>Imprimir</h6>
                                         <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
-                                                <template v-if="norma247">
-                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato</a>
-                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
-                                                    <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAnexoE/'+id">Anexo E</a>
+                                            <template v-if="norma247">
+                                                <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+id">Contrato</a>
+                                                <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAvisoPrivacidad'">Aviso de Privacidad</a>
+                                                <a class="btn btn-success btn-sm" target="_blank" v-bind:href="'/contrato/printAnexoE/'+id">Anexo E</a>
+                                            </template>
+                                            <template v-else>
+                                                <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
+                                                    <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                 </template>
                                                 <template v-else>
-                                                    <template v-if="modelo != 'Terreno'  || (modelo == 'Terreno' && tipo_credito == 'Crediterreno')">
-                                                        <a class="btn btn-warning btn-sm" v-if="tipo_credito!='Crédito Directo' && tipo_credito!='Apartado'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                        <a class="btn btn-warning btn-sm" v-if="tipo_credito=='Crédito Directo'|| tipo_credito=='Apartado'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
-                                                    </template>
-                                                    <template v-else>
-                                                        <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Contrato</a>
-                                                    </template>
-                                                    <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
-                                                    <a class="btn btn-info btn-sm" v-if="tipo_proyecto == 2" v-bind:href="'/contrato/anexoA/'+id">Anexo A</a>
+                                                    <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Contrato</a>
                                                 </template>
+                                                <a class="btn btn-info btn-sm" @click="selectNombreArchivoModelo()">Especificaciones</a>
+                                                <a class="btn btn-info btn-sm" v-if="tipo_proyecto == 2" v-bind:href="'/contrato/anexoA/'+id">Anexo A</a>
+                                            </template>
                                         </div>
                                         <div style="text-align: right;" v-if="rolId!=2 || (rolId == 2 && status == 1)">
                                             <a class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
@@ -1946,7 +1827,6 @@
                         </div>
                     </div>
                 </template>
-
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -2045,7 +1925,6 @@
                 </template>
             </template>
             <template v-slot:buttons-footer>
-                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                     <button type="button" v-if="tipoAccion==1 && status != 3" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
                     <button type="button"
                         v-if="tipoAccion==1 && status == 3"
@@ -2181,13 +2060,33 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">Total:</td>
-                                    <td class="td2">${{formatNumber(totalEco)}}</td>
+                                    <td class="td2">${{$root.formatNumber(totalEco)}}</td>
                                 </tr>
                             </template>
                         </TableComponent>
                     </div>
 
                 </div>
+            </template>
+        </ModalComponent>
+
+        <ModalComponent v-if="modal == 4"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <RowModal :label1="'Premio: '" :clsRow1="'col-md-6'">
+                    <input class="form-control" type="text" disabled v-model="datosCupon.descuento_desc">
+                </RowModal>
+                <RowModal :label1="'Manera de aplicar: '" :clsRow1="'col-md-6'">
+                    <select class="form-control" v-model="datosCupon.modo_desc">
+                        <option :value="0">Descuento directo a valor de casa</option>
+                        <option :value="1">Pago en efectivo</option>
+                    </select>
+                </RowModal>
+            </template>
+            <template v-slot:buttons-footer>
+                <Button :btnClass="'btn-success'" :icon="'icon-check'" @click="aplicarCupon()">Aplicar cupón</Button>
             </template>
         </ModalComponent>
     </main>
@@ -2198,18 +2097,26 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-import TableComponent from '../Componentes/TableComponent.vue'
-import ModalComponent from '../Componentes/ModalComponent.vue'
+    import TableComponent from '../Componentes/TableComponent.vue'
+    import ModalComponent from '../Componentes/ModalComponent.vue'
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
+    import Button from '../Componentes/ButtonComponent.vue'
+    import Nav from '../Componentes/NavComponent.vue'
+
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            RowModal,
+            Button,
+            Nav
         },
         props:{
             rolId:{type: String}
         },
         data(){
             return{
+                datosCupon:{},
                 id:0,
                 id_contrato:0,
                 proceso:false,
@@ -2232,9 +2139,20 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 arrayManzanas:[],
                 arrayLotes:[],
                 arrayDatosLotes:[],
-
                 arryaEmpresas:[],
                 arrayPagos:[],
+                arrayEstados: [],
+                arrayCiudadesCoa: [],
+                arrayCiudades: [],
+                arrayColoniasCoa: [],
+                arrayColonias: [],
+                arrayPaquetes: [],
+                arrayDatosPaquetes: [],
+                arrayAsesores: [],
+                arrayCreditos: [],
+                arrayInstituciones: [],
+                arrayEcotecnologias:[],
+                ecotecnologasAsignadas:[],
 
                 sel_proyecto:0,
                 sel_etapa:'',
@@ -2384,17 +2302,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 fecha_pago:'',
                 numero_pago:0,
                 fecha_contrato:'',
-                arrayEstados: [],
-                arrayCiudadesCoa: [],
-                arrayCiudades: [],
-                arrayColoniasCoa: [],
-                arrayColonias: [],
-                arrayPaquetes: [],
-                arrayDatosPaquetes: [],
-                arrayAsesores: [],
-                arrayCreditos: [],
-                arrayInstituciones: [],
-                arrayMediosPublicidad: [],
                 btn_actualizar: 0,
 
                 loteEnContrato: 0,
@@ -2410,16 +2317,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'from' : 0,
                     'to' : 0,
                 },
-                pagination2 : {
-                    'total' : 0,
-                    'current_page' : 0,
-                    'per_page' : 0,
-                    'last_page' : 0,
-                    'from' : 0,
-                    'to' : 0,
-                },
                 offset : 3,
-                offset2 : 3,
                 criterio : 'personal.nombre',
                 buscar : '',
                 buscar3 : '',
@@ -2440,22 +2338,19 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 b_fecha2:'',
                 b_fecha_status: '',
                 b_fecha_status2: '',
+                b_cupon : '',
                 listado:0,
                 liquidado:0,
                 modal: 0,
                 tituloModal: '',
                 tipoAccion: 0,
-                empresas:'',
                 b_empresa:'',
                 clv_lada:52,
-                arrayClaves:[],
                 tipo_proyecto:'',
                 observacion_r :'',
-                arrayEcotecnologias:[],
-                ecotecnologasAsignadas:[],
+
                 totalEco:0,
-                ecoSeleccionada:{
-                },
+                ecoSeleccionada:{},
 
                 norma247:0,
                 num_licencia:'',
@@ -2470,10 +2365,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
         computed:{
             isActived: function(){
                 return this.pagination.current_page;
-            },
-
-            isActived2: function(){
-                return this.pagination2.current_page;
             },
 
             //Calcula los elementos de la paginación
@@ -2498,29 +2389,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     from++;
                 }
                 return pagesArray;
-            },
-
-            pagesNumber2:function(){
-                if(!this.pagination2.to){
-                    return [];
-                }
-
-                var from = this.pagination2.current_page - this.offset2;
-                if(from < 1){
-                    from = 1;
-                }
-
-                var to = from + (this.offset2 * 2);
-                if(to >= this.pagination2.last_page){
-                    to = this.pagination2.last_page;
-                }
-
-                var pagesArray2 = [];
-                while(from <= to){
-                    pagesArray2.push(from);
-                    from++;
-                }
-                return pagesArray2;
             },
 
             //Calculos
@@ -2567,7 +2435,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
             totalPagar: function(){
                 let me = this;
                 var total_pago =0;
-                    total_pago =parseFloat(this.precioVenta) - parseFloat(this.monto_total_credito);
+                    total_pago = parseFloat(this.precioVenta) - parseFloat(this.monto_total_credito);
                 return total_pago;
             },
 
@@ -2582,6 +2450,72 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
         },
 
         methods:{
+            getPremio(){
+                let me = this;
+                const url = '/premios/getPremio?rfc='+this.rfc+'&folio='+this.b_cupon
+
+                axios.get(url).then(function (response) {
+                    const respuesta = response.data;
+                    me.b_cupon = ''
+                    if(respuesta.length){
+                        me.abrirModal('cupon', respuesta[0])
+                    }
+                    else{
+
+                        swal({
+                            position: 'top-end',
+                            type: 'warning',
+                            title: 'Cupón invalido',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
+            aplicarCupon(){
+                let me = this;
+                if(me.datosCupon.modo_desc == 1){
+                    me.datosCupon.descuento_cant = 0;
+                    me.datosCupon.descuento_desc = me.datosCupon.descuento_desc + ' aplicado como reembolso en efectivo.'
+                }
+                else{
+                    me.datosCupon.descuento_desc = me.datosCupon.descuento_desc + ' aplicado como descuento directo al valor de venta'
+                    me.precioVenta = me.precioVenta - me.datosCupon.descuento_cant
+                }
+                me.modal = 0;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Cupón aplicado',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            },
+            getLastPromo(){
+                let me = this;
+                const url = '/promocion/getLastPromo?lote='+this.lote_id
+
+                axios.get(url).then(function (response) {
+                    const respuesta = response.data;
+                    me.precioVenta = parseFloat(me.precioVenta) + parseFloat(me.descuentoPromo)
+
+                    me.promocion = respuesta.promocion
+                    me.descripcionPromo = respuesta.descripcionPromo
+                    me.descuentoPromo = respuesta.descuentoPromo
+
+                    me.precioVenta = parseFloat(me.precioVenta) - parseFloat(me.descuentoPromo)
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
             onSelectConstancia(){
                 this.$refs.constanciaSelector.click()
             },
@@ -2597,7 +2531,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.archivo2 = event.target.files[0]
             },
             saveArchivo(){
-
                 let formData = new FormData();
 
                 formData.append('archivo', this.archivo2);
@@ -2615,7 +2548,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                         })
                     me.archivoFisc = me.archivo2.name
                     me.archivo2 = undefined;
-                    me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    me.listarContratos(me.pagination.current_page);
 
                 }).catch(function (error) {
                     console.log(error);
@@ -2640,15 +2573,15 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                         })
                     me.archivoConstancia = me.id+me.archivo.name
                     me.archivo = undefined;
-                    me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    me.listarContratos(me.pagination.current_page);
 
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
-            listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+            listarSimulaciones(page){
                 let me = this;
-                var url = '/creditos_aprobados?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
+                var url = '/creditos_aprobados?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa+ '&b_manzana=' + me.b_manzana + '&b_lote='+ me.b_lote + '&criterio=' + me.criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arraySimulaciones = respuesta.creditos.data;
@@ -2658,22 +2591,22 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 })
             },
-            listarContratos(page, buscar,buscar3, b_etapa, b_manzana,b_lote,criterio){
+            listarContratos(page){
                 let me = this;
-                var url = '/contratos?page=' + page + '&buscar=' + buscar
-                    + '&buscar3=' + buscar3 + '&b_modelo=' + me.b_modelo
-                    + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana
-                    + '&b_lote='+ b_lote + '&b_status='+ me.b_status
-                    + '&criterio=' + criterio + '&f_ini=' + me.b_fecha
+
+                var url = '/contratos?page=' + page + '&buscar=' + me.buscar2
+                    + '&buscar3=' + me.buscar3 + '&b_modelo=' + me.b_modelo
+                    + '&b_etapa=' +me.b_etapa2+ '&b_manzana=' + me.b_manzana2
+                    + '&b_lote='+ me.b_lote2 + '&b_status='+ me.b_status
+                    + '&criterio=' + me.criterio2 + '&f_ini=' + me.b_fecha
                     + '&f_fin=' + me.b_fecha2 + '&publicidad=' + me.b_publicidad
                     + '&b_institucion=' + this.b_institucion
                     + '&b_empresa_cliente=' + this.b_empresa_cliente
                     + '&b_empresa=' + this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayContratos = respuesta.contratos.data;
-                    me.pagination2 = respuesta.pagination;
-                    me.contador = respuesta.contadorContrato;
+                    me.arrayContratos = respuesta.contratos;
+                    me.contador = me.arrayContratos.total;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2691,25 +2624,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-            getClavesLadas(){
-                let me = this;
-                me.arrayClaves=[];
-                var url = '/getClavesLadas';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayClaves = respuesta.claves;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            },
-
             abrirPDF(id){
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
                 win.focus();
             },
-
             entregarExp(id){
                 if( this.rolId == 6 || this.rolId == 1 || this.rolId == 4 || this.rolId == 8 ){
                     let me = this;
@@ -2735,7 +2653,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                                 'id':id
                             });
 
-                            me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                            me.listarContratos(me.pagination.current_page);
                             Swal({
                                 title: 'Hecho!',
                                 text: 'El expediente ha sido entregado',
@@ -2768,35 +2686,12 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 })
             },
-            selectMedioPublicidad(){
-                let me = this;
-                var url = '/select_medio_publicidad';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayMediosPublicidad = respuesta.medios_publicitarios;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            },
-            cambiarPagina(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarSimulaciones(page,buscar, b_etapa, b_manzana,b_lote,criterio);
-            },
-
-            cambiarPagina2(page, buscar, buscar3, b_etapa, b_manzana,b_lote,criterio){
-                let me = this;
-                //Actualiza la pagina actual
-                me.pagination2.current_page = page;
-                //Envia la petición para visualizar la data de esta pagina
-                me.listarContratos(page,buscar, buscar3, b_etapa, b_manzana,b_lote,criterio);
+                me.listarSimulaciones(page);
             },
             cambiarTitular(){
                 let me = this;
@@ -2808,7 +2703,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'cliente_id':this.prospecto_id,
                 }).then(function (response){
                     me.listado = 0;
-                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                     me.listarContratos(me.pagination.current_page);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -2833,7 +2728,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-
             //Select todas las etapas
             selectEtapas(buscar){
                 let me = this;
@@ -2949,11 +2843,88 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     if(me.listado == 3)
                         me.reasignar2(me.arrayDatosLotes[0],lote);
 
-
                     me.selectPaquetes(me.etapa,me.proyecto);
                     me.cerrarModal();
                 })
                 .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            reasignar(data=[],lote){
+                let me = this;
+
+                axios.put('/contrato/reasignar',{
+                   'lote_id':me.lote_id,
+                   'sel_lote':me.sel_lote,
+                   'id':me.id,
+                   'fraccionamiento':data['proyecto'],
+                   'etapa':me.sel_etapa,
+                   'manzana':me.sel_manzana,
+                   'num_lote':data['num_lote'],
+                   'modelo':data['modelo'],
+                   'precio_base':data['precio_base'],
+                   'superficie':data['terreno'],
+                   'terreno_excedente':Math.round( data['terreno_tam_excedente']*100)/100,
+                   'precio_terreno_excedente':Math.round(data['excedente_terreno']*100)/100,
+                   'precio_obra_extra':data['obra_extra'],
+                   'promocion':data['promocion'],
+                   'descripcion_promocion':data['descripcionPromo'],
+                   'descuento_promocion':data['descuentoPromo'],
+                   'desc_eq_promo':data['desc_eq_promo'],
+                   'precio_venta':data['precio_venta'] - data['descuentoPromo'],
+                   'reubicar': me.reubicacion,
+                   'observacion' : me.observacion_r
+
+                }).then(function (response){
+                    me.getNewDatosLote(lote);
+                    me.reubicacion = 0;
+                    me.observacion_r = '';
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El cliente ha sido reasignado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            reasignar2(data=[],lote){
+                let me = this;
+
+                axios.put('/contrato/reasignar2',{
+                   'lote_id':me.lote_id,
+                   'sel_lote':me.sel_lote,
+                   'id':me.id,
+                   'fraccionamiento':data['proyecto'],
+                   'etapa':me.sel_etapa,
+                   'manzana':me.sel_manzana,
+                   'num_lote':data['num_lote'],
+                   'modelo':data['modelo'],
+                   'precio_base':data['precio_base'],
+                   'superficie':data['terreno'],
+                   'terreno_excedente':Math.round( data['terreno_tam_excedente']*100)/100,
+                   'precio_terreno_excedente':Math.round(data['excedente_terreno']*100)/100,
+                   'precio_obra_extra':data['obra_extra'],
+                   'promocion':data['promocion'],
+                   'descripcion_promocion':data['descripcionPromo'],
+                   'descuento_promocion':data['descuentoPromo'],
+                   'desc_eq_promo' : data['desc_eq_promo'],
+                   'precio_venta':data['precio_venta'] - data['descuentoPromo'],
+
+                }).then(function (response){
+                    me.getNewDatosLote(lote)
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El cliente ha sido reasignado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
                     console.log(error);
                 });
             },
@@ -2997,7 +2968,7 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.lote_id = lote;
                     me.sobreprecio = me.arrayDatosLotes[0]['sobreprecio'];
 
-                    me.precioVenta = me.precioVenta - me.descuentoPromo + me.totalEco;
+                    me.precioVenta = me.precioVenta - me.descuentoPromo + me.totalEco - me.datosCupon.descuento_cant;
                     me.descripcion_paquete = "";
                     me.costoPaquete = 0;
                     me.desc_eq_paquete = '';
@@ -3007,7 +2978,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-        /////
             selectEmpresas(){
                 let me = this;
                 me.arryaEmpresas=[];
@@ -3085,7 +3055,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-
             getEcotecnologiasAsignadas(contrato){
                 let me = this;
                 me.ecotecnologasAsignadas = [];
@@ -3258,8 +3227,12 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     me.desc_eq_paquete = '';
                 }
             },
-
             mostrarDetalle(data = []){
+                this.datosCupon = {
+                    'descuento_id' : null,
+                    'descuento_desc' : '',
+                    'descuento_cant' : 0
+                };
                 this.sobreprecio = data['sobreprecio'];
                 this.publicidad_id = data['publicidadId'];
                 this.nombre_recomendado = data['nombre_recomendado'];
@@ -3369,14 +3342,13 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
                 this.getDatosProyecto(data['fraccionamiento_id']);
             },
-
             enteradoEsp(id){
                 let me = this;
                 axios.put('/lote/enteradoEsp',{
                    'id' : id,
                 }).then(function (response){
                      me.listado = 0;
-                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                     me.listarContratos(me.pagination.current_page);
                     Swal({
                             title: 'Hecho!',
                             text: '',
@@ -3388,7 +3360,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-
             actualizarContrato(){
                let me = this;
 
@@ -3489,15 +3460,23 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'institucion': this.inst_financiera,
                     'plazo_credito' : this.plazo_credito,
 
+                    'promocion' : this.promocion,
+                    'descripcionPromo' : this.descripcionPromo,
+                    'descuentoPromo' : this.descuentoPromo,
+
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,
                     'costo_paquete' : this.costoPaquete,
                     'desc_eq_paquete' : this.desc_eq_paquete,
-                    'precio_venta' : this.precioVenta
+                    'precio_venta' : this.precioVenta,
+
+                    'descuento_id' : this.datosCupon.descuento_id,
+                    'descuento_desc' : this.datosCupon.descuento_desc,
+                    'descuento_cant' : this.datosCupon.descuento_cant
 
                 }).then(function (response){
                      me.listado = 0;
-                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                     me.listarContratos(me.pagination.current_page);
 
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -3511,19 +3490,23 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-
             mostrarCreditosAprobados(){
-                this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+                this.listarSimulaciones(1);
                 this.listado = 1;
             },
-
             cerrarDetalle(){
                 this.limpiarDatos();
-                this.listarContratos(this.pagination.current_page,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+                this.listarContratos(this.pagination.current_page);
                 this.listado = 0;
             },
-
             cerrarModal(){
+                if(this.modal == 4){
+                    this.datosCupon = {
+                        'descuento_id' : null,
+                        'descuento_desc' : '',
+                        'descuento_cant' : 0
+                    }
+                }
                 this.modal = 0;
                 this.tituloModal = '';
                 this.arrayEtapas = [];
@@ -3535,8 +3518,8 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.sel_lote='';
                 this.archivo= undefined
                 this.archivo2=undefined
-            },
 
+            },
             verImagen(imagen){
                 let url = '/files/datosFisc/'+imagen;
                 Swal.fire({
@@ -3546,10 +3529,15 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 imageAlt: 'Datos Fiscales',
                 })
             },
-
             verContrato(data = []){
                 this.getDatosProyecto(data['fraccionamiento_id']);
                 this.getEcotecnologiasAsignadas(data['id']);
+
+                this.datosCupon = {
+                    'descuento_id' : data['descuento_id'],
+                    'descuento_desc' : data['descuento_desc'],
+                    'descuento_cant' : data['descuento_cant']
+                }
 
                 this.planos = {
                     'planoLicencia' : data['planoLicencia'],
@@ -3729,7 +3717,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 this.listado=4;
                 this.btn_actualizar = 0;
             },
-
             agregarPago(){
                 let me = this;
                 if(me.monto_pago == 0 || me.monto_pago=='' || me.fecha_pago==''){
@@ -3775,12 +3762,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
                     }
             },
-
             eliminarPago(index){
                 let me = this;
                 me.arrayPagos.splice(index,1);
             },
-
             eliminarPagoBD(id_pago){
 
                 //console.log(this.departamento_id);
@@ -3812,7 +3797,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 })
 
             },
-
             actualizarPagoBD(id_pago, monto, fecha){
 
                 let me = this;
@@ -3837,11 +3821,10 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 });
 
             },
-
             selectStatus(status){
                 let me = this;
                 if(status==3 || status==0 ){
-                    this.abrirModal('statusFecha',this.arrayContratos);
+                    this.abrirModal('statusFecha',this.arrayContratos.data);
                 }else{
                       swal({
                 title: 'Esta seguro de cambiar el status de este contrato?',
@@ -3886,7 +3869,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
                 }
             },
-
             registrarFechaStatus(){
                 let me = this;
                 axios.put('/contrato/status/fecha',{
@@ -3911,7 +3893,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-
             validarRegistro(){
                 this.errorContrato=0;
                 this.errorMostrarMsjContrato=[];
@@ -3978,7 +3959,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
                 return this.errorContrato;
             },
-
             validarLoteContrato(id){
                 let me = this;
                 me.loteEnContrato = 0;
@@ -3993,7 +3973,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 
                 return this.loteEnContrato;
             },
-
             crearContrato(){
                 if(this.validarRegistro() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -4051,13 +4030,19 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     'desc_eq_paquete' : this.desc_eq_paquete,
                     'precio_venta' : this.precioVenta,
 
+                    'descuento_id' : this.datosCupon.descuento_id,
+                    'descuento_desc' : this.datosCupon.descuento_desc,
+                    'descuento_cant' : this.datosCupon.descuento_cant,
+
                     'data':this.arrayPagos,
+
+
 
                 }).then(function (response){
                     me.proceso=false;
                     me.actualizarDatosProspecto();
                     me.limpiarDatos();
-                    me.listarSimulaciones(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    me.listarSimulaciones(me.pagination.current_page);
                     me.listado=0;
                     me.nuevo = 0;
 
@@ -4073,10 +4058,19 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                     console.log(error);
                 });
             },
-
             actualizarDatosProspecto(){
                 //Con axios se llama el metodo store del controller
                 axios.put('/contrato/actualizarCredito',{
+                'paquete' : this.paquete,
+                'descripcion_paquete' : this.descripcionPaquete,
+                'costo_paquete' : this.costoPaquete,
+                'desc_eq_paquete' : this.desc_eq_paquete,
+                'precio_venta' : this.precioVenta,
+
+                'promocion' : this.promocion,
+                'descripcionPromo' : this.descripcionPromo,
+                'descuentoPromo' : this.descuentoPromo,
+
                 'prospecto_id':this.prospecto_id,
                 'apellidos':this.apellidos,
                 'nombre':this.nombre,
@@ -4135,17 +4129,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 'nombre_recomendado' : this.nombre_recomendado,
                 })
             },
-
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
-
             limpiarDatos(){
                 let me = this;
                 me.id=0;
@@ -4294,7 +4277,6 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                 me.errorMostrarMsjContrato = [];
 
             },
-
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
@@ -4346,113 +4328,31 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
                         this.ecoSeleccionada = {};
                         break;
                     }
+                    case 'cupon':{
+                        this.tituloModal = 'Aplicar Cupon';
+                        this.datosCupon = {
+                            'descuento_id' : data['id'],
+                            'descuento_desc' : data['descripcion'],
+                            'modo_desc' : 0,
+                            'descuento_cant' : data['premio']
+                        }
+                        this.modal = 4;
+                    }
                 }
             },
-        /////
 
-            reasignar(data=[],lote){
-                let me = this;
-
-                axios.put('/contrato/reasignar',{
-                   'lote_id':me.lote_id,
-                   'sel_lote':me.sel_lote,
-                   'id':me.id,
-                   'fraccionamiento':data['proyecto'],
-                   'etapa':me.sel_etapa,
-                   'manzana':me.sel_manzana,
-                   'num_lote':data['num_lote'],
-                   'modelo':data['modelo'],
-                   'precio_base':data['precio_base'],
-                   'superficie':data['terreno'],
-                   'terreno_excedente':Math.round( data['terreno_tam_excedente']*100)/100,
-                   'precio_terreno_excedente':Math.round(data['excedente_terreno']*100)/100,
-                   'precio_obra_extra':data['obra_extra'],
-                   'promocion':data['promocion'],
-                   'descripcion_promocion':data['descripcionPromo'],
-                   'descuento_promocion':data['descuentoPromo'],
-                   'desc_eq_promo':data['desc_eq_promo'],
-                   'precio_venta':data['precio_venta'] - data['descuentoPromo'],
-                   'reubicar': me.reubicacion,
-                   'observacion' : me.observacion_r
-
-                }).then(function (response){
-                    me.getNewDatosLote(lote);
-                    me.reubicacion = 0;
-                    me.observacion_r = '';
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'El cliente ha sido reasignado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-            reasignar2(data=[],lote){
-                let me = this;
-
-                axios.put('/contrato/reasignar2',{
-                   'lote_id':me.lote_id,
-                   'sel_lote':me.sel_lote,
-                   'id':me.id,
-                   'fraccionamiento':data['proyecto'],
-                   'etapa':me.sel_etapa,
-                   'manzana':me.sel_manzana,
-                   'num_lote':data['num_lote'],
-                   'modelo':data['modelo'],
-                   'precio_base':data['precio_base'],
-                   'superficie':data['terreno'],
-                   'terreno_excedente':Math.round( data['terreno_tam_excedente']*100)/100,
-                   'precio_terreno_excedente':Math.round(data['excedente_terreno']*100)/100,
-                   'precio_obra_extra':data['obra_extra'],
-                   'promocion':data['promocion'],
-                   'descripcion_promocion':data['descripcionPromo'],
-                   'descuento_promocion':data['descuentoPromo'],
-                   'desc_eq_promo' : data['desc_eq_promo'],
-                   'precio_venta':data['precio_venta'] - data['descuentoPromo'],
-
-                }).then(function (response){
-                    me.getNewDatosLote(lote)
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'El cliente ha sido reasignado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-            getEmpresa(){
-                let me = this;
-                me.empresas=[];
-                var url = '/lotes/empresa/select';
-                axios.get(url).then(function (response) {
-                    var respuesta = response;
-                    me.empresas = respuesta.data.empresas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
         },
         created(){
-
         },
         mounted() {
             this.selectEcotecnologias();
-            this.listarContratos(1,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+            this.listarContratos(1);
             this.$root.selectFraccionamientos();
             this.selectAsesores();
             this.selectCreditos();
-            this.selectMedioPublicidad();
-            this.getEmpresa();
-            this.getClavesLadas();
+            this.$root.selectMedioPublicidad();
+            this.$root.getEmpresa();
+            this.$root.getClavesLadas();
         }
     }
 </script>

@@ -36,6 +36,7 @@ use App\Cuenta;
 use App\Avaluo;
 use App\User;
 use App\EquipLote;
+use App\Premios;
 use App\PlanoProyecto;
 use App\DocProyecto;
 use NumerosEnLetras;
@@ -210,14 +211,7 @@ class ContratoController extends Controller
         }
 
         return [
-            'pagination' => [
-                'total'         => $contratos->total(),
-                'current_page'  => $contratos->currentPage(),
-                'per_page'      => $contratos->perPage(),
-                'last_page'     => $contratos->lastPage(),
-                'from'          => $contratos->firstItem(),
-                'to'            => $contratos->lastItem(),
-            ], 'contratos' => $contratos, 'contadorContrato' => $contratos->total()
+            'contratos' => $contratos
         ];
     }
 
@@ -248,6 +242,9 @@ class ContratoController extends Controller
                     'creditos.manzana',
                     'creditos.num_lote',
                     'creditos.valor_terreno',
+                    'creditos.descuento_id',
+                    'creditos.descuento_desc',
+                    'creditos.descuento_cant',
                     'lotes.sobreprecio',
                     'licencias.foto_predial',
                     'licencias.foto_lic',
@@ -584,6 +581,15 @@ class ContratoController extends Controller
         $credito->credito_solic = $request->credito_solic;
         $credito->contrato = 1;
 
+        $credito->paquete =  $request->paquete;
+        $credito->descripcion_paquete = $request->descripcion_paquete;
+        $credito->desc_eq_paquete = $request->desc_eq_paquete;
+        $credito->costo_paquete = $request->costo_paquete;
+        $credito->precio_venta = $request->precio_venta;
+        $credito->promocion = $request->promocion;
+        $credito->descripcion_promocion = $request->descripcionPromo;
+        $credito->descuento_promocion = $request->descuentoPromo;
+
         $inst_sel = inst_seleccionada::select('id')
                     ->where('credito_id','=',$request->id)
                     ->where('elegido','=',1)->get();
@@ -694,6 +700,16 @@ class ContratoController extends Controller
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
 
+            $credito->descuento_id = $request->descuento_id;
+            $credito->descuento_desc = $request->descuento_desc;
+            $credito->descuento_cant = $request->descuento_cant;
+
+            if($credito->descuento_id != NULL){
+                $premio = Premios::findOrFail($credito->descuento_id);
+                $premio->status = 1;
+                $premio->save();
+            }
+
             $loteId = $credito->lote_id;
             //Calcular porcentaje correspondiente de terreno y construcción
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
@@ -782,6 +798,8 @@ class ContratoController extends Controller
                 'creditos.costo_paquete', 'inst_seleccionadas.tipo_credito',
                 'inst_seleccionadas.id as inst_credito', 'creditos.precio_obra_extra',
                 'creditos.fraccionamiento as proyecto', 'creditos.lote_id',
+                'creditos.descuento_desc',
+                'creditos.descuento_cant',
                 'fraccionamientos.tipo_proyecto',
 
                 'lotes.calle', 'lotes.numero', 'lotes.interior',
@@ -876,11 +894,12 @@ class ContratoController extends Controller
         $fecha_nac_coa = new Carbon($contratos[0]->f_nacimiento_coa);
         $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
         // Se calcula el precio base de la casa
-        $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
+        $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion - $contratos[0]->descuento_cant;
         $descuentoPromo = $contratos[0]->descuento_promocion;
 
         // Se da formato numerico
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
+        $contratos[0]->descuento_cant = number_format((float)$contratos[0]->descuento_cant, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
         $contratos[0]->precio_terreno_excedente = number_format((float)$contratos[0]->precio_terreno_excedente, 2, '.', ',');
         $contratos[0]->comision_apertura = number_format((float)$contratos[0]->comision_apertura, 2, '.', ',');
@@ -1891,6 +1910,21 @@ class ContratoController extends Controller
                 $credito->credito_solic = $request->credito_solic;
                 $credito->plazo = $request->plazo_credito;
                 $credito->desc_eq_paquete = $request->desc_eq_paquete;
+
+                $credito->promocion = $request->promocion;
+                $credito->descripcion_promocion = $request->descripcionPromo;
+                $credito->descuento_promocion = $request->descuentoPromo;
+
+                $credito->descuento_id = $request->descuento_id;
+                $credito->descuento_desc = $request->descuento_desc;
+                $credito->descuento_cant = $request->descuento_cant;
+
+                if($credito->descuento_id != NULL){
+                    $premio = Premios::findOrFail($credito->descuento_id);
+                    $premio->status = 1;
+                    $premio->save();
+                }
+
                 $credito->contrato = 1;
 
             // Se obtiene la institución de financiamiento actual del contrato

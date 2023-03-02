@@ -240,6 +240,9 @@ const app = new Vue({
         etapas: [],
         manzanas:[],
         lotes:[],
+        empresas:[],
+        arrayClaves: [],
+        arrayMediosPublicidad:[],
         buscar:''
     },
 
@@ -266,6 +269,19 @@ const app = new Vue({
             window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
                 me.notifications.unshift(notification);
             });
+        },
+        getClavesLadas(){
+            let me = this;
+            me.arrayClaves=[];
+            var url = '/getClavesLadas';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayClaves = respuesta.claves;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
         },
         /* Making an Axios call to the backend and getting the data from the database. */
         selectFraccionamientos(){
@@ -329,6 +345,30 @@ const app = new Vue({
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.manzanas = respuesta;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        getEmpresa(){
+            let me = this;
+            me.empresas=[];
+            var url = '/lotes/empresa/select';
+            axios.get(url).then(function (response) {
+                var respuesta = response;
+                me.empresas = respuesta.data.empresas;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectMedioPublicidad(){
+            let me = this;
+            me.arrayMediosPublicidad=[];
+            var url = '/select_medio_publicidad';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayMediosPublicidad = respuesta.medios_publicitarios;
             })
             .catch(function (error) {
                 console.log(error);

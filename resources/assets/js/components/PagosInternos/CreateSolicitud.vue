@@ -183,7 +183,7 @@
                                                 <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar"
                                                     @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
                                                 ></Button>
-                                                <Button v-if="solic.vb_gerente == 0"
+                                                <Button v-if="solic.vb_gerente == 0 || usuario == 'shady'"
                                                         :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar"
                                                         :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>

@@ -30,7 +30,8 @@
             </div>
 
             <div v-if="muestraPremio" class="grid_ruleta">
-                <img
+                <div class="content_ruleta">
+                      <img
                     v-if="vP == '3'"
                     class="content_ruleta"
                     style=" z-index: 5;"
@@ -72,6 +73,9 @@
                     src="/img/ruleta/GraciasxParticipar.png"
                     alt=""
                 />
+
+                </div>
+              
             </div>
 
             <div v-if="div_registra" class="div_registra_d">
@@ -80,7 +84,7 @@
                     <input
                         v-model="no"
                         class="form-control"
-                        style="font-size: 16px; font-family: sans-serif; border-radius: 10px; color: black;"
+                        style="font-size: 15px; font-family: sans-serif; border-radius: 10px; color: black;"
                         type="text"
                         name=""
                         id="nom"
@@ -137,24 +141,28 @@
                         id="cws"
                         v-on:keypress="isNumber($event)"
                     />
-                    <div
-                        v-if="validDatos"
-                        class="mensaje-error"
-                        style="font-size: 16px; padding-top: 30px; margin-left: 100px;"
-                    >
-                        Llene todos los campos requeridos.
-                    </div>
                 </div>
 
+              
+            </div>
+            <div
+                v-if="validDatos"
+                class="mensaje-error"
+            >
+                Llene todos los campos requeridos.
+            </div>
+            <div v-if="div_registra" class="aviso_priv">
                 <a
-                    class="aviso_priv"
-                    style=" margin-left:220px;"
+                    style=" font-size: 25px; color: yellow;"
                     target="_blank"
                     href="https://www.casascumbres.mx/wp-content/uploads/2022/09/AvisoPrivacidad2022Nom-1.pdf"
-                    >Aviso de privacidad</a
-                >
+                    >Aviso de privacidad
+                </a>
+
             </div>
+
             <div v-if="div_registra" class="div_boton_gl">
+               
                 <img
                     style="width: 240px; height: 50px;"
                     src="/img/ruleta/BuenaSuerte_boton.png"
@@ -201,8 +209,8 @@
                         id="correo"
                     />
 
-                    <label style="font-size:14px; color: yellow"
-                        >* Recibirás tu cupón en un lapso de 24 horas *</label
+                    <label style="font-size:18px; color: yellow; padding-top: 30px;"
+                        >* Recibirás tu cupón en un lapso de 24 horas</label
                     >
                 </div>
 
@@ -221,8 +229,8 @@
                         v-on:keypress="isNumber($event)"
                     />
 
-                    <label style="font-size:14px; color: yellow"
-                        >* Recibirás tu cupón en un lapso de 24 horas *</label
+                    <label style="font-size:18px; color: yellow; padding-top: 30px;"
+                        >* Recibirás tu cupón en un lapso de 24 horas</label
                     >
                 </div>
             </div>
@@ -284,16 +292,7 @@ export default {
 
     methods: {
         registraD() {
-            if (
-                this.no != "" &&
-                this.app != "" &&
-                this.apm != "" &&
-                this.fn != ""
-            ) {
-                this.postLead();
-            } else {
                 this.div_registra = true;
-            }
         },
 
         btn_gl() {
@@ -301,8 +300,10 @@ export default {
                 this.no != "" &&
                 this.app != "" &&
                 this.apm != "" &&
-                this.fn != ""
+                this.fn != "" &&
+                 (this.reg_correo || this.reg_whts) 
             ) {
+                this.postLead();
                 this.div_registra = false;
                 this.validDatos = false;
             } else {
@@ -691,85 +692,77 @@ export default {
                 this.validCorreo = true;
                 return false;
             }
-        }
-    }
+        },     
+    },
 };
 </script>
 
 <style>
 body {
-    background-image: url("/img/ruleta/Background.png");
+    /* background-image: url("/img/ruleta/Background.png");
     background-position: center;
     background-size: cover;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
     z-index: -4;
 }
 .conte_principal {
-    overflow: hidden;
-    max-width: 1260px;
-    min-width: 1260px;
 
-    max-height: 1500px;
+    max-width: 1260px;
+    max-height: 750px;
     z-index: -3;
 }
 .content_grid {
     display: grid;
-    /* grid-template-rows: repeat(30,1fr);  */
-    /* bloques de 50 px  halto */
-    /* grid-template-columns: repeat(21,1fr);  */
-    /* loques de 60px  ancho */
-    /* grid-auto-rows: minmax(100px, auto);
-  grid-auto-columns:minmax(100px, auto); */
-    grid-template-columns: repeat(21, 60px);
-    grid-template-rows: repeat(30, 50px);
+    grid-template-columns: repeat(11, 60px);
+    grid-template-rows: repeat(25, 30px);
 
-    background-image: url("/img/ruleta/Background.png");
-    background-position: center;
     width: 100%;
     height: 100%;
     z-index: -2;
+    
 }
 
 .top {
     background-image: url("/img/ruleta/Participa_y_Gana.png");
-    grid-column: 7/16;
-    grid-row: 2/9;
-    width: 540px;
-    height: 350px;
+    /* background-size: cover; */
+    background-repeat: no-repeat;
+    background-size: contain;
+    grid-column: 4;
+    grid-row: 2/7;
+    width: 440px;
+    height: 200px;
     z-index: 1;
 }
 
 .grid_ruleta {
-    grid-column: 7/16;
-    grid-row: 8/19;
-    width: 540px;
-    height: 550px;
+    grid-column: 3/11;
+    grid-row: 8/16;
+    width: 432px;
+    height: 432px;
     z-index: 0;
 }
-.div_premios {
-    grid-column: 7/16;
-    grid-row: 8/19;
-    width: 540px;
-    height: 550px;
-}
+
 
 .div_fanfar_izq {
-    grid-column: 1/6;
-    grid-row: 2/13;
-    width: 540px;
-    height: 550px;
+    grid-column: 1/5;
+    grid-row: 5/12;
+    width: 250px;
+    height: 250px;
+
+    margin-left: -50px;
     z-index: 0;
 }
 .div_fanfar_der {
-    grid-column: 12/17;
-    grid-row: 2/13;
-    width: 540px;
-    height: 550px;
+    grid-column: 9/13;
+    grid-row: 5/12;
+    width: 250px;
+    height: 250px;
+    margin-right: -50px;
     z-index: 0;
 }
 
 .div_tr {
-    grid-column: 11;
+    grid-column:6;
     grid-row: 9;
     z-index: 2;
     width: 60px;
@@ -801,15 +794,15 @@ body {
     align-content: center;
     margin: auto;
     width: 100%; /* todo el ancho de el componente padre */
-    height: 540px; /* se ajusta a el ancho */
+    height: 100%; /* se ajusta a el ancho */
     z-index: 0;
 }
 
 .div_girar {
-    grid-column: 10/13;
-    grid-row: 19/21;
+    grid-column: 5;
+    grid-row: 23/25;
     width: 180px;
-    height: 100px;
+    height: 60px;
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
     display: flex;
     flex-direction: column;
@@ -825,10 +818,10 @@ body {
     transform: scale(120%);
 }
 .div_legenda {
-    grid-column: 8/15;
-    grid-row: 19;
+    grid-column: 3/10;
+    grid-row: 23;
     width: 420px;
-    height: 50px;
+    height: 30px;
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
     display: flex;
     flex-direction: column;
@@ -837,8 +830,8 @@ body {
 }
 
 .div_enviar {
-    grid-column: 10/14;
-    grid-row: 20;
+    grid-column: 5/9;
+    grid-row: 24;
     width: 240px;
     height: 50px;
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
@@ -858,12 +851,15 @@ body {
     transform: scale(115%);
 }
 .div_registra_d {
-    grid-column: 6/17;
-    grid-row: 4/21;
-    width: 630px;
-    height: 850px;
+    grid-column: 3/11;
+    grid-row: 2/26;
+    width: 480px;
+    height: 720px;
+    margin-left: -25px;
 
     background-image: url("/img/ruleta/formulario1.png");
+    background-size: cover;
+     background-repeat: no-repeat;
 
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
     display: flex;
@@ -877,23 +873,24 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 600px;
-    height: 700px;
-    margin-top: 120px;
+    width: 480px;
+    height: 660px;
+    margin-top: 75px;
     padding: 60px;
 
 
     z-index: 6;
     color: aliceblue;
-    font-size: x-large;
+    font-size: 17px;
     font-family: sans-serif;
 }
 
 .div_boton_gl {
-    grid-column: 9/14;
-    grid-row: 19;
+    grid-column: 5/10;
+    grid-row: 21;
     width: 240px;
     height: 50px;
+    margin-left: -25px;
 
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
     display: flex;
@@ -908,10 +905,12 @@ body {
 }
 
 .div_corr_wts {
-    grid-column: 7/17;
+    grid-column: 3/11;
     grid-row: 13/23;
-    width: 540px;
+    width: 480px;
     height: 450px;
+
+    margin-left: -30px;
 
     background-image: url("/img/ruleta/ventana_confirmacion.png");
     background-repeat: no-repeat;
@@ -929,20 +928,27 @@ body {
     flex-direction: column;
     align-items: center;
     align-content: space-between;
-    width: 420px;
+    width: 480px;
     height: 250px;
-    margin: 60px;
-    padding-top: 60px;
+    padding: 60px;
+    padding-top: 20px;
     z-index: 4;
 
     color: aliceblue;
-    font-size: x-large;
+    font-size: 15px;
     font-family: sans-serif;
 }
 .aviso_priv {
-    font-size: 20px;
-    color: yellow;
-    margin-top: 125px;
+    grid-column: 5/9;
+    grid-row: 24;
+    width: 240px;
+    height: 30px;
+
+     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 6;
     margin-left: -10px;
 }
 
@@ -953,12 +959,12 @@ body {
 }
 
 .div_boton_cw {
-    grid-column: 10/13;
-    grid-row: 19;
+    grid-column: 5/8;
+    grid-row: 23;
     width: 140px;
     height: 50px;
+    margin-left: 20px;
 
-    margin-left: 10px;
 
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
     display: flex;
@@ -983,11 +989,20 @@ body {
     animation-play-state: running;
 }
 .mensaje-error {
-    color: rgb(237, 33, 10);
-    font-size: 14px;
-    left: 300px;
-    padding-top: 30px;
-    margin-left: 100px;
+    grid-column: 5/10;
+    grid-row: 23;
+    width: 300px;
+    height: 30px;
+     margin-left: -25px;
+    /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 6;
+
+    color: rgb(255, 25, 0);
+    font-size: 16px;
 }
 
 @keyframes flecha {

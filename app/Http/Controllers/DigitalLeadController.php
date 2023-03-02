@@ -253,7 +253,7 @@ class DigitalLeadController extends Controller
                         }
                 }
                 if($fecha1 != '' && $fecha2!='') // Fecha de registro
-                    $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1,$fecha2]);
+                    $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1.' 00:00:01',$fecha2.' 23:59:59']);
                 if($buscar != '') // Nombre de lead
                     $leads = $leads->where('digital_leads.nombre','like', '%'. $buscar . '%');
                 if($b_apellidos != '') // Nombre de lead
@@ -961,6 +961,7 @@ class DigitalLeadController extends Controller
                 $obs->lead_id = $lead->id;
                 $obs->comentario = 'Lead Descartado';
                 $obs->usuario = Auth::user()->usuario;
+                $obs->visto = $fecha;
                 $obs->save();
         }
         $lead->save();

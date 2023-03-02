@@ -50,7 +50,8 @@
 
     .table-cell {
         display: table-cell;
-        padding: 0.5em;
+        padding: 1px;
+        padding-left: 5px;
         font-size: 7pt;
     }
 
@@ -128,6 +129,10 @@
         font-style: italic;
     }
 
+    .sub-title-cell{
+        style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 300px; margin-top:25px; padding-left:5px; background-color: #0B173B;
+    }
+
     .table-pagos { display: table; width: 98%; border-collapse: collapse; table-layout: fixed;}
     .table-bancaria { display: table; width: 98%; border-collapse: collapse; table-layout: fixed; line-height: 1%;}
     .table-row-pagos { display: table-row; align-items: center; text-align:center; vertical-align: middle;  color: white;}
@@ -143,12 +148,12 @@
     <div class="hoja1">
         <div style="position: static;">
             <p align="center"
-                style="border: ridge #0B173B 1px; font-size:15pt; color:white; margin-right: 100px; background-color: #0B173B;">
-                SOLICITUD DE CONTRATO DE COMPRA-VENTA</p>
+                style="border: ridge #0B173B 1px; font-size:13pt; color:white; margin-right: 100px; background-color: #0B173B;">
+                <strong>SOLICITUD DE CONTRATO DE COMPRA-VENTA</strong></p>
 
             <div class="table1" style="margin-top: -12px;">
-                <div class="table-row">
-                    <div style="border: ridge #0B173B 1px; padding-right:-20px; color:white; font-size:9pt; background-color: #0B173B;"
+                <div class="table-row" style="padding:0px;">
+                    <div style="border: ridge #0B173B 1px; padding-right:-20px; color:white; font-size:8pt; background-color: #0B173B;"
                         class="table-cell1">FECHA</div>
                     <div style="border: ridge #000000 1px; color:black; " class="table-cell1">
                         {{ strtoupper($contratos[0]->fecha) }}</div>
@@ -160,8 +165,7 @@
             </div>
         </div>
         <div style="position: static;  margin-top: -20px;">
-            <p align="left"
-                style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 300px; margin-top:25px; background-color: #0B173B;">
+            <p align="left" class="sub-title-cell">
                 DATOS DEL CREDITO</p>
             <div class="table1" style="border: ridge #0B173B 1px; color:black;  margin-top: -10px;">
                 <div class="table-row">
@@ -177,12 +181,11 @@
         </div>
 
         <div style="position: static;  margin-top: -25px;">
-            <p align="left"
-                style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 300px; margin-top:27px; background-color: #0B173B;">
+            <p align="left" class="sub-title-cell">
                 DATOS DEL COMPRADOR</p>
             <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">NOMBRE: <u>{{ mb_strtoupper($contratos[0]->apellidos) }}
+                    <div colspan="4"  class="table-cell">NOMBRE: <u>{{ mb_strtoupper($contratos[0]->apellidos) }}
                             {{ mb_strtoupper($contratos[0]->nombre) }}</u></div>
                 </div>
                 <div class="table-row">
@@ -292,8 +295,7 @@
         </div>
         @if ($contratos[0]->coacreditado == 1)
             <div style="position: static; margin-top: -25px;">
-                <p align="left"
-                    style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 200px; margin-top:27px; background-color: #0B173B;">
+                <p align="left" class="sub-title-cell">
                     DATOS DEL CONYUGE O COACREDITADO</p>
                 <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                     <div class="table-row">
@@ -391,17 +393,14 @@
         <div style="position: static; margin-top: -20px;">
             @if ($contratos[0]->tipo_proyecto == 1)
                 @if ($contratos[0]->modelo == 'Terreno')
-                    <p align="left"
-                        style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #0B173B;">
+                    <p align="left" class="sub-title-cell">
                         DATOS DEL TERRENO</p>
                 @else
-                    <p align="left"
-                        style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #0B173B;">
+                    <p align="left" class="sub-title-cell">
                         DATOS DE LA VIVIENDA</p>
                 @endif
             @elseif($contratos[0]->tipo_proyecto == 2)
-                <p align="left"
-                    style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; margin-top:25px; background-color: #0B173B;">
+                <p align="left" class="sub-title-cell">
                     DATOS DEL DEPARTAMENTO</p>
             @endif
             <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
@@ -474,12 +473,17 @@
                     <div colspan="3" class="table-cell">PROMOCION: {{ mb_strtoupper($contratos[0]->promocion) }}
                     </div>
                 </div>
+                @if($contratos[0]->descuento_desc != '' && $contratos[0]->descuento_desc != NULL)
+                    <div class="table-row">
+                        <div colspan="3" class="table-cell">PREMIO: {{ mb_strtoupper($contratos[0]->descuento_desc) }}
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
         <div style="position: static; margin-top: -20px;">
-            <p align="left"
-                style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; margin-top:20px; background-color: #0B173B;">
+            <p align="left" class="sub-title-cell">
                 PRESUPUESTO</p>
             <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
 
@@ -559,7 +563,6 @@
                         <div class="table-cell2">${{ $contratos[0]->credito_neto }}</div>
                         <div class="table-cell2">MONTO NETO CREDITO: </div>
                         <div class="table-cell2">${{ $contratos[0]->monto_total_credito }}</div>
-
                     </div>
                     <div class="table-row">
                         <div class="table-cell2"></div>
@@ -666,7 +669,7 @@
             </div>
         </div>
 
-        <div style="position: static; margin-top: -2px;">
+        <div style="position: static; margin-top: 5px;">
             <div class="table" style="color:black; margin-top: -1px;">
                 @if (count($pagos) > 0)
                     <div class="table-row">
@@ -722,9 +725,6 @@
                         {{ mb_strtoupper($contratos[0]->observacion) }}
                     </div>
                 </div>
-                <!--<div class="table-row">
-                    <div colspan="5" class="table-cell"></div>
-                </div>  -->
                 <div class="table-row">
                     @if ($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
                         <div colspan="20" class="table-cell" style="text-align:center;">
@@ -743,9 +743,9 @@
 
     <div style="display: inline-block; float: right; margin-top: 15px; margin-right: 35px;">
         @if ($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
-            <IMG SRC="img/contratos/logoContratoC2.png" width="170" height="170">
+            <IMG SRC="img/contratos/logoContratoC2.png" width="150" height="150">
         @else
-            <IMG SRC="img/contratos/logoContrato1.png" width="170" height="170">
+            <IMG SRC="img/contratos/logoContrato1.png" width="150" height="150">
         @endif
     </div>
 

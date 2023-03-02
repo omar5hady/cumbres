@@ -47,36 +47,23 @@
     
 
 
+    background-image: url('/img/ruleta/Background.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    max-width: 1920px;
-    min-width: 1260px;
-
+   
    
   
    
   }
 
 
-  @media screen and (max-width: 1080px){
 
-body{
-  background-image: url('/img/ruleta/Background.png');
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-
-
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-
-max-width: 1080px;
-
-
-
-}
 </style>
