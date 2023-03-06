@@ -16,6 +16,7 @@ use App\Credito;
 use App\Vendedor;
 use App\Fraccionamiento;
 use App\Cliente_observacion;
+use App\Premios;
 use Carbon\Carbon;
 use Excel;
 use Auth;
@@ -154,6 +155,11 @@ class ClienteController extends Controller
         foreach($personas as $index => $persona){
             $persona->diferenciaGer = 0;
             $now = Carbon::now();
+
+            $persona->premio = Premios::join('digital_leads as l','premios.lead_id','=','l.id')
+                ->select('premios.*', 'l.name_user')
+                ->where('premios.rfc','=',$persona->rfc)->get();
+
             if($persona->clasificacion > 1 && $persona->clasificacion <= 4){
                 $fechaSeg = Carbon::parse($persona->seguimiento);
                 $persona->diferenciaGer = $fechaSeg->diffInDays($now);
@@ -342,7 +348,6 @@ class ClienteController extends Controller
             $cliente->clasificacion = 7;
             $cliente->lugar_nacimiento = $request->lugar_nacimiento;
             $cliente->nombre_recomendado = $request->nombre_recomendado;
-
             $cliente->save();
 
             $observacion = new Cliente_observacion();
@@ -366,10 +371,8 @@ class ClienteController extends Controller
 
         try{
             DB::beginTransaction();
-
             $cliente = Cliente::findOrFail($request->id);
             $persona = Personal::findOrFail($request->id);
-
             $persona->departamento_id = 8;
             $persona->nombre = $request->nombre;
             $persona->apellidos = $request->apellidos;
@@ -384,7 +387,6 @@ class ClienteController extends Controller
             $persona->num_pasaporte = $request->num_pasaporte;
             $persona->num_ine = $request->num_ine;
             $persona->activo = 1;
-
             $persona->save();
 
             $cliente->sexo = $request->sexo;
@@ -450,6 +452,14 @@ class ClienteController extends Controller
             DB::rollBack();
         }
 
+    }
+
+    public function storeObs(Request $request){
+        $observacion = new Cliente_observacion();
+        $observacion->cliente_id = $request->id;
+        $observacion->comentario = $request->observacion;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
     }
 
     // Función para actualizar los datos del prospecto desde el modulo de Asesores.

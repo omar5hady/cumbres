@@ -160,6 +160,7 @@
                                         <th>Clasificación</th>
                                         <th>Fecha de alta</th>
                                         <th>Observaciones</th>
+                                        <th></th>
                                         <th v-if="rolId != 2">Vendedor</th>
                                         <th v-if="rolId != 2">Vendedor Auxiliar</th>
                                         <th v-if="rolId != 2">Publicidad</th>
@@ -224,6 +225,14 @@
                                         </td>
                                         <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3(prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                        <td>
+                                            <template v-if="prospecto.premio.length > 0">
+                                                <a v-if="prospecto.premio[0].premio > 0" target="_blank" class="btn btn-scarlet" title="Descargar cupón" v-bind:href="'/premios/cuponPDF'+
+                                                        '?gc='+ prospecto.premio[0].lead_id+'&d='+ prospecto.premio[0].name_user">
+                                                    <i class="fa fa-gift"></i>&nbsp;
+                                                </a>
+                                            </template>
+                                        </td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.vAux_completo"></td>
                                         <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
@@ -1224,13 +1233,14 @@
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
-                    <div class="form-group row" v-if="rolId != 2">
+                    <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
                         <div class="col-md-6">
                                 <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
                         </div>
                         <div class="col-md-2">
-                            <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                            <button type="button"  class="btn btn-primary" v-if="rolId != 2" @click="agregarComentario()">Guardar</button>
+                            <button type="button"  class="btn btn-primary" v-if="rolId == 2" @click="storeObs()">Guardar</button>
                         </div>
                     </div>
 
@@ -2073,6 +2083,28 @@
                 let me = this;
                 //Con axios se llama el metodo store del controller
                 axios.post('/clientes/storeObsGerente',{
+                    'id':this.id,
+                    'observacion':this.observacion,
+                }).then(function (response){
+                    me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comentario guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            storeObs(){
+                let me = this;
+                //Con axios se llama el metodo store del controller
+                axios.post('/clientes/storeObs',{
                     'id':this.id,
                     'observacion':this.observacion,
                 }).then(function (response){

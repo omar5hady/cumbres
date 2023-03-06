@@ -102,7 +102,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="6" class="text-center">REPORTE POR ASESOR</th>
+                                                <th colspan="7" class="text-center">REPORTE POR ASESOR</th>
                                             </tr>
                                             <tr>
                                                 <th> Asesor</th>
@@ -110,6 +110,7 @@
                                                 <th> Descartados</th>
                                                 <th></th>
                                                 <th colspan="2"></th>
+                                                <th> Removidos </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -123,6 +124,9 @@
                                                 </td>
                                                 <td class="table-danger">
                                                     <a @click="verLeads(asesor.rojo, 'Rojo')" href="#">{{asesor.nRojo}}</a>
+                                                </td>
+                                                <td class="td2">
+                                                    <a @click="verLeads(asesor.removidos, 'Removidos')" href="#">{{asesor.n_removidos}}</a>
                                                 </td>
                                             </tr>
 
@@ -155,12 +159,21 @@
                 <template v-slot:body>
                     <div class="form-group row">
                         <div class="col-md-12">
-                            <TableComponent :cabecera="['Lead','Campaña','Proyecto']">
+                            <TableComponent v-if="modal == 1" :cabecera="['Lead','Campaña','Proyecto']">
                                 <template v-slot:tbody>
                                     <tr v-for="c in leads" :key="c.id">
                                         <td class="td2" v-text="c.nombre+' '+c.apellidos"></td>
                                         <td>{{(c.nombre_campania) ? c.nombre_campania : 'Organico'}}</td>
                                         <td class="td2" v-text="c.proyecto"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                            <TableComponent v-if="modal == 2" :cabecera="['Lead','Fecha removido','FIn de castigo']">
+                                <template v-slot:tbody>
+                                    <tr v-for="c in leads" :key="c.id">
+                                        <td class="td2" v-text="c.l_nombre+' '+c.l_apellidos"></td>
+                                        <td>{{c.f_ini}}</td>
+                                        <td class="td2" v-text="c.f_fin"></td>
                                     </tr>
                                 </template>
                             </TableComponent>
@@ -249,10 +262,15 @@
 
             verLeads(data,tipo){
                 this.modal = 1;
-                this.tituloModal = 'Leads en '+tipo;
+                if(tipo != 'Removidos'){
+                    this.tituloModal = 'Leads en '+tipo;
+                }
+                else{
+                    this.modal = 2
+                    this.tituloModal = 'Leads Removidos'
+                }
                 this.leads = data;
             },
-
 
             formatNumber(value) {
                 let val = (value/1).toFixed(2)

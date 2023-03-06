@@ -152,6 +152,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/clientes/actualizar','ClienteController@update');
         Route::put('clientes/setAdvertising','ClienteController@setAdvertising');
         Route::put('/clientes/actualizar2','ClienteController@updateProspecto');
+        Route::post('/clientes/storeObs','ClienteController@storeObs');
         Route::get('/clientes/observacion','ClienteController@listarObservacion');
         Route::get('/clientes/clientesPorReasignar','ClienteController@clientesPorReasignar');
         Route::put('/clientes/desactivar','ClienteController@desactivar');
@@ -1152,6 +1153,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/leads/store', 'DigitalLeadController@store');
 
         Route::put('/leads/update', 'DigitalLeadController@update');
+        Route::put('/leads/auditar', 'DigitalLeadController@auditar');
         Route::put('/leads/changeStatus', 'DigitalLeadController@changeStatus');
         Route::put('/leads/hibernarLead', 'DigitalLeadController@hibernarLead');
         Route::put('/leads/setCuponEnviado', 'DigitalLeadController@setCuponEnviado');

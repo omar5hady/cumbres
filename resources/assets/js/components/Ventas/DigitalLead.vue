@@ -66,7 +66,6 @@
                                 <input type="text" v-if="b_motivo == 1" v-model="b_contacto" @keyup.enter="listarLeads(1)" placeholder="Medio de contacto" class="form-control col-sm-6">
                             </div>
                         </div>
-
                         <div class="col-md-8" v-if="b_motivo ==1 || b_motivo == 2">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
@@ -85,7 +84,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-6" v-if="b_motivo == 1">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Semaforo Atención:" class="form-control col-sm-4">
@@ -97,7 +95,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-8" v-if="b_motivo ==1">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
@@ -109,7 +106,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-8">
                             <div class="input-group" v-if="b_motivo == 1">
                                 <select class="form-control"  v-model="b_asesor"
@@ -131,7 +127,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-10" v-if="userId == 25511 //Adrian
                                     || userId == 28669 //Ashly
                                     || userId == 28271 //Alejandro Ort
@@ -145,7 +140,22 @@
                                 </select>
                                 <input type="text" readonly placeholder="Pendiente de envio de cupon:" class="form-control col-sm-4">
                                 <select class="form-control" v-model="b_cupon">
-                                    <option value="">No</option>
+                                    <option value="3">Todos</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-10" v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 || rolId == 1 || userId == 10">
+                            <div class="input-group" v-if="b_motivo == 1">
+                                <input type="text" readonly placeholder="Leads auditados:" class="form-control col-sm-4">
+                                <select class="form-control  col-sm-4" v-model="b_auditado">
+                                    <option value="">Todos</option>
+                                    <option value="0">No</option>
                                     <option value="1">Si</option>
                                 </select>
                             </div>
@@ -170,7 +180,7 @@
                                         '?buscar='+ b_cliente+'&campania='+ b_campania+
                                         '&status='+ b_status+'&asesor='+ b_asesor+
                                         '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
-										'&hibernar=' + b_hibernar +
+										'&hibernar=' + b_hibernar + '&b_auditado=' + b_auditado +
                                         '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
                                     <i class="fa fa-file-text"></i>&nbsp; Excel para Audiencia
                                 </a>
@@ -186,7 +196,7 @@
                         :cabecera="[
                             '','Avance', ' ','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
                             'Presupuesto','Modelo recomendado','Estatus','Vendedor asignado',
-                            'Fecha de alta','Observaciones', '   '
+                            'Fecha de alta','Observaciones', '   ', '     ',
                         ]"
                     >
                         <template v-slot:tbody>
@@ -287,6 +297,12 @@
                                     <template v-if="lead.ini_dormir == null">
                                         <Button :btnClass="'btn-dark'" title="Hibernar lead" :icon="'fa fa-power-off'" @click="abrirModal('hibernar', lead)"></Button>
                                     </template>
+                                </td>
+                                <td class="td2" v-if="userId == 25511 //Adrian
+                                    || userId == 28271 //Alejandro Ort
+                                    || rolId == 1">
+                                    <Button v-if="lead.f_audit == null" :btnClass="'btn-danger'" title="Auditar" :icon="'fa fa-user-secret'" @click="abrirModal('auditar', lead)"></Button>
+                                    <label v-else>Auditado el: {{this.moment(lead.f_audit).locale('es').format('DD/MMM/YYYY')}}</label>
                                 </td>
                             </tr>
                         </template>
@@ -1643,6 +1659,22 @@
                 <Button v-if="fin_dormir != '' && comentario != ''" @click="hibernarLead()" :icon="'fa fa-power-off'"></Button>
             </template>
         </ModalComponent>
+        <ModalComponent v-if="modal==5"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <label class="col-md-2 form-control-label" for="text-input"><strong>Resultado de la auditoria</strong></label>
+                    <div class="col-md-8">
+                        <textarea rows="3" cols="30" class="form-control" v-model="comentario"></textarea>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <Button v-if="comentario != ''" @click="auditar()" :icon="'icon-check'"></Button>
+            </template>
+        </ModalComponent>
     </main>
 </template>
 
@@ -1697,7 +1729,8 @@ export default {
             b_user_name : '',
             b_user_lastname : '',
             b_contacto : '',
-            b_cupon: '',
+            b_cupon: '3',
+            b_auditado: '',
             b_hibernar: 0,
             proceso : false,
             loading: false,
@@ -1921,7 +1954,6 @@ export default {
             });
 
         },
-
         hibernarLead(){
             let me = this;
 
@@ -1940,7 +1972,22 @@ export default {
                 }
             ).catch(error => console.log(error));
         },
+        auditar(){
+            let me = this;
 
+            axios.put('/leads/auditar',{
+                'id': me.id,
+                'comentario': me.comentario,
+            }).then(
+                rsponse => {
+                    this.myAlerts.popAlert('Lead en auditado');
+                    this.listarLeads(this.arrayLeads.current_page);
+                    this.cerrarModal();
+
+                    return response.data;
+                }
+            ).catch(error => console.log(error));
+        },
         eliminar(id){
             swal({
             title: '¿Desea eliminar?',
@@ -1969,7 +2016,6 @@ export default {
             }
             })
         },
-
         changeStatus(id){
             Swal.fire({
                 title: '¿Estas seguro de finalizar el seguimiento de este lead?',
@@ -1998,7 +2044,6 @@ export default {
             });
 
         },
-
         setCuponEnviado(id){
             let me = this;
 
@@ -2011,7 +2056,6 @@ export default {
                 }
             ).catch(error => console.log(error));
         },
-
         finalizar(){
 
             let me = this;
@@ -2058,11 +2102,9 @@ export default {
                 })()
 
         },
-
         fichaTecnica(archivo){
             window.open('/files/modelos/ficha/'+archivo, '_blank')
         },
-
         descartar(){
             Swal.fire({
                 title: '¿Estas seguro de finalizar el seguimiento de este lead?',
@@ -2102,7 +2144,9 @@ export default {
             this.b_prioridad='';
             this.b_modelo ='';
             this.b_contacto = '';
-            this.b_cupon = '';
+            this.b_cupon = '3';
+            this.b_hibernar = '';
+            this.b_auditado = '';
 
             this.listarLeads(1);
         },
@@ -2137,7 +2181,6 @@ export default {
 
 
         },
-
         getDatosCliente(rfc){
             var url = '/leads/getCliente?rfc=' + rfc;
             let me = this;
@@ -2201,6 +2244,7 @@ export default {
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
                 '&b_cupon='+me.b_cupon + '&hibernar=' + me.b_hibernar +
+                '&b_auditado=' + me.b_auditado +
                 '&modelo='+me.b_modelo      + '&page=' + page + '&b_semaforo=' + me.b_semaforo +
                 '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname +
                 '&b_contacto='+me.b_contacto
@@ -2263,8 +2307,6 @@ export default {
                 console.log(error);
             });
         },
-
-
         campaniaSelect(search, loading){
             let me = this;
             loading(true)
@@ -2280,12 +2322,10 @@ export default {
                 console.log(error);
             });
         },
-
         getCampania(val1){
             let me = this;
             me.campania_id = val1.id
         },
-
         selectCampania(buscar){
             let me = this;
 
@@ -2304,14 +2344,12 @@ export default {
             me.loading = true;
             me.datos.empresa_coa = val1.nombre;
             me.datos.empresaCoa_id = val1.id;
-
         },
         getDatosEmpresa2(val1){
             let me = this;
             me.loading = true;
             me.datos.empresa_id = val1.id;
             me.datos.empresa = val1.nombre;
-
         },
         getInventario(){
             let me = this;
@@ -2381,7 +2419,6 @@ export default {
             this.modal = 0;
             this.selectCampania(1);
         },
-
         listarObservacion(page,id){
             axios.get('/leads/getObs'+
                 '?id='+id+
@@ -2394,20 +2431,17 @@ export default {
             sms(){
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/customsms').then(function (response){
-
-
                     swal({
                         position: 'top-end',
                         type: 'success',
                         title: 'Deposito agregado correctamente',
                         showConfirmButton: false,
                         timer: 1500
-                        })
+                    })
                 }).catch(function (error){
                     console.log(error);
                 });
             },
-
         storeLead(){
             if(this.nombre == '' || this.medio_contacto == '' ||this.proceso==true) //Se verifica si hay un error (campo vacio)
             {
@@ -2492,7 +2526,6 @@ export default {
                 this.proceso = false;
             });
         },
-
         updateLead(){
             if(this.nombre == '' || this.proceso==true) //Se verifica si hay un error (campo vacio)
             {
@@ -2578,10 +2611,8 @@ export default {
                 this.proceso = false;
             });
         },
-
         storeObs(){
             this.proceso=true;
-
             let me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/leads/storeObs',{
@@ -2611,7 +2642,6 @@ export default {
                 this.proceso = false;
             });
         },
-
         abrirModal1(id,motivo){
             this.listarObservacion(1,id)
             this.modal = 2;
@@ -2621,10 +2651,8 @@ export default {
             this.motivo = motivo;
             this.fecha_aviso = '';
         },
-
         abrirModal(accion,data =[]){
             this.selectEstados();
-
             this.selectEmpresa(this.empresa);
             this.selectCreditos();
 
@@ -2792,9 +2820,15 @@ export default {
                     this.tituloModal= 'Hibernar lead';
                     break;
                 }
+                case 'auditar':{
+                    this.id = data['id'];
+                    this.comentario = '';
+                    this.modal = 5;
+                    this.tituloModal= 'Auditar lead';
+                    break;
+                }
             }
         },
-
         isNumber: function(evt) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -2804,12 +2838,10 @@ export default {
                 return true;
             }
         },
-
         formatNumber(value) {
             let val = (value/1).toFixed(2)
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
-
         back(){
             this.editar = 0;
         }

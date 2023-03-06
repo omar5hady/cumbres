@@ -293,12 +293,22 @@ class DigitalLeadController extends Controller
                     if($b_semaforo == 3)
                         $leads = $leads->where('fecha_update','<',Carbon::now()->subDays(16));
                 }
-                if($request->b_cupon == 1){
+                if($request->b_cupon == 1){//Pendientes de envio de cupon
                     $cupones = Premios::select('lead_id as id')->get();
                     $leads = $leads->whereIn('digital_leads.id',$cupones)
                             ->where('digital_leads.envio_cupon','=',NULL);
                 }
-
+                if($request->b_cupon == 0){
+                    $cupones = Premios::select('lead_id as id')->get();
+                    $leads = $leads->whereIn('digital_leads.id',$cupones)
+                            ->where('digital_leads.envio_cupon','!=',NULL);
+                }
+                if($request->b_auditado == 0){//No
+                    $leads = $leads->where('f_audit','=', NULL);
+                }
+                if($request->b_auditado == 1){//Si
+                    $leads = $leads->where('f_audit','!=', NULL);
+                }
                 if($request->hibernar == 1){
                     $leads = $leads->where('ini_dormir','!=', NULL);
                 }
@@ -1052,7 +1062,7 @@ class DigitalLeadController extends Controller
         // Se obtienen los asesores que tienen por lo menos un lead asignado.
         $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
                 ->select('personal.id','personal.nombre','personal.apellidos')
-                ->where('vendedor_asign','!=',NULL)
+                //->where('vendedor_asign','!=',NULL)
                 ->where('motivo','=',1)
                 ->groupBy('personal.id')
                 ->get();
@@ -1088,7 +1098,7 @@ class DigitalLeadController extends Controller
                                 'digital_leads.apellidos')
                 ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                 ->where('fecha_update','>',$today)
-                ->where('digital_leads.fecha_asign','>',$today)
+                ->where('digital_leads.fecha_asign','!=',NULL)
                 ->where('status','!=',0);
                 if($fecha1 != '') // Fecha de registro
                     $asesor->amarillo = $asesor->amarillo->whereBetween('created_at', [$fecha1, $fecha2]);
@@ -1106,7 +1116,7 @@ class DigitalLeadController extends Controller
                                 'digital_leads.apellidos')
                     ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                     ->where('fecha_update','<=',$today)
-                    ->where('digital_leads.fecha_asign','>',$today)
+                    ->where('digital_leads.fecha_asign','!=',NULL)
                     ->where('status','!=',0);
                     if($fecha1 != '') // Fecha de registro
                         $asesor->rojo = $asesor->rojo->whereBetween('created_at', [$fecha1, $fecha2]);
@@ -1116,8 +1126,20 @@ class DigitalLeadController extends Controller
 
             $asesor->nRojo = $asesor->rojo->count();
 
+            $asesor->removidos = $this->getCastigados($asesor->id);
+            $asesor->n_removidos = $asesor->removidos->count();
+
         }
         return $asesores;
+    }
+
+    private function getCastigados($asesor_id){
+        return AsesorCastigo::join('personal as p', 'asesor_castigos.asesor_id', '=', 'p.id')
+                ->join('digital_leads as l', 'asesor_castigos.lead_id','=', 'l.id')
+                ->select('asesor_castigos.*', 'p.nombre', 'p.apellidos', 'l.nombre as l_nombre', 'l.apellidos as l_apellidos')
+                ->where('asesor_castigos.asesor_id','=',$asesor_id)
+                ->orderBy('asesor_castigos.f_ini','desc')
+                ->get();
     }
 
     // Función para generar reporte de Digital Leads.
@@ -1575,6 +1597,18 @@ class DigitalLeadController extends Controller
             $request->comentario,
             $request->fin_dormir
         );
+    }
+
+    public function auditar(Request $request){
+        $lead = Digital_lead::findOrFail($request->id);
+        $obs = new Obs_lead(); // Nuevo comentario al lead
+        $obs->lead_id = $request->id;
+        $lead->f_audit = Carbon::now();
+        $obs->usuario = 'Auditoria';
+        $obs->comentario = $request->comentario;
+
+        $lead->save();
+        $obs->save();
     }
 
     public function despertar($hoy){
