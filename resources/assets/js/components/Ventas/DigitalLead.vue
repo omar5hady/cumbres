@@ -109,11 +109,7 @@
                         <div class="col-md-8">
                             <div class="input-group" v-if="b_motivo == 1">
                                 <select class="form-control"  v-model="b_asesor"
-                                        v-if="userId == 25511 //Adrian
-                                        || userId == 28669 //Ashly
-                                        || userId == 28271 //Alejandro Ort
-                                        || userId == 28128 //Ale Escobar
-                                        || userId == 33095 || rolId == 1">
+                                        v-if="rolId != 1">
                                     <option value="">Vendedor asignado</option>
                                     <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                 </select>

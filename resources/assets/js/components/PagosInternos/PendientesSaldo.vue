@@ -40,6 +40,7 @@
                     </div>
 
                     <TableComponent :cabecera="[
+                        ' ',
                         'Proveedor',
                         'Solicitante',
                         'Obra',
@@ -53,6 +54,11 @@
                     ]">
                         <template v-slot:tbody>
                             <tr v-for="solic in arrayPendientes.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                <td>
+                                    <Button :btnClass="'btn-success'" :icon="'fa fa-money'" @click="getPagosAnteriores(solic.id, solic.proveedor)">
+                                        Edo. Cuenta
+                                    </Button>
+                                </td>
                                 <td class="td2">
                                     {{solic.proveedor}}
                                 </td>
@@ -95,6 +101,44 @@
 
                 </div>
 
+                <ModalComponent v-if="modal" :titulo="'Edo. de Cuenta'"
+                    @closeModal="modal=0"
+                >
+                    <template v-slot:body>
+                        <RowModal :clsRow1="'col-md-7'" :label1="'Proveedor'">
+                            <input v-model="proveedor" class="form-control" disabled/>
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-5'" :label1="'Importe Total:'">
+                            <label>{{$root.formatNumber(arrayEdoCuenta[0].total)}}</label>
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-12'" :label1="''">
+                            <TableComponent :cabecera="[
+                                '','Cargo', 'Concepto', 'Detalle', 'Pago', 'Saldo'
+                            ]">
+                                <template v-slot:tbody>
+                                    <tr v-for="det in arrayEdoCuenta" :key="det.id" :class="{ 'table-danger' : det.extraordinario }">
+                                        <td class="td2">
+                                            {{det.fecha_solic}}
+                                        </td>
+                                        <td class="td2">
+                                           {{det.cargo}}
+                                        </td>
+                                        <td class="td2">
+                                           {{det.concepto}}
+                                        </td>
+                                        <td class="td2">
+                                           {{det.observacion}}
+                                        </td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(det.pago)"></td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(det.saldo)"></td>
+
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </RowModal>
+                    </template>
+                </ModalComponent>
+
                 <!--Inicio del modal observaciones-->
             </div>
             <!-- Fin ejemplo de tabla Listado -->
@@ -129,11 +173,28 @@ export default {
             arrayPendientes : [],
             b_proveedor : '',
             b_empresa : '',
+            modal : 0,
+            arrayEdoCuenta : [],
+            proveedor : ''
         };
     },
     computed: {
     },
     methods: {
+        getPagosAnteriores(id, proveedor){
+            let me = this;
+            me.proveedor = proveedor
+            me.arrayEdoCuenta=[];
+            var url = 'sp/getPagosAnteriores?id=' + id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEdoCuenta = respuesta;
+                me.modal = 1;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         getEmpresa(){
             let me = this;
             me.empresas=[];

@@ -1189,6 +1189,11 @@
                                                                 {{det.fecha_factura}}
                                                             </td>
                                                             <td>{{det.folio_fisc}}</td>
+                                                            <td v-if="det.pendiente_id">
+                                                                <Button :btnClass="'btn-success'" :icon="'fa fa-money'" @click="abrirModal('edoCuenta', det)" v-if="vista == 1">
+                                                                    Edo. Cuenta
+                                                                </Button>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td colspan="9"></td>
@@ -1701,6 +1706,45 @@
                         </TableComponent>
                     </template>
                 </ModalComponent>
+
+                <ModalComponent v-if="modal == 8"
+                    :titulo="tituloModal"
+                    @closeModal="cerrarModal()"
+                >
+                    <template v-slot:body>
+                        <RowModal :clsRow1="'col-md-7'" :label1="'Proveedor'">
+                            <input v-model="solicitudData.proveedor" class="form-control" disabled/>
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-5'" :label1="'Importe Total:'">
+                            <label>{{$root.formatNumber(arrayEdoCuenta[0].total)}}</label>
+                        </RowModal>
+                        <RowModal :clsRow1="'col-md-12'" :label1="''">
+                            <TableComponent :cabecera="[
+                                '','Cargo', 'Concepto', 'Detalle', 'Pago', 'Saldo'
+                            ]">
+                                <template v-slot:tbody>
+                                    <tr v-for="det in arrayEdoCuenta" :key="det.id" :class="{ 'table-danger' : det.extraordinario }">
+                                        <td class="td2">
+                                            {{det.fecha_solic}}
+                                        </td>
+                                        <td class="td2">
+                                           {{det.cargo}}
+                                        </td>
+                                        <td class="td2">
+                                           {{det.concepto}}
+                                        </td>
+                                        <td class="td2">
+                                           {{det.observacion}}
+                                        </td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(det.pago)"></td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(det.saldo)"></td>
+
+                                    </tr>
+                                </template>
+                            </TableComponent>
+                        </RowModal>
+                    </template>
+                </ModalComponent>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -1758,6 +1802,8 @@ export default {
             arrayObs : [],
             arrayCuentas : [],
             arrayCuentasPago : [],
+
+            arrayEdoCuenta : [],
 
             solicitudData:{},
             datosDetalle:{},
@@ -2816,7 +2862,25 @@ export default {
                     me.solicitudData = { ...data }
                     break;
                 }
+                case 'edoCuenta':{
+                    me.modal = 8;
+                    me.tituloModal = 'Edo. de Cuenta';
+                    me.getPagosAnteriores(data['id']);
+                    break;
+                }
             }
+        },
+        getPagosAnteriores(id){
+            let me = this;
+            me.arrayEdoCuenta=[];
+            var url = 'sp/getPagosAnteriores?id=' + id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEdoCuenta = respuesta;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         verObs(solicitud){
             let me = this;

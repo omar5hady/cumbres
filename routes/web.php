@@ -1296,6 +1296,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
         Route::resource('/files-solic', solicPagos\ArchivosController::class);
         Route::get('/sp/printExcel/','solicPagos\SolicitudesController@printExcel');
+        Route::get('/sp/getPagosAnteriores/','solicPagos\SolicitudesController@getPagosAnteriores');
         Route::get('/sp/printExcelDetalles/','solicPagos\SolicitudesController@printExcelDetalles');
         Route::post('/sp/storeObs/','solicPagos\SolicitudesController@storeObs');
         Route::get('/sp/printComprobante/','solicPagos\SolicitudesController@printComprobante');

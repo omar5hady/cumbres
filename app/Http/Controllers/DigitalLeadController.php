@@ -713,7 +713,7 @@ class DigitalLeadController extends Controller
                 $persona->save;
 
                 $cliente = Cliente::findOrFail($cliente[0]->id);
-                $cliente->publicidad_id = $medio[0]->id;
+                $cliente->publicidad_id = $publi;
                 $cliente->proyecto_interes_id = $request->proyecto_interes;
                 $cliente->vendedor_id = $request->vendedor_asign;
                 $cliente->nss = $request->nss;

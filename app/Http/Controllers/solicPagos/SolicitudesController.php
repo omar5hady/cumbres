@@ -916,4 +916,35 @@ class SolicitudesController extends Controller
         $solic->rev_op = 1;
         $solic->save();
     }
+
+    public function getPagosAnteriores(Request $request){
+
+        $id = $request->id;
+
+        $solicitudes = [];
+
+        $solicitud = SpDetalle::join('sp_solicituds as solic', 'solic.id','=','sp_detalles.solic_id')
+            ->select('sp_detalles.*','solic.created_at as fecha_solic')
+            ->where('sp_detalles.id','=',$id)
+            ->first();
+
+        array_unshift($solicitudes, $solicitud);
+
+        $last_id = $solicitud->pendiente_id;
+
+        while($last_id){
+            if($last_id != NULL){
+                $solicitud = SpDetalle::join('sp_solicituds as solic', 'solic.id','=','sp_detalles.solic_id')
+                    ->select('sp_detalles.*','solic.created_at as fecha_solic')
+                    ->where('sp_detalles.id','=',$last_id)
+                    ->first();
+
+                $last_id = $solicitud->pendiente_id;
+                array_unshift($solicitudes, $solicitud);
+            }
+        }
+
+        return $solicitudes;
+
+    }
 }
