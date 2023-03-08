@@ -887,19 +887,26 @@ class SolicitudesController extends Controller
         return $detalles;
     }
 
-    public function printComprobante(Request $request){
+    private function getSolic($id){
         $solicitud = SpSolicitud::join('personal as pv','sp_solicituds.proveedor_id','=','pv.id')
-            ->join('personal as prov','pv.id','=','prov.id')
-            ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
-                'pv.rfc as rfc_prov'
-            )
-            ->where('sp_solicituds.id','=',$request->id)->first();
+        ->join('personal as prov','pv.id','=','prov.id')
+        ->select('sp_solicituds.*',  DB::raw("CONCAT(prov.nombre,' ',prov.apellidos) AS proveedor"),
+            'pv.rfc as rfc_prov'
+        )
+        ->where('sp_solicituds.id','=',$id)->first();
+
+        $solicitud->det = SpDetalle::leftJoin('lotes','sp_detalles.lote_id','=','lotes.id')
+            ->select('sp_detalles.*','lotes.manzana','lotes.num_lote','lotes.sublote')
+            ->where('sp_detalles.solic_id','=',$id)->get();
+
+        return $solicitud;
+    }
+
+    public function printComprobante(Request $request){
+        $solicitud = $this->getSolic($request->id);
 
         $solicitud->importe_letra = NumerosEnLetras::convertir($solicitud->importe, 'Pesos', true, 'Centavos');
         $solicitud->importe_letra = substr($solicitud->importe_letra, strpos($solicitud->importe_letra, "("));
-
-        $solicitud->det = SpDetalle::select('observacion')->where('solic_id','=',$request->id)->get();
-
 
         setlocale(LC_TIME, 'es_MX.utf8');
         $solicitud->fecha_pago = new Carbon();
@@ -946,5 +953,17 @@ class SolicitudesController extends Controller
 
         return $solicitudes;
 
+    }
+
+    public function printSolPago(Request $request){
+        $solicitud = $this->getSolic($request->id);
+
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $fecha = new Carbon($solicitud->created_at);
+        $solicitud->f_created = $fecha->formatLocalized('%d de %B del %Y %H:%m');
+
+        $pdf = \PDF::loadview('pdf.PagosInternos.solicitudPago',['solicitud' => $solicitud]);
+
+        return $pdf->stream('Solicitud_pago.pdf');
     }
 }

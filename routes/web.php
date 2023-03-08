@@ -1300,6 +1300,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/sp/printExcelDetalles/','solicPagos\SolicitudesController@printExcelDetalles');
         Route::post('/sp/storeObs/','solicPagos\SolicitudesController@storeObs');
         Route::get('/sp/printComprobante/','solicPagos\SolicitudesController@printComprobante');
+        Route::get('/sp/printSolPago/','solicPagos\SolicitudesController@printSolPago');
         Route::put('/sp/setRevOpc/','solicPagos\SolicitudesController@setRevOpc');
         Route::delete('/solic-detalles/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
         Route::put('/solic-pagos/changeVbGerente/{id}','solicPagos\SolicitudesController@changeVbGerente');

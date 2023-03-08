@@ -79,7 +79,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="indexSolicitudes(1)">
@@ -183,7 +182,11 @@
                                                 <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar"
                                                     @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
                                                 ></Button>
-                                                <Button v-if="solic.vb_gerente == 0 || usuario == 'shady'"
+                                                <Button v-if="solic.vb_gerente == 0 ||
+                                                        usuario == 'shady' ||
+                                                        usuario == 'jorge.diaz' ||
+                                                        usuario == 'dora.m' ||
+                                                        usuario == 'uriel.al'"
                                                         :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar"
                                                         :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>
@@ -254,6 +257,12 @@
                                                         <Button :btnClass="'btn-danger'" :size="'btn-sm'" title="Eliminar" v-if="solic.vb_gerente == 0"
                                                                 :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                         ></Button>
+                                                        <a class="btn btn-scarlet"
+                                                            target="_blank"
+                                                            title="Imprimir solicitud"
+                                                            :href="'/sp/printSolPago?id='+solic.id">
+                                                            <i class="fa fa-file-pdf-o"></i>
+                                                        </a>
                                                     </td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
@@ -302,6 +311,12 @@
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                         ></Button>
+                                                        <a class="btn btn-scarlet"
+                                                            target="_blank"
+                                                            title="Imprimir solicitud"
+                                                            :href="'/sp/printSolPago?id='+solic.id">
+                                                            <i class="fa fa-file-pdf-o"></i>
+                                                        </a>
                                                     </td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
@@ -356,6 +371,12 @@
                                                 <Button :btnClass="'btn-primary'" title="Ver solicitd" :size="'btn-sm'"
                                                     @click="vistaFormulario('ver', solic)" :icon="'icon-eye'"
                                                 ></Button>
+                                                <a class="btn btn-scarlet"
+                                                    target="_blank"
+                                                    title="Imprimir solicitud"
+                                                    :href="'/sp/printSolPago?id='+solic.id">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </a>
                                             </td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
@@ -433,6 +454,13 @@
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                                 :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                         ></Button>
+
+                                                        <a class="btn btn-scarlet"
+                                                            target="_blank"
+                                                            title="Imprimir solicitud"
+                                                            :href="'/sp/printSolPago?id='+solic.id">
+                                                            <i class="fa fa-file-pdf-o"></i>
+                                                        </a>
                                                     </td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
@@ -501,6 +529,12 @@
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                         ></Button>
+                                                        <a class="btn btn-scarlet"
+                                                            target="_blank"
+                                                            title="Imprimir solicitud"
+                                                            :href="'/sp/printSolPago?id='+solic.id">
+                                                            <i class="fa fa-file-pdf-o"></i>
+                                                        </a>
                                                     </td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
@@ -592,6 +626,13 @@
                                                     :btnClass="'btn-success'" :size="'btn-sm'" :title="'Ver Pago'"
                                                     @click="abrirModal('verPago',solic)" :icon="'fa fa-money'"
                                                 ></Button>
+
+                                                <a class="btn btn-scarlet"
+                                                    target="_blank"
+                                                    title="Imprimir solicitud"
+                                                    :href="'/sp/printSolPago?id='+solic.id">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </a>
                                             </td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
@@ -676,6 +717,12 @@
                                                     :btnClass="'btn-success'" :size="'btn-sm'" :title="'Ver Pago'"
                                                     @click="abrirModal('verPago',solic)" :icon="'fa fa-money'"
                                                 ></Button>
+                                                <a class="btn btn-scarlet"
+                                                    target="_blank"
+                                                    title="Imprimir solicitud"
+                                                    :href="'/sp/printSolPago?id='+solic.id">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </a>
                                             </td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">

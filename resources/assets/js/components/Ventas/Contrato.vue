@@ -3821,10 +3821,24 @@
                 });
 
             },
+            validateEmail(mail, status){
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail) || status == 0)
+            {
+                return true;
+            }
+                alert("Email invalido!")
+                return (false)
+            },
             selectStatus(status){
                 let me = this;
                 if(status==3 || status==0 ){
-                    this.abrirModal('statusFecha',this.arrayContratos.data);
+                    if(me.validateEmail(me.email, status)){
+                        this.abrirModal('statusFecha',this.arrayContratos.data);
+                    }
+                    else{
+                        this.status = 1;
+                        return
+                    }
                 }else{
                       swal({
                 title: 'Esta seguro de cambiar el status de este contrato?',

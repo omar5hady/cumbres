@@ -661,7 +661,7 @@ class DigitalLeadController extends Controller
         // Se obtiene el id del medio de publicidad.
         $medio = Medio_publicitario::select('id')->where('nombre','like','%'.$request->medio_publicidad.'%')->get();
         if(sizeof($medio) == 0)
-            $publi = 20;
+            $publi = 5;
         else{
             $publi = $medio[0]->id;
         }
@@ -831,10 +831,10 @@ class DigitalLeadController extends Controller
     // Funcion para asignar un lead de manera aleatoria.
     public function asignarLead(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $this->setVendedorAleatorio($request->id);
+        $this->setVendedorAleatorio($request->id, Auth::user()->usuario);
     }
 
-    private function setVendedorAleatorio($lead_id){
+    private function setVendedorAleatorio($lead_id, $usuario){
         $fecha = Carbon::now(); // Fecha actual.
         try{
             DB::beginTransaction();
@@ -866,7 +866,7 @@ class DigitalLeadController extends Controller
             $obs->comentario = 'Aviso!, lead asignado a '.$vendedorD->nombre.' '.$vendedorD->apellidos.' para seguimiento,
                                     favor de ingresar al modulo de Digital Leads para mas información. ';
 
-            $obs->usuario = 'Sistema';
+            $obs->usuario = $usuario;
             $obs->save();
 
 
@@ -1058,7 +1058,7 @@ class DigitalLeadController extends Controller
         $fecha2 = $request->fecha2;
         $proyecto = $request->proyecto;
 
-        $today = Carbon::now()->subDays(3)->format('Y-m-d');
+        $today = Carbon::now()->subDays(14)->format('Y-m-d');
         // Se obtienen los asesores que tienen por lo menos un lead asignado.
         $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
                 ->select('personal.id','personal.nombre','personal.apellidos')
@@ -1565,7 +1565,7 @@ class DigitalLeadController extends Controller
                     $obs->usuario = 'Sistema';
                     $obs->save();
 
-                    $this->setVendedorAleatorio($lead->id);
+                    $this->setVendedorAleatorio($lead->id, 'Sistema');
                 }
             }
 
