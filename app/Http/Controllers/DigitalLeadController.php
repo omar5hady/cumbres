@@ -1543,6 +1543,7 @@ class DigitalLeadController extends Controller
         $leads = Digital_lead::select('id','fecha_asign','vendedor_asign')
             ->where('fecha_asign', '!=', NULL)
             ->where('fecha_contacto','=',NULL)
+            ->where('status','!=',4)
             ->orderBy('fecha_asign','desc')
             ->get();
 

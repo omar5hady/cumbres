@@ -13,6 +13,7 @@ use App\Pago_contrato;
 use App\Apartado;
 use App\Pagos_lotes;
 use App\Cotizacion_lotes;
+use App\Digital_lead;
 use App\datos_calc_lotes;
 use App\Precio_etapa;
 use App\Precio_modelo;
@@ -1027,8 +1028,6 @@ class ContratoController extends Controller
         return $pdf->stream('ContratoCompraVenta.pdf');
     }
 
-
-
     // Función para imprimir los pagares
     public function pagareContratopdf(Request $request, $id)
     {
@@ -1465,6 +1464,19 @@ class ContratoController extends Controller
         $pdf->stream('contrato_promesa_credito.pdf');
     }
 
+    private function setVentaLead($contrato_id){
+        $cliente = Credito::join('personal as p','creditos.prospecto_id','=','p.id')
+        ->select('p.rfc')
+        ->where('creditos.id','=',$contrato_id)->first();
+
+        $lead = Digital_lead::select('id')->where('rfc','=',$cliente->rfc)->get();
+        if(sizeof($lead)){
+            $l = Digital_lead::findOrFail($lead[0]->id);
+            $l->status = 4;
+            $l->save();
+        }
+    }
+
     //Función para cambiar el estatus del contrato
     /*
         0 = Cancelado
@@ -1634,6 +1646,7 @@ class ContratoController extends Controller
             }
             // Venta firmada
             if ($request->status == 3) {
+                $this->setVentaLead($request->id);
                 //Se obtienen la información del paquete asignado.
                 $credito = Credito::select('prospecto_id', 'descripcion_paquete', 'num_lote', 'fraccionamiento', 'etapa')
                     ->where('id', '=', $request->id)

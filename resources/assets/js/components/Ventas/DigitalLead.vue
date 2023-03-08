@@ -120,6 +120,7 @@
                                     <option value="0">Descartado</option>
                                     <option value="2">Potencial</option>
                                     <option value="3">Enviado a prospectos</option>
+                                    <option value="4">Venta</option>
                                 </select>
                             </div>
                         </div>
@@ -279,6 +280,7 @@
                                     <span v-if="lead.status == '0'" class="badge badge-danger">Descartado</span>
                                     <span v-if="lead.status == '2'" class="badge badge-success">Potencial</span>
                                     <span v-if="lead.status == '3'" class="badge badge-success">Enviado a prospectos</span>
+                                    <span v-if="lead.status == '4'" class="badge badge-success">Venta</span>
                                 </td>
                                 <td class="td2" v-text="lead.vendedor"></td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
