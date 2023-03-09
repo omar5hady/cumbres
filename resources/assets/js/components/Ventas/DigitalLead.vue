@@ -2416,6 +2416,7 @@ export default {
             this.datos = [];
             this.modal = 0;
             this.selectCampania(1);
+            this.selectAsesores()
         },
         listarObservacion(page,id){
             axios.get('/leads/getObs'+

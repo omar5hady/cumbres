@@ -62,6 +62,7 @@
                                                 <th> Descartados sin canalizar</th>
                                                 <th> Canalizados a asesor</th>
                                                 <th> Descartados por asesor</th>
+                                                <th> Venta </th>
 
                                             </tr>
                                         </thead>
@@ -72,6 +73,9 @@
                                                 <td v-text="cont_desc"></td>
                                                 <td v-text="asesor_org"></td>
                                                 <td v-text="desc_ase"></td>
+                                                <td >
+                                                    <a @click="verLeads(ventasOrg, 'venta')" href="#">{{n_ventasOrg}}</a>
+                                                </td>
                                             </tr>
                                             <tr v-for="leads in arrayLeads" :key="leads.id">
                                                 <template  v-if="leads.conteo > 0">
@@ -84,6 +88,9 @@
                                                     <td class="td2" v-text="leads.descartado"></td>
                                                     <td class="td2" v-text="leads.asesor"></td>
                                                     <td class="td2" v-text="leads.descAsesor"></td>
+                                                    <td >
+                                                        <a @click="verLeads(leads.ventas, 'venta')" href="#">{{leads.n_ventas}}</a>
+                                                    </td>
                                                 </template>
                                             </tr>
 
@@ -177,6 +184,22 @@
                                     </tr>
                                 </template>
                             </TableComponent>
+                            <TableComponent v-if="modal == 3" :cabecera="['Cliente','Fraccionamiento',
+                                'Etapa','Manzana','Lote','Precio','Fecha']">
+                                <template v-slot:tbody>
+                                    <tr v-for="c in leads" :key="c.id">
+                                        <td class="td2" v-text="c.nombre+' '+c.apellidos"></td>
+                                        <td class="td2" v-text="c.fraccionamiento"></td>
+                                        <td class="td2" v-text="c.etapa"></td>
+                                        <td class="td2" v-text="c.manzana"></td>
+                                        <td class="td2">
+                                            {{c.num_lote}} {{c.sublote? c.sublote : ''}}
+                                        </td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(c.precio_venta)"></td>
+                                        <td class="td2" v-text="c.fecha"></td>
+                                    </tr>
+                                </template>
+                            </TableComponent>
                         </div>
                     </div>
                 </template>
@@ -215,6 +238,8 @@
                 modal: 0,
                 tituloModal: '',
                 leads:[],
+                ventasOrg : [],
+                n_ventasOrg : 0,
 
             }
         },
@@ -234,8 +259,10 @@
                     me.asesor_org = respuesta.asesor_org;
                     me.camp_org = respuesta.camp_org;
                     me.arrayAsesores = respuesta.asesores;
-                    me.desc_ase = respuesta.desc_ase,
-                    me.cont_desc = respuesta.cont_desc,
+                    me.desc_ase = respuesta.desc_ase;
+                    me.cont_desc = respuesta.cont_desc;
+                    me.ventasOrg = respuesta.ventasOrg;
+                    me.n_ventasOrg = respuesta.n_ventasOrg;
 
                     me.arrayLeads.sort((b, a) => a.conteo - b.conteo);
                     me.arrayAsesores.sort((b, a) => a.conteo - b.conteo);
@@ -261,13 +288,19 @@
             },
 
             verLeads(data,tipo){
-                this.modal = 1;
-                if(tipo != 'Removidos'){
-                    this.tituloModal = 'Leads en '+tipo;
-                }
-                else{
-                    this.modal = 2
-                    this.tituloModal = 'Leads Removidos'
+                switch(tipo){
+                    case 'venta':
+                        this.modal = 3
+                        this.tituloModal = 'Ventas'
+                        break;
+                    case 'Removidos':
+                        this.modal = 2
+                        this.tituloModal = 'Leads Removidos'
+                    break;
+                    default:
+                        this.modal = 1;
+                        this.tituloModal = 'Leads en '+tipo;
+                    break
                 }
                 this.leads = data;
             },

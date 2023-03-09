@@ -13,6 +13,7 @@ use App\AsesorCastigo;
 use App\Obs_lead;
 use App\Personal;
 use App\User;
+use App\Contrato;
 use App\Cliente;
 use App\Vendedor;
 use App\Premios;
@@ -1014,12 +1015,28 @@ class DigitalLeadController extends Controller
 
         foreach ($campanias as $campania) {
             //TOTAL LEADS POR CAMPAÑA
-                $campania->conteo = Digital_lead::select('campania_id')
+                $campania->conteo = Digital_lead::select('campania_id','rfc')
                         ->where('campania_id','=',$campania->id)->where('motivo','=',1);
                         if($fecha1 != '')// Por fecha de registro.
                             $campania->conteo = $campania->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
                         if($proyecto != '')// Por proyecto de interes.
                             $campania->conteo = $campania->conteo->where('proyecto_interes', '=',$proyecto);
+                $campania->conteo = $campania->conteo->get();
+
+                if(sizeof($campania->conteo)){
+                    $campania->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->select('personal.nombre','personal.apellidos','lotes.num_lote','lotes.sublote','lotes.manzana',
+                            'creditos.etapa','creditos.fraccionamiento','creditos.precio_venta','contratos.fecha'
+                        )
+                        ->where('contratos.status','=',3)
+                        ->whereIn('personal.rfc',$campania->conteo)
+                        ->get();
+
+                    $campania->n_ventas = $campania->ventas->count();
+                }
+
                 $campania->conteo = $campania->conteo->count();
             //LEADS ASIGNADOS A ASESOR
                 $campania->asesor = Digital_lead::select('campania_id')
@@ -1158,14 +1175,30 @@ class DigitalLeadController extends Controller
         $asesor_org = 0;
 
         /// CONTEOS PARA TRAFICO ORGANICO
-            $cont_org = Digital_lead::select('campania_id')
+            $cont_org = Digital_lead::select('campania_id','rfc')
                             ->where('campania_id','=',NULL) // Sin campaña asignada
                             ->where('motivo','=',1);
                             if($fecha1 != '') // Fecha de registro
                                 $cont_org = $cont_org->whereBetween('created_at', [$fecha1, $fecha2]);
                             if($proyecto != '')  // Proyecto de interes
                                 $cont_org = $cont_org->where('proyecto_interes', '=',$proyecto);
-                    $cont_org = $cont_org->count();
+                    $cont_org = $cont_org->get();
+
+            if(sizeof($cont_org)){
+                $ventasOrg = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                    ->join('personal','creditos.prospecto_id','=','personal.id')
+                    ->select('personal.nombre','personal.apellidos','lotes.num_lote','lotes.sublote','lotes.manzana',
+                        'creditos.etapa','creditos.fraccionamiento','creditos.precio_venta','contratos.fecha'
+                    )
+                    ->where('contratos.status','=',3)
+                    ->whereIn('personal.rfc',$cont_org)
+                    ->get();
+
+                $n_ventasOrg = $ventasOrg->count();
+            }
+
+            $cont_org = $cont_org->count();
 
             $cont_desc = Digital_lead::select('campania_id') // Organico descartados
                             ->where('campania_id','=',NULL)
@@ -1210,6 +1243,9 @@ class DigitalLeadController extends Controller
                 'asesores' => $asesores,
                 'desc_ase' => $desc_ase,
                 'cont_desc' => $cont_desc,
+                'ventasOrg' => $ventasOrg,
+                'n_ventasOrg' => $n_ventasOrg
+
             ];
         else{ // Retorno de resultado en Excel.
             return Excel::create('Rep Digital Leads', function($excel) use ($campanias, $cont_org, $asesor_org,
@@ -1559,6 +1595,7 @@ class DigitalLeadController extends Controller
         $leads = Digital_lead::select('id','fecha_asign','vendedor_asign')
             ->where('fecha_asign', '!=', NULL)
             ->where('fecha_contacto','=',NULL)
+            ->where('vendedor_asign','!=',19)
             ->where('status','!=',4)
             ->orderBy('fecha_asign','desc')
             ->get();
