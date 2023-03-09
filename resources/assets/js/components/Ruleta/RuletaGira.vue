@@ -119,7 +119,7 @@
                         name=""
                         id="f_nac"
                     />
-                    <label for="correo">Correo Electrónico</label>
+                    <!-- <label for="correo">Correo Electrónico</label>
                          <input
                         v-model="reg_correo"
                         placeholder="Aquí enviaremos tu cupón"
@@ -140,7 +140,7 @@
                         name=""
                         id="cws"
                         v-on:keypress="isNumber($event)"
-                    />
+                    /> -->
                 </div>
 
               
@@ -299,9 +299,9 @@ export default {
             if (
                 this.no != "" &&
                 this.app != "" &&
-                this.apm != "" &&
-                this.fn != "" &&
-                 (this.reg_correo || this.reg_whts) 
+                //this.apm != "" && // sin validar 
+                this.fn != ""
+                
             ) {
                 this.postLead();
                 this.div_registra = false;
@@ -504,9 +504,7 @@ export default {
 
             //{{{{{{{{{{{{{{{{{{part 1}}}}}}}}}}}}}}}}}}
             var ants = ["BACA","BAKA","BUEI","BUEY","CACA","CACO","CAGA","CAGO","CAKA","CAKO","COGE","COGI","COJA","COJE","COJI","COJO","COLA","CULO","FALO","FETO","GETA","GUEI","GUEY","JETA","JOTO","KACA","KACO","KAGA","KAGO","KAKA","KAKO","KOGE","KOGI","KOJA","KOJE","KOJI","KOJO","KOLA","KULO","LILO","LOCA","LOCO","LOKA","LOKO","MAME","MAMO","MEAR","MEAS","MEON","MIAR","MION","MOCO","MOKO","MULA","MULO","NACA","NACO","PEDA","PEDO","PENE","PIPI","PITO","POPO","PUTA","PUTO","QULO","RATA","ROBA","ROBE","ROBO","RUIN","SENO","TETA","VACA","VAGA","VAGO","VAKA","VUEI","VUEY","WUEI","WUEY"];
-
             var p1 = paterno[0] + paternoL + materno[0] + name[0];
-
             if (ants.indexOf(p1) >= 0) {
                 var x = p1.split("");
                 x[1] = "X";
@@ -615,9 +613,7 @@ export default {
                     nombres: me.no,
                     apep: me.app,
                     apem: me.apm,
-                    fenac: me.fn,
-                    correo:me.reg_correo,
-                    celular:me.reg_whts
+                    fenac: me.fn
 
                 })
                 .then(function(response) {
@@ -864,8 +860,8 @@ body {
     /* si se desea alineacion dentro de este contenedor se añaden reglas de flexbox*/
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
+    align-items:flex-start;
+    justify-content:center;
     z-index: 5;
     border-radius: 20px;
 }
@@ -873,9 +869,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-top: -100px;
     width: 480px;
-    height: 660px;
-    margin-top: 75px;
+    height: 400px;
     padding: 60px;
 
 
@@ -883,6 +879,7 @@ body {
     color: aliceblue;
     font-size: 17px;
     font-family: sans-serif;
+    justify-content:space-around;
 }
 
 .div_boton_gl {

@@ -47,28 +47,21 @@ class PremiosController extends Controller
 
     public function storePremio(Request $request){
 
-       $rfc   = $request->rfc;
        $lead_id =$request->lead_id;
-       $nombres=$request->nombres;
-       $apep=$request->apep;
-       $apem=$request->apem;
-       $fenac=$request->fenac;
 
        $registrado='0';
 
        $lead = Digital_lead::findOrFail($lead_id);
-       $lead->nombre = $nombres;
-       $lead->apellidos = $apep . ' ' .$apem;
-       $lead->f_nacimiento =$fenac;
-       $lead->rfc = $rfc;
-       $lead->email = $request->correo;
-       $lead->celular = $request->celular;
+       $lead->nombre = $request->nombres;
+       $lead->apellidos = $request->apep . ' ' .$request->apem;
+       $lead->f_nacimiento =$request->fenac;
+       $lead->rfc = $request->rfc;
        $lead->save();
 
 
        // clientes- :clasificacion - no viable :1 --  vendedor cliente descartado !=  104
         $persona = Personal::join('clientes','personal.id','=','clientes.id')
-        ->where('personal.rfc','=',$rfc)
+        ->where('personal.rfc','=',$request->rfc)
         ->where('clientes.clasificacion','!=','1')
         ->where('clientes.vendedor_id','!=','104')
         ->get();  // verificar
@@ -81,7 +74,7 @@ class PremiosController extends Controller
 
             $new_premio= new Premios;
             $new_premio->lead_id=$lead_id;
-            $new_premio->RFC=$rfc;
+            $new_premio->RFC=$request->rfc;
             $new_premio->save();
 
 
@@ -148,15 +141,6 @@ class PremiosController extends Controller
         $lead->save();
 
 
-    }
-
-    public function getPremio(Request $request){
-        $fecha = Carbon::now()->subMonths(3);
-        return Premios::where('rfc','=', $request->rfc)
-                    ->where('status','=',0)
-                    ->where('premio','>',0)
-                    ->where('id','=',$request->folio)
-                    ->where('created_at','>',$fecha)->get();
     }
 
 }
