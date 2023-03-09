@@ -52,7 +52,7 @@
                                                                         <th> Asesor</th>
                                                                         <th> Prospectos en verde</th>
                                                                         <th> Prospectos amarillo</th>
-                                                                        <th> Prospectos rojo</th>
+                                                                        <th> Prospectos retirados</th>
                                                                         <th></th>
                                                                         <th> Prospectos en verde</th>
                                                                         <th> Prospectos amarillo</th>
@@ -65,7 +65,9 @@
                                                                         <td class="td2" v-text="asesor.vendedor"></td>
                                                                         <td class="td2 table-success" v-text="asesor.reg"></td>
                                                                         <td class="td2 table-warning" v-text="asesor.dif7"></td>
-                                                                        <td class="td2 table-danger" v-text="asesor.dif15"></td>
+                                                                        <td class="td2 table-danger">
+                                                                            <a @click="abrirModal('retirados', asesor.retirados)" href="#">{{asesor.n_retirados}}</a>
+                                                                        </td>
                                                                         <td></td>
                                                                         <td class="td2 table-success" v-text="asesor.ger"></td>
                                                                         <td class="td2 table-warning" v-text="asesor.ger7"></td>
@@ -107,7 +109,7 @@
                                                                 <th> Asesor</th>
                                                                 <th> Prospectos en verde</th>
                                                                 <th> Prospectos amarillo</th>
-                                                                <th> Prospectos rojo</th>
+                                                                <th> Prospectos retirados</th>
                                                                 <th></th>
                                                                 <th> Prospectos en verde</th>
                                                                 <th> Prospectos amarillo</th>
@@ -119,7 +121,9 @@
                                                                 <td class="td2" v-text="asesor.vendedor"></td>
                                                                 <td class="td2 table-success" v-text="asesor.reg"></td>
                                                                 <td class="td2 table-warning" v-text="asesor.dif7"></td>
-                                                                <td class="td2 table-danger" v-text="asesor.dif15"></td>
+                                                                <td class="td2 table-danger">
+                                                                    <a @click="abrirModal('retirados', asesor.retirados)" href="#">{{asesor.n_retirados}}</a>
+                                                                </td>
                                                                 <td></td>
                                                                 <td class="td2 table-success" v-text="asesor.ger"></td>
                                                                 <td class="td2 table-warning" v-text="asesor.ger7"></td>
@@ -196,55 +200,66 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
-            <ModalComponent v-if="modal"
+            <ModalComponent v-if="modal == 1"
                 @closeModal="modal = 0"
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-10">
-                            <TableComponent :cabecera="['Prospecto', 'Proyecto de interes']">
-                                <template v-slot:tbody>
-                                    <tr v-for="c in prospectos" :key="c.id">
-                                        <td class="td2" v-text="c.nombre+' '+c.apellidos"></td>
-                                        <td class="td2" v-text="c.proyecto"></td>
-                                        <td>
-                                            <button v-if="c.obs.length" class="btn btn-scarlet"
-                                                @click="verObs(c.obs)" title="Ver Observaciones"
-                                            >
-                                                <i class="fa fa-address-book" aria-hidden="true"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </TableComponent>
-                        </div>
-                        <div class="col-md-1"></div>
-                    </div>
+                    <RowModal :clsRow1="'col-md-12'">
+                        <TableComponent :cabecera="['Prospecto', 'Proyecto de interes']">
+                            <template v-slot:tbody>
+                                <tr v-for="c in prospectos" :key="c.id">
+                                    <td class="td2" v-text="c.nombre+' '+c.apellidos"></td>
+                                    <td class="td2" v-text="c.proyecto"></td>
+                                    <td>
+                                        <button v-if="c.obs.length" class="btn btn-scarlet"
+                                            @click="verObs(c.obs)" title="Ver Observaciones"
+                                        >
+                                            <i class="fa fa-address-book" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </RowModal>
                 </template>
             </ModalComponent>
+
+            <ModalComponent v-if="modal == 2"
+                @closeModal="modal = 0"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <RowModal :clsRow1="'col-md-12'">
+                        <TableComponent :cabecera="['Prospecto', 'Fecha de retiro']">
+                            <template v-slot:tbody>
+                                <tr v-for="c in prospectos" :key="c.id">
+                                    <td class="td2" v-text="c.c_nombre+' '+c.c_apellidos"></td>
+                                    <td class="td2" v-text="c.created_at"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </RowModal>
+                </template>
+            </ModalComponent>
+
 
             <ModalComponent v-if="modalObs"
                 @closeModal="modalObs = 0, modal = 1"
                 :titulo="'Observaciones'"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-10">
-                            <TableComponent :cabecera="['Usuario', 'Comentario','']">
-                                <template v-slot:tbody>
-                                    <tr v-for="o in obs" :key="o.id">
-                                        <td class="td2" v-text="o.usuario"></td>
-                                        <td v-text="o.comentario"></td>
-                                        <td class="td2" v-text="o.created_at"></td>
-                                    </tr>
-                                </template>
-                            </TableComponent>
-                        </div>
-                        <div class="col-md-1"></div>
-                    </div>
+                    <RowModal :clsRow1="'col-md-12'">
+                        <TableComponent :cabecera="['Usuario', 'Comentario','']">
+                            <template v-slot:tbody>
+                                <tr v-for="o in obs" :key="o.id">
+                                    <td class="td2" v-text="o.usuario"></td>
+                                    <td v-text="o.comentario"></td>
+                                    <td class="td2" v-text="o.created_at"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </RowModal>
                 </template>
             </ModalComponent>
 
@@ -258,10 +273,12 @@
 <script>
     import ModalComponent from '../Componentes/ModalComponent.vue';
     import TableComponent from '../Componentes/TableComponent.vue';
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            RowModal,
         },
         data(){
             return{
@@ -322,9 +339,15 @@
 
             abrirModal(tipo,data){
                 this.prospectos = data;
-                this.modal = 1;
-                this.tituloModal = 'Prospectos tipo: '+tipo;
-                this.modalObs = 0;
+                if(tipo === 'retirados'){
+                    this.modal = 2
+                    this.tituloModal = 'Prospectos retirados';
+                }
+                else{
+                    this.modal = 1;
+                    this.tituloModal = 'Prospectos tipo: '+tipo;
+                    this.modalObs = 0;
+                }
             },
 
             verObs(data){

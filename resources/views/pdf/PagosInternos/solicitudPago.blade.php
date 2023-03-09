@@ -264,12 +264,21 @@
                 </div>
             </div>
             <div class="table-row">
-                <div colspan="2" class="table-cell1 title-cabecera">
+                <div colspan="1" class="table-cell1 title-cabecera">
                     @if($solicitud->forma_pago == 0 && $solicitud->tipo_pago == 1)
                         <p>Clabe interbancaria</p>
                     @endif
                 </div>
-                <div colspan="1" class="table-cell1 title-cabecera"></div>
+                <div colspan="1" class="table-cell1 title-cabecera">
+                    @if($solicitud->forma_pago == 0 && $solicitud->tipo_pago == 1 && $solicitud->convenio != NULL)
+                        <p>Convenio</p>
+                    @endif
+                </div>
+                <div colspan="1" class="table-cell1 title-cabecera">
+                    @if($solicitud->forma_pago == 0 && $solicitud->tipo_pago == 1 && $solicitud->referencia != NULL)
+                        <p>Referencia</p>
+                    @endif
+                </div>
                 <div colspan="1" class="table-cell1 title-cabecera">
                     Fecha de Solicitud
                 </div>
@@ -282,7 +291,19 @@
                         </div>
                     @endif
                 </div>
-                <div colspan="2" class="table-cell1 title-cabecera">
+                <div colspan="1" class="table-cell1 title-cabecera">
+                    @if($solicitud->forma_pago == 0 && $solicitud->tipo_pago == 1 && $solicitud->convenio != NULL)
+                        <div class="info-cabecera">
+                            <p>{{$solicitud->convenio}}&nbsp;</p>
+                        </div>
+                    @endif
+                </div>
+                <div colspan="1" class="table-cell1 title-cabecera">
+                    @if($solicitud->forma_pago == 0 && $solicitud->tipo_pago == 1 && $solicitud->referencia != NULL)
+                        <div class="info-cabecera">
+                            <p>{{$solicitud->referencia}}&nbsp;</p>
+                        </div>
+                    @endif
                 </div>
                 <div colspan="1" class="table-cell1 title-cabecera">
                     <p style="font-size:8pt; margin-top:-8px;">

@@ -914,7 +914,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label for="">&nbsp;</label>
-                                                <button v-if="admin == 3 || usuario == 'shady'"
+                                                <button
                                                     class="btn btn-warning form-control"
                                                     @click="abrirModal('banco')"
                                                 >Cambiar Cuenta</button>
@@ -1706,7 +1706,7 @@
                 >
                     <template v-slot:body>
                         <TableComponent :cabecera="[
-                            'Obra', '   ', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo'
+                            'Obra', '   ', ' ', 'Cargo', 'Subconcepto','Obs.', 'Tipo Mov.', 'Importe total', 'Este pago', 'Saldo', ''
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="det in solicitudData.detalle"
@@ -1747,6 +1747,11 @@
                                     </td>
                                     <td class="td2">
                                         ${{$root.formatNumber(det.total - det.pago)}}
+                                    </td>
+                                    <td v-if="det.pendiente_id">
+                                        <Button :btnClass="'btn-success'" :icon="'fa fa-money'" @click="abrirModal('edoCuenta', det)">
+                                            Edo. Cuenta
+                                        </Button>
                                     </td>
                                 </tr>
                             </template>

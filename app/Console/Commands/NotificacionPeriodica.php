@@ -9,6 +9,7 @@ use App\Mail\NotificationReceived;
 use App\Notificacion_aviso;
 use App\Cliente_observacion;
 use App\Cliente;
+use App\HistDescartado;
 use App\Http\Controllers\DigitalLeadController;
 use Carbon\Carbon;
 use App\Pago_renta;
@@ -160,6 +161,12 @@ class NotificacionPeriodica extends Command
 
             if($persona->diferencia > 16){
                 $c = Cliente::findOrFail($persona->id);
+
+                $hist = new HistDescartado();
+                $hist->asesor_id = $c->vendedor_id;
+                $hist->prospecto_id = $c->id;
+                $hist->save();
+
                 $c->vendedor_id = 104;
                 $c->clasificacion = 1;
                 $c->save();

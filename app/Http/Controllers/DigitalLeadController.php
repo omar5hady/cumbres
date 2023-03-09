@@ -18,6 +18,7 @@ use App\Vendedor;
 use App\Premios;
 use App\Campania;
 use App\Expediente;
+use App\HistDescartado;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -1126,20 +1127,24 @@ class DigitalLeadController extends Controller
 
             $asesor->nRojo = $asesor->rojo->count();
 
-            $asesor->removidos = $this->getCastigados($asesor->id);
+            $asesor->removidos = $this->getCastigados($asesor->id, $fecha1, $fecha2);
             $asesor->n_removidos = $asesor->removidos->count();
 
         }
         return $asesores;
     }
 
-    private function getCastigados($asesor_id){
-        return AsesorCastigo::join('personal as p', 'asesor_castigos.asesor_id', '=', 'p.id')
+    private function getCastigados($asesor_id, $fecha1, $fecha2){
+        $castigos =  AsesorCastigo::join('personal as p', 'asesor_castigos.asesor_id', '=', 'p.id')
                 ->join('digital_leads as l', 'asesor_castigos.lead_id','=', 'l.id')
                 ->select('asesor_castigos.*', 'p.nombre', 'p.apellidos', 'l.nombre as l_nombre', 'l.apellidos as l_apellidos')
-                ->where('asesor_castigos.asesor_id','=',$asesor_id)
-                ->orderBy('asesor_castigos.f_ini','desc')
+                ->where('asesor_castigos.asesor_id','=',$asesor_id);
+                if($fecha1 != '' && $fecha2 != '')
+                    $castigos = $castigos->whereBetween('asesor_castigos.f_ini', [$fecha1, $fecha2]);
+                $castigos = $castigos->orderBy('asesor_castigos.f_ini','desc')
                 ->get();
+
+        return $castigos;
     }
 
     // Función para generar reporte de Digital Leads.
@@ -1409,6 +1414,17 @@ class DigitalLeadController extends Controller
             $vendedor->bd15 = 0; // Prospectos con mas de 15 dias de atención.
             $vendedor->dif = 0;
             $vendedor->dif7 = 0;
+
+            $vendedor->retirados = HistDescartado::join('personal as c','c.id', '=', 'hist_descartados.prospecto_id')
+                    ->join('personal as a','a.id','=','hist_descartados.asesor_id')
+                    ->select('a.nombre as a_nombre','a.apellidos as a_apellidos','c.nombre as c_nombre','c.apellidos as c_apellidos',
+                        'hist_descartados.*'
+                    )
+                    ->where('hist_descartados.asesor_id','=', $vendedor->id)
+                    ->get();
+
+            $vendedor->n_retirados = $vendedor->retirados->count();
+
                     $vendedor->dif15 = 0;
                     $vendedor->ger = 0;
                     $vendedor->ger7 = 0;
