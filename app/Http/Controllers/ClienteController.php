@@ -17,6 +17,7 @@ use App\Vendedor;
 use App\Fraccionamiento;
 use App\Cliente_observacion;
 use App\Premios;
+use App\HistContacto;
 use Carbon\Carbon;
 use Excel;
 use Auth;
@@ -373,6 +374,19 @@ class ClienteController extends Controller
             DB::beginTransaction();
             $cliente = Cliente::findOrFail($request->id);
             $persona = Personal::findOrFail($request->id);
+            if(
+                $request->telefono != $persona->telefono ||
+                $request->celular != $persona->celular ||
+                $request->email != $persona->email
+            ){
+                $hist = new HistContacto();
+                $hist->prospecto_id = $request->id;
+                $hist->telefono = $persona->telefono;
+                $hist->celular = $persona->celular;
+                $hist->email = $persona->email;
+                $hist->usuario = Auth::user()->usuario;
+                $hist->save();
+            }
             $persona->departamento_id = 8;
             $persona->nombre = $request->nombre;
             $persona->apellidos = $request->apellidos;

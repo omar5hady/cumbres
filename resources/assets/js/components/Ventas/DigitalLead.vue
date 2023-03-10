@@ -859,7 +859,9 @@
                         <div class="form-group row">
                             <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
                             <div class="col-md-3">
-                                <input type="text" v-model="rfc" @keyup="selectRFC(rfc)" class="form-control" placeholder="RFC" maxlength="10">
+                                <input type="text" v-model="rfc" @keyup="selectRFC(rfc)"
+                                :disabled="prospecto==1 && rfc != '' && rfc != null"
+                                class="form-control" placeholder="RFC" maxlength="10">
                             </div>
                             <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
                             <div class="col-md-4">

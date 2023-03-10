@@ -9,6 +9,7 @@ use DB;
 use App\Cliente;
 use App\Premios;
 use App\Digital_lead;
+use App\HistRuleta;
 use Carbon\Carbon;
 
 
@@ -20,18 +21,25 @@ class PremiosController extends Controller
        $nombre=$request->d;
 
 
-       $con_premio=Premios::select('id','lead_id', 'premio', 'RFC', 'status','descripcion')->where('lead_id','=',$lead_id)->get();
+        $con_premio=Premios::select('id','lead_id', 'premio', 'RFC', 'status','descripcion')->where('lead_id','=',$lead_id)->get();
 
         $search = Digital_lead::select('rfc','id')->where('id','=' ,$lead_id)->where('name_user','=',$nombre)->get();
 
         if (sizeof($search)==1){
             if(sizeof($con_premio) == 0){
+                $hist = new HistRuleta();
+                $hist->ip = $request->ip();
+                $hist->nombre = $nombre;
+                $hist->lead_id = $search[0]->id;
+                $hist->save();
+                //return $request->header();
+                //return $request->ip();
                 return view('premios/ruleta',['lead'=>$lead_id,'conPrem'=>$con_premio]);
-            }else
-                return view('premios/premios',['cpremio'=>$con_premio]);
-        }else{
-            return view('premios/InvalidURL');
+            }
+            return view('premios/premios',['cpremio'=>$con_premio]);
         }
+
+        return view('premios/InvalidURL');
     }
 
 

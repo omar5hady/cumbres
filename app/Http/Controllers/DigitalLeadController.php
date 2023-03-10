@@ -20,6 +20,7 @@ use App\Premios;
 use App\Campania;
 use App\Expediente;
 use App\HistDescartado;
+use App\HistContacto;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -527,9 +528,23 @@ class DigitalLeadController extends Controller
         $lead = Digital_lead::findOrFail($request->id);
         $lead->nombre = $request->nombre;
         $lead->apellidos = $request->apellidos;
+        if(
+            $request->telefono != $lead->telefono ||
+            $request->celular != $lead->celular ||
+            $request->email != $lead->email
+        ){
+            $hist = new HistContacto();
+            $hist->lead_id = $request->id;
+            $hist->telefono = $lead->telefono;
+            $hist->celular = $lead->celular;
+            $hist->email = $lead->email;
+            $hist->usuario = Auth::user()->usuario;
+            $hist->save();
+        }
         $lead->telefono = $request->telefono;
-        $lead->clv_lada = $request->clv_lada;
         $lead->celular = $request->celular;
+        $lead->email = $request->email;
+        $lead->clv_lada = $request->clv_lada;
         $lead->campania_id = $request->campania_id;
         $lead->medio_contacto = $request->medio_contacto;
         $lead->proyecto_interes = $request->proyecto_interes;
@@ -537,7 +552,6 @@ class DigitalLeadController extends Controller
         $lead->modelo_interes = $request->modelo_interes;
         $lead->rango1 = $request->rango1;
         $lead->rango2 = $request->rango2;
-        $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
         $lead->fecha_update = $fecha;
 
