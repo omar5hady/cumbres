@@ -9,7 +9,7 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Precios vivienda
-                        <!--   Boton descargar excel    
+                        <!--   Boton descargar excel
                          <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp'">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
                         </a>
@@ -20,17 +20,29 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    
+
                                     <select class="form-control"  @change="selectEtapa(buscar)" v-model="buscar" >
                                         <option value="">Proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control"  v-model="b_etapa" > 
+                                    <select class="form-control"  v-model="b_etapa" >
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
-
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control" v-model="b_status">
+                                        <option value="">Status</option>
+                                        <option value="0">Disponible</option>
+                                        <option value="1">Vendida</option>
+                                        <option value="2">Individualizada</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -47,7 +59,7 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <button type="submit" @click="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a  :href="'/preciosVivienda/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana 
+                                    <a  :href="'/preciosVivienda/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana
                                         + '&b_lote=' + b_lote + '&modelo=' + b_modelo
                                         + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 </div>
@@ -57,7 +69,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        
+
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -72,8 +84,8 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
-                                         
-                                        
+
+
                                         <td class="td2" style="width:20%" v-text="lote.proyecto"></td>
                                         <td class="td2" style="width:20%" v-text="lote.num_etapa"></td>
                                         <td class="td2" v-text="lote.manzana"></td>
@@ -98,11 +110,11 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
 
                                         <td style="width:90%">
-                                        <input type="text" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" v-on:keypress="isNumber($event)" class="form-control" >     
+                                        <input type="text" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" v-on:keypress="isNumber($event)" class="form-control" >
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -129,7 +141,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -142,9 +154,9 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            En caso de que sea necesario realizar un ajuste al precio de una vivienda o lote en específico, 
-                            podrá agregar el precio buscando el lote o vivienda en listado, para agregar el precio solo 
-                            debe editar el moto en la columna “ajuste” y presionar la tecla enter para guardar, 
+                            En caso de que sea necesario realizar un ajuste al precio de una vivienda o lote en específico,
+                            podrá agregar el precio buscando el lote o vivienda en listado, para agregar el precio solo
+                            debe editar el moto en la columna “ajuste” y presionar la tecla enter para guardar,
                             el precio será sumado al costo total del lote.
                         </p>
                     </div>
@@ -176,7 +188,7 @@
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -184,11 +196,12 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
+                criterio : 'fraccionamientos.nombre',
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
                 b_modelo:'',
+                b_status : '',
                 buscar : '',
             }
         },
@@ -227,9 +240,10 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, b_etapa, b_manzana,b_lote, criterio){
                 let me = this;
-                var url = '/lotes/con_precio_base?page=' + page + '&buscar=' + buscar 
-                        + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana 
+                var url = '/lotes/con_precio_base?page=' + page + '&buscar=' + buscar
+                        + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana
                         + '&b_lote=' + b_lote + '&modelo=' + this.b_modelo
+                        + '&status=' + this.b_status
                         + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -257,7 +271,7 @@
             },
 
             selectEtapa(buscar){
-                let me = this;       
+                let me = this;
                 me.arrayEtapas=[];
                 var url = '/select_etapa?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -268,7 +282,7 @@
                     console.log(error);
                 });
             },
-           
+
             cambiarPagina(page, buscar, b_etapa,b_manzana,b_lote, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -281,7 +295,7 @@
                 axios.put('/lotes/actualizar/ajuste',{
                     'ajuste':ajuste,
                     'id' : id
-                }).then(function (response){ 
+                }).then(function (response){
                 me.listarLote(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                 const toast = Swal.mixin({
                     toast: true,
@@ -313,12 +327,12 @@
                     return true;
                 }
             },
-            
+
         },
         mounted() {
             this.listarLote(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
-           
+
         }
     }
 </script>
@@ -379,5 +393,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    }  
+    }
 </style>

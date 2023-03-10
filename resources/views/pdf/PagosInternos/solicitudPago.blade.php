@@ -211,7 +211,7 @@
                 <div colspan="2" class="table-cell1 title-cabecera">
                     @if($solicitud->tipo_pago == 1)
                         <div class="info-cabecera">
-                            <p>111585454542 - BBVA</p>
+                            <p>{{$solicitud->cuenta_pago}}</p>
                         </div>
                     @endif
                 </div>

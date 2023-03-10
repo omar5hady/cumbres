@@ -1838,6 +1838,18 @@ class LoteController extends Controller
         $b_lote = $request->b_lote;
         $modelo = $request->modelo;
         $criterio = $request->criterio;
+        $status = $request->status;
+
+        $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
+                                            ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('expedientes','contratos.id','=','expedientes.id')
+                                            ->select('creditos.lote_id')
+                                            ->where('inst_seleccionadas.elegido','=',1)
+                                            ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                            ->where('contratos.status','=',3)
+                                            ->where('expedientes.liquidado','=',1)
+                                            ->get();
+
         $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -1857,6 +1869,21 @@ class LoteController extends Controller
                 $lotes = $lotes->where('lotes.num_lote', '=', $b_lote);
             if($modelo != '')//Busqueda por modelo
                 $lotes = $lotes->where('modelos.nombre', 'like', '%'. $modelo . '%');
+
+            if($status != ''){
+                if($status == 0)
+                    $lotes = $lotes->where('lotes.contrato', '=', '0');
+                if($status == 1){
+                    $lotes = $lotes->where('lotes.contrato', '=', '1')
+                                ->where('lotes.firmado', '=', '0')
+                                ->whereNotIn('lotes.id', $contrato);
+                }
+                if($status == 2){
+                    $lotes = $lotes->where('lotes.contrato', '=', '1')
+                                ->where('lotes.firmado', '=', '1')
+                                ->whereIn('lotes.id', $contrato);
+                }
+            }
         $lotes=$lotes
             ->where('lotes.precio_base','>','0')
             ->orderBy('fraccionamientos.nombre','ASC')
