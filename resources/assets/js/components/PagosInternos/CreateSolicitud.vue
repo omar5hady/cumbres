@@ -2196,6 +2196,8 @@ export default {
                         'cuenta_pago' : me.solicitudData.cuenta_pago,
                         'beneficiario' : me.solicitudData.beneficiario
                     }).then(function (response){
+                        if(me.solicitudData.tipo_pago == 0)
+                            window.open('/sp/printComprobante?id='+me.solicitudData.id, '_blank')
                         me.cerrarModal();
                         me.cerrarFormulario();
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros

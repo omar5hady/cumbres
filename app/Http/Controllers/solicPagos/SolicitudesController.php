@@ -767,10 +767,8 @@ class SolicitudesController extends Controller
         $solic->num_factura = $request->num_factura;
         $solic->cuenta_pago = $request->cuenta_pago;
         $solic->beneficiario = $request->beneficiario;
-        if($solic->tipo_pago == 0 || $solic->forma_pago == 0 && $solic->tipo_pago == 1){
-            $solic->status = 4;
-            $solic->entrega_pago = Carbon::now();
-        }
+        $solic->status = 4;
+        $solic->entrega_pago = Carbon::now();
         $this->liberaDetalles($request->id);
         $solic->save();
     }
