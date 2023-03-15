@@ -870,7 +870,7 @@
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label for="">Covenio</label>
-                                                    <input type="text" class="form-control" v-on:keypress="$root.isNumber($event)"
+                                                    <input type="text" class="form-control"
                                                         v-model="solicitudData.convenio" :disabled="tipoAccion == 3">
                                                 </div>
                                             </div>
@@ -878,7 +878,7 @@
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label for="">Referencia</label>
-                                                    <input type="text" class="form-control" v-on:keypress="$root.isNumber($event)"
+                                                    <input type="text" class="form-control"
                                                         v-model="solicitudData.referencia" :disabled="tipoAccion == 3">
                                                 </div>
                                             </div>
@@ -1115,7 +1115,7 @@
 
                                                 <div class="col-md-3">
                                                     <label for="">Folio fiscal <span style="color:red;" v-show="datosDetalle.folio_fisc == ''">(*)</span></label>
-                                                    <input class="form-control" type="text" v-model="datosDetalle.folio_fisc" pattern="\d*" maxlength="5" v-on:keypress="$root.isNumber($event)">
+                                                    <input class="form-control" type="text" v-model="datosDetalle.folio_fisc" maxlength="5">
                                                 </div>
 
                                                 <div class="col-md-6"></div>
@@ -2474,20 +2474,15 @@ export default {
         },
         verificarCaptura(){
             let me = this;
-            let res = false;
-            if(me.solicitudData.caja_chica == 1 && (
-                me.datosDetalle.proveedor_id == '' ||
-                me.datosDetalle.fecha_factura == '' ||
-                me.datosDetalle.folio_fisc == ''
-            )) return false;
 
             if( me.datosDetalle.obra != ''
                 && me.datosDetalle.cargo != ''
                 && me.datosDetalle.concepto != ''
                 && me.datosDetalle.total > 0
                 && me.datosDetalle.pago > 0
-            )res = true;
-            return res;
+            )return true;
+
+            return false;
         },
         limpiarFormularioDetalle(){
             let me = this;

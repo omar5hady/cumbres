@@ -10,9 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Promociones
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('promocion','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button :btnClass="'btn-secondary'" :icon="'icon-plus'" @click="abrirModal('promocion','registrar')">Nuevo</Button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -35,71 +33,57 @@
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <button type="submit" @click="listarPromociones(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <Button @click="listarPromociones(1,buscar,buscar2,criterio)" :icon="'fa fa-search'">Buscar</Button>
                                 </div>
                             </div>
 
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Proyecto</th>
-                                        <th>Etapa</th>
-                                        <th>Promocion</th>
-                                        <th>Descripcion</th>
-                                        <th>Descuento $</th>
-                                        <th>Inicio</th>
-                                        <th>Fin</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="promocion in arrayPromocion" :key="promocion.id">
-                                        <td class="td2" style="width:10%">
-                                            <button type="button" @click="abrirModal('promocion','actualizar',promocion)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success2 btn-sm" @click="abrirModal2('lote_promocion','registrar',promocion), listarLotePromociones(1, promocion.id)" title="Asignar a Lote" v-if="promocion.is_active == '1'">
-                                            <i class="icon-share"></i>
-                                            </button>
-                                        </td>
-                                        <td class="td2" v-text="promocion.proyecto" ></td>
-                                        <td class="td2" v-text="promocion.etapas" ></td>
-                                        <td v-text="promocion.nombre" ></td>
-                                        <td v-text="promocion.descripcion" ></td>
-                                        <td class="td2" v-text="'$'+formatNumber(promocion.descuento)" ></td>
-                                        <td class="td2" v-text="promocion.v_ini" ></td>
-                                        <td class="td2" v-text="promocion.v_fin" ></td>
-                                        <td class="td2" v-if="promocion.is_active == '1'">
-                                            <span class="badge badge-success">Activo</span>
-                                        </td>
-                                        <td class="td2" v-else>
-                                            <span class="badge badge-danger">Desactivado</span>
-                                        </td>
-                                        <td v-if="promocion.is_active == '1'">
-                                        </td>
-                                        <td v-else-if="promocion.is_active == '0' && promocion.mostrar == 0">
-                                            <button type="button" @click="promocion.mostrar = 1" class="btn btn-default btn-sm">
-                                                <i class="icon-eye"></i>
-                                            </button>
-                                        </td>
-                                        <td v-else>
-                                            <button type="button" @click="promocion.mostrar = 0" class="btn btn-default btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                            <br>
-                                            {{promocion.lote}}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <TableComponent :cabecera="[
+                            'Opciones','Proyecto','Etapa','Promocion','Descripcion','Descuento $','Inicio','Fin','Status',''
+                        ]">
+                            <template v-slot:tbody>
+                                <tr v-for="promocion in arrayPromocion" :key="promocion.id">
+                                    <td class="td2" style="width:10%">
+                                        <Button :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'" title="Editar"
+                                            @click="abrirModal('promocion','actualizar',promocion)"
+                                        ></Button>
+                                        <Button :btnClass="'btn-danger'" :size="'btn-sm'" :icon="'icon-trash'" title="Eliminar"
+                                            @click="eliminarPromocion(promocion)"
+                                        ></Button>
+                                        <Button v-if="promocion.is_active == '1'" :btnClass="'btn-success2'" :size="'btn-sm'" :icon="'icon-share'" title="Asignar a Lote"
+                                             @click="abrirModal2('lote_promocion','registrar',promocion), listarLotePromociones(1, promocion.id)"
+                                        ></Button>
+                                    </td>
+                                    <td class="td2" v-text="promocion.proyecto" ></td>
+                                    <td class="td2" v-text="promocion.etapas" ></td>
+                                    <td v-text="promocion.nombre" ></td>
+                                    <td v-text="promocion.descripcion" ></td>
+                                    <td class="td2" v-text="'$'+formatNumber(promocion.descuento)" ></td>
+                                    <td class="td2" v-text="promocion.v_ini" ></td>
+                                    <td class="td2" v-text="promocion.v_fin" ></td>
+                                    <td class="td2" v-if="promocion.is_active == '1'">
+                                        <span class="badge badge-success">Activo</span>
+                                    </td>
+                                    <td class="td2" v-else>
+                                        <span class="badge badge-danger">Desactivado</span>
+                                    </td>
+                                    <td v-if="promocion.is_active == '1'">
+                                    </td>
+                                    <td v-else-if="promocion.is_active == '0' && promocion.mostrar == 0">
+                                        <button type="button" @click="promocion.mostrar = 1" class="btn btn-default btn-sm">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td v-else>
+                                        <button type="button" @click="promocion.mostrar = 0" class="btn btn-default btn-sm">
+                                            <i class="icon-close"></i>
+                                        </button>
+                                        <br>
+                                        {{promocion.lote}}
+                                    </td>
+                                </tr>
+                            </template>
+                        </TableComponent>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -118,221 +102,146 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+            <ModalComponent :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+                v-if="modal"
+            >
+                <template v-slot:body>
+                    <RowModal :clsRow1="'col-md-8'" :label1="'Nombre de la promoción'">
+                        <textarea rows="3" cols="30" v-model="nombre" class="form-control" placeholder="Promoción"></textarea>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-5'" :label1="'Proyecto'" :clsRow2="'col-md-4'" :label2="'Etapa'">
+                        <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
+                            <option value="0">Seleccione</option>
+                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                        </select>
+                        <template v-slot:input2>
+                            <select class="form-control" v-model="etapa_id">
+                                <option value="0">Seleccione</option>
+                                <option v-for="e in arrayEtapas" :key="e.id" :value="e.id" v-text="e.num_etapa"></option>
+                            </select>
+                        </template>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-4'" :label1="'Fecha de inicio'" :clsRow2="'col-md-4'" :label2="'Fecha de vencimiento'">
+                        <input type="date" v-model="v_ini"  class="form-control" placeholder="Inicio">
+                        <template v-slot:input2>
+                            <input type="date" v-model="v_fin" class="form-control" placeholder="Vencimiento">
+                        </template>
+                    </RowModal>
+                    <RowModal :label1="'Descuento $'">
+                        <input type="text" pattern="\d*" v-model="cant_desc"
+                            @change="calcularDesc()" class="form-control" placeholder="Descuento" v-on:keypress="isNumber($event)">
+                    </RowModal>
+                    <RowModal :label1="'Descuento terreno $'">
+                        <input type="text" pattern="\d*" v-model="cant_terreno" @change="calcularDesc()"
+                            class="form-control" placeholder="Descuento" v-on:keypress="isNumber($event)">
+                    </RowModal>
+                    <RowModal :label1="'Descuento ubicación $'">
+                        <input type="text" pattern="\d*" v-model="cant_ubicacion" @change="calcularDesc()"
+                            class="form-control" placeholder="Descuento" v-on:keypress="isNumber($event)">
+                    </RowModal>
+                    <RowModal :label1="'Descuento Total $'">
+                        <h6><strong>$ {{$root.formatNumber(descuento)}}</strong></h6>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-8'" :label1="'Descripción'">
+                        <textarea rows="5" cols="30" v-model="descripcion" class="form-control" placeholder="Descripcion del paquete"></textarea>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-8'" :label1="'Equipamiento incluido'">
+                        <textarea rows="4" cols="30" v-model="desc_equipamiento" class="form-control"
+                            placeholder="Descripcion del equipamiento incluido"></textarea>
+                    </RowModal>
+
+                    <!-- Div para mostrar los errores que mande validerPaquete -->
+                    <div v-show="errorPromocion" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjPromocion" :key="error" v-text="error">
+
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre de la promoción</label>
-                                    <div class="col-md-8">
-                                        <textarea rows="3" cols="30" v-model="nombre" class="form-control" placeholder="Promoción"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="v_ini"  class="form-control" placeholder="Inicio">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de vencimiento</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="v_fin" class="form-control" placeholder="Vencimiento">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Descuento $</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" v-model="descuento" class="form-control" placeholder="Descuento" v-on:keypress="isNumber($event)">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Descripcion</label>
-                                    <div class="col-md-8">
-                                        <textarea rows="5" cols="30" v-model="descripcion" class="form-control" placeholder="Descripcion del paquete"></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Equipamiento incluido</label>
-                                    <div class="col-md-6">
-                                        <textarea rows="4" cols="30" v-model="desc_equipamiento" class="form-control" placeholder="Descripcion del equipamiento incluido"></textarea>
-                                    </div>
-                                </div>
-
-
-                                <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorPromocion" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjPromocion" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPromociones()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPromociones()">Actualizar</button>
-                        </div>
-
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <Button v-if="tipoAccion==1" :icon="'icon-check'" @click="registrarPromociones()">Guardar</Button>
+                    <Button v-if="tipoAccion==2" :icon="'icon-check'" @click="actualizarPromociones()">Actualizar</Button>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
 
             <!--Inicio del modal asignar Lote-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
+            <ModalComponent :titulo="tituloModal2"
+                @closeModal="cerrarModal2()"
+                v-if="modal2"
+            >
+                <template v-slot:body>
+                    <RowModal :clsRow1="'col-md-5'" :label1="'Proyecto'" :clsRow2="'col-md-4'" :label2="'Etapa'">
+                        <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" disabled>
+                            <option value="0">Seleccione</option>
+                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                        </select>
+                        <template v-slot:input2>
+                            <select class="form-control" v-model="etapa_id" @change="selectManzanas(fraccionamiento_id,etapa_id)" disabled>
+                                <option value="0">Seleccione</option>
+                                <option v-for="e in arrayEtapas" :key="e.id" :value="e.id" v-text="e.num_etapa"></option>
+                            </select>
+                        </template>
+                    </RowModal>
+                    <RowModal :clsRow1="'col-md-5'" :label1="'Manzana'" :clsRow2="'col-md-4'" :label2="'Lote'">
+                        <select class="form-control" v-model="manzana" @change="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                            <option value="">Seleccione</option>
+                            <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                        </select>
+                        <template v-slot:input2>
+                            <select class="form-control" name = 'lotes_promo[]' multiple size = 6 v-model="lotes_promo">
+                                <option value="0">Seleccione</option>
+                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                            </select>
+                        </template>
+                    </RowModal>
+                    <RowModal :label1="''">
+                        <Button :icon="'icon-plus'" @click="registrarLotePromocion()">Agregar Lote</Button>
+                    </RowModal>
+                    <div v-show="errorLotePromocion" class="form-group row div-error">
+                        <div class="text-center text-error">
+                            <div v-for="error in errorMostrarMsjLotePromocion" :key="error" v-text="error"></div>
+                        </div>
+                    </div>
+                    <template v-if="mostrar == 1">
                         <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+                            <h5 class="modal-title"> Lotes con la promoción</h5>
                         </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)"  disabled>
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id" @change="selectManzanas(fraccionamiento_id,etapa_id)" disabled>
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Manzanas</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="manzana" @change="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Lote</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" name = 'lotes_promo[]' multiple size = 6 v-model="lotes_promo">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                                <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorLotePromocion" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjLotePromocion" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary" @click="registrarLotePromocion()">Guardar</button>
-
-                            </div>
-                                <div class="modal-header" v-if="mostrar == 1">
-                                    <h5 class="modal-title"> Lotes con la promoción</h5>
-                                </div>
-                                <table class="table table-bordered table-striped table-sm" v-if="mostrar == 1">
-                                    <thead>
-                                        <tr>
-                                            <th>Opciones</th>
-                                            <th>Manzana</th>
-                                            <th># Lote</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="lotePromocion in arrayLotePromocion" :key="lotePromocion.id">
-                                            <td style="width:25%">
-                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarLotePromocion(lotePromocion)">
-                                                <i class="icon-trash"></i>
-                                                </button>
-                                            </td>
-                                            <td v-text="lotePromocion.manzana" ></td>
-                                            <td v-text="lotePromocion.lote" ></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <nav>
-                                    <!--Botones de paginacion -->
-                                    <ul class="pagination">
-                                        <li class="page-item" v-if="pagination2.current_page > 1">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
-                                        </li>
-                                        <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-
-                        </div>
-                    <!-- /.modal-content -->
-
-                <!-- /.modal-dialog -->
-            </div>
+                        <TableComponent :cabecera="['','Manzana','Lote']">
+                            <template v-slot:tbody>
+                                <tr v-for="lotePromocion in arrayLotePromocion" :key="lotePromocion.id">
+                                    <td style="width:25%">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarLotePromocion(lotePromocion)">
+                                        <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td v-text="lotePromocion.manzana" ></td>
+                                    <td v-text="lotePromocion.lote" ></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </template>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
         </main>
@@ -343,7 +252,18 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+
+import ModalComponent from '../Componentes/ModalComponent.vue'
+import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
+import TableComponent from '../Componentes/TableComponent.vue'
+import Button from '../Componentes/ButtonComponent.vue'
     export default {
+        components:{
+            ModalComponent,
+            RowModal,
+            TableComponent,
+            Button
+        },
         data(){
             return{
                 proceso:false,
@@ -357,6 +277,9 @@
                 v_ini : new Date().toISOString().substr(0, 10),
                 v_fin : '',
                 descuento : '',
+                cant_terreno : 0,
+                cant_ubicacion : 0,
+                cant_desc : 0,
                 'desc_equipamiento' : '',
                 descripcion : '',
                 arrayPromocion : [],
@@ -509,6 +432,11 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarLotePromociones(page,buscar);
             },
+            calcularDesc(){
+                this.descuento = 0;
+
+                this.descuento = parseFloat(this.cant_desc) + parseFloat(this.cant_terreno) + parseFloat(this.cant_ubicacion);
+            },
             /**Metodo para registrar  */
             registrarPromociones(){
                 if(this.validarPromociones() || this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -526,6 +454,9 @@
                     'v_ini': this.v_ini,
                     'v_fin': this.v_fin,
                     'descuento': this.descuento,
+                    'cant_terreno' : this.cant_terreno,
+                    'cant_ubicacion' : this.cant_ubicacion,
+                    'cant_desc' : this.cant_desc ,
                     'desc_equipamiento' : this.desc_equipamiento,
                     'descripcion': this.descripcion
                 }).then(function (response){
@@ -576,8 +507,7 @@
                         });
                    // me.listarLote(1,'','','','','','','lote');
                     me.proceso=false;
-                    me.cerrarModal2(); //al guardar el registro se cierra el modal
-                    me.listarPromociones(me.pagination.current_page,me.buscar,me.buscar2,me.criterio); //se enlistan nuevamente los registros
+                    me.listarLotePromociones(1,me.id)
                     Swal({
                         title: 'Hecho!',
                         text: 'Promocion asignada correctamente',
@@ -605,6 +535,9 @@
                     'v_ini': this.v_ini,
                     'v_fin': this.v_fin,
                     'descuento': this.descuento,
+                    'cant_terreno' : this.cant_terreno,
+                    'cant_ubicacion' : this.cant_ubicacion,
+                    'cant_desc' : this.cant_desc ,
                     'descripcion': this.descripcion,
                     'desc_equipamiento' : this.desc_equipamiento,
                     'id': this.id
@@ -825,6 +758,9 @@
                                 // this.v_ini ='';
                                 this.v_fin = '';
                                 this.descuento = 0;
+                                this.cant_terreno = 0;
+                                this.cant_ubicacion = 0;
+                                this.cant_desc = 0;
                                 this.descripcion = '';
                                 this.tipoAccion = 1;
                                 this.desc_equipamiento = '';
@@ -843,6 +779,9 @@
                                 this.v_ini=data['v_ini'];
                                 this.v_fin=data['v_fin'];
                                 this.descuento=data['descuento'];
+                                this.cant_terreno = data['cant_terreno'];
+                                this.cant_ubicacion = data['cant_ubicacion'];
+                                this.cant_desc = data['cant_desc'];
                                 this.descripcion=data['descripcion'];
                                 this.desc_equipamiento = data['desc_equipamiento'];
                                 break;
@@ -886,17 +825,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -922,16 +850,6 @@
         color: #fff;
         background-color: #2c309e;
         border-color: #313a98;
-    }
-
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {

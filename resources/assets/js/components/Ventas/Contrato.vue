@@ -2266,6 +2266,9 @@
                     promocion: '',
                     descripcionPromo: '',
                     descuentoPromo: 0,
+                    costo_descuento : 0,
+                    descuento_terreno : 0,
+                    descuento_ubicacion : 0,
                     desc_eq_paquete: '',
                     desc_eq_promo: '',
                     paquete_id: 0,
@@ -2507,6 +2510,9 @@
                     me.promocion = respuesta.promocion
                     me.descripcionPromo = respuesta.descripcionPromo
                     me.descuentoPromo = respuesta.descuentoPromo
+                    costo_descuento = respuesta.descuentoCant
+                    descuento_terreno = respuesta.descuentoTerreno
+                    descuento_ubicacion = respuesta.descuentoUbic
 
                     me.precioVenta = parseFloat(me.precioVenta) - parseFloat(me.descuentoPromo)
 
@@ -2957,6 +2963,11 @@
                     me.promocion = me.arrayDatosLotes[0]['promocion'];
                     me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                     me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+
+                    me.costo_descuento = me.arrayDatosLotes[0]['costo_descuento'];
+                    me.descuento_terreno = me.arrayDatosLotes[0]['descuento_terreno'];
+                    me.descuento_ubicacion = me.arrayDatosLotes[0]['descuento_ubicacion'];
+
                     me.desc_eq_promo = me.arrayDatosLotes[0]['desc_equipamiento'];
                     me.terreno_tam_excedente= Math.round( me.arrayDatosLotes[0]['terreno_tam_excedente']*100)/100;
                     me.lote = me.arrayDatosLotes[0]['num_lote'];
@@ -3315,6 +3326,10 @@
                 this.promocion = data['promocion'];
                 this.descripcionPromo = data['descripcion_promocion'];
                 this.descuentoPromo = data['descuento_promocion'];
+                this.costo_descuento = data['costo_descuento'];
+                this.descuento_terreno = data['descuento_terreno'];
+                this.descuento_ubicacion = data['descuento_ubicacion'];
+
                 this.desc_eq_promo = data['desc_eq_promo'];
                 this.paquete = data['paquete'];
                 this.descripcionPaquete = data['descripcion_paquete'];
@@ -3463,6 +3478,9 @@
                     'promocion' : this.promocion,
                     'descripcionPromo' : this.descripcionPromo,
                     'descuentoPromo' : this.descuentoPromo,
+                    'costo_descuento' : this.costo_descuento,
+                    'descuento_terreno' : this.descuento_terreno,
+                    'descuento_ubicacion' : this.descuento_ubicacion,
 
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,
@@ -3676,6 +3694,9 @@
                 this.promocion = data['promocion'];
                 this.descripcionPromo = data['descripcion_promocion'];
                 this.descuentoPromo = data['descuento_promocion'];
+                this.costo_descuento = data['costo_descuento'];
+                this.descuento_terreno = data['descuento_terreno'];
+                this.descuento_ubicacion = data['descuento_ubicacion'];
                 this.desc_eq_promo = data['desc_eq_promo'];
                 this.paquete = data['paquete'];
                 this.descripcionPaquete = data['descripcion_paquete'];
@@ -4084,6 +4105,9 @@
                 'promocion' : this.promocion,
                 'descripcionPromo' : this.descripcionPromo,
                 'descuentoPromo' : this.descuentoPromo,
+                'costo_descuento' : this.costo_descuento,
+                'descuento_terreno' : this.descuento_terreno,
+                'descuento_ubicacion' : this.descuento_ubicacion,
 
                 'prospecto_id':this.prospecto_id,
                 'apellidos':this.apellidos,
@@ -4247,6 +4271,9 @@
                     me.promocion= '';
                     me.descripcionPromo= '';
                     me.descuentoPromo= 0;
+                    me.costo_descuento = 0;
+                    me.descuento_terreno = 0;
+                    me.descuento_ubicacion = 0;
                     me.desc_eq_promo = '';
                     me.paquete_id= 0;
                     me.descripcionPaquete= '';

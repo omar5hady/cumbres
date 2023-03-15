@@ -58,6 +58,7 @@ class CreateCreditosTable extends Migration
 
             $table->double('costo_descuento')->default(0);
             $table->double('descuento_terreno')->default(0);
+            $table->double('descuento_ubicacion')->default(0);
             $table->double('costo_alarma')->default(0);
             $table->double('costo_cuota_mant')->default(0);
             $table->double('costo_protecciones')->default(0);

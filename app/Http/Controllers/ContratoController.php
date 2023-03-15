@@ -253,6 +253,9 @@ class ContratoController extends Controller
                     'creditos.modelo',
                     'creditos.precio_base',
                     'creditos.superficie',
+                    'creditos.costo_descuento',
+                    'creditos.descuento_terreno',
+                    'creditos.descuento_ubicacion',
                     'creditos.terreno_excedente',
                     'creditos.precio_terreno_excedente',
                     'creditos.promocion',
@@ -491,6 +494,9 @@ class ContratoController extends Controller
                 'creditos.terreno_excedente', 'creditos.precio_terreno_excedente', 'creditos.promocion',
                 'creditos.descripcion_promocion', 'creditos.descuento_promocion', 'creditos.paquete',
                 'creditos.descripcion_paquete', 'creditos.precio_venta', 'creditos.plazo',
+                'creditos.costo_descuento',
+                'creditos.descuento_terreno',
+                'creditos.descuento_ubicacion',
                 'creditos.credito_solic', 'creditos.lote_id', 'creditos.fraccionamiento as proyecto',
                 'creditos.costo_paquete', 'creditos.status', 'personal.nombre', 'personal.apellidos',
                 'clientes.sexo', 'clientes.nombre_recomendado', 'clientes.publicidad_id as publicidadId',
@@ -590,6 +596,9 @@ class ContratoController extends Controller
         $credito->promocion = $request->promocion;
         $credito->descripcion_promocion = $request->descripcionPromo;
         $credito->descuento_promocion = $request->descuentoPromo;
+        $credito->costo_descuento = $request->costo_descuento;
+        $credito->descuento_terreno = $request->descuento_terreno;
+        $credito->descuento_ubicacion = $request->descuento_ubicacion;
 
         $inst_sel = inst_seleccionada::select('id')
                     ->where('credito_id','=',$request->id)
@@ -1927,6 +1936,9 @@ class ContratoController extends Controller
                 $credito->promocion = $request->promocion;
                 $credito->descripcion_promocion = $request->descripcionPromo;
                 $credito->descuento_promocion = $request->descuentoPromo;
+                $credito->costo_descuento = $request->costo_descuento;
+                $credito->descuento_terreno = $request->descuento_terreno;
+                $credito->descuento_ubicacion = $request->descuento_ubicacion;
 
                 $credito->descuento_id = $request->descuento_id;
                 $credito->descuento_desc = $request->descuento_desc;

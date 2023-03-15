@@ -32,7 +32,7 @@ class CreateSpDetallesTable extends Migration
             $table->integer('lote_id')->nullable();//Campo para enlazar un lote en caso de ser necesario
 
             $table->date('fecha_factura')->nullable();
-            $table->integer('folio_fisc')->nullable();
+            $table->string('folio_fisc')->nullable();
             $table->date('recepcion')->nullable();
 
             $table->integer('proveedor_id')->nullable(); //Se selecciona proveedor cuando la solicitud sea para caja chica.

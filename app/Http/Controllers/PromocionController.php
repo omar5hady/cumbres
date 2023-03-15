@@ -25,9 +25,7 @@ class PromocionController extends Controller
         $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','promociones.etapa_id','=','etapas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
-                    'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
-                    'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
-                    'promociones.desc_equipamiento',
+                    'promociones.*',
                     DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
 
             if($buscar != '')
@@ -86,6 +84,9 @@ class PromocionController extends Controller
         $promocion->v_ini = $request->v_ini;
         $promocion->v_fin = $request->v_fin;
         $promocion->descuento = $request->descuento;
+        $promocion->cant_terreno = $request->cant_terreno;
+        $promocion->cant_ubicacion = $request->cant_ubicacion;
+        $promocion->cant_desc = $request->cant_desc;
         $promocion->descripcion = $request->descripcion;
         $promocion->desc_equipamiento = $request->desc_equipamiento;
 
@@ -104,6 +105,9 @@ class PromocionController extends Controller
         $promocion->v_ini = $request->v_ini;
         $promocion->v_fin = $request->v_fin;
         $promocion->descuento = $request->descuento;
+        $promocion->cant_terreno = $request->cant_terreno;
+        $promocion->cant_ubicacion = $request->cant_ubicacion;
+        $promocion->cant_desc = $request->cant_desc;
         $promocion->descripcion = $request->descripcion;
         $promocion->desc_equipamiento = $request->desc_equipamiento;
 
@@ -133,8 +137,7 @@ class PromocionController extends Controller
         $descuentoPromo = 0;
 
         $promo = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-                ->select('promociones.nombre','promociones.descripcion', 'promociones.descuento',
-                    'promociones.v_ini','promociones.v_fin','promociones.id')
+                ->select('promociones.*')
                 ->where('lotes_promocion.lote_id','=',$request->lote)
                 ->where('promociones.v_ini','<=',Carbon::today()->format('ymd'))
                 ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))
@@ -145,12 +148,18 @@ class PromocionController extends Controller
             $promocion = $promo[0]->nombre;
             $descripcionPromo = $promo[0]->descripcion;
             $descuentoPromo = $promo[0]->descuento;
+            $descuentoUbic = $promo[0]->cant_ubicacion;
+            $descuentoTerreno = $promo[0]->cant_terreno;
+            $descuentoCant = $promo[0]->cant_desc;
         }
 
         return [
             'promocion' => $promocion,
             'descripcionPromo' => $descripcionPromo,
-            'descuentoPromo' => $descuentoPromo
+            'descuentoPromo' => $descuentoPromo,
+            'descuentoUbic' => $descuentoUbic,
+            'descuentoTerreno' => $descuentoTerreno,
+            'descuentoCant' => $descuentoCant,
         ];
 
     }

@@ -23,6 +23,10 @@ class CreatePromocionesTable extends Migration
             $table->double('descuento')->default(0);
             $table->text('descripcion');
             $table->text('desc_equipamiento')->nullable();
+
+            $table->double('cant_terreno')->default(0);
+            $table->double('cant_ubicacion')->default(0);
+            $table->double('cant_desc')->default(0);
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

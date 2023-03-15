@@ -142,6 +142,9 @@ class CreditoController extends Controller
             $credito->promocion = $request->promocion;
             $credito->descripcion_promocion = $request->descripcionPromo;
             $credito->descuento_promocion = $request->descuentoPromo;
+            $credito->costo_descuento = $request->costo_descuento;
+            $credito->descuento_terreno = $request->descuento_terreno;
+            $credito->descuento_ubicacion = $request->descuento_ubicacion;
             $credito->paquete = $request->paquete_id; //
             $credito->descripcion_paquete = $request->descripcionPaquete;
             $credito->costo_paquete = $request->costoPaquete;
