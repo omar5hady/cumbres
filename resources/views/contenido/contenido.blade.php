@@ -545,5 +545,8 @@
         <template v-if="menu == 291">
             <premios-ruleta></premios-ruleta>
         </template>
+        <template v-if="menu == 292">
+            <ventas-rep></ventas-rep>
+        </template>
     @endif
 @endsection

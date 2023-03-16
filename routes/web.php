@@ -1310,6 +1310,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/solic-pagos/generarPago/{id}','solicPagos\SolicitudesController@generarPago');
         Route::put('/solic-pagos/changeCuenta/{id}','solicPagos\SolicitudesController@changeCuenta');
 
+        Route::get('/presupuestos/getVentas','solicPagos\ReportesController@getVentas');
+
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');
         Route::post('/equip-lotes/storeObservacion','Lotes\EquipLoteController@storeObservacion');
         Route::post('/equip-lotes/fileSubmit','Lotes\EquipLoteController@fileSubmit');
