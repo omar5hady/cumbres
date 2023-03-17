@@ -2510,9 +2510,9 @@
                     me.promocion = respuesta.promocion
                     me.descripcionPromo = respuesta.descripcionPromo
                     me.descuentoPromo = respuesta.descuentoPromo
-                    costo_descuento = respuesta.descuentoCant
-                    descuento_terreno = respuesta.descuentoTerreno
-                    descuento_ubicacion = respuesta.descuentoUbic
+                    me.costo_descuento = respuesta.descuentoCant
+                    me.descuento_terreno = respuesta.descuentoTerreno
+                    me.descuento_ubicacion = respuesta.descuentoUbic
 
                     me.precioVenta = parseFloat(me.precioVenta) - parseFloat(me.descuentoPromo)
 

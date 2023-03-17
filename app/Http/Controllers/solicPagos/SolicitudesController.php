@@ -46,7 +46,7 @@ class SolicitudesController extends Controller
         $usuario = Auth::user()->usuario;
         if( $usuario == 'shady'
             || $usuario == 'uriel.al'
-            || $usuario == 'lomelin'
+
         )$admin = 1;
         if( $usuario == 'shady'
             || $usuario == 'alejandro.pe'
@@ -61,6 +61,7 @@ class SolicitudesController extends Controller
         )$admin = 3;
         if(
             $usuario == 'mendez.erika59'
+            || $usuario == 'lomelin'
         )$admin = 4;
 
         $total = 0;

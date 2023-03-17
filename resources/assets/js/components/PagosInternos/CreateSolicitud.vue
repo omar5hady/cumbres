@@ -896,7 +896,7 @@
                                             </div>
                                         </div>
 
-                                        <template v-if="tipoAccion == 3 && solicitudData.tipo_pago == 1 && solicitudData.status >= 1">
+                                        <template v-if="tipoAccion == 2 && solicitudData.tipo_pago == 1 || tipoAccion == 3 && solicitudData.tipo_pago == 1">
                                             <div class="col-md-3">
                                                 <label for="">Banco</label>
                                                 <input type="text" class="form-control"
@@ -914,7 +914,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <label for="">&nbsp;</label>
-                                                <button
+                                                <button v-if="tipoAccion == 2 || tipoAccion == 3 && usuario == 'jorge.diaz' || tipoAccion == 3 && usuario == 'shady'"
                                                     class="btn btn-warning form-control"
                                                     @click="abrirModal('banco')"
                                                 >Cambiar Cuenta</button>

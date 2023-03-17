@@ -208,26 +208,26 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <template v-if="tipoAccion > 1">
+                    <template v-if="tipoAccion>1">
                         <RowModal :clsRow1="'col-md-9'" :label1="'Apellidos'">
-                            <Input :placeholder="'Apellidos'" :max="25" :value="apellidos" v-model="apellidos"/>
+                            <input class="form-control" type="text" placeholder="Apellidos" maxlength="25" v-model="apellidos"/>
                         </RowModal>
                         <RowModal :clsRow1="'col-md-9'" :label1="'Nombre'">
-                            <Input :placeholder="'Nombre'" :value="nombre" :max="25" v-model="nombre"/>
+                            <input class="form-control" type="text" placeholder="Nombre" maxlength="25" v-model="nombre"/>
                         </RowModal>
                         <RowModal :clsRow1="'col-md-6'" :label1="'Fecha de nacimiento'">
-                            <Input :tipo="'date'" :value="f_nacimiento" v-model="f_nacimiento"/>
+                            <input class="form-control" type="date" v-model="f_nacimiento"/>
                         </RowModal>
-                        <RowModal :clsRow2="'col-md-4'" :label1="'RFC'" :label2="'Homoclave'">
-                            <Input :max="13" :value="rfc" v-model="rfc" :placeholder="'rfc'" style="text-transform:uppercase"/>
+                        <RowModal :clsRow2="'col-md-3'" :label1="'RFC'" :label2="'Homoclave'">
+                            <input class="form-control" maxlength="13" v-model="rfc" placeholder="RFC" style="text-transform:uppercase"/>
                             <template v-slot:input2>
-                                <Input :max="3" :value="homoclave" v-model="homoclave" :placeholder="'Homoclave'" style="text-transform:uppercase"/>
+                                <input class="form-control" maxlength="3" v-model="homoclave" placeholder="Homoclave" style="text-transform:uppercase"/>
                             </template>
                         </RowModal>
                     </template>
                     <template v-if="tipoAccion > 1">
                         <RowModal :label1="'Código Postal'">
-                            <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="$root.isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
+                            <input class="form-control" type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="$root.isNumber($event)" @keyup="selectColonias(cp)" placeholder="Codigo postal" >
                         </RowModal>
                         <RowModal :label1="'Colonia'" :clsRow1="'col-md-6'">
                             <select class="form-control" v-model="colonia" >
