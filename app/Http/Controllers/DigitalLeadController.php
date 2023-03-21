@@ -226,6 +226,8 @@ class DigitalLeadController extends Controller
         $asesor = $request->asesor;
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
+        $f_asign1 = $request->f_asign1;
+        $f_asign2 = $request->f_asign2;
         $proyecto = $request->proyecto;
         $prioridad = $request->prioridad;
         $modelo = $request->modelo;
@@ -257,6 +259,8 @@ class DigitalLeadController extends Controller
                 }
                 if($fecha1 != '' && $fecha2!='') // Fecha de registro
                     $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1.' 00:00:01',$fecha2.' 23:59:59']);
+                if($f_asign1 != '' && $f_asign2!='') // Fecha de registro
+                    $leads = $leads->whereBetween('digital_leads.fecha_asign',[$f_asign1,$f_asign2]);
                 if($buscar != '') // Nombre de lead
                     $leads = $leads->where('digital_leads.nombre','like', '%'. $buscar . '%');
                 if($b_apellidos != '') // Nombre de lead
@@ -306,7 +310,7 @@ class DigitalLeadController extends Controller
                     $leads = $leads->whereIn('digital_leads.id',$cupones)
                             ->where('digital_leads.envio_cupon','!=',NULL);
                 }
-                if($request->b_auditado == 0){//No
+                if($request->b_auditado === 0){//No
                     $leads = $leads->where('f_audit','=', NULL);
                 }
                 if($request->b_auditado == 1){//Si
@@ -1116,7 +1120,7 @@ class DigitalLeadController extends Controller
                 ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                 ->where('status','=',0);
                 if($fecha1 != '') // Fecha de Registro
-                    $asesor->descartados = $asesor->descartados->whereBetween('created_at', [$fecha1, $fecha2]);
+                    $asesor->descartados = $asesor->descartados->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
                 if($proyecto != '') // Proyecto de interes
                     $asesor->descartados = $asesor->descartados->where('proyecto_interes', '=',$proyecto);
             $asesor->descartados = $asesor->descartados->count();
@@ -1131,9 +1135,11 @@ class DigitalLeadController extends Controller
                 ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                 ->where('fecha_update','>',$today)
                 ->where('digital_leads.fecha_asign','!=',NULL)
+                ->where('status','!=',3)
+                ->where('status','!=',4)
                 ->where('status','!=',0);
                 if($fecha1 != '') // Fecha de registro
-                    $asesor->amarillo = $asesor->amarillo->whereBetween('created_at', [$fecha1, $fecha2]);
+                    $asesor->amarillo = $asesor->amarillo->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
                 if($proyecto != '')  // Proyecto de interes
                     $asesor->amarillo = $asesor->amarillo->where('proyecto_interes', '=',$proyecto);
                 $asesor->amarillo = $asesor->amarillo->get();
@@ -1149,9 +1155,11 @@ class DigitalLeadController extends Controller
                     ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
                     ->where('fecha_update','<=',$today)
                     ->where('digital_leads.fecha_asign','!=',NULL)
+                    ->where('status','!=',3)
+                    ->where('status','!=',4)
                     ->where('status','!=',0);
                     if($fecha1 != '') // Fecha de registro
-                        $asesor->rojo = $asesor->rojo->whereBetween('created_at', [$fecha1, $fecha2]);
+                        $asesor->rojo = $asesor->rojo->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
                     if($proyecto != '')  // Proyecto de interes
                         $asesor->rojo = $asesor->rojo->where('proyecto_interes', '=',$proyecto);
                     $asesor->rojo = $asesor->rojo->get();

@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-md-10">
                             <div class="input-group">
-                                <input type="text" readonly placeholder="Nombre" class="form-control col-sm-4">
+                                <input type="text" readonly placeholder="Nombre" class="form-control col-sm-3">
                                 <input type="text"
                                     v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
                                 <input type="text"
@@ -46,7 +46,7 @@
                         </div>
                         <div class="col-md-8" v-if="rolId != 2">
                             <div class="input-group">
-                                <input type="text" readonly placeholder="Usuario" class="form-control col-sm-4">
+                                <input type="text" readonly placeholder="Usuario" class="form-control col-sm-3">
                                 <input type="text"
                                     v-model="b_user_name" @keyup.enter="listarLeads(1)" placeholder="Nombre de Usuario" class="form-control col-sm-6">
                                 <input type="text"
@@ -64,46 +64,6 @@
 
                                 <input type="text" v-if="b_motivo == 1" v-model="b_campania" @keyup.enter="listarLeads(1)" placeholder="Campaña publicitaria" class="form-control col-sm-6">
                                 <input type="text" v-if="b_motivo == 1" v-model="b_contacto" @keyup.enter="listarLeads(1)" placeholder="Medio de contacto" class="form-control col-sm-6">
-                            </div>
-                        </div>
-                        <div class="col-md-8" v-if="b_motivo ==1 || b_motivo == 2">
-                            <div class="input-group">
-                                <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
-                                <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
-                                <input type="date" v-model="b_fecha2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
-                            </div>
-                        </div>
-                        <div class="col-md-6" v-if="b_motivo ==4">
-                            <div class="input-group">
-                                <input type="text" readonly placeholder="Prioridad:" class="form-control col-sm-4">
-                                <select class="form-control"  v-model="b_prioridad" >
-                                    <option value="">Todos</option>
-                                    <option value="Baja">Baja</option>
-                                    <option value="Media">Media</option>
-                                    <option value="Alta">Alta</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6" v-if="b_motivo == 1">
-                            <div class="input-group">
-                                <input type="text" readonly placeholder="Semaforo Atención:" class="form-control col-sm-4">
-                                <select class="form-control"  v-model="b_semaforo" >
-                                    <option value="">Todos</option>
-                                    <option value="1">Al corriente</option>
-                                    <option value="2">7-15 dias</option>
-                                    <option value="3">+16 dias</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-8" v-if="b_motivo ==1">
-                            <div class="input-group">
-                                <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
-                                <select class="form-control" v-model="b_proyecto">
-                                    <option value="">Seleccione</option>
-                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
-                                        :value="proyecto.id" v-text="proyecto.nombre">
-                                    </option>
-                                </select>
                             </div>
                         </div>
                         <div class="col-md-8">
@@ -124,18 +84,65 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-8" v-if="b_motivo ==1 || b_motivo == 2">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-3">
+                                <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                                <input type="date" v-model="b_fecha2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                            </div>
+                        </div>
+                        <div class="col-md-8" v-if="b_motivo ==1 && rolId != 2">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Fecha de Canalizacion:" class="form-control col-sm-3">
+                                <input type="date" v-model="b_fasign1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                                <input type="date" v-model="b_fasign2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                            </div>
+                        </div>
+                        <div class="col-md-6" v-if="b_motivo ==4">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Prioridad:" class="form-control col-sm-3">
+                                <select class="form-control"  v-model="b_prioridad" >
+                                    <option value="">Todos</option>
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" v-if="b_motivo == 1">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Semaforo Atención:" class="form-control col-sm-3">
+                                <select class="form-control"  v-model="b_semaforo" >
+                                    <option value="">Todos</option>
+                                    <option value="1">Al corriente</option>
+                                    <option value="2">7-15 dias</option>
+                                    <option value="3">+16 dias</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-8" v-if="b_motivo ==1">
+                            <div class="input-group">
+                                <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-3">
+                                <select class="form-control" v-model="b_proyecto">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                        :value="proyecto.id" v-text="proyecto.nombre">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-10" v-if="userId == 25511 //Adrian
                                     || userId == 28669 //Ashly
                                     || userId == 28271 //Alejandro Ort
                                     || userId == 28128 //Ale Escobar
                                     || userId == 33095 || rolId == 1 || userId == 10">
                             <div class="input-group" v-if="b_motivo == 1">
-                                <input type="text" readonly placeholder="Leads hibernando:" class="form-control col-sm-4">
+                                <input type="text" readonly placeholder="Leads hibernando:" class="form-control col-sm-3">
                                 <select class="form-control  col-sm-4" v-model="b_hibernar">
                                     <option value="0">No</option>
                                     <option value="1">Si</option>
                                 </select>
-                                <input type="text" readonly placeholder="Pendiente de envio de cupon:" class="form-control col-sm-4">
+                                <input type="text" readonly placeholder="Pendiente de envio de cupon:" class="form-control col-sm-3">
                                 <select class="form-control" v-model="b_cupon">
                                     <option value="3">Todos</option>
                                     <option value="0">No</option>
@@ -149,7 +156,7 @@
                                     || userId == 28128 //Ale Escobar
                                     || userId == 33095 || rolId == 1 || userId == 10">
                             <div class="input-group" v-if="b_motivo == 1">
-                                <input type="text" readonly placeholder="Leads auditados:" class="form-control col-sm-4">
+                                <input type="text" readonly placeholder="Leads auditados:" class="form-control col-sm-3">
                                 <select class="form-control  col-sm-4" v-model="b_auditado">
                                     <option value="">Todos</option>
                                     <option value="0">No</option>
@@ -177,6 +184,7 @@
                                         '?buscar='+ b_cliente+'&campania='+ b_campania+
                                         '&status='+ b_status+'&asesor='+ b_asesor+
                                         '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
+                                        '&f_asign1='+b_fasign1      + '&f_asign2='+b_fasign2 +
 										'&hibernar=' + b_hibernar + '&b_auditado=' + b_auditado +
                                         '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
                                     <i class="fa fa-file-text"></i>&nbsp; Excel para Audiencia
@@ -272,7 +280,7 @@
                                     {{(lead.proyecto_interes != 0) ? lead.proyecto : lead.zona_interes}}
                                 </td>
                                 <td class="td2">
-                                    {{ (lead.rango1 != null) ? `$${formatNumber(lead.rango1)} - $${formatNumber(lead.rango2)}` : '' }}
+                                    {{ (lead.rango1 != null) ? `$${$root.formatNumber(lead.rango1)} - $${$root.formatNumber(lead.rango2)}` : '' }}
                                 </td>
                                 <td class="td2" v-text="lead.modelo_interes"></td>
                                 <td class="td2">
@@ -400,7 +408,7 @@
                                 <td class="td2" v-else v-text="lead.zona_interes"></td>
                                 <td class="td2" v-text="lead.modelo_interes"></td>
                                 <td class="td2">
-                                    {{(lead.rango1 != null) ? '$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2) : ''}}
+                                    {{(lead.rango1 != null) ? '$'+$root.formatNumber(lead.rango1) + ' - $'+$root.formatNumber(lead.rango2) : ''}}
                                 </td>
                                 <td class="td2">
                                     <span v-if="lead.status == '1'" class="badge badge-warning">En Seguimiento</span>
@@ -562,8 +570,8 @@
                                     </a>
                                 </td>
                                 <td v-text="lead.direccion"></td>
-                                <td>${{formatNumber(lead.rango1)}}</td>
-                                <td>{{formatNumber(lead.rango2)}}m&sup2;</td>
+                                <td>${{$root.formatNumber(lead.rango1)}}</td>
+                                <td>{{$root.formatNumber(lead.rango2)}}m&sup2;</td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                 <td v-text="lead.descripcion"></td>
                                 <td class="td2">
@@ -762,14 +770,14 @@
                         <div class="form-group row">
                             <label class="col-md-2 form-control-label" for="text-input">Presupuesto</label>
                             <div class="col-md-2">
-                                <p><strong>${{ formatNumber(rango1)}}</strong></p>
+                                <p><strong>${{ $root.formatNumber(rango1)}}</strong></p>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
                                 <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="300000" max="2500000">
                             </div>
                             <div class="col-md-2">
-                                <p><strong>${{ formatNumber(rango2)}}</strong></p>
+                                <p><strong>${{ $root.formatNumber(rango2)}}</strong></p>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
@@ -865,7 +873,7 @@
                             </div>
                             <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
                             <div class="col-md-4">
-                                <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
+                                <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" placeholder="NSS" maxlength="11">
                             </div>
                         </div>
 
@@ -1211,14 +1219,14 @@
                         <div class="form-group row">
                             <label class="col-md-2 form-control-label" for="text-input">Rango de mensualidad</label>
                             <div class="col-md-2">
-                                <p><strong>${{ formatNumber(rango1)}}</strong></p>
+                                <p><strong>${{ $root.formatNumber(rango1)}}</strong></p>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
                                 <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="5000" max="30000">
                             </div>
                             <div class="col-md-2">
-                                <p><strong>${{ formatNumber(rango2)}}</strong></p>
+                                <p><strong>${{ $root.formatNumber(rango2)}}</strong></p>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
@@ -1403,7 +1411,7 @@
                             <label class="col-md-3 form-control-label" for="text-input">Medida en m&sup2;: </label>
                             <div class="col-md-5">
                                 <input class="form-control" type="number" v-model="rango2">
-                                <p><strong>{{ formatNumber(rango2)}}m&sup2;</strong></p>
+                                <p><strong>{{ $root.formatNumber(rango2)}}m&sup2;</strong></p>
 
                             </div>
                         </div>
@@ -1412,7 +1420,7 @@
                             <label class="col-md-3 form-control-label" for="text-input">Precio por m&sup2;: </label>
                             <div class="col-md-5">
                                 <input class="form-control" type="number" v-model="rango1">
-                                <p><strong>${{ formatNumber(rango1)}}</strong></p>
+                                <p><strong>${{ $root.formatNumber(rango1)}}</strong></p>
                             </div>
                         </div>
 
@@ -1519,7 +1527,6 @@
             </template>
         </ModalComponent>
         <!--Fin del modal consulta-->
-
         <!--Inicio del modal observaciones-->
         <ModalComponent v-if="modal==2"
             :titulo="tituloModal"
@@ -1553,7 +1560,6 @@
                 </TableComponent>
             </template>
         </ModalComponent>
-
         <ModalComponent v-if="modal==3"
             :titulo="tituloModal"
             @closeModal="cerrarModal()"
@@ -1608,7 +1614,7 @@
                                             : lote.lote.num_lote
                                          }}
                                     </td>
-                                    <td class="td2" v-text="'$'+ formatNumber(lote.lote.p_venta)"></td>
+                                    <td class="td2" v-text="'$'+ $root.formatNumber(lote.lote.p_venta)"></td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -1624,8 +1630,8 @@
                                             : lote.num_lote
                                          }}
                                     </td>
-                                    <td class="td2">{{formatNumber(lote.terreno)}} m&sup2;</td>
-                                    <td class="td2" v-text="'$'+ formatNumber(lote.p_venta)"></td>
+                                    <td class="td2">{{$root.formatNumber(lote.terreno)}} m&sup2;</td>
+                                    <td class="td2" v-text="'$'+ $root.formatNumber(lote.p_venta)"></td>
                                     <td>
                                         <Button @click="mostrarPromo(lote.promocion)" v-if="lote.promocion != ''" :icon="'icon-eye'"></Button>
                                     </td>
@@ -1636,7 +1642,6 @@
                 </div>
             </template>
         </ModalComponent>
-
         <ModalComponent v-if="modal==4"
             :titulo="tituloModal"
             @closeModal="cerrarModal()"
@@ -1723,6 +1728,8 @@ export default {
             b_motivo:1,
             b_fecha1:'',
             b_fecha2:'',
+            b_fasign1 :'',
+            b_fasign2: '',
             b_proyecto:'',
             b_prioridad:'',
             b_modelo:'',
@@ -2141,6 +2148,8 @@ export default {
             this.b_fecha1='';
             this.b_fecha2='';
             this.b_proyecto='';
+            this.b_fasign2='';
+            this.b_fasign1='';
             this.b_prioridad='';
             this.b_modelo ='';
             this.b_contacto = '';
@@ -2242,6 +2251,7 @@ export default {
                 '&campania='+me.b_campania  + '&status='+me.b_status+
                 '&asesor='+me.b_asesor      + '&motivo='+me.b_motivo +
                 '&fecha1='+me.b_fecha1      + '&fecha2='+me.b_fecha2 +
+                '&f_asign1='+me.b_fasign1      + '&f_asign2='+me.b_fasign2 +
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
                 '&b_cupon='+me.b_cupon + '&hibernar=' + me.b_hibernar +
                 '&b_auditado=' + me.b_auditado +
@@ -2829,19 +2839,6 @@ export default {
                     break;
                 }
             }
-        },
-        isNumber: function(evt) {
-            evt = (evt) ? evt : window.event;
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                evt.preventDefault();;
-            } else {
-                return true;
-            }
-        },
-        formatNumber(value) {
-            let val = (value/1).toFixed(2)
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         back(){
             this.editar = 0;
