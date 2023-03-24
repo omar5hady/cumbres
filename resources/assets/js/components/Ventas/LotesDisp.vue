@@ -316,7 +316,7 @@
                                         <th># Departamento</th>
                                         <th>% Avance</th>
                                         <th style="text-align:center;">Modelo</th>
-                                        <th>Especificación</th>
+
                                         <th>Construcción</th>
                                         <th># Oficial</th>
                                         <th>Precio venta</th>
@@ -344,7 +344,9 @@
                                         <td  style="width:20%" v-text="lote.proyecto"></td>
                                         <td  style="width:20%" v-text="lote.etapa"></td>
                                         <td  v-text="lote.manzana"></td>
-                                        <td  v-text="lote.num_lote"></td>
+                                        <td>
+                                            {{lote.sublote? lote.num_lote+'-'+lote.sublote : lote.num_lote}}
+                                        </td>
                                         <td  v-text="lote.avance + '%'"></td>
                                         <td >
                                             <button v-if="lote.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(lote.archivo)" class="btn btn-success btn-sm">
@@ -353,7 +355,7 @@
                                             <span v-else class="btn badge badge-primary" v-text="lote.modelo"></span>
                                             <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                         </td>
-                                        <td class="td2" v-text="lote.sublote"></td>
+
                                         <td class="td2" v-text="lote.construccion"></td>
                                             <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
                                             <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>

@@ -516,7 +516,8 @@ class ContratoController extends Controller
                 'clientes.nacionalidad_coa',
                 'clientes.lugar_nacimiento',
                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion',
-                'inst_seleccionadas.elegido'
+                'inst_seleccionadas.elegido',
+                'personal.num_ine', 'personal.num_pasaporte'
             )
             ->where('inst_seleccionadas.elegido', '=', 1)
             ->where('creditos.id', '=', $folio)->get();

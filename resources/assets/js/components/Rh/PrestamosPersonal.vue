@@ -12,7 +12,7 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group flex-column">
-                        <button class="btn btn-info" @click="abrirModal('registrar')"> <i class="fa fa-plus-circle"></i> Nueva Solicitud.</button>
+                        <button v-if="isRHCurrent" class="btn btn-info" @click="abrirModal('registrar')"> <i class="fa fa-plus-circle"></i> Nueva Solicitud.</button>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-8" v-if="isRHCurrent">
