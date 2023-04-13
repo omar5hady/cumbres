@@ -1113,6 +1113,7 @@ class UserController extends Controller
                 $castigados = AsesorCastigo::select('asesor_id')
                     ->where('f_ini', '<', $current)
                     ->where('f_fin', '>', $current)
+                    ->whereNotIn('asesor_id',[104,19])
                     ->get();
 
                 $personas = $personas->whereNotIn('personal.id',$castigados);

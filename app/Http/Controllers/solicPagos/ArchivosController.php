@@ -35,8 +35,8 @@ class ArchivosController extends Controller
         $solicitud->tipo = $request->tipo;
         if($solicitud->tipo == 'COMPROBANTE DE PAGO'){
             $solic = SpSolicitud::findOrFail($request->id);
-            $solic->status = 4;
-            $solic->entrega_pago = Carbon::now();
+            //$solic->status = 4;
+            //$solic->entrega_pago = Carbon::now();
             $file = DropboxFiles::findOrFail($fileID);
             $solic->comprobante_pago = $file->public_url;
             $solic->save();

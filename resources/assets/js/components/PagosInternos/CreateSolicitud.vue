@@ -447,7 +447,7 @@
                                                 <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-warning'" :icon="'icon-check'" title="Indicar revision previa"
-                                                            v-if="solic.rev_op == 0 && (admin == 1 || usuario == 'shady')"
+                                                            v-if="solic.rev_op == 0 && (admin == 1 || usuario == 'shady' || usuario == 'lomelin')"
                                                             @click="setRevOpc(solic.id)"
                                                         ></Button>
 

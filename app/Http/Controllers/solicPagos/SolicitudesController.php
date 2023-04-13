@@ -641,7 +641,7 @@ class SolicitudesController extends Controller
     }
 
     private function updateSolicitud($solicitud){
-        $prov = Proveedor::where('id','=',$solicitud['proveedor_id'])->get();
+        //$prov = Proveedor::where('id','=',$solicitud['proveedor_id'])->get();
 
         $solic = SpSolicitud::findOrFail($solicitud['id']);
         $solic->empresa_solic       = $solicitud['empresa_solic'];
@@ -654,12 +654,12 @@ class SolicitudesController extends Controller
         $solic->convenio  = $solicitud['convenio'];
         $solic->referencia  = $solicitud['referencia'];
 
-        if(sizeof($prov))
+        /*if(sizeof($prov))
         {
             $solic->banco           = $prov[0]->banco;
             $solic->num_cuenta      = $prov[0]->num_cuenta;
             $solic->clabe           = $prov[0]->clabe;
-        }
+        }*/
         $solic->rechazado           = 0;
         $solic->save();
 

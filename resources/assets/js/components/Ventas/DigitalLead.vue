@@ -199,13 +199,16 @@
                     <br>
                     <TableComponent v-if="b_motivo == 1"
                         :cabecera="[
-                            '','Avance', ' ','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
+                            'Obs','','Avance', ' ','Nombre','Celular','Correo','Campaña','Proyecto o zona de interés ',
                             'Presupuesto','Modelo recomendado','Estatus','Vendedor asignado',
-                            'Fecha de alta','Observaciones', '   ', '     ',
+                            'Fecha de alta', '   ', '     ',
                         ]"
                     >
                         <template v-slot:tbody>
                             <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                <td class="td2">
+                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
+                                </td>
                                 <td class="td2" style="width:10%">
                                     <Button title="Editar" :btnClass="'btn-warning'" :size="'btn-sm'" :icon="'icon-pencil'"
                                         @click="abrirModal('actualizar',lead)">
@@ -292,9 +295,7 @@
                                 </td>
                                 <td class="td2" v-text="lead.vendedor"></td>
                                 <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                <td class="td2">
-                                    <Button :btnClass="'btn-info'" title="Ver Observaciones" :icon="'icon-eye'" @click="abrirModal1(lead.id,lead.motivo)"></Button>
-                                </td>
+
                                 <td class="td2" v-if="userId == 25511 //Adrian
                                     || userId == 28669 //Ashly
                                     || userId == 28271 //Alejandro Ort

@@ -1434,6 +1434,7 @@
                                                 v-if="listado==3 || listado==4 && btn_actualizar==1">
                                                 <div class="form-group"
                                                     v-if="tipo_credito=='Cofinavit'
+                                                        || tipo_credito == 'Infonavit Mas Banco'
                                                         || tipo_credito=='COFINAVIT I.A'">
                                                     <label for="">Infonavit</label>
                                                     <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >

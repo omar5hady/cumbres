@@ -442,6 +442,7 @@
             Las partes establecen que la celebración del Contrato de Compraventa estará condicionada al hecho de
             que a “EL PROMITENTE COMPRADOR” le sea aprobado y otorgado el crédito por parte de
             @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
+                && $contrato->tipo_credito != 'Infonavit Mas Banco'
                 && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
                 {{ mb_strtoupper($contrato->institucion) }}
             @else
@@ -463,6 +464,7 @@
                 <li><template class="cuadrado"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg=="></template>
                     Solicita a <strong>“EL PROMITENTE VENDEDOR”</strong> realice la gestión correspondiente ante
                     @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
+                        && $contrato->tipo_credito != 'Infonavit Mas Banco'
                         && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
                         {{ mb_strtoupper($contrato->institucion) }}
                     @else
@@ -476,6 +478,7 @@
                     o compromiso de que dicho crédito le sea autorizado a <strong>“EL PROMITENTE COMPRADOR”,</strong> y solo se limita a realizar la gestión
                     y trámite directamente ante
                     @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
+                        && $contrato->tipo_credito != 'Infonavit Mas Banco'
                         && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
                         {{ mb_strtoupper($contrato->institucion) }}
                     @else
@@ -490,6 +493,7 @@
                     la firma de este contrato, toda la documentación que le sea requerida y que sea necesaria para
                     realizar dicho trámite, así como a cubrir los montos que
                     @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
+                        && $contrato->tipo_credito != 'Infonavit Mas Banco'
                         && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
                         {{ mb_strtoupper($contrato->institucion) }}
                     @else
@@ -518,6 +522,7 @@
                     Llevará a cabo por cuenta propia la tramitación de su crédito para adquisición de vivienda, por lo que
                     <strong>“EL PROMITENTE COMPRADOR”</strong> se obliga a realizar todas las gestiones y entregar a
                     @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
+                        && $contrato->tipo_credito != 'Infonavit Mas Banco'
                         && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
                         {{ mb_strtoupper($contrato->institucion) }}
                     @else
