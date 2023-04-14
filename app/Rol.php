@@ -10,7 +10,7 @@ class Rol extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
         'nombre','descripcion','condicion'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
-    
+
     public $timestamps = false;
 
     public function users(){

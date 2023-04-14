@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Vendedor;
 
 class User extends Authenticatable
 {
@@ -178,6 +179,10 @@ class User extends Authenticatable
 
     public function rol(){
         return $this->belongsTo('App\Rol');
+    }
+
+    public function vendedor(){
+        return $this->belongsTo('App\Vendedor','id');
     }
 
     public function persona(){
