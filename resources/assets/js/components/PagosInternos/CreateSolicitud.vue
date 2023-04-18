@@ -1435,10 +1435,10 @@
                                     </Button>
                                 </template>
                                 <template v-if="solicitudData.status == 1 && solicitudData.rechazado == 0">
-                                    <Button v-if="admin == 3 || usuario == 'shady'" :icon="'fa fa-times'" :btnClass="'btn-danger'" @click="abrirModal('rechazo')">
+                                    <Button v-if="admin == 3 || usuario == 'shady' || usuario == 'cp.martin'" :icon="'fa fa-times'" :btnClass="'btn-danger'" @click="abrirModal('rechazo')">
                                         Rechazar solicitud
                                     </Button>
-                                    <Button v-if="admin == 3 || usuario == 'shady'" :icon="'icon-check'" :btnClass="'btn-success'" @click="changeVbTesoreria(1)">
+                                    <Button v-if="admin == 3 || usuario == 'shady' || usuario == 'cp.martin'" :icon="'icon-check'" :btnClass="'btn-success'" @click="changeVbTesoreria(1)">
                                         Aprobar solicitud
                                     </Button>
                                 </template>
@@ -1452,7 +1452,7 @@
                                     </Button>
                                     <Button v-if="solicitudData.vb_direccion == 0 && admin === 1
                                         || solicitudData.vb_direccion == 0 && usuario == 'shady'
-                                        || solicitudData.vb_direccion == 1 && usuario == 'cp.martin' && solicitudData.extraordinario == 1"
+                                        || solicitudData.vb_direccion == 0 && usuario == 'cp.martin' && solicitudData.extraordinario == 1"
                                         :icon="'icon-check'"
                                         :btnClass="'btn-success'"
                                         @click="changeVbDireccion(1)">

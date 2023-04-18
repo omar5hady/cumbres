@@ -220,6 +220,7 @@ Vue.component('vehiculo-comodato', require('./components/Rh/VehiculoComodato.vue
 Vue.component('fondo-ahorro', require('./components/Rh/FondoAhorro.vue'));
 Vue.component('fondo-pension', require('./components/Rh/FondoPension.vue'));
 Vue.component('prestamos-personal', require('./components/Rh/PrestamosPersonal.vue'));
+Vue.component('ficha-medica', require('./components/Rh/FichaMedica.vue'));
 
 // Inventario
 Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));
