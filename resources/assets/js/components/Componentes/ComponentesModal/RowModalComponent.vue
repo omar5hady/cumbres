@@ -1,10 +1,10 @@
 <template>
     <div class="form-group row">
-        <label class="col-md-2 form-control-label" for="text-input">{{label1}}</label>
+        <label v-if="label1.length > 0" class="col-md-2 form-control-label" for="text-input">{{label1}}</label>
         <div :class="clsRow1">
             <slot></slot>
         </div>
-        <label  v-if="label2" class="col-md-1 form-control-label" for="text-input">{{label2}}</label>
+        <label v-if="label2" class="form-control-label" for="text-input" :class="label2.length >= 8 ? 'col-md-2' : 'col-md-1'">{{label2}}</label>
         <div v-if="clsRow2 != ''" :class="clsRow2">
             <slot name="input2"></slot>
         </div>

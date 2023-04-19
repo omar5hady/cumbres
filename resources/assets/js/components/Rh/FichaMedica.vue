@@ -107,13 +107,13 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">
+                                    <h5 class="card-title">
                                         <font style="vertical-align: inherit;">
                                             <font style="vertical-align: inherit;"
                                                 >Afilaciones a servicios de salud </font
                                             >
                                         </font>
-                                    </h4>
+                                    </h5>
                                     <!---->
                                 </div>
                                 <div class="card-body" style="padding-bottom: 0px;">
@@ -132,41 +132,15 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-6 col-lg-12">
-                            <div class="card">
-                                <div class="card-header" >
-                                    <h4 class="card-title">
-                                        <font style="vertical-align: inherit;">
-                                            <font style="vertical-align: inherit;"
-                                                >Alergias </font
-                                            >
-                                        </font>
-                                    </h4>
-                                    <!---->
-                                </div>
-                                <div class="card-body" style="padding-bottom: 0px;">
-                                    <h6>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!</h6>
-                                </div>
-                            </div>
-                        </div>
+                        <CardTextVue
+                            :title="'Alergias'"
+                            :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
+                        ></CardTextVue>
 
-                        <div class="col-sm-6 col-lg-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">
-                                        <font style="vertical-align: inherit;">
-                                            <font style="vertical-align: inherit;"
-                                                >Tratamientos actuales </font
-                                            >
-                                        </font>
-                                    </h4>
-                                    <!---->
-                                </div>
-                                <div class="card-body" style="padding-bottom: 0px;">
-                                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!</p>
-                                </div>
-                            </div>
-                        </div>
+                        <CardTextVue
+                            :title="'Tratamientos actuales'"
+                            :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
+                        ></CardTextVue>
                     </div>
 
 
@@ -239,6 +213,16 @@
                                             {antecedente : 'Dificultad para realizar tareas diarias', especificacion: 'Especificacion', estado: false},
                                         ]"
                                     ></CardListGroupVue>
+
+                                    <CardTextVue
+                                        :title="'Tratamiento médico controlado'"
+                                        :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
+                                    ></CardTextVue>
+
+                                    <CardTextVue
+                                        :title="'Observaciones'"
+                                        :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
+                                    ></CardTextVue>
                                 </div>
                             </div>
                         </div>
@@ -259,12 +243,14 @@
                 <div class="card-body">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Datos Médicos Generales</a></li>
-                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Datos personales</a></li>
-                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Datos importantes</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Antecedentes</a></li>
+                        <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Psicológicos/Psiquiátricos</a></li>
                     </ul>
                     <template v-if="paso == 1"> <!--Datos Generales -->
+                    <br>
                         <RowModal :label1="'Grupo y R.H.'">
                             <select class="form-control" v-model="medicalRecord.tipo_sangre">
+                                <option value="">Seleccione</option>
                                 <option value="A+">A+</option>
                                 <option value="A-">A-</option>
                                 <option value="B+">B+</option>
@@ -275,33 +261,401 @@
                                 <option value="O-">O-</option>
                             </select>
                         </RowModal>
-                        <RowModal :label1="'Peso'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'">
-                            <select class="form-control" v-model="medicalRecord.tipo_sangre">
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                            </select>
+                        <RowModal :label1="'Peso (kg)'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Talla (m)'">
+                            <input v-model="histMedico.peso" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                            <template v-slot:input2>
+                                <input v-model="medicalRecord.estatura" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                            </template>
                         </RowModal>
-                        <RowModal :label1="'Grupo y R.H.'">
-                            <select class="form-control" v-model="medicalRecord.tipo_sangre">
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                            </select>
+                        <RowModal :label1="'Alerta'" :clsRow1="'col-md-8'">
+                            <textarea v-model="medicalRecord.alerta" class="form-control" cols="50" rows="4"></textarea>
+                        </RowModal>
+                        <RowModal :label1="'Alergias'" :clsRow1="'col-md-8'">
+                            <textarea v-model="medicalRecord.alergias" class="form-control" cols="50" rows="4"
+                                placeholder="Especificar agente alérgico y reacción que provoca"
+                            ></textarea>
+                        </RowModal>
+                        <RowModal :label1="'Tratamientos actuales'" :clsRow1="'col-md-8'">
+                            <textarea v-model="histMedico.tratamiento_act" class="form-control" cols="50" rows="4"
+                                placeholder="Especificar medicamento, dosis y periocidad de toma"
+                            ></textarea>
+                        </RowModal>
+                    </template>
+
+                    <template v-if="paso == 2"> <!--Datos Generales -->
+                    <br>
+                        <RowModal :label1="'Diabetes'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Respiratorios'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.diabetes" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.diabetes" v-model="histMedico.diabetes_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.respiratorios" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.respiratorios" v-model="histMedico.respiratorios_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Hipertensión'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Oftálmicos'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.hipertension" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.hipertension" v-model="histMedico.hipertension_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.oftalmicos" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.oftalmicos" v-model="histMedico.oftalmicos_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Evento Epiléptico'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Naríz y/u Oídos'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.epileptico" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.epileptico" v-model="histMedico.epileptico_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.nariz" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.nariz" v-model="histMedico.nariz_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Problema Cardíaco'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Neurológicos'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.cardiaco" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.cardiaco" v-model="histMedico.cardiaco_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.neurologicos" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.neurologicos" v-model="histMedico.neurologicos_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Desmayos y/o mareos'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Hematológicos'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.mareos" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.mareos" v-model="histMedico.mareos_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.hematologicos" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.hematologicos" v-model="histMedico.hematologicos_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Asma'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Hepáticos'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.asma" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.asma" v-model="histMedico.asma_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.hepaticos" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.hepaticos" v-model="histMedico.hepaticos_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Toxicomanías'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Aparato digestivo'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.toxicomanias" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.toxicomanias" v-model="histMedico.toxicomanias_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.digestivo" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.digestivo" v-model="histMedico.digestivo_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Cirugía Reciente'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Tiroideo'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.cirugia" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.cirugia" v-model="histMedico.cirugia_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.tiroideo" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.tiroideo" v-model="histMedico.tiroideo_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Embarazo y/o Puerperio'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Dermatológico'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.embarazo" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.embarazo" v-model="histMedico.embarazo_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.dermatologico" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.dermatologico" v-model="histMedico.dermatologico_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Transfusión'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Inmunológicos'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.transfusion" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.transfusion"  v-model="histMedico.transfusion_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.inmunologico" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.inmunologico" v-model="histMedico.inmunologico_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Lesión músculo esquelética'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Urinarios'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.lesion_musculo" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.lesion_musculo"  v-model="histMedico.lesion_musculo_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.urinario" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.urinario" v-model="histMedico.urinario_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Ortopédicos'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'COVID-19'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.ortopedicos" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.ortopedicos"  v-model="histMedico.ortopedicos_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.covid" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.covid" v-model="histMedico.covid_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                    </template>
+
+                    <template v-if="paso == 3"> <!--Datos Generales -->
+                    <br>
+                        <RowModal :label1="'Cambios en alimentación'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Alteraciones del sueño'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.cambio_alimentacion" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.cambio_alimentacion" v-model="histMedico.cambio_alimentacion_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.alt_sueno" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.alt_sueno" v-model="histMedico.alt_sueno_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+                        <RowModal :label1="'Aislamiento Personal'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Agotamiento excesivo'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.aislamiento" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.aislamiento" v-model="histMedico.aislamiento_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.agotamiento" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.agotamiento" v-model="histMedico.agotamiento_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+                        <RowModal :label1="'Sensación de vacío o sin importancia'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Dolores inexplicables'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.sensacion_vacio" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.sensacion_vacio" v-model="histMedico.sensacion_vacio_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.dolores" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.dolores" v-model="histMedico.dolores_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+                        <RowModal :label1="'Impotencia o Desesperanza'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Aumento en Toxicomanias'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.desesperanza" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.desesperanza" v-model="histMedico.desesperanza_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.aumento_toxic" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.aumento_toxic" v-model="histMedico.aumento_toxic_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+                        <RowModal :label1="'Confusión, Distracción o Irritabilidad'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Cambios de humor'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.irritabilidad" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.irritabilidad" v-model="histMedico.irritabilidad_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.humor" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.humor" v-model="histMedico.humor_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+                        <RowModal :label1="'Pensamientos y/o Recuerdos que no salgan de su cabeza'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Escuchar voces o creer cosas que no son ciertas'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.pensamientos_cabeza" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.pensamientos_cabeza" v-model="histMedico.pensamientos_cabeza_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.voces" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.voces" v-model="histMedico.voces_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+                        <RowModal :label1="'Pensar lastimarse a si mismo u otros'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Dificultad para realizar tareas diarias'">
+                            <label class="switch switch-default switch-pill switch-success">
+                                <input type="checkbox" class="switch-input" v-model="histMedico.lastimarse" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                            <input v-if="histMedico.lastimarse" v-model="histMedico.lastimarse_esp"
+                                placeholder="Especifique" type="text" class="form-control">
+                            <template v-slot:input2>
+                                    <label class="switch switch-default switch-pill switch-success">
+                                    <input type="checkbox" class="switch-input" v-model="histMedico.dif_tareas" checked>
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input v-if="histMedico.dif_tareas" v-model="histMedico.dif_tareas_esp"
+                                    placeholder="Especifique" type="text" class="form-control">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="''" :clsRow1="'col-md-12'">
+                            <center><h6>En caso de encontrarse bajo tratamiento médico controlado describa las dosis y procedimientos indicados.</h6></center>
+                            <textarea v-model="histMedico.tratamiento_act" class="form-control" cols="50" rows="2"
+                                placeholder="Especificar"
+                            ></textarea>
+                        </RowModal>
+
+                        <RowModal :label1="'Observaciones'" :clsRow1="'col-md-10'">
+                            <textarea v-model="histMedico.observacion" class="form-control" cols="50" rows="2"
+                            ></textarea>
                         </RowModal>
                     </template>
                 </div>
-
             </template>
 
             <template v-slot:buttons-footer>
@@ -323,6 +677,7 @@ import TableVue from '../Componentes/TableComponent.vue'
 import Nav from '../Componentes/NavComponent.vue'
 import CardListGroupVue from './components/CardListGroup.vue'
 import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
+import CardTextVue from './components/CardText.vue'
 
 export default {
     components:{
@@ -331,7 +686,8 @@ export default {
         TableVue,
         Nav,
         CardListGroupVue,
-        RowModal
+        RowModal,
+        CardTextVue
     },
     props: {
         adminMant: { type: String },
@@ -343,7 +699,91 @@ export default {
                 user_id: this.userId,
                 nombre:''
             },
-            histMedico: {},
+            histMedico: {
+                peso : 50,
+                imc: 0,
+                tratamiento_act : '',
+                medic_controlado : '',
+                observacion : '',
+                //HISTORIAL MEDICO
+                diabetes: false,
+                diabetes_esp: '',
+                hipertension: false,
+                hipertension_esp: '',
+                epileptico: false,
+                epileptico_esp: '',
+                cardiaco: false,
+                cardiaco_esp: '',
+                mareos: false,
+                mareos_esp: '',
+                asma: false,
+                asma_esp: '',
+                toxicomanias: false,
+                toxicomanias_esp: '',
+                cirugia: false,
+                cirugia_esp: '',
+                embarazo: false,
+                embarazo_esp: '',
+                transfusion: false,
+                transfusion_esp: '',
+                lesion_musculo: false,
+                lesion_musculo_esp: '',
+                ortopedicos: false,
+                ortopedicos_esp: '',
+                respiratorios: false,
+                respiratorios_esp: '',
+                oftalmicos: false,
+                oftalmicos_esp: '',
+                nariz: false,
+                nariz_esp: '',
+                neurologicos: false,
+                neurologicos_esp: '',
+                hematologicos: false,
+                hematologicos_esp: '',
+                hepaticos: false,
+                hepaticos_esp: '',
+                digestivo: false,
+                digestivo_esp: '',
+                tiroideo: false,
+                tiroideo_esp: '',
+                dermatologico: false,
+                dermatologico_esp: '',
+                inmunologico: false,
+                inmunologico_esp: '',
+                urinario: false,
+                urinario_esp: '',
+                covid: false,
+                covid_esp: '',
+                //PSICOLOGICOS/PSIQUIATRICOS
+                cambio_alimentacion: false,
+                cambio_alimentacion_esp: '',
+                aislamiento: false,
+                aislamiento_esp: '',
+                sensacion_vacio: false,
+                sensacion_vacio_esp: '',
+                desesperanza: false,
+                desesperanza_esp: '',
+                irritabilidad: false,
+                irritabilidad_esp: '',
+                pensamientos_cabeza: false,
+                pensamientos_cabeza_esp: '',
+                lastimarse: false,
+                lastimarse_esp: '',
+                alt_sueno: false,
+                alt_sueno_esp: '',
+                agotamiento: false,
+                agotamiento_esp: '',
+                dolores: false,
+                dolores_esp: '',
+                aumento_toxic: false,
+                aumento_toxic_esp: '',
+                humor: false,
+                humor_esp: '',
+                voces: false,
+                voces_esp: '',
+                dif_tareas: false,
+                dif_tareas_esp : ''
+            },
             medicalRecord:{},
             arrayUsers: [],
             loading: false,
@@ -383,12 +823,96 @@ export default {
                 user_id : this.busqueda.user_id,
                 alerta : '',
                 tipo_sangre : '',
-                estatura : 0,
+                estatura : 1.50,
                 alergias : '',
                 regimen_alimenticio : null,
                 ...this.medicalRecord
             }
-            this.histMedico = {}
+            this.histMedico = {
+                peso : this.histMedico.peso ? this.histMedico.peso : 50,
+                imc: this.histMedico.paso/(this.medicalRecord.estatura*this.medicalRecord.estatura),
+                tratamiento_act : '',
+                medic_controlado : '',
+                observacion : '',
+                //HISTORIAL MEDICO
+                diabetes: false,
+                diabetes_esp: '',
+                hipertension: false,
+                hipertension_esp: '',
+                epileptico: false,
+                epileptico_esp: '',
+                cardiaco: false,
+                cardiaco_esp: '',
+                mareos: false,
+                mareos_esp: '',
+                asma: false,
+                asma_esp: '',
+                toxicomanias: false,
+                toxicomanias_esp: '',
+                cirugia: false,
+                cirugia_esp: '',
+                embarazo: false,
+                embarazo_esp: '',
+                transfusion: false,
+                transfusion_esp: '',
+                lesion_musculo: false,
+                lesion_musculo_esp: '',
+                ortopedicos: false,
+                ortopedicos_esp: '',
+                respiratorios: false,
+                respiratorios_esp: '',
+                oftalmicos: false,
+                oftalmicos_esp: '',
+                nariz: false,
+                nariz_esp: '',
+                neurologicos: false,
+                neurologicos_esp: '',
+                hematologicos: false,
+                hematologicos_esp: '',
+                hepaticos: false,
+                hepaticos_esp: '',
+                digestivo: false,
+                digestivo_esp: '',
+                tiroideo: false,
+                tiroideo_esp: '',
+                dermatologico: false,
+                dermatologico_esp: '',
+                inmunologico: false,
+                inmunologico_esp: '',
+                urinario: false,
+                urinario_esp: '',
+                covid: false,
+                covid_esp: '',
+                //PSICOLOGICOS/PSIQUIATRICOS
+                cambio_alimentacion: false,
+                cambio_alimentacion_esp: '',
+                aislamiento: false,
+                aislamiento_esp: '',
+                sensacion_vacio: false,
+                sensacion_vacio_esp: '',
+                desesperanza: false,
+                desesperanza_esp: '',
+                irritabilidad: false,
+                irritabilidad_esp: '',
+                pensamientos_cabeza: false,
+                pensamientos_cabeza_esp: '',
+                lastimarse: false,
+                lastimarse_esp: '',
+                alt_sueno: false,
+                alt_sueno_esp: '',
+                agotamiento: false,
+                agotamiento_esp: '',
+                dolores: false,
+                dolores_esp: '',
+                aumento_toxic: false,
+                aumento_toxic_esp: '',
+                humor: false,
+                humor_esp: '',
+                voces: false,
+                voces_esp: '',
+                dif_tareas: false,
+                dif_tareas_esp : ''
+            }
 
         },
 

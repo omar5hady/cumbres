@@ -200,7 +200,7 @@
                             </select>
                         </template>
                     </RowModal>
-                    <RowModal :label1="''">
+                    <RowModal :label1="' '">
                         <Button :icon="'icon-plus'" @click="registrarLotePromocion()">Agregar Lote</Button>
                     </RowModal>
                     <div v-show="errorLotePromocion" class="form-group row div-error">

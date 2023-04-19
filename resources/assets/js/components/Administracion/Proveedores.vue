@@ -125,7 +125,7 @@
                                 <input  class="form-control" type="text" placeholder="Clabe" v-model="clabe" :disabled="tipoAccion == 2" @keypress="$root.isNumber($event)">
                             </RowModal>
 
-                            <RowModal :label1="''" v-if="tipoAccion == 2">
+                            <RowModal :label1="' '" v-if="tipoAccion == 2">
                                 <Button :btnClass="'btn-success'" title="Nueva cuenta" :icon="'icon-plus'" @click="abrirModal('banco')">Nueva Cuenta</Button>
                             </RowModal>
 
@@ -183,7 +183,7 @@
                         <input type="text" class="form-control" v-model="n_clabe" placeholder="Clabe interbancaria" @keypress="$root.isNumber($event)">
                     </RowModal>
 
-                    <RowModal :label1="''">
+                    <RowModal :label1="' '">
                         <Button :btnClass="'btn-primary'" title="Guardar cuenta" :icon="'icon-plus'" @click="storeCuenta()">
                             Guardar cuenta
                         </Button>
