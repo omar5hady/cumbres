@@ -1267,6 +1267,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/fondo-ahorro', Rh\FondoAhorroController::class);
         Route::resource('/fondo-pension', Rh\FondoPensionController::class);
 
+        ////////////////////// Rutas Medial Records
+        Route::resource('/medical-record', Rh\MedicalRecordController::class);
+
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
 

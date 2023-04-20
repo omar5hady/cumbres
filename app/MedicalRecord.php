@@ -16,11 +16,11 @@ class MedicalRecord extends Model
         'regimen_alimenticio'
     ];
 
-    public function persona(){
+    public function usuario(){
         return $this->belongsTo('App\Personal','user_id');
     }
 
-    public function historial(Request $request){
+    public function historial(){
         $historial = HistMedicalRecords::where('record_id','=',$this->id);
         $historial = $historial->orderBy('fecha','desc')->paginate(1);
         return $historial;

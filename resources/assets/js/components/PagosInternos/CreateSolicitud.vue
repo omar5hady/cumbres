@@ -1470,6 +1470,8 @@
                                 <Button v-if="(admin === 3 && solicitudData.status == 3
                                         && (solicitudData.fecha_pago == null || solicitudData.fecha_pago == ''))
                                         || (usuario == 'shady' && solicitudData.status == 3
+                                        && (solicitudData.fecha_pago == null || solicitudData.fecha_pago == ''))
+                                        || (usuario == 'cp.martin' && solicitudData.status == 3
                                         && (solicitudData.fecha_pago == null || solicitudData.fecha_pago == ''))"
                                     :icon="'fa fa-money'"
                                     @click="abrirModal('pagar')">

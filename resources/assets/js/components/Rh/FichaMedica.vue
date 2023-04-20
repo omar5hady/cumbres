@@ -50,183 +50,184 @@
                         </div>
                     </div>
 
-                    <div class="info-center" style="margin-top:50px; margin-bottom:50px;" v-if="mostrar == 1">
+                    <div class="info-center" style="margin-top:50px; margin-bottom:50px;" v-if="mostrar == 0">
                         <center><h4>Aun no se ha cargado información para este usuario</h4></center>
                     </div>
-                    <div class="row" v-else>
-                        <div class="col-md-6">
-                            <div class="card card-user">
-                                <!---->
-                                <div class="card-body">
-                                    <div class="author">
-                                        <img
-                                            :src="`/img/avatars/default-image.gif`"
-                                            class="avatar border-white"
-                                        />
-                                        <h4 class="title">
-                                            <font style="vertical-align: inherit;">
-                                                <font style="vertical-align: inherit;"
-                                                >
-                                                    Omar Ramos
-                                                </font>
-                                            </font>
-                                        </h4>
-                                    </div>
-                                </div>
-                                <div class="card-body row">
-                                    <div class="col-md-12">
-                                        <h5 style="vertical-align: inherit;">
-                                            Grupo Sanguineo: <strong>O+</strong>
-                                        </h5>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6 style="vertical-align: inherit;">
-                                            Peso: <strong>67 kg</strong>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6 style="vertical-align: inherit;">
-                                            Talla: <strong>1.67 m</strong>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <h6 style="vertical-align: inherit;">
-                                            IMC: <strong>1.67 m</strong>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <h6 style="vertical-align: inherit;">
-                                            Regimen de alimentación: <strong>Dieta baja en sodio</strong>
-                                        </h6>
-                                    </div>
-                                </div>
-                                <!---->
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="card-title">
-                                        <font style="vertical-align: inherit;">
-                                            <font style="vertical-align: inherit;"
-                                                >Afilaciones a servicios de salud </font
-                                            >
-                                        </font>
-                                    </h5>
+                    <template v-else>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card card-user">
+                                    <!---->
+                                    <div class="card-body">
+                                        <div class="author">
+                                            <img
+                                                :src="`/img/avatars/default-image.gif`"
+                                                class="avatar border-white"
+                                            />
+                                            <h4 class="title">
+                                                <font style="vertical-align: inherit;">
+                                                    <font style="vertical-align: inherit;"
+                                                    >
+                                                        {{medicalRecord.usuario.nombre}}
+                                                    </font>
+                                                </font>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="col-md-12">
+                                            <h5 style="vertical-align: inherit;">
+                                                Grupo Sanguineo: <strong>{{medicalRecord.tipo_sangre}}</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 style="vertical-align: inherit;">
+                                                Peso: <strong>{{histMedico.peso}} kg</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 style="vertical-align: inherit;">
+                                                Talla: <strong>{{medicalRecord.estatura}} m</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <h6 style="vertical-align: inherit;">
+                                                IMC: <strong>{{histMedico.imc}}</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <h6 style="vertical-align: inherit;">
+                                                Regimen de alimentación: <strong>{{medicalRecord.regimen_alimenticio}}</strong>
+                                            </h6>
+                                        </div>
+                                    </div>
                                     <!---->
                                 </div>
-                                <div class="card-body" style="padding-bottom: 0px;">
-                                    <TableVue :cabecera="[
-                                        'Proveedor', 'No. Poliza', 'Tipo'
-                                    ]">
-                                        <template v-slot:tbody>
-                                            <tr>
-                                                <td class="td2">MetLife</td>
-                                                <td class="td2">018562245</td>
-                                                <td class="td2">Particular</td>
-                                            </tr>
-                                        </template>
-                                    </TableVue>
-                                </div>
                             </div>
-                        </div>
 
-                        <CardTextVue
-                            :title="'Alergias'"
-                            :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
-                        ></CardTextVue>
-
-                        <CardTextVue
-                            :title="'Tratamientos actuales'"
-                            :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
-                        ></CardTextVue>
-                    </div>
-
-
-
-                    <!-- Formularios para historial clinico -->
-                    <div id="accordion" role="tablist">
-                        <!-- Historial Medico -->
-                        <div class="card mb-0">
-                            <div class="card-header" id="headingOne" role="tab">
-                                <h5 class="mb-0">
-                                    <a data-toggle="collapse" href="#collapseOne" aria-expanded="false"
-                                        aria-controls="collapseOne" class="collapsed"
-                                        >Historial Médico
-                                    </a>
-                                </h5>
-                            </div>
-                            <div class="collapse" id="collapseOne" role="tabpanel"
-                                aria-labelledby="headingOne" data-parent="#accordion">
-                                <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
-                                    <div class="col-md-12">
-                                        <div class="form-group"><center><h3></h3></center></div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <font style="vertical-align: inherit;">
+                                                <font style="vertical-align: inherit;"
+                                                    >Afilaciones a servicios de salud </font
+                                                >
+                                            </font>
+                                        </h5>
+                                        <!---->
                                     </div>
-                                    <CardListGroupVue :titulo="'Antecendentes'"
-                                        :data="[
-                                            {antecedente : 'Diabetes', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Hipertensión', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Evento epiléptico', especificacion: 'Especificacion', estado: true},
-                                            {antecedente : 'Problema cardíaco', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Desmayos y/o Mareos', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Asma', especificacion: 'Especificacion', estado: true},
-                                            {antecedente : 'Toxicomanías', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Cirugía reciente', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Embarazo y/o Puerperio', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Transfusión', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Lesión Músculo Esquelética', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Ortopédicos', especificacion: 'Especificacion', estado: false},
-                                        ]"
-                                        :data2="[
-                                            {antecedente : 'Respiratorios', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Oftálmicos', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Naríz y/u Oídos', especificacion: 'Especificacion', estado: true},
-                                            {antecedente : 'Neurológicos', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Hmetológicos', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Hepáticos', especificacion: 'Especificacion', estado: true},
-                                            {antecedente : 'Aparato Digestivo', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Tiroideo', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Dermatológico', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Inmunológico', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Urinarios', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Covid-19', especificacion: 'Especificacion', estado: false},
-                                        ]"
-                                    ></CardListGroupVue>
-                                    <CardListGroupVue :titulo="'Psicologicos/Psquiátricos'"
-                                        :data="[
-                                            {antecedente : 'Cambios en alimentación', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Aislamiento personal', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Sensación de vacío o sin importancia', especificacion: 'Especificacion', estado: true},
-                                            {antecedente : 'Impotencia o desesperanza', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Confusión, Distracción o Irritabilidad', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Pensamientos y/o Recuerdos que no salgan de su cabeza', especificacion: 'Especificacion', estado: true},
-                                            {antecedente : 'Pensar Lastimarse a Sí Mismo u Otros', especificacion: 'Especificacion', estado: false},
-                                        ]"
-                                        :data2="[
-                                            {antecedente : 'Alteraciones del Sueño', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Agotamiento Excesivo', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Dolores Inexplicables', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Aumento en Toxicomanias', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Cambios de humor', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Escuchar voces o creer cosas que no son ciertas', especificacion: 'Especificacion', estado: false},
-                                            {antecedente : 'Dificultad para realizar tareas diarias', especificacion: 'Especificacion', estado: false},
-                                        ]"
-                                    ></CardListGroupVue>
+                                    <div class="card-body" style="padding-bottom: 0px;">
+                                        <TableVue :cabecera="[
+                                            'Proveedor', 'No. Poliza', 'Tipo'
+                                        ]">
+                                            <template v-slot:tbody>
+                                                <tr>
+                                                    <td class="td2">MetLife</td>
+                                                    <td class="td2">018562245</td>
+                                                    <td class="td2">Particular</td>
+                                                </tr>
+                                            </template>
+                                        </TableVue>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <CardTextVue
-                                        :title="'Tratamiento médico controlado'"
-                                        :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
-                                    ></CardTextVue>
+                            <CardTextVue
+                                :title="'Alergias'"
+                                :description="medicalRecord.alergias"
+                            ></CardTextVue>
 
-                                    <CardTextVue
-                                        :title="'Observaciones'"
-                                        :description="'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia voluptates maxime quae praesentium corporis quo dicta excepturi, ullam maiores minus earum vero? Voluptas itaque esse quos suscipit cumque. Magnam, consequuntur!'"
-                                    ></CardTextVue>
+                            <CardTextVue
+                                :title="'Tratamientos actuales'"
+                                :description="histMedico.tratamiento_act"
+                            ></CardTextVue>
+                        </div>
+
+                        <!-- Formularios para historial clinico -->
+                        <div id="accordion" role="tablist">
+                            <!-- Historial Medico -->
+                            <div class="card mb-0">
+                                <div class="card-header" id="headingOne" role="tab">
+                                    <h5 class="mb-0">
+                                        <a data-toggle="collapse" href="#collapseOne" aria-expanded="false"
+                                            aria-controls="collapseOne" class="collapsed"
+                                            >Historial Médico
+                                        </a>
+                                    </h5>
+                                </div>
+                                <div class="collapse" id="collapseOne" role="tabpanel"
+                                    aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
+                                        <div class="col-md-12">
+                                            <div class="form-group"><center><h3>OSO</h3></center></div>
+                                        </div>
+                                        <CardListGroupVue :titulo="'Antecendentes'"
+                                            :data="[
+                                                {antecedente : 'Diabetes', especificacion: histMedico.diabetes_esp, estado: histMedico.diabetes},
+                                                {antecedente : 'Hipertensión', especificacion: histMedico.hipertension_esp, estado: histMedico.hipertension},
+                                                {antecedente : 'Evento epiléptico', especificacion: histMedico.epileptico_esp, estado: histMedico.epileptico},
+                                                {antecedente : 'Problema cardíaco', especificacion: histMedico.cardiaco_esp, estado: histMedico.cardiaco},
+                                                {antecedente : 'Desmayos y/o Mareos', especificacion: histMedico.mareos_esp, estado: histMedico.mareos},
+                                                {antecedente : 'Asma', especificacion: histMedico.asma_esp, estado: histMedico.asma},
+                                                {antecedente : 'Toxicomanías', especificacion: histMedico.toxicomanias_esp, estado: histMedico.toxicomanias},
+                                                {antecedente : 'Cirugía reciente', especificacion: histMedico.cirugia_esp, estado: histMedico.cirugia},
+                                                {antecedente : 'Embarazo y/o Puerperio', especificacion: histMedico.embarazo_esp, estado: histMedico.embarazo},
+                                                {antecedente : 'Transfusión', especificacion: histMedico.transfusion_esp, estado: histMedico.transfusion},
+                                                {antecedente : 'Lesión Músculo Esquelética', especificacion: histMedico.lesion_musculo_esp, estado: histMedico.lesion_musculo},
+                                                {antecedente : 'Ortopédicos', especificacion: histMedico.ortopedicos_esp, estado: histMedico.ortopedicos},
+                                            ]"
+                                            :data2="[
+                                                {antecedente : 'Respiratorios', especificacion: histMedico.respiratorios_esp, estado: histMedico.repiratorios},
+                                                {antecedente : 'Oftálmicos', especificacion:histMedico.oftalmicos_esp, estado: histMedico.oftalmicos},
+                                                {antecedente : 'Naríz y/u Oídos', especificacion:histMedico.nariz_esp, estado: histMedico.nariz},
+                                                {antecedente : 'Neurológicos', especificacion:histMedico.neurologicos_esp, estado: histMedico.neurologicos},
+                                                {antecedente : 'Hematológicos', especificacion:histMedico.hematologicos_esp, estado: histMedico.hematologicos},
+                                                {antecedente : 'Hepáticos', especificacion:histMedico.hepaticos_esp, estado: histMedico.hepaticos},
+                                                {antecedente : 'Aparato Digestivo', especificacion:histMedico.digestivo_esp, estado: histMedico.digestivo},
+                                                {antecedente : 'Tiroideo', especificacion:histMedico.tiroideo_esp, estado: histMedico.tiroideo},
+                                                {antecedente : 'Dermatológico', especificacion:histMedico.dermatologico_esp, estado: histMedico.dermatologico},
+                                                {antecedente : 'Inmunológico', especificacion:histMedico.inmunologico_esp, estado: histMedico.inmunologico},
+                                                {antecedente : 'Urinarios', especificacion:histMedico.urinario_esp, estado: histMedico.urinario},
+                                                {antecedente : 'Covid-19', especificacion:histMedico.covid_esp, estado: histMedico.covid},
+                                            ]"
+                                        ></CardListGroupVue>
+                                        <CardListGroupVue :titulo="'Psicologicos/Psquiátricos'"
+                                            :data="[
+                                                {antecedente : 'Cambios en alimentación', especificacion: histMedico.cambio_alimentacion_esp, estado: histMedico.cambio_alimentacion},
+                                                {antecedente : 'Aislamiento personal', especificacion: histMedico.aislamiento_esp, estado: histMedico.aislamiento},
+                                                {antecedente : 'Sensación de vacío o sin importancia', especificacion: histMedico.sensacion_vacio_esp, estado: histMedico.sensacion_vacio},
+                                                {antecedente : 'Impotencia o desesperanza', especificacion: histMedico.desesperanza_esp, estado: histMedico.desesperanza},
+                                                {antecedente : 'Confusión, Distracción o Irritabilidad', especificacion: histMedico.irritabilidad_esp, estado: histMedico.irritabilidad},
+                                                {antecedente : 'Pensamientos y/o Recuerdos que no salgan de su cabeza', especificacion: histMedico.pensamientos_cabeza_esp, estado: histMedico.pensamientos_cabeza},
+                                                {antecedente : 'Pensar Lastimarse a Sí Mismo u Otros', especificacion: histMedico.lastimarse_esp, estado: histMedico.lastimarse},
+                                            ]"
+                                            :data2="[
+                                                {antecedente : 'Alteraciones del Sueño', especificacion: histMedico.alt_sueno_esp, estado: histMedico.alt_sueno},
+                                                {antecedente : 'Agotamiento Excesivo', especificacion: histMedico.agotamiento_esp, estado: histMedico.agotamiento},
+                                                {antecedente : 'Dolores Inexplicables', especificacion: histMedico.dolores_esp, estado: histMedico.dolores},
+                                                {antecedente : 'Aumento en Toxicomanias', especificacion: histMedico.aumento_toxic_esp, estado: histMedico.aumento_toxic},
+                                                {antecedente : 'Cambios de humor', especificacion: histMedico.humor_esp, estado: histMedico.humor},
+                                                {antecedente : 'Escuchar voces o creer cosas que no son ciertas', especificacion: histMedico.voces_esp, estado: histMedico.voces},
+                                                {antecedente : 'Dificultad para realizar tareas diarias', especificacion: histMedico.dif_tareas_esp, estado: histMedico.dif_tareas},
+                                            ]"
+                                        ></CardListGroupVue>
+
+                                        <CardTextVue
+                                            :title="'Tratamiento médico controlado'"
+                                            :description="histMedico.medic_controlado"
+                                        ></CardTextVue>
+
+                                        <CardTextVue
+                                            :title="'Observaciones'"
+                                            :description="histMedico.observacion"
+                                        ></CardTextVue>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
 
 
                 </div>
@@ -645,7 +646,7 @@
 
                         <RowModal :label1="''" :clsRow1="'col-md-12'">
                             <center><h6>En caso de encontrarse bajo tratamiento médico controlado describa las dosis y procedimientos indicados.</h6></center>
-                            <textarea v-model="histMedico.tratamiento_act" class="form-control" cols="50" rows="2"
+                            <textarea v-model="histMedico.medic_controlado" class="form-control" cols="50" rows="2"
                                 placeholder="Especificar"
                             ></textarea>
                         </RowModal>
@@ -659,7 +660,7 @@
             </template>
 
             <template v-slot:buttons-footer>
-                <button v-if="modal.accion == 'nuevo'" type="button" class="btn btn-success" @click="save()">Guardar</button>
+                <button v-if="modal.accion == 'nuevo'" type="button" class="btn btn-success" @click="save()">Guardar registro</button>
             </template>
 
         </ModalComponent>
@@ -699,6 +700,7 @@ export default {
                 user_id: this.userId,
                 nombre:''
             },
+            proceso : false,
             histMedico: {
                 peso : 50,
                 imc: 0,
@@ -813,6 +815,72 @@ export default {
                 console.log(error);
             });
         },
+        getRecord(page) {
+            let me = this;
+            me.medicalRecord = {};
+            me.histMedico = {};
+            me.loading = true
+
+            const url =
+                "/medical-record?page=" +
+                page +
+                "&user_id=" +
+                me.busqueda.user_id;
+
+            axios
+                .get(url)
+                .then(function(response) {
+                    const respuesta = response.data;
+
+                    me.medicalRecord = respuesta.data[0];
+                    me.mostrar = 0;
+                    if(me.medicalRecord){
+                        console.log(me.medicalRecord)
+                        me.histMedico = me.medicalRecord.historial.data[0];
+                        me.busqueda.nombre = me.medicalRecord.usuario.nombre;
+                        me.mostrar = 1
+                    }
+
+                    me.loading = false
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    me.medicalRecord = {};
+                    me.histMedico = {};
+                    me.loading = false
+                });
+        },
+
+        save(){
+            let me = this;
+            if(me.proceso)
+                return;
+            me.proceso = true;
+
+            axios.post('/medical-record',{
+                    'medicalRecord': me.medicalRecord,
+                    'histMedico': me.histMedico
+                }).then(function (response){
+                    me.proceso = false;
+                    // me.closeModal()
+
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Registro guardado correctamente.'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                    me.proceso = false;
+                    // me.closeModal();
+                });
+        },
 
         nuevoMovimiento(){
             this.modal.mostrar = 1;
@@ -820,6 +888,7 @@ export default {
             this.modal.accion = 'nuevo'
             this.paso = 1;
             this.medicalRecord = {
+                id : null,
                 user_id : this.busqueda.user_id,
                 alerta : '',
                 tipo_sangre : '',
@@ -922,6 +991,7 @@ export default {
             this.medicalRecord = {}
             this.histMedico = {}
         },
+
         getNombre(id){
             console.log(id)
             let me = this;
@@ -930,6 +1000,7 @@ export default {
                 const respuesta = response.data;
                 me.busqueda.nombre = respuesta.nombre + ' ' +respuesta.apellidos;
                 me.vista = 2
+                me.getRecord(1);
             })
             .catch(function (error) {
                 console.log(error);
