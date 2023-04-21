@@ -11,6 +11,7 @@ use DB;
 use Carbon\Carbon;
 
 use App\MedicalRecord;
+use App\MedicalAffiliation;
 use App\HistMedicalRecords;
 
 class MedicalRecordController extends Controller
@@ -128,5 +129,14 @@ class MedicalRecordController extends Controller
         $hist->dif_tareas = $histMedico['dif_tareas'];
         $hist->dif_tareas_esp = $histMedico['dif_tareas_esp'];
         $hist->save();
+    }
+
+    public function storeAfiliacion(Request $request){
+        $affiliation = new MedicalAffiliation();
+        $affiliation->record_id = $request->record_id;
+        $affiliation->proveedor = $request->proveedor;
+        $affiliation->poliza = $request->poliza;
+        $affiliation->tipo = $request->tipo;
+        $affiliation->save();
     }
 }

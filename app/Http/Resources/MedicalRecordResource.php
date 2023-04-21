@@ -25,6 +25,7 @@ class MedicalRecordResource extends JsonResource
             'alergias' => $this->alergias,
             'regimen_alimenticio' => $this->regimen_alimenticio,
             'historial' => $this->historial($request),
+            'afiliaciones' => $this->afiliaciones(),
         ];
     }
 }

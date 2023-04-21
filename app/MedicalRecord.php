@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\HistMedicalRecords;
+use App\MedicalAffiliation;
 
 class MedicalRecord extends Model
 {
@@ -24,5 +25,9 @@ class MedicalRecord extends Model
         $historial = HistMedicalRecords::where('record_id','=',$this->id);
         $historial = $historial->orderBy('fecha','desc')->paginate(1);
         return $historial;
+    }
+
+    public function afiliaciones(){
+        return MedicalAffiliation::where('record_id','=',$this->id)->get();
     }
 }

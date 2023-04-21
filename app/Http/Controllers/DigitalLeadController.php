@@ -549,7 +549,8 @@ class DigitalLeadController extends Controller
         $lead->celular = $request->celular;
         $lead->email = $request->email;
         $lead->clv_lada = $request->clv_lada;
-        $lead->campania_id = $request->campania_id;
+        if($request->campania_id != null && $lead->campania_id != null)
+            $lead->campania_id = $request->campania_id;
         $lead->medio_contacto = $request->medio_contacto;
         $lead->proyecto_interes = $request->proyecto_interes;
         $lead->tipo_uso = $request->tipo_uso;

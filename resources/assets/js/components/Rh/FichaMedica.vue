@@ -13,6 +13,7 @@
                     <i class="fa fa-align-justify"></i> Ficha Medica
                     <div class="button-header">
                         <Button v-if="busqueda.user_id" @click="nuevoMovimiento()"
+                            :btnClass="'btn-sucess'"
                             :icon="'icon-plus'"
                         >Nuevo</Button>
                         <!---->
@@ -127,8 +128,7 @@
                                             </font>
                                             &nbsp;
                                             <Button @click="addAfiliacion()"
-                                            title="Nuevo"
-                                                :btnClass="'btn-success'" :icon="'icon-plus'"
+                                            title="Nuevo" :icon="'icon-plus'"
                                             ></Button>
                                         </h5>
                                         <!---->
@@ -138,10 +138,10 @@
                                             'Proveedor', 'No. Poliza', 'Tipo'
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr>
-                                                    <td class="td2">MetLife</td>
-                                                    <td class="td2">018562245</td>
-                                                    <td class="td2">Particular</td>
+                                                <tr v-for="afiliacion in medicalRecord.afiliaciones" :key="afiliacion.id">
+                                                    <td class="td2">{{afiliacion.proveedor}}</td>
+                                                    <td class="td2">{{afiliacion.poliza}}</td>
+                                                    <td class="td2">{{afiliacion.tipo}}</td>
                                                 </tr>
                                             </template>
                                         </TableVue>
@@ -247,14 +247,13 @@
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
-
         <!--Inicio del modal nuevo registro-->
         <ModalComponent v-if="modal.mostrar"
             :titulo="modal.titulo"
             @closeModal="closeModal()"
         >
             <template v-slot:body>
-                <div class="card-body">
+                <div class="card-body" v-if="modal.accion == 'nuevo'">
                     <ul class="nav nav-tabs">
                         <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Datos Médicos Generales</a></li>
                         <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Antecedentes</a></li>
@@ -670,10 +669,23 @@
                         </RowModal>
                     </template>
                 </div>
+
+                <div class="card-body" v-if="modal.accion == 'afiliacion'">
+                    <RowModal :label1="'Proveedor'" :clsRow1="'col-md-8'">
+                        <input type="text" v-model="afiliacion.proveedor" class="form-control">
+                    </RowModal>
+                    <RowModal :label1="'No. Poliza'" :clsRow1="'col-md-8'">
+                        <input type="text" v-model="afiliacion.poliza" class="form-control" pattern="\d*" maxlength="15" v-on:keypress="$root.isNumber($event)">
+                    </RowModal>
+                    <RowModal :label1="'Tipo'" :clsRow1="'col-md-8'">
+                        <input type="text" v-model="afiliacion.tipo" class="form-control">
+                    </RowModal>
+                </div>
             </template>
 
             <template v-slot:buttons-footer>
-                <button v-if="modal.accion == 'nuevo'" type="button" class="btn btn-success" @click="save()">Guardar registro</button>
+                <Button v-if="modal.accion == 'nuevo'" :btnClass="'btn-success'" :icon="'icon-check'" @click="save()">Guardar Registro</Button>
+                <Button v-else :btnClass="'btn-success'" :icon="'icon-check'" @click="storeAfiliacion()">Guardar</Button>
             </template>
 
         </ModalComponent>
@@ -802,10 +814,10 @@ export default {
                 dif_tareas_esp : ''
             },
             afiliacion:{
-                record_id,
-                proveedor,
-                poliza,
-                tipo
+                record_id : '',
+                proveedor : '',
+                poliza : '',
+                tipo : ''
             },
             medicalRecord:{},
             arrayUsers: [],
@@ -856,7 +868,6 @@ export default {
                     me.medicalRecord = respuesta.data[0];
                     me.mostrar = 0;
                     if(me.medicalRecord){
-                        console.log(me.medicalRecord)
                         me.histMedico = me.medicalRecord.historial.data[0];
                         me.busqueda.nombre = me.medicalRecord.usuario.nombre;
                         me.mostrar = 1
@@ -883,7 +894,7 @@ export default {
                     'histMedico': me.histMedico
                 }).then(function (response){
                     me.proceso = false;
-                    // me.closeModal()
+                    me.closeModal()
 
                     const toast = Swal.mixin({
                     toast: true,
@@ -901,6 +912,50 @@ export default {
                     me.proceso = false;
                     // me.closeModal();
                 });
+        },
+
+        storeAfiliacion(){
+            let me = this;
+            if(me.proceso)
+                return;
+            me.proceso = true;
+
+            axios.post('/medical/storeAfiliacion',{
+                    'record_id': me.afiliacion.record_id,
+                    'proveedor': me.afiliacion.proveedor,
+                    'poliza': me.afiliacion.poliza,
+                    'tipo': me.afiliacion.tipo,
+                }).then(function (response){
+                    me.closeModal()
+
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Registro guardado correctamente.'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                    me.proceso = false;
+                    // me.closeModal();
+                });
+        },
+
+        addAfiliacion(){
+            this.modal.mostrar = 1;
+            this.modal.titulo = `Nuevo registro para: ${this.busqueda.nombre}`;
+            this.modal.accion = 'afiliacion';
+            this.afiliacion = {
+                record_id : this.medicalRecord.id,
+                proveedor : '',
+                poliza : '',
+                tipo : ''
+            };
         },
 
         nuevoMovimiento(){
