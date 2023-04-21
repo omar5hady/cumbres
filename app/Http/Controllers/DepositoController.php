@@ -67,7 +67,7 @@ class DepositoController extends Controller
         // Se crea el excel y retorna.
         return Excel::create('Pagares', function($excel) use ($pagares){
             $excel->sheet('pagares', function($sheet) use ($pagares){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente','Gestor','Proyecto', 'Etapa', 'Manzana',
                     '# Lote','# Pagare', 'Saldo', 'Total Depositado', 'Fecha limite', 'Status'
@@ -93,7 +93,7 @@ class DepositoController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 foreach($pagares as $index => $pagare) {
@@ -111,7 +111,7 @@ class DepositoController extends Controller
                     if($pagare->pagado == 3) $status = 'Liquidado';
 
                     $sheet->row($index+2, [
-                        $pagare->folio, 
+                        $pagare->folio,
                         $pagare->nombre. ' ' . $pagare->apellidos,
                         $pagare->gestor,
                         $pagare->fraccionamiento,
@@ -124,7 +124,7 @@ class DepositoController extends Controller
                         $pagare->fecha_pago,
                         $status
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:J' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -148,7 +148,7 @@ class DepositoController extends Controller
             ->join('personal','clientes.id','=','personal.id')
             ->leftjoin('expedientes','contratos.id','=','expedientes.id')
             ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago',
                     'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
                     'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
@@ -198,10 +198,10 @@ class DepositoController extends Controller
             $pagares = $pagares->where('pagos_contratos.pagado','!=',2)
                 ->where('pagos_contratos.pagado','!=',3)
                 ->where('contratos.status','!=',0)
-                ->where('contratos.status','!=',2) 
+                ->where('contratos.status','!=',2)
                 // Fecha de pago anterior a fecha actual.
                 ->where('pagos_contratos.fecha_pago','<',$hoy);
-        } 
+        }
         elseif($vencido == 2){ //CANCELADOS
             //Contratos cancelados y no firmados.
             $pagares = $pagares->whereIn('contratos.status',[0,2]);
@@ -311,7 +311,7 @@ class DepositoController extends Controller
         // Creación de excel.
         return Excel::create('Depositos', function($excel) use ($depositos){
             $excel->sheet('Depositos', function($sheet) use ($depositos){
-                
+
                 $sheet->row(1, [
                     '# Contrato', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','# Fecha de deposito', 'Cuenta', '# Recibo', 'Monto'
@@ -344,7 +344,7 @@ class DepositoController extends Controller
 
                     $cliente = $deposito->nombre.' '.$deposito->apellidos;
                     $sheet->row($index+2, [
-                        $deposito->id, 
+                        $deposito->id,
                         $cliente,
                         $deposito->fraccionamiento,
                         $deposito->etapa,
@@ -355,7 +355,7 @@ class DepositoController extends Controller
                         $deposito->num_recibo,
                         $deposito->cant_depo
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:J' . $cont;
                 $sheet->setBorder($num, 'thin');
@@ -418,7 +418,7 @@ class DepositoController extends Controller
         // Retorno en excel.
         return Excel::create('Depositos', function($excel) use ($depositos){
                 $excel->sheet('Depositos', function($sheet) use ($depositos){
-                    
+
                     $sheet->row(1, [
                         '# Contrato','Proyecto', 'Etapa', 'Manzana',
                         '# Lote','# Fecha de pago', '# Recibo', 'Cuenta', 'Concepto', 'Monto'
@@ -443,7 +443,7 @@ class DepositoController extends Controller
                         $cells->setAlignment('center');
                     });
 
-                    
+
                     $cont=1;
 
                     foreach($depositos as $index => $deposito) {
@@ -452,9 +452,9 @@ class DepositoController extends Controller
                         setlocale(LC_TIME, 'es_MX.utf8');
                         $fecha1 = new Carbon($deposito->fecha_pago);
                         $deposito->fecha_pago = $fecha1->formatLocalized('%d de %B de %Y');
-                        
+
                         $sheet->row($index+2, [
-                            $deposito->contrato_id, 
+                            $deposito->contrato_id,
                             $deposito->fraccionamiento,
                             $deposito->etapa,
                             $deposito->manzana,
@@ -465,7 +465,7 @@ class DepositoController extends Controller
                             $deposito->concepto,
                             $deposito->cant_depo
 
-                        ]);	
+                        ]);
                     }
                     $num='A1:J' . $cont;
                     $sheet->setBorder($num, 'thin');
@@ -507,7 +507,7 @@ class DepositoController extends Controller
                     $restante = abs($pago_contrato->restante); // Se calcula el monto sobrante
                     $pago_contrato->restante = 0; // El pagare se iguala a 0
                     $pago_contrato->save(); // Guardan cambios
-                    
+
                     $nextPago = Pago_contrato::select('id') // El restante se añade al siguiente pagare
                                 ->where('contrato_id','=',$pago_contrato->contrato_id)
                                 ->where('pagado','<',2)
@@ -530,7 +530,7 @@ class DepositoController extends Controller
                             $i++;
                         }while($n->restante < 0);
                     }
-                        
+
                 }
             }
             else{ // Si el monto del pagare no ha sido cubierto.
@@ -539,7 +539,7 @@ class DepositoController extends Controller
 
             if($request->interes_ord != 0){ // En caso de tener intereses ordinarios.
                 // El interes se almacena en la tabla de Gastos Administrativos.
-                $gasto = new Gasto_admin(); 
+                $gasto = new Gasto_admin();
                 $gasto->contrato_id = $pago_contrato->contrato_id;
                 $gasto->concepto = 'Interes Ordinario';
                 $gasto->costo = $request->interes_ord;
@@ -561,7 +561,7 @@ class DepositoController extends Controller
             // Se actualiza el saldo del contrato.
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
             $contrato->saldo = round($contrato->saldo - $pago - $descuento,2);
-            
+
             // Se indica a que lote pertenece el deposito.
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
             $deposito->lote_id = $credit->lote_id;
@@ -577,8 +577,8 @@ class DepositoController extends Controller
                 else
                     $deposito->monto_terreno = $monto_terreno;
             }
-            
-            $contrato->save(); 
+
+            $contrato->save();
             $pago_contrato->save();
             $deposito->save();
 
@@ -588,23 +588,23 @@ class DepositoController extends Controller
                     ['elegido', '=', 1]
                 ])
             ->first();
-            
+
             //alerta cuando la suma de lo depositos alcanza 50mil y esta como apartado
             if($tCredito->tipo_credito == "Apartado"){
                 $saldo = Pago_contrato::select(
-                            DB::raw('SUM(monto_pago) as monto'), 
+                            DB::raw('SUM(monto_pago) as monto'),
                             DB::raw('SUM(restante) as restante')
                         )->groupBy('contrato_id')
                         ->where('contrato_id', '=', $contrato->id)
                 ->get();
                 // Se envia notificación en caso de ser Apartado y al alcanzar deposito mayor a 50'000.00
                 if(($saldo[0]->monto - $saldo[0]->restante) >= 50000){
-                    
+
                     $toAlert1 = [12];
                     $msj1 = "El contrato con folio $contrato->id ha acumulado un monto de $50,000.00 es momento de cambiar el tipo de crédito";
                     foreach($toAlert1 as $index => $id){
                         $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
-                        
+
                         $dataAr = [
                             'notificacion'=>[
                                 'usuario' => $senderData[0]->usuario,
@@ -643,7 +643,7 @@ class DepositoController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
     // Función para actualizar depositos.
     public function update(Request $request){
@@ -686,7 +686,7 @@ class DepositoController extends Controller
                     $gasto->fecha = $request->fecha_pago;
                     $gasto->observacion = '';
                     $gasto->save();
-                }              
+                }
             }
             // Si la actualización no incluye interes ordinario
             elseif($request->interes_ord != $deposito->interes_ord  && $request->interes_ord==0){
@@ -722,7 +722,7 @@ class DepositoController extends Controller
                     $gasto->fecha = $request->fecha_pago;
                     $gasto->observacion = '';
                     $gasto->save();
-                }              
+                }
             }
             // Si la actualización no incluye interes moratorio.
             elseif($request->interes_mor != $deposito->interes_mor  && $request->interes_mor==0){
@@ -766,7 +766,7 @@ class DepositoController extends Controller
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
             // Se actualiza el nuevo saldo del contrato.
             $contrato->saldo = round($contrato->saldo + $pagoAnt + $descAnt - $descuento - $pago,2);
-            $contrato->save(); 
+            $contrato->save();
             // Se accede al registro del crédito.
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
             // En caso de ser un lote de alianza.
@@ -789,7 +789,7 @@ class DepositoController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
     // Función para eliminar el registro de un deposito.
     public function delete(Request $request){
@@ -831,17 +831,17 @@ class DepositoController extends Controller
                 $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
                 $gasto->delete();
             }
-            
 
-            $contrato->save(); 
+
+            $contrato->save();
             $pago_contrato->save();
 
             $deposito->delete();
             DB::commit();
         }catch (Exception $e){
             DB::rollBack();
-        }     
-    
+        }
+
     }
     // Función para imprimir el recibo del deposito en PDF.
     public function reciboPDF($id){
@@ -888,7 +888,7 @@ class DepositoController extends Controller
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as c', 'clientes.id', '=', 'c.id')
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-            
+
             ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                         'licencias.avance',
                         'creditos.manzana','creditos.num_lote',
@@ -906,7 +906,7 @@ class DepositoController extends Controller
                         'creditos.num_cuenta_fisc',
                         'creditos.clabe_fisc',
                         'creditos.archivo_fisc',
-                        'expedientes.valor_escrituras', 
+                        'expedientes.valor_escrituras',
                         'expedientes.descuento', 'expedientes.liquidado',
                         'expedientes.fecha_firma_esc',
                         'contratos.enganche_total',
@@ -928,20 +928,20 @@ class DepositoController extends Controller
                         'lotes.calle','lotes.numero',
 
                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                            WHERE pagos_contratos.contrato_id = contratos.id 
+                            WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                        
+
                         DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                            WHERE pagos_contratos.contrato_id = contratos.id 
+                            WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as totalPagares"),
 
                         DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                            WHERE pagos_contratos.contrato_id = contratos.id AND 
+                            WHERE pagos_contratos.contrato_id = contratos.id AND
                             (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
                             GROUP BY pagos_contratos.contrato_id) as pagares"),
 
                         DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                            WHERE gastos_admin.contrato_id = contratos.id 
+                            WHERE gastos_admin.contrato_id = contratos.id
                             GROUP BY gastos_admin.contrato_id) as gastos")
 
             );
@@ -953,7 +953,7 @@ class DepositoController extends Controller
         // Dirección oficial
         if($b_direccion != '')
             $contratos = $contratos->where(DB::raw("CONCAT(lotes.calle,' ',lotes.numero)"), 'like', '%'. $b_direccion . '%');
-                
+
         switch($criterio){
             // Busqueda por cliente
             case 'c.nombre':{
@@ -1000,7 +1000,7 @@ class DepositoController extends Controller
                 break;
             }
         }
-            
+
         if($request->b_empresa != ''){
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
@@ -1040,7 +1040,7 @@ class DepositoController extends Controller
                     ->select('depositos.id','depositos.cant_depo')
                     ->where('pg.contrato_id','=',$contrato->folio)
                     ->get();
-                
+
                 if(sizeof($depositos))
                     foreach ($depositos as $key => $deposito) {
                         // Se suman los depositos.
@@ -1067,7 +1067,7 @@ class DepositoController extends Controller
         $contratos = $this->getContratosEdoCuenta($request);
         $contratos = $contratos->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
-                                ->get();        
+                                ->get();
 
         if(sizeOf($contratos)){
             // Se recorren todos los contratos
@@ -1092,7 +1092,7 @@ class DepositoController extends Controller
                     ->select('depositos.id','depositos.cant_depo')
                     ->where('pg.contrato_id','=',$contrato->folio)
                     ->get();
-                
+
                 if(sizeof($depositos))
                     foreach ($depositos as $key => $deposito) {
                         // Se suman los depositos.
@@ -1105,7 +1105,7 @@ class DepositoController extends Controller
         // Créación de Excel.
         return Excel::create('Relacion estado de cuenta', function($excel) use ($contratos){
             $excel->sheet('Contratos', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana', '# Lote',
                     'Avance', 'Precio de Venta', 'Valor a escriturar','Pagares pendientes','Total enganche','Depositos',
@@ -1125,7 +1125,7 @@ class DepositoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-                $cont=1;            
+                $cont=1;
                 $sheet->setColumnFormat(array(
                     'H' => '$#,##0.00',
                     'I' => '$#,##0.00',
@@ -1139,24 +1139,24 @@ class DepositoController extends Controller
                     'Q' => '$#,##0.00',
                     'R' => '$#,##0.00',
                 ));
-                
+
                 foreach($contratos as $index => $contrato) {
                     $cont++;
                     //$depositos = $contrato->totalPagares - $contrato->totalRestante;
                     $pendienteCredito = $contrato->credito_solic - $contrato->cobrado;
-                   
+
                     $contrato->avance = $contrato->avance.'%';
 
                     $credito = $contrato->credito_solic + $contrato->segundo_credito;
                     $sheet->row($index+2, [
-                        $contrato->folio, 
+                        $contrato->folio,
                         $contrato->nombre_cliente,
-                        $contrato->fraccionamiento, 
+                        $contrato->fraccionamiento,
                         $contrato->etapa,
                         $contrato->manzana,
                         $contrato->num_lote,
-                        $contrato->avance, 
-                        $contrato->precio_venta, 
+                        $contrato->avance,
+                        $contrato->precio_venta,
                         $contrato->valor_escrituras,
                         $contrato->pagares,
                         $contrato->enganche_total,
@@ -1167,17 +1167,17 @@ class DepositoController extends Controller
                         $contrato->gastos,
                         $contrato->descuento,
                         $contrato->saldo,
-                       
-                    ]);	
+
+                    ]);
                 }
 
 
                 $num='A1:R' . $cont;
                 $sheet->setBorder($num, 'thin');
-                
+
             });
         }
-        
+
         )->download('xls');
     }
     // Función para retornar el estado de cuenta por cliente.
@@ -1189,17 +1189,19 @@ class DepositoController extends Controller
         // Se obtienen los datos del contrato.
         $contrato = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
             ->leftJoin('creditos','contratos.id','=','creditos.id')
+            ->leftJoin('entregas','contratos.id','=','entregas.id')
             ->leftJoin('lotes','creditos.lote_id','=','lotes.id')
             ->leftJoin('modelos','lotes.modelo_id','modelos.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as c', 'clientes.id', '=', 'c.id')
-            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id') 
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                     'creditos.manzana','creditos.num_lote','creditos.modelo',
                     'creditos.precio_venta',
-                    'expedientes.valor_escrituras', 
-                    'expedientes.descuento', 
-                    'expedientes.obs_descuento', 
+                    'expedientes.valor_escrituras',
+                    'entregas.fecha_entrega_real',
+                    'expedientes.descuento',
+                    'expedientes.obs_descuento',
                     'expedientes.fecha_liquidacion',
                     'expedientes.fecha_firma_esc',
                     'lotes.credito_puente',
@@ -1218,7 +1220,7 @@ class DepositoController extends Controller
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                     'c.rfc','c.homoclave',
                     DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                        WHERE gastos_admin.contrato_id = contratos.id 
+                        WHERE gastos_admin.contrato_id = contratos.id
                         GROUP BY gastos_admin.contrato_id) as gastos")
                     )
             ->where('i.elegido', '=', 1)
@@ -1316,7 +1318,7 @@ class DepositoController extends Controller
                     $dev = Devolucion::select('cuenta')->where('contrato_id','=',$id)
                                 ->where('devolver','=',$gasto->costo)
                                 ->where('fecha','=',$gasto->fecha)->first();
-                    
+
                     if($dev)
                         $gasto->cuenta = $dev->cuenta;
                 }
@@ -1333,14 +1335,14 @@ class DepositoController extends Controller
                                         ->where('creditos.id','=',$id)
                                         ->get();
         $contrato->sumDepositoCredito = 0;
-        
+
         for($i = 0; $i < count($depositos_credito); $i++){
             // Se suman todos los depositos institucionales
             $contrato->sumDepositoCredito += $depositos_credito[$i]->cant_depo;
             // Formato numerco para cada deposito institucional
             $depositos_credito[$i]->cant_depo = number_format((float)$depositos_credito[$i]->cant_depo, 2, '.', ',');
         }
-       
+
         $totalDesc[0]->sumDesc += $contrato->descuento;
         // Se calcula el total de abonos a la venta.
         $contrato->totalAbono = $contrato->sumDeposito + $contrato->sumDepositoCredito + $totalDesc[0]->sumDesc;
@@ -1422,7 +1424,7 @@ class DepositoController extends Controller
                     $depositoConc[0]->suma = 0;
                 }
         // Calculo del saldo.
-        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma + 
+        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma +
                 $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
         $credito->save();
     }
@@ -1441,7 +1443,7 @@ class DepositoController extends Controller
         // Se crea el documento Excel.
         return Excel::create('Pendientes de ingresar', function($excel) use ($pendientes){
             $excel->sheet('Pendientes', function($sheet) use ($pendientes){
-                
+
                 $sheet->row(1, [
                     'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Clasificación', 'Total de deposito', 'Importe a ingresar', 'Fecha'
                 ]);
@@ -1459,37 +1461,37 @@ class DepositoController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-                $cont=1;            
+                $cont=1;
                 $sheet->setColumnFormat(array(
                     'H' => '$#,##0.00',
                     'G' => '$#,##0.00',
                 ));
-                
+
                 foreach($pendientes as $index => $pendiente) {
                     $cont++;
 
                     $concepto = 'Deposito de crédito';
                     if($pendiente->tipo == 0)
                         $concepto = $pendiente->concepto;
-                    
+
                     $sheet->row($index+2, [
-                        $pendiente->fraccionamiento, 
-                        $pendiente->etapa, 
-                        $pendiente->manzana, 
-                        $pendiente->num_lote, 
+                        $pendiente->fraccionamiento,
+                        $pendiente->etapa,
+                        $pendiente->manzana,
+                        $pendiente->num_lote,
                         $pendiente->nombre.' '.$pendiente->apellidos,
                         $concepto,
-                        $pendiente->cant_depo, 
-                        $pendiente->monto_terreno, 
-                        $pendiente->fecha_dep, 
-                       
-                    ]);	
+                        $pendiente->cant_depo,
+                        $pendiente->monto_terreno,
+                        $pendiente->fecha_dep,
+
+                    ]);
                 }
 
 
                 $num='A1:I' . $cont;
                 $sheet->setBorder($num, 'thin');
-                
+
             });
         }
         )->download('xls');
@@ -1519,7 +1521,7 @@ class DepositoController extends Controller
             ->Where(function ($query) use($cuentas) {
                 for ($i = 0; $i < count($cuentas); $i++){
                     $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
-                }      
+                }
             })
             ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
             if($fecha1 != '' && $fecha2 != ''){
@@ -1527,9 +1529,9 @@ class DepositoController extends Controller
             }
             $ingresosCreditos = $ingresosCreditos->get();
 
-        
+
         $cont =1;
-        
+
         if($fecha1 != '' && $fecha2 != ''){
             $depositosAnt = $this->getDepositosConc();
             $ingresosCreditosAnt = $this->getIngresosConc();
@@ -1562,7 +1564,7 @@ class DepositoController extends Controller
                 ->Where(function ($query) use($cuentas) {
                     for ($i = 0; $i < count($cuentas); $i++){
                         $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
-                    }      
+                    }
                 })
                 ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
                 if($fecha1 != '' && $fecha2 != ''){
@@ -1574,7 +1576,7 @@ class DepositoController extends Controller
                 ->Where(function ($query) use($cuentas) {
                     for ($i = 0; $i < count($cuentas); $i++){
                     $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
-                    }      
+                    }
                 })
                 ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
                 if($fecha1 != '' && $fecha2 != ''){
@@ -1614,7 +1616,7 @@ class DepositoController extends Controller
                     'personal.nombre','personal.apellidos','depositos.concepto',
                     'depositos.monto_terreno', 'depositos.cant_depo',
                     'depositos.fecha_pago as fecha_dep','depositos.banco');
-        
+
         return $depositos;
 
     }
@@ -1627,7 +1629,7 @@ class DepositoController extends Controller
             ->join('personal','personal.id','=','creditos.prospecto_id')
             ->select('contratos.id', 'dep_creditos.id as depId',
                     'creditos.fraccionamiento',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos', 'dep_creditos.concepto',
                     'dep_creditos.monto_terreno', 'dep_creditos.cant_depo',
                     'dep_creditos.fecha_deposito as fecha_dep','dep_creditos.banco');
@@ -1662,7 +1664,7 @@ class DepositoController extends Controller
     // Funcion para retornar el historial de ingresos por alianza.
     public function historialIngresos(Request $request){
         if(!$request->ajax())return redirect('/');
-        // Depositos por pago de enganche 
+        // Depositos por pago de enganche
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','creditos.id','=','contratos.id')
@@ -1700,8 +1702,8 @@ class DepositoController extends Controller
                 $depositos = $depositos->where('depositos.cuenta','=',$request->cuenta);
                 $ingresosCreditos = $ingresosCreditos->where('dep_creditos.cuenta','=',$request->cuenta);
             }
-        
-        if($request->buscar != '')                            
+
+        if($request->buscar != '')
         switch($request->criterio){
             case 'cliente':{ // Busqueda por cliente.
                 $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
@@ -1711,7 +1713,7 @@ class DepositoController extends Controller
             case 'fraccionamiento':{ // Busqueda por proyecto.
                 $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);
                 $ingresosCreditos = $ingresosCreditos->where('lotes.fraccionamiento_id','=',$request->buscar);
-                
+
                 if($request->etapa != '')// Etapa
                     $depositos = $depositos->where('lotes.etapa_id','=',$request->etapa);
                     $ingresosCreditos = $ingresosCreditos->where('lotes.etapa_id','=',$request->etapa);
@@ -1747,7 +1749,7 @@ class DepositoController extends Controller
         return[//'depositos' => $depositos,
                 //'ingresosCreditos' => $ingresosCreditos,
                 'ingresos' => $ingresos,
-                
+
             ];
     }
     // Función para obtener los pagos vencidos.

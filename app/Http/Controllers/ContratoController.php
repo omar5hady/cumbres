@@ -61,7 +61,7 @@ class ContratoController extends Controller
         return DocProyectoResource::collection(
             DocProyecto::where('lote_id','=',$lote_id)
                 ->where('carpeta','=',$carpeta)
-                ->where('tipo','=',$tipo)
+                ->where('tipo','like','%'.$tipo.'%')
                 ->get()
         );
     }

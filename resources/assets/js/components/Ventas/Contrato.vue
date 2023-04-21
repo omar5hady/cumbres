@@ -1788,7 +1788,7 @@
                                                     :href="licencias.licRecibo[0].file.public_url" class="btn btn-danger btn-sm">Recibo de Licencia</a>
                                                 <button v-else disabled class="btn btn-light">Recibo de Licencia</button>
                                                 <a v-if="licencias.licUsoSuelo[0]"
-                                                    :href="licencias.licUsoSuelo[0].file.public_url" class="btn btn-danger btn-sm">Recibo de Licencia</a>
+                                                    :href="licencias.licUsoSuelo[0].file.public_url" class="btn btn-danger btn-sm">Lic. De Uso de Suelo</a>
                                                 <button v-else disabled class="btn btn-light">Lic. De Uso de Suelo</button>
                                             </div>
                                         </template>
@@ -1802,11 +1802,15 @@
                                                 <a v-if="docs_acreditar.acreditarEscritura[0]"
                                                     :href="docs_acreditar.acreditarEscritura[0].file.public_url" class="btn btn-danger btn-sm">Escrituras de Propiedad</a>
                                                 <button v-else disabled class="btn btn-light">Escrituras de Propiedad</button>
-                                                <a v-if="docs_acreditar.acreditarActa[0]"
-                                                    :href="docs_acreditar.acreditarActa[0].file.public_url" class="btn btn-danger btn-sm">Acta Constitutiva</a>
+                                                <template v-if="docs_acreditar.acreditarActa[0]">
+                                                    <a v-for="doc in docs_acreditar.acreditarActa" :key="doc.file.public_url"
+                                                        :href="doc.file.public_url" class="btn btn-danger btn-sm">{{doc.tipo}}</a>&nbsp;
+                                                </template>
                                                 <button v-else disabled class="btn btn-light">Acta Constitutiva</button>
-                                                <a v-if="docs_acreditar.acreditarPoderes[0]"
-                                                    :href="docs_acreditar.acreditarPoderes[0].file.public_url" class="btn btn-danger btn-sm">Poderes</a>
+                                                <template v-if="docs_acreditar.acreditarPoderes[0]">
+                                                    <a v-for="poder in docs_acreditar.acreditarPoderes" :key="poder.file.public_url"
+                                                    :href="poder.file.public_url" class="btn btn-danger btn-sm">{{poder.tipo}}</a>&nbsp;
+                                                </template>
                                                 <button v-else disabled class="btn btn-light">Poderes</button>
                                                 <a v-if="docs_acreditar.acreditarIdentificacion[0]"
                                                     :href="docs_acreditar.acreditarIdentificacion[0].file.public_url" class="btn btn-danger btn-sm">Identificación de Apoderado</a>

@@ -10,14 +10,11 @@
             <!-- Ejemplo de tabla Listado -->
             <div class="card scroll-box">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Ficha Tecnica
+                    <i class="fa fa-align-justify"></i> Ficha Medica
                     <div class="button-header">
-                        <button v-if="busqueda.user_id"
-                        type="button" class="btn btn-success btn-sm"
-                            @click="nuevoMovimiento()"
-                        >
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <Button v-if="busqueda.user_id" @click="nuevoMovimiento()"
+                            :icon="'icon-plus'"
+                        >Nuevo</Button>
                         <!---->
                     </div>
                 </div>
@@ -76,10 +73,13 @@
                                         </div>
                                     </div>
                                     <div class="card-body row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <h5 style="vertical-align: inherit;">
                                                 Grupo Sanguineo: <strong>{{medicalRecord.tipo_sangre}}</strong>
                                             </h5>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 style="vertical-align: inherit">Fecha: {{histMedico.fecha}}</h6>
                                         </div>
                                         <div class="col-md-6">
                                             <h6 style="vertical-align: inherit;">
@@ -97,9 +97,19 @@
                                             </h6>
                                         </div>
                                         <div class="col-md-12">
-                                            <h6 style="vertical-align: inherit;">
+                                            <h6 style="vertical-align: inherit;"
+                                             v-if="medicalRecord.regimen_alimenticio"
+                                            >
                                                 Regimen de alimentación: <strong>{{medicalRecord.regimen_alimenticio}}</strong>
                                             </h6>
+                                        </div>
+
+                                        <div class="col-md-12">
+
+                                            <Nav :current="medicalRecord.historial.current_page"
+                                                :last="medicalRecord.historial.last_page"
+                                                @changePage="getRecord"
+                                            ></Nav>
                                         </div>
                                     </div>
                                     <!---->
@@ -115,6 +125,11 @@
                                                     >Afilaciones a servicios de salud </font
                                                 >
                                             </font>
+                                            &nbsp;
+                                            <Button @click="addAfiliacion()"
+                                            title="Nuevo"
+                                                :btnClass="'btn-success'" :icon="'icon-plus'"
+                                            ></Button>
                                         </h5>
                                         <!---->
                                     </div>
@@ -160,9 +175,7 @@
                                 <div class="collapse" id="collapseOne" role="tabpanel"
                                     aria-labelledby="headingOne" data-parent="#accordion">
                                     <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
-                                        <div class="col-md-12">
-                                            <div class="form-group"><center><h3>OSO</h3></center></div>
-                                        </div>
+                                        <div class="col-md-12"></div>
                                         <CardListGroupVue :titulo="'Antecendentes'"
                                             :data="[
                                                 {antecedente : 'Diabetes', especificacion: histMedico.diabetes_esp, estado: histMedico.diabetes},
@@ -679,12 +692,14 @@ import Nav from '../Componentes/NavComponent.vue'
 import CardListGroupVue from './components/CardListGroup.vue'
 import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
 import CardTextVue from './components/CardText.vue'
+import Button from '../Componentes/ButtonComponent.vue'
 
 export default {
     components:{
         LoadingComponentVue,
         ModalComponent,
         TableVue,
+        Button,
         Nav,
         CardListGroupVue,
         RowModal,
@@ -785,6 +800,12 @@ export default {
                 voces_esp: '',
                 dif_tareas: false,
                 dif_tareas_esp : ''
+            },
+            afiliacion:{
+                record_id,
+                proveedor,
+                poliza,
+                tipo
             },
             medicalRecord:{},
             arrayUsers: [],
@@ -988,8 +1009,7 @@ export default {
         closeModal(){
             this.modal.mostrar = 0
             this.modal.titulo = ''
-            this.medicalRecord = {}
-            this.histMedico = {}
+            this.getNombre(this.busqueda.user_id);
         },
 
         getNombre(id){
