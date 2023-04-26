@@ -12,7 +12,7 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Ficha Medica
                     <div class="button-header">
-                        <Button v-if="busqueda.user_id" @click="nuevoMovimiento()"
+                        <Button v-if="busqueda.user_id && (userName == 'shady' || userName == 'marce.gaytan')" @click="nuevoMovimiento()"
                             :btnClass="'btn-sucess'"
                             :icon="'icon-plus'"
                         >Nuevo</Button>
@@ -31,7 +31,7 @@
                         <div class="col-md-6">
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group row">
+                            <div class="form-group row" v-if=" (userName == 'shady' || userName == 'marce.gaytan')">
                                 <input v-if="vista==2" disabled type="text" v-model="busqueda.nombre" class="form-control col-md-6">
                                 <button v-if="vista == 2" class="form-control btn btn-sm btn-primary col-md-3" @click="vista = 1, busqueda.user_id = ''">Cambiar</button>
                                 <input v-if="vista==1" type="text" name="user" list="usersName" @keyup="selectUsuario(busqueda.user_id)" @change="getNombre(busqueda.user_id)"  class="form-control col-md-8" v-model="busqueda.user_id">
@@ -127,7 +127,8 @@
                                                 >
                                             </font>
                                             &nbsp;
-                                            <Button @click="addAfiliacion()"
+                                            <Button v-if=" (userName == 'shady' || userName == 'marce.gaytan')"
+                                            @click="addAfiliacion()"
                                             title="Nuevo" :icon="'icon-plus'"
                                             ></Button>
                                         </h5>
@@ -158,6 +159,75 @@
                                 :title="'Tratamientos actuales'"
                                 :description="histMedico.tratamiento_act"
                             ></CardTextVue>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <font style="vertical-align: inherit;">
+                                                <font style="vertical-align: inherit;"
+                                                    >Contactos de Emergencia </font
+                                                >
+                                            </font>
+                                            &nbsp;
+                                            <Button v-if=" (userName == 'shady' || userName == 'marce.gaytan')"
+                                            @click="addContact()"
+                                            title="Nuevo contacto" :icon="'icon-plus'"
+                                            ></Button>
+                                        </h5>
+                                        <!---->
+                                    </div>
+                                    <div class="card-body" style="padding-bottom: 0px;">
+                                        <TableVue :cabecera="[
+                                            'Nombre', 'Telefono','Telefono 2', 'Dirección', 'Parentesco'
+                                        ]">
+                                            <template v-slot:tbody>
+                                                <tr v-for="contact in medicalRecord.contacts" :key="contact.id">
+                                                    <td class="td2">{{contact.nombre}}</td>
+                                                    <td class="td2">{{contact.telefono1}}</td>
+                                                    <td class="td2">{{contact.telefono2}}</td>
+                                                    <td class="td2">{{contact.direccion}}</td>
+                                                    <td class="td2">{{contact.parentesco}}</td>
+                                                </tr>
+                                            </template>
+                                        </TableVue>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">
+                                            <font style="vertical-align: inherit;">
+                                                <font style="vertical-align: inherit;"
+                                                    >Vacunas </font
+                                                >
+                                            </font>
+                                            &nbsp;
+                                            <Button v-if=" (userName == 'shady' || userName == 'marce.gaytan')"
+                                            @click="addVaccine()"
+                                            title="Nuevo" :icon="'icon-plus'"
+                                            ></Button>
+                                        </h5>
+                                        <!---->
+                                    </div>
+                                    <div class="card-body" style="padding-bottom: 0px;">
+                                        <TableVue :cabecera="[
+                                            'Vacuna', 'Lote', 'Fecha'
+                                        ]">
+                                            <template v-slot:tbody>
+                                                <tr v-for="vaccine in medicalRecord.vaccines" :key="vaccine.id">
+                                                    <td class="td2">{{vaccine.vacuna}}</td>
+                                                    <td class="td2">{{vaccine.lote}}</td>
+                                                    <td class="td2">{{vaccine.created_at}}</td>
+                                                </tr>
+                                            </template>
+                                        </TableVue>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Formularios para historial clinico -->
@@ -681,11 +751,43 @@
                         <input type="text" v-model="afiliacion.tipo" class="form-control">
                     </RowModal>
                 </div>
+
+                <div class="card-body" v-if="modal.accion == 'vaccine'">
+                    <RowModal :label1="'Vacuna'" :clsRow1="'col-md-8'">
+                        <input type="text" v-model="vaccines.vacuna" class="form-control">
+                    </RowModal>
+                    <RowModal :label1="'No. Lote'" :clsRow1="'col-md-5'">
+                        <input type="text" v-model="vaccines.lote" class="form-control" maxlength="15">
+                    </RowModal>
+                </div>
+
+                <div class="card-body" v-if="modal.accion == 'contact'">
+                    <RowModal :label1="'Contacto'" :clsRow1="'col-md-4'" :label2="'Parentesco'" :clsRow2="'col-md-4'">
+                        <input type="text" v-model="contact.nombre" class="form-control">
+                        <template v-slot:input2>
+                            <input type="text" v-model="contact.parentesco" class="form-control">
+                        </template>
+                    </RowModal>
+                    <RowModal :label1="'Telefono'" :clsRow1="'col-md-4'" :label2="'Telefono 2'" :clsRow2="'col-md-4'">
+                        <input type="text" v-model="contact.telefono1" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                        <template v-slot:input2>
+                            <input type="text" v-model="contact.telefono2" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                        </template>
+                    </RowModal>
+                    <RowModal :label1="'Email'" :clsRow1="'col-md-6'">
+                        <input type="email" v-model="contact.email" class="form-control">
+                    </RowModal>
+                    <RowModal :label1="'Dirección'" :clsRow1="'col-md-6'">
+                        <input type="text" v-model="contact.direccion" class="form-control">
+                    </RowModal>
+                </div>
             </template>
 
             <template v-slot:buttons-footer>
                 <Button v-if="modal.accion == 'nuevo'" :btnClass="'btn-success'" :icon="'icon-check'" @click="save()">Guardar Registro</Button>
-                <Button v-else :btnClass="'btn-success'" :icon="'icon-check'" @click="storeAfiliacion()">Guardar</Button>
+                <Button v-if="modal.accion == 'afiliacion'" :btnClass="'btn-success'" :icon="'icon-check'" @click="storeAfiliacion()">Guardar</Button>
+                <Button v-if="modal.accion == 'vaccine'" :btnClass="'btn-success'" :icon="'icon-check'" @click="storeVaccine()">Guardar</Button>
+                <Button v-if="modal.accion == 'contact'" :btnClass="'btn-success'" :icon="'icon-check'" @click="storeContact()">Guardar</Button>
             </template>
 
         </ModalComponent>
@@ -718,7 +820,7 @@ export default {
         CardTextVue
     },
     props: {
-        adminMant: { type: String },
+        userName: { type: String },
         userId: { type: String }
     },
     data() {
@@ -818,6 +920,20 @@ export default {
                 proveedor : '',
                 poliza : '',
                 tipo : ''
+            },
+            vaccines:{
+                record_id : '',
+                vacuna : '',
+                lote : ''
+            },
+            contact :{
+                record_id : '',
+                nombre : '',
+                telefono1 : '',
+                telefono2 : '',
+                email : '',
+                direccion : '',
+                parentesco : ''
             },
             medicalRecord:{},
             arrayUsers: [],
@@ -946,6 +1062,73 @@ export default {
                 });
         },
 
+        storeContact(){
+            let me = this;
+            if(me.proceso)
+                return;
+            me.proceso = true;
+
+            axios.post('/medical/storeContact',{
+                    'record_id': me.contact.record_id,
+                    'nombre' : me.contact.nombre,
+                    'telefono1' : me.contact.telefono1,
+                    'telefono2' : me.contact.telefono2,
+                    'email' : me.contact.email,
+                    'direccion' : me.contact.direccion,
+                    'parentesco' : me.contact.parentesco
+                }).then(function (response){
+                    me.closeModal()
+
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Registro guardado correctamente.'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                    me.proceso = false;
+                    // me.closeModal();
+                });
+        },
+
+        storeVaccine(){
+            let me = this;
+            if(me.proceso)
+                return;
+            me.proceso = true;
+
+            axios.post('/medical/storeVaccine',{
+                    'record_id': me.vaccines.record_id,
+                    'vacuna' : me.vaccines.vacuna,
+                    'lote' : me.vaccines.lote,
+
+                }).then(function (response){
+                    me.closeModal()
+
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Registro guardado correctamente.'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                    me.proceso = false;
+                    // me.closeModal();
+                });
+        },
+
         addAfiliacion(){
             this.modal.mostrar = 1;
             this.modal.titulo = `Nuevo registro para: ${this.busqueda.nombre}`;
@@ -956,6 +1139,32 @@ export default {
                 poliza : '',
                 tipo : ''
             };
+        },
+
+        addContact(){
+            this.modal.mostrar = 1;
+            this.modal.titulo = `Nuevo registro para: ${this.busqueda.nombre}`;
+            this.modal.accion = 'contact';
+            this.contact = {
+                record_id : this.medicalRecord.id,
+                nombre : '',
+                telefono1 : '',
+                telefono2 : '',
+                email : '',
+                direccion : '',
+                parentesco : ''
+            }
+        },
+
+        addVaccine(){
+            this.modal.mostrar = 1;
+            this.modal.titulo = `Nuevo registro para: ${this.busqueda.nombre}`;
+            this.modal.accion = 'vaccine';
+            this.vaccines = {
+                record_id : this.medicalRecord.id,
+                vacuna : '',
+                lote : ''
+            }
         },
 
         nuevoMovimiento(){

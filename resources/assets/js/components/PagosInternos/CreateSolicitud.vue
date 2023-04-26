@@ -1418,7 +1418,7 @@
                                     Guardar Cambios
                                 </button>
                                 <template v-if="solicitudData.status == 0 && solicitudData.rechazado == 0">
-                                    <Button :btnClass="'btn-primary'" v-if="solicitudData.vb_gerente == 0 && encargado"
+                                    <Button :btnClass="'btn-primary'" v-if="solicitudData.vb_gerente == 0 && encargado == 1"
                                         title="Validar revisión de solicitud" :icon="'icon-check'"
                                         @click="changeVbGerente(solicitudData.id,1)"
                                     >Revisar
@@ -1427,7 +1427,7 @@
                                         title="Autorizar solicitud" @click="changeVbGerente(solicitudData.id,2)" :icon="'icon-check'"
                                     >Autorizar Solicitud
                                     </Button>
-                                    <Button v-if="gerente || encargado"
+                                    <Button v-if="gerente || encargado == 1"
                                         :icon="'fa fa-times'"
                                         :btnClass="'btn-danger'"
                                         @click="abrirModal('rechazo')">

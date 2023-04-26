@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\HistMedicalRecords;
 use App\MedicalAffiliation;
+use App\EmergencyContact;
+use App\MedicalVaccine;
 
 class MedicalRecord extends Model
 {
@@ -29,5 +31,13 @@ class MedicalRecord extends Model
 
     public function afiliaciones(){
         return MedicalAffiliation::where('record_id','=',$this->id)->get();
+    }
+
+    public function vaccines(){
+        return MedicalVaccine::where('record_id', $this->id)->get();
+    }
+
+    public function contacts(){
+        return EmergencyContact::where('record_id', $this->id)->get();
     }
 }

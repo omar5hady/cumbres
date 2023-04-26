@@ -549,7 +549,10 @@
             <ventas-rep></ventas-rep>
         </template>
         <template v-if="menu == 293">
-            <ficha-medica user-id="{{  Auth::user()->id }}"></ficha-medica>
+            <ficha-medica
+                user-id="{{  Auth::user()->id }}"
+                user-name="{{ Auth::user()->usuario }}"
+                ></ficha-medica>
         </template>
     @endif
 @endsection

@@ -1270,6 +1270,8 @@ Route::group(['middleware' => ['auth']],function(){
         ////////////////////// Rutas Medial Records
         Route::resource('/medical-record', Rh\MedicalRecordController::class);
         Route::post('/medical/storeAfiliacion','Rh\MedicalRecordController@storeAfiliacion');
+        Route::post('/medical/storeContact','Rh\MedicalRecordController@storeContact');
+        Route::post('/medical/storeVaccine','Rh\MedicalRecordController@storeVaccine');
 
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);

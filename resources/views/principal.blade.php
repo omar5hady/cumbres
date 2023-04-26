@@ -92,8 +92,8 @@
                             @include('sidebars.administracion')
                         @endif
                 <!-- RH -->
-                        @if(Auth::user()->rol->id != 2
-                            || Auth::user()->rol->id == 2 && Auth::user()->vendedor->tipo == 0)
+                        @if(Auth::user()->rol_id != 2
+                            || (Auth::user()->rol_id === 2 && Auth::user()->vendedor->tipo === 0))
                             @include('sidebars.rh')
                         @endif
                 <!-- Oficina -->
@@ -156,8 +156,8 @@
                         @endif
 
                 <!-- Modulo pagos internos --->
-                    @if(Auth::user()->rol->id != 2
-                            || Auth::user()->rol->id == 2 && Auth::user()->vendedor->tipo == 0)
+                    @if(Auth::user()->rol_id != 2
+                        || (Auth::user()->rol_id === 2 && Auth::user()->vendedor->tipo === 0))
                         @include('sidebars.pagosinternos')
                     @endif
                 <!-- Fin pago internos -->

@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use App\MedicalRecord;
 use App\MedicalAffiliation;
 use App\HistMedicalRecords;
+use App\MedicalVaccine;
+use App\EmergencyContact;
 
 class MedicalRecordController extends Controller
 {
@@ -138,5 +140,25 @@ class MedicalRecordController extends Controller
         $affiliation->poliza = $request->poliza;
         $affiliation->tipo = $request->tipo;
         $affiliation->save();
+    }
+
+    public function storeContact(Request $request){
+        $contact = new EmergencyContact();
+        $contact->record_id = $request->record_id;
+        $contact->nombre = $request->nombre;
+        $contact->telefono1 = $request->telefono1;
+        $contact->telefono2 = $request->telefono2;
+        $contact->email = $request->email;
+        $contact->direccion = $request->direccion;
+        $contact->parentesco = $request->parentesco;
+        $contact->save();
+    }
+
+    public function storeVaccine(Request $request){
+        $vaccine = new MedicalVaccine();
+        $vaccine->record_id = $request->record_id;
+        $vaccine->vacuna = $request->vacuna;
+        $vaccine->lote = $request->lote;
+        $vaccine->save();
     }
 }

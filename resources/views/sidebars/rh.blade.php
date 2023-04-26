@@ -16,12 +16,10 @@
                 <a class="nav-link" href="#"><i class="fa fa-university"></i> Fondo de pensión</a>
             </li>
         @endif
-         @if(Auth::user()->rol_id ==1)
         <li @click="menu=293" class="nav-item">
             <a class="nav-link" href="#"><i class="fa fa-money" aria-hidden="true">
             </i> Reto Cumbres </a>
         </li>
-        @endif
 
         @if(Auth::user()->prestamos_personales ==1)
         <li @click="menu=284" class="nav-item">
