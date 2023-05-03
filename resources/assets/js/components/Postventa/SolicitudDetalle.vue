@@ -41,10 +41,10 @@
                                     </select>
 
                                     <input v-else type="text" v-model="buscar2" @keyup.enter="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="form-control" placeholder="Texto a buscar">
-                                   
+
                                 </div>
                                 <div class="input-group" v-if="criterio2=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-6" @change="selectManzanas(buscar2,b_etapa2)" v-model="b_etapa2"> 
+                                    <select class="form-control col-md-6" @change="selectManzanas(buscar2,b_etapa2)" v-model="b_etapa2">
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
@@ -57,7 +57,15 @@
                                     <input type="text"  v-model="b_lote2" @keyup.enter="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="form-control" placeholder="Lote a buscar">
                                 </div>
                             </div>
-                            
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <input type="text" disabled class="form-control" v-model="b_fecha1" placeholder="Fecha:">
+                                    <input type="date" class="form-control" v-model="b_fecha1">
+                                    <input type="date" class="form-control" v-model="b_fecha2">
+                                </div>
+                            </div>
+
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
@@ -76,27 +84,21 @@
                                 </div>
                             </div>
                         </div>
-                            
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th></th>
                                         <th># Folio</th>
-                                        <th>Cliente</th>
-                                        <th>Contacto</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
                                         <th>Modelo</th>
-                                        <th>Contratista</th>
                                         <th>Fecha de reporte</th>
-                                        <th>Disponibilidad</th>
-                                        <th>Costo</th>
+                                        <th>Fecha conclusión</th>
                                         <th>Status</th>
-                                        <th>Imprimir Reporte</th>
-                                        <th colspan="2">Fecha programada</th>
                                         <th>Reporte de conclusión</th>
                                     </tr>
                                 </thead>
@@ -115,34 +117,16 @@
                                                     <a class="dropdown-item" v-bind:href="'/files/'+'solicitudDetalle/'+ contratos.nom_contrato + '/download'" >Descargar solicitud</a>
                                                     <a class="dropdown-item" @click="eliminarArchivo(contratos.nom_contrato, contratos.id)" >Eliminar archivo</a>
                                                 </template>
-                                                
+
                                             </div>
-                                        </td>
-                                        <td class="td2">
-                                            <a href="#" v-text="contratos.cliente"></a>
-                                        </td>
-                                        <td class="td2">
-                                            <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                         </td>
                                         <td class="td2" v-text="contratos.fraccionamiento"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
                                         <td class="td2" v-text="contratos.modelo"></td>
-                                        <td class="td2" v-text="contratos.nombre"></td>
                                         <td class="td2" v-text="this.moment(contratos.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td>
-                                           <p>
-                                           <b><span style="color:blue;" v-if="contratos.lunes == 1">Lunes</span>
-                                           <span style="color:blue;" v-if="contratos.martes == 1">Martes</span>
-                                           <span style="color:blue;" v-if="contratos.miercoles == 1">Miercoles</span>
-                                           <span style="color:blue;" v-if="contratos.jueves == 1">Jueves</span>
-                                           <span style="color:blue;" v-if="contratos.viernes == 1">Viernes</span>
-                                           <span style="color:blue;" v-if="contratos.sabado == 1">Sabado</span>
-                                           </b></p>
-                                       </td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.costo)"></td>
+                                        <td class="td2" v-text="contratos.fecha_concluido ? this.moment(contratos.fecha_concluido).locale('es').format('DD/MMM/YYYY') : ''"></td>
                                         <template>
                                             <td class="td2" v-if="contratos.status == '0'">
                                                 <span class="badge badge-warning">Pendiente</span>
@@ -153,54 +137,39 @@
                                             <td class="td2" v-if="contratos.status == '2'">
                                                 <span class="badge badge-success">Concluido</span>
                                             </td>
+                                            <td class="td2" v-if="contratos.status == '3'">
+                                                <span class="badge badge-danger">Cancelado</span>
+                                            </td>
                                         </template>
-                                        <td class="td2">
-                                            <a title="Ver revision" type="button" 
+                                        <!-- <td class="td2">
+                                            <a title="Ver revision" type="button"
                                                     class="btn btn-danger pull-right" target="_blank" :href="'/detalles/reporteDetalles/pdf/'+contratos.id">
                                                     <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte
-                                            </a> 
-                                        </td>
-                                        <template v-if="contratos.status == 3">
-                                                
-                                            <td class="td2" colspan="2" v-if="contratos.status == '3'">
-                                                <span class="badge badge-danger">Cancelado</span>
-                                            </td>  
-                                        </template>
-                                        <template v-else>
-                                        
-                                            <td class="td2">
-                                                Fecha: <input v-if="contratos.status != '2'"  type="date" v-on:change="actualizarFechaProgram($event.target.value,contratos.id)"  :id="contratos.id" :value="contratos.fecha_program" class="form-control" >
-                                                <label v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></label>
-                                            </td>
-                                            <td class="td2">                                           
-                                                Hora: <input v-if="contratos.status != '2'"  type="time" v-on:change="actualizarHoraProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.hora_program" class="form-control" >
-                                                <label v-else v-text="contratos.hora_program"></label>
-                                            </td>
-                                            
-                                        </template>
-                                        
-                                        <template>    
+                                            </a>
+                                        </td> -->
+
+                                        <template>
                                             <td class="td2" v-if="contratos.status == '2'">
-                                                <a title="Ver revision" type="button" 
+                                                <a title="Ver revision" type="button"
                                                     class="btn btn-danger pull-right" target="_blank" :href="'/detalles/reporteDetalles/reporteConclusionPDF/'+contratos.id">
                                                     <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte conclusión
-                                                </a> 
-                                            </td>  
+                                                </a>
+                                            </td>
                                             <td class="td2" v-if="contratos.status == '0'">
                                                 <span class="badge badge-warning">Pendiente</span>
                                             </td>
                                             <td class="td2" v-if="contratos.status == '1'">
                                                 <span class="badge badge-warning">En proceso</span>
-                                            </td>  
+                                            </td>
 
                                             <td class="td2" v-if="contratos.status == '3'">
                                                 <span class="badge badge-danger">Cancelado</span>
-                                            </td>                                          
+                                            </td>
                                         </template>
-                                        
+
                                     </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -227,11 +196,11 @@
 
                 <!-------------------  Div descripcion de detalles  --------------------->
                     <div class="card-body" v-if="descripcion == 1">
-                            
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th>General</th>
                                         <th>Subconcepto</th>
                                         <th>Detalle</th>
@@ -250,8 +219,8 @@
                                         <td class="td2" v-text="descripcion.observacion"></td>
                                         <td v-if="descripcion.garantia == 1"><span class="badge badge-success">Si</span> </td>
                                         <td v-else> <span  class="badge badge-danger">No</span> </td>
-                                        <td class="td2" v-text="'$'+formatNumber(descripcion.costo)"></td> 
-                                        <td class="td2" v-if="descripcion.fecha_concluido" v-text="this.moment(descripcion.fecha_concluido).locale('es').format('DD/MMM/YYYY')"></td>                      
+                                        <td class="td2" v-text="'$'+formatNumber(descripcion.costo)"></td>
+                                        <td class="td2" v-if="descripcion.fecha_concluido" v-text="this.moment(descripcion.fecha_concluido).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-else v-text="'En proceso'"></td>
                                         <template>
                                             <td class="td2" v-if="descripcion.fecha_concluido && descripcion.revisado==0">
@@ -269,7 +238,7 @@
                                         </template>
                                     </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                     </div>
                 <!-------------------  Fin Div para Reportes de Detalles  --------------------->
@@ -277,7 +246,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
             <!--Inicio del modal para diversos llenados de tabla en historial -->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -289,7 +258,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                
+
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-3">
@@ -484,12 +453,12 @@
                                         <textarea v-model="obs_gen" cols="50" rows="4"></textarea>
                                     </div>
 
-                                    
+
                                 </div>
 
-                                
+
                             </template>
-                                
+
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
                                 <div v-show="errorEntrega" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -497,7 +466,7 @@
                                         </div>
                                     </div>
                                 </div>
- 
+
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
@@ -522,7 +491,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                
+
                                 <div class="form-group row">
                                     <div class="col-md-8">
                                         <form class="form-horizontal" @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
@@ -531,7 +500,7 @@
                                                 <span class="input-group-text">
                                                 <i class="fa fa-file"></i>
                                                 </span>
-                                                <input type="file" v-on:change="dropboxFile" name="file" required>    
+                                                <input type="file" v-on:change="dropboxFile" name="file" required>
                                                 <button class="btn btn-primary" type="submit">Guardar archivo</button>
                                             </div>
                                         </div>
@@ -576,7 +545,7 @@
 
                                 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                    
+
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
@@ -587,14 +556,14 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                
+
                                                 <td v-text="observacion.usuario" ></td>
                                                 <td v-text="observacion.comentario" ></td>
                                                 <td v-text="observacion.created_at"></td>
-                                            </tr>                               
+                                            </tr>
                                         </tbody>
                                     </table>
-                                    
+
                                 </form>
                             </div>
                             <!-- Botones del modal -->
@@ -650,7 +619,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                
+
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
@@ -659,7 +628,7 @@
                                             <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
                                         </select>
 
-                                        <select class="form-control" v-model="etapa"> 
+                                        <select class="form-control" v-model="etapa">
                                             <option value="">Etapa</option>
                                             <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                         </select>
@@ -700,8 +669,8 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
-            
-         
+
+
      </main>
 </template>
 
@@ -737,7 +706,7 @@
                 etapa_entregada:'',
                 manzana_entregada:'',
                 lote_entregado:'',
-                
+
                 modal: 0,
                 modal2 : 0,
                 modal3: 0,
@@ -782,18 +751,20 @@
 
                 // Criterios para historial de contratos
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio2 : 'lotes.fraccionamiento_id', 
+                criterio2 : 'lotes.fraccionamiento_id',
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
+                b_fecha1: '',
+                b_fecha2: '',
                 status:'',
                 tipoAccion:0,
                 observacion:'',
@@ -808,7 +779,7 @@
                 fecha1:'',
                 fecha2:''
 
-               
+
             }
         },
         computed:{
@@ -841,7 +812,7 @@
 
         },
 
-        
+
         methods : {
             dropboxFile(e){
 
@@ -856,11 +827,11 @@
                 e.preventDefault();
 
                 let formData = new FormData();
-           
+
                 formData.append('file', this.file);
                 axios.post('/dropbox/files/'+this.solicitud_id+'/solicitudDetalle', formData)
                 .then(function (response) {
-                   
+
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -918,16 +889,19 @@
                 })
 
             },
-            
+
             listarSolicitudes(page, buscar, b_etapa, b_manzana, b_lote, criterio, status){
                 let me = this;
                 this.descripcion = 0;
-                var url = '/detalles/indexSolicitudes?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&criterio=' + criterio + '&status=' + status;
+                let url = '/detalles/indexSolicitudes?page=' + page
+                    + '&buscar=' + buscar + '&b_etapa=' + b_etapa
+                    + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&criterio=' + criterio + '&status=' + status
+                    + '&b_fecha1=' + me.b_fecha1 + '&b_fecha2=' + me.b_fecha2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arraySolicitudes = respuesta.solicitudes.data;
                     me.pagination2 = respuesta.pagination;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -960,11 +934,11 @@
                     console.log(error);
                 });
             },
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 me.arrayFraccionamientos2=[];
                 me.arrayEtapas=[];
@@ -981,14 +955,14 @@
 
             actualizarFechaProgram(fecha,id){
                 let me = this;
-                
+
                 axios.put('/detalles/updateFecha',{
                     'fecha_program':fecha,
                     'id': id,
                 }).then(function (response){
-                    
+
                     me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
-                  
+
                 const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -1008,14 +982,14 @@
 
             actualizarHoraProgram(hora,id){
                 let me = this;
-                
+
                 axios.put('/detalles/updateHora',{
                     'hora_program':hora,
                     'id': id,
                 }).then(function (response){
-                    
+
                     me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
-                  
+
                 const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -1037,7 +1011,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.b_etapa=""
-                
+
                 me.arrayEtapas=[];
                 me.arrayEtapas2=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
@@ -1086,14 +1060,14 @@
             /// SELECT PARA LOTES ENTREGADOS
                 selectEtapaEntregada(fraccionamiento){
                     let me = this;
-                    
+
                     me.arrayEtapas=[];
                     me.arrayManzanas=[];
                     var url = '/select_etapas_entregados?buscar=' + fraccionamiento;
                     axios.get(url).then(function (response) {
                         var respuesta = response.data;
                         me.arrayEtapas = respuesta.lotes_etapas;
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1101,14 +1075,14 @@
                 },
                 selectManzanaEntregada(etapa){
                     let me = this;
-                    
+
                     me.arrayManzanas=[];
                     me.arrayLotes=[];
                     var url = '/select_manzanas_entregados?buscar=' + etapa;
                     axios.get(url).then(function (response) {
                         var respuesta = response.data;
                         me.arrayManzanas = respuesta.lotes_manzanas;
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1121,7 +1095,7 @@
                     axios.get(url).then(function (response) {
                         var respuesta = response.data;
                         me.arrayLotes = respuesta.lotes_entregados;
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1130,19 +1104,19 @@
 
                 revisarDetalle(id,resultado,comentario){
                     let me = this;
-                    
-                    
+
+
                     axios.put('/detalles/updateResultado',{
                         'resultado':resultado,
                         'solicitud_id': me.solicitud_id,
                         'id' : id,
                         'comentario':comentario
                     }).then(function (response){
-                        
+
                         me.verDetalles(me.solicitud_id);
                         me.modal2 = 0;
                         me.observacion ='';
-                    
+
                     const toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
@@ -1178,7 +1152,7 @@
                         me.modelo = me.arrayDatosLotes[0]['modelo'];
 
                         me.contratista = respuesta.datosContratista[0]['id'];
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1188,7 +1162,7 @@
 
             addDetalle(){
                 let me = this;
-            
+
                     me.arrayListadoDetalles.push({
                     id_gral: me.id_gral,
                     id_sub: me.id_sub,
@@ -1198,7 +1172,7 @@
                     subconcepto: me.subconcepto,
                     general: me.general,
                     observacion : me.observacion,
-                    
+
                 });
                 me.id_gral = '';
                 me.id_sub = '';
@@ -1208,7 +1182,7 @@
                 me.subconcepto = '';
                 me.general = '';
                 me.observacion = '';
-                
+
             },
 
             eliminarDetalle(index){
@@ -1274,7 +1248,7 @@
                         //Con axios se llama el metodo update de LoteController
                         axios.put('/detalles/finalizarReporte',{
                             'solicitud_id': id,
-                            
+
                         }).then(function (response){
                             me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
                             //window.alert("Cambios guardados correctamente");
@@ -1293,19 +1267,19 @@
                         });
                     }
                 })
-                
+
             },
 
             /// SELECT PARA CATALOGO DE DETALLES
                 selectGenerales(fraccionamiento){
                     let me = this;
-                    
+
                     me.arrayGenerales=[];
                     var url = '/catalogoDetalle/selectGeneral';
                     axios.get(url).then(function (response) {
                         var respuesta = response.data;
                         me.arrayGenerales = respuesta.general;
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1313,13 +1287,13 @@
                 },
                 selectSubconcepto(id_gral){
                     let me = this;
-                    
+
                     me.arraySubconceptos=[];
                     var url = '/catalogoDetalle/selectSub?id_gral=' + id_gral;
                     axios.get(url).then(function (response) {
                         var respuesta = response.data;
                         me.arraySubconceptos = respuesta.subconcepto;
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1327,13 +1301,13 @@
                 },
                 selectDetalle(id_sub){
                     let me = this;
-                    
+
                     me.arrayDetalles=[];
                     var url = '/catalogoDetalle/selectDetalle?id_sub=' + id_sub;
                     axios.get(url).then(function (response) {
                         var respuesta = response.data;
                         me.arrayDetalles = respuesta.detalle;
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -1356,13 +1330,13 @@
                         else{
                             me.garantia = 0;
                         }
-                        
+
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
                 },
-            
+
             cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio,status){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1392,7 +1366,7 @@
                 axios.post('/postventa/registrarObservacion',{
                     'comentario' : this.observacion,
                     'entrega_id':this.folio,
-                    
+
                 }).then(function (response){
                     me.listarObservacion(1,me.folio);
                     //window.alert("Cambios guardados correctamente");
@@ -1422,7 +1396,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             validarFecha(){
@@ -1506,7 +1480,7 @@
                         this.solicitud_id = data['id'];
                         this.modalArchivo = 1;
                         this.tituloModal = 'Subir solicitud para solicitud: ' + this.solicitud_id;
-                        
+
                         break;
                     }
 
@@ -1522,9 +1496,9 @@
                     }
                 }
             }
-            
+
         },
-       
+
         mounted() {
             this.listarSolicitudes(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2,this.status);
             this.selectFraccionamientos();
@@ -1557,7 +1531,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -1606,5 +1580,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

@@ -60,7 +60,7 @@
                                     <div class="card-body">
                                         <div class="author">
                                             <img
-                                                :src="`/img/avatars/default-image.gif`"
+                                                :src="`/img/avatars/${medicalRecord.usuario.foto}`"
                                                 class="avatar border-white"
                                             />
                                             <h4 class="title">

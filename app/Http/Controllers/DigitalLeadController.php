@@ -678,7 +678,8 @@ class DigitalLeadController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
         // Se busca en la tabla personal si existe un prospecto registrado con el mismo RFC del lead.
-        $cliente = Personal::select('id')->where('rfc','=',$request->rfc)->get();
+        $cliente = Personal::leftJoin('clientes','personal.id','=','clientes.id')
+            ->select('personal.id', 'clientes.vendedor_id')->where('personal.rfc','=',$request->rfc)->get();
         // Se obtiene el id del medio de publicidad.
         $medio = Medio_publicitario::select('id')->where('nombre','like','%'.$request->medio_publicidad.'%')->get();
         if(sizeof($medio) == 0)
@@ -719,9 +720,12 @@ class DigitalLeadController extends Controller
                 $cliente->clasificacion = 4;
                 $cliente->save();
 
+                $comentario =  'El lead se ha enviado a la base de prospectos del vendedor';
+
             }
             else{ // Si ya esta registrado el prospecto.
                 // Se actualiza la informacion en la tabla Personal y Clientes.
+                $comentario =  'El lead ya se encuentra registrado en la base de datos de otro vendendor.';
                 $persona = Personal::findOrFail($cliente[0]->id);
                 $persona->nombre = $request->nombre;
                 $persona->apellidos = $request->apellidos;
@@ -736,6 +740,10 @@ class DigitalLeadController extends Controller
                 $cliente = Cliente::findOrFail($cliente[0]->id);
                 $cliente->publicidad_id = $publi;
                 $cliente->proyecto_interes_id = $request->proyecto_interes;
+                if($cliente->vendedor_id == 104){
+                    $comentario =  'El lead se ha enviado a la base de prospectos del vendedor';
+                    $cliente->vendedor_id = $request->vendedor_asign;
+                }
                 //$cliente->vendedor_id = $request->vendedor_asign;
                 $cliente->nss = $request->nss;
                 $cliente->sexo = $request->sexo;
@@ -747,6 +755,7 @@ class DigitalLeadController extends Controller
                 $cliente->curp = $request->curp;
                 $cliente->lugar_nacimiento = $request->lugar_nacimiento;
                 $cliente->save();
+
             }
             // Se accede al registro del Lead
             $lead = Digital_lead::findOrFail($request->id);
@@ -756,7 +765,7 @@ class DigitalLeadController extends Controller
 
             $obs = new Obs_lead(); // Nuevo comentario al lead.
             $obs->lead_id = $lead->id;
-            $obs->comentario = 'El lead se ha enviado a la base de prospectos del vendedor';
+            $obs->comentario = $comentario;
             $obs->usuario = Auth::user()->usuario;
             $obs->visto = $fecha;
             $obs->save();

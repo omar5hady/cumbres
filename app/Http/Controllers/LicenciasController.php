@@ -436,6 +436,10 @@ class LicenciasController extends Controller
         $licencia->f_planos_obra = $request->f_planos_obra;
         $licencia->perito_dro = $request->perito_dro;
         $licencia->save();
+
+        $lote = Lote::findOrFail($request->id);
+        $lote->arquitecto_id = $request->arquitecto_id;
+        $lote->save();
     }
 
     //Función para actualizar la fecha de ingreso, salida y numero de licencias de construcción

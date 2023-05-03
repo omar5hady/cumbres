@@ -15,11 +15,12 @@
             <li @click="menu=218" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-address-card-o"></i> Documentos</a>
             </li>
-        @if(Auth::user()->postventa == 1)
+            {{-- Modulo deja de ser usado --}}
+        {{-- @if(Auth::user()->postventa == 1)
             <li @click="menu=220" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-check-circle-o"></i> Revisión previa</a>
             </li>
-        @endif
+        @endif --}}
         @if(Auth::user()->entregas == 1)
             <li @click="menu=215" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>

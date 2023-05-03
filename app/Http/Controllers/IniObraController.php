@@ -251,8 +251,7 @@ class IniObraController extends Controller
                     //Se accede al registro en la tabla de lotes
                     //Para actualizar la información correspondiente al contrato de obra
                     $lote = Lote::findOrFail($det['lote_id']);
-                    $ini_obra->num_casas = $ini_obra->num_casas - 1;
-                    $ini_obra->save();
+
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
@@ -272,6 +271,11 @@ class IniObraController extends Controller
                     }
                     $lote->save();
                 }
+                else{
+                    $ini_obra->num_casas = $ini_obra->num_casas - 1;
+                    $ini_obra->save();
+                }
+
             }
 
             DB::commit();
@@ -420,8 +424,6 @@ class IniObraController extends Controller
                 if($det['lote_id']>0){
                     //Se accede al registro del lote y se actualiza información
                     $lote = Lote::findOrFail($det['lote_id']);
-                    $ini_obra->num_casas = $ini_obra->num_casas - 1;
-                    $ini_obra->save();
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
@@ -440,6 +442,10 @@ class IniObraController extends Controller
                         }
                     }
                     $lote->save();
+                }
+                else{
+                    $ini_obra->num_casas = $ini_obra->num_casas - 1;
+                    $ini_obra->save();
                 }
             }
 

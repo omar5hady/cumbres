@@ -1474,36 +1474,13 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     }
 
                     case 'finalizar':{
-                        if(data['revision_previa'] == 0){
-                            Swal.fire({
-                            title: 'Sin revisión previa',
-                            text: "No se ha realizado la revision previa, ¿Desea Continuar?",
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Si!'
-                            }).then((result) => {
-                            if (result.value) {
-                                this.folio = data['folio'];
-                                this.modal = 2;
-                                this.tituloModal = "Finalizar entrega";
-                                this.tipoAccion = 3;
-                                this.cero_detalles = 1;
-                                this.fecha_entrega_real = data['fecha_program'];
-                                this.hora_entrega_real = data['hora_entrega_prog'];
-                            }
-                            })
-                        }
-                        else{
-                            this.folio = data['folio'];
-                            this.modal = 2;
-                            this.tituloModal = "Finalizar entrega";
-                            this.tipoAccion = 3;
-                            this.cero_detalles = 1;
-                            this.fecha_entrega_real = data['fecha_program'];
-                            this.hora_entrega_real = data['hora_entrega_prog'];
-                        }
+                        this.folio = data['folio'];
+                        this.modal = 2;
+                        this.tituloModal = "Finalizar entrega";
+                        this.tipoAccion = 3;
+                        this.cero_detalles = 1;
+                        this.fecha_entrega_real = data['fecha_program'];
+                        this.hora_entrega_real = data['hora_entrega_prog'];
                         break;
                     }
                 }

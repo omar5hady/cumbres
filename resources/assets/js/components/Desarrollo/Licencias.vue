@@ -353,6 +353,15 @@
                     </ul>
                     <template v-if="tipoAccion == 1">
                         <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Arquitecto</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="arquitecto_id">
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">DRO</label>
                             <div class="col-md-6">
                                 <select class="form-control" v-model="perito_dro">
@@ -1367,7 +1376,8 @@ import LoadingComponent from '../Componentes/LoadingComponent.vue'
                             axios.put('/licencias/actualizarMasa',{
                                 'id':element,
                                 'f_planos_obra' : this.f_planos_obra,
-                                'perito_dro' : this.perito_dro
+                                'perito_dro' : this.perito_dro,
+                                'arquitecto_id' : this.arquitecto_id
 
                             });
                         })
