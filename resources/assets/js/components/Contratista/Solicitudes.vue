@@ -143,7 +143,7 @@
                                         <td v-else>
                                             <input  type="text" pattern="\d*" @keyup.enter="actualizarCosto($event.target.value,detalles.id,detalles.solicitud_id)" :id="detalles.solicitud_id" :value="detalles.costo" v-on:keypress="isNumber($event)" class="form-control" >
                                         </td>
-                                        <td v-if="detalles.fecha_concluido" v-text="detalles.fecha_concluido"><span class="badge badge-success"></span></td>
+                                        <td v-if="detalles.fecha_concluido"><span class="badge badge-success" v-text="detalles.fecha_concluido"></span></td>
                                         <td v-else>
                                             <input  type="date" v-on:change="actualizarConcluido($event.target.value,detalles.id,detalles.solicitud_id)" :id="detalles.solicitud_id" :value="detalles.fecha_concluido" class="form-control" >
                                         </td>

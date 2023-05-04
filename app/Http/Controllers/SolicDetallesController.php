@@ -650,6 +650,23 @@ class SolicDetallesController extends Controller
         $solicitud->save();
     }
 
+    public function finalizarSolicitud(Request $request){
+        $solicitud = Solic_detalle::findOrFail($request->id);
+        $solicitud->status = 2; //
+        $solicitud->save();
+
+        $detalles = Descripcion_detalle::select('id')->where('solicitud_id','=',$solicitud->id)->get();
+        if(sizeof($detalles)){
+            foreach($detalles as $det){
+                $detalle = Descripcion_detalle::findOrFail($det->id);
+                $detalle->fecha_concluido = $request->fecha;
+                $detalle->revisado = 1;
+                $detalle->resultado = 'Finalizado';
+                $detalle->save();
+            }
+        }
+    }
+
     // Funcion para cambiar la fecha de finalizado de la solicitud
     public function updateFechaConcluido(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

@@ -1018,6 +1018,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/detalles/finalizarReporte','SolicDetallesController@finalizarReporte');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
+        Route::put('detalles/finalizarSolicitud', 'SolicDetallesController@finalizarSolicitud');
 
     /////////////////////////// RUTAS CREDITOS PUENTE ////////////////////////
         Route::get('/c_puente/indexSinCredito','CreditoPuenteController@indexSinCredito');

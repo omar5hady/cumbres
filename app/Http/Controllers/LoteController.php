@@ -2255,7 +2255,7 @@ class LoteController extends Controller
             $lotes_entregados = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('creditos','lotes.id','=','creditos.lote_id')
                     ->join('contratos','creditos.id','=','contratos.id')
-                    ->select('lotes.num_lote','lotes.id')
+                    ->select('lotes.num_lote', 'lotes.sublote','lotes.id')
                     ->where('contratos.entregado','=',1)
                     ->where('etapas.num_etapa', '=',  $etapa )
                     ->where('lotes.manzana','=',$manzana)
