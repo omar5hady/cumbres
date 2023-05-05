@@ -177,7 +177,7 @@
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                             <td class="td2">
                                                 <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar"
                                                     @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
@@ -246,7 +246,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-warning'" :size="'btn-sm'" title="Editar" v-if="solic.vb_gerente == 0"
                                                             @click="vistaFormulario('actualizar', solic)" :icon="'icon-pencil'"
@@ -283,11 +283,16 @@
                                                     <td class="td2">
                                                         Solicitud pendiente de revisar
                                                     </td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         <Button :btnClass="'btn-light'" title="Ver Observaciones"
                                                             @click="verObs(solic)"
                                                         >Observaciones
                                                         </Button>
+                                                        <Button :btnClass="'btn-success'" title="Indicar pago"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            @click="pagado(solic.id)"
+                                                            :icon="'fa fa-money'"
+                                                        ></Button>
                                                     </td>
                                                 </tr>
                                             </template>
@@ -306,7 +311,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
@@ -337,11 +342,16 @@
                                                     <td class="td2">
                                                         Solicitud pendiente de autorizar
                                                     </td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         <Button :btnClass="'btn-light'" title="Ver Observaciones"
                                                             @click="verObs(solic)"
                                                         >Observaciones
                                                         </Button>
+                                                        <Button :btnClass="'btn-success'" title="Indicar pago"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            @click="pagado(solic.id)"
+                                                            :icon="'fa fa-money'"
+                                                        ></Button>
                                                     </td>
                                                 </tr>
                                                  <tr>
@@ -366,7 +376,7 @@
                                     ' '
                                 ]">
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                             <td class="td2">
                                                 <Button :btnClass="'btn-primary'" title="Ver solicitd" :size="'btn-sm'"
                                                     @click="vistaFormulario('ver', solic)" :icon="'icon-eye'"
@@ -401,11 +411,16 @@
                                                     </span>
                                                 </template>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 <Button :btnClass="'btn-light'" title="Ver Observaciones"
                                                     @click="verObs(solic)"
                                                 >Observaciones
                                                 </Button>
+                                                <Button :btnClass="'btn-success'" title="Indicar pago"
+                                                    v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                    @click="pagado(solic.id)"
+                                                    :icon="'fa fa-money'"
+                                                ></Button>
                                             </td>
                                         </tr>
                                          <tr>
@@ -444,7 +459,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-warning'" :icon="'icon-check'" title="Indicar revision previa"
                                                             v-if="solic.rev_op == 0 && (admin == 1 || usuario == 'shady' || usuario == 'lomelin')"
@@ -502,6 +517,11 @@
                                                             @click="verObs(solic)"
                                                         >Observaciones
                                                         </Button>
+                                                        <Button :btnClass="'btn-success'" title="Indicar pago"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            @click="pagado(solic.id)"
+                                                            :icon="'fa fa-money'"
+                                                        ></Button>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -524,7 +544,7 @@
                                             ' '
                                         ]">
                                             <template v-slot:tbody>
-                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                                <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                                     <td class="td2">
                                                         <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
                                                             :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
@@ -571,11 +591,16 @@
                                                         </template>
 
                                                     </td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         <Button :btnClass="'btn-light'" title="Ver Observaciones"
                                                             @click="verObs(solic)"
                                                         >Observaciones
                                                         </Button>
+                                                        <Button :btnClass="'btn-success'" title="Indicar pago"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            @click="pagado(solic.id)"
+                                                            :icon="'fa fa-money'"
+                                                        ></Button>
                                                     </td>
                                                 </tr>
                                                  <tr>
@@ -598,6 +623,7 @@
                                                     @click="abrirModal('pagoMasa', solicCheck[0])"
                                                     title="Pagar Seleccion">Pagar solicitudes seleccionadas</Button>
                                             </th>
+                                        </tr>
                                         <tr>
                                             <th></th>
                                             <th></th>
@@ -611,7 +637,7 @@
                                         </tr>
                                     </template>
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                             <td>
                                                 <input type="checkbox" v-if="solic.tipo_pago == 1 && solic.forma_pago == 0"
                                                     :id="solic.id" :value="solic"
@@ -687,6 +713,7 @@
                                                     @click="abrirModal('comprobanteMasa')"
                                                     title="Pagar Seleccion">Cargar comprobante de pago para solicitudes seleccionadas</Button>
                                             </th>
+                                        </tr>
                                         <tr>
                                             <th></th>
                                             <th></th>
@@ -701,7 +728,7 @@
                                         </tr>
                                     </template>
                                     <template v-slot:tbody>
-                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="{ 'table-danger' : solic.extraordinario }">
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
                                             <td>
                                                 <input type="checkbox" v-if="solic.tipo_pago == 1 && solic.forma_pago == 0"
                                                     :id="solic.id" :value="solic.id"
@@ -1582,8 +1609,8 @@
                                 <label class="form-control">{{solicitudData.clabe}}</label>
                             </template>
                         </RowModal>
-                        <RowModal v-if="solicitudData.tipo_pago == 0
-                            || solicitudData.tipo_pago == 1 && solicitudData.forma_pago == 0" :label1="'Folio'">
+                        <RowModal v-if="solicitudData.tipo_pago == 0"
+                             :label1="'Folio'">
                             <input :disabled="solicitudData.accionPago==2" type="text" class="form-control" v-model="solicitudData.num_factura">
                         </RowModal>
                         <template v-if="solicitudData.tipo_pago == 1">
@@ -1998,6 +2025,42 @@ export default {
                     axios.put(`/solic-pagos/autorizarDireccion/${me.solicitudData.id}`,{
                         'id': me.solicitudData.id,
                         'estado' : estado,
+                    }).then(function (response){
+                        me.cerrarFormulario();
+                        me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Solicitud actualizada'
+                        })
+                    }).catch(function (error){
+                    });
+                }
+            })
+        },
+        pagado(id){
+            let me = this;
+            const titulo = '¿Seguro de indicar pago para esta solicitud?';
+
+            swal({
+                title: titulo,
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, continuar'
+                }).then((result) => {
+                if (result.value) {
+                    axios.put(`/solic-pagos/pagado/${id}`,{
+                        'id': id,
                     }).then(function (response){
                         me.cerrarFormulario();
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros

@@ -1311,6 +1311,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/sp/setRevOpc/','solicPagos\SolicitudesController@setRevOpc');
         Route::delete('/solic-detalles/deleteDetalle/{id}','solicPagos\SolicitudesController@deleteDetalle');
         Route::put('/solic-pagos/changeVbGerente/{id}','solicPagos\SolicitudesController@changeVbGerente');
+        Route::put('/solic-pagos/pagado/{id}','solicPagos\SolicitudesController@pagado');
         Route::put('/solic-pagos/changeVbTesoreria/{id}','solicPagos\SolicitudesController@changeVbTesoreria');
         Route::put('/solic-pagos/changeVbDireccion/{id}','solicPagos\SolicitudesController@changeVbDireccion');
         Route::put('/solic-pagos/autorizarDireccion/{id}','solicPagos\SolicitudesController@autorizarDireccion');

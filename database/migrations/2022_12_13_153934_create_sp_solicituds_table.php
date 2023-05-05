@@ -47,6 +47,7 @@ class CreateSpSolicitudsTable extends Migration
             $table->boolean('extraordinario')->default(0);//?  0: NO, 1:Si
 
             $table->boolean('rev_op')->default(0);
+            $table->boolean('pagado')->default(0);
 
             $table->string('convenio')->nullable();
             $table->string('referencia')->nullable();

@@ -518,6 +518,12 @@ class SolicitudesController extends Controller
             $this->createObs($id, "Solicitud autorizada por gerente.");
     }
 
+    public function pagado(Request $request, $id){
+        $solic = SpSolicitud::findOrFail($request->id);
+        $solic->pagado = 1;
+        $solic->save();
+    }
+
     private function sendNotifGerente($departamento){
         $msj = 'Tienes pendiente una solicitud de pago extraordinaria por autorizar';
         // 'eli_hdz', //Comercializacion 9
