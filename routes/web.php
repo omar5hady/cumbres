@@ -1318,6 +1318,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/solic-pagos/generarPago/{id}','solicPagos\SolicitudesController@generarPago');
         Route::put('/solic-pagos/changeCuenta/{id}','solicPagos\SolicitudesController@changeCuenta');
 
+        Route::get('/sp/indexConcentrado/','solicPagos\SolicitudesController@indexConcentrado');
+
         Route::get('/presupuestos/getVentas','solicPagos\ReportesController@getVentas');
 
         Route::get('/equip-lotes/printRecepcion/print','Lotes\EquipLoteController@printRecepcion');

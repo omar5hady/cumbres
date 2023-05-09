@@ -92,6 +92,7 @@ class PlanosController extends Controller
                     $lotes = $lotes->where('etapa_id','=',$request->etapa);
             $lotes = $lotes->get();
             foreach($lotes as $lote){
+                $this->findDupli($lote->id, $request->tipo, $request->description);
                 $plano = new PlanoProyecto();
                 $plano->lote_id = $lote->id;
                 $plano->file_id = $fileID;
@@ -103,12 +104,33 @@ class PlanosController extends Controller
         else{
             $ids = explode(",", $request->ids);
             foreach($ids as $id){
+                $this->findDupli($id, $request->tipo, $request->description);
                 $plano = new PlanoProyecto();
                 $plano->lote_id = $id;
                 $plano->file_id = $fileID;
                 $plano->tipo = $request->tipo;
                 $plano->description = $request->description;
                 $plano->save();
+            }
+        }
+    }
+
+    private function findDupli($lote_id, $tipo, $description){
+        $planos = PlanoProyecto::select('id')
+        ->where('description','=',$description)
+        ->where('tipo','=',$tipo)
+        ->where('lote_id','=',$lote_id)
+        ->get();
+
+        if(sizeof($planos)){
+            foreach($planos as $plano){
+                $doc = PlanoProyecto::findOrFail($plano->id);
+
+                $docs = PlanoProyecto::select('id')->where('file_id','=',$doc->file_id)->get();
+                if(sizeof($docs) == 1){
+                    $this->deleteDropBoxFile($doc->file_id);
+                }
+                $doc->delete();
             }
         }
     }

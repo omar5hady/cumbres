@@ -15,5 +15,13 @@
                 <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Reporte ventas</a>
             </li>
         @endif
+        @if(Auth::user()->rol_id == 1 ||
+            Auth::user()->usuario == 'uriel.al' ||
+            Auth::user()->usuario == 'Herlindo'
+        )
+            <li @click="menu=294" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Concentrado pagos</a>
+            </li>
+        @endif
     </ul>
 </li>

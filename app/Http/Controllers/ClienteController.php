@@ -1293,6 +1293,7 @@ class ClienteController extends Controller
         $band = 0;
         //Fecha actual.
         $current = Carbon::now();
+        $hora = $current->format('H');
 
         $castigados = AsesorCastigo::select('asesor_id')
             ->where('f_ini', '<', $current)
@@ -1317,6 +1318,13 @@ class ClienteController extends Controller
                         ->where('proyecto_id','=',$tipo)
                         ->whereDate('end_date','>=',$current)
                         ->whereDate('start_date','>=',$current);
+                }
+                if($hora > 15){
+                    $calendario = $calendario
+                    ->orWhere('event_name','=','Descanso')
+                    ->where('proyecto_id','=',$tipo)
+                    ->whereDate('end_date','>=',$current->addDays(1))
+                    ->whereDate('start_date','>=',$current->addDays(1));
                 }
                 $calendario = $calendario->get();
 

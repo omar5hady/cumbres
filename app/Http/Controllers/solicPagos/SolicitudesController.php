@@ -971,4 +971,28 @@ class SolicitudesController extends Controller
 
         return $pdf->stream('Solicitud_pago.pdf');
     }
+
+    public function indexConcentrado(Request $request){
+        $concentrado = $this->getCargos($request);
+        foreach($concentrado as $c){
+            $c->total = 0;
+            $c->detalle = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
+                ->select('sp_detalles.*', 'solic.fecha_pago')
+                ->where('sp_detalles.cargo','=',$c->cargo)
+                ->where('solic.status','=',4);
+                if($request->empresa != ''){
+                    $c->detalle = $c->detalle->where('solic.empresa_solic','=',$request->empresa);
+                }
+                if($request->fecha1 != ''){
+                    $c->detalle = $c->detalle->whereBetween('solic.fecha_pago',[$request->fecha1, $request->fecha2]);
+                }
+            $c->detalle = $c->detalle->get();
+            foreach($c->detalle as $d){
+                $c->total += $d->pago;
+            }
+        }
+
+        return $concentrado;
+    }
+
 }

@@ -554,5 +554,8 @@
                 user-name="{{ Auth::user()->usuario }}"
                 ></ficha-medica>
         </template>
+        <template v-if="menu == 294">
+            <resumen-concetrado></resumen-concetrado>
+        </template>
     @endif
 @endsection

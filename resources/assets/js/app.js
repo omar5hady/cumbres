@@ -196,6 +196,7 @@ Vue.component('comision-bonos', require('./components/Comisiones/BonosVentas.vue
 Vue.component('solicitud-crear', require('./components/PagosInternos/CreateSolicitud.vue'));
 Vue.component('solicitud-pendiente', require('./components/PagosInternos/PendientesSaldo.vue'));
 Vue.component('ventas-rep', require('./components/PagosInternos/RepVentas.vue'));
+Vue.component('resumen-concetrado', require('./components/PagosInternos/ResumenConcetrado.vue'));
 
 
 //Cotizador de lotes
