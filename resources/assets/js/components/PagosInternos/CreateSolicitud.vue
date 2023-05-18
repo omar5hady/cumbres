@@ -289,7 +289,7 @@
                                                         >Observaciones
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
-                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
                                                             @click="pagado(solic.id)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
@@ -348,7 +348,7 @@
                                                         >Observaciones
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
-                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
                                                             @click="pagado(solic.id)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
@@ -417,7 +417,7 @@
                                                 >Observaciones
                                                 </Button>
                                                 <Button :btnClass="'btn-success'" title="Indicar pago"
-                                                    v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                    v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
                                                     @click="pagado(solic.id)"
                                                     :icon="'fa fa-money'"
                                                 ></Button>
@@ -518,7 +518,7 @@
                                                         >Observaciones
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
-                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
                                                             @click="pagado(solic.id)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
@@ -597,7 +597,7 @@
                                                         >Observaciones
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
-                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0"
+                                                            v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
                                                             @click="pagado(solic.id)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
@@ -1634,12 +1634,12 @@
                     </template>
                     <template v-slot:buttons-footer>
                         <Button
-                            v-if="solicitudData.fecha_pago != '' && solicitudData.num_factura != '' && solicitudData.accionPago == 1"
+                            v-if="solicitudData.fecha_pago != '' && solicitudData.accionPago == 1"
                             :btnClass="'btn-success'" :icon="'fa fa-money'"
                             @click="generarPago()"
                         >Crear pago</Button>
                         <Button
-                            v-if="solicitudData.fecha_pago != '' && solicitudData.num_factura != '' && solicitudData.accionPago == 3"
+                            v-if="solicitudData.fecha_pago != '' && solicitudData.accionPago == 3"
                             :btnClass="'btn-success'" :icon="'fa fa-money'"
                             @click="generarPagoMasa()"
                         >Crear pago</Button>

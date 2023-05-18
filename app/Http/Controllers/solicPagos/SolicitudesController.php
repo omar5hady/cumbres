@@ -792,7 +792,7 @@ class SolicitudesController extends Controller
                 }
                 else{
                     $detalle->saldo = $detalle->total - $detalle->pago;
-                    if($detalle->saldo == 0)
+                    if($detalle->saldo <= 0)
                         $detalle->status = 0;
                     else
                         $detalle->status = 1;
@@ -800,7 +800,7 @@ class SolicitudesController extends Controller
                 if($detalle->pendiente_id != NULL){
                     $det2 = SpDetalle::findOrFail($detalle->id);
                     $det2->saldo = $det2->saldo - $detalle->pago;
-                    if($det2->saldo == 0)
+                    if($det2->saldo <= 0)
                         $det2->status = 0;
                     else
                         $det2->status = 1;
@@ -842,7 +842,7 @@ class SolicitudesController extends Controller
             );
             if($admin == 0 && $encargado == 0)
                 $detalles = $detalles->where('solic.solicitante_id','=',Auth::user()->id);
-            if($encargado == 1)
+            if($encargado == 1 && $admin == 0)
                 $detalles = $detalles->where('solic.departamento','=',$dep->departamento_id);
             if($request->proveedor != '')
                 $detalles = $detalles->where(DB::raw("CONCAT(prov.nombre,' ',prov.apellidos)"), 'like', '%'. $request->proveedor . '%');

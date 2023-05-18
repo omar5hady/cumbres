@@ -56,57 +56,94 @@
         list-style-type:none;
     }
 
+
+    ol {
+        counter-reset: item;
+        list-style-type: none;
+    }
+    ol > li {
+        position: relative;
+        margin-bottom: 7px;
+    }
+    /* li { display: block; } */
+    ol > li:before {
+        content: counter(item, lower-alpha) ")";
+        counter-increment: item;
+        position: absolute;
+        font-weight:bold;
+        left: -28px;
+    }
+
+    .ul-custom {
+        counter-reset: item;
+        list-style-type: none;
+    }
+    .ul-custom > .li-custom {
+        position: relative;
+    }
+    /* li { display: block; } */
+    .ul-custom > .li-custom:before {
+        content: "-";
+        counter-increment: item;
+        position: absolute;
+        font-weight:bold;
+        left: -28px;
+    }
+
+
+
 </style>
 
 <body>
     <div>
+        <strong>
+            @if($contrato->emp_terreno != $contrato->emp_constructora)
+                <p>
+                    CONTRATO DE PROMESA DE COMPRAVENTA DE BIEN INMUEBLE DESTINADO A CASA HABITACIÓN QUE CELEBRAN, POR UNA PARTE LA SOCIEDAD MERCANTIL
+                    DENOMINADA GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
+                    A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO CUMBRES; LA DIVERSA SOCIEDAD DENOMINADA
+                    CONCRETANIA, S. A. DE. C.V,
+                    REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO,
+                    SE LE DENOMINARA COMO CONCRETANIA Y A AMBAS PERSONAS MORALES CUANDO SE LES DESIGNE CONJUNTAMENTE SERA COMO
+                    LOS PROMITENTES VENDEDORES Y POR LA OTRA PARTE, POR SU PROPIO DERECHO
+                    EL(A) SR(A).
+                        {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
+                        @if ($contrato->coacreditado == 1)
+                            y {{ mb_strtoupper($contrato->nombre_coa) }}
+                            {{ mb_strtoupper($contrato->apellidos_coa) }}
+                        @endif
 
-        @if($contrato->emp_terreno != $contrato->emp_constructora)
-            <p>
-                CONTRATO DE PROMESA DE COMPRAVENTA DE BIEN INMUEBLE DESTINADO A CASA HABITACIÓN QUE CELEBRAN, POR UNA PARTE LA SOCIEDAD MERCANTIL
-                DENOMINADA <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
-                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO <strong>CUMBRES;</strong> LA DIVERSA SOCIEDAD DENOMINADA
-                <strong>CONCRETANIA, S. A. DE. C.V</strong>,
-                REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO,
-                SE LE DENOMINARA COMO <strong>CONCRETANIA</strong> Y A AMBAS PERSONAS MORALES CUANDO SE LES DESIGNE CONJUNTAMENTE SERA COMO
-                <strong>LOS PROMITENTES VENDEDORES</strong> Y POR LA OTRA PARTE, POR SU PROPIO DERECHO
-                <strong>EL(A) SR(A).
-                    {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
-                    @if ($contrato->coacreditado == 1)
-                        y {{ mb_strtoupper($contrato->nombre_coa) }}
-                        {{ mb_strtoupper($contrato->apellidos_coa) }}
-                    @endif
-                </strong>
-                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO <strong>EL PROMITENTE COMPRADOR</strong>,
-                AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
-            </p>
-        @else
+                    A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO EL PROMITENTE COMPRADOR,
+                    AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
+                </p>
+            @else
 
-            <p>
-                CONTRATO DE PROMESA DE COMPRAVENTA DE BIEN INMUEBLE DESTINADO A CASA HABITACIÓN QUE CELEBRAN, POR UNA PARTE LA SOCIEDAD MERCANTIL
-                DENOMINADA
-                @if($contrato->emp_constructora == 'Grupo Constructor Cumbres')
-                    <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
-                @else
-                    <strong>CONCRETANIA, S. A. DE. C.V</strong>, REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA
-                @endif
-                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO <strong>EL PROMITENTE VENDEDOR</strong>
-                Y POR LA OTRA PARTE, POR SU PROPIO DERECHO
-                <strong>EL(A) SR(A).
-                    {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
-                    @if ($contrato->coacreditado == 1)
-                        y {{ mb_strtoupper($contrato->nombre_coa) }}
-                        {{ mb_strtoupper($contrato->apellidos_coa) }}
+                <p>
+                    CONTRATO DE PROMESA DE COMPRAVENTA DE BIEN INMUEBLE DESTINADO A CASA HABITACIÓN QUE CELEBRAN, POR UNA PARTE LA SOCIEDAD MERCANTIL
+                    DENOMINADA
+                    @if($contrato->emp_constructora == 'Grupo Constructor Cumbres')
+                        GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
+                    @else
+                        CONCRETANIA, S. A. DE. C.V, REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA
                     @endif
-                </strong>
-                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO <strong>EL PROMITENTE COMPRADOR</strong>,
-                AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
-            </p>
+                    A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO "EL PROMITENTE VENDEDOR"
+                    Y POR LA OTRA PARTE, POR SU PROPIO DERECHO
+                    EL(A) SR(A).
+                        {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
+                        @if ($contrato->coacreditado == 1)
+                            y {{ mb_strtoupper($contrato->nombre_coa) }}
+                            {{ mb_strtoupper($contrato->apellidos_coa) }}
+                        @endif
+
+                    A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO "EL PROMITENTE COMPRADOR",
+                    AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
+                </p>
+        </strong>
 
 
         @endif
 
-        <h4 align="center">DECLARACIONES</h4>
+        <h4 align="center">"D E C L A R A C I O N E S"</h4>
 
         @if($contrato->emp_terreno != $contrato->emp_constructora)
 
@@ -155,7 +192,7 @@
                 otorgada ante la fe del Notario publico número {{$contrato->num_notario}} del distrito de {{$contrato->distrito_notario}},
                 con inscripción en el Registro Publico de la Propiedad bajo el folio real No.{{$contrato->folio_registro}},
                 lo cual ha sido debidamente exhibido y explicado a EL PROMITENTE COMPRADOR y además se encuentra a su
-                disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapam, de la Ciudad de San Luis Potosí, S.L.P.
+                disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapan, de la Ciudad de San Luis Potosí, S.L.P.
             </p>
 
             <br>
@@ -215,7 +252,7 @@
                 con las especificaciones técnicas, de seguridad, materiales utilizados,
                 servicios básicos y demás características que se indican en el “Anexo A”. La propiedad se acredita en términos
                 del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en	Manuel Gutiérrez Nájera #190.
-                Colonia Tequisquiapam, San Luis Potosí, San Luis Potosí.
+                Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí.
             </p>
 
             <p>
@@ -254,193 +291,218 @@
 
         @else
 
-            <p>I.- Declara <strong>EL PROMITENTE VENDEDOR</strong>, por conducto de su representante:</p>
+            <p><strong>I.- Declara "EL PROMITENTE VENDEDOR": por conducto de su representante:</strong></p>
 
-            @if($contrato->emp_constructora == 'Grupo Constructor Cumbres')
-                <p>
-                    a)	Que es una sociedad mercantil constituida en escritura pública número 3 de fecha 8 de diciembre de 1999,
-                    otorgada ante el Notario Público número 33 del primer distrito judicial del estado de San Luis Potosí,
-                    Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro    Público de la Propiedad y del
-                    Comercio en San Luis Potosí, San Luis Potosí,  bajo el folio mercantil 70 que su domicilio fiscal se
-                    encuentra en Manuel Gutiérrez Nájera 190. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
-                    Registro Federal de Contribuyentes es <strong>GCC000106QS6</strong>
-                </p>
-
-                <p>
-                    b)	Que las facultades de su representante constan en la escritura pública número 1560
-                    de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
-                    San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
-                    Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
-                </p>
-            @else
-
-                <p>
-                    a)	Que es una sociedad mercantil debidamente constituida con arreglo a las leyes de la República Mexicana según consta en la
-                    escritura pública número 764 volumen 21 de fecha 25 de julio de 2018, otorgada ante la fe del Lic. Octaviano Gómez y González,
-                    Notario Público número 4, con ejercicio en la Ciudad  de San Luis Potosí, S.L.P, cuyo testimonio obra inscrito en el Registro
-                    Público de la Propiedad y Comercio de esa misma Ciudad, bajo el folio mercantil electrónico N-2018073682, que su domicilio
-                    fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de causantes
-                    es <strong>CON180725REA.</strong>
-                </p>
-
-                <p>
-                    b)	Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
-                    otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
-                    inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
-                    123507, mismas atribuciones que no le han sido revocadas a la fecha.
-                </p>
-
-            @endif
-
-
-
-            <p>
-                c)	Que su objeto social es, la ejecución, administración, construcción, promoción, comercialización y arrendamiento
-                de desarrollos inmobiliarios, comerciales y habitacionales dentro del territorio nacional y en el extranjero, así como la celebración de los
-                contratos mercantiles necesarios para el cumplimiento de  su objeto.
-            </p>
-
-            <p>
-                d)	Que es única y legitima propietaria del inmueble materia de este contrato, descrito a detalle en el
-                <strong>“Anexo A”,</strong> que firmado por las partes, es integrante de este instrumento y se localiza en la siguiente ubicación;
-            </p>
-
-            <p>
-                Calle:&nbsp; <u>{{mb_strtoupper($contrato->calle_lote)}}</u> <br>
-                Lote o área privativa:&nbsp; <u>{{$contrato->num_lote}}</u>  <br>
-                Manzana o condominio:&nbsp; <u>{{mb_strtoupper($contrato->manzana)}}</u>  <br>
-                No oficial exterior:&nbsp; <u>{{$contrato->num_oficial}}</u>  <br>
-                @if($contrato->interior != NULL)
-                    No oficial interior:&nbsp; <u>{{$contrato->interior}}</u>  <br>
+            <ol>
+                @if($contrato->emp_constructora == 'Grupo Constructor Cumbres')
+                    <li>
+                        Que es una sociedad mercantil constituida en escritura pública número 3 de fecha 8 de diciembre de 1999,
+                        otorgada ante el Notario Público número 33 del primer distrito judicial del estado de San Luis Potosí,
+                        Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro    Público de la Propiedad y del
+                        Comercio en San Luis Potosí, San Luis Potosí,  bajo el folio mercantil 70 que su domicilio fiscal se
+                        encuentra en Manuel Gutiérrez Nájera 190. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
+                        Registro Federal de Contribuyentes es <strong>GCC000106QS6</strong>
+                    </li>
+                    <li>
+                        Que las facultades de su representante constan en la escritura pública número 1560
+                        de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
+                        San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
+                        Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le
+                        han sido revocadas a la fecha.
+                    </li>
+                @else
+                    <li>
+                        Que es una sociedad mercantil debidamente constituida con arreglo a las leyes de la República Mexicana según consta en la
+                        escritura pública número 764 volumen 21 de fecha 25 de julio de 2018, otorgada ante la fe del Lic. Octaviano Gómez y González,
+                        Notario Público número 4, con ejercicio en la Ciudad  de San Luis Potosí, S.L.P, cuyo testimonio obra inscrito en el Registro
+                        Público de la Propiedad y Comercio de esa misma Ciudad, bajo el folio mercantil electrónico N-2018073682, que su domicilio
+                        fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de causantes
+                        es <strong>CON180725REA.</strong>
+                    </li>
+                    <li>
+                        Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                        otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
+                        inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
+                        123507, mismas atribuciones que no le han sido revocadas a la fecha.
+                    </li>
                 @endif
-                Fraccionamiento:&nbsp; <u>{{mb_strtoupper($contrato->proyecto)}}</u> <br>
-            </p>
+                <li>
+                    Que su objeto social es, la ejecución, administración, construcción, promoción, comercialización y arrendamiento
+                    de desarrollos inmobiliarios, comerciales y habitacionales dentro del territorio nacional y en el extranjero, así como la celebración de los
+                    contratos mercantiles necesarios para el cumplimiento de  su objeto.
+                </li>
+                <li>
+                    Que es única y legitima propietaria del inmueble materia de este contrato, descrito a detalle en el
+                    <strong>“Anexo A”,</strong> que firmado por las partes, es integrante de este instrumento y
+                    se localiza en la siguiente ubicación;
+                    <p>
+                        Calle:&nbsp; <u>{{mb_strtoupper($contrato->calle_lote)}}</u> <br>
+                        Lote o área privativa:&nbsp; <u>{{$contrato->num_lote}}</u>  <br>
+                        Manzana o condominio:&nbsp; <u>{{mb_strtoupper($contrato->manzana)}}</u>  <br>
+                        No oficial exterior:&nbsp; <u>{{$contrato->num_oficial}}</u>  <br>
+                        @if($contrato->interior != NULL)
+                            No oficial interior:&nbsp; <u>{{$contrato->interior}}</u>  <br>
+                        @endif
+                        Fraccionamiento:&nbsp; <u>{{mb_strtoupper($contrato->proyecto)}}</u> <br>
+                        Entidad Federativa:&nbsp; <u>{{mb_strtoupper($contrato->estado_proy)}}</u> <br>
+                        Código Postal:&nbsp; <u>{{$contrato->cp_proy}}</u> <br>
 
-            <p>
-                Y acredita la propiedad con la escritura pública numero {{ $contrato->num_escritura }} de fecha {{$contrato->date_escritura}}
-                otorgada ante la fe del Notario publico número {{$contrato->num_notario}} del distrito de {{$contrato->distrito_notario}},
-                con inscripción en el Registro Publico de la Propiedad bajo el folio real No.{{$contrato->folio_registro}},
-                lo cual ha sido debidamente exhibido y explicado a EL PROMITENTE COMPRADOR y además se encuentra a su
-                disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapam, de la Ciudad de San Luis Potosí, S.L.P.
-            </p>
+                    </p>
+                    <p>
+                        Y acredita la propiedad con la escritura pública numero {{ $contrato->num_escritura }} de fecha {{$contrato->date_escritura}}
+                        otorgada ante la fe del Notario publico número {{$contrato->num_notario}} del distrito de {{$contrato->distrito_notario}},
+                        con inscripción en el Registro Publico de la Propiedad bajo el folio real No.{{$contrato->folio_registro}},
+                        lo cual ha sido debidamente exhibido y explicado a <strong>"EL PROMITENTE COMPRADOR"</strong> y además se encuentra
+                        a su disposición en el domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190
+                        Col. Tequisquiapan, de la Ciudad de San Luis Potosí, S.L.P.
+                    </p>
+                    <p>
+                        Dicha documentación puede ser consultada por <strong>“EL PROMITENTE COMPRADOR”</strong>
+                        en el domicilio del <strong>“EL PROMITENTE VENDEDOR”</strong><br>
+                        Calle:&nbsp; Manuel Gutiérrez Nájera #190 <br>
+                        Col.&nbsp; Tequisquiapan <br>
+                        C.P.&nbsp; 78230, San Luis Potosí, S.L.P. <br>
+                        No telefónico&nbsp; 444 8334683 <br>
+                        Correo electrónico:&nbsp; atencion@grupocumbres.com
+                    </p>
 
-            <br>
+                    <p>
+                        En caso que el inmueble este sujeto al régimen de propiedad en condómino. El inmueble indicado está sujeto
+                        al régimen de propiedad en condominio en términos de la escritura pública número:_______, otorgada en fecha
+                        día, mes y año ante la fe del Notario Público número _______ con ejercicio en la Ciudad de
+                        ________________El Lic._______________________, y debidamente inscrita el día, mes y año con inscripción
+                        en el Registro Público de la Propiedad bajo el folio real N°.__________, instrumento en el cual están referidas
+                        las correspondientes áreas de uso común y porcentaje de indiviso, lo cual ha sido debidamente exhibido y
+                        explicado a <strong>EL PROMITENTE COMPRADOR.</strong>
+                    </p>
+                </li>
+                <li>
+                    Que es su voluntad celebrar el presente contrato por virtud del cual se establecen los términos y condiciones bajo
+                    las que se celebrará el contrato de compraventa por el que “EL PROMITENTE VENDEDOR” venderá y “EL
+                    PROMITENTE COMPRADOR” comprará, el inmueble cuya superficie, ubicación, acabados, características,
+                    especificaciones técnicas, de seguridad, materiales utilizados, se encuentran descritas en el citado “Anexo A”.
+                </li>
+                <li>
+                    Que el inmueble objeto de la compraventa cuenta con lo descrito en el “Anexo A” que firmado por las contratantes
+                    forma partede este instrumento, como aparece en el título de propiedad relacionado en dicho “Anexo A”, y que cuenta
+                    con los planos estructurales, arquitectónicos y de instalaciones (o en su defecto indicar que se cuenta con el
+                    dictamen de las condiciones estructurales), así como con las autorizaciones, licencias y permisos expedidos por
+                    las autoridades competentes para la construcción, seguridad, uso de suelo, y demás relativas al Inmueble, mismas
+                    que han sido exhibidas a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentran a su disposición en el domicilio de
+                    <strong>“EL PROMITENTE VENDEDOR”</strong> De igual forma, el inmueble cuenta con las especificaciones técnicas, de
+                    seguridad, materiales utilizados, servicios básicos y demás características que se indican en el “Anexo A”. La
+                    propiedad se acredita en términos del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en
+                    Manuel Gutiérrez Nájera #190 Col. Tequisquiapan de la Ciudad de San Luis Potosí, S.L.P.
+                </li>
+                <li>
+                    Que, con respecto a los planos estructurales, arquitectónicos y de instalaciones: <br><br>
+                    <p>
+                        <ul class="ul-custom">
+                            <li>
+                                <template class="cuadrado">
+                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
+                                </template>
+                                <strong>SI</strong> cuenta con ellos, mismos que le han sido exhibidos
+                                y explicados a <strong>“EL PROMITENTE COMPRADOR” </strong>
+                                y se encuentran nuevamente a su disposición para consulta en el domicilio de
+                                <strong>“El PROMITENTENTE VENDEDOR”.</strong></li>
+                                <br><br>
+                            <li>
+                                <template class="cuadrado">
+                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
+                                </template>
+                                <strong>NO</strong> cuenta con ellos, sin embargo, cuenta con el Dictamen de las Condiciones
+                                Estructurales, mismo que le ha sido exhibido
+                                y explicado a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentra nuevamente a su disposición para consulta en
+                                el domicilio de <strong>“EL PROMITENTENTE VENDEDOR”.</strong> </li>
+                                <br><br>
+                            <li>
+                                <template class="cuadrado">
+                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
+                                </template>
+                                <strong>NO</strong> cuenta con ellos ni con el dictamen de las condiciones estructurales, en razón de que
+                                ___________________________, sin embargo, dicha documentación estará puesta a su disposición a
+                                partir del _______________________________________.
+                            </li>
 
-            <p>II.- Declara <strong>EL PROMITENTE VENDEDOR:</strong></p>
-
-
-            <p>
-                a)	Que el inmueble objeto de la compraventa cuenta con lo descrito en el “Anexo A” que
-                firmado por <strong>“EL PROMITENTE VENDEDOR”</strong> es integrante de este instrumento, como aparece en el título de
-                propiedad relacionado en dicho “Anexo A”, y que cuenta con los planos estructurales, arquitectónicos y
-                de instalaciones (o en su defecto indicar que se cuenta con el dictamen de las condiciones estructurales),
-                así como con las autorizaciones, licencias y permisos expedidos por las autoridades competentes para la
-                construcción, seguridad, uso de suelo, y demás relativas al Inmueble, mismas que han sido exhibidas
-                a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentran a su disposición en
-                el domicilio de <strong>“EL PROMITENTE VENDEDOR”.</strong> De igual forma, el inmueble cuenta
-                con las especificaciones técnicas, de seguridad, materiales utilizados,
-                servicios básicos y demás características que se indican en el “Anexo A”. La propiedad se acredita en términos
-                del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en	Manuel Gutiérrez Nájera #190.
-                Colonia Tequisquiapam, San Luis Potosí, San Luis Potosí.
-            </p>
-
-            <p>
-                b)	Que, con respecto a los planos estructurales, arquitectónicos y de instalaciones:
-            </p>
-
-            <p>
-                <ul class="ul-custom">
-                    <li><template class="cuadrado"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg=="></template> <strong>SI</strong> cuenta con ellos, mismos que le han sido exhibidos
-                        y explicados a <strong>“EL PROMITENTE COMPRADOR” </strong>
-                        y se encuentran nuevamente a su disposición para consulta en el domicilio de <strong>“LOS PROMITENTENTES VENDEDORES”.</strong></li>
-                        <br><br>
-                    <li><template class="cuadrado"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg=="></template> NO cuenta con ellos, sin embargo, cuenta con el Dictamen de las Condiciones
-                        Estructurales, mismo que le ha sido exhibido
-                        y explicado a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentra nuevamente a su disposición para consulta en
-                        el domicilio de <strong>“EL PROMITENTENTE VENDEDOR”.</strong> </li>
-                        <br><br>
-                    <li><template class="cuadrado"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg=="></template> NO cuenta con ellos ni con el dictamen de las condiciones estructurales, en razón de que
-                        ___________________________, sin embargo, dicha documentación estará puesta a su disposición a
-                        partir del _______________________________________. </li>
-
-                </ul>
-            </p>
-
-            <p>
-                c)	Que cuenta con las autorizaciones, licencias y permisos expedidos por las autoridades competentes para la construcción,
-                seguridad, uso de suelo, y demás relativas al Inmueble y demás documentos que se indican en el “Anexo B”,
-                los cuales le han sido exhibidos y explicados a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentran nuevamente a su disposición
-                para consulta en el domicilio de <strong>“EL PROMITENTENTE VENDEDOR”.</strong>
-            </p>
-
-            <p>
-                d)	Que al momento de la escrituración que formalice el contrato de compraventa del inmueble destinado a vivienda,
-                dicho inmueble debe estar libre de todo gravamen que afecte la propiedad de <strong>“EL PROMITENTE COMPRADOR”</strong> sobre el mismo.
-            </p>
+                        </ul>
+                    </p>
+                </li>
+                <li>
+                    Que cuenta con las autorizaciones, licencias y permisos expedidos por las autoridades competentes para la construcción,
+                    seguridad, uso de suelo, y demás relativas al Inmueble y demás documentos que se indican en el “Anexo B”,
+                    los cuales le han sido exhibidos y explicados a <strong>“EL PROMITENTE COMPRADOR”</strong> y se encuentran nuevamente a su disposición
+                    para consulta en el domicilio de <strong>“EL PROMITENTENTE VENDEDOR”.</strong>
+                </li>
+                <li>
+                    Que al momento de la escrituración que formalice el contrato de compraventa del inmueble destinado a vivienda,
+                    dicho inmueble debe estar libre de todo gravamen que afecte la propiedad de
+                    <strong>“EL PROMITENTE COMPRADOR”</strong> sobre el mismo.
+                </li>
+            </ol>
 
         @endif
 
-
-
         <p>
             @if($contrato->emp_terreno != $contrato->emp_constructora)
-                IV.-
-            @else
                 III.-
+            @else
+                II.-
             @endif
-            Declara <strong>EL PROMITENTE COMPRADOR:</strong></p>
+            Declara <strong>"EL PROMITENTE COMPRADOR":</strong></p>
 
-        <p>
-            a) Ser una persona física de nacionalidad {{($contrato->nacionalidad) == 0 ? 'Mexicana': 'Extranjera'}}
-            Que se identifica con cualquiera de los
-            siguientes documentos, INE {{$contrato->num_ine}} o  Pasaporte No. {{($contrato->num_pasaporte)?$contrato->num_pasaporte : '_____'}},
-            llamada como ha quedado escrito, haber nacido en {{$contrato->lugar_nacimiento}}, el {{$contrato->f_nacimiento}},
-            estado civil {{$contrato->edo_civil}}, de ocupación {{ucwords($contrato->puesto)}}, con domicilio en
-            {{ucwords($contrato->dir_cliente)}} Col. {{ucwords($contrato->col_cliente)}}, con Registro Federal de Contribuyentes {{$contrato->rfc}}-{{$contrato->homoclave}}
-            y con capacidad legal y económica para celebrar este contrato.
-        </p>
+        <ol>
+            <li>
+                Ser una persona física de nacionalidad {{($contrato->nacionalidad) == 0 ? 'Mexicana': 'Extranjera'}}
+                Que se identifica con cualquiera de los
+                siguientes documentos, INE {{$contrato->num_ine}} o  Pasaporte No. {{($contrato->num_pasaporte)?$contrato->num_pasaporte : '_____'}},
+                llamada como ha quedado escrito, haber nacido en {{$contrato->lugar_nacimiento}}, el {{$contrato->f_nacimiento}},
+                estado civil {{$contrato->edo_civil}}, de ocupación {{ucwords($contrato->puesto)}}, con domicilio en
+                {{ucwords($contrato->dir_cliente)}} Col. {{ucwords($contrato->col_cliente)}}, con Registro Federal de Contribuyentes {{$contrato->rfc}}-{{$contrato->homoclave}}
+                y con capacidad legal y económica para celebrar este contrato.
+            </li>
+            <li>
+                Que es derechohabiente del: <br><br>
+                <p>
+                    <ul class="ul-custom">
+                        <li><template class="cuadrado">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
+                            </template> Instituto del Fondo Nacional de la Vivienda para los Trabajadores <strong>(INFONAVIT)</strong>. </li>
+                             <br><br>
+                         <li><template class="cuadrado">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
+                            </template> Instituto de Seguridad y Servicios Sociales para los Trabajadores del Estado.</li>
+                            <br><br>
+                         <li><template class="cuadrado">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
+                            </template>Otro _________________________________ </li>
+                    </ul>
+                </p>
 
-        <p>
-            b)	Que es derechohabiente del:
-        </p>
-
-        <p>
-            <ul class="ul-custom">
-                <li><template class="cuadrado">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
-                    </template> Instituto del Fondo Nacional de la Vivienda para los Trabajadores <strong>(INFONAVIT)</strong>. </li>
-                     <br><br>
-                 <li><template class="cuadrado">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
-                    </template> Instituto de Seguridad y Servicios Sociales para los Trabajadores del Estado.</li>
-                    <br><br>
-                 <li><template class="cuadrado">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAaklEQVQ4je3Uuw2AMBRD0WuUBRiDzwRImYeWdZgHKRMA65gCOsqHqOLOzZEra+i6RWLig9iUJDEZRtAW5LIE6S7ajvOcI9zQ9yu4bWKr3qlgBStYwX/A5w+d7z+LxBnYk02RANwGx+025QJbXxksupQZ7wAAAABJRU5ErkJggg==">
-                    </template>Otro _________________________________ </li>
-            </ul>
-        </p>
-
-        <p>
-            c)	Que gestionará y obtendrá un crédito hipotecario con cualesquiera de las instituciones de crédito autorizadas en el País,
-            para ejercerlo con o sin cofinanciamiento con otra institución de crédito, según convenga a sus intereses.
-        </p>
+            </li>
+            <li>
+                Que gestionará y obtendrá un crédito hipotecario con cualesquiera de las instituciones de crédito autorizadas en el País,
+                para ejercerlo con o sin cofinanciamiento con otra institución de crédito, según convenga a sus intereses.
+            </li>
+        </ol>
 
         <p>Habiendo declarado lo anterior, las partes se obligan en los términos de las siguientes:</p>
+
 
 
         <p align="center"><strong>C L Á U S U L A S</strong></p>
 
         <p>
-            <strong>PRIMERA.- OBJETO.</strong> El presente contrato sólo da origen a obligaciones de hacer a cargo de las partes,
+            <strong>PRIMERA.- <u>OBJETO.</u></strong> El presente contrato sólo da origen a obligaciones de hacer a cargo de las partes,
             las cuales prometen celebrar un contrato de compraventa con las formalidades que para este tipo de acto jurídico exige
             la legislación aplicable, respecto del inmueble que se identifica con la superficie, características y especificaciones
             señaladas en el “Anexo A”, siempre y cuando se cumpla con la condición suspensiva referida en la Cláusula Segunda siguiente.
         </p>
 
         <p>
-            <strong>SEGUNDA.- CONDICIÓN A QUE SE SUJETA EL CONTRATO DE PROMESA DE COMPRAVENTA. </strong>
+            <strong>SEGUNDA.- <u>CONDICIÓN A QUE SE SUJETA EL CONTRATO DE PROMESA DE COMPRAVENTA.</u> </strong>
             Las partes establecen que la celebración del Contrato de Compraventa estará condicionada al hecho de
-            que a “EL PROMITENTE COMPRADOR” le sea aprobado y otorgado el crédito por parte de
+            que a <strong>“EL PROMITENTE COMPRADOR”</strong> le sea aprobado y otorgado el crédito por parte de
             @if($contrato->tipo_credito != 'INFONAVIT-FOVISSSTE' && $contrato->tipo_credito != 'Cofinavit'
                 && $contrato->tipo_credito != 'Infonavit Mas Banco'
                 && $contrato->tipo_credito != 'COFINAVIT I.A' && $contrato->tipo_credito != 'Apoyo Infonavit')
@@ -456,7 +518,7 @@
         </p>
 
         <p>
-            Para la gestión y trámite del crédito hipotecario, “EL PROMITENTE COMPRADOR”:
+            Para la gestión y trámite del crédito hipotecario, <strong>“EL PROMITENTE COMPRADOR”:</strong>
         </p>
 
         <p>
@@ -556,7 +618,7 @@
         </p>
 
         <p>
-            <strong>TERCERA.- PLAZO PARA CELEBRAR EL CONTRATO DE COMPRAVENTA.</strong>
+            <strong>TERCERA.- <u>PLAZO PARA CELEBRAR EL CONTRATO DE COMPRAVENTA.</u></strong>
             Las partes pactan que la firma del Contrato de Compraventa en escritura pública se llevará a cabo dentro del plazo de
             {{$contrato->diasTramites}} días hábiles
             posteriores a la  fecha en que la institución o en su caso instituciones acreditantes
@@ -569,7 +631,7 @@
                 @endif
             </strong> según sea el caso,
             que le fue aprobado y otorgado el crédito a <strong>“EL PROMITENTE COMPRADOR”.</strong> Las partes podrán convenir las prórrogas
-            que estimen convenientes para la firma del contrato de_  compraventa respectivo.
+            que estimen convenientes para la firma del contrato de compraventa respectivo.
         </p>
 
         <p>
@@ -612,64 +674,68 @@
         </p>
 
         <p>
-            <strong>QUINTA.- ESTIPULACIONES QUE CONTENDRÁ EL CONTRATO DE COMPRAVENTA DEFINITIVO. </strong>
+            <strong>QUINTA.- <u>ESTIPULACIONES QUE CONTENDRÁ EL CONTRATO DE COMPRAVENTA DEFINITIVO.</u> </strong>
             Las partes establecen que el Contrato de Compraventa contendrá las siguientes disposiciones:
         </p>
 
         <p>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp; El objeto de la compraventa será el inmueble descrito en el “Anexo A”.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp; El precio de la operación será la cantidad de $	{{$contrato->precio_venta}}
-                @if($contrato->emp_terreno != $contrato->emp_constructora)
-                    Correspondiendo la cantidad de ${{$contrato->valor_terreno}} como precio del terreno y la cantidad
-                    de ${{$contrato->valor_const}} como precio de lo edificado
-                @endif
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp; La transmisión de la propiedad del inmueble a favor de <strong></strong>“EL PROMITENTE COMPRADOR”</strong>
-                deberá realizarse libre de todo gravamen y al corriente en el pago de todos sus impuestos,
-                derechos, cuotas de mantenimiento y servicios.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp;<strong>
-                @if($contrato->emp_terreno != $contrato->emp_constructora)
-                    “LOS PROMITENTES VENDEDORES”
-                @else
-                    “EL PROMITENTE VENDEDOR”
-                @endif</strong>
-                se obligarán al saneamiento para el caso de evicción y a responder por los vicios ocultos en los términos de la legislación aplicable
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp; La entrega de la posesión del inmueble en ningún caso será mayor a 30 días naturales a partir de la fecha de la escritura pública.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp; <strong>
+            <ul class="ul-custom">
+                <li class="li-custom">
+                    El objeto de la compraventa será el inmueble descrito en el “Anexo A”.
+                </li>
+                <li class="li-custom">
+                    El precio de la operación será la cantidad de $	{{$contrato->precio_venta}}
                     @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif</strong> otorgarán a <strong>“EL PROMITENTE COMPRADOR”</strong> las garantías que en términos del artículo
-                73 Quáter de la Ley Federal del Consumidor deben considerarse.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                - &nbsp; Las demás cláusulas que correspondan conforme a la naturaleza de la compraventa.
-            </li>
+                        Correspondiendo la cantidad de ${{$contrato->valor_terreno}} como precio del terreno y la cantidad
+                        de ${{$contrato->valor_const}} como precio de lo edificado
+                    @endif
+                </li>
+                <li class="li-custom">
+                    La transmisión de la propiedad del inmueble a favor de <strong></strong>“EL PROMITENTE COMPRADOR”</strong>
+                    deberá realizarse libre de todo gravamen y al corriente en el pago de todos sus impuestos,
+                    derechos, cuotas de mantenimiento y servicios.
+                </li>
+                <li class="li-custom">
+                    <strong>
+                        @if($contrato->emp_terreno != $contrato->emp_constructora)
+                            “LOS PROMITENTES VENDEDORES”
+                        @else
+                            “EL PROMITENTE VENDEDOR”
+                        @endif</strong>
+                        se obligarán al saneamiento para el caso de evicción y a responder por los vicios ocultos en los términos de la legislación aplicable
+                </li>
+                <li class="li-custom">
+                    La entrega de la posesión del inmueble en ningún caso será mayor a 30 días naturales a partir de la fecha de la escritura pública.
+                </li>
+                <li class="li-custom">
+                    <strong>
+                        @if($contrato->emp_terreno != $contrato->emp_constructora)
+                            “LOS PROMITENTES VENDEDORES”
+                        @else
+                            “EL PROMITENTE VENDEDOR”
+                        @endif
+                    </strong> otorgarán a <strong>“EL PROMITENTE COMPRADOR”</strong> las garantías que en términos del artículo
+                    73 Quáter de la Ley Federal del Consumidor deben considerarse.
+                </li>
+                <li class="li-custom">
+                    Las demás cláusulas que correspondan conforme a la naturaleza de la compraventa.
+                </li>
+
+            </ul>
         </p>
 
         <p>
             <strong>
-                SEXTA.- ENTREGA FÍSICA Y MATERIAL DEL INMUEBLE.
+                SEXTA.- <u>ENTREGA FÍSICA Y MATERIAL DEL INMUEBLE.</u>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”
                 @else
                     “EL PROMITENTE VENDEDOR”
                 @endif</strong>
             </strong>
-            notificarán a <strong>“EL PROMITENTE COMPRADOR”</strong> ya sea al número telefónico, correo electrónico o en el domicilio indicados en la Cláusula Novena,
-            con al menos con 3 (tres) días hábiles de anticipación, la fecha para recibir la posesión material del inmueble. En caso de que <strong>“EL PROMITENTE COMPRADOR” </strong>
-            no concurra en la fecha fijada para recibir la posesión del inmueble <strong>“EL PROMITENTE VENDEDOR”</strong> le concederá hasta 30 días naturales más para su
+            notificarán a <strong>“EL PROMITENTE COMPRADOR”</strong> ya sea al número telefónico, correo electrónico o en el domicilio indicados en la Cláusula Décima Sexta,
+            con al menos con 3 (tres) días hábiles de anticipación, la fecha para recibir la posesión material del <strong>inmueble.</strong> En caso de que <strong>“EL PROMITENTE COMPRADOR”
+            no concurra en la fecha fijada para recibir la posesión</strong> del inmueble <strong>“EL PROMITENTE VENDEDOR”</strong> le concederá hasta 30 días naturales más para su
             recepción y en caso de nueva inasistencia se levantará acta circunstanciada ante dos testigos que haga constar tal situación, y se entenderá que
             recibió el inmueble a su entera satisfacción para todos los efectos a que haya lugar.
         </p>
@@ -688,7 +754,7 @@
 
         <p>
             <strong>
-                SÉPTIMA.- GARANTÍAS.
+                SÉPTIMA.- <u>GARANTÍAS.</u>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”
                 @else
@@ -715,7 +781,7 @@
                     “EL PROMITENTE VENDEDOR”,
                 @endif
             </strong>
-            ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapam de la Ciudad de San Luis Potosí, S.L.P.
+            ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapan de la Ciudad de San Luis Potosí, S.L.P.
             o al teléfono 444 8 33 46 83, 84 al 85 o en su caso al  domicilio electrónico postventa@grupocumbres.com, especificando los elementos de la
             vivienda sobre los que se pretende hacer válida su garantía.
         </p>
@@ -801,8 +867,8 @@
         </p>
 
         <p>
-            <strong>OCTAVA.- AVISO DE PRIVACIDAD.</strong> Para efectos de lo dispuesto en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares y
-            demás legislación aplicable, “EL PROMITENTE COMPRADOR” manifiesta que el Aviso de Privacidad de
+            <strong>OCTAVA.- <u>AVISO DE PRIVACIDAD.</u> </strong> Para efectos de lo dispuesto en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares y
+            demás legislación aplicable, <strong>“EL PROMITENTE COMPRADOR”</strong> manifiesta que el Aviso de Privacidad de
             <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”
@@ -841,8 +907,8 @@
                     <div class="table-row">
                         <div colspan="2" class="table-cell"></div>
                         <div colspan="3" class="table-cell">
-                            <center>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
-                                <strong>“EL PROMITENTE COMPRADOR”</strong></center>
+                            {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
+                                <strong>“EL PROMITENTE COMPRADOR”</strong>
                         </div>
                     </div>
                 </div>
@@ -858,11 +924,11 @@
                     </div>
                     <div class="table-row">
                         <div colspan="2" class="table-cell">
-                            <center>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
+                            {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}<br>
                         </div>
                         <div colspan="1" class="table-cell"></div>
                         <div colspan="2" class="table-cell">
-                            <center>{{mb_strtoupper($contrato->nombre_coa)}} {{mb_strtoupper($contrato->apellidos_coa)}}</center>
+                            {{mb_strtoupper($contrato->nombre_coa)}} {{mb_strtoupper($contrato->apellidos_coa)}}
                         </div>
                     </div>
                 </div>
@@ -871,7 +937,7 @@
         @endif
 
         <p>
-            <strong>NOVENA.- PROCESO DE CANCELACIÓN. “EL PROMITENTE COMPRADOR”</strong> podrá cancelar el presente contrato, sin responsabilidad alguna, siempre y cuando
+            <strong>NOVENA.- <u>PROCESO DE CANCELACIÓN.</u> “EL PROMITENTE COMPRADOR”</strong> podrá cancelar el presente contrato, sin responsabilidad alguna, siempre y cuando
             esté dentro de los 5 días hábiles siguientes a su firma, sin menoscabo de los pagos realizados, así como la obligación del
             <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
@@ -921,78 +987,82 @@
         </p>
 
         <p>
-            <strong>DÉCIMA.- DERECHOS Y OBLIGACIONES DEL “PROMITENTE COMPRADOR”.</strong>
+            <strong>DÉCIMA.- <u>DERECHOS Y OBLIGACIONES DEL “PROMITENTE COMPRADOR”. </u></strong>
             Con motivo delpresente contrato <strong>“EL PROMITENTE COMPRADOR” adquiere los derechos y asume las obligaciones siguientes:</strong>
         </p>
 
         <p>
-            <li style="margin-left:40px;" class="ul-custom">
-                <strong>Derechos:</strong>
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;Recibir la información detallada y puntual por parte de
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> respecto del  inmueble que será objeto del contrato de compraventa.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;Estar informado sobre el estado que guarde su trámite para el otorgamiento de su crédito, esto cuando haya optado porque sean
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> los que realicen la gestión respectiva.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                c)	&nbsp;En su caso, que se le informe oportunamente sobre el resultado de la gestión que hayan realizado
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> respecto de su crédito de vivienda.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                d)	&nbsp;Una vez aprobado su crédito, celebrar el contrato de compraventa en escritura pública.
-            </li><br><br>
-        </p>
-
-        <p>
-            <li style="margin-left:40px;" class="ul-custom">
-                <strong>Obligaciones:</strong>
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;Obtener la aprobación de su crédito hipotecario y mantener vigente la aprobación durante el tiempo necesario para cumplir las obligaciones de este contrato.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;En su caso, entregar a
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong>, a más tardar dentro de los 5 días hábiles posteriores a la firma de este contrato, toda la documentación que sea necesaria
-                para iniciar y realizar el trámite de su crédito.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                c)	&nbsp;Realizar el pago de los gastos operativos relativos a avalúo, comisiones por apertura y/o cualquier otro que sea
-                necesario para realizar el trámite de su crédito de vivienda.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                d)	&nbsp;Realizar oportuna y cumplidamente, cualquier aclaración o rectificación de sus datos e información que le sea requerida por la
-                institución acreditante, para continuar con su trámite para la obtención de su crédito.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                e)	&nbsp;Una vez aprobado su crédito, acudir a la notaría pública correspondiente para celebrar el contrato de compraventa respectivo.
-            </li><br>
+            <ul class="ul-custom">
+                <li class="li-custom">
+                    <strong>Derechos:</strong>
+                    <ol>
+                        <li>
+                            Recibir la información detallada y puntual por parte de
+                            <strong>
+                                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                                    “LOS PROMITENTES VENDEDORES”
+                                @else
+                                    “EL PROMITENTE VENDEDOR”
+                                @endif
+                            </strong> respecto del  inmueble que será objeto del contrato de compraventa.
+                        </li>
+                        <li>
+                            Estar informado sobre el estado que guarde su trámite para el otorgamiento de su crédito, esto cuando haya optado porque sean
+                            <strong>
+                                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                                    “LOS PROMITENTES VENDEDORES”
+                                @else
+                                    “EL PROMITENTE VENDEDOR”
+                                @endif
+                            </strong> los que realicen la gestión respectiva.
+                        </li>
+                        <li>
+                            En su caso, que se le informe oportunamente sobre el resultado de la gestión que hayan realizado
+                            <strong>
+                                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                                    “LOS PROMITENTES VENDEDORES”
+                                @else
+                                    “EL PROMITENTE VENDEDOR”
+                                @endif
+                            </strong> respecto de su crédito de vivienda.
+                        </li>
+                        <li>
+                            Una vez aprobado su crédito, celebrar el contrato de compraventa en escritura pública.
+                        </li>
+                    </ol>
+                </li>
+                <li class="li-custom">
+                    <strong>Obligaciones:</strong>
+                    <ol>
+                        <li>
+                            Obtener la aprobación de su crédito hipotecario y mantener vigente la aprobación durante el tiempo
+                            necesario para cumplir las obligaciones de este contrato.
+                        </li>
+                        <li>
+                            En su caso, entregar a
+                            <strong>
+                                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                                    “LOS PROMITENTES VENDEDORES”
+                                @else
+                                    “EL PROMITENTE VENDEDOR”
+                                @endif
+                            </strong>, a más tardar dentro de los 5 días hábiles posteriores a la firma de este contrato, toda la documentación que sea necesaria
+                            para iniciar y realizar el trámite de su crédito.
+                        </li>
+                        <li>
+                            Realizar el pago de los gastos operativos relativos a avalúo, comisiones por apertura y/o cualquier otro que sea
+                            necesario para realizar el trámite de su crédito de vivienda.
+                        </li>
+                        <li>
+                            Realizar oportuna y cumplidamente, cualquier aclaración o rectificación de sus datos e información que le sea requerida por la
+                            institución acreditante, para continuar con su trámite para la obtención de su crédito.
+                        </li>
+                        <li>
+                            Una vez aprobado su crédito, acudir a la notaría pública correspondiente para celebrar el contrato de compraventa respectivo.
+                        </li>
+                    </ol>
+                </li>
+            </ul>
         </p>
 
         <p>
@@ -1009,12 +1079,12 @@
         </p>
 
         <p>
-            <strong>DÉCIMA PRIMERA.- DERECHOS Y OBLIGACIONES DE
+            <strong>DÉCIMA PRIMERA.- <u>DERECHOS Y OBLIGACIONES DE
             @if($contrato->emp_terreno != $contrato->emp_constructora)
                 “LOS PROMITENTES VENDEDORES”
             @else
                 “EL PROMITENTE VENDEDOR”
-            @endif. </strong> Con motivo del presente contrato
+            @endif.</u> </strong> Con motivo del presente contrato
             <strong>@if($contrato->emp_terreno != $contrato->emp_constructora)
                 “LOS PROMITENTES VENDEDORES”</strong> adquieren
             @else
@@ -1023,62 +1093,65 @@
         </p>
 
         <p>
-            <li style="margin-left:40px;" class="ul-custom">
-                <strong>Derechos:</strong>
-            </li><br>
-
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;En caso de aplicar, solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> toda la documentación que sea necesaria para iniciar
-                y realizar el trámite para la gestión de su crédito para vivienda.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;Solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> que realice cualquier aclaración o rectificación de sus datos
-                e información que le sea requerida para continuar con su trámite para la obtención y en su caso, renovación de su crédito,
-                en caso de que haya optado por que sea <strong>“EL PROMITENTE COMPRADOR”</strong> el que realice dicha gestión
-            </li><br><br>
+            <ul class="ul-custom">
+                <li class="li-custom">
+                    <strong>Derechos:</strong>
+                    <ol>
+                        <li>
+                            En caso de aplicar, solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> toda la documentación que sea necesaria para iniciar
+                            y realizar el trámite para la gestión de su crédito para vivienda.
+                        </li>
+                        <li>
+                            Solicitar a <strong>“EL PROMITENTE COMPRADOR”</strong> que realice cualquier aclaración o rectificación de sus datos
+                            e información que le sea requerida para continuar con su trámite para la obtención y en su caso, renovación de su crédito,
+                            en caso de que haya optado por que sea <strong>“EL PROMITENTE COMPRADOR”</strong> el que realice dicha gestión
+                        </li>
+                    </ol>
+                </li>
+                <li class="li-custom">
+                    <strong>Obligaciones:</strong>
+                    <ol>
+                        <li>
+                            Presentar ante la institución acreditante toda la documentación que le haya sido entregada por <strong>“EL PROMITENTE COMPRADOR”</strong>
+                            y llevar de manera diligente la gestión en busca de la aprobación u otorgamiento de su crédito (solo en el caso de que
+                            <strong>“EL PROMITENTE COMPRADOR”</strong> haya elegido dicha opción).
+                        </li>
+                        <li>
+                            No cobrar cantidad alguna por concepto de contraprestación u honorarios por la gestión y trámite del
+                            crédito hipotecario a favor de <strong>“EL PROMITENTE COMPRADOR”.</strong> Los gastos relativos a avalúo,
+                            comisiones por apertura y/o cualquier otro que requiera la institución acreditante, son gastos operativos
+                            necesarios para realizar dicho trámite y no constituyen contraprestación alguna a favor de
+                            <strong>“LOS PROMITENTES VENDEDORES”.</strong>
+                        </li>
+                        <li>
+                            Brindar a <strong>“EL PROMITENTE COMPRADOR”</strong> la información detallada y puntual respecto del inmueble que será objeto
+                            del contrato de compraventa, así como del estado que guarde su trámite para el otorgamiento de su crédito y la resolución del mismo,
+                            esto último cuando haya optado porque sean
+                            <strong>
+                                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                                    “LOS PROMITENTES VENDEDORES”
+                                @else
+                                    “EL PROMITENTE VENDEDOR”
+                                @endif
+                            </strong> los que realicen dicho trámite
+                        </li>
+                        <li>
+                            Informar a <strong>“EL PROMITENTE COMPRADOR”</strong> sobre alguna aclaración que este deba
+                            realizar o documentación adicional que deba presentar, para continuar con la gestión de su crédito,
+                            en caso de ser aplicable.
+                        </li>
+                        <li>
+                            Acudir a la notaría pública correspondiente para suscribir el contrato de compraventa respectivo,
+                            una vez que le haya sido otorgado a <strong>“EL PROMITENTE COMPRADOR”</strong> su crédito.
+                        </li>
+                    </ol>
+                </li>
+            </ul>
         </p>
 
         <p>
-            <li style="margin-left:40px;" class="ul-custom">
-                <strong>Obligaciones:</strong>
-            </li><br>
-
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                a)	&nbsp;Presentar ante la institución acreditante toda la documentación que le haya sido entregada por <strong>“EL PROMITENTE COMPRADOR”</strong>
-                y llevar de manera diligente la gestión en busca de la aprobación u otorgamiento de su crédito (solo en el caso de que
-                <strong>“EL PROMITENTE COMPRADOR”</strong> haya elegido dicha opción).
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                b)	&nbsp;No cobrar cantidad alguna por concepto de contraprestación u honorarios por la gestión y trámite del
-                crédito hipotecario a favor de <strong>“EL PROMITENTE COMPRADOR”.</strong> Los gastos relativos a avalúo,
-                comisiones por apertura y/o cualquier otro que requiera la institución acreditante, son gastos operativos necesarios
-                para realizar dicho trámite y no constituyen contraprestación alguna a favor de <strong>“LOS PROMITENTES VENDEDORES”.</strong>
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                c)	&nbsp;Brindar a <strong>“EL PROMITENTE COMPRADOR”</strong> la información detallada y puntual respecto del inmueble que será objeto
-                del contrato de compraventa, así como del estado que guarde su trámite para el otorgamiento de su crédito y la resolución del mismo,
-                esto último cuando haya optado porque sean
-                <strong>
-                    @if($contrato->emp_terreno != $contrato->emp_constructora)
-                        “LOS PROMITENTES VENDEDORES”
-                    @else
-                        “EL PROMITENTE VENDEDOR”
-                    @endif
-                </strong> los que realicen dicho trámite
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                d)	&nbsp;Informar a <strong>“EL PROMITENTE COMPRADOR”</strong> sobre alguna aclaración que este deba realizar o documentación
-                adicional que deba presentar, para continuar con la gestión de su crédito, en caso de ser aplicable.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom"><template class="cuadrado"></template>
-                e)	&nbsp;Acudir a la notaría pública correspondiente para suscribir el contrato de compraventa respectivo, una vez que le haya sido otorgado a
-                <strong>“EL PROMITENTE COMPRADOR”</strong> su crédito.
-            </li><br>
-        </p>
-
-        <p>
-            <strong>DÉCIMA SEGUNDA.- FONDO DE RESERVA Y MANTENIMIENTO.</strong> Si el Inmueble objeto del presente contrato estuviera sujeto a un régimen
-            de propiedad en condominio <strong>“EL PROMITENTE COMPRADOR”</strong> entregará a <strong>
+            <strong>DÉCIMA SEGUNDA.- <u>FONDO DE RESERVA Y MANTENIMIENTO.</u></strong> Si el Inmueble objeto del presente contrato
+            estuviera sujeto a un régimen de propiedad en condominio <strong>“EL PROMITENTE COMPRADOR”</strong> entregará a <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”
                 @else
@@ -1087,31 +1160,31 @@
             </strong> a la firma de esta escritura para constituir el fondo de reserva para el mantenimiento y conservación del Conjunto Habitacional
             donde se encuentra el Inmueble la cantidad de $ 0.00 (cero pesos 00/100 M.N.) la cual resulta de aplicar cualesquiera de las siguientes
             opciones, de acuerdo a la legislación aplicable:
-        </p>
-
-        <p><strong>a)</strong>	Por metro cuadrado de superficie de construcción, o</p>
-
-        <p><strong>b)</strong>	Por porcentaje de indiviso, o</p>
-
-        <p><strong>c)</strong>	Por cuota fija.</p>
-
-        <p>
-            <strong>DÉCIMA TERCERA.- RESCISIÓN Y PENA CONVENCIONAL.</strong> Las partes acuerdan que, en caso de incumplimiento a cualquiera de las obligaciones
-            pactadas en el presente contrato, dará lugar a la rescisión del mismo, la cual podrá ser declarada por la parte afectada por el
-            incumplimiento, sin necesidad de declaración judicial previa alguna, bastando el simple aviso que por escrito le sea entregado a la otra parte.
-            La parte cuyo incumplimiento haya dado lugar a la rescisión de este contrato, se obliga a pagar por concepto de pena convencional, el equivalente al 0 % (cero por ciento)
-            del precio pactado en la cláusula Segunda del presente contrato.
+            <ol>
+                <li>Por metro cuadrado de superficie de construcción, o</li>
+                <li>Por porcentaje de indiviso, o</li>
+                <li>Por cuota fija.</li>
+            </ol>
         </p>
 
         <p>
-            <strong>DÉCIMA CUARTA.- FALLECIMIENTO DE “EL PROMITENTE COMPRADOR”.</strong> En caso de fallecimiento de
+            <strong>DÉCIMA TERCERA.- <u>RESCISIÓN Y PENA CONVENCIONAL.</u></strong> Las partes acuerdan que, en caso de incumplimiento a
+            cualquiera de las obligaciones pactadas en el presente contrato, dará lugar a la rescisión del mismo, la cual podrá ser
+            declarada por la parte afectada por el incumplimiento, sin necesidad de declaración judicial previa alguna,
+            bastando el simple aviso que por escrito le sea entregado a la otra parte. La parte cuyo incumplimiento haya dado lugar
+            a la rescisión de este contrato, se obliga a pagar por concepto de pena convencional, el equivalente al 0 % (cero por ciento)
+            del precio pactado en la cláusula Quinta del presente contrato.
+        </p>
+
+        <p>
+            <strong>DÉCIMA CUARTA.- <u>FALLECIMIENTO DE “EL PROMITENTE COMPRADOR”.</u></strong> En caso de fallecimiento de
             <strong>
                 @if($contrato->coacreditado == 1)
-                    “LOS PROMITENTES COMPRADORES”
+                    “LOS PROMITENTES COMPRADORES”,
                 @else
-                    “EL PROMITENTE COMPRADOR”
+                    “EL PROMITENTE COMPRADOR”,
                 @endif
-            </strong>, el presente contrato subsistirá en todos sus efectos y alcances, transmitiendo los derechos y obligaciones de
+            </strong> el presente contrato subsistirá en todos sus efectos y alcances, transmitiendo los derechos y obligaciones de
             <strong>“EL PROMITENTE COMPRADOR”</strong> a sus sucesores, en los términos que prevea la Legislación Civil del Estado de SLP. Salvo que manifiesten a
             <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
@@ -1120,64 +1193,68 @@
                     “EL PROMITENTE VENDEDOR”
                 @endif
             </strong> no desear continuar con la compraventa, en tal caso, se procederá en los términos que prevea la Legislación vigente del Estado SLP
-            y en su caso, devolución de los pagos previamente realizados conforme a lo dispuesto en la Cláusula DECIMA TERCERA.
+            y en su caso, devolución de los pagos previamente realizados conforme a lo dispuesto en la Cláusula Quinta.
         </p>
 
         <p>
-            <strong>DÉCIMA QUINTA.- CANALES DE ATENCIÓN AL CONSUMIDOR.</strong>
+            <strong>DÉCIMA QUINTA.- <u>CANALES DE ATENCIÓN AL CONSUMIDOR.</u></strong>
             <strong>
                 @if($contrato->emp_terreno != $contrato->emp_constructora)
                     “LOS PROMITENTES VENDEDORES”
                 @else
                     “EL PROMITENTE VENDEDOR”
                 @endif
-            </strong> ponen a disposición de <strong>“EL PROMITENTE COMPRADOR”</strong> el siguiente canal de atención al consumidor, para iniciar y
+            </strong> pone a disposición de <strong>“EL PROMITENTE COMPRADOR”</strong> el siguiente canal de atención al consumidor, para iniciar y
             dar atención y seguimiento a cualquier queja, reclamación o sugerencia:
         </p>
 
         <p>
-            <li style="margin-left:40px;" class="ul-custom">
-                -	&nbsp;&nbsp;Número Telefónico: 444 8334683, 84 al 85, con un horario de atención de las  9:00 horas a las 17:00 horas, los días de lunes a viernes y sábados de 9:00 horas a 13 horas.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom">
-                -	&nbsp;&nbsp;Plazo de respuesta:  8 días hábiles.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom">
-                -	&nbsp;&nbsp;<strong>Centro de Ventas (personalizada):</strong> Manuel Gutiérrez Nájera 190. Colonia Tequisquiapam, con un horario de atención de las
-                9:00 horas a las17:00 horas, los días de lunes a viernes y sábados de 9:00 horas a 13 horas.
-            </li><br>
-            <li style="margin-left:40px;" class="ul-custom">
-                -	&nbsp;&nbsp;<strong>Correo Electrónico: atencion@grupocumbres.com</strong>
-            </li><br>
+            <ul class="ul-custom">
+                <li class="li-custom">Número Telefónico: 444 8334683, 84 al 85, con un horario de atención de las 9:00 horas a las 17:00 horas,
+                    los días de lunes a viernes y sábados de 9:00 horas a 13 horas.
+                </li>
+                <li class="li-custom">
+                    Plazo de respuesta:  8 días hábiles.
+                </li>
+                <li class="li-custom">
+                    <strong>Centro de Ventas (personalizada):</strong> Manuel Gutiérrez Nájera 190. Colonia Tequisquiapan, con un horario de atención de las
+                    9:00 horas a las17:00 horas, los días de lunes a viernes y sábados de 9:00 horas a 13 horas.
+                </li>
+                <li class="li-custom">
+                    <strong>Correo Electrónico: atencion@grupocumbres.com</strong>
+                </li>
+            </ul>
         </p>
 
         <p>
-            <strong>DÉCIMA SEXTA.-  MEDIOS PARA NOTIFICACIONES Y AVISOS.</strong> Las notificaciones y avisos que las partes contratantes deban darse
-            con relación a este Contrato, se harán por escrito recabándose constancia de su recepción y deberán ser enviadas en cualquiera
-            de los medios que se señalan a continuación, dándose por totalmente válidas siempre y cuando las partes contratantes no hagan cambio o
+            <strong>DÉCIMA SEXTA.- <u>MEDIOS PARA NOTIFICACIONES Y AVISOS.</u></strong> Las notificaciones y avisos que
+            <strong>las partes contratantes</strong> deban darse con relación a este Contrato, se harán por escrito
+            recabándose constancia de su recepción y deberán ser enviadas en cualquiera de los medios que se señalan a continuación,
+            dándose por totalmente válidas siempre y cuando las partes contratantes no hagan cambio o
             designación de otro medio o domicilio para tales efectos:
         </p>
 
-        <p><strong>
-            @if($contrato->emp_terreno != $contrato->emp_constructora)
-                “LOS PROMITENTES VENDEDORES”:
-            @else
-                “EL PROMITENTE VENDEDOR”:
-            @endif
-            </strong> -:<br>
+        <p>
+            <strong>
+                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                    “LOS PROMITENTES VENDEDORES”
+                @else
+                    “EL PROMITENTE VENDEDOR”
+                @endif
+            </strong><br>
             <div style="margin-left: 30px;">
-                Calle: Manuel Gutiérrez Nájera #190 Col. Tequisquiapam <br>
+                Calle: Manuel Gutiérrez Nájera #190 Col. Tequisquiapan <br>
                 C.P. 78230, San Luis Potosí, S.L.P. <br>
                 No telefónico 444 8334683 <br>
                 Correo electrónico atencion@grupocumbres.com <br>
             </div>
         </p><br>
 
-        <p><strong>“EL PROMITENTE COMPRADOR”:</strong> -:<br>
+        <p><strong>“EL PROMITENTE COMPRADOR”: <u>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}</u></strong><br>
             <div style="margin-left: 30px;">
                 Calle: {{ucwords($contrato->dir_cliente)}} Col. {{ucwords($contrato->col_cliente)}}<br>
                 C.P. {{$contrato->cp_cliente}}, {{ucwords($contrato->ciudad_cliente)}}, {{ucwords($contrato->edo_cliente)}} <br>
-                No telefónico {{$contrato->tel_cliente}} &nbsp;No Celular +{{$contrato->clv_lada}} {{$contrato->cel_cliente}} <br>
+                No telefónico: {{$contrato->tel_cliente}} &nbsp;No Celular: +{{$contrato->clv_lada}} {{$contrato->cel_cliente}} <br>
                 Correo electrónico {{$contrato->cliente_email}} <br>
             </div>
         </p>
@@ -1190,36 +1267,40 @@
         </p>
 
         <p>
-            <strong>DÉCIMA SEPTIMA.- JURISDICCIÓN.</strong> La Procuraduría Federal del Consumidor (PROFECO) es competente en la vía administrativa
+            <strong>DÉCIMA SEPTIMA.- <u>JURISDICCIÓN.</u></strong> La Procuraduría Federal del Consumidor (PROFECO) es competente en la vía administrativa
             para resolver cualquier controversia que se suscite para la interpretación o cumplimiento del presente contrato. Sin perjuicio de lo anterior,
             las partes se someten a la jurisdicción de los tribunales competentes de la Ciudad de San Luis Potosí, renunciando expresamente a
             cualquier otra jurisdicción que pudiera corresponderles, por razón de sus domicilios presentes o futuros o por cualquier otra razón.
         </p>
 
         <p>
-            <strong>DÉCIMA OCTAVA.- PRESCRIPCIÓN DE ACCIONES.</strong> Las acciones civiles derivadas de responsabilidad civil,
+            <strong>DÉCIMA OCTAVA.- <u>PRESCRIPCIÓN DE ACCIONES.</u></strong> Las acciones civiles derivadas de responsabilidad civil,
             vicios ocultos y en su caso evicción, se resolverán y determinarán con base en las disposiciones legales vigentes del Código Civil del Estado de San Luis Potosí.
         </p>
 
         <p>
-            <strong>DECIMA NOVENA.- MODELO DE CONTRATO PROFECO.</strong> El modelo de contrato de adhesión que se utiliza para documentar la
+            <strong>DECIMA NOVENA.- <u>MODELO DE CONTRATO PROFECO.</u></strong> El modelo de contrato de adhesión que se utiliza para documentar la
             presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el
-            número______________________ de fecha __________________________ Asimismo, el contenido de   este contrato se incorporará en escritura pública sin importar el orden
+            número <strong>4444-2023</strong> de fecha <strong>02 DE MAYO DE 2023.</strong> Asimismo, el contenido de este contrato se incorporará en escritura pública sin importar el orden
             y forma en que se citen y esto no se considerará como incumplimiento a la Ley, ni modificación al modelo de contrato registrado ante PROFECO.
             Cualquier variación del contenido del presente contrato en perjuicio de <strong>“EL PROMITENTE COMPRADOR”</strong> se tendrá por no puesta.
         </p>
 
         <p>
-            Este contrato se da y firma en la Ciudad de San Luis Potosí, S.L.P.	a los {{$contrato->fecha_contrato}}.
+            Este contrato se da y firma en la Ciudad de San Luis Potosí, S.L.P.	a los {{$contrato->fecha_contrato}}. En dos tantos y
+            <strong>“EL PROMITENTE VENDEDOR”</strong> entregará un tanto a <strong>“EL PROMITENTE COMPRADOR”</strong>
+            así como los anexos originales y firmados.
         </p>
 
 
         <p align="center">
-            @if($contrato->emp_terreno != $contrato->emp_constructora)
-                “LOS PROMITENTES VENDEDORES”:
-            @else
-                “EL PROMITENTE VENDEDOR”:
-            @endif
+            <strong>
+                @if($contrato->emp_terreno != $contrato->emp_constructora)
+                    “LOS PROMITENTES VENDEDORES”:
+                @else
+                    “EL PROMITENTE VENDEDOR”:
+                @endif
+            </strong>
         </p>
 
         <p  align="center">
@@ -1254,7 +1335,7 @@
         </p>
 
         <p align="center"><br><br><br><br>
-            “EL PROMITENTE COMPRADOR”
+            <strong>“EL PROMITENTE COMPRADOR”</strong>
         </p>
 
 

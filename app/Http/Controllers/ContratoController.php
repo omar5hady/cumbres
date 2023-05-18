@@ -1231,6 +1231,7 @@ class ContratoController extends Controller
                 'fraccionamientos.ciudad as ciudad_proy',
                 'fraccionamientos.estado as estado_proy',
                 'fraccionamientos.calle as direccionProyecto',
+                'fraccionamientos.cp as cp_proy',
 
                 'personal.nombre',
                 'personal.apellidos',

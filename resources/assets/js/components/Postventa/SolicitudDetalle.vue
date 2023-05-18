@@ -125,7 +125,7 @@
                                         <td class="td2" v-text="this.moment(contratos.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
                                             {{  contratos.fecha_concluido ? this.moment(contratos.fecha_concluido).locale('es').format('DD/MMM/YYYY') : '' }}
-                                            <Button v-if="!contratos.fecha_concluido && contratos.status == 1"
+                                            <Button v-if="!contratos.fecha_concluido && (contratos.status == 1 || contratos.status == 0)"
                                                 :btnClass="'btn-scarlet'" :icon="'icon-check'"
                                                 @click="abrirModal('finalizar', contratos)"
                                             >

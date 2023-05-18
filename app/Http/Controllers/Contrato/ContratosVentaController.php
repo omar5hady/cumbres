@@ -54,6 +54,7 @@ class ContratosVentaController extends Controller
                 'fraccionamientos.nombre as proyecto',
                 'fraccionamientos.ciudad as ciudad_proy',
                 'fraccionamientos.estado as estado_proy',
+                'fraccionamientos.cp as cp_proy',
                 'fraccionamientos.calle as direccionProyecto',
                 'fraccionamientos.logo_fracc2',
                 'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos',
@@ -256,14 +257,24 @@ class ContratosVentaController extends Controller
         $contrato->f_nacimiento = $contrato->f_nacimiento->formatLocalized('%d de %B de %Y');
 
         if($contrato->modelo != 'Terreno'){
-            if($contrato->tipo_credito == 'Crédito Directo')
-                $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_contado', ['contrato' => $contrato]);
-            else
-                $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito', ['contrato' => $contrato]);
+            if($contrato->emp_terreno != $contrato->emp_constructora){
+                if($contrato->tipo_credito == 'Crédito Directo')
+                    $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_contado_alianza', ['contrato' => $contrato]);
+                else
+                    $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito_alianza', ['contrato' => $contrato]);
+            }
+            else{
+                if($contrato->tipo_credito == 'Crédito Directo')
+                    $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_contado', ['contrato' => $contrato]);
+                else
+                    $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_credito', ['contrato' => $contrato]);
+            }
         }
         else{
-
-            $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_terreno', ['contrato' => $contrato]);
+            if($contrato->emp_terreno == 'Grupo Constructor Cumbres')
+                $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_terreno', ['contrato' => $contrato]);
+            else
+                $pdf = \PDF::loadview('pdf.contratos.norma247.contrato_terreno_concretania', ['contrato' => $contrato]);
         }
 
         return $pdf->stream('contrato_venta.pdf');

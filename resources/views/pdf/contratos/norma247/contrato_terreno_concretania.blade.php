@@ -98,7 +98,7 @@
             <strong>
                 CONTRATO DE COMPRAVENTA DE TERRENO DESTINADO A USO HABITACIONAL AL QUE EN LO SUCESIVO SE LE DENOMINARÁ,
                 EL “CONTRATO DE COMPRAVENTA”, QUE CELEBRAN POR UNA PARTE
-                GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
+                CONCRETANIA, S. A. DE. C.V, REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA
                 A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ, "EL VENDEDOR"
                 Y POR LA OTRA
                 EL(A) SR(A).
@@ -108,42 +108,39 @@
                         {{ mb_strtoupper($contrato->apellidos_coa) }}
                     @endif
                 A QUIEN EN LO SUCESIVO SE LE DENOMINARÁ "EL COMPRADOR",
-                AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
+                AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS:
             </strong>
         </p>
 
-        <h4 align="center">D E C L A R A C I O N E S</h4>
+        <h4>D E C L A R A C I O N E S</h4>
 
         <p><strong>I.- Declara "EL VENDEDOR" a través de su representante legal que:</strong></p>
 
-        <ol>
-            <li>
-                Que es una sociedad mercantil constituida en escritura pública número 3 de fecha 8 de diciembre de 1999,
-                otorgada ante el Notario Público número 33 del primer distrito judicial del estado de San Luis Potosí,
-                Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro  Público de la Propiedad y del
-                Comercio en San Luis Potosí, San Luis Potosí,  bajo el folio mercantil 70 que su domicilio fiscal se
-                encuentra en Manuel Gutiérrez Nájera 190. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
-                Registro Federal de Contribuyentes es <strong>GCC000106QS6</strong>
+        <ul class="ul-custom">
+            <li><template class="cuadrado">a)</template>
+                Que es una sociedad mercantil debidamente constituida con arreglo a las leyes de la República Mexicana según consta en la
+                escritura pública número 764 volumen 21 de fecha 25 de julio de 2018, otorgada ante la fe del Lic. Octaviano Gómez y González,
+                Notario Público número 4, con ejercicio en la Ciudad  de San Luis Potosí, S.L.P, cuyo testimonio obra inscrito en el Registro
+                Público de la Propiedad y Comercio de esa misma Ciudad, bajo el folio mercantil electrónico N-2018073682, que su domicilio
+                fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de causantes
+                es CON180725REA. <br><br>
             </li>
-
-            <li>
+            <li><template class="cuadrado">b)</template>
                 Que su objeto social es, la ejecución, administración, construcción, promoción, comercialización y arrendamiento
                 de desarrollos inmobiliarios, comerciales y habitacionales dentro del territorio nacional y en el extranjero, así como la celebración de los
-                contratos mercantiles necesarios para el cumplimiento de  su objeto.
+                contratos mercantiles necesarios para el cumplimiento de  su objeto. <br><br>
             </li>
-            <li>
-                Que las facultades de su representante constan en la escritura pública número 1560
-                de fecha 07 de noviembre del 2022, otorgada ante el Notario Público número 19 del primer distrito judicial de
-                San Luis Potosí, Lic. Alfredo Noyola Robles, inscrita en el Registro Público de la Propiedad y del
-                Comercio en San Luis Potosí, bajo el folio mercantil 123547, mismas atribuciones que no le han sido revocadas a la fecha.
+            <li><template class="cuadrado">a)</template>
+                Que las facultades de su representante legal constan en la escritura pública número 764 de fecha 25 de julio del 2018,
+                otorgada ante el Notario Público número 4 del primer distrito judicial de la ciudad de San Luis Potosí,
+                Lic. Octaviano Gómez y González inscritaen el Registro Público de la Propiedad y del Comercio en San
+                Luis Potosí, S.L.P, bajo el folio mercantil N-2018073682, mismas atribuciones que no le han sido
+                revocadas a la fecha. <br><br>
             </li>
-
-
-            <li>
-                Que es única y legitima propietaria del terreno materia de este contrato, descrito a detalle
+            <li><template class="cuadrado">c)</template>
+                Que es única y legitima propietaria del inmueble materia de este contrato, descrito a detalle
                 en el <strong>“Anexo A”,</strong> que firmado por las partes, es integrante de este instrumento y se localiza en la
                 siguiente ubicación;
-
                 <p>
                     Calle:&nbsp; <u>{{mb_strtoupper($contrato->calle_lote)}}</u> <br>
                     Lote o área privativa:&nbsp; <u>{{$contrato->num_lote}}</u>  <br>
@@ -154,10 +151,7 @@
                         No oficial interior:&nbsp; <u>{{$contrato->interior}}</u>  <br>
                     @endif
                     Fraccionamiento:&nbsp; <u>{{mb_strtoupper($contrato->proyecto)}}</u> <br>
-                    Entidad Federativa: <u>{{mb_strtoupper($contrato->estado_proy)}}</u> <br>
-                    Código Postal: <u>{{mb_strtoupper($contrato->cp_proy)}}</u>
                 </p>
-
                 <p>
                     Y acredita la propiedad con la escritura pública numero {{ $contrato->num_escritura }} de fecha {{$contrato->date_escritura}}
                     otorgada ante la fe del Notario publico número {{$contrato->num_notario}} del distrito de {{$contrato->distrito_notario}},
@@ -165,63 +159,43 @@
                     lo cual ha sido debidamente exhibido y explicado a <strong>EL COMPRADOR</strong> y además se encuentra a su
                     disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapan, de la Ciudad de San Luis Potosí, S.L.P.
                 </p>
-
-                <p>
-                    Dicha documentación puede ser consultada por <strong>“EL PROMITENTE COMPRADOR”</strong> en el domicilio del <strong>“EL
-                    PROMITENTE VENDEDOR”<br>
-                    Calle: Manuel Gutiérrez Nájera #190 <br>
-                    Col. Tequisquiapan <br>
-                    C.P. 78230, San Luis Potosí, S.L.P. <br></strong>
-                    N°. Telefónico 444 8334683 <br>
-                    Correo electrónico: atencion@grupocumbres.com <br>
-                </p>
             </li>
-
-           <li>
+            <li><template class="cuadrado">d)</template>
                 Que el TERRENO cuenta con la infraestructura para la adecuada conexión de los servicios de suministro de agua potable,
-                drenaje y alcantarillado y demás obras de equipamiento urbano.
-           </li>
-
-           <li>
+                drenaje y alcantarillado y demás obras de equipamiento urbano. <br><br>
+            </li>
+            <li><template class="cuadrado">e)</template>
                 Que cuenta con el plano de medidas y colindancias, licencia de uso de suelo, autorizaciones y permisos respectivos emitidos por
                 autoridad competente, mismas que han sido exhibidas a <strong>“EL COMPRADOR”</strong> y se encuentran a su disposición
-                en el domicilio de <strong>“EL VENDEDOR”.</strong>
-           </li>
-
-           <li>
+                en el domicilio de <strong>“EL VENDEDOR”.</strong> <br><br>
+            </li>
+            <li><template class="cuadrado">f)</template>
                 El TERRENO cuenta con autorización de uso de suelo destinado para uso habitacional, de conformidad con la
-                licencia de uso de suelo expedida por	_________de fecha ____________ de _____.
-           </li>
-
-           <li>
+                licencia de uso de suelo expedida por	_________de fecha ____________ de _____.<br><br>
+            </li>
+            <li><template class="cuadrado">g)</template>
                 El TERRENO objeto del contrato, no se encuentra sujeto algún régimen especial, se puede escriturar
-                de inmediato y no está sujeto a régimen ejidal o comunal
-           </li>
-
-           <li>
+                de inmediato y no está sujeto a régimen ejidal o comunal.<br><br>
+            </li>
+            <li><template class="cuadrado">h)</template>
                 En su caso, el TERRENO reporta ciertos gravámenes en virtud del crédito que obtuvo <strong>“EL VENDEDOR”</strong>
                 como acreditada, gravámenes de los cuales quedará liberado el TERRENO a más tardar en la fecha de firma de la escritura
-                pública de compraventa correspondiente.
-           </li>
-
-           <li>
+                pública de compraventa correspondiente.<br><br>
+            </li>
+            <li><template class="cuadrado">i)</template>
                 Que, para el pago del precio de compraventa del TERRENO, aceptará montos derivados de créditos que
-                <strong>“EL COMPRADOR”</strong> reciba de cualquier institución acreditante autorizada para dichos efectos.
-           </li>
-
-           <li>
+                <strong>“EL COMPRADOR”</strong> reciba de cualquier institución acreditante autorizada para dichos efectos.<br><br>
+            </li>
+            <li><template class="cuadrado">j)</template>
                 Que puso a disposición de <strong>“EL COMPRADOR”</strong> la información y documentación
                 relativa a el TERRENO, que se especifica en el “Anexo C” del presente contrato, el cual firmado por ambas partes
-                forma parte integrante del mismo.
-           </li>
-
-           <li>
+                forma parte integrante del mismo.<br><br>
+            </li>
+            <li><template class="cuadrado">k)</template>
                 Informó a <strong>“EL COMPRADOR”</strong> el costo total del TERRENO, así como las restricciones que, en su caso,
-                son aplicables a la comercialización del bien objeto de este Contrato.
-           </li>
-        </ol>
-
-        <br>
+                son aplicables a la comercialización del bien objeto de este Contrato.<br><br>
+            </li>
+        </ul>
 
         <p>
             <strong>II.- Declara “EL COMPRADOR”  que:</strong>
@@ -255,7 +229,7 @@
             Única. Es su espontánea voluntad celebrar el presente Contrato al tenor de las siguientes:
         </p>
 
-        <p align="center"><strong>C L Á U S U L A S</strong></p>
+        <p><strong>C L Á U S U L A S</strong></p>
 
         <p>
             <strong>PRIMERA. OBJETO DE LA COMPRAVENTA.-</strong> En virtud de este acuerdo de voluntades,
@@ -266,7 +240,7 @@
         </p>
 
         <p>
-            En caso de que <strong>EL TERRENO</strong> cuente con servicios adicionales, los cuales son opcionales a solicitud de
+            En caso de que <strong>EL INMUEBLE</strong> cuente con servicios adicionales, los cuales son opcionales a solicitud de
             <strong>“EL COMPRADOR”,</strong> los mismos se especificarán en el <strong>“Anexo I”,</strong> de este contrato.
         </p>
 
@@ -281,33 +255,45 @@
             al tipo de cambio que rija en el lugar en que se realice el pago, de conformidad con la legislación aplicable.
         </p>
 
-        <ol>
-            <li>
+        <ul class="ul-custom">
+            <li><template class="cuadrado">a)</template>
                 La cantidad de ${{$contrato->pagos[0]->monto_pago}} a la firma del presente Contrato como enganche de la compraventa,
                 cantidad que “EL VENDEDOR” en este acto recibe a su entera satisfacción y se aplicará como parte del precio del TERRENO,
-                expidiendo <strong>“EL VENDEDOR”</strong> al COMPRADOR el recibo que ampare la cantidad pagada.
+                expidiendo <strong>“EL VENDEDOR”</strong> al COMPRADOR el recibo que ampare la cantidad pagada. <br><br>
             </li>
             @if(count($contrato->pagos) > 2)
-                <li>
-                    @for ($i = 1; $i < (count($contrato->pagos)-1); $i++)
-                        La cantidad de $ {{$contrato->restoPago}} en las siguientes fechas: <br>
-                        {{$contrato->pagos[$i]->fecha_pago}},
-                    @endfor
-                    y con los siguientes importes respectivamente; <br>
-                    @for ($i = 1; $i < (count($contrato->pagos)-1); $i++)
-                        $ {{$contrato->pagos[$i]->monto_pago}},
-                    @endfor
-                </li>
+            <li><template class="cuadrado">b)</template>
+                @for ($i = 1; $i < (count($contrato->pagos)-1); $i++)
+                    La cantidad de $ {{$contrato->restoPago}} en las siguientes fechas: <br>
+                    {{$contrato->pagos[$i]->fecha_pago}},
+                @endfor
+                y con los siguientes importes respectivamente; <br>
+                @for ($i = 1; $i < (count($contrato->pagos)-1); $i++)
+                    $ {{$contrato->pagos[$i]->monto_pago}},
+                @endfor <br><br>
+            </li>
             @endif
             <li>
-                En la fecha de firma de la escritura pública de compraventa, la cantidad de $ {{$contrato->finPago}}.
+                <template class="cuadrado">
+                    @if(count($contrato->pagos) > 2)
+                        c)
+                    @else
+                        b)
+                    @endif
+                </template>
+                En la fecha de firma de la escritura pública de compraventa, la cantidad de $ {{$contrato->finPago}}. <br><br>
             </li>
-        </ol>
+        </ul>
 
         <p>
-            Los conceptos de pago a cargo de <strong>“EL COMPRADOR”,</strong> deben ser cubiertos a través del sistema financiero nacional,
-            mediante depósitos o transferencias a la cuenta No. 0107059795 que EL VENDEDOR tiene con la institución bancaria BBVA
+            El precio de compraventa es en Moneda Nacional, en caso de expresarse en moneda extranjera, se
+            estará al tipode cambio que rija en el lugar y fecha que se realice el pago, de conformidad con la
+            legislación aplicable.
+        </p>
 
+        <p>
+            Los conceptos de pago a cargo de “EL COMPRADOR”, deben ser cubiertos a través del sistema financiero nacional,
+            mediante depósitos o transferencias a la cuenta No. 0107059795 que EL VENDEDOR tiene con la institución bancaria BBVA
 
         </p>
 
@@ -390,26 +376,26 @@
 
         <ol>
             <li>
-                El Terreno objeto del presente Contrato tenga las características técnicas de seguridad y de la estructura,
+                El inmueble objeto del presente Contrato tenga las características técnicas de seguridad y de la estructura,
                 así como los materiales, instalaciones y acabados especificadas en el citado <strong>“Anexo A”.</strong>
             </li>
             <li>
-                El Terreno se encuentre al corriente en el pago de todos sus impuestos, derechos, cuotas de
+                El Inmueble se encuentre al corriente en el pago de todos sus impuestos, derechos, cuotas de
                 mantenimiento y demás, así como libre de gravámenes y adeudos de cualesquiera naturaleza.
             </li>
             <li>
                 Entregar a <strong>“EL COMPRADOR”</strong> el terreno en los términos establecidos en la Cláusula Octava del presente Contrato.
             </li>
             <li>
-                Poner a disposición de <strong>“EL COMPRADOR”</strong> la información y documentación relativa al terreno.
+                Poner a disposición de <strong>“EL COMPRADOR”</strong> la información y documentación relativa al Inmueble.
             </li>
             <li>
-                Informar a <strong>“EL COMPRADOR”</strong> si el terreno materia del presente Contrato se encuentra
+                Informar a <strong>“EL COMPRADOR”</strong> si el Inmueble materia del presente Contrato se encuentra
                 sujeto a un régimen de propiedad específico.
             </li>
             <li>
                 Hacer del conocimiento a <strong>“EL COMPRADOR”,</strong> cuando ya existan, las cuotas de mantenimiento fijadas para
-                la conservación y funcionamiento del Conjunto Habitacional al que pertenece el terreno materia del presente Contrato.
+                la conservación y funcionamiento del Conjunto Habitacional al que pertenece el inmueble materia del presente Contrato.
             </li>
             <li>
                 Así como cumplir con todo aquello a que se encuentre obligado en los términos del presente Contrato.
@@ -424,7 +410,7 @@
 
         <ol>
             <li>
-                Recibir de <strong>“EL VENDEDOR”</strong> el terreno en los términos establecidos en la Cláusula
+                Recibir de <strong>“EL VENDEDOR”</strong> el inmueble en los términos establecidos en la Cláusula
                 OCTAVA del presente Contrato.
             </li>
             <li>
@@ -432,7 +418,7 @@
                 presente Contrato.
             </li>
             <li>
-                Revisar la información y documentación que le ponga a su disposición <strong>“EL VENDEDOR”,</strong> relativa al Terreno.
+                Revisar la información y documentación que le ponga a su disposición <strong>“EL VENDEDOR”,</strong> relativa al Inmueble.
             </li>
             <li>
                 Preservar el entorno urbanístico y arquitectónico del Conjunto Habitacional donde se encuentra el terreno
@@ -442,7 +428,7 @@
             </li>
             <li>
                 Observar por sí, por sus familiares y visitantes el Reglamento del Régimen de Propiedad en
-                Condominio a que está sujeto el terreno materia de esta operación.
+                Condominio a que está sujeto el Inmueble materia de esta operación.
             </li>
             <li>
                 Cubrir las cuotas de mantenimiento que se fijen para la conservación y funcionamiento del Conjunto
@@ -463,7 +449,7 @@
             Del mismo modo, las partes podrán de común acuerdo pactar una nueva fecha de entrega del TERRENO por así convenir
             a sus intereses, misma que no será considerada como incumplimiento para efectos de la presente cláusula. En caso de una
             nueva inasistencia se levantará acta circunstanciada ante dos testigos que haga constar tal situación y se entenderá que
-            recibió el terreno a su entera satisfacción para todos los efectos a que haya lugar.
+            recibió el inmueble a su entera satisfacción para todos los efectos a que haya lugar.
         </p>
 
         <p>
@@ -578,7 +564,7 @@
         <p>
             <strong>“EL VENDEDOR”:</strong> -:<br>
             <div style="margin-left: 30px;">
-                Calle: Manuel Gutiérrez Nájera #190 Col. Tequisquiapan <br>
+                Calle: Manuel Gutiérrez Nájera #180 Col. Tequisquiapan <br>
                 C.P. 78230, San Luis Potosí, S.L.P. <br>
                 No telefónico 444 8334683 <br>
                 Correo electrónico atencion@grupocumbres.com <br>
@@ -625,7 +611,7 @@
 
         <p><strong>DÉCIMA OCTAVA.- MODELO DE CONTRATO DE PROFECO.-</strong>
             El modelo del presente Contrato de Adhesión se encuentra registrado en
-            el Registro Público de Contratos de Adhesión de PROFECO bajo el número 4447-2023, de fecha 02 DE MAYO DE 2023.
+            el Registro Público de Contratos de Adhesión de PROFECO bajo el número 7731-2022, de fecha 1 de diciembre de 2022.
             Cualquier variación del presente Contrato en perjuicio de <strong>“EL COMPRADOR”,</strong> frente al contrato de adhesión registrado
             ante PROFECO, se tendrá por no puesta.
         </p>
@@ -652,22 +638,22 @@
             <br>
             <div class="table">
                 <div class="table-row">
-                    <div colspan="5" class="table-cell"><center>“EL VENDEDOR”</center></div>
+                    <div colspan="5" class="table-cell"><strong>“EL VENDEDOR”</strong></div>
                     <div colspan="2" class="table-cell"></div>
-                    <div colspan="5" class="table-cell"><center>“EL COMPRADOR</center></div>
+                    <div colspan="5" class="table-cell"><strong>“EL COMPRADOR</strong></div>
                 </div>
                 <div class="table-row">
                     <div colspan="5" class="table-cell">
                         <br><br><br>
-                        <center>__________________________________ <br>
-                            Grupo Constructor Cumbres S.A. de C.V.
-                        </center>
+                        __________________________________ <br>
+                            Concretania, S.A. de C.V.
+
                     </div>
                     <div colspan="2" class="table-cell"></div>
                     <div colspan="5" class="table-cell"><br><br><br>
-                        <center>__________________________________ <br>
+                        __________________________________ <br>
                             {{$contrato->c_nombre}} {{$contrato->c_apellidos}}
-                        </center>
+
                     </div>
                 </div>
             </div>
@@ -786,7 +772,7 @@
                     <div colspan="5" class="table-cell">
                         <br><br><br>
                         <center>__________________________________ <br>
-                            Grupo Constructor Cumbres S.A. de C.V.
+                            Concretania, S.A. de C.V.
                         </center>
                     </div>
                     <div colspan="2" class="table-cell"></div>

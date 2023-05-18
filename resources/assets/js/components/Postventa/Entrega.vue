@@ -348,6 +348,7 @@
                                             <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
                                             <a v-if="entregas.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ entregas.foto_predial">Predial</a>
                                             <a v-if="entregas.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ entregas.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                            <a v-if="entregas.num_licencia" class="dropdown-item"  v-text="'Licencia: '+entregas.num_licencia" v-bind:href="'/downloadLicencias/'+entregas.foto_lic"></a>
                                         </div>
 
                                     </td>
