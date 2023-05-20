@@ -17,6 +17,7 @@ class SpSolicitud extends Model
         'comprobante_pago',
         'cuenta_pago',
         'pagado',
+        'fecha_elab_cheque',
         'beneficiario', 'extraordinaria', 'rev_op', 'convencio', 'referencia'
     ];
 }

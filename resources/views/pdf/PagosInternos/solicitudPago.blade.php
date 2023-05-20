@@ -42,6 +42,15 @@
         text-align: right
     }
 
+    .estatus{
+        padding: 0px;
+        margin: 0px;
+        font-size: 11pt;
+        color: #0C3456;
+        font-style: bold;
+        text-align: right
+    }
+
     .backblue{
         text-align: center;
         vertical-align: middle;
@@ -170,8 +179,20 @@
                     </p>
                 </div>
             </div>
+
+            <div class="table-row">
+                <div colspan="2" class="table-cell1">
+                </div>
+                <div colspan="3" class="table-cell1">
+                    <p class="estatus">
+                        {{$solicitud->estatus}}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <br>
 
     <div class="contenido">
         <div class="table">
@@ -311,6 +332,32 @@
                     </p>
                 </div>
             </div>
+            @if($solicitud->tipo_pago == 1 && $solicitud->forma_pago == 1 && $solicitud->fecha_elab_cheque)
+
+                <div class="table-row">
+                    <div colspan="3" class="table-cell1 title-cabecera">
+                       <br>
+                    </div>
+
+                    <div colspan="1" class="table-cell1 title-cabecera">
+                        <p>
+                            Fecha de elaboración de cheque:
+                        </p>
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div colspan="3" class="table-cell1 title-cabecera">
+                       <br>
+                    </div>
+
+                    <div colspan="1" class="table-cell1 title-cabecera">
+                        <div class="info-cabecera">
+                            {{$solicitud->fecha_elab_cheque}}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="table-row">
                 <div colspan="4" class="table-cell1 title-cabecera">
                     <br>

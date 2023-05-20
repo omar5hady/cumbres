@@ -152,7 +152,8 @@
                 otorgada ante el Notario Público número 33 del primer distrito judicial del estado de San Luis Potosí,
                 Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro    Público de la Propiedad y del
                 Comercio en San Luis Potosí, San Luis Potosí,  bajo el folio mercantil 70 que su domicilio fiscal se
-                encuentra en Manuel Gutiérrez Nájera 190. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
+                encuentra en Manuel Gutiérrez Nájera
+                    {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }}. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
                 Registro Federal de Contribuyentes es <strong>GCC000106QS6</strong>
             </p>
 
@@ -190,7 +191,8 @@
                 otorgada ante la fe del Notario publico número {{$contrato->num_notario}} del distrito de {{$contrato->distrito_notario}},
                 con inscripción en el Registro Publico de la Propiedad bajo el folio real No.{{$contrato->folio_registro}},
                 lo cual ha sido debidamente exhibido y explicado a EL PROMITENTE COMPRADOR y además se encuentra a su
-                disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapam, de la Ciudad de San Luis Potosí, S.L.P.
+                disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera
+                    {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }} Col. Tequisquiapam, de la Ciudad de San Luis Potosí, S.L.P.
             </p>
 
             <br>
@@ -249,7 +251,8 @@
                 el domicilio de <strong>“LOS PROMITENTES VENDEDORES”.</strong> De igual forma, el inmueble cuenta
                 con las especificaciones técnicas, de seguridad, materiales utilizados,
                 servicios básicos y demás características que se indican en el “Anexo A”. La propiedad se acredita en términos
-                del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en	Manuel Gutiérrez Nájera #190.
+                del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en	Manuel Gutiérrez Nájera
+                    {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }}.
                 Colonia Tequisquiapam, San Luis Potosí, San Luis Potosí.
             </p>
 
@@ -299,7 +302,8 @@
                         otorgada ante el Notario Público número 33 del primer distrito judicial del estado de San Luis Potosí,
                         Lic. Leopoldo de la Garza Marroquín, inscrita en el Registro    Público de la Propiedad y del
                         Comercio en San Luis Potosí, San Luis Potosí,  bajo el folio mercantil 70 que su domicilio fiscal se
-                        encuentra en Manuel Gutiérrez Nájera 190. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
+                        encuentra en Manuel Gutiérrez Nájera
+                            {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }}. Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí y su
                         Registro Federal de Contribuyentes es <strong>GCC000106QS6</strong>
                     </li>
                     <li>
@@ -318,7 +322,7 @@
                         escritura pública número 764 volumen 21 de fecha 25 de julio de 2018, otorgada ante la fe del Lic. Octaviano Gómez y González,
                         Notario Público número 4, con ejercicio en la Ciudad  de San Luis Potosí, S.L.P, cuyo testimonio obra inscrito en el Registro
                         Público de la Propiedad y Comercio de esa misma Ciudad, bajo el folio mercantil electrónico N-2018073682, que su domicilio
-                        fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de causantes
+                        fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de Contribuyentes
                         es <strong>CON180725REA.</strong>
                     </li>
 
@@ -361,13 +365,15 @@
                         otorgada ante la fe del Notario publico número {{$contrato->num_notario}} del distrito de {{$contrato->distrito_notario}},
                         con inscripción en el Registro Publico de la Propiedad bajo el folio real No.{{$contrato->folio_registro}},
                         lo cual ha sido debidamente exhibido y explicado a "EL PROMITENTE COMPRADOR" y además se encuentra a su
-                        disposición en el  domicilio mercantil ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapam, de la Ciudad de San Luis Potosí, S.L.P.
+                        disposición en el domicilio mercantil ubicado en Manuel Gutiérrez Nájera
+                            {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }} Col. Tequisquiapam, de la Ciudad de San Luis Potosí, S.L.P.
                     </p>
 
                     <p>
                         Dicha documentación puede ser consultada por <strong>“EL PROMITENTE COMPRADOR”</strong> en el domicilio del <strong>“EL
                         PROMITENTE VENDEDOR”<br>
-                        Calle: Manuel Gutiérrez Nájera #190 <br>
+                        Calle: Manuel Gutiérrez Nájera
+                            {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }} <br>
                         Col. Tequisquiapan <br>
                         C.P. 78230, San Luis Potosí, S.L.P. <br></strong>
                         N°. Telefónico 444 8334683 <br>
@@ -402,7 +408,8 @@
                     <strong>“EL PROMITENTE VENDEDOR”</strong> De igual forma, el inmueble cuenta con las especificaciones técnicas, de
                     seguridad, materiales utilizados, servicios básicos y demás características que se indican en el “Anexo A”. La
                     propiedad se acredita en términos del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en
-                    Manuel Gutiérrez Nájera #190 Col. Tequisquiapan de la Ciudad de San Luis Potosí, S.L.P.
+                    Manuel Gutiérrez Nájera
+                        {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }} Col. Tequisquiapan de la Ciudad de San Luis Potosí, S.L.P.
                     Colonia Tequisquiapam, San Luis Potosí, San Luis Potosí.
                 </li>
 
@@ -637,7 +644,8 @@
                     “EL PROMITENTE VENDEDOR”,
                 @endif
             </strong>
-            ubicado en Manuel Gutiérrez Nájera #190 Col. Tequisquiapam de la Ciudad de San Luis Potosí, S.L.P.
+            ubicado en Manuel Gutiérrez Nájera
+                {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }} Col. Tequisquiapam de la Ciudad de San Luis Potosí, S.L.P.
             o al teléfono 444 8 33 46 83, 84 al 85 o en su caso al  domicilio electrónico postventa@grupocumbres.com, especificando los elementos de la
             vivienda sobre los que se pretende hacer válida su garantía.
         </p>
@@ -995,7 +1003,8 @@
                     Plazo de respuesta:  8 días hábiles.
                 </li>
                 <li class="li-custom">
-                    Centro de Ventas (personalizada):</strong> Manuel Gutiérrez Nájera 190. Colonia Tequisquiapam,
+                    Centro de Ventas (personalizada):</strong> Manuel Gutiérrez Nájera
+                        {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }}. Colonia Tequisquiapam,
                     con un horario de atención de las 9:00 horas a las 17:00 horas, los días de lunes a viernes y
                     sábados de 9:00 horas a 13 horas.
                 </li>
@@ -1020,7 +1029,8 @@
             @endif
             </strong> -:<br>
             <div style="margin-left: 30px;">
-                Calle: Manuel Gutiérrez Nájera #190 Col. Tequisquiapam <br>
+                Calle: Manuel Gutiérrez Nájera
+                    {{ $contrato->emp_constructora == 'CONCRETANIA' ? '#180' : '#190' }} Col. Tequisquiapam <br>
                 C.P. 78230, San Luis Potosí, S.L.P. <br>
                 No telefónico 444 8334683 <br>
                 Correo electrónico atencion@grupocumbres.com <br>
@@ -1058,7 +1068,8 @@
         <p>
             <strong>DECIMA NOVENA.- <u>MODELO DE CONTRATO PROFECO.</u></strong> El modelo de contrato de adhesión que se utiliza para documentar la
             presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el
-            número <strong>4446-2023</strong> de fecha <strong>02 DE MAYO DE 2023.</strong> Asimismo, el contenido de   este contrato se incorporará en escritura pública sin importar el orden
+            número <strong>{{ $contrato->emp_constructora == 'CONCRETANIA' ? '________________' : '4446-2023' }}
+            de fecha <strong>{{ $contrato->emp_constructora == 'CONCRETANIA' ? '________________' : '02 DE MAYO DE 2023.' }}</strong> Asimismo, el contenido de   este contrato se incorporará en escritura pública sin importar el orden
             y forma en que se citen y esto no se considerará como incumplimiento a la Ley, ni modificación al modelo de contrato registrado ante PROFECO.
             Cualquier variación del contenido del presente contrato en perjuicio de <strong>“EL PROMITENTE COMPRADOR”</strong> se tendrá por no puesta.
         </p>

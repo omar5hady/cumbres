@@ -520,6 +520,10 @@ class SolicitudesController extends Controller
 
     public function pagado(Request $request, $id){
         $solic = SpSolicitud::findOrFail($request->id);
+        if($request->comentario != ''){
+            $this->createObs($solic->id, "Cheque en elaboracion: ".$request->comentario);
+            $solic->fecha_elab_cheque = Carbon::now();
+        }
         $solic->pagado = 1;
         $solic->save();
     }
@@ -967,6 +971,13 @@ class SolicitudesController extends Controller
         $fecha = new Carbon($solicitud->created_at);
         $solicitud->f_created = $fecha->formatLocalized('%d de %B del %Y %H:%m');
 
+        if($solicitud->fecha_elab_cheque != NULL){
+            $fecha_elab_cheque = new Carbon($solicitud->fecha_elab_cheque);
+            $solicitud->fecha_elab_cheque = $fecha_elab_cheque->formatLocalized('%d de %B del %Y %H:%m');
+        }
+
+        $solicitud->estatus = $this->getStatus($solicitud);
+
         $pdf = \PDF::loadview('pdf.PagosInternos.solicitudPago',['solicitud' => $solicitud]);
 
         return $pdf->stream('Solicitud_pago.pdf');
@@ -993,6 +1004,23 @@ class SolicitudesController extends Controller
         }
 
         return $concentrado;
+    }
+
+    private function getStatus($solicitud){
+        $status = 'Solicitud Nueva';
+        if($solicitud->status == 1)
+            $status = 'Solicitud En Proceso';
+        if($solicitud->status == 2)
+            $status = ' Solicitud en Proceso de Aprobadas';
+        if($solicitud->status == 3){
+            $obs = SpObservacion::select('usuario')->where('solicitud_id','=',$solicitud->id)
+                ->where('comentario','=','Solicitud Autorizada por Dirección')->first();
+            $status = ' Solicitud Autorizada por: '.$obs->usuario;
+        }
+        if($solicitud->status == 4)
+            $status = 'Pagada';
+
+        return $status;
     }
 
 }

@@ -48,6 +48,7 @@ class CreateSpSolicitudsTable extends Migration
 
             $table->boolean('rev_op')->default(0);
             $table->boolean('pagado')->default(0);
+            $table->date('fecha_elab_cheque')->nullable();
 
             $table->string('convenio')->nullable();
             $table->string('referencia')->nullable();

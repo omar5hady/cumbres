@@ -290,7 +290,7 @@
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
                                                             v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
-                                                            @click="pagado(solic.id)"
+                                                            @click="pagado(solic.id, solic.tipo_pago, solic.forma_pago)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
                                                     </td>
@@ -349,7 +349,7 @@
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
                                                             v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
-                                                            @click="pagado(solic.id)"
+                                                            @click="pagado(solic.id, solic.tipo_pago, solic.forma_pago)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
                                                     </td>
@@ -418,7 +418,7 @@
                                                 </Button>
                                                 <Button :btnClass="'btn-success'" title="Indicar pago"
                                                     v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
-                                                    @click="pagado(solic.id)"
+                                                    @click="pagado(solic.id, solic.tipo_pago, solic.forma_pago)"
                                                     :icon="'fa fa-money'"
                                                 ></Button>
                                             </td>
@@ -519,7 +519,7 @@
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
                                                             v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
-                                                            @click="pagado(solic.id)"
+                                                            @click="pagado(solic.id, solic.tipo_pago, solic.forma_pago)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
                                                     </td>
@@ -598,7 +598,7 @@
                                                         </Button>
                                                         <Button :btnClass="'btn-success'" title="Indicar pago"
                                                             v-if="usuario == 'cp.martin' && solic.pagado == 0 || usuario == 'shady' && solic.pagado == 0 || usuario == 'jorge.diaz' && solic.pagado == 0"
-                                                            @click="pagado(solic.id)"
+                                                            @click="pagado(solic.id, solic.tipo_pago, solic.forma_pago)"
                                                             :icon="'fa fa-money'"
                                                         ></Button>
                                                     </td>
@@ -2044,7 +2044,56 @@ export default {
                 }
             })
         },
-        pagado(id){
+        pagado(id, tipo_pago, forma_pago){
+
+            if(tipo_pago == 1 && forma_pago == 1)//Cheque
+                this.setElaboracionCheque(id)
+            else{
+                this.indicarPago(id)
+            }
+        },
+        setElaboracionCheque(id){
+            let me = this;
+            (async function getComent () {
+                const {value: comentario} = await Swal({
+                title: 'Indicar elaboración de cheque',
+                input: 'text',
+                inputPlaceholder: 'Deja un comentario...',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                    if (value != '') {
+                        resolve()
+                    } else {
+                        resolve('Es necesario escribir el comentario :)')
+                    }
+                    })
+                }
+                })
+                if (comentario) {
+                    axios.put(`/solic-pagos/pagado/${id}`,{
+                        'id': id,
+                        'comentario': comentario
+                    }).then(function (response){
+                        me.cerrarFormulario();
+                        me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
+                        //Se muestra mensaje Success
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Solicitud actualizada'
+                        })
+                    }).catch(function (error){
+                    });
+                }
+            })()
+        },
+        indicarPago(id){
             let me = this;
             const titulo = '¿Seguro de indicar pago para esta solicitud?';
 
@@ -2061,6 +2110,7 @@ export default {
                 if (result.value) {
                     axios.put(`/solic-pagos/pagado/${id}`,{
                         'id': id,
+                        'comentario': ''
                     }).then(function (response){
                         me.cerrarFormulario();
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros

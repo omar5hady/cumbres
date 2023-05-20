@@ -173,32 +173,31 @@
         </ul>
 
 
-
-
-
         <p><strong>II.- Declara CONCRETANIA por medio de su representante:</strong></p>
 
-        <ol>
-            <li>
-                Que es una sociedad mercantil debidamente constituida con arreglo a las leyes de la República Mexicana según consta en la
-                escritura pública número 764 volumen 21 de fecha 25 de julio de 2018, otorgada ante la fe del Lic. Octaviano Gómez y González,
-                Notario Público número 4, con ejercicio en la Ciudad  de San Luis Potosí, S.L.P, cuyo testimonio obra inscrito en el Registro
-                Público de la Propiedad y Comercio de esa misma Ciudad, bajo el folio mercantil electrónico N-2018073682, que su domicilio
-                fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de causantes
-                es <strong>CON180725REA.</strong>
-            </li>
-            <li>
-                Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
-                otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
-                inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
-                123507, mismas atribuciones que no le han sido revocadas a la fecha.
-            </li>
-            <li>
-                Que su objeto social es la ejecución, administración, construcción, promoción, comercialización y arrendamiento de desarrollos
-                inmobiliarios, comerciales y habitacionales; así como la celebración de los contratos mercantiles que sean necesarios para el
-                cumplimiento de su objeto.
-            </li>
-        </ol>
+        <p>
+            <ol>
+                <li>
+                    Que es una sociedad mercantil debidamente constituida con arreglo a las leyes de la República Mexicana según consta en la
+                    escritura pública número 764 volumen 21 de fecha 25 de julio de 2018, otorgada ante la fe del Lic. Octaviano Gómez y González,
+                    Notario Público número 4, con ejercicio en la Ciudad  de San Luis Potosí, S.L.P, cuyo testimonio obra inscrito en el Registro
+                    Público de la Propiedad y Comercio de esa misma Ciudad, bajo el folio mercantil electrónico N-2018073682, que su domicilio
+                    fiscal es Manuel Gutiérrez Nájera #180,  Col Tequisquiapan,  en la Ciudad de San Luis Potosí y su registro federal de causantes
+                    es <strong>CON180725REA.</strong>
+                </li>
+                <li>
+                    Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
+                    otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
+                    inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
+                    123507, mismas atribuciones que no le han sido revocadas a la fecha.
+                </li>
+                <li>
+                    Que su objeto social es la ejecución, administración, construcción, promoción, comercialización y arrendamiento de desarrollos
+                    inmobiliarios, comerciales y habitacionales; así como la celebración de los contratos mercantiles que sean necesarios para el
+                    cumplimiento de su objeto.
+                </li>
+            </ol>
+        </p>
 
         <br>
 
@@ -210,6 +209,7 @@
                 bajo las que se celebrará el contrato de compraventa por el que “LOS PROMITENTES VENDEDORES” venderán y
                 “EL PROMITENTE COMPRADOR” comprará, el inmueble cuya superficie, ubicación, acabados, características,
                 especificaciones técnicas, de seguridad, materiales utilizados, se encuentran descritas en el citado “Anexo A”.
+                <br>
             </li>
             <li>
                 Que con fecha 13 de marzo de 2020, celebraron un convenio de Alianza Estratégica, que tiene por objeto llevar
@@ -227,12 +227,17 @@
                     así como con las autorizaciones, licencias y permisos expedidos por las autoridades competentes para la
                     construcción, seguridad, uso de suelo, y demás relativas al Inmueble, mismas que han sido exhibidas
                     a “EL PROMITENTE COMPRADOR” y se encuentran a su disposición en
-                    el domicilio de “LOS PROMITENTES VENDEDORES”. De igual forma, el inmueble cuenta
+                    el domicilio de “LOS PROMITENTES VENDEDORES”.
+                </p>
+
+                <p>
+                    De igual forma, el inmueble cuenta
                     con las especificaciones técnicas, de seguridad, materiales utilizados,
                     servicios básicos y demás características que se indican en el “Anexo A”. La propiedad se acredita en términos
                     del Instrumento Notarial, el cual está a su disposición en el domicilio ubicado en	Manuel Gutiérrez Nájera #190.
                     Colonia Tequisquiapan, San Luis Potosí, San Luis Potosí.
                 </p>
+                <br>
             </li>
             <li>
                 Que, con respecto a los planos estructurales, arquitectónicos y de instalaciones:
@@ -276,8 +281,8 @@
         </ol>
 
 
-        <p>
-            <strong>III.-Declara "EL PROMITENTE COMPRADOR":</strong></p>
+
+        <p><strong>III.-Declara "EL PROMITENTE COMPRADOR":</strong></p>
 
 
 
@@ -529,7 +534,7 @@
                     73 Quáter de la Ley Federal del Consumidor deben considerarse.
                 </li>
                 <li class="li-custom">
-                    Las demás cláusulas que correspondan conforme a la naturaleza de la compraventa.
+                    Las demás cláusulas que correspondan conforme a la naturaleza de la compraventa. <br>
                 </li>
 
             </ul>
