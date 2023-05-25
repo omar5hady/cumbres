@@ -13,7 +13,7 @@
                     <i class="fa fa-align-justify"></i> Ficha Medica
                     <div class="button-header">
                         <Button v-if="busqueda.user_id && (userName == 'shady' || userName == 'marce.gaytan')" @click="nuevoMovimiento()"
-                            :btnClass="'btn-sucess'"
+                            :btnClass="'btn-success'"
                             :icon="'icon-plus'"
                         >Nuevo</Button>
                         <!---->
@@ -82,16 +82,22 @@
                                         <div class="col-md-4">
                                             <h6 style="vertical-align: inherit">Fecha: {{histMedico.fecha}}</h6>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <h6 style="vertical-align: inherit;">
                                                 Peso: <strong>{{histMedico.peso}} kg</strong>
                                             </h6>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
+                                            <h6 style="vertical-align: inherit;">
+                                                Cintura: <strong>{{histMedico.cintura}} cm</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-4">
                                             <h6 style="vertical-align: inherit;">
                                                 Talla: <strong>{{medicalRecord.estatura}} m</strong>
                                             </h6>
                                         </div>
+
                                         <div class="col-md-12">
                                             <h6 style="vertical-align: inherit;">
                                                 IMC: <strong>{{histMedico.imc}}</strong>
@@ -104,8 +110,33 @@
                                                 Regimen de alimentación: <strong>{{medicalRecord.regimen_alimenticio}}</strong>
                                             </h6>
                                         </div>
+                                        <div class="col-md-12">
+                                            <hr>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <h6 style="vertical-align: inherit;">
+                                                Glucosa: <strong>{{histMedico.glucosa}} mg/dL</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 style="vertical-align: inherit;">
+                                                Trigliceridos: <strong>{{histMedico.trigliceridos}} mg/dL</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 style="vertical-align: inherit;">
+                                                Colesterol: <strong>{{histMedico.colesterol}} mg/dL</strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <h6 style="vertical-align: inherit;">
+                                                Presión arterial: <strong>{{histMedico.presion_arterial}}</strong>
+                                            </h6>
+                                        </div>
 
                                         <div class="col-md-12">
+                                            <hr>
 
                                             <Nav :current="medicalRecord.historial.current_page"
                                                 :last="medicalRecord.historial.last_page"
@@ -350,6 +381,26 @@
                                 <input v-model="medicalRecord.estatura" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
                             </template>
                         </RowModal>
+                        <RowModal :label1="'Cintura (cm)'" :clsRow1="'col-md-4'">
+                            <input v-model="histMedico.cintura" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                        </RowModal>
+
+                        <hr>
+
+                        <RowModal :label1="'Glucosa (mg/dL)'" :clsRow1="'col-md-4'" :clsRow2="'col-md-4'" :label2="'Trigliceridos (mg/dL)'">
+                            <input v-model="histMedico.glucosa" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                            <template v-slot:input2>
+                                <input v-model="histMedico.trigliceridos" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                            </template>
+                        </RowModal>
+
+                        <RowModal :label1="'Colesterol (mg/dL)'" :clsRow1="'col-md-5'">
+                            <input v-model="histMedico.colesterol" type="text" class="form-control" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)">
+                        </RowModal>
+                        <RowModal :label1="'Presión Arterial'" :clsRow1="'col-md-7'">
+                            <input v-model="histMedico.presion_arterial" type="text" class="form-control" maxlength="10">
+                        </RowModal>
+
                         <RowModal :label1="'Alerta'" :clsRow1="'col-md-8'">
                             <textarea v-model="medicalRecord.alerta" class="form-control" cols="50" rows="4"></textarea>
                         </RowModal>
@@ -836,6 +887,12 @@ export default {
                 tratamiento_act : '',
                 medic_controlado : '',
                 observacion : '',
+                //PrevenImss
+                cintura : '',
+                glucosa : '',
+                trigliceridos : '',
+                colesterol : '',
+                presion_arterial : '',
                 //HISTORIAL MEDICO
                 diabetes: false,
                 diabetes_esp: '',
@@ -1185,6 +1242,11 @@ export default {
             this.histMedico = {
                 peso : this.histMedico.peso ? this.histMedico.peso : 50,
                 imc: this.histMedico.paso/(this.medicalRecord.estatura*this.medicalRecord.estatura),
+                cintura : this.histMedico.cintura,
+                glucosa : '',
+                trigliceridos : '',
+                colesterol : '',
+                presion_arterial : '',
                 tratamiento_act : '',
                 medic_controlado : '',
                 observacion : '',

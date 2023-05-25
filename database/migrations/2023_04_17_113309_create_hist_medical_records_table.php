@@ -22,6 +22,12 @@ class CreateHistMedicalRecordsTable extends Migration
             $table->text('tratamiento_act')->nullable();
             $table->text('medic_controlado')->nullable();
             $table->text('observacion')->nullable();
+            //PrevenIMSS
+            $table->float('cintura',8,2)->nullable();
+            $table->float('glucosa',8,2)->nullable();
+            $table->float('trigliceridos',8,2)->nullable();
+            $table->float('colesterol',8,2)->nullable();
+            $table->string('presion_arterial')->nullable();
             //HISTORIAL MEDICO
             $table->boolean('diabetes')->default(0);
             $table->string('diabetes_esp',50)->nullable();

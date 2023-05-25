@@ -24,20 +24,20 @@ use App\Closet_otro;
 
 class RecepEquipamientoController extends Controller
 {
-    // Crea un nuevo proceso de recepcion 
+    // Crea un nuevo proceso de recepcion
     public function storeRecepcion (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tipoRecepcion = $request->tipoRecepcion;
         setlocale(LC_TIME, 'es_MX.utf8');
-        $hoy = Carbon::today()->toDateString(); // crea un nueva variable de la fecha en curso 
-        // crea la variable con nombre y apellidos del usuario autor 
-        $usuario = DB::table('personal')->select('nombre','apellidos')->where('id','=',Auth::user()->id)->get(); 
+        $hoy = Carbon::today()->toDateString(); // crea un nueva variable de la fecha en curso
+        // crea la variable con nombre y apellidos del usuario autor
+        $usuario = DB::table('personal')->select('nombre','apellidos')->where('id','=',Auth::user()->id)->get();
 
 
-        try{ // se empieza el proceso con un (try and chatch) 
+        try{ // se empieza el proceso con un (try and chatch)
             DB::beginTransaction();
 
-                    // se crean nuevos registros 
+                    // se crean nuevos registros
                     $recepcion = new Recep_equipamiento();
                     $recepcion->id = $request->id;
                     $recepcion->fecha_revision = $hoy;
@@ -54,11 +54,11 @@ class RecepEquipamientoController extends Controller
                     // se busca la solicitud
                     $solicitud = Solic_equipamiento::findOrFail($request->id);
 
-                    // 
+                    //
                     $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
                     $proveedor = $equipamiento->proveedor_id;  // se crea variable para la notificacion al proveedor
                     $credito = Credito::findOrFail( $solicitud->contrato_id);
-                    if($recepcion->resultado == 2){ // verifica si es aceptado o rechazado 
+                    if($recepcion->resultado == 2){ // verifica si es aceptado o rechazado
                         $solicitud->status = 4;
                         $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                     }
@@ -69,11 +69,11 @@ class RecepEquipamientoController extends Controller
                     $solicitud->recepcion = 1; // en la solicitud se cambia de status
                     $solicitud->save();
                     $recepcion->save();
-                    
+
                     //////////////NOTIFICACION PARA EL PROVEEDOR
                     $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                     $fecha = Carbon::now();
-                    
+
                     $arregloAceptado = [
                         'notificacion' => [
                             'usuario' => $imagenUsuario[0]->usuario,
@@ -86,8 +86,8 @@ class RecepEquipamientoController extends Controller
                     //////////////NOTIFICACION PARA EL PROVEEDOR
 
                     User::findOrFail($proveedor)->notify(new NotifyAdmin($arregloAceptado));
-                
-            switch($tipoRecepcion){ // segun el tipo de recepcion es el caso para crear los nuevos regitros 
+
+            switch($tipoRecepcion){ // segun el tipo de recepcion es el caso para crear los nuevos regitros
                 case 1:{
                         $cocina_acabado = new Cocina_acabado();
                             $cocina_acabado->id = $request->id;
@@ -133,7 +133,7 @@ class RecepEquipamientoController extends Controller
                             $cocina_puerta->alacena_parches = $request->alacena_parches;
                             $cocina_puerta->save();
 
-                    
+
                     break;
                 }
                 case 2:{
@@ -297,17 +297,17 @@ class RecepEquipamientoController extends Controller
                             $closet_otro->clo_soporte_princ = $request->clo_soporte_princ;
                             $closet_otro->clo_soporte_baja = $request->clo_soporte_baja;
                             $closet_otro->save();
-                    break;                
+                    break;
                 }
             }
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
-    // Actualiza informacion  de acuerdo al id  de recepcion 
+    // Actualiza informacion  de acuerdo al id  de recepcion
     public function updateRecepcion (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tipoRecepcion = $request->tipoRecepcion;
@@ -340,20 +340,20 @@ class RecepEquipamientoController extends Controller
                         if($recepcion->resultado == 2){ // verifica si es aprobado o rechazado
                             $solicitud->status = 4; // se cambia status
                             $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. " para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
-                            // mensaje para la notificacion 
+                            // mensaje para la notificacion
                         }
                         else{
                             $solicitud->status = 0;
                             $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. " para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                         }
                         $solicitud->recepcion = 1;
-                        $solicitud->save(); // se gurada todo el proceso 
+                        $solicitud->save(); // se gurada todo el proceso
                         $recepcion->save();
-                        
+
                         //////////////NOTIFICACION PARA EL PROVEEDOR
                         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                         $fecha = Carbon::now();
-                        
+
                         $arregloAceptado = [
                             'notificacion' => [
                                 'usuario' => $imagenUsuario[0]->usuario,
@@ -366,7 +366,7 @@ class RecepEquipamientoController extends Controller
                         //////////////NOTIFICACION PARA EL PROVEEDOR
 
                         User::findOrFail($proveedor)->notify(new NotifyAdmin($arregloAceptado));
-            switch($tipoRecepcion){  // funcion para seleccionar el tipo de recepcion 
+            switch($tipoRecepcion){  // funcion para seleccionar el tipo de recepcion
                 case 1:{
                     $cocina_acabado = Cocina_acabado::findOrFail($request->id);
                         $cocina_acabado->cubierta_acab_uniones  = $request->cubierta_acab_uniones;
@@ -409,7 +409,7 @@ class RecepEquipamientoController extends Controller
                         $cocina_puerta->alacena_parches = $request->alacena_parches;
                         $cocina_puerta->save();
 
-                    
+
                     break;
                 }
                 case 2:{
@@ -570,17 +570,17 @@ class RecepEquipamientoController extends Controller
                             $closet_otro->clo_soporte_princ = $request->clo_soporte_princ;
                             $closet_otro->clo_soporte_baja = $request->clo_soporte_baja;
                             $closet_otro->save();
-                    break;                
+                    break;
                 }
             }
             DB::commit();
-                
+
         } catch (Exception $e){
             DB::rollBack();
-        }  
+        }
     }
 
-    // obtiene toda la infrmacion del registro de recepcion 
+    // obtiene toda la infrmacion del registro de recepcion
     public function getRecepcion (Request $request){
 
         $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
@@ -593,10 +593,10 @@ class RecepEquipamientoController extends Controller
             ->select('recep_equipamientos.id as solicitud_id',
                 'cocina_acabados.cubierta_acab_uniones','cocina_acabados.cubierta_acab_silicon','cocina_acabados.cubierta_acab_cortes',
                 'cocina_acabados.puerta_acab_alineados','cocina_acabados.puerta_acab_cantos',
-                
+
                 'cocina_otras.estufa_instalacion','cocina_otras.estufa_pzas_extra','cocina_otras.estufa_manuales','cocina_otras.estufa_danos',
                 'cocina_otras.tarja_danos','cocina_otras.tarja_pzas_extra',
-                
+
                 'cocina_puertas.puerta_danos','cocina_puertas.puerta_tornillos','cocina_puertas.puerta_abatimiento','cocina_puertas.puerta_limpieza',
                 'cocina_puertas.puerta_jaladera','cocina_puertas.puerta_gomas','cocina_puertas.cajones_uniones',
                 'cocina_puertas.cajones_silicon','cocina_puertas.cajones_limpieza','cocina_puertas.cajones_jaladeras',
@@ -641,9 +641,9 @@ class RecepEquipamientoController extends Controller
                 'closet_otros.clo_pande_der','closet_otros.clo_pande_izq','closet_otros.clo_pande_princ',
                 'closet_otros.clo_pande_baja','closet_otros.clo_soporte_der','closet_otros.clo_soporte_izq',
                 'closet_otros.clo_soporte_princ','closet_otros.clo_soporte_baja'
-                
+
             )
-            ->where('recep_equipamientos.id','=',$request->id)  // filtra solo el id de la recepcion 
+            ->where('recep_equipamientos.id','=',$request->id)  // filtra solo el id de la recepcion
             ->get();
 
         return [
@@ -653,7 +653,7 @@ class RecepEquipamientoController extends Controller
 
     // Crea un archivo PDF con la informacion sobre la recepcion de los closets
     public function recepcionClosetsPDF($id){
-        $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
+        return $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
         ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
         ->leftJoin('cocina_otras','recep_equipamientos.id','=','cocina_otras.id')
         ->leftJoin('closet_acabados','recep_equipamientos.id','=','closet_acabados.id')
@@ -673,10 +673,10 @@ class RecepEquipamientoController extends Controller
         ->select('recep_equipamientos.id as solicitud_id',
             'cocina_acabados.cubierta_acab_uniones','cocina_acabados.cubierta_acab_silicon','cocina_acabados.cubierta_acab_cortes',
             'cocina_acabados.puerta_acab_alineados','cocina_acabados.puerta_acab_cantos',
-            
+
             'cocina_otras.estufa_instalacion','cocina_otras.estufa_pzas_extra','cocina_otras.estufa_manuales','cocina_otras.estufa_danos',
             'cocina_otras.tarja_danos','cocina_otras.tarja_pzas_extra',
-            
+
             'cocina_puertas.puerta_danos','cocina_puertas.puerta_tornillos','cocina_puertas.puerta_abatimiento','cocina_puertas.puerta_limpieza',
             'cocina_puertas.puerta_jaladera','cocina_puertas.puerta_gomas','cocina_puertas.cajones_uniones',
             'cocina_puertas.cajones_silicon','cocina_puertas.cajones_limpieza','cocina_puertas.cajones_jaladeras',
@@ -734,12 +734,12 @@ class RecepEquipamientoController extends Controller
             'recep_equipamientos.supervisor',
             'recep_equipamientos.observacion',
             'recep_equipamientos.fecha_revision'
-            
+
         )
         ->where('recep_equipamientos.id','=',$id)
         ->get();
 
-        // llama a la funcion para crear el archivo PDF 
+        // llama a la funcion para crear el archivo PDF
         $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionClosets', ['resultados' => $resultados]);
         //$pdf->setPaper('A4','landscape');
         return $pdf->stream('recepcion_de_closets.pdf');
@@ -747,7 +747,7 @@ class RecepEquipamientoController extends Controller
 
     // Crea un archivo PDF con la informacion sobre la recepcion de la cocina
     public function recepcionCocinaPDF(Request $request){
-        $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
+        return $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
         ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
         ->leftJoin('cocina_otras','recep_equipamientos.id','=','cocina_otras.id')
         ->leftJoin('closet_acabados','recep_equipamientos.id','=','closet_acabados.id')
@@ -767,10 +767,10 @@ class RecepEquipamientoController extends Controller
         ->select('recep_equipamientos.id as solicitud_id',
             'cocina_acabados.cubierta_acab_uniones','cocina_acabados.cubierta_acab_silicon','cocina_acabados.cubierta_acab_cortes',
             'cocina_acabados.puerta_acab_alineados','cocina_acabados.puerta_acab_cantos',
-            
+
             'cocina_otras.estufa_instalacion','cocina_otras.estufa_pzas_extra','cocina_otras.estufa_manuales','cocina_otras.estufa_danos',
             'cocina_otras.tarja_danos','cocina_otras.tarja_pzas_extra',
-            
+
             'cocina_puertas.puerta_danos','cocina_puertas.puerta_tornillos','cocina_puertas.puerta_abatimiento','cocina_puertas.puerta_limpieza',
             'cocina_puertas.puerta_jaladera','cocina_puertas.puerta_gomas','cocina_puertas.cajones_uniones',
             'cocina_puertas.cajones_silicon','cocina_puertas.cajones_limpieza','cocina_puertas.cajones_jaladeras',
@@ -828,11 +828,11 @@ class RecepEquipamientoController extends Controller
             'recep_equipamientos.supervisor',
             'recep_equipamientos.observacion',
             'recep_equipamientos.fecha_revision'
-            
+
         )
         ->where('recep_equipamientos.id','=',$request->id)
         ->get();
-        // llama a la funcion para crear el archivo PDF 
+        // llama a la funcion para crear el archivo PDF
         $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionCocina', ['resultados' => $resultados]);
         //$pdf->setPaper('A4','landscape');
         return $pdf->stream('recepcion_de_closets.pdf');
@@ -840,7 +840,7 @@ class RecepEquipamientoController extends Controller
 
     // // Crea un archivo PDF con la informacion general sobre la recepcion
     public function recepcionGeneralPDF(Request $request){
-        $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
+        return $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
         ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
         ->leftJoin('cocina_otras','recep_equipamientos.id','=','cocina_otras.id')
         ->leftJoin('closet_acabados','recep_equipamientos.id','=','closet_acabados.id')
@@ -871,11 +871,11 @@ class RecepEquipamientoController extends Controller
             'recep_equipamientos.supervisor',
             'recep_equipamientos.observacion',
             'recep_equipamientos.fecha_revision'
-            
+
         )
         ->where('recep_equipamientos.id','=',$request->id)
         ->get();
-        // llama a la funcion para crear el archivo PDF 
+        // llama a la funcion para crear el archivo PDF
         $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionGeneral', ['resultados' => $resultados]);
         //$pdf->setPaper('A4','landscape');
         return $pdf->stream('recepcion_de_trabajos.pdf');

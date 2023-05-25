@@ -15,6 +15,12 @@ class HistMedicalRecords extends Model
         'tratamiento_act',
         'medic_controlado',
         'observacion',
+         //PrevenIMSS
+        'cintura',
+        'glucosa',
+        'trigliceridos',
+        'colesterol',
+        'presion_arterial',
         //HISTORIAL MEDICO
         'diabetes',
         'diabetes_esp',

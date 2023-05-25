@@ -49,6 +49,11 @@ class MedicalRecordController extends Controller
         $hist->fecha = Carbon::now();
         $hist->peso = $histMedico['peso'];
         $hist->imc = $histMedico['imc'];
+        $hist->cintura = $histMedico['cintura'];
+        $hist->glucosa = $histMedico['glucosa'];
+        $hist->trigliceridos = $histMedico['trigliceridos'];
+        $hist->colesterol = $histMedico['colesterol'];
+        $hist->presion_arterial = $histMedico['presion_arterial'];
         $hist->tratamiento_act = $histMedico['tratamiento_act'];
         $hist->medic_controlado = $histMedico['medic_controlado'];
         $hist->observacion = $histMedico['observacion'];
