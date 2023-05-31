@@ -802,7 +802,7 @@ class SolicitudesController extends Controller
                         $detalle->status = 1;
                 }
                 if($detalle->pendiente_id != NULL){
-                    $det2 = SpDetalle::findOrFail($detalle->id);
+                    $det2 = SpDetalle::findOrFail($detalle->pendiente_id);
                     $det2->saldo = $det2->saldo - $detalle->pago;
                     if($det2->saldo <= 0)
                         $det2->status = 0;
@@ -988,7 +988,12 @@ class SolicitudesController extends Controller
         foreach($concentrado as $c){
             $c->total = 0;
             $c->detalle = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
-                ->select('sp_detalles.*', 'solic.fecha_pago')
+                ->join('personal as pv','solic.proveedor_id','=','pv.id')
+                ->join('personal as user','solic.solicitante_id','=','user.id')
+                ->select('sp_detalles.*', 'solic.fecha_pago',
+                    DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante"),
+                    DB::raw("CONCAT(pv.nombre,' ',pv.apellidos) AS proveedor")
+                )
                 ->where('sp_detalles.cargo','=',$c->cargo)
                 ->where('solic.status','=',4);
                 if($request->empresa != ''){

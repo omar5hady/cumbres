@@ -1404,7 +1404,7 @@ class UserController extends Controller
     // actualiza informacion del perfil usuario
     public function updatePassword(Request $request){
 
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         if($request->password != ''){ // cambia los valores de la contrasela
             $user = User::findOrFail($request->id);

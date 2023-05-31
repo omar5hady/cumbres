@@ -79,7 +79,9 @@
                             'Concepto',
                             'Especificación',
                             'Fecha pago',
-                            'Monto'
+                            'Monto',
+                            'Solicitante',
+                            'Proveedor',
                         ]"
                     >
                         <template v-slot:tbody>
@@ -94,6 +96,12 @@
                                     {{det.fecha_pago}}
                                 </td>
                                 <th class="td2" v-text="'$'+$root.formatNumber(det.pago)"></th>
+                                <td class="td2">
+                                    {{ det.solicitante }}
+                                </td>
+                                <td class="td2">
+                                    {{ det.proveedor }}
+                                </td>
                             </tr>
                         </template>
                     </TableComponent>

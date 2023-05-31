@@ -1074,11 +1074,11 @@ class IniObraController extends Controller
         //Se obtienen los montos total de las estimaciones anteriores.
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
             ->select(
-                'total_estimacion'
+                'total_estimacion', 'num_estimacion'
             )
             ->where('estimaciones.aviso_id','=',$request->clave)
             ->where('num_estimacion','<',$num_est)
-            ->distinct('total_estimacion')
+            ->distinct('num_estimacion')
         ->get();
 
         $totalEstimacionAnt = 0;
@@ -1215,10 +1215,10 @@ class IniObraController extends Controller
 
         //Se obtienen los montos total de las estimaciones anteriores.
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
-            ->select('total_estimacion')
+            ->select('total_estimacion', 'num_estimacion')
             ->where('estimaciones.aviso_id','=',$request->clave)
             ->where('num_estimacion','<',$num_est)
-            ->distinct('total_estimacion')->get();
+            ->distinct('num_estimacion')->get();
 
         $totalEstimacionAnt = 0;
 
@@ -1393,11 +1393,11 @@ class IniObraController extends Controller
         //Se obtienen los montos total de las estimaciones anteriores.
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
         ->select(
-            'total_estimacion'
+            'total_estimacion', 'num_estimacion'
         )
         ->where('estimaciones.aviso_id','=',$request->clave)
         ->where('num_estimacion','<',$num_est)
-        ->distinct('total_estimacion')
+        ->distinct('num_estimacion')
         ->get();
 
         $totalEstimacionAnt = 0;
@@ -1859,11 +1859,11 @@ class IniObraController extends Controller
         //Se obtienen los montos total de las estimaciones anteriores.
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
         ->select(
-            'total_estimacion'
+            'total_estimacion', 'num_estimacion'
         )
         ->where('estimaciones.aviso_id','=',$request->clave)
         ->where('num_estimacion','<',$num_est)
-        ->distinct('total_estimacion')
+        ->distinct('num_estimacion')
         ->get();
 
         $totalEstimacionAnt = 0;

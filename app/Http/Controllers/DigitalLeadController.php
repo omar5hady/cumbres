@@ -893,7 +893,7 @@ class DigitalLeadController extends Controller
 
             $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
             $obs->lead_id = $lead->id;
-            $obs->comentario = 'Aviso!, lead asignado a '.$vendedorD->nombre.' '.$vendedorD->apellidos.' para seguimiento,
+            $obs->comentario = 'Aviso!, lead asignado de manera aleatoria a '.$vendedorD->nombre.' '.$vendedorD->apellidos.' para seguimiento,
                                     favor de ingresar al modulo de Digital Leads para mas información. ';
 
             $obs->usuario = $usuario;

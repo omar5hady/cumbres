@@ -1478,16 +1478,14 @@
                                         Rechazar solicitud
                                     </Button>
                                     <Button v-if="solicitudData.vb_direccion == 0 && admin === 1
-                                        || solicitudData.vb_direccion == 0 && usuario == 'shady'
-                                        || solicitudData.vb_direccion == 0 && usuario == 'cp.martin' && solicitudData.extraordinario == 1"
+                                        || solicitudData.vb_direccion == 0 && usuario == 'shady'"
                                         :icon="'icon-check'"
                                         :btnClass="'btn-success'"
                                         @click="changeVbDireccion(1)">
                                         Aprobar solicitud
                                     </Button>
                                     <Button v-if="solicitudData.vb_direccion == 1 && admin === 2
-                                        || solicitudData.vb_direccion == 1 && usuario == 'shady'
-                                        || solicitudData.vb_direccion == 1 && usuario == 'cp.martin' && solicitudData.extraordinario == 1"
+                                        || solicitudData.vb_direccion == 1 && usuario == 'shady'"
                                         :icon="'icon-check'"
                                         :btnClass="'btn-success'"
                                         @click="autorizarDireccion(1)">

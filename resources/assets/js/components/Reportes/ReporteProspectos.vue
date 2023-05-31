@@ -205,7 +205,7 @@
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
-                    <RowModal :clsRow1="'col-md-12'">
+                    <RowModal :label1="''" :clsRow1="'col-md-12'">
                         <TableComponent :cabecera="['Prospecto', 'Proyecto de interes']">
                             <template v-slot:tbody>
                                 <tr v-for="c in prospectos" :key="c.id">
@@ -230,7 +230,7 @@
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
-                    <RowModal :clsRow1="'col-md-12'">
+                    <RowModal :label1="''" :clsRow1="'col-md-12'">
                         <TableComponent :cabecera="['Prospecto', 'Fecha de retiro']">
                             <template v-slot:tbody>
                                 <tr v-for="c in prospectos" :key="c.id">
@@ -249,7 +249,7 @@
                 :titulo="'Observaciones'"
             >
                 <template v-slot:body>
-                    <RowModal :clsRow1="'col-md-12'">
+                    <RowModal :label1="''" :clsRow1="'col-md-12'">
                         <TableComponent :cabecera="['Usuario', 'Comentario','']">
                             <template v-slot:tbody>
                                 <tr v-for="o in obs" :key="o.id">
