@@ -644,31 +644,31 @@ class DigitalLeadController extends Controller
                         ->where('digital_leads.rfc','=',$rfc)
                         ->get(); // verifica si hay mas de una concidencia de RFC y los cuenta
 
-        if(sizeOf($lead)){
-            $l = Digital_lead::findOrFail($lead[0]->id);
-            $l->vendedor_asign =  Auth::user()->id;
-            $l->prospecto = 1; // Indica que ha sido registrado en la tabla de personal.
-            $l->status = 3;
-            $l->save();
+        // if(sizeOf($lead)){
+        //     $l = Digital_lead::findOrFail($lead[0]->id);
+        //     $l->vendedor_asign =  Auth::user()->id;
+        //     $l->prospecto = 1; // Indica que ha sido registrado en la tabla de personal.
+        //     $l->status = 3;
+        //     $l->save();
 
-            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-                $fecha = Carbon::now();
-                $arreglo = [
-                        'notificacion' => [
-                        'usuario' => $imagenUsuario[0]->usuario,
-                        'foto' => $imagenUsuario[0]->foto_user,
-                        'fecha' => $fecha,
-                        'msj' => 'El lead ha sido registrado en modulo de prospectos',
-                        'titulo' => 'Prospecto registrado',
-                        'menu' => 250,
-                    ]
-                ];
-                $obs = new Obs_lead(); // Registra comentario con la asignación del lead.
-                $obs->lead_id = $l->id;
-                $obs->comentario = 'Aviso!, el Lead ha sido registrado por '.Auth::user()->usuario.' en el modulo de prospectos';
-                $obs->usuario = Auth::user()->usuario;
-                $obs->save();
-        }
+        //     $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+        //         $fecha = Carbon::now();
+        //         $arreglo = [
+        //                 'notificacion' => [
+        //                 'usuario' => $imagenUsuario[0]->usuario,
+        //                 'foto' => $imagenUsuario[0]->foto_user,
+        //                 'fecha' => $fecha,
+        //                 'msj' => 'El lead ha sido registrado en modulo de prospectos',
+        //                 'titulo' => 'Prospecto registrado',
+        //                 'menu' => 250,
+        //             ]
+        //         ];
+        //         $obs = new Obs_lead(); // Registra comentario con la asignación del lead.
+        //         $obs->lead_id = $l->id;
+        //         $obs->comentario = 'Aviso!, el Lead ha sido registrado por '.Auth::user()->usuario.' en el modulo de prospectos';
+        //         $obs->usuario = Auth::user()->usuario;
+        //         $obs->save();
+        // }
 
         return $lead;
     }
