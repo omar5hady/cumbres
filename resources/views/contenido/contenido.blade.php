@@ -557,5 +557,11 @@
         <template v-if="menu == 294">
             <resumen-concetrado></resumen-concetrado>
         </template>
+
+        <template v-if="menu == 295">
+            <panel-items rol-id = "{{ Auth::user()->rol_id }}"
+                user-name="{{ Auth::user()->usuario }}"
+            ></panel-items>
+        </template>
     @endif
 @endsection

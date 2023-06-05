@@ -3956,7 +3956,7 @@ class ReportesController extends Controller
                 ->where('contratos.status','=',3)
                 ->where('expedientes.liquidado','=',1)
                 ->where('inst_seleccionadas.elegido', '=', '1')
-                ->where('lotes.casa_muestra','=',0)
+                // ->where('lotes.casa_muestra','=',0)
                 ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo');
         if($empresa != '')//Filtro para empresa constructora
         $indivContado = $indivContado->where('lotes.emp_constructora','=', $empresa);
@@ -3975,7 +3975,7 @@ class ReportesController extends Controller
                 ->where('contratos.status','=',3)
                 ->where('expedientes.fecha_firma_esc','!=',NULL)
                 ->where('inst_seleccionadas.elegido', '=', '1')
-                ->where('lotes.casa_muestra','=',0)
+                // ->where('lotes.casa_muestra','=',0)
                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
         if($empresa != '')//Filtro para empresa constructora
         $indivCredito = $indivCredito->where('lotes.emp_constructora','=', $empresa);

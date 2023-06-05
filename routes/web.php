@@ -1274,6 +1274,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/medical/storeContact','Rh\MedicalRecordController@storeContact');
         Route::post('/medical/storeVaccine','Rh\MedicalRecordController@storeVaccine');
 
+        //////////////////// RUTAS Donativos Items
+        Route::resource('/donativos-items', Rh\DonativosController::class);
+
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
 

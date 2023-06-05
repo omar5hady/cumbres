@@ -223,6 +223,8 @@ Vue.component('fondo-pension', require('./components/Rh/FondoPension.vue'));
 Vue.component('prestamos-personal', require('./components/Rh/PrestamosPersonal.vue'));
 Vue.component('ficha-medica', require('./components/Rh/FichaMedica.vue'));
 
+Vue.component('panel-items', require('./components/Rh/Donativos/PanelControl.vue'));
+
 // Inventario
 Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));
 Vue.component('inv-proveedor', require('./components/Oficina/Proveedor.vue'));

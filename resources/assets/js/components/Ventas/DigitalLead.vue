@@ -260,7 +260,7 @@
                                         </template>
                                 </td>
                                 <td class="td2">
-                                    <span v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" >{{ lead.nombre + ' ' + lead.apellidos }}</span>
+                                    <span v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3 || lead.status == 4" >{{ lead.nombre + ' ' + lead.apellidos }}</span>
                                     <span v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15" class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                     <span v-else-if="lead.diferencia > 15" class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                 </td>

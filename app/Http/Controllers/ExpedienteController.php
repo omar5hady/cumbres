@@ -1484,6 +1484,7 @@ class ExpedienteController extends Controller
             DB::beginTransaction();
             $contrato = Contrato::FindOrFail($request->folio);
             $contrato->integracion = 1;
+            $contrato->status = 3;
             $contrato->save();
 
             //Se accede al registro de expediente
