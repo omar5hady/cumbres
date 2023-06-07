@@ -1276,6 +1276,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////// RUTAS Donativos Items
         Route::resource('/donativos-items', Rh\DonativosController::class);
+        Route::post('donativos-items/solicitarItem','Rh\DonativosController@solicitarItem');
+        Route::put('donativos-items/setColaborador/{id}','Rh\DonativosController@setColaborador');
+        Route::put('donativos-items/setEntrega/{id}','Rh\DonativosController@setEntrega');
 
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);

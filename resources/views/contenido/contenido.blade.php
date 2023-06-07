@@ -563,5 +563,11 @@
                 user-name="{{ Auth::user()->usuario }}"
             ></panel-items>
         </template>
+        <template v-if="menu == 296">
+            <listado-items rol-id = "{{ Auth::user()->rol_id }}"
+                user-name="{{ Auth::user()->usuario }}"
+                user-id="{{  Auth::user()->id }}"
+            ></listado-items>
+        </template>
     @endif
 @endsection

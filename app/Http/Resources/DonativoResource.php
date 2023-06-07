@@ -21,9 +21,12 @@ class DonativoResource extends JsonResource
             'usuario' => new PersonalResource($this->usuario),
             'descripcion' => $this->descripcion,
             'titulo' => $this->titulo,
+            'f_entrega' => $this->f_entrega,
             'picture' => $this->picture,
             'status' => $this->status,
-            'historial' => $this->historial($request)
+            'historial' => $this->historial($request),
+            'reservation' => $this->findMe($request),
+            'elegido' => $this->elegido($request)
         ];
     }
 }

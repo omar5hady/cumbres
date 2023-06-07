@@ -9,6 +9,7 @@ use App\Http\Resources\DonativoResource;
 
 use App\DonativoItem;
 use App\HistDonativo;
+use Carbon\Carbon;
 use Auth;
 use File;
 
@@ -53,8 +54,23 @@ class DonativosController extends Controller
             $donativos = $donativos->where('user_id','=',Auth::user()->id);
         if($request->status != '')
             $donativos = $donativos->where('status','=',$request->status);
+        /* Este bloque de código está comprobando si el parámetro `finalizado` no está vacío en el
+        objeto ``. Si no está vacío, filtra la consulta `` para incluir solo
+        elementos con un `estado` superior a 1. Es probable que esto se use para filtrar elementos
+        que ya se completaron o finalizaron. */
+        if($request->finalizado != '')
+            $donativos = $donativos->where('status','>',1);
+
         if($request->item != '')
             $donativos = $donativos->where('titulo','like','%'.$request->item.'%');
+
+        if($request->myitem != ''){
+            $hist = HistDonativo::select('item_id as id')
+                ->where('user_id',Auth::user()->id)
+                ->get();
+            $donativos = $donativos->whereIn('id',$hist);
+
+        }
 
         $donativos = $donativos->orderBy('created_at','desc')->paginate(10);
 
@@ -147,5 +163,69 @@ class DonativosController extends Controller
         }
 
         $donativo->delete();
+    }
+
+   /**
+    * La función guarda un nuevo registro en la tabla HistDonativo con el ID de usuario y el ID de
+    * artículo obtenidos de la solicitud.
+    *
+    * @param Request request  es un objeto de la clase Request que contiene los datos enviados
+    * por el cliente en la solicitud HTTP. Puede contener datos de los parámetros de URL, datos de
+    * formulario, encabezados, cookies y archivos. En este fragmento de código específico,  se
+    * usa para recuperar el valor del parámetro "id"
+    */
+    public function solicitarItem(Request $request){
+        $hist = new HistDonativo();
+        $hist->user_id = Auth::user()->id;
+        $hist->item_id = $request->id;
+        $hist->save();
+    }
+
+    /**
+     * Esta función establece el estado de una donación y su artículo a 2 y cancela la solicitud
+     * correspondiente.
+     *
+     * @param Request request  es una instancia de la clase Request que se utiliza para
+     * recuperar datos de solicitudes HTTP. Contiene información sobre la solicitud actual, como el
+     * método HTTP, los encabezados y cualquier dato enviado en el cuerpo de la solicitud. En esta
+     * función específica,  se usa para recuperar la identificación del HistDonativo
+     */
+    public function setColaborador(Request $request){
+        $hist = HistDonativo::findOrFail($request->id);
+        $hist->status = 2;
+        $hist->save();
+
+        $item = DonativoItem::findOrFail($hist->item_id);
+        $item->status = 2;
+        $item->save();
+
+        $this->cancelarSolicitud($hist->item_id);
+    }
+
+    /**
+     * La función cancela una solicitud de donación y actualiza el estado de los registros del
+     * historial de donaciones relacionados a 0.
+     *
+     * @param item_id El parámetro item_id es una variable que representa el ID de un artículo para el
+     * que se ha realizado una solicitud de donación. Esta función cancela todas las solicitudes de
+     * donación asociadas con este artículo al establecer su estado en 0.
+     */
+    private function cancelarSolicitud($item_id){
+        $otros = HistDonativo::select('id')
+                ->where('item_id','=',$item_id)
+                ->where('status','=',1)->get();
+
+        foreach($otros as $solic){
+            $hist = HistDonativo::findOrFail($solic->id);
+            $hist->status = 0;
+            $hist->save();
+        }
+    }
+
+    public function setEntrega(Request $request){
+        $donativo = DonativoItem::findOrFail($request->id);
+        $donativo->status = 3;
+        $donativo->f_entrega = Carbon::now();
+        $donativo->save();
     }
 }

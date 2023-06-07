@@ -61,7 +61,7 @@
                                         <h6>
                                         {{
                                             item.status == ITEM_STATUS.APARTADO ? 'Apartado'
-                                            : item.status == ITEM_STATUS.ENTREGADO ? 'Entregadp'
+                                            : item.status == ITEM_STATUS.ENTREGADO ? 'Entregado'
                                             : ''
                                         }}
                                         </h6>
@@ -70,7 +70,7 @@
                                         <h5 class="card-title">{{item.titulo}}</h5>
                                         <p class="card-text">{{ item.descripcion }}</p>
                                         <hr>
-                                        <p class="card-subtitle" v-if="userName == 'shady' || userName == 'marce.gaytan'">
+                                        <p class="card-subtitle" v-if="userName == 'shady' || userName == 'marce.gaytan' || rolId == 11">
                                             Colaborador: {{ item.usuario.nombre }}
                                         </p>
                                     </div>
@@ -288,8 +288,12 @@ export default {
                 me.items = null;
                 me.loading = true;
 
+                let user = '1';
+                if(me.rolId == 1 || me.rolId == 11 || me.userName == 'marce.gaytan')
+                user = '';
+
                 try{
-                    const url   = `/donativos-items?page=${page}&item=${me.b_item}&user_id=${me.rolId == 1 ? '' : '1'}&status=${me.b_status}`;
+                    const url   = `/donativos-items?page=${page}&item=${me.b_item}&user_id=${user}&status=${me.b_status}`;
                     const res   = await axios.get(url);
                     me.items    = await res.data
                 }catch(e){

@@ -19,6 +19,7 @@ class CreateDonativoItemsTable extends Migration
             $table->string('descripcion')->nullable();
             $table->string('titulo',50);
             $table->boolean('status')->default(1);
+            $table->date('f_entrega')->nullable();
             $table->string('picture',100)->nullable();
             $table->foreign('user_id')->references('id')->on('personal');
             $table->timestamps();

@@ -224,6 +224,7 @@ Vue.component('prestamos-personal', require('./components/Rh/PrestamosPersonal.v
 Vue.component('ficha-medica', require('./components/Rh/FichaMedica.vue'));
 
 Vue.component('panel-items', require('./components/Rh/Donativos/PanelControl.vue'));
+Vue.component('listado-items', require('./components/Rh/Donativos/ListadoDonaciones.vue'));
 
 // Inventario
 Vue.component('inventarios', require('./components/Oficina/Inventario.vue'));
