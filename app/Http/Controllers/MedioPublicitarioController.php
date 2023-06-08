@@ -231,7 +231,7 @@ class MedioPublicitarioController extends Controller
                             $venta->campania = 'Contenido Organico';
                             $lead = Digital_lead::leftJoin('campanias','campanias.id','=','digital_leads.campania_id')
                                 ->select('digital_leads.rfc','campanias.nombre_campania')
-                                ->where('digital_leads.rfc','=','$venta->rfc')->get();
+                                ->where('digital_leads.rfc','=',$venta->rfc)->get();
 
                             if(sizeof($lead)){
                                 if($lead[0]->nombre_campania != NULL)

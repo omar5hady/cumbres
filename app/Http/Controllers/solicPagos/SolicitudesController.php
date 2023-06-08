@@ -1028,6 +1028,9 @@ class SolicitudesController extends Controller
                 if($request->obra != ''){
                     $c->detalle = $c->detalle->where('sp_detalles.obra','=',$request->obra);
                 }
+                if($request->sub_obra != ''){
+                    $c->detalle = $c->detalle->where('sp_detalles.sub_obra','=',$request->sub_obra);
+                }
             $c->detalle = $c->detalle->get();
             foreach($c->detalle as $d){
                 $c->total += $d->pago;

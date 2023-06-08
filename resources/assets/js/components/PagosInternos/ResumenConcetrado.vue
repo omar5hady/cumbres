@@ -30,11 +30,22 @@
                         <div class="col-md-10">
                             <div class="input-group">
                                 <input class="form-control col-md-2" type="text" disabled placeholder="Obra:">
-                                <select class="form-control" v-model="b_obra">
+                                <select class="form-control" v-model="b_obra"  @change="selectEtapa( b_obra)">
                                     <option value="">Seleccione</option>
                                     <option value="OFICINA">OFICINA</option>
                                     <option value="NUEVOS PROYECTOS">NUEVOS PROYECTOS</option>
                                     <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-10"  v-if="(b_obra != 'OFICINA' && b_obra != 'NUEVOS PROYECTOS') && b_obra != ''">
+                            <div class="input-group">
+                                <input class="form-control col-md-2" type="text" disabled placeholder="Sub Obra:">
+                                <select class="form-control"
+                                    v-model="b_sub_obra"
+                                    >
+                                    <option value="">Seleccione</option>
+                                    <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
                                 </select>
                             </div>
                         </div>
@@ -151,7 +162,9 @@ export default {
             b_fecha1 : '',
             b_fecha2 : '',
             b_empresa : '',
-            b_obra : ''
+            b_obra : '',
+            b_sub_obra : '',
+            arrayEtapas : []
         };
     },
     computed: {
@@ -173,12 +186,26 @@ export default {
             .catch(function (error) {
             });
         },
+        selectEtapa(buscar){
+            let me = this;
+            me.b_sub_obra = '';
+            me.arrayEtapas=[];
+            var url = '/select_etapa?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEtapas = respuesta.etapas;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         indexConcentrado(){
             let me = this;
             me.arrayConcentrado=[];
             var url = '/sp/indexConcentrado?fecha1='+ me.b_fecha1
                 + '&fecha2=' + me.b_fecha2
                 + '&obra=' + me.b_obra
+                + '&sub_obra=' + me.b_sub_obra
                 +'&empresa='+ me.b_empresa;
             axios.get(url).then(function (response) {
                 me.arrayConcentrado = response.data;
