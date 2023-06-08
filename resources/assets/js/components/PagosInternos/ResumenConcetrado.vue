@@ -27,6 +27,17 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <input class="form-control col-md-2" type="text" disabled placeholder="Obra:">
+                                <select class="form-control" v-model="b_obra">
+                                    <option value="">Seleccione</option>
+                                    <option value="OFICINA">OFICINA</option>
+                                    <option value="NUEVOS PROYECTOS">NUEVOS PROYECTOS</option>
+                                    <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-12">
                             <div class="input-group">
                                 <input class="form-control col-md-2" type="text" disabled placeholder="Fecha:">
@@ -140,6 +151,7 @@ export default {
             b_fecha1 : '',
             b_fecha2 : '',
             b_empresa : '',
+            b_obra : ''
         };
     },
     computed: {
@@ -166,6 +178,7 @@ export default {
             me.arrayConcentrado=[];
             var url = '/sp/indexConcentrado?fecha1='+ me.b_fecha1
                 + '&fecha2=' + me.b_fecha2
+                + '&obra=' + me.b_obra
                 +'&empresa='+ me.b_empresa;
             axios.get(url).then(function (response) {
                 me.arrayConcentrado = response.data;
@@ -182,6 +195,7 @@ export default {
     mounted() {
         this.indexConcentrado();
         this.getEmpresa();
+        this.$root.selectFraccionamientos();
     }
 };
 </script>

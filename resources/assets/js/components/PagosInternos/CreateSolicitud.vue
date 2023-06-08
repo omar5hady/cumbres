@@ -119,6 +119,13 @@
                         </div>
 
                         <ul class="nav nav-tabs" id="myTab1" role="tablist">
+                            <li class="nav-item" v-if="usuario == 'shady' || usuario == 'uriel.al' || admin == 2">
+                                <a class="nav-link"
+                                @click="b_status = 5, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = '', solicCheck = [],
+                                    indexSolicitudes(1)"
+                                v-bind:class="{ 'btn-danger text-info': b_status === 5}"
+                                role="tab">{{ (b_status === 5) ? `CANCELADOS: ${arraySolic.total ? arraySolic.total : ''}` : 'CANCELADOS' }}</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link"
                                 @click="b_status = '', b_vbgerente = '',  b_rechazado = 1, b_vbdireccion = '', solicCheck = [],
@@ -165,6 +172,50 @@
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
+                            <!-- Listado por Solicitudes CANCELADAS -->
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 5 }" v-if="b_status ===  5">
+                                <TableComponent :cabecera="[
+                                    '',
+                                    'Proveedor',
+                                    'Solicitante',
+                                    'Fecha solic',
+                                    'Importe',
+                                    'Tipo de pago',
+                                    ' '
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="solic in arraySolic.data" :key="solic.id" :class="solic.pagado ? 'table-success' : solic.extraordinario ? 'table-danger' : ''">
+                                            <td class="td2">
+                                                <Button :btnClass="'btn-primary'" :size="'btn-sm'" title="Ver solicitud"
+                                                    :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
+                                                ></Button>
+                                            </td>
+                                            <td class="td2">
+                                                <template v-if="solic.const_fisc">
+                                                    <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
+                                                </template>
+                                                <template v-else>
+                                                    {{solic.proveedor}}
+                                                </template>
+                                            </td>
+                                            <td class="td2" v-text="solic.solicitante"></td>
+                                            <td class="td2"
+                                                v-text="this.moment(solic.created_at).locale('es').format('DD/MMM/YYYY')">
+                                            </td>
+                                            <td class="td2" v-text="'$'+$root.formatNumber(solic.importe)"></td>
+                                            <td class="td2">
+                                                {{ solic.tipo_pago == 0 ? 'C.F.' : 'Bancos' }}
+                                            </td>
+                                            <td>
+                                                <Button :btnClass="'btn-light'" title="Ver Observaciones"
+                                                    @click="verObs(solic)"
+                                                >Observaciones
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                            </div>
                             <!-- Listado por Solicitudes Rechazados -->
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === '' }" v-if="b_status ===  ''">
                                 <TableComponent :cabecera="[
@@ -939,7 +990,7 @@
                                                 <input type="text" class="form-control"
                                                     v-model="solicitudData.clabe" disabled>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-2" v-if="solicitudData.status != 5">
                                                 <label for="">&nbsp;</label>
                                                 <button v-if="tipoAccion == 2 || tipoAccion == 3 && usuario == 'jorge.diaz' || tipoAccion == 3 && usuario == 'shady'"
                                                     class="btn btn-warning form-control"
@@ -1300,7 +1351,7 @@
                                         </div>
 
                                         <template v-if="tipoAccion >= 2">
-                                            <div class="form-sub">
+                                            <div class="form-sub" v-if="solicitudData.status != 5">
                                                 <form method="post" @submit="formSubmitFile"
                                                     enctype="multipart/form-data"
                                                 >
@@ -1360,7 +1411,8 @@
                                                         <tr v-for="p in solicitudData.files"
                                                             :key="p.id">
                                                             <td>
-                                                                <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion >= 2 && solicitudData.status < 3 || usuario == 'shady'"
+                                                                <button class="btn btn-danger" title="Eliminar"
+                                                                    v-if="tipoAccion >= 2 && solicitudData.status < 3 || usuario == 'shady'"
                                                                     @click="deleteFile(p.id)"
                                                                 >
                                                                     <i class="icon-trash"></i>
@@ -1432,18 +1484,18 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" v-if="solicitudData.status != 5">
                             <div class="col-md-12">
-                                <button class="btn btn-success" @click="storeSolic()"
+                                <Button class="btn btn-success" @click="storeSolic()"
                                     v-if="solicitudData.importe > 0
                                         && tipoAccion == 1">
                                     Guardar Solicitud
-                                </button>
-                                <button class="btn btn-success" @click="updateSolicitud()"
+                                </Button>
+                                <Button class="btn btn-success" @click="updateSolicitud()"
                                     v-if="solicitudData.importe > 0
                                         && tipoAccion == 2">
                                     Guardar Cambios
-                                </button>
+                                </Button>
                                 <template v-if="solicitudData.status == 0 && solicitudData.rechazado == 0">
                                     <Button :btnClass="'btn-primary'" v-if="solicitudData.vb_gerente == 0 && encargado == 1"
                                         title="Validar revisión de solicitud" :icon="'icon-check'"
@@ -2690,9 +2742,9 @@ export default {
                 confirmButtonText: 'Si, eliminar!'
                 }).then((result) => {
                 if (result.value) {
-                    axios.delete(`/solic-pagos/${id}`, {
-                            params: {'id': id}
-                    }).then(function (response){
+                    axios.put(`/solic-pagos/deleteSolic/${id}`,{
+                            'id': id,
+                        }).then(function (response){
                         me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
                         //Se muestra mensaje Success
                         const toast = Swal.mixin({

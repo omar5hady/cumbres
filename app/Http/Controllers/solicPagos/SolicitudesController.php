@@ -730,6 +730,29 @@ class SolicitudesController extends Controller
         }
     }
 
+    public function deleteSolic(Request $request){
+        $solicitud = SpSolicitud::findOrFail($request->id);
+        $solicitud->status = 5;
+        $solicitud->save();
+
+        $detalles = SpDetalle::select('id')->where('solic_id','=',$request->id)->get();
+        foreach($detalles as $det){
+            $this->cancelarDetalle($det->id);
+        }
+    }
+
+    private function cancelarDetalle($id){
+        $detalle = SpDetalle::findOrFail($id);
+        $detalle->status = 0;
+        $detalle->saldo = 0;
+        if($detalle->pendiente_id != null){
+            $det = SpDetalle::findOrFail($detalle->pendiente_id);
+            $det->status = 1;
+            $det->save();
+        }
+        $detalle->save();
+    }
+
     public function changeVbTesoreria(Request $request){
         $solic = SpSolicitud::findOrFail($request->id);
         if($request->estado == 1){
@@ -1001,6 +1024,9 @@ class SolicitudesController extends Controller
                 }
                 if($request->fecha1 != ''){
                     $c->detalle = $c->detalle->whereBetween('solic.fecha_pago',[$request->fecha1, $request->fecha2]);
+                }
+                if($request->obra != ''){
+                    $c->detalle = $c->detalle->where('sp_detalles.obra','=',$request->obra);
                 }
             $c->detalle = $c->detalle->get();
             foreach($c->detalle as $d){

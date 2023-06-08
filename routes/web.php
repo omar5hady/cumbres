@@ -1322,6 +1322,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/solic-pagos/changeVbDireccion/{id}','solicPagos\SolicitudesController@changeVbDireccion');
         Route::put('/solic-pagos/autorizarDireccion/{id}','solicPagos\SolicitudesController@autorizarDireccion');
         Route::put('/solic-pagos/generarPago/{id}','solicPagos\SolicitudesController@generarPago');
+        Route::put('/solic-pagos/deleteSolic/{id}','solicPagos\SolicitudesController@deleteSolic');
         Route::put('/solic-pagos/changeCuenta/{id}','solicPagos\SolicitudesController@changeCuenta');
 
         Route::get('/sp/indexConcentrado/','solicPagos\SolicitudesController@indexConcentrado');
