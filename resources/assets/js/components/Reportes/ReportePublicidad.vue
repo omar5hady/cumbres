@@ -154,6 +154,7 @@
                                             <th>Institucion Fin.</th>
                                             <th>Tipo de Crédito</th>
                                             <th>Asesor</th>
+                                            <th></th>
                                         </template>
                                     </tr>
                                 </thead>
@@ -177,6 +178,9 @@
                                             <td class="td2" v-text="cliente.institucion"></td>
                                             <td class="td2" v-text="cliente.tipo_credito"></td>
                                             <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
+                                            <td class="td2" v-if="cliente.publicidad_id == 5">
+                                                {{ cliente.campania  }}
+                                            </td>
                                         </tr>
                                     </template>
                                 </tbody>

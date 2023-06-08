@@ -7,6 +7,7 @@ use App\Medio_publicitario; //Importar el modelo
 use Auth;
 use App\Vendedor;
 use App\Cliente;
+use App\Digital_lead;
 use App\Contrato;
 use Carbon\Carbon;
 //Controlador para el modelo Medio_publicitario.
@@ -210,9 +211,10 @@ class MedioPublicitarioController extends Controller
                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                 ->join('personal as v', 'creditos.vendedor_id', '=', 'v.id' )
                                 ->select('creditos.prospecto_id','contratos.publicidad_id',
-                                    'personal.nombre','personal.apellidos', 'contratos.id',
+                                    'personal.nombre','personal.apellidos', 'contratos.id', 'personal.rfc',
                                     'v.nombre as v_nombre', 'v.apellidos as v_apellidos',
                                     'inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion',
+                                    'contratos.publicidad_id',
                                     'creditos.etapa',
                                     'creditos.manzana',
                                     'creditos.fraccionamiento as proyecto',
@@ -224,6 +226,19 @@ class MedioPublicitarioController extends Controller
                                 ->whereIn('contratos.id',$clientesID_contrato)
                                 ->get();
 
+                    if($publiV->id == 5){
+                        foreach($res as $venta){
+                            $venta->campania = 'Contenido Organico';
+                            $lead = Digital_lead::leftJoin('campanias','campanias.id','=','digital_leads.campania_id')
+                                ->select('digital_leads.rfc','campanias.nombre_campania')
+                                ->where('digital_leads.rfc','=','$venta->rfc')->get();
+
+                            if(sizeof($lead)){
+                                if($lead[0]->nombre_campania != NULL)
+                                    $venta->campania = $lead[0]->nombre_campania;
+                            }
+                        }
+                    }
                     $publiV->clientes = $res;
                     $publiV->cant = $res->count('contratos.id');
 
@@ -242,7 +257,7 @@ class MedioPublicitarioController extends Controller
                                 ->join('personal as v', 'clientes.vendedor_id', '=', 'v.id' )
                                 ->select('clientes.id','personal.nombre','personal.apellidos',
                                     'v.nombre as v_nombre', 'v.apellidos as v_apellidos',
-                                    'fraccionamientos.nombre as proyecto'
+                                    'fraccionamientos.nombre as proyecto', 'clientes.publicidad_id'
                                 )->whereIn('clientes.id',$prospectos)
                                 ->where('clientes.publicidad_id','=',$publiC->id)->get();
 
