@@ -16,6 +16,7 @@ use App\Amenitie;
 use App\SpecificationLote;
 use App\Urban_equipment;
 use App\Solic_equipamiento;
+use App\Notaria;
 use Carbon\Carbon;
 use NumerosEnLetras;
 use DB;
@@ -209,6 +210,8 @@ class ContratosVentaController extends Controller
                 }
             }
         }
+
+        $contrato->notaria = Notaria::where('notaria','=','Notaría '.$contrato->num_notario)->orderBy('notaria','asc')->first();
 
         $contrato->valor_const = $contrato->precio_venta - $contrato->valor_terreno;
         $contrato->valor_const = NumerosEnLetras::convertir($contrato->valor_const, 'Pesos', true, 'Centavos');

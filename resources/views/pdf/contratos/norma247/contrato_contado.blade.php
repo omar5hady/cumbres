@@ -382,10 +382,10 @@
 
                     <p>
                         En caso que el inmueble este sujeto al régimen de propiedad en condómino. El inmueble indicado está sujeto
-                        al régimen de propiedad en condominio en términos de la escritura pública número:_______, otorgada en fecha
-                        día, mes y año ante la fe del Notario Público número _______ con ejercicio en la Ciudad de ________________El
-                        Lic._______________________, y debidamente inscrita el día, mes y año con inscripción en el Registro Público
-                        de la Propiedad bajo el folio real N°.__________, instrumento en el cual están referidas las correspondientes
+                        al régimen de propiedad en condominio en términos de la escritura pública número: {{$contrato->num_escritura}}, otorgada en fecha
+                        {{$contrato->date_escritura}} ante la fe del Notario Público número {{$contrato->num_notario}} con ejercicio en
+                        la &Tab; ciudad de San Luis Potosí, El {{$contrato->notaria->titular}}, y debidamente inscrita el día, mes y año con
+                        inscripción en el Registro Público de la Propiedad bajo el folio real N°.{{$contrato->folio_registro}}, instrumento en el cual están referidas las correspondientes
                         áreas de uso común y porcentaje de indiviso, lo cual ha sido debidamente exhibido y explicado a
                         <strong>EL PROMITENTE COMPRADOR.</strong>
                     </p>

@@ -9,6 +9,7 @@ use App\Http\Resources\DonativoResource;
 
 use App\DonativoItem;
 use App\HistDonativo;
+use App\PeticionDonativo;
 use Carbon\Carbon;
 use Auth;
 use File;
@@ -227,5 +228,12 @@ class DonativosController extends Controller
         $donativo->status = 3;
         $donativo->f_entrega = Carbon::now();
         $donativo->save();
+    }
+
+    public function getPeticiones(Request $request){
+        $peticion = PeticionDonativo::join('personal','personal.id','=','peticion_donativos.user_id')
+            ->select('peticion_donativos.*','personal.nombre','personal.apellidos')
+            ->where('peticion_donativos.status','=',0)
+            ->get();
     }
 }

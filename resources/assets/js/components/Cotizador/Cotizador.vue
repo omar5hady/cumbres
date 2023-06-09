@@ -30,7 +30,7 @@
 
                         <select class="form-control col-sm-2" v-model="r_proyecto" v-on:change="selectEtapa(r_proyecto)">
                             <option value="">Proyecto</option>
-                            <option v-for="proj in arrayFraccionamientos" :key="proj.id" :value="proj.id" v-text="proj.nombre">proyecto 1</option>
+                            <option v-for="proj in arrayFraccionamientos" :key="proj.id" :value="proj.id" v-text="proj.nombre"></option>
                         </select>
                         <select v-on:change="buscaLotes(r_etapa)" class="form-control col-md-2" v-model="r_etapa">
                             <option value="">Etapa</option>
@@ -40,10 +40,8 @@
 
                         <select class="form-control col-sm-2" v-model="r_lote" v-on:change="selccionaLote(r_lote)" >
                             <option value="">Lote</option>
-                            <template v-for="lote in arrayLotes">
-                                <option v-if="lote.sublote != null" :key="lote.id" :value="lote" v-text="lote.num_lote + ' '+ lote.sublote"></option>
-                                <option v-else :key="lote.id" :value="lote" v-text="lote.num_lote"></option>
-                            </template>
+                            <option v-for="lote in arrayLotes" :key="lote.id" :value="lote"
+                                v-text="lote.sublote ?  lote.num_lote + ' '+ lote.sublote : lote.num_lote"></option>
 
                         </select>
 
@@ -59,7 +57,7 @@
                             <option value="12">7 A 12 MESES</option>
                             <option value="24">13 A 24 MESES</option>
                             <option value="36">25 A 36 MESES</option>
-                            <option value="48">37 A 48 MESES</option>
+                            <!-- <option value="48">37 A 48 MESES</option> -->
                         </select>
 
                         <button @click="actualizar()" class="btn btn-sm btn-primary col-sm-1">Calcular</button>
@@ -106,7 +104,7 @@
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="pago in arrayMensualidad" :key="pago.folio">
-                                    <td v-text="pago.folio" class="text-info text-center">#</td>
+                                    <td v-text="pago.folio" class="text-info text-center"></td>
                                     <td>
                                         {{(pago.pago == 0) ? 'Enganche' : 'Mensualidad'}}
                                     </td>
@@ -120,11 +118,11 @@
                                         <span v-text="pago.dias" class="badge" v-bind:class="!(r_mensualidad>6) ? 'badge-success' : 'badge-warning'"></span>
                                     </td>
                                     <td v-text="pago.interesesPor+'%'"></td>
-                                    <td v-text="'$ '+pago.descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Descuento</td>
-                                    <td v-text="'$ '+pago.pagoCapital.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Pago Capital</td>
-                                    <td v-text="'$ '+pago.interesMont.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Interes</td>
-                                    <td v-text="'$ '+pago.totalAPagar.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Total a Pagar</td>
-                                    <td v-text="'$ '+pago.saldo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Saldo</td>
+                                    <td v-text="'$ '+pago.descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
+                                    <td v-text="'$ '+pago.pagoCapital.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
+                                    <td v-text="'$ '+pago.interesMont.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
+                                    <td v-text="'$ '+pago.totalAPagar.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
+                                    <td v-text="'$ '+pago.saldo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
                                 </tr>
                             </template>
                         </TableComponent>
@@ -150,7 +148,7 @@
                                     <td class="text-center"><strong>De 7 a 12 meses</strong></td>
                                     <td class="text-center"><strong>De 13 a 24 meses</strong></td>
                                     <td class="text-center"><strong>De 25 a 36 meses</strong></td>
-                                    <td class="text-center"><strong>De 37 a 48 meses</strong></td>
+                                    <!-- <td class="text-center"><strong>De 37 a 48 meses</strong></td> -->
                                 </tr>
                                 <tr>
                                     <td class="text-center">{{arrayListA[0].valor + '% de Descuento'}}</td>
@@ -158,7 +156,7 @@
                                     <td class="text-center">{{arrayListA[6].valor + '% de Interes de tasa anual'}}</td>
                                     <td class="text-center">{{arrayListA[7].valor + '% de Interes de tasa anual'}}</td>
                                     <td class="text-center">{{arrayListA[8].valor + '% de Interes de tasa anual'}}</td>
-                                    <td class="text-center">{{arrayListA[9].valor + '% de Interes de tasa anual'}}</td>
+                                    <!-- <td class="text-center">{{arrayListA[9].valor + '% de Interes de tasa anual'}}</td> -->
                                 </tr>
                             </template>
                         </TableComponent>

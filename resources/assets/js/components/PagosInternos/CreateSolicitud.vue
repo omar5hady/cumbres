@@ -1098,12 +1098,13 @@
                                                     <option value="">Seleccione</option>
                                                     <option value="OFICINA">OFICINA</option>
                                                     <option value="NUEVOS PROYECTOS">NUEVOS PROYECTOS</option>
+                                                    <option value="FRACCIONAMIENTOS CAMPESTRES">FRACCIONAMIENTOS CAMPESTRES</option>
                                                     <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3" v-if="(datosDetalle.obra != 'OFICINA' && datosDetalle.obra != 'NUEVOS PROYECTOS') && datosDetalle.obra != ''">
                                                 <label for="">&nbsp;</label>
-                                                <select class="form-control"
+                                                <select class="form-control" v-if="datosDetalle.obra != 'FRACCIONAMIENTOS CAMPESTRES'"
                                                     v-model="datosDetalle.sub_obra"
                                                     @change="$root.getManzanas(datosDetalle.obra, datosDetalle.sub_obra),
                                                         datosDetalle.manzana = '',
@@ -1111,6 +1112,14 @@
                                                     >
                                                     <option value="">Etapa</option>
                                                     <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
+                                                </select>
+                                                <select class="form-control" v-else
+                                                    v-model="datosDetalle.sub_obra">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="sub_obra in arrayCampestres"
+                                                        :key="sub_obra" :value="sub_obra">
+                                                        {{ sub_obra }}
+                                                    </option>
                                                 </select>
                                             </div>
                                             <template v-if="(datosDetalle.obra != 'OFICINA' && datosDetalle.obra != 'NUEVOS PROYECTOS') && datosDetalle.obra != ''">
@@ -1918,6 +1927,22 @@ export default {
                 'guadalupe.ff',// Obra 2
                 'uriel.al',
                 'shady'
+            ],
+            arrayCampestres:[
+                'FRACC. LOS ZAPOTES, EL JAGUEY, SAN NICOLAS TOLENTINO',
+                'FRACC. ORQUIDEAS, EL NARANJO, SLP.',
+                'FRACC. LA CEBADILLA 3, CARDENAS , SLP',
+                'FRACC. MESA DE LOS CEDROS, ARMADILLO, SLP',
+                'FRACC. LA CEBADILLA 4, CARDENAS , SLP',
+                'FRACC. EL SALITRILLO, CARDENAS, SLP',
+                'FRACC. PIEDRA REAL , LAGUNILLAS,SLP ',
+                'FRACC. LAS PRESAS, VENADO, SLP',
+                'BELEN DE GUADALUPE',
+                'FRACC. LA CEBADILLA 5, CARDENAS , SLP',
+                'FRACC. VALLE ALTO, TAMASOPO, SLP',
+                'FRACC. LA CEBADILLA , CARDENAS , SLP',
+                'FRACC. LA CEBADILLA 2, CARDENAS , SLP',
+                'FRACC. LA TINAJERA , VENADO , SLP.',
             ],
             solicCheck:[],
             arrayPendientes:[],

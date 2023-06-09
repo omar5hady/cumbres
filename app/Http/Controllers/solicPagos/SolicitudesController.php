@@ -733,6 +733,7 @@ class SolicitudesController extends Controller
     public function deleteSolic(Request $request){
         $solicitud = SpSolicitud::findOrFail($request->id);
         $solicitud->status = 5;
+        $solicitud->rechazado = 0;
         $solicitud->save();
 
         $detalles = SpDetalle::select('id')->where('solic_id','=',$request->id)->get();
