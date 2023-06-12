@@ -1280,6 +1280,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('donativos-items/setColaborador/{id}','Rh\DonativosController@setColaborador');
         Route::put('donativos-items/setEntrega/{id}','Rh\DonativosController@setEntrega');
 
+        Route::post('donativos-items/storePeticion','Rh\DonativosController@storePeticion');
+        Route::get('peticiones-items/getPeticiones','Rh\DonativosController@getPeticiones');
+        Route::post('peticiones-items/donarItem','Rh\DonativosController@donarItem');
+
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
 

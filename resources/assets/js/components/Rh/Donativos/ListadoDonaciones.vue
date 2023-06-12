@@ -9,6 +9,7 @@
             <div class="card scroll-box">
                 <div class="card-header flex-md-column" >
                     <i class="fa fa-align-justify"></i>Donaciones
+                    <Button btnClass="btn-info" icon="fa fa-plus-circle" @click="abrirModal('crear')"> Nueva Petición</Button>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
@@ -33,31 +34,40 @@
                             <li class="nav-item">
                                 <a class="nav-link"
                                 @click="b_status = ITEM_STATUS.ACTIVO, b_finalizado = '', b_myitems = '',
+                                    b_peticiones = false,
                                     index(1)"
-                                v-bind:class="{ 'text-primary active': b_status === ITEM_STATUS.ACTIVO}"
-                                role="tab">{{ (b_status === ITEM_STATUS.ACTIVO)
+                                v-bind:class="{ 'text-primary active': b_status === ITEM_STATUS.ACTIVO && !b_peticiones}"
+                                role="tab">{{ (b_status === ITEM_STATUS.ACTIVO && !b_peticiones)
                                     ? `Disponibles: ${items.meta.total ? items.meta.total : 0}` : 'Disponibles' }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_finalizado = 1, b_status = '', b_myitems = '',
+                                @click="b_finalizado = 1, b_status = '', b_myitems = '', b_peticiones = false,
                                     index(1)"
-                                v-bind:class="{ 'text-primary active': b_finalizado == 1}"
-                                role="tab">{{ (b_finalizado == 1)
+                                v-bind:class="{ 'text-primary active': b_finalizado == 1 && !b_peticiones}"
+                                role="tab">{{ (b_finalizado == 1 && !b_peticiones)
                                     ? `Finalizados: ${items.meta.total ? items.meta.total : 0}` : 'Finalizados' }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
-                                @click="b_status = ITEM_STATUS.ENTREGADO, b_finalizado = '', b_myitems = 1,
+                                @click="b_status = ITEM_STATUS.ENTREGADO, b_finalizado = '', b_myitems = 1, b_peticiones = false,
                                     index(1)"
-                                v-bind:class="{ 'text-primary active': b_status === ITEM_STATUS.ENTREGADO}"
-                                role="tab">{{ (b_status === ITEM_STATUS.ENTREGADO)
+                                v-bind:class="{ 'text-primary active': b_status === ITEM_STATUS.ENTREGADO && !b_peticiones}"
+                                role="tab">{{ (b_status === ITEM_STATUS.ENTREGADO && !b_peticiones)
                                     ? `Mis Items: ${items.meta.total ? items.meta.total : 0}` : 'Mis Items' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                @click="b_peticiones = true,
+                                    indexPeticiones(1)"
+                                v-bind:class="{ 'text-primary active': b_peticiones}"
+                                role="tab">{{ (b_peticiones)
+                                    ? `Solicitudes: ${peticiones.total ? peticiones.total : 0}` : 'Solicitudes' }}</a>
                             </li>
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
-                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === ITEM_STATUS.ACTIVO }" v-if="b_status ===  ITEM_STATUS.ACTIVO">
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === ITEM_STATUS.ACTIVO && !b_peticiones }" v-if="b_status === ITEM_STATUS.ACTIVO && !b_peticiones">
                                 <div class="row" v-if="items">
                                     <div class="col-sm" v-for="item in items.data" :key="item.id">
                                         <div class="card" style="width: 18rem;">
@@ -112,7 +122,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_finalizado == 1 }" v-if="b_finalizado == 1">
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_finalizado == 1 && !b_peticiones }" v-if="b_finalizado == 1 && !b_peticiones">
                                 <div class="row" v-if="items">
                                     <div class="col-sm" v-for="item in items.data" :key="item.id">
                                         <div class="card" style="width: 18rem;">
@@ -165,7 +175,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === ITEM_STATUS.ENTREGADO }" v-if="b_status === ITEM_STATUS.ENTREGADO">
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === ITEM_STATUS.ENTREGADO  && !b_peticiones }" v-if="b_status === ITEM_STATUS.ENTREGADO  && !b_peticiones">
                                 <div class="row" v-if="items">
                                     <div class="col-sm" v-for="item in items.data" :key="item.id">
                                         <div class="card" style="width: 18rem;">
@@ -208,13 +218,51 @@
                                 </div>
                             </div>
 
-                            <div class="row" v-if="items">
-                                <Nav v-if="items"
+                            <div class="tab-pane fade"  v-bind:class="{ 'active show': b_peticiones }" v-if="b_peticiones">
+                                <div class="row" v-if="peticiones">
+                                    <div class="col-sm" v-for="item in peticiones.data" :key="item.id">
+                                        <div class="card" style="width: 18rem;">
+                                            <img class="bd-placeholder-img card-img-top"
+                                                loading="lazy"
+                                                :src="item.picture ? `/files/rh/items/${item.picture}` :
+                                                    'https://placehold.co/600x400?text=Cumbres'"
+                                                    width="auto" height="200">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{item.titulo}}</h5>
+                                                <hr>
+                                                <p class="card-subtitle" v-if="userName == 'shady' || userName == 'marce.gaytan' || rolId == 11">
+                                                    Colaborador: {{ item.nombre }} {{ item.apellidos }}
+                                                </p>
+                                            </div>
+                                            <div class="card-body">
+                                                <template v-if="item.user_id != userId">
+                                                    <Button title="Solicitar articulo"
+                                                        :btnClass="'btn-success'"
+                                                        :icon="'fa fa-hand-paper-o'"
+                                                        @click="donarItem(item.id)"
+                                                    >
+                                                        Donar Item solicitado
+                                                    </Button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <Nav v-if="items && !b_peticiones"
                                     :current="items.meta.current_page"
                                     :last="items.meta.last_page"
                                     @changePage="index"
                                 ></Nav>
+                                <Nav v-if="peticiones && b_peticiones"
+                                    :current="peticiones.current_page"
+                                    :last="peticiones.last_page"
+                                    @changePage="indexPeticiones"
+                                ></Nav>
                             </div>
+
                         </div>
                     </template>
                 </div>
@@ -223,7 +271,7 @@
         </div>
 
         <ModalComponent
-            v-if="modal.mostrar"
+            v-if="modal.mostrar == 1"
             :titulo="modal.titulo"
             @closeModal="closeModal()"
         >
@@ -251,6 +299,57 @@
                     </TableComponent>
                 </RowModal>
 
+            </template>
+            <template v-slot:buttons-footer>
+
+            </template>
+        </ModalComponent>
+
+        <ModalComponent
+            v-if="modal.mostrar == 2"
+            :titulo="modal.titulo"
+            @closeModal="closeModal()"
+        >
+            <template v-slot:body>
+                <form method="post" @submit.prevent="saveForm" enctype="multipart/form-data">
+                    <RowModal label1='' clsRow1="col-md-4" label2="" clsRow2="col-md-6">
+                        <img :src="`${solic.picture ? solic.picture : 'https://placehold.co/600x400?text=Cumbres'}`"
+                            width="auto" height="100">
+                        <template v-slot:input2>
+                            <div class="form-archivo">
+                                <input ref="fileSelector"
+                                    v-show="false"
+                                    type="file" accept="image/*"
+                                    v-on:change="onChangeFile"
+                                />
+
+                                <label class="label-button" @click="onSelectFile">
+                                    Selecciona la imagen
+                                    <i class="fa fa-upload"></i>
+                                </label>
+                                <div :class="(solic.nom_archivo == 'Seleccione Archivo')
+                                    ? 'text-file-hide' : 'text-file'"
+                                    v-text="solic.nom_archivo"
+                                ></div>
+                            </div>
+                            <!-- <input type="file" accept="image/*"
+                                ref="file"
+                                @change="selectImage"> -->
+                        </template>
+                    </RowModal>
+                    <RowModal label1="Titulo" clsRow1="col-md-5">
+                        <input type="text" class="form-control" v-model="solic.titulo" />
+                    </RowModal>
+                    <RowModal label1="" clsRow1="col-md-12">
+                        <center>
+                            <button v-if="!solic.loading"
+                                type="submit"
+                                class="btn btn-success"
+                            >Guardar
+                            </button>
+                        </center>
+                    </RowModal>
+                </form>
             </template>
             <template v-slot:buttons-footer>
 
@@ -299,20 +398,100 @@ export default{
                 b_item : '',
                 b_finalizado : '',
                 b_myitems : '',
+                b_peticiones: false,
 
                 loading : false,
                 modal: {
-                    mostrar : false,
+                    mostrar : 0,
                     titulo : '',
                 },
                 items: null,
-                item:{}
+                peticiones :null,
+                item:{},
+                solic:{
+                    id : '',
+                    status : '',
+                    titulo :'',
+                    picture: '',
+                    nom_archivo: '',
+                    file: null,
+                    loading : false,
+                }
 
             }
         },
         computed:{
         },
         methods : {
+            saveForm(e) {
+                if(this.validarForm())
+                    return
+
+                e.preventDefault();
+                let currentObj = this;
+                this.solic.loading = true;
+
+                let formData = new FormData();
+                formData.append('file', this.solic.file);
+                formData.append('id', this.solic.id);
+                formData.append('titulo', this.solic.titulo);
+                formData.append('nom_archivo', this.solic.nom_archivo);
+
+                let me = this;
+
+                axios.post('/donativos-items/storePeticion', formData)
+                .then(function (response) {
+                    me.solic.loading = false;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud creada correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    me.closeModal();
+                    me.index(me.items.meta.current_page)
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+                    me.item.loading = false;
+                });
+            },
+            async deleteItem(id){
+                try{
+                    await axios.delete(`/donativos-items/${id}`,{
+                        params: {'id': id}
+                    });
+
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud Eliminada correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+                catch(e){
+                    alert('Error al tratar de eliminar el item')
+                }
+                finally{
+                    this.index(this.items.meta.current_page)
+                }
+
+            },
+            validarForm(){
+                return (
+                    this.solic.titulo == '' || this.solic.descripcion == ''
+                )
+            },
+            onChangeFile(e){
+                this.solic.file = e.target.files[0];
+                this.solic.nom_archivo = e.target.files[0].name;
+                this.solic.picture = URL.createObjectURL(this.solic.file)
+            },
+            onSelectFile(){
+                this.$refs.fileSelector.click()
+            },
             async index(page){
                 let me = this;
                 me.items = null;
@@ -334,6 +513,22 @@ export default{
                     me.loading = false
                 }
             },
+            async indexPeticiones(page){
+                let me = this;
+                me.peticiones = null;
+                me.loading = true;
+
+                try{
+                    const url   = `/peticiones-items/getPeticiones?page=${page}&item=${me.b_item}`;
+                    const res   = await axios.get(url);
+                    me.peticiones    = await res.data
+                }catch(e){
+                    console.log(e);
+                }
+                finally{
+                    me.loading = false
+                }
+            },
             async solicitarItem(id){
                 let me = this;
 
@@ -345,6 +540,28 @@ export default{
                             position: 'top-end',
                             type: 'success',
                             title: 'Solicitud creada correctamente',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                }
+                catch(e){
+                    alert('Error al crear la solicitud')
+                }
+                finally{
+                    me.index(me.items.meta.current_page)
+                }
+            },
+            async donarItem(id){
+                let me = this;
+
+                try{
+                    const res = await axios.post('peticiones-items/donarItem',{
+                        'id': id,
+                    })
+                    swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Item creado correctamente para donación',
                             showConfirmButton: false,
                             timer: 2000
                         })
@@ -404,10 +621,23 @@ export default{
             abrirModal(accion, data={}){
                 let me = this;
 
-                me.modal.mostrar = true;
-                me.modal.titulo  = 'Ver solicitudes'
+                me.modal.mostrar = accion == 'crear' ? 2 : 1
+                me.modal.titulo = accion == 'crear' ? 'Crear Solicitud' : 'Ver solicitudes'
 
-                me.item = {...data}
+                if(me.modal.mostrar == 1)
+                    me.item = {...data}
+
+                if(me.modal.mostrar == 2){
+                    me.solic = {
+                        id : '',
+                        status : '',
+                        titulo :'',
+                        picture: '',
+                        nom_archivo : 'Seleccione Archivo',
+                        file: null,
+                        loading : false,
+                    };
+                }
 
 
             },
@@ -418,6 +648,7 @@ export default{
         },
         mounted() {
             this.index(1)
+            this.indexPeticiones(1)
         }
     }
 
@@ -436,5 +667,43 @@ export default{
         white-space: nowrap;
         border-bottom: none;
         color: rgb(20, 20, 20);
+    }
+    .form-archivo{
+        display: flex;
+        flex-direction: row;
+
+        width: 100%;
+    }
+
+    .label-button{
+        border-style: solid;
+        cursor:pointer;
+        color: #fff;
+        background-color: #00ADEF;
+        border-color: #00ADEF;
+        padding: 10px;
+        margin: 15px;
+    }
+    .label-button:hover {
+        color: #fff;
+        background-color: #1b8eb7;
+        border-color: #00b0bb;
+    }
+    .text-file{
+        color: rgb(39, 38, 38);
+        font-size:12px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
+    }
+    .text-file-hide{
+        display: none;
+        color: rgb(127, 130, 134);
+        font-size:13px;
+        word-break: break-all;
+        font-weight: bold;
+        width: 300px;
+        padding: 15px;
     }
 </style>

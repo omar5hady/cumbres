@@ -231,9 +231,51 @@ class DonativosController extends Controller
     }
 
     public function getPeticiones(Request $request){
-        $peticion = PeticionDonativo::join('personal','personal.id','=','peticion_donativos.user_id')
+        return $peticion = PeticionDonativo::join('personal','personal.id','=','peticion_donativos.user_id')
             ->select('peticion_donativos.*','personal.nombre','personal.apellidos')
             ->where('peticion_donativos.status','=',0)
-            ->get();
+            ->paginate(6);
+    }
+
+    public function storePeticion(Request $request){
+        $file = $request->file;
+        $donativo = new PeticionDonativo();
+        $donativo->user_id = Auth::user()->id;
+        $donativo->titulo = $request->titulo;
+        /* Este bloque de código verifica si el usuario ha seleccionado un archivo para cargar
+        verificando si el valor de `->nom_archivo` no es igual a la cadena "Seleccione
+        Archivo". Si se ha seleccionado un archivo, llama a la función `setImage` con el archivo
+        cargado y el valor actual de `->imagen` (que puede estar vacío si es un
+        `DonativoItem` nuevo). La función `setImage` guarda el archivo cargado en el servidor y
+        devuelve el nombre del archivo, que luego se asigna a `->imagen`. Esto actualiza el
+        campo `imagen` del `DonativoItem` con el nuevo archivo, o lo establece en el mismo valor si
+        no se cargó ningún archivo nuevo. */
+        if($request->nom_archivo != 'Seleccione Archivo')
+            $donativo->picture = $this->setImage($request->file, $donativo->picture);
+        $donativo->save();
+    }
+
+    public function donarItem(Request $request){
+
+        $peticion = PeticionDonativo::findOrFail($request->id);
+        $peticion->status = 1;
+
+
+        $donativo = new DonativoItem();
+        $donativo->user_id = Auth::user()->id;
+        $donativo->titulo = $peticion->titulo;
+        $donativo->descripcion = '';
+        $donativo->picture = $peticion->picture;
+        $donativo->status = 2;
+        $donativo->save();
+
+        $hist = new HistDonativo();
+        $hist->user_id = $peticion->user_id;
+        $hist->item_id = $donativo->id;
+        $hist->status = 2;
+        $hist->save();
+
+        $peticion->save();
+
     }
 }
