@@ -50,13 +50,13 @@
                                     <div class="input-group">
                                         <select class="form-control" v-model="b_clasificacion" >
                                             <option value="">Clasificación</option>
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>
-                                            <option value="7">Coacreditado</option>
+                                            <option :value="STATUS.NO_VIABLE">No viable</option>
+                                            <option :value="STATUS.A">Tipo A</option>
+                                            <option :value="STATUS.B">Tipo B</option>
+                                            <option :value="STATUS.C">Tipo C</option>
+                                            <option :value="STATUS.VENTA">Ventas</option>
+                                            <option :value="STATUS.CANCELADO">Cancelado</option>
+                                            <option :value="STATUS.COACREDITADO">Coacreditado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -82,13 +82,13 @@
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
                                         <select class="form-control" v-model="b_clasificacion" >
                                             <option value="">Clasificación</option>
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>
-                                            <option value="7">Coacreditado</option>
+                                            <option :value="STATUS.NO_VIABLE">No viable</option>
+                                            <option :value="STATUS.A">Tipo A</option>
+                                            <option :value="STATUS.B">Tipo B</option>
+                                            <option :value="STATUS.C">Tipo C</option>
+                                            <option :value="STATUS.VENTA">Ventas</option>
+                                            <option :value="STATUS.CANCELADO">Cancelado</option>
+                                            <option :value="STATUS.COACREDITADO">Coacreditado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -214,13 +214,13 @@
                                         <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp"></td>
                                         <td class="td2" v-text="prospecto.proyecto"></td>
                                         <td class="td2">
-                                            {{ (prospecto.clasificacion==1) ? 'No viable'
-                                                : (prospecto.clasificacion==2) ? 'Tipo A'
-                                                : (prospecto.clasificacion==3) ? 'Tipo B'
-                                                : (prospecto.clasificacion==4)  ? 'Tipo C'
-                                                : (prospecto.clasificacion==5)  ? 'Ventas'
-                                                : (prospecto.clasificacion==6)  ? 'Cancelado'
-                                                : (prospecto.clasificacion==7)  ? 'Coacreditado' : ''
+                                            {{  (prospecto.clasificacion == STATUS.NO_VIABLE) ? 'No viable'
+                                                : (prospecto.clasificacion == STATUS.A) ? 'Tipo A'
+                                                : (prospecto.clasificacion == STATUS.B) ? 'Tipo B'
+                                                : (prospecto.clasificacion == STATUS.C)  ? 'Tipo C'
+                                                : (prospecto.clasificacion == STATUS.VENTA)  ? 'Ventas'
+                                                : (prospecto.clasificacion == STATUS.CANCELADO)  ? 'Cancelado'
+                                                : (prospecto.clasificacion == STATUS.COACREDITADO)  ? 'Coacreditado' : ''
                                             }}
                                         </td>
                                         <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
@@ -310,7 +310,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
-                                    <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                    <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="telefono" placeholder="Telefono">
                                     </div>
                                 </div>
 
@@ -322,7 +322,7 @@
                                                 <option value="">Clave lada</option>
                                                 <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
                                             </select>
-                                            <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                            <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="$root.isNumber($event)" v-model="celular" placeholder="Celular">
                                         </div>
                                     </div>
                                 </div>
@@ -363,7 +363,7 @@
                                     <div class="input-group-addon">
                                         $
                                     </div>
-                                    <input type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="isNumber($event)" v-model="ingreso" placeholder="ingreso">
+                                    <input type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="ingreso" placeholder="ingreso">
                                     </div>
                                     </div>
                                 </div>
@@ -423,7 +423,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">NSS</label>
-                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                        <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="nss" placeholder="NSS">
                                     </div>
                                 </div>
 
@@ -432,7 +432,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">No. INE</label>
-                                        <input type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
+                                        <input type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="num_ine" placeholder="INE">
                                     </div>
                                 </div>
 
@@ -465,13 +465,13 @@
                                     <div class="form-group">
                                     <label for="">Clasificacion</label>
                                     <select class="form-control" v-model="clasificacion" >
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>
-                                            <option v-if="rolId!=2" value="7">Coacreditado</option>
+                                            <option :value="STATUS.NO_VIABLE">No viable</option>
+                                            <option :value="STATUS.A">Tipo A</option>
+                                            <option :value="STATUS.B">Tipo B</option>
+                                            <option :value="STATUS.C">Tipo C</option>
+                                            <option :value="STATUS.VENTA">Ventas</option>
+                                            <option :value="STATUS.CANCELADO">Cancelado</option>
+                                            <option v-if="rolId!=2" :value="STATUS.COACREDITADO">Coacreditado</option>
                                     </select>
                                 </div>
                                 </div>
@@ -684,7 +684,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
-                                    <input :disabled="edit == 1" type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                    <input :disabled="edit == 1" type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="telefono" placeholder="Telefono">
                                 </div>
                                 </div>
 
@@ -696,7 +696,7 @@
                                             <option value="">Clave lada</option>
                                             <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
                                         </select>
-                                        <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                        <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="$root.isNumber($event)" v-model="celular" placeholder="Celular">
                                     </div>
                                 </div>
                                  </div>
@@ -738,7 +738,7 @@
                                     <div class="input-group-addon">
                                         $
                                     </div>
-                                    <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="isNumber($event)" v-model="ingreso" placeholder="ingreso">
+                                    <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="ingreso" placeholder="ingreso">
                                     </div>
                                 </div>
                                  </div>
@@ -790,7 +790,7 @@
                                 <div class="col-md-3">
                                      <div class="form-group">
                                         <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                        <input :disabled="edit == 1" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                        <input :disabled="edit == 1" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="nss" placeholder="NSS">
                                     </div>
                                 </div>
 
@@ -800,7 +800,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">No. INE</label>
-                                        <input type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_ine" placeholder="INE">
+                                        <input type="text" maxlength="13" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="num_ine" placeholder="INE">
                                     </div>
                                 </div>
 
@@ -831,13 +831,13 @@
                                     <div class="form-group">
                                     <label for="">Clasificacion</label>
                                     <select :disabled="edit == 1" class="form-control" v-model="clasificacion" >
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>
-                                            <option value="7">Coacreditado</option>
+                                            <option :value="STATUS.NO_VIABLE">No viable</option>
+                                            <option :value="STATUS.A">Tipo A</option>
+                                            <option :value="STATUS.B">Tipo B</option>
+                                            <option :value="STATUS.C">Tipo C</option>
+                                            <option :value="STATUS.VENTA">Ventas</option>
+                                            <option :value="STATUS.CANCELADO">Cancelado</option>
+                                            <option :value="STATUS.COACREDITADO">Coacreditado</option>
                                     </select>
                                 </div>
                                 </div>
@@ -1032,141 +1032,103 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Nombre </label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" v-model="nombre_coa" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
-                        </div>
-                        <label class="col-md-2 form-control-label" for="text-input">Apellidos</label>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" v-model="apellidos_coa" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
-                        </div>
-                    </div>
+                    <RowModal label1="Nombre" clsRow1="col-md-4" clsRow2="col-md-3" label2="Apellidos"
+                        :span1="nombre_coa==''" :span2="apellidos_coa==''"
+                    >
+                        <input type="text" class="form-control" v-model.trim="nombre_coa"
+                            placeholder="Nombre"  onkeyup="this.value = this.value.replace('  ', ' ')">
+                        <template v-slot:input2>
+                            <input type="text" class="form-control" v-model.trim="apellidos_coa" placeholder="Apellidos"
+                                onkeyup="this.value = this.value.replace('  ', ' ')">
+                        </template>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Celular </label>
-                        <select  v-model="clv_lada_coa"  class="form-control col-md-3" >
+                    <RowModal label1="Celular" clsRow1="col-md-3" clsRow2="col-md-4" :span1="celular_coa==''">
+                        <select  v-model="clv_lada_coa" class="form-control" >
                             <option value="">Clave lada</option>
                             <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
                         </select>
-                        <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-4" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
-                    </div>
+                        <template v-slot:input2>
+                            <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="celular_coa" placeholder="Celular">
+                        </template>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Telefono </label>
-                        <div class="col-md-3">
-                            <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
-                        </div>
-                    </div>
+                    <RowModal label1="Telefono" clsRow1="col-md-3" :span1="telefono_coa==''">
+                        <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
+                    </RowModal>
 
+                    <RowModal label1="Email personal" clsRow1="col-md-5" :span1="email_coa == ''">
+                        <input type="email" class="form-control"  v-model.trim="email_coa" placeholder="email">
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Email personal</label>
-                        <div class="col-md-5">
-                            <input type="email" class="form-control"  v-model="email_coa" placeholder="email">
-                        </div>
+                    <RowModal label1="Email Institucional" clsRow1="col-md-5">
+                        <input type="email" class="form-control"  v-model.trim="email_institucional_coa" placeholder="email">
+                    </RowModal>
 
-                    </div>
+                    <RowModal label1="Sexo" clsRow1="col-md-3" :span1="sexo_coa==''">
+                        <select class="form-control" v-model="sexo_coa" >
+                            <option value="">Seleccione</option>
+                            <option value="F">Femenino</option>
+                            <option value="M">Masculino</option>
+                        </select>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Email Institucional</label>
-                        <div class="col-md-5">
-                            <input type="email" class="form-control" v-model="email_institucional_coa" placeholder="email institucional">
-                        </div>
-                    </div>
+                    <RowModal label1="Fecha de nacimiento" clsRow1="col-md-3" :span1="fecha_nac_coa==''">
+                        <input type="date" class="form-control"  v-model="fecha_nac_coa" >
+                    </RowModal>
 
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Sexo </label>
-                        <div class="col-md-3">
-                            <select class="form-control" v-model="sexo_coa" >
-                                <option value="">Seleccione</option>
-                                <option value="F">Femenino</option>
-                                <option value="M">Masculino</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control"  v-model="fecha_nac_coa" >
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label  class="col-md-3 form-control-label" for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
-                        <div class="col-md-6">
-                            <input type="text" name="city2" list="cityname2" class="form-control" v-model="lugar_nacimiento_coa">
+                    <RowModal label1="Lugar de nacimiento" :span1="lugar_nacimiento_coa=''" clsRow1="col-md-6">
+                        <input type="text" name="city2" list="cityname2" class="form-control" v-model="lugar_nacimiento_coa">
                             <datalist id="cityname2">
                                 <option value="">Seleccione</option>
                                 <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>
                             </datalist>
-                        </div>
-                    </div>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">CURP</label>
-                        <div class="col-md-4">
-                            <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp_coa" placeholder="CURP">
-                        </div>
-                        <label class="col-md-2 form-control-label" for="text-input">NSS </label>
-                        <div class="col-md-3">
-                            <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
-                        </div>
-                    </div>
+                    <RowModal label1="CURP" clsRow1="col-md-4" label2="NSS" clsRow2="col-md-3">
+                        <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp_coa" placeholder="CURP">
+                        <template v-slot:input2>
+                            <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="$root.isNumber($event)" v-model="nss_coa" placeholder="NSS">
+                        </template>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">INE</label>
-                        <div class="col-md-4">
-                            <input type="text" maxlength="13" style="text-transform:uppercase" class="form-control"  v-model="num_ine_coa" placeholder="No. INE">
-                        </div>
-                        <label class="col-md-2 form-control-label" for="text-input">Pasaporte </label>
-                        <div class="col-md-3">
+                    <RowModal label1="INE" clsRow1="col-md-4" label2="Pasaporte" clsRow2="col-md-3">
+                        <input type="text" maxlength="13" style="text-transform:uppercase" class="form-control"  v-model="num_ine_coa" placeholder="No. INE">
+                        <template v-slot:input2>
                             <input type="text" maxlength="11" class="form-control" v-model="num_pasaporte_coa" placeholder="No. Passaporte">
-                        </div>
-                    </div>
+                        </template>
+                    </RowModal>
 
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                        <div class="col-md-3">
-                            <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span>
-                            <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc_coa)" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
-                        </div>
-                        <div class="col-md-3">
+                    <RowModal label1="RFC" clsRow1="col-md-3" clsRow2="col-md-3">
+                        <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span>
+                        <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc_coa)" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                        <template v-slot:input2>
                             <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave_coa" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
-                        </div>
-                    </div>
+                        </template>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Vive en casa </label>
-                        <div class="col-md-3">
-                            <select class="form-control" v-model="tipo_casa_coa" >
-                                <option value="0">Seleccione</option>
-                                <option value="De familiares">De familiares</option>
-                                <option value="Prestada">Prestada</option>
-                                <option value="Propia">Propia</option>
-                                <option value="Rentada">Rentada</option>
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal label1="Vive en casa" clsRow1="col-md-3" :span1="tipo_casa_coa == 0">
+                        <select class="form-control" v-model="tipo_casa_coa" >
+                            <option value="0">Seleccione</option>
+                            <option value="De familiares">De familiares</option>
+                            <option value="Prestada">Prestada</option>
+                            <option value="Propia">Propia</option>
+                            <option value="Rentada">Rentada</option>
+                        </select>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
-                        <div class="col-md-3">
-                            <select class="form-control" v-model="e_civil_coa" >
-                                <option value="0">Seleccione</option>
-                                <option value="1">Casado - separacion de bienes</option>
-                                <option value="2">Casado - sociedad conyugal</option>
-                                <option value="3">Divorciado</option>
-                                <option value="4">Soltero</option>
-                                <option value="5">Union libre</option>
-                                <option value="6">Viudo</option>
-                                <option value="7">Otro</option>
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal label1="Estado civil" clsRow1="col-md-3" :span1="e_civil_coa == 0">
+                        <select class="form-control" v-model="e_civil_coa" >
+                            <option value="0">Seleccione</option>
+                            <option value="1">Casado - separacion de bienes</option>
+                            <option value="2">Casado - sociedad conyugal</option>
+                            <option value="3">Divorciado</option>
+                            <option value="4">Soltero</option>
+                            <option value="5">Union libre</option>
+                            <option value="6">Viudo</option>
+                            <option value="7">Otro</option>
+                        </select>
+                    </RowModal>
 
                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                     <div v-show="errorCoacreditado" class="form-group row div-error">
@@ -1177,8 +1139,7 @@
                     </div>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCoacreditado()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
+                    <Button @click="registrarCoacreditado()" icon="icon-check">Guardar</Button>
                 </template>
 
             </ModalComponent>
@@ -1190,39 +1151,30 @@
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
-                        <div class="col-md-6">
-                            <select class="form-control" v-model="asesor_id" >
-                                <option value="0">Seleccione</option>
-                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal label1="Asesor" clsRow1="col-md-6">
+                        <select class="form-control" v-model="asesor_id" >
+                            <option value="0">Seleccione</option>
+                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                        </select>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">CLasificación</label>
-                        <div class="col-md-6">
-                            <select class="form-control" v-model="clasificacion" >
-                                <option value="1">No viable</option>
-                                <option value="2">Tipo A</option>
-                                <option value="3">Tipo B</option>
-                                <option value="4">Tipo C</option>
-                                <option value="5">Ventas</option>
-                                <option value="6">Cancelado</option>
-                            </select>
-                        </div>
-                    </div>
+                    <RowModal label1="Clasificación" clsRow1="col-md-6">
+                        <select class="form-control" v-model="clasificacion" >
+                            <option :value="STATUS.NO_VIABLE">No viable</option>
+                            <option :value="STATUS.A">Tipo A</option>
+                            <option :value="STATUS.B">Tipo B</option>
+                            <option :value="STATUS.C">Tipo C</option>
+                            <option :value="STATUS.VENTA">Ventas</option>
+                            <option :value="STATUS.CANCELADO">Cancelado</option>
+                        </select>
+                    </RowModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Observación</label>
-                        <div class="col-md-9">
-                            <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
-                        </div>
-                    </div>
+                    <RowModal label1="Observación" :span1="observacion==''" clsRow1="col-md-9">
+                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                    </RowModal>
                 </template>
                 <template v-slot:buttons-footer>
-                    <button type="button" class="btn btn-primary" @click="asignarProspecto()">Reasignar </button>
+                    <Button icon="icon-check" @click="asignarProspecto()">Reasignar</Button>
                 </template>
             </ModalComponent>
             <!--Fin del modal-->
@@ -1233,16 +1185,13 @@
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
-                        <div class="col-md-6">
-                                <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button"  class="btn btn-primary" v-if="rolId != 2" @click="agregarComentario()">Guardar</button>
-                            <button type="button"  class="btn btn-primary" v-if="rolId == 2" @click="storeObs()">Guardar</button>
-                        </div>
-                    </div>
+                    <RowModal label1="Observación" clsRow1="col-md-6" clsRow2="col-md-2">
+                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                        <template v-slot:input2>
+                            <Button  v-if="rolId != 2" @click="agregarComentario()" icon="icon-check">Guardar</Button>
+                            <Button  v-if="rolId == 2" @click="storeObs()" icon="icon-check">Guardar</Button>
+                        </template>
+                    </RowModal>
 
                     <TableComponent v-if="tipoAccion==4"
                         :cabecera="['Usuario','Observacion','Fecha','Cita']"
@@ -1326,8 +1275,11 @@
 
 <script>
     import ModalComponent from '../Componentes/ModalComponent.vue';
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue';
     import vSelect from 'vue-select';
+    import Button from '../Componentes/ButtonComponent.vue';
+    import createCurpRFC from '../../helpers/createCurpRFC';
     export default {
         props:{
             rolId:{type: String},
@@ -1335,6 +1287,16 @@
         },
         data(){
             return{
+                STATUS : Object.freeze({
+                    NO_VIABLE: 1,
+                    A: 2,
+                    B: 3,
+                    C: 4,
+                    VENTA: 5,
+                    CANCELADO: 6,
+                    COACREDITADO: 7
+                }),
+
                 proceso:false,
                 id:0,
                 clasificacion:1,
@@ -1410,15 +1372,6 @@
                 errorMostrarMsjProspecto : [],
                 errorCoacreditado : 0,
                 errorMostrarMsjCoacreditado : [],
-                pagination : {
-                    'total' : 0,
-                    'current_page' : 0,
-                    'per_page' : 0,
-                    'last_page' : 0,
-                    'from' : 0,
-                    'to' : 0,
-                },
-                offset : 3,
                 criterio : 'personal.nombre',
                 buscar : '',
                 buscar2: '',
@@ -1449,45 +1402,20 @@
         components:{
             vSelect,
             ModalComponent,
-            TableComponent
+            TableComponent,
+            RowModal,
+            Button
         },
         computed:{
-            isActived: function(){
-                return this.pagination.current_page;
-            },
-
-            //Calcula los elementos de la paginación
-            pagesNumber:function(){
-                if(!this.pagination.to){
-                    return [];
-                }
-
-                var from = this.pagination.current_page - this.offset;
-                if(from < 1){
-                    from = 1;
-                }
-
-                var to = from + (this.offset * 2);
-                if(to >= this.pagination.last_page){
-                    to = this.pagination.last_page;
-                }
-
-                var pagesArray = [];
-                while(from <= to){
-                    pagesArray.push(from);
-                    from++;
-                }
-                return pagesArray;
-            },
         },
 
         methods : {
             /**Metodo para mostrar los registros */
-            listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
+            listarProspectos(page, buscar, buscar2, buscar3){
                 let me = this;
                 var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_advertising=' + me.b_advertising +
-                    '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&seguimiento='+me.b_seguimiento +
-                    '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio + '&b_aux=' + me.b_aux;
+                    '&buscar3=' + buscar3 + '&b_clasificacion=' + me.b_clasificacion + '&seguimiento='+me.b_seguimiento +
+                    '&b_publicidad=' + me.b_publicidad + '&criterio=' + me.criterio + '&b_aux=' + me.b_aux;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
@@ -1501,7 +1429,6 @@
             },
             buscarCliente(){
                 let me = this;
-                let mostrar = 0;
                 var url = '/clientes/buscar?nombre=' + me.nombre + '&apellidos=' + me.apellidos;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1527,271 +1454,19 @@
                 } else {
                     return true;
                 }
-            },CreateCurp(){
+            },
+            CreateCurp(){
+                const { curp, rfc } = createCurpRFC(
+                    this.apellidos,
+                    this.apellidos2,
+                    this.nombre,
+                    this.fecha_nac,
+                    this.sexo,
+                    this.lugar_nacimiento
+                )
 
-                var special = ['!','"','#','$','%','&','(',')','*','+',',','-','.','/','^',
-                                '[',']','{','}','~',"'"];
-                var prepo = ["DA", "DAS", "DE", "DEL", "DER", "DI", "DIE", "DD", "EL", "LA",
-                            "LOS", "LAS", "LE", "LES", "MAC", "MC", "VAN", "VON", "Y"];
-                var i;
-
-                //{{{{{{{{{{{{{{{{{{paterno}}}}}}}}}}}}}}}}}}
-                var paterno = this.apellidos.toUpperCase();
-                var paterno2 = paterno.split(" ");
-                var paternoL ="";
-
-                if(paterno2.length > 1){
-                    var paterno1 ="";
-                    if(prepo.indexOf(paterno2[0]) >= 0){
-                        for(i = 1; i < paterno2.length; i++){
-                            paterno1 = paterno1+paterno2[i]+" ";
-                        }
-                    }else{
-                        for(i = 0; i < paterno2.length; i++){
-                            paterno1 = paterno1+paterno2[i]+" ";
-                        }
-                    }
-                    paterno = paterno1.split("");
-                }else{paterno = paterno2[0].split("");}
-
-                for (i = 1; i < 100; i++) {
-                    if (paterno[i] == "A") {
-                        paternoL = paterno[i];
-                        i = 101;
-                    }
-                    if (paterno[i] == "E") {
-                        paternoL = paterno[i];
-                        i = 101;
-                    }
-                    if (paterno[i] == "I") {
-                        paternoL = paterno[i];
-                        i = 101;
-                    }
-                    if (paterno[i] == "O") {
-                        paternoL = paterno[i];
-                        i = 101;
-                    }
-                    if (paterno[i] == "U") {
-                        paternoL = paterno[i];
-                        i = 101;
-                    }
-                }
-
-                if(paternoL == ""){ paternoL = "X" }
-                if(paterno[0] == "\u00d1"){paterno[0]="X"; }//para la Ñ
-                if(special.indexOf(paterno[0]) > 0){ paterno[0] = "X";}
-                if(special.indexOf(paternoL) > 0){ paternoL = "X";}
-
-                //{{{{{{{{{{{{{{{{{{materno}}}}}}}}}}}}}}}}}}
-                var materno;
-                materno = this.apellidos2.toUpperCase();
-                var materno2 = materno.split(" ");
-
-                if(materno2.length > 1){
-                    var materno1 = "";
-                    if(prepo.indexOf(materno2[0]) >= 0){
-                        for(i = 1; i < materno2.length; i++){
-                            materno1 = materno1+materno2[i]+" ";
-                        }
-                    }else{
-                        for(i = 0; i < materno2.length; i++){
-                            materno1 = materno1+materno2[i]+" ";
-                        }
-                    }
-                    materno = materno1.split("");
-                }else{materno = materno2[0].split("");}
-
-                if(materno == ""){materno[0]="X"; }
-                if(materno[0] == "\u00d1"){materno[0]="X"; }//para la Ñ
-                if(special.indexOf(materno[0]) > 0){ materno[0] = "X";}
-
-                //{{{{{{{{{{{{{{{{{{nombre}}}}}}}}}}}}}}}}}}
-                var names = ["MARIA","MA.","MA","JOSE","J","J.","DA","DAS", "DE", "DEL", "DER",
-                            "DI", "DIE", "DD", "EL", "LA", "LOS", "LAS", "LE", "LES", "MAC",
-                            "MC", "VAN", "VON", "Y"];
-                var name;
-                name = this.nombre.toUpperCase();
-                var name2 = name.split(' ');
-
-                if(name2.length > 1){
-                    var name1 = "";
-                    if(names.indexOf(name2[0]) >= 0){
-                        for(i = 1; i < name2.length; i++){
-                            name1 = name1+name2[i]+" ";
-                        }
-                    }else{
-                        for(i = 0; i < name2.length; i++){
-                            name1 = name1+name2[i]+" ";
-                        }
-                    }
-                    name = name1.split("");
-                }else{name = name2[0].split("");}
-
-                if(name[0] == "\u00d1"){name[0]="X"; }//para la Ñ
-                if(special.indexOf(name[0]) > 0){ name[0] = "X";}
-
-                //{{{{{{{{{{{{{{{{{{part 1}}}}}}}}}}}}}}}}}}
-                var ants = ["BACA","BAKA","BUEI","BUEY","CACA","CACO","CAGA","CAGO","CAKA",
-                            "CAKO","COGE","COGI","COJA","COJE","COJI","COJO","COLA","CULO",
-                            "FALO","FETO","GETA","GUEI","GUEY","JETA","JOTO","KACA","KACO",
-                            "KAGA","KAGO","KAKA","KAKO","KOGE","KOGI","KOJA","KOJE","KOJI",
-                            "KOJO","KOLA","KULO","LILO","LOCA","LOCO","LOKA","LOKO","MAME",
-                            "MAMO","MEAR","MEAS","MEON","MIAR","MION","MOCO","MOKO","MULA",
-                            "MULO","NACA","NACO","PEDA","PEDO","PENE","PIPI","PITO","POPO",
-                            "PUTA","PUTO","QULO","RATA","ROBA","ROBE","ROBO","RUIN","SENO",
-                            "TETA","VACA","VAGA","VAGO","VAKA","VUEI","VUEY","WUEI","WUEY"];
-
-                var p1 = paterno[0] + paternoL + materno[0] + name[0];
-
-                if(ants.indexOf(p1) >= 0){
-                    var x = p1.split("");
-                    x[1] = "X";
-                    p1="";
-                    for(i=0; i < 4; i++){
-                        p1=p1+x[i];
-                    }
-                }
-
-                //{{{{{{{{{{{{{{{{{{date}}}}}}}}}}}}}}}}}}
-                var date = this.fecha_nac.split('');
-                var p2 = date[2]+date[3]+date[5]+date[6]+date[8]+date[9];
-
-                //{{{{{{{{{{{{{{{{{{part 3}}}}}}}}}}}}}}}}}}
-                var sex = this.sexo;
-                var p3 = "";
-                if(sex == "F"){p3 = "M";}
-                if(sex == "M"){p3 = "H";}
-
-                //{{{{{{{{{{{{{{{{{{estado}}}}}}}}}}}}}}}}}}
-                var estado = ["Aguascalientes","Baja California","Baja California Sur",
-                            "Campeche","Coahuila de Zaragoza","Colima","Chiapas","Chihuahua",
-                            "Distrito Federal","Durango","Guanajuato","Guerrero","Hidalgo",
-                            "Jalisco","México","Michoacán de Ocampo","Morelos","Nayarit","Nuevo León",
-                            "Oaxaca","Puebla","Querétaro","Quintana Roo","San Luis Potosí",
-                            "Sinaloa","Sonora","Tabasco","Tamaulipas","Tlaxcala","Veracruz de Ignacio de la Llave",
-                            "Yucatán","Zacatecas","EXTRANJERO"];
-                var ef = ["AS","BC","BS","CC","CL","CM","CS","CH","DF","DG","GT","GR","HG",
-                            "JC","MC","MN","MS","NT","NL","OC","PL","QT","QR","SP","SL","SR",
-                            "TC","TS","TL","VZ","YN","ZS","NE"];
-
-                var stat = this.lugar_nacimiento;
-                var p4 ="";
-                p4= ef[estado.indexOf(stat)];
-
-                //{{{{{{{{{{{{{{{{{{conson}}}}}}}}}}}}}}}}}}
-                var abc = ["B","C","D","F","G","H","J","K","L","M","N","Ñ","P","Q","R","S",
-                            "T","V","W","X","Y","Z","\u00d1"];
-                var cname = ["MARIA","JOSE"];
-                var c14 = "";
-                var vtemp = "";
-                var i2 ="";
-
-                c14 = this.apellidos.toUpperCase().split(" ");
-
-                if(c14.length > 1){
-                    for(i=0;i < c14.length;i++){
-                        vtemp = c14[i].split("");
-                        for(i2 = 1; i2 < vtemp.length;i2++){
-                            if(abc.indexOf(vtemp[i2])>=0){
-                                c14 = vtemp[i2];
-                                i = c14.length+1;
-                                i2 = vtemp.length+1
-                            }
-                        }
-                    }
-                }else{
-                    vtemp = c14[0].split("");
-                    for(i2 = 1; i2 < vtemp.length;i2++){
-                        if(abc.indexOf(vtemp[i2])>=0){
-                            c14 = vtemp[i2];
-                            i = c14.length+1;
-                            i2 = vtemp.length+1
-                        }
-                    }
-                }
-
-                if(abc.indexOf(c14)>=0){}else{
-                    c14 = "X";
-                }
-                if(c14 == "\u00d1"){c14="X"; }//para la Ñ
-                //{{{{{{p15}}}}}}
-                var c15 = "";
-
-                c15 = this.apellidos2.toUpperCase().split(" ");
-
-                if(c15.length > 1){
-                    for(i=0;i < c15.length;i++){
-                        vtemp = c15[i].split("");
-                        for(i2 = 1; i2 < vtemp.length;i2++){
-                            if(abc.indexOf(vtemp[i2])>=0){
-                                c15 = vtemp[i2];
-                                i = c15.length+1;
-                                i2 = vtemp.length+1
-                            }
-                        }
-                    }
-                }else{
-                    vtemp = c15[0].split("");
-                    for(i2 = 1; i2 < vtemp.length;i2++){
-                        if(abc.indexOf(vtemp[i2])>=0){
-                            c15 = vtemp[i2];
-                            i = c15.length+1;
-                            i2 = vtemp.length+1
-                        }
-                    }
-                }
-
-                if(abc.indexOf(c15)>=0){}else{
-                    c15 = "X";
-                }
-                if(c15 == "\u00d1"){c15="X"; }//para la Ñ
-                //{{{{{{p16}}}}}}
-                var c16 = "";
-
-                c16 = this.nombre.toUpperCase().split(" ");
-
-                if(c16.length > 1){
-                    if(cname.indexOf(c16[0]) >= 0){
-                        for(i=1;i < c16.length;i++){
-                            vtemp = c16[i].split("");
-                            for(i2 = 1; i2 < vtemp.length;i2++){
-                                if(abc.indexOf(vtemp[i2])>=0){
-                                    c16 = vtemp[i2];
-                                    i = c16.length+1;
-                                    i2 = vtemp.length+1
-                                }
-                            }
-                        }
-                    }else{
-                        for(i=0;i < c16.length;i++){
-                            vtemp = c16[i].split("");
-                            for(i2 = 1; i2 < vtemp.length;i2++){
-                                if(abc.indexOf(vtemp[i2])>=0){
-                                    c16 = vtemp[i2];
-                                    i = c16.length+1;
-                                    i2 = vtemp.length+1
-                                }
-                            }
-                        }
-                    }
-                }else{
-                    vtemp = c16[0].split("");
-                    for(i2 = 1; i2 < vtemp.length;i2++){
-                        if(abc.indexOf(vtemp[i2])>=0){
-                            c16 = vtemp[i2];
-                            i = c16.length+1;
-                            i2 = vtemp.length+1
-                        }
-                    }
-                }
-
-                if(abc.indexOf(c16)>=0){}else{
-                    c16 = "X";
-                }
-                if(c16 == "\u00d1"){c16="X"; }//para la Ñ
-
-                this.curp = p1 + p2 + p3 + p4 + c14 + c15 + c16;
-                this.rfc = p1 + p2;
+                this.curp = curp;
+                this.rfc = rfc;
 
                 this.selectRFC(this.rfc);
             },
@@ -2314,10 +1989,6 @@
                 }
                 })
             },
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            },
             activarProspecto(id){
                swal({
                 title: 'Esta seguro de activar a este cliente?',
@@ -2462,16 +2133,6 @@
                     this.errorCoacreditado = 1;
 
                 return this.errorCoacreditado;
-            },
-
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
             },
             limpiarDatos(){
                 this.clasificacion=1;
@@ -2711,7 +2372,7 @@
                 this.tipoAccion= 4;
             },
 
-            abrirModal(accion, data =[]){
+            abrirModal(accion){
                 switch(accion){
                     case 'coacreditado':
                     {
@@ -2756,44 +2417,17 @@
     }
 </script>
 <style>
-
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-
-    }
     .badge2 {
-    display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 95%;
-    font-weight: bold;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
-    .modal-body{
-        height: 450px;
-        width: 100%;
-        overflow-y: auto;
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 95%;
+        font-weight: bold;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
     }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-
     .td2, .th2 {
     border: solid rgb(200, 200, 200) 1px;
     padding: .5rem;

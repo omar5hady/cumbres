@@ -62,6 +62,7 @@ class SolicitudesController extends Controller
         if(
             $usuario == 'mendez.erika59'
             || $usuario == 'lomelin'
+            || $usuario == 'ricardo_esparza'
         )$admin = 4;
 
         $total = 0;
