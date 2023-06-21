@@ -10,13 +10,10 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Mis prospectos
                         <!--   Boton agregar    -->
-                        <button type="button" @click="mostrarDetalle()" class="btn btn-secondary" v-if="listado==1">
-                            <i class="icon-people"></i>&nbsp;Agregar
-                        </button>
-
-                        <button v-if="rolId == 2 && reasignar == 0 && listado == 3" type="button" @click="reasignToAsesor()" class="btn btn-primary btn-sm" title="Pedir reasignar">
-                            <i class="fa fa-exchange"></i>
-                        </button>
+                        <Button v-if="listado==1" btnClass="btn-secondary" @click="mostrarDetalle()" icon="icon-people">Agregar</Button>
+                        <Button v-if="rolId == 2 && reasignar == 0 && listado == 3"
+                            @click="reasignToAsesor()" title="Pedir reasignar" icon="fa fa-exchange">
+                        </Button>
                         <!---->
                     </div>
                     <!-- Div Card Body para listar -->
@@ -77,9 +74,9 @@
                                                 <option value="">Seleccione</option>
                                                 <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                             </select>
-                                            <input type="text" v-if="buscar" placeholder="Nombre del cliente" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
+                                            <input type="text" v-if="buscar" placeholder="Nombre del cliente" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3)" class="form-control">
                                         </template>
-                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
+                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3)" class="form-control">
                                         <select class="form-control" v-model="b_clasificacion" >
                                             <option value="">Clasificación</option>
                                             <option :value="STATUS.NO_VIABLE">No viable</option>
@@ -138,7 +135,7 @@
 
                                 <div class="col-md-8" >
                                     <div class="input-group">
-                                        <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <Button icon="fa fa-search" @click="listarProspectos(1)">Buscar</Button>
                                         <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad +  + '&b_advertising=' + this.b_advertising + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad +  + '&b_advertising=' + b_advertising + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
@@ -167,7 +164,7 @@
                                     </tr>
                                 </template>
                                 <template v-slot:tbody>
-                                    <tr v-for="prospecto in arrayProspectos" :key="prospecto.id"
+                                    <tr v-for="prospecto in arrayProspectos.data" :key="prospecto.id"
                                             :class="[prospecto.advertising == '0' ? 'table-danger' : '']"
                                         >
                                         <td class="td2">
@@ -246,20 +243,11 @@
                                     </tr>
                                 </template>
                             </TableComponent>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,b_clasificacion,criterio)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,b_clasificacion,criterio)" v-text="page"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,b_clasificacion,criterio)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                            <Nav v-if="arrayProspectos"
+                                :current="arrayProspectos.current_page"
+                                :last="arrayProspectos.last_page"
+                                @changePage="listarProspectos"
+                            ></Nav>
                             <button class="btn btn-sm btn-default" @click="modal=4">Manual</button>
                         </div>
                     </template>
@@ -1280,6 +1268,7 @@
     import vSelect from 'vue-select';
     import Button from '../Componentes/ButtonComponent.vue';
     import createCurpRFC from '../../helpers/createCurpRFC';
+    import Nav from "../Componentes/NavComponent.vue";
     export default {
         props:{
             rolId:{type: String},
@@ -1404,22 +1393,22 @@
             ModalComponent,
             TableComponent,
             RowModal,
-            Button
+            Button,
+            Nav
         },
         computed:{
         },
 
         methods : {
             /**Metodo para mostrar los registros */
-            listarProspectos(page, buscar, buscar2, buscar3){
+            listarProspectos(page){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_advertising=' + me.b_advertising +
-                    '&buscar3=' + buscar3 + '&b_clasificacion=' + me.b_clasificacion + '&seguimiento='+me.b_seguimiento +
+                var url = '/clientes?page=' + page + '&buscar=' + me.buscar + '&buscar2=' + me.buscar2 + '&b_advertising=' + me.b_advertising +
+                    '&buscar3=' + me.buscar3 + '&b_clasificacion=' + me.b_clasificacion + '&seguimiento='+me.b_seguimiento +
                     '&b_publicidad=' + me.b_publicidad + '&criterio=' + me.criterio + '&b_aux=' + me.b_aux;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayProspectos = respuesta.personas.data;
-                    me.pagination = respuesta.pagination;
+                    me.arrayProspectos = respuesta.personas;
                     me.contador = respuesta.contadorClientes;
                     me.usuario = respuesta.user;
                 })
@@ -1668,14 +1657,6 @@
                 });
 
             },
-
-            cambiarPagina(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
-                let me = this;
-                //Actualiza la pagina actual
-                me.pagination.current_page = page;
-                //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,buscar2,buscar3,b_clasificacion,criterio);
-            },
             /**Metodo para registrar  */
             registrarProspecto(){
                 if(this.validarProspecto() || this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -1739,7 +1720,7 @@
                     me.listado=1;
                     me.makeRemember = "";
                     me.limpiarDatos();
-                    me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(1);
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1761,7 +1742,7 @@
                     'id':this.id,
                     'observacion':this.observacion,
                 }).then(function (response){
-                    me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(me.arrayProspectos.current_page,me.buscar,me.buscar2,me.buscar3);
                     me.cerrarModal();
                     //Se muestra mensaje Success
                     swal({
@@ -1783,7 +1764,7 @@
                     'id':this.id,
                     'observacion':this.observacion,
                 }).then(function (response){
-                    me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(me.arrayProspectos.current_page,me.buscar,me.buscar2,me.buscar3);
                     me.cerrarModal();
                     //Se muestra mensaje Success
                     swal({
@@ -1853,11 +1834,11 @@
                     'id' : id
                 }).then(function (response){
                     //Se muestra mensaje Success
-                    const index = me.arrayProspectos.map( e => e.id ).indexOf( id )
-                    if(me.arrayProspectos[index].advertising == 1)
-                        me.arrayProspectos[index].advertising = 0;
+                    const index = me.arrayProspectos.data.map( e => e.id ).indexOf( id )
+                    if(me.arrayProspectos.data[index].advertising == 1)
+                        me.arrayProspectos.data[index].advertising = 0;
                     else
-                        me.arrayProspectos[index].advertising = 1;
+                        me.arrayProspectos.data[index].advertising = 1;
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -1934,7 +1915,7 @@
                     me.listado=1;
                     me.makeRemember = "";
                     me.limpiarDatos();
-                    me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(me.arrayProspectos.current_page,me.buscar,me.buscar2,me.buscar3);
 
                     //Se muestra mensaje Success
                     swal({
@@ -1970,7 +1951,7 @@
                     }).then(function (response) {
                         me.listado=1;
                         me.limpiarDatos();
-                        me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                        me.listarProspectos(1);
                         swal(
                         'Desactivado!',
                         'El registro ha sido desactivado con éxito.',
@@ -2011,7 +1992,7 @@
                     }).then(function (response) {
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(1);
                         swal(
                         'Activado!',
                         'El registro ha sido activado con éxito.',
@@ -2053,7 +2034,7 @@
                     }).then(function (response) {
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(1);
                         swal(
                         'Hecho!',
                         'La solicitud ha llegado al gerente del fraccionamiento.',
@@ -2268,7 +2249,7 @@
                         'clasificacion':me.clasificacion,
                         'observacion':me.observacion
                     }).then(function (response) {
-                        me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                        me.listarProspectos(1);
                         me.cerrarModal();
                         swal(
                         'Hecho!',
@@ -2405,7 +2386,7 @@
 
         },
         mounted() {
-            this.listarProspectos(1,this.buscar,this.buscar2,this.buscar3,this.b_clasificacion,this.criterio);
+            this.listarProspectos(1);
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
             this.selectFraccionamientos2();

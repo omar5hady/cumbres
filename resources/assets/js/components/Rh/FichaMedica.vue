@@ -94,7 +94,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <h6 style="vertical-align: inherit;">
-                                                Talla: <strong>{{medicalRecord.estatura}} m</strong>
+                                                Talla: <strong>{{$root.formatNumber(medicalRecord.estatura)}} m</strong>
                                             </h6>
                                         </div>
 
