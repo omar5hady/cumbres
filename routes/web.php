@@ -23,6 +23,9 @@ Route::post('premios/store','Premios\PremiosController@storePremio');
 Route::get('/premios/cuponPDF','Premios\PremiosController@cuponPDF');
 Route::get('/ruleta','Premios\PremiosController@ruleta');
 Route::put('/premios/reg_corr_whats','Premios\PremiosController@regCorrWhats');
+
+Route::post('evento/store','Form\EventoController@store');
+
 // Route::post('/mailPrueba', function () {
 //     return view('mails/welcome');
 // });
