@@ -30,6 +30,7 @@ Vue.use(VueCurrencyFilter, {
 
 Vue.component('calendar-component', require('./components/Calendar/CalendarComponent.vue'));
 Vue.component('notificacion-component', require('./components/Notificacion.vue'));
+Vue.component('evento-registro', require('./components/Evento/Registro.vue'));
 
 //Componentes Administracion
 Vue.component('departamento', require('./components/Administracion/Departamento.vue'));

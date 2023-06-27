@@ -22,8 +22,9 @@ class EventoController extends Controller
         $registro->asist_adult  = $request->asist_adult;
         $registro->asist_kid    = $request->asist_kid;
         $registro->rfc          = $request->rfc;
-        $registro->is_cliente   = $this->findRFC($request->rfc);
-        $registro->cliente_id   = $request->cliente_id;
+        $registro->is_cliente   = $request->is_cliente;
+        if($registro->is_cliente == 1)
+            $registro->cliente_id   = $this->findRFC($request->rfc);
         $registro->fraccionamiento = $request->fraccionamiento;
         $registro->evento       = $request->evento;
         $registro->save();
@@ -40,5 +41,9 @@ class EventoController extends Controller
                 return NULL;
 
 
+    }
+
+    public function getEvento(Requet $request){
+        return EventoRegistro::where('id','=',$request->id)->first();
     }
 }

@@ -61,6 +61,10 @@ Route::group(['middleware' => ['auth']],function(){
         return view('contenido/contenido');
     })->name('main');
 
+    Route::get('/evento', function () {
+        return view('contenido/evento');
+    })->name('evento');
+
     //RUTAS PARA LOS ASESORES
     Route::group(['middleware' => ['Asesor']],function(){
 
