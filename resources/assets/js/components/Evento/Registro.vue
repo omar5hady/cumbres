@@ -39,21 +39,21 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" v-if="dataInvitado">
                         <div class="col-sm-6 col-lg-4">
                             <div
                                 class="card mb-4"
                             >
                                 <div
                                     class="card-header d-flex justify-content-center align-items-center"
-                                    style="background-color: navy; color: white;"
+                                    :style="`${dataInvitado.isCliente == 1 ? 'background-color: #f1b922;' : 'background-color: #5dc1b9;'}   color: white;`"
                                 >
                                     <span class="material-icons md-48" style="font-size: 64px;">family_restroom</span>
 
                                 </div>
                                 <div
                                     class="card-header d-flex justify-content-center align-items-center"
-                                    style="background-color: navy; color: white;"
+                                    :style="`${dataInvitado.isCliente == 1 ? 'background-color: #f1b922;' : 'background-color: #5dc1b9;'}   color: white;`"
                                 >
                                     <h4>Invitados confirmados</h4>
 
@@ -61,8 +61,10 @@
                                 <div class="card-body row text-center">
                                     <div class="col">
                                         <div class="fs-5">
-                                            <h5 style="font-weight: bold;">
-                                                Juanito Perez
+                                            <h5 class="text-uppercase" style="font-weight: bold;">
+                                                {{ dataInvitado.nombre }}
+                                                {{ dataInvitado.ap_paterno }}
+                                                {{ dataInvitado.ap_materno }}
                                             </h5>
                                         </div>
 
@@ -72,11 +74,15 @@
                                     <div class="col">
                                         <div class="fs-5">
                                             <button class="btn btn-sm btn-primary" title="Añadir"
+                                            v-if="dataInvitado.status==0 && dataInvitado.asist_adult < 4"
+                                            @click="changeAsistAdult(1)"
                                                 style="border-radius: 100%;">
                                                     <span class="material-icons" style="font-size: 12px;">add</span>
                                             </button>
-                                            <h4>2</h4>
+                                            <h4>{{ dataInvitado.asist_adult }}</h4>
                                             <button class="btn btn-sm btn-primary" title="Quitar"
+                                                v-if="dataInvitado.status==0 && dataInvitado.asist_adult > 1"
+                                                @click="changeAsistAdult(-1)"
                                                 style="border-radius: 100%;">
                                                     <span class="material-icons" style="font-size: 12px;">remove</span>
                                             </button>
@@ -91,11 +97,15 @@
                                     <div class="col">
                                         <div class="fs-5">
                                             <button class="btn btn-sm btn-primary" title="Añadir"
+                                            v-if="dataInvitado.status==0 && dataInvitado.asist_kid < 4"
+                                            @click="changeAsistKid( 1 )"
                                                 style="border-radius: 100%;">
                                                     <span class="material-icons" style="font-size: 12px;">add</span>
                                             </button>
-                                            <h4>4</h4>
+                                            <h4>{{ dataInvitado.asist_kid }}</h4>
                                             <button class="btn btn-sm btn-primary" title="Quitar"
+                                                v-if="dataInvitado.status==0 && dataInvitado.asist_kid > 0"
+                                                @click="changeAsistKid( -1 )"
                                                 style="border-radius: 100%;">
                                                     <span class="material-icons" style="font-size: 12px;">remove</span>
                                             </button>
@@ -111,6 +121,8 @@
                                     <div class="col">
                                         <div class="fs-5">
                                             <button class="btn btn-success" title="Confirmar registro"
+                                                v-if="dataInvitado.status == 0"
+                                                @click="confirmAsist()"
                                                 style="border-radius: 100%;">
                                                     <span class="material-icons" style="font-size: 24px;">done</span>
                                             </button>
@@ -139,16 +151,53 @@ export default {
     components: {
         Button
     },
-    props: {},
+    props: {
+        invitado:{
+            type:String,
+            required: false,
+            default: null
+        }
+    },
     data() {
         return {
-            b_folio:''
+            b_folio:'',
+            dataInvitado: null
         };
     },
     computed: {},
     methods: {
+        setDatos(){
+            if(this.invitado)
+                this.dataInvitado = JSON.parse(this.invitado)
+        },
+        changeAsistAdult( cant ){
+            this.dataInvitado.asist_adult += cant;
+        },
+        changeAsistKid( cant ){
+            this.dataInvitado.asist_kid += cant;
+        },
+        async confirmAsist(){
+            let me = this;
+
+            const res = await axios.put(`/invitacion/confirm`,me.dataInvitado)
+
+            me.dataInvitado.status = 1;
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+
+            toast({
+            type: 'success',
+            title: 'Asistencia confirmada.'
+            })
+        }
     },
-    mounted() {}
+    mounted() {
+        this.setDatos();
+    }
 };
 </script>
 <style>

@@ -5,7 +5,7 @@
     {{-- Se verifica que el usuario este autenticado (Iniciado sesion) --}}
     @if (Auth::check())
     <template>
-        <evento-registro v-if="menu==100"></evento-registro>
+        <evento-registro v-if="menu==100" invitado="{{$invitado}}"></evento-registro>
     </template>
     @endif
 @endsection

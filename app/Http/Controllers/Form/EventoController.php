@@ -28,6 +28,8 @@ class EventoController extends Controller
         $registro->fraccionamiento = $request->fraccionamiento;
         $registro->evento       = $request->evento;
         $registro->save();
+
+        return 'https://siicumbres.com/invitacion/print?id='.$registro->id;
     }
 
     private function findRFC($rfc){
@@ -43,7 +45,28 @@ class EventoController extends Controller
 
     }
 
-    public function getEvento(Requet $request){
+    public function printInvitacion(Request $request){
+        $invitado = EventoRegistro::where('id','=',$request->id)->first();
+        $pdf = \PDF::loadview('pdf.evento.invitacion',['invitado'=> $invitado,
+            'qr' => '<h1>Oso PArdo</h1>'
+        ]);
+            return $pdf->stream('invitacion.pdf');
+    }
+
+    public function getEvento(Request $request){
         return EventoRegistro::where('id','=',$request->id)->first();
+    }
+
+    public function enterPage(Request $request){
+        $invitado = EventoRegistro::where('id','=',$request->id)->first();
+        return view('contenido/evento',['invitado'=>$invitado]);
+    }
+
+    public function confirmAsist(Request $request){
+        $invitado = EventoRegistro::findOrFail($request->id);
+        $invitado->status = 1;
+        $invitado->extra_adult = $request->asist_adult - $invitado->asist_adult;
+        $invitado->extra_kid = $request->asist_kid - $invitado->asist_kid;
+        $invitado->save();
     }
 }

@@ -25,6 +25,7 @@ Route::get('/ruleta','Premios\PremiosController@ruleta');
 Route::put('/premios/reg_corr_whats','Premios\PremiosController@regCorrWhats');
 
 Route::post('evento/store','Form\EventoController@store');
+Route::get('invitacion/print','Form\EventoController@printInvitacion');
 
 // Route::post('/mailPrueba', function () {
 //     return view('mails/welcome');
@@ -61,9 +62,12 @@ Route::group(['middleware' => ['auth']],function(){
         return view('contenido/contenido');
     })->name('main');
 
-    Route::get('/evento', function () {
-        return view('contenido/evento');
-    })->name('evento');
+    // Route::get('/evento', function () {
+    //     return view('contenido/evento');
+    // })->name('evento');
+
+    Route::get('/evento','Form\EventoController@enterPage');
+    Route::put('/invitacion/confirm','Form\EventoController@confirmAsist');
 
     //RUTAS PARA LOS ASESORES
     Route::group(['middleware' => ['Asesor']],function(){
