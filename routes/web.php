@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     Route::get('/evento','Form\EventoController@enterPage');
     Route::put('/invitacion/confirm','Form\EventoController@confirmAsist');
+    Route::get('/evento/findInvitado','Form\EventoController@findInvitado');
 
     //RUTAS PARA LOS ASESORES
     Route::group(['middleware' => ['Asesor']],function(){

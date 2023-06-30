@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\EventoRegistro;
 use App\Cliente;
+use DB;
 
 
 class EventoController extends Controller
@@ -68,5 +69,11 @@ class EventoController extends Controller
         $invitado->extra_adult = $request->asist_adult - $invitado->asist_adult;
         $invitado->extra_kid = $request->asist_kid - $invitado->asist_kid;
         $invitado->save();
+    }
+
+    public function findInvitado(Request $request){
+        return EventoRegistro::where(
+            DB::raw("CONCAT(nombre,' ',ap_paterno,' ',ap_materno)"), 'like', '%'. $request->nombre . '%'
+        )->first();
     }
 }

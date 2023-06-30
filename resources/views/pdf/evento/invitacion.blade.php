@@ -59,12 +59,20 @@
             text-align: center;
         }
         .qr{
-            background-color: violet;
             top: 1200px;
             left: 335px;
             height: 416px;
             width: 416px;
             position: absolute;
+        }
+        .footer{
+            background-color: rgb(0,0,0, 0.3);
+            top: 1800px;
+            height: auto;
+            width: 1080px;
+            position: absolute;
+            padding: 15px;
+            color: #fff;
         }
 
 
@@ -79,6 +87,13 @@
         </div>
         <div class="qr">
             <img src="data:image/png;base64, {!! base64_encode(QrCode::size(416)->generate('https://siicumbres.com/evento?id='.$invitado->id)) !!} ">
+        </div>
+        <div class="footer">
+            <center>
+                <h3
+                    style="margin: 10px;"
+                >Este boleto debe ser presentado y escaneado para acceder al evento. Se verificará su validez al ingreso.</h3>
+            </center>
         </div>
     </body>
 </html>

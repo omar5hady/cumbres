@@ -213,15 +213,15 @@
                                 <strong>Menu Evento</strong>
                             </li>
                             @if(Auth::user()->calendario == 1)
-                                <li @click="menu=0" class="nav-item">
-                                    <a class="nav-link" @click="menu=0" href="#"><i class="fa fa-address-card"></i> Registro</a>
+                                <li @click="menu=100" class="nav-item">
+                                    <a class="nav-link" @click="menu=100" href="#"><i class="fa fa-address-card"></i> Registro</a>
                                 </li>
                             @endif
-                            @if(Auth::user()->notifications == 1)
+                            {{-- @if(Auth::user()->notifications == 1)
                                 <li @click="menu=264" class="nav-item">
                                     <a class="nav-link" @click="menu=264" href="#"><i class="fa fa-area-chart"></i> Reportes</a>
                                 </li>
-                            @endif
+                            @endif --}}
 
                         </ul>
                     </nav>

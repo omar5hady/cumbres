@@ -20,17 +20,19 @@
                                     class="form-control col-md-3"
                                     type="text"
                                     disabled
-                                    placeholder="Folio a Buscar:"
+                                    placeholder="Invitado a Buscar:"
                                 />
                                 <input
-                                    type="number"
-                                    v-model="b_folio"
+                                    type="text"
+                                    v-model="b_invitado"
                                     class="form-control"
+                                    @keyup.enter="findInvitado()"
                                 />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <Button
+                                @click="findInvitado()"
                                 :btnClass="'form-control btn-primary'"
                                 :icon="'fa fa-search'"
                             >
@@ -160,7 +162,7 @@ export default {
     },
     data() {
         return {
-            b_folio:'',
+            b_invitado:'',
             dataInvitado: null
         };
     },
@@ -193,6 +195,18 @@ export default {
             type: 'success',
             title: 'Asistencia confirmada.'
             })
+        },
+        async findInvitado(){
+            let me = this;
+            me.dataInvitado = {}
+
+            try{
+                const res = await axios.get(`/evento/findInvitado?nombre=${me.b_invitado}`)
+                me.dataInvitado = res.data
+            }
+            catch(e){
+                console.log(e)
+            }
         }
     },
     mounted() {

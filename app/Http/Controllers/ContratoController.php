@@ -7,6 +7,7 @@ use App\Notifications\NotifyAdmin;
 use App\Mail\NotificationReceived;
 use App\Http\Controllers\ReubicacionController;
 use Carbon\Carbon;
+use App\lotes_individuales;
 use App\Credito;
 use App\Contrato;
 use App\Pago_contrato;
@@ -2200,36 +2201,36 @@ class ContratoController extends Controller
             // Se obtienen los datos del lote anterior al cambio.
             $lote_ant = Lote::findOrFail($request->lote_id);
             $terrenoExcedenteOld = 0;
-                    // Precio actual de terreno por m2
-                    $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
-                    ->where('etapa_id','=',$lote_ant->etapa_id)
-                    ->where('fraccionamiento_id','=',$lote_ant->fraccionamiento_id)->get();
-                    // Medida base de terreno para el modelo.
-                    $terrenoModelo = Modelo::select('terreno')
-                    ->where('id','=',$lote_ant->modelo_id)
-                    ->get();
-                    // Precio base actual del modelo.
-                    $precioBaseOld = Precio_modelo::select('precio_modelo')
-                    ->where('modelo_id','=',$lote_ant->modelo_id)
-                    ->where('precio_etapa_id', '=', $precioTerrenoOld[0]->id)
-                    ->get();
-                    // Sobreprecios del lote
-                    $sobrepreciosOld = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-                    ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-                    ->where('sobreprecios_modelos.lote_id','=',$lote_ant->id)->get();
-                    // Se calcula el excedente de terreno
-                    $terrenoExcedenteOld = ($lote_ant->terreno - $terrenoModelo[0]->terreno);
-                    if($terrenoExcedenteOld > 0)
-                        $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
-                    //Se asigna el precio de base actual del lote.
-                    $lote_ant->precio_base = 0;
-                    if(sizeof($precioBaseOld))
-                        $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
-                    //Se asigna el valor de sobreprecio actual.
-                    if($sobrepreciosOld[0]->sobreprecios != NULL)
-                        $lote_ant->sobreprecio = $sobrepreciosOld[0]->sobreprecios;
-                    else
-                        $lote_ant->sobreprecio = 0;
+            // Precio actual de terreno por m2
+            $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
+            ->where('etapa_id','=',$lote_ant->etapa_id)
+            ->where('fraccionamiento_id','=',$lote_ant->fraccionamiento_id)->get();
+            // Medida base de terreno para el modelo.
+            $terrenoModelo = Modelo::select('terreno')
+            ->where('id','=',$lote_ant->modelo_id)
+            ->get();
+            // Precio base actual del modelo.
+            $precioBaseOld = Precio_modelo::select('precio_modelo')
+            ->where('modelo_id','=',$lote_ant->modelo_id)
+            ->where('precio_etapa_id', '=', $precioTerrenoOld[0]->id)
+            ->get();
+            // Sobreprecios del lote
+            $sobrepreciosOld = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+            ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+            ->where('sobreprecios_modelos.lote_id','=',$lote_ant->id)->get();
+            // Se calcula el excedente de terreno
+            $terrenoExcedenteOld = ($lote_ant->terreno - $terrenoModelo[0]->terreno);
+            if($terrenoExcedenteOld > 0)
+                $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
+            //Se asigna el precio de base actual del lote.
+            $lote_ant->precio_base = 0;
+            if(sizeof($precioBaseOld))
+                $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
+            //Se asigna el valor de sobreprecio actual.
+            if($sobrepreciosOld[0]->sobreprecios != NULL)
+                $lote_ant->sobreprecio = $sobrepreciosOld[0]->sobreprecios;
+            else
+                $lote_ant->sobreprecio = 0;
 
             //Variable para almacenar el estado del lote ant para venta.
             $varContrato = $lote_ant->contrato;
@@ -2244,38 +2245,51 @@ class ContratoController extends Controller
             $new_avance = Licencia::findOrFail($loteNuevo_id);
 
             /////////////////////////////////////////////////////////////////
-            // Se obtiene el valor de m2 por excedente para la etapa del nuevo lote.
-            $precio_etapa = Precio_etapa::select('id','precio_excedente')
-                            ->where('fraccionamiento_id','=',$lote_new->fraccionamiento_id)
-                            ->where('etapa_id','=',$lote_new->etapa_id)->get();
-            // Se obtiene el precio del modelo para el nuevo lote.
-            $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
-                            ->where('modelo_id','=',$lote_new->modelo_id)->get();
-            // Se obtienen los sobreprecios del nuevo lote.
-            $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-            ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-            ->where('sobreprecios_modelos.lote_id','=',$loteNuevo_id)->get();
-            // Medida estandar del modelo para el nuevo lote.
-            $modelo = Modelo::select('terreno')->where('id','=',$lote_new->modelo_id)->get();
+            $modelo = Modelo::select('terreno','nombre')->where('id','=',$lote_new->modelo_id)->get();
             // Se calcula el terreno excedente.
-            $terrenoExcedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
-                if((double)$terrenoExcedente > 0)
-                    $lote_new->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
-                else {
-                    $lote_new->excedente_terreno = 0;
-                }
+            if($modelo[0]->nombre != 'Terreno'){
+                // Se obtiene el valor de m2 por excedente para la etapa del nuevo lote.
+                $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                                ->where('fraccionamiento_id','=',$lote_new->fraccionamiento_id)
+                                ->where('etapa_id','=',$lote_new->etapa_id)->get();
+                // Se obtiene el precio del modelo para el nuevo lote.
+                $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                                ->where('modelo_id','=',$lote_new->modelo_id)->get();
+                // Se obtienen los sobreprecios del nuevo lote.
+                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                ->where('sobreprecios_modelos.lote_id','=',$loteNuevo_id)->get();
+                // Medida estandar del modelo para el nuevo lote.
+                $terrenoExcedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+                    if((double)$terrenoExcedente > 0)
+                        $lote_new->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                    else {
+                        $lote_new->excedente_terreno = 0;
+                    }
 
-            $costoEquipamiento = 0;
-            $equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
-            if(sizeOf($equipamiento))
-                foreach($equipamiento as $eq){
-                    $costoEquipamiento += $eq->costo;
-                }
+                $costoEquipamiento = 0;
+                $equipamiento = EquipLote::where('status','>',3)->where('lote_id','=',$lote_new->id)->get();
+                if(sizeOf($equipamiento))
+                    foreach($equipamiento as $eq){
+                        $costoEquipamiento += $eq->costo;
+                    }
 
-            $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
-            $lote_new->precio_base = round(($lote_new->precio_base), 2);
-            $precio_venta = round(($sobreprecios[0]->sobreprecios + $costoEquipamiento + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
-            $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+                $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
+                $lote_new->precio_base = round(($lote_new->precio_base), 2);
+                $precio_venta = round(($sobreprecios[0]->sobreprecios + $costoEquipamiento + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+                $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+            }
+            else{
+                //Se obtiene el costo por m2 para terreno
+                $preciom2 = lotes_individuales::select('costom2','id')
+                        ->where('etapa_id','=',$lote_new->etapa_id)->first();
+                //Se asigna el precio calculado el precio por m2 multuplicado por el tamaño del terreno.
+                $lote_new->precio_base = $preciom2->costom2 * $lote_new->terreno;
+                $lote_new->excedente_terreno = 0;
+                $precio_venta = $lote_new->precio_base + $lote_new->ajuste;
+                $terreno_tam_excedente = 0;
+                $costoEquipamiento = 0;
+            }
             $lote_new->contrato = 1;
 
             ////////////////////////////////////////////////////////////////////////////////////////
