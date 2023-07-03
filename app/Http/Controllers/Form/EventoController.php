@@ -12,6 +12,8 @@ use DB;
 class EventoController extends Controller
 {
     public function store(Request $request){
+
+        $verificar_cupo = $this->checkCupo($request->is_client, $request->evento);
         $registro = new EventoRegistro();
         $registro->nombre       = $request->nombre;
         $registro->ap_paterno   = $request->ap_paterno;
@@ -28,8 +30,12 @@ class EventoController extends Controller
             $registro->cliente_id   = $this->findRFC($request->rfc);
         $registro->fraccionamiento = $request->fraccionamiento;
         $registro->evento       = $request->evento;
+        if($verificar_cupo > 315)
+            $registro->status = 2;
         $registro->save();
 
+        if($registro->status == 2)
+            return $registro->id;
         return 'https://siicumbres.com/invitacion/print?id='.$registro->id;
     }
 
@@ -56,6 +62,21 @@ class EventoController extends Controller
 
     public function getEvento(Request $request){
         return EventoRegistro::where('id','=',$request->id)->first();
+    }
+
+    private function checkCupo($is_cliente, $evento){
+        $total = 0;
+        $evento = EventoRegistro::select('asist_kid','asist_adult','evento','is_cliente')
+            ->where('evento','=',$evento)
+            ->where('is_cliente','=',$is_cliente)->get();
+
+        if(sizeof($evento)){
+            foreach($evento as $ev){
+                $total += ($ev->asist_kid + $ev->asist_adult);
+            }
+        }
+
+        return $total;
     }
 
     public function enterPage(Request $request){

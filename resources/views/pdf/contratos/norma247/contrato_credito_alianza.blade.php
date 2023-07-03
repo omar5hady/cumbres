@@ -983,7 +983,7 @@
             <strong>DÉCIMA OCTAVA.- <u>PRESCRIPCIÓN DE ACCIONES.</u></strong> Las acciones civiles derivadas de responsabilidad
             civil por vicios ocultos de acuerdo al artículo 1982 en relación con lo dispuesto en los arts. Del 1975 al 1981
             y en su caso evicción según el artículo 1972, se resolverán y determinarán con base en las disposiciones legales
-            vigentes del Código Civil del Estado de San Luis Potos.
+            vigentes del Código Civil del Estado de San Luis Potosí.
         </p>
 
         <p>

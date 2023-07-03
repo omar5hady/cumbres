@@ -533,180 +533,16 @@
                             <div class="col-md-8" v-if="grafico == 1">
                                 <div class="card card-chart">
                                     <div class="card-header">
-                                        <h4 v-text="titulo">Genero</h4>
+                                        <h4 v-text="titulo"></h4>
                                     </div>
-                                    <div class="card-content">
+                                    <div class="card-content" style="height: 100%;">
                                         <br />
                                         <div
                                             class="ct-chart"
-                                            v-if="ver_edades == 1"
                                         >
                                             <canvas
-                                                style="width:100%;"
-                                                id="edades"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_genero == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="genero"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_amasCasa == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="amasCasa"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_edadesComp == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="edadesCompra"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_mascotas == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="mascotas"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_empresas == 1 &&
-                                                    empresasCant.length < 10
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:100%; height:1000px;"
-                                                id="empresas"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_empresas == 1 &&
-                                                    empresasCant.length < 30 &&
-                                                    empresasCant.length > 10
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:1800px;"
-                                                id="empresas"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_empresas == 1 &&
-                                                    empresasCant.length > 30
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:2800px;"
-                                                id="empresas"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_edoCivil == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="edoCivil"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_discap == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="discapacidad"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="ver_autos == 1"
-                                        >
-                                            <canvas
-                                                style="width:100%;"
-                                                id="autos"
-                                            >
-                                            </canvas>
-                                        </div>
-
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_lugarNac == 1 &&
-                                                    lugarCant.length < 15
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:100%;"
-                                                id="lugar"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_lugarNac == 1 &&
-                                                    lugarCant.length > 15
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:1800px;"
-                                                id="lugar"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_colonia == 1 &&
-                                                    colonias.length < 15
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:100%;"
-                                                id="colonia"
-                                            >
-                                            </canvas>
-                                        </div>
-                                        <div
-                                            class="ct-chart"
-                                            v-if="
-                                                ver_colonia == 1 &&
-                                                    colonias.length > 15
-                                            "
-                                        >
-                                            <canvas
-                                                style="width:100%; height:1800px;"
-                                                id="colonia"
+                                                style="width:100%; height: 100%; max-height: 1200px;"
+                                                id="graphics"
                                             >
                                             </canvas>
                                         </div>
@@ -812,11 +648,10 @@ export default {
             totalEntregas: 0,
 
             varEdades: null,
-            charEdades: null,
             edades: [],
 
             varEdadesCompra: null,
-            charEdadesCompra: null,
+            charGraphics: null,
             edadesCompra: [],
             rang1: 0,
             rang2: 0,
@@ -827,7 +662,6 @@ export default {
             rang7: 0,
 
             varedoCivil: null,
-            charedoCivil: null,
             edoCivil: [],
             edoCivil2: [],
             sepBienes: 0,
@@ -839,30 +673,24 @@ export default {
             otro: 0,
 
             varMascotas: null,
-            charMascotas: null,
             mascotas: [],
 
             varLugar: null,
-            charLugar: null,
             lugares: [],
             lugarCant: [],
 
             varEmpresas: null,
-            charEmpresas: null,
             empresas: [],
             empresasCant: [],
 
             varGenero: null,
-            charGenero: null,
             genero: [],
             mujer: 0,
             hombre: 0,
 
             varAmasCasa: null,
-            charAmasCasa: null,
 
             varDiscapacidad: null,
-            charDiscapacidad: null,
             discapacidad: 0,
             sinDiscap: 0,
             silla_ruedas: 0,
@@ -870,10 +698,8 @@ export default {
             promAmasCasa: 0,
 
             varExtra: null,
-            charExtra: null,
 
             varAuto: null,
-            charAuto: null,
             autos: [],
             mascotas: 0,
             perros: 0,
@@ -906,7 +732,6 @@ export default {
             ver_colonia: 0,
 
             varColonia: null,
-            charColonia: null,
             colonias_cliente: [],
             colonias: []
         };
@@ -916,27 +741,7 @@ export default {
             let me = this;
             me.grafico = 0;
 
-            if (me.charGenero) me.charGenero.destroy();
-
-            if (me.charEdades) me.charEdades.destroy();
-
-            if (me.charMascotas) me.charMascotas.destroy();
-
-            if (me.charEdadesCompra) me.charEdadesCompra.destroy();
-
-            if (me.charedoCivil) me.charedoCivil.destroy();
-
-            if (me.charDiscapacidad) me.charDiscapacidad.destroy();
-
-            if (me.charAuto) me.charAuto.destroy();
-
-            if (me.charLugar) me.charLugar.destroy();
-
-            if (me.charEmpresas) me.charEmpresas.destroy();
-
-            if (me.charAmasCasa) me.charAmasCasa.destroy();
-
-            if (me.charColonia) me.charColonia.destroy();
+            if (me.charGraphics) me.charGraphics.destroy();
         },
         formatNumber(value) {
             let val = (value / 1).toFixed(2);
@@ -1043,16 +848,15 @@ export default {
         },
         mostrarGraficos() {
             this.getDatos();
-            //this.getMascotas();
             this.mostrar = 1;
             this.verDatos = 1;
         },
         loadExtras() {
             let me = this;
 
-            me.varExtra = document.getElementById("amas_casa").getContext("2d");
-            if (me.charExtra) me.charExtra.destroy();
-            me.charExtra = new Chart(me.varExtra, {
+            me.varExtra = document.getElementById("graphics").getContext("2d");
+            if (me.charGraphics) me.charGraphics.destroy();
+            me.charGraphics = new Chart(me.varExtra, {
                 type: "bar",
                 data: {
                     labels: ["Amas de casa", "Promedio"],
@@ -1109,9 +913,9 @@ export default {
             me.grafico = 1;
 
             if (me.ver_autos == 1) {
-                me.varAuto = document.getElementById("autos").getContext("2d");
+                me.varAuto = document.getElementById("graphics").getContext("2d");
 
-                me.charAuto = new Chart(me.varAuto, {
+                me.charGraphics = new Chart(me.varAuto, {
                     type: "bar",
                     data: {
                         labels: [
@@ -1177,10 +981,10 @@ export default {
 
             if (me.ver_discap == 1) {
                 me.varDiscapacidad = document
-                    .getElementById("discapacidad")
+                    .getElementById("graphics")
                     .getContext("2d");
 
-                me.charDiscapacidad = new Chart(me.varDiscapacidad, {
+                me.charGraphics = new Chart(me.varDiscapacidad, {
                     type: "bar",
                     data: {
                         labels: ["No", "Si", "Silla de ruedas"],
@@ -1236,10 +1040,10 @@ export default {
 
             if (me.ver_edades == 1) {
                 me.varEdades = document
-                    .getElementById("edades")
+                    .getElementById("graphics")
                     .getContext("2d");
 
-                me.charEdades = new Chart(me.varEdades, {
+                me.charGraphics = new Chart(me.varEdades, {
                     type: "bar",
                     data: {
                         labels: ["Entre 0-10", "Entre 11-20", "Mayores de 21"],
@@ -1295,10 +1099,10 @@ export default {
 
             if (me.ver_edadesComp == 1) {
                 me.varEdadesCompra = document
-                    .getElementById("edadesCompra")
+                    .getElementById("graphics")
                     .getContext("2d");
 
-                me.charEdadesCompra = new Chart(me.varEdadesCompra, {
+                me.charGraphics = new Chart(me.varEdadesCompra, {
                     type: "bar",
                     data: {
                         labels: [
@@ -1371,7 +1175,7 @@ export default {
 
             if (me.ver_edoCivil == 1) {
                 me.varedoCivil = document
-                    .getElementById("edoCivil")
+                    .getElementById("graphics")
                     .getContext("2d");
 
                 me.edoCivil2 = [];
@@ -1423,7 +1227,7 @@ export default {
                     i++;
                 });
 
-                me.charedoCivil = new Chart(me.varedoCivil, {
+                me.charGraphics = new Chart(me.varedoCivil, {
                     type: "horizontalBar",
                     data: {
                         labels: me.lista3,
@@ -1472,10 +1276,10 @@ export default {
 
             if (me.ver_mascotas == 1) {
                 me.varMascotas = document
-                    .getElementById("mascotas")
+                    .getElementById("graphics")
                     .getContext("2d");
 
-                me.charMascotas = new Chart(me.varMascotas, {
+                me.charGraphics = new Chart(me.varMascotas, {
                     type: "bar",
                     data: {
                         labels: [
@@ -1535,11 +1339,11 @@ export default {
             me.grafico = 1;
 
             me.varAmasCasa = document
-                .getElementById("amasCasa")
+                .getElementById("graphics")
                 .getContext("2d");
             var no = me.totalEntregas - me.promAmasCasa;
 
-            me.charAmasCasa = new Chart(me.varAmasCasa, {
+            me.charGraphics = new Chart(me.varAmasCasa, {
                 type: "bar",
                 data: {
                     labels: ["Si", "No"],
@@ -1588,7 +1392,7 @@ export default {
             me.ver_lugarNac = 1;
             me.grafico = 1;
 
-            me.varLugar = document.getElementById("lugar").getContext("2d");
+            me.varLugar = document.getElementById("graphics").getContext("2d");
 
             me.lugarCant.sort((a, b) => (a.num < b.num ? 1 : -1));
 
@@ -1596,12 +1400,14 @@ export default {
             me.lista2 = [];
             var i = 0;
             me.lugares.forEach(element => {
+                if(me.lugarCant[i].num > 3){
                 me.lista.push(me.lugarCant[i].num);
                 me.lista2.push(me.lugarCant[i].lugar_nacimiento);
+                }
                 i++;
             });
 
-            me.charLugar = new Chart(me.varLugar, {
+            me.charGraphics = new Chart(me.varLugar, {
                 type: "horizontalBar",
                 data: {
                     labels: me.lista2,
@@ -1612,11 +1418,13 @@ export default {
                             backgroundColor: "rgba(102, 0, 0, 0.4)",
 
                             borderColor: "rgba(102, 0, 0, 1)",
-                            borderWidth: 1
+                            borderWidth: 1,
+                            minBarLength: 5,
                         }
                     ]
                 },
                 options: {
+                    responsive: true,
                     scales: {
                         yAxes: [
                             {
@@ -1648,7 +1456,7 @@ export default {
             me.ver_colonia = 1;
             me.grafico = 1;
 
-            me.varColonia = document.getElementById("colonia").getContext("2d");
+            me.varColonia = document.getElementById("graphics").getContext("2d");
 
             me.colonias.sort((a, b) => (a.num < b.num ? 1 : -1));
 
@@ -1656,12 +1464,14 @@ export default {
             me.lista2 = [];
             var i = 0;
             me.colonias_cliente.forEach(element => {
-                me.lista.push(me.colonias[i].num);
-                me.lista2.push(me.colonias[i].colonia);
+                if(me.colonias[i].num > 3){
+                    me.lista.push(me.colonias[i].num);
+                    me.lista2.push(me.colonias[i].colonia);
+                }
                 i++;
             });
 
-            me.charColonia = new Chart(me.varColonia, {
+            me.charGraphics = new Chart(me.varColonia, {
                 type: "horizontalBar",
                 data: {
                     labels: me.lista2,
@@ -1708,9 +1518,9 @@ export default {
             me.ver_genero = 1;
             me.grafico = 1;
 
-            me.varGenero = document.getElementById("genero").getContext("2d");
+            me.varGenero = document.getElementById("graphics").getContext("2d");
 
-            me.charGenero = new Chart(me.varGenero, {
+            me.charGraphics = new Chart(me.varGenero, {
                 type: "bar",
                 data: {
                     labels: ["Hombres", "Mujeres"],
@@ -1764,16 +1574,6 @@ export default {
     border: solid rgb(200, 200, 200) 1px;
     padding: 0.5rem;
 }
-
-/*th {
-    text-align: left;
-    background-color: rgb(190, 220, 250);
-    text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: rgb(50, 50, 100) solid 2px;
-    border-top: none;
-    }*/
 
 .td2 {
     white-space: nowrap;

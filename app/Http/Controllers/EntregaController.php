@@ -19,6 +19,7 @@ use App\lote;
 use App\Credito;
 use App\Etapa;
 use App\Ini_obra;
+use App\DocProyecto;
 use App\PlanoProyecto;
 use App\User;
 use Carbon\Carbon;
@@ -35,6 +36,7 @@ use Illuminate\Support\Facades\Storage;
 
 
 use App\Http\Resources\PlanoResource;
+use App\Http\Resources\DocProyectoResource;
 
 /*  Controlador para entregas de vivienda.  */
 class EntregaController extends Controller
@@ -49,6 +51,15 @@ class EntregaController extends Controller
 
     private function getPlanos($lote_id){
         return PlanoResource::collection(PlanoProyecto::where('lote_id','=',$lote_id)->get());
+    }
+
+    private function getDocs($lote_id, $carpeta, $tipo){
+        return DocProyectoResource::collection(
+            DocProyecto::where('lote_id','=',$lote_id)
+                ->where('carpeta','=',$carpeta)
+                ->where('tipo','like','%'.$tipo.'%')
+                ->get()
+        );
     }
 
     // Función para registrar la petición de entrega de una vivienda en el sistema
@@ -200,6 +211,7 @@ class EntregaController extends Controller
             if(sizeOf($contratos)){
                 foreach($contratos as $index => $contrato){
                     $contrato->planos = $this->getPlanos($contrato->loteId);
+                    $contrato->acreditarEscritura = $this->getDocs($contrato->loteId, 'DocsAcreditar', 'ESCRITURAS DE PROPIEDAD');
                     // Se obtiene el equipamiento solicitado por cada contrato.
                     $equipamiento = Solic_equipamiento::select('fecha_colocacion','fin_instalacion')
                             ->where('contrato_id','=',$contrato->folio)
@@ -498,6 +510,7 @@ class EntregaController extends Controller
         if(sizeof($contratos))
             foreach($contratos as $contrato){
                 $contrato->planos = $this->getPlanos($contrato->loteId);
+                $contrato->acreditarEscritura = $this->getDocs($contrato->loteId, 'DocsAcreditar', 'ESCRITURAS DE PROPIEDAD');
             }
 
         return [
