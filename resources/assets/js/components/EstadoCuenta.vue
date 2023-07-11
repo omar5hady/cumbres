@@ -10,8 +10,8 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Estado de cuenta
                          <!--   Boton descargar excel    -->
-                        <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 + 
-                            '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio + 
+                        <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 +
+                            '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio +
                             '&credito=' + b_credito +'&b_empresa='+b_empresa">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                         </a>
@@ -48,23 +48,23 @@
                                     <input v-else-if="criterio=='contratos.fecha'" type="date"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio=='c.nombre'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">
                                     <input v-else-if="criterio=='contratos.fecha'" type="date"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                   
+
                                 </div>
 
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
 
-                                    <select class="form-control"  v-model="buscar2"> 
+                                    <select class="form-control"  v-model="buscar2">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                     <input type="text" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                   
+
                                 </div>
 
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                    
+
                                     <input type="text" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-                                    <select class="form-control" v-model="b_credito"> 
+                                    <select class="form-control" v-model="b_credito">
                                         <option value="">Tipo de Credito</option>
                                         <option v-for="credito in arrayCreditos" :key="credito.nombre" :value="credito.nombre" v-text="credito.nombre"></option>
                                     </select>
@@ -72,7 +72,7 @@
 
                                 <div class="input-group">
                                     <input type="text" v-model="b_direccion" class="form-control" placeholder="Direccion oficial">
-                                </div>   
+                                </div>
 
                                 <div class="input-group">
                                     <select class="form-control col-md-4" v-model="b_status">
@@ -93,7 +93,7 @@
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th>Opciones</th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
@@ -128,9 +128,14 @@
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
-                                                    <a class="dropdown-item" v-if="contratos.tipo_credito!='Crédito Directo'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+contratos.folio">Contrato</a>
-                                                    <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo != 'Terreno'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+contratos.folio">Contrato</a>
-                                                    <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo == 'Terreno'" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+contratos.folio">Contrato</a>
+                                                    <template v-if="this.moment('2022-09-18') < this.moment(contratos.fecha_status)">
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contrato/printContratoCredito/'+contratos.folio">Contrato</a>
+                                                    </template>
+                                                    <template v-else>
+                                                        <a class="dropdown-item" v-if="contratos.tipo_credito!='Crédito Directo'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+contratos.folio">Contrato</a>
+                                                        <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo != 'Terreno'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+contratos.folio">Contrato</a>
+                                                        <a class="dropdown-item" v-if="contratos.tipo_credito=='Crédito Directo' && contratos.modelo == 'Terreno'" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+contratos.folio">Contrato</a>
+                                                    </template>
                                                     <a v-if="contratos.liquidado == 1" class="dropdown-item" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+contratos.folio">Liquidación</a>
                                                     <a v-if="contratos.archivoConstancia != null" class="dropdown-item" target="_blank" v-bind:href="'/contratos/downloadFileConstFisc/'+ contratos.archivoConstancia">Constancia de Situación Fisc.</a>
                                                 </div>
@@ -159,9 +164,9 @@
                                         <td v-else></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.descuento)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.saldo)"></td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -218,7 +223,7 @@
                                         </div>
                                     </div>
                                     <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
-                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+clv_lada+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
+                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+clv_lada+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Telefono</label>
@@ -286,13 +291,13 @@
                                 <hr>
 
                                 <!-- DATOS FISCALES -->
-                                <template> 
+                                <template>
                                     <div class="form-group row">
                                         <div class="col-md-4">
                                         </div>
                                         <h5 style="text-align:center;">DATOS FISCALES</h5>
                                         <div class="col-md-3" v-if="datosFiscales.archivo_fisc != null">
-                                            <button 
+                                            <button
                                             type="button" @click="verImagen(datosFiscales.archivo_fisc)" class="btn btn-dark btn-sm"
                                                 title="Ver Archivo Fiscal"
                                             >
@@ -300,7 +305,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    
+
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Correo Electrónico</label>
@@ -353,33 +358,33 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
                                         <div class="col-md-6">
-                                            <input disabled type="text" 
+                                            <input disabled type="text"
                                             v-model="datosFiscales.regimen_fisc" class="form-control" placeholder="Régimen">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Banco</label>
                                         <div class="col-md-4">
-                                            <input disabled type="text" 
+                                            <input disabled type="text"
                                             v-model="datosFiscales.banco_fisc" class="form-control" placeholder="Banco">
                                         </div>
                                         <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
                                         <div class="col-md-4">
-                                            <input disabled type="text" 
+                                            <input disabled type="text"
                                             v-model="datosFiscales.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
                                         <div class="col-md-4">
-                                            <input disabled type="text" 
+                                            <input disabled type="text"
                                             v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
                                         </div>
                                     </div>
 
-                                    
+
                                 </template>
-                                
+
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
@@ -391,8 +396,8 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
-            
-         
+
+
      </main>
 </template>
 
@@ -448,9 +453,9 @@
 
                 modal: 0,
                 tituloModal: '',
-           
+
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -458,7 +463,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 buscar2: '',
                 b_manzana: '',
@@ -466,7 +471,7 @@
                 b_status: 3,
                 b_credito:'',
                 b_empresa:'',
-                empresas:[],               
+                empresas:[],
             }
         },
         computed:{
@@ -500,13 +505,13 @@
 
         },
 
-        
+
         methods : {
 
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, buscar2, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + 
+                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana +
                     '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio + '&credito=' + this.b_credito
                     + '&b_direccion=' + this.b_direccion+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
@@ -518,7 +523,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
             verImagen(imagen){
                 let url = '/files/datosFisc/'+imagen;
@@ -533,11 +538,11 @@
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
                 win.focus();
             },
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -552,7 +557,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2=""
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -576,7 +581,7 @@
                     console.log(error);
                 });
             },
-            
+
             cambiarPagina(page,buscar,buscar2,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -660,7 +665,7 @@
                                 this.emailinstitucional_cliente=data['email_institucional'];
                                 this.telefonoempresa_cliente=data['telefono_empresa'];
                                 this.ext_cliente=data['ext_empresa'];
-                                
+
                                 this.datosFiscales.email_fisc = data['email_fisc'];
                                 this.datosFiscales.tel_fisc = data['tel_fisc'];
                                 this.datosFiscales.nombre_fisc = data['nombre_fisc'];
@@ -706,7 +711,7 @@
                                         break;
                                     }
                                 }
-                                
+
                                 this.depeconomicos_cliente=data['num_dep_economicos'];
                             }
                         }
@@ -723,9 +728,9 @@
                     console.log(error);
                 });
             },
-            
+
         },
-       
+
         mounted() {
             this.listarContratos(1,this.buscar,this.buscar2,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
@@ -751,7 +756,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -800,5 +805,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

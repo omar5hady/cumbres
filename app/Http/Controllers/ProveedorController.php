@@ -211,6 +211,11 @@ class ProveedorController extends Controller
         $proveedor->banco = $request->banco;
         $proveedor->clabe = $request->clabe;
         $proveedor->save();
+
+        $personal = Personal::findOrFail($request->id);
+        $personal->nombre = $request->proveedor;
+        $personal->apellidos = '';
+        $personal->save();
     }
 
     public function selectProveedor(Request $request){

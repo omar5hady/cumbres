@@ -911,6 +911,7 @@ class DepositoController extends Controller
                         'expedientes.fecha_firma_esc',
                         'contratos.enganche_total',
                         'contratos.saldo',
+                        'contratos.fecha_status',
                         'i.monto_credito as credito_solic',
                         'i.tipo_credito',
                         'i.cobrado',

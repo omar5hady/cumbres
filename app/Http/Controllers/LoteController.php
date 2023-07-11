@@ -1176,6 +1176,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                         'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.casa_renta', 'lotes.precio_renta', 'modelos.ficha_tecnica as archivo',
+                        'lotes.area_jardin', 'lotes.area_estacionamiento', 'lotes.indivisos',
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                         'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
@@ -1188,8 +1189,8 @@ class LoteController extends Controller
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                    'lotes.casa_renta', 'lotes.precio_renta',
+                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno', 'lotes.indivisos',
+                    'lotes.casa_renta', 'lotes.precio_renta','lotes.area_jardin', 'lotes.area_estacionamiento',
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste', 'lotes.emp_constructora', 'lotes.emp_terreno','licencias.archivo_esp',

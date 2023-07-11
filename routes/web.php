@@ -1438,6 +1438,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/asignarLotesDep','DepositoController@asignarLotes');
 
         Route::get('/ventasAbastos','ReportesController@ventasAbastos');
+        Route::get('/reporte/ventasImperia','ReportesController@getIndividualizadas');
 
 });
 

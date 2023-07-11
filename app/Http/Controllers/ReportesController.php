@@ -3984,5 +3984,145 @@ class ReportesController extends Controller
         return $indivCredito;
     }
 
+    public function getIndividualizadas(Request $request){
+        $credito = Expediente::join('contratos as co','expedientes.id',         '=','co.id')
+                    ->join('creditos as cr',        'co.id',                    '=','cr.id')
+                    ->join('personal as p',         'cr.prospecto_id',    '=','p.id')
+                    ->join('lotes as l',            'cr.lote_id',               '=','l.id')
+                    ->join('modelos as mod',        'l.modelo_id',              '=','mod.id')
+                    ->join('fraccionamientos as f', 'l.fraccionamiento_id',     '=','f.id')
+                    ->join('inst_seleccionadas as inst', 'cr.id',               '=', 'inst.credito_id')
+                    ->select('co.id','co.status','expedientes.valor_escrituras','expedientes.fecha_firma_esc as fecha',
+                        'p.nombre', 'p.apellidos',
+                        'l.manzana', 'l.calle', 'l.numero', 'l.interior','l.terreno', 'mod.construccion',
+                        'mod.nombre as modelo', 'cr.precio_base',  'l.sobreprecio',
+                        'cr.precio_terreno_excedente','cr.precio_obra_extra','cr.descuento_promocion','cr.costo_paquete','cr.descuento_cant',
+                        'cr.precio_venta','f.nombre as proyecto', 'expedientes.descuento as desc_liquidacion'
+                    )
+                    ->where('co.status','=',3)
+                    ->where('inst.tipo_credito','!=','Crédito Directo')
+                    ->where('inst.elegido','=',1)
+                    ->where('expedientes.fecha_firma_esc','!=',NULL)
+                    ->whereBetween('expedientes.fecha_firma_esc', ['2020-01-01', '2023-06-30'])
+                    ->where('f.id','=',15)
+                    ->get();
+
+        $contado = Expediente::join('contratos as co','expedientes.id',         '=','co.id')
+                    ->join('creditos as cr',        'co.id',                    '=','cr.id')
+                    ->join('personal as p',         'cr.prospecto_id',    '=','p.id')
+                    ->join('lotes as l',            'cr.lote_id',               '=','l.id')
+                    ->join('modelos as mod',        'l.modelo_id',              '=','mod.id')
+                    ->join('fraccionamientos as f', 'l.fraccionamiento_id',     '=','f.id')
+                    ->join('inst_seleccionadas as inst', 'cr.id',               '=', 'inst.credito_id')
+                    ->select('co.id','co.status','expedientes.valor_escrituras','expedientes.fecha_liquidacion as fecha',
+                        'p.nombre', 'p.apellidos',
+                        'l.manzana', 'l.calle', 'l.numero', 'l.interior','l.terreno', 'mod.construccion', 'l.sobreprecio',
+                        'mod.nombre as modelo', 'cr.precio_base',
+                        'cr.precio_terreno_excedente','cr.precio_obra_extra','cr.descuento_promocion','cr.costo_paquete','cr.descuento_cant',
+                        'cr.precio_venta','f.nombre as proyecto', 'expedientes.descuento as desc_liquidacion'
+                    )
+                    ->where('co.status','=',3)
+                    ->where('inst.tipo_credito','=','Crédito Directo')
+                    ->where('inst.elegido','=',1)
+                    ->where('expedientes.liquidado','=',1)
+                    ->whereBetween('expedientes.fecha_liquidacion', ['2020-01-01', '2023-06-30'])
+                    ->where('f.id','=',15)
+                    ->get();
+
+        return Excel::create('Reporte Imperia', function($excel) use ($credito, $contado){
+            $excel->sheet('Individualizaciones', function($sheet) use ($credito, $contado){
+
+                $sheet->row(1, [
+                    'Nombre',
+                    'Fecha de cobranza/escrituras',
+                    'Dirección',
+                    'Modelo',
+                    'Sup. Const.',
+                    'Sup. Terreno',
+                    'Valor de escrituras',
+                    'Precio de venta',
+                    'Precio base',
+                    'Terreno extra',
+                    'Obra extra',
+                    'Sobreprecio',
+                    'Paquetes',
+                    'Descuentos'
+                ]);
+
+                $sheet->cells('A1:N1', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'G' => '$#,##0.00',
+                    'H' => '$#,##0.00',
+                    'I' => '$#,##0.00',
+                    'J' => '$#,##0.00',
+                    'K' => '$#,##0.00',
+                    'L' => '$#,##0.00',
+                    'M' => '$#,##0.00',
+                    'N' => '$#,##0.00',
+                ));
+
+                $renglon = 2;
+
+                foreach($contado as $index => $venta) {
+                    $sheet->row($renglon, [
+                        $venta->nombre.' '.$venta->apellidos,
+                        $venta->fecha,
+                        $venta->calle.' Num.'.$venta->numero.' '.$venta->interior,
+                        $venta->modelo,
+                        $venta->construccion,
+                        $venta->terreno,
+                        $venta->valor_escrituras,
+                        $venta->precio_venta - $venta->desc_liquidacion,
+                        $venta->precio_base,
+                        $venta->precio_terreno_excedente,
+                        $venta->precio_obra_extra,
+                        $venta->sobreprecio,
+                        $venta->costo_paquete,
+                        $venta->descuento_cant + $venta->desc_liquidacion,
+                    ]);
+                    $renglon ++;
+                }
+
+                foreach($credito as $index => $venta) {
+                    $sheet->row($renglon, [
+                        $venta->nombre.' '.$venta->apellidos,
+                        $venta->fecha,
+                        $venta->calle.' Num.'.$venta->numero.' '.$venta->interior,
+                        $venta->modelo,
+                        $venta->construccion,
+                        $venta->terreno,
+                        $venta->valor_escrituras,
+                        $venta->precio_venta - $venta->desc_liquidacion,
+                        $venta->precio_base,
+                        $venta->precio_terreno_excedente,
+                        $venta->precio_obra_extra,
+                        $venta->sobreprecio,
+                        $venta->costo_paquete,
+                        $venta->descuento_cant + $venta->desc_liquidacion,
+                    ]);
+                    $renglon ++;
+                }
+
+
+                $num='A1:N' . $renglon;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+
+        )->download('xls');
+
+    }
+
 
 }

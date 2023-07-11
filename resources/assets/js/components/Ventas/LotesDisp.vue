@@ -318,6 +318,10 @@
                                         <th style="text-align:center;">Modelo</th>
 
                                         <th>Construcción</th>
+                                        <th>Área de jardin</th>
+                                        <th>Área de estacionamiento</th>
+                                        <th>Total privativa</th>
+                                        <th>Indiviso %</th>
                                         <th># Oficial</th>
                                         <th>Precio venta</th>
                                         <th>Promoción</th>
@@ -357,6 +361,10 @@
                                         </td>
 
                                         <td class="td2" v-text="lote.construccion"></td>
+                                        <td class="td2" v-text="lote.area_jardin"></td>
+                                        <td class="td2" v-text="lote.area_estacionamiento"></td>
+                                        <td class="td2">{{lote.construccion + lote.area_jardin + lote.area_estacionamiento }}</td>
+                                        <td class="td2" v-text="lote.indivisos+'%'"></td>
                                             <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
                                             <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                         <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
