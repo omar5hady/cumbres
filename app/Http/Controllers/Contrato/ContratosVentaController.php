@@ -140,9 +140,7 @@ class ContratosVentaController extends Controller
 
         //Llamada a la función privada que obtiene los datos del contrato.
         $contrato = $this->getDatosContrato($id);
-        $contrato->t_garanita = 5;
-        if($contrato->etapa == 'PRIVADA VILLA DEL REY')
-            $contrato->t_garanita = 10;
+        $contrato->t_garanita = $request->tiempo;
 
 
         if($contrato->entrega_real != NULL){

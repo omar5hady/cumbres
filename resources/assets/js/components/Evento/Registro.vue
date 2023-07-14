@@ -41,6 +41,15 @@
                         </div>
                     </div>
 
+                    <div class="card-body text-center">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <h1>Asistencia Total:</h1>
+                                <button @click="getTotal" class="btn btn-primary"><h2>{{ total }}</h2></button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row" v-if="dataInvitado">
                         <div class="col-sm-6 col-lg-4">
                             <div
@@ -163,7 +172,8 @@ export default {
     data() {
         return {
             b_invitado:'',
-            dataInvitado: null
+            dataInvitado: null,
+            total : 0,
         };
     },
     computed: {},
@@ -177,6 +187,11 @@ export default {
         },
         changeAsistKid( cant ){
             this.dataInvitado.asist_kid += cant;
+        },
+        async getTotal(){
+            let me = this;
+            const res = await axios.get('/invitacion/getTotal?evento=Sirenia')
+            me.total = res.data.total ? res.data.total : 0;
         },
         async confirmAsist(){
             let me = this;
@@ -195,6 +210,7 @@ export default {
             type: 'success',
             title: 'Asistencia confirmada.'
             })
+            me.getTotal()
         },
         async findInvitado(){
             let me = this;
@@ -211,6 +227,7 @@ export default {
     },
     mounted() {
         this.setDatos();
+        this.getTotal();
     }
 };
 </script>

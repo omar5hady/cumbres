@@ -99,9 +99,15 @@
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contrato/printProcServicios'">Procedimiento de Agua-Luz</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contrato/printProcGarantia'">Procedimiento de Garantia</a>
                                                 <a v-if="contratos.fecha_program" class="dropdown-item" target="_blank"
-                                                        v-bind:href="'/contrato/printGarantia/'+ contratos.folio">Poliza de garantia
+                                                        v-bind:href="'/contrato/printGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años
                                                 </a>
-                                                <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
+                                                <a v-if="contratos.fecha_program" class="dropdown-item" target="_blank"
+                                                        v-bind:href="'/contrato/printGarantia/'+ contratos.folio+'?tiempo=10'">Poliza de garantia 5 años
+                                                </a>
+                                                <a v-if="contratos.fecha_program" class="dropdown-item" target="_blank"
+                                                        v-bind:href="'/contrato/printGarantia/'+ contratos.folio+'?tiempo=15'">Poliza de garantia 5 años
+                                                </a>
+                                                <!-- <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a> -->
 
                                                 <!-- <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a> -->
                                             </div>

@@ -458,6 +458,7 @@ class LoteController extends Controller
                             ->where('etapa_id','=',$request->etapa_id)->get();
                     //Se asigna el precio calculado el precio por m2 multuplicado por el tamaño del terreno.
                     $lote->precio_base = $preciom2[0]->costom2 * $lote->terreno;
+                    $lote->excedente_terreno = 0;
                 }
                 $lote->contrato = $this->searchContrato($lote->id,0);
                 $lote->casa_renta = $request->casa_renta;

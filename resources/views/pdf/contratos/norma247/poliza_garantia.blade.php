@@ -263,7 +263,7 @@
                 @endif
                 CON DOMICILIO EN MANUEL GUTIÉRREZ NÁJERA NO. 190 COL. TEQUISQUIAPAN CP. 78230  DE LA
                 CIUDAD DE SAN LUIS POTOSÍ S.L.P. CON TELÉFONO 444 833-46-83,
-                A FAVOR DE {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }},
+                A FAVOR DE <b>{{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }},</b>
                 EN LO SUCESIVO <b>“EL PROPIETARIO,</b> RESPECTO A LA VIVIENDA UBICADA EN
                 @if($contrato->tipo_modelo != 2)
                     EL LOTE {{$contrato->num_lote}} {{($contrato->sublote) ? $contrato->sublote : ''}}

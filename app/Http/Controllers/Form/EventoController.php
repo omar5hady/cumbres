@@ -97,4 +97,10 @@ class EventoController extends Controller
             DB::raw("CONCAT(nombre,' ',ap_paterno,' ',ap_materno)"), 'like', '%'. $request->nombre . '%'
         )->first();
     }
+    public function getTotal(Request $request){
+        return EventoRegistro::select(
+            DB::raw("( SUM(asist_adult) + SUM(asist_kid) + SUM(extra_adult) + SUM(extra_kid) ) as total")
+        )->where('evento','=',$request->evento)
+        ->where('status','=',1)->first();
+    }
 }

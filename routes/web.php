@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth']],function(){
     // })->name('evento');
 
     Route::get('/evento','Form\EventoController@enterPage');
+    Route::get('/invitacion/getTotal','Form\EventoController@getTotal');
     Route::put('/invitacion/confirm','Form\EventoController@confirmAsist');
     Route::get('/evento/findInvitado','Form\EventoController@findInvitado');
 
