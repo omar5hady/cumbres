@@ -1230,6 +1230,7 @@
                                             <div class="col-md-1">
                                                 <label for="">&nbsp;</label>
                                                 <button class="btn btn-success form-control" @click="addDetalle()" title="Añadir"><i class="icon-plus"></i></button>
+                                                <button class="btn btn-danger form-control" @click="addDetalle(-1)" title="Añadir"><i class="fa fa-minus"></i></button>
                                             </div>
                                         </template>
 
@@ -2597,10 +2598,12 @@ export default {
             this.tituloModal = '';
             this.arrayObs = [];
         },
-        addDetalle(){
+        addDetalle(positivo = 1){
             let me = this;
             if(me.verificarCaptura()){
                 const detalle = {...me.datosDetalle}
+                detalle.total*=positivo;
+                detalle.pago*=positivo;
                 me.solicitudData.detalle.push(detalle);
                 me.limpiarFormularioDetalle();
                 const toast = Swal.mixin({

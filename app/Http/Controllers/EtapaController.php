@@ -144,6 +144,7 @@ class EtapaController extends Controller
             $etapa->f_fin = $request->f_fin;
             $etapa->personal_id = $request->personal_id;
             $etapa->terreno_m2 = $request->terreno_m2;
+            $etapa->tipo_proyecto = $request->tipo_proyecto;
             $etapa->save();
 
             // Crea registro en la BD de precios por etapa para terreno excedente.
@@ -183,6 +184,7 @@ class EtapaController extends Controller
         $etapa->personal_id = $request->personal_id;
         $etapa->fecha_ini_venta = $request->fecha_ini_venta;
         $etapa->terreno_m2 = $request->terreno_m2;
+        $etapa->tipo_proyecto = $request->tipo_proyecto;
         $etapa->save();
     }
 

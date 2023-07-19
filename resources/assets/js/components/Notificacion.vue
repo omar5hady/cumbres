@@ -1,199 +1,135 @@
 <template>
     <main class="main">
-            <!-- Breadcrumb -->
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
-            </ol>
-            <div class="container-fluid">
-                <!-- Ejemplo de tabla Listado -->
-                <div class="card scroll-box">
-                    <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Notificaciones
-                        <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('crear')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
-                        <!---->
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
+        </ol>
+        <div class="container-fluid">
+            <!-- Ejemplo de tabla Listado -->
+            <div class="card scroll-box">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Notificaciones
+                    <!--   Boton Nuevo    -->
+                    <Button icon="icon-plus" btnClass="btn-success" @click="abrirModal('crear')">Nuevo</Button>
+                    <!---->
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <!--Criterios para el listado de busqueda -->
+                                <p type="text" class="form-control label" style="" disabled>Fecha de creación</p>
+                                <input @keyup.enter="getNotificaciones(1)" type="date" class="form-control" v-model="fecha_inicio"  >
+                                <input @keyup.enter="getNotificaciones(1)" type="date" class="form-control" v-model="fecha_fin" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input id="nombre" @keyup.enter="getNotificaciones(1)" type="text" v-model="b_nombre" class="form-control" placeholder="Nombre">
+                                <Button icon="fa fa-search" @click="getNotificaciones(1)">Buscar</Button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <input type="text" class="form-control" disabled value="Fecha de creación"  >
-                                    <input @keyup.enter="getNotificaciones(1)" type="date" class="form-control" v-model="fecha_inicio"  >
-                                    <input @keyup.enter="getNotificaciones(1)" type="date" class="form-control" v-model="fecha_fin" >
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <input @keyup.enter="getNotificaciones(1)" type="text" v-model="b_nombre" class="form-control" placeholder="Nombre">
-                                    <button  @click="getNotificaciones(1)" type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class=" col-md-12 table-responsive">
-                            <table class="table2 table-bordered table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Nombre</th>
-                                        <th>Mensaje</th>
-                                        <th>Recurrencia</th>
-                                        <th>Fin de periodo</th>
-                                        <th>Fecha Creado</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="notificacion in arrayNotificacion" :key="notificacion.id">
-                                        <td class="td2">
-                                            <button type="button" @click="abrirModal('editar',notificacion)" class="btn btn-warning btn-sm" title="Fecha de finalización">
-                                                <i class="icon-pencil"></i>
-                                            </button> &nbsp;
-                                        </td>
-                                        <td class="td2" v-text="notificacion.nombre+' '+notificacion.apellidos" ></td>
-                                        <td v-text="notificacion.mensaje"></td>
-                                        <td class="td2" v-if="notificacion.periodo == 1">Diario</td>
-                                        <td class="td2" v-if="notificacion.periodo == 7">Semanal</td>
-                                        <td class="td2" v-if="notificacion.periodo == 30">Mensual</td>
-                                        <td class="td2" v-text="notificacion.finPeriodo"></td>
-                                        <td class="td2" v-text="notificacion.created_at"></td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                    <TableComponent
+                        :cabecera="['','Nombre','Mensaje','Recurrencia','Fin de Periodo','Fecha de alta']"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="notificacion in arrayNotificacion" :key="notificacion.id">
+                                <td class="td2">
+                                    <button type="button" @click="abrirModal('editar',notificacion)" class="btn btn-warning btn-sm" title="Fecha de finalización">
+                                        <i class="icon-pencil"></i>
+                                    </button> &nbsp;
+                                </td>
+                                <td class="td2" v-text="notificacion.nombre+' '+notificacion.apellidos" ></td>
+                                <td v-text="notificacion.mensaje"></td>
+                                <td class="td2" v-if="notificacion.periodo == 1">Diario</td>
+                                <td class="td2" v-if="notificacion.periodo == 7">Semanal</td>
+                                <td class="td2" v-if="notificacion.periodo == 30">Mensual</td>
+                                <td class="td2" v-text="notificacion.finPeriodo"></td>
+                                <td class="td2" v-text="notificacion.created_at"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                    <nav>
+                        <!--Botones de paginacion -->
+                        <ul class="pagination">
+                            <li class="page-item" v-if="pagination.current_page > 1">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
+                            </li>
+                            <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
+                            </li>
+                            <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- Fin ejemplo de tabla Listado -->
+        </div>
+
+        <!--Inicio del modal Crear mensaje-->
+        <ModalComponent @closeModal="cerrarModal()"
+            v-if="modal"
+            :titulo="tituloModal"
+        >
+            <template v-slot:body>
+                <RowModal clsRow1="col-md-6" label1="Mensaje" id1="mensaje">
+                    <textarea id="mensaje" rows="10" cols="30" v-model="mensaje" class="form-control" placeholder="Mensaje"></textarea>
+                </RowModal>
+                <RowModal clsRow1="col-md-6" label1="Recurrencia" id1="recurrencia">
+                    <select id="recurrencia" class="form-control" v-model="recurrencia">
+                        <option value="0">Unica ocasión</option>
+                        <option value="1">Diario </option>
+                        <option value="7">Semanal</option>
+                        <option value="30">Mensual</option>
+                    </select>
+                </RowModal>
+                <RowModal clsRow1="col-md-6" label1="Fin de periodo" v-if="recurrencia != 0">
+                    <input type="date" v-model="finPeriodo" class="form-control">
+                </RowModal>
+                <RowModal clsRow1="col-md-6" label1="Rol" v-if="tipoAccion == 1">
+                    <select class="form-control" v-model="rol_id" @click="getUser(rol_id)">
+                        <option value="">Seleccione</option>
+                        <option v-for="rol in arrayRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
+                    </select>
+                </RowModal>
+                <RowModal clsRow1="col-md-6" label1="Nombre" v-if="tipoAccion == 1">
+                    <select class="form-control" name = 'arrayPer[]' multiple size = 7 v-model="arrayPer">
+                        <option v-for="persona in arrayPersonal" :key="persona.id" :value="persona" v-text="persona.nombre + ' ' + persona.apellidos"></option>
+                    </select>
+                </RowModal>
+                <RowModal clsRow1="col-md-12" :label1="''" v-if="tipoAccion == 1">
+                    <div class="table-responsive">
+                        <table class="table" >
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">Seleccionados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="array in arrayPer" :key="array.id">
+                                    <td v-if="array.nombre !='' && array.apellidos !=''" v-text="array.nombre + ' ' + array.apellidos"></td>
+                                    <td v-else v-text="array.nombre" ></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </RowModal>
+                <div v-show="error" class="form-group row div-error">
+                    <div class="text-center text-error">
+                        <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
                     </div>
                 </div>
-                <!-- Fin ejemplo de tabla Listado -->
-            </div>
-       
-
-
-            <!--Inicio del modal Crear mensaje-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal" ></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Mensaje</label>
-                                    <div class="col-md-6">
-                                        <textarea rows="10" cols="30" v-model="mensaje" class="form-control" placeholder="Mensaje"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Recurrencia</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="recurrencia">
-                                            <option value="0">Unica ocasión</option>
-                                            <option value="1">Diario </option>
-                                            <option value="7">Semanal</option>
-                                            <option value="30">Mensual</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="recurrencia != 0">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fin de periodo</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="finPeriodo" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row"  v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Rol</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="rol_id" @click="getUser(rol_id)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="rol in arrayRol" :key="rol.id" :value="rol.id" v-text="rol.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row"  v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" name = 'arrayPer[]' multiple size = 7 v-model="arrayPer">
-                                            <option v-for="persona in arrayPersonal" :key="persona.id" :value="persona" v-text="persona.nombre + ' ' + persona.apellidos"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row"  v-if="tipoAccion == 1">
-                                    <div class="col-md-3"></div>
-                                    <div class="col-md-6">
-                                        <div class="table-responsive">
-                                            <table class="table " >
-                                                <thead>
-                                                    <tr>
-                                                        <th style="text-align:center">Seleccionados</th>
-                                                        <!--   <th>id</th>  -->
-                                                        
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="array in arrayPer" :key="array.id">
-                                                        <td v-if="array.nombre !='' && array.apellidos !=''" v-text="array.nombre + ' ' + array.apellidos"></td>
-                                                        <td v-else v-text="array.nombre" ></td>
-                                                    <!--    <td v-text="array.id"></td> -->
-                                                    </tr>                               
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores que mande validerModelo -->
-                                <div v-show="error" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsj" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion == 1" class="btn btn-primary" @click="storeNotificacion()">Guardar</button>
-                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateNotificacion()">Guardar cambios</button>
-
-                            </div>
-                             
-                            </div>
-                            
-                        </div>
-                    <!-- /.modal-content -->
-                
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-
-        </main>
+            </template>
+            <template v-slot:buttons-footer>
+                <Button v-if="tipoAccion == 1" icon="icon-check" @click="storeNotificacion()">Guardar</Button>
+                <Button v-if="tipoAccion == 2" icon="icon-check" @click="updateNotificacion()">Guardar cambios</Button>
+            </template>
+        </ModalComponent>
+        <!--Fin del modal-->
+    </main>
 </template>
 
 <!-- ************************************************************************************************************************************  -->
@@ -201,9 +137,22 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from './Componentes/ModalComponent'
+import RowModal from './Componentes/ComponentesModal/RowModalComponent'
+import LoadingComponent from './Componentes/LoadingComponent'
+import TableComponent from './Componentes/TableComponent'
+import Button from './Componentes/ButtonComponent'
+
     export default {
+        components:{
+            LoadingComponent,
+            TableComponent,
+            ModalComponent,
+            RowModal,
+            Button
+        },
         data(){
-            return{  
+            return{
                 tituloModal : '',
                 mensaje :'',
                 rol_id :'',
@@ -214,29 +163,29 @@
 
                 nombre : '',
                 arrayPer : [],
-                
+
                 arrayRol: [],
                 arrayPersonal : [],
                 arrayNotificacion : [],
-               
+
                 modal : 0,
                 mostrar : 0,
                 error : 0,
                 tipoAccion : 1,
-                
+
                 errorMostrarMsj: [],
 
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                 
+
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'nombre',
                 b_nombre :'',
                 fecha_inicio : '',
                 fecha_fin : '',
@@ -270,7 +219,7 @@
                 }
                 return pagesArray;
             },
-           
+
         },
         methods : {
             /**Metodo para mostrar los registros */
@@ -281,7 +230,7 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.getNotificaciones(page);
             },
-           
+
             selectRol(){
                 let me = this;
 
@@ -295,7 +244,7 @@
                     console.log(error);
                 });
             },
-                       
+
             getUser(id_rol){
                 let me = this;
 
@@ -341,7 +290,7 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
-                    
+
                     confirmButtonText: 'Si, enviar notificación!'
                     }).then((result) => {
 
@@ -352,7 +301,7 @@
                                 'periodo' : this.recurrencia,
                                 'mensaje' : this.mensaje,
                                 'finPeriodo' : this.finPeriodo
-                            }); 
+                            });
                         });
                         me.cerrarModal();
                         me.getNotificaciones(1);
@@ -397,13 +346,13 @@
                     this.errorMostrarMsj.push("Mensaje vacio");
                 if(this.arrayPer.length == 0)
                     this.errorMostrarMsj.push("Ningun usuario seleccionado");
-                
+
                 if(this.errorMostrarMsj.length)//Si el mensaje tiene almacenado algo en el array
                     this.error = 1;
 
                 return this.error;
             },
-       
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -413,14 +362,12 @@
                 this.arrayPer = [];
                 this.recurrencia = 0;
                 this.arrayPersonal = [];
-                
+
                 this.error = 0;
                 this.errorMostrarMsj = [];
                 this.id = '';
-                
-
             },
-           
+
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(accion,data=[]){
                 switch(accion){
@@ -434,9 +381,9 @@
                         this.fecha_creado = '';
                         this.tipoAccion = 1;
                         this.finPeriodo = '';
-                    
+
                         break;
-                    }   
+                    }
                     case 'editar':{
                         this.modal = 1;
                         this.tituloModal = 'Editar mensaje';
@@ -445,7 +392,7 @@
                         this.tipoAccion = 2;
                         this.finPeriodo = data['finPeriodo'];
                         this.id = data['id'];
-                    
+
                         break;
                     }
                 }
@@ -458,17 +405,6 @@
     }
 </script>
 <style>
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-        overflow-y: auto;
-    }
     .div-error{
         display:flex;
         justify-content: center;
@@ -476,46 +412,9 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }    
-    .btn-success2 {
-        color: #fff;
-        background-color: #2c309e;
-        border-color: #313a98;
     }
-    .btn-success2:active, .btn-success2.active, .show > .btn-success2.dropdown-toggle {
-        background-color: #2c309e;
-        background-image: none;
-        border-color: #313a98;
-    }
-    .btn-success2:focus, .btn-success2.focus {
-        box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);
-    }
-    .btn-success2:hover {
-        color: #fff;
-        background-color: #2c309e;
-        border-color: #313a98;
-    }
-
-    .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-     .table3 {
-
-    margin-left: auto;
-    border-collapse:separate;
-    
-    display: block;
-    width: auto;
-    max-width: 80%;
-    align-content: center;
-    text-align: center;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    .label{
+        background-color: #c2cfd6;
     }
 
     .td2, .th2 {
@@ -535,5 +434,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

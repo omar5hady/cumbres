@@ -103,7 +103,16 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
+                        <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="tipo_proyecto">
+                                <option value="1">Lotificación</option>
+                                <option value="2">Departamentos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
                         <div class="col-md-4">
                             <input type="text" v-model="num_etapa" class="form-control" placeholder="# de etapa">
                         </div>
@@ -248,6 +257,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 id:0,
                 contador : 0,
                 fraccionamiento_id : 0,
+                tipo_proyecto: 1,
                 num_etapa : 0,
                 f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
@@ -492,7 +502,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'terreno_m2':this.terreno_m2,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
-                    'personal_id': this.personal_id
+                    'personal_id': this.personal_id,
+                    'tipo_proyecto' : this.tipo_proyecto
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -536,7 +547,8 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
                     'personal_id': this.personal_id,
-                    'fecha_ini_venta' : this.fecha_ini_venta
+                    'fecha_ini_venta' : this.fecha_ini_venta,
+                    'tipo_proyecto' : this.tipo_proyecto
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -800,6 +812,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.personal_id = '0';
                                 this.tipoAccion = 1;
                                 this.terreno_m2 = 0;
+                                this.tipo_proyecto = 1;
                                 break;
                             }
                             case 'actualizar':
@@ -816,6 +829,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                                 this.personal_id=data['personal_id'];
                                 this.fecha_ini_venta = data['fecha_ini_venta'];
                                 this.terreno_m2 = data['terreno_m2'];
+                                this.tipo_proyecto = data['tipo_proyecto'];
                                 break;
                             }
                             case 'amenidades':

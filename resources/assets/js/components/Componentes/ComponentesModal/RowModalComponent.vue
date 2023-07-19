@@ -1,13 +1,13 @@
 <template>
     <div class="form-group row">
-        <label v-if="label1.length > 0" class="col-md-2 form-control-label" for="text-input">
+        <label :for="id1" v-if="label1.length > 0" class="col-md-2 form-control-label">
             {{label1}}
             <span v-show="span1" style="color:red">*</span>
         </label>
         <div :class="clsRow1">
             <slot></slot>
         </div>
-        <label v-if="label2" class="form-control-label" for="text-input" :class="label2.length >= 8 ? 'col-md-2' : 'col-md-1'">
+        <label :for="id2" v-if="label2" class="form-control-label" :class="label2.length >= 8 ? 'col-md-2' : 'col-md-1'">
             {{label2}}
             <span v-show="span2" style="color:red">*</span>
         </label>
@@ -48,6 +48,16 @@ export default {
             type:Boolean,
             required:false,
             default: false
+        },
+        id1:{
+            type:String,
+            required:false,
+            default:"",
+        },
+        id2:{
+            type:String,
+            required:false,
+            default:"",
         }
     }
 };

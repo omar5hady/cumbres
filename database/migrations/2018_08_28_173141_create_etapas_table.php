@@ -37,6 +37,7 @@ class CreateEtapasTable extends Migration
             $table->string('titular_admin',100)->nullable();
             $table->string('banco_admin',50)->nullable();
             $table->float('terreno_m2',10,2)->default(0);
+            $table->boolean('tipo_proyecto',1)->default(1);
 
             $table->string('carpeta_ventas')->nullable();
 

@@ -111,11 +111,18 @@
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                <a class="dropdown-item" v-if="!contratos.nom_contrato" @click="abrirModal('subir_archivo',contratos)">Subir Solicitud firmada</a>
+                                                <template v-if="!contratos.nom_contrato">
+                                                    <a class="dropdown-item"  @click="abrirModal('subir_archivo',contratos)">Subir Solicitud firmada</a>
+                                                    <a title="Ver revision" type="button"
+                                                        class="dropdown-item" target="_blank" :href="'/detalles/reporteDetalles/pdf/'+contratos.id">
+                                                            <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte
+                                                    </a>
+                                                </template>
                                                 <template v-else>
                                                     <a class="dropdown-item" v-bind:href="'/files/'+'solicitudDetalle/'+ contratos.nom_contrato + '/download'" >Descargar solicitud</a>
                                                     <a class="dropdown-item" @click="eliminarArchivo(contratos.nom_contrato, contratos.id)" >Eliminar archivo</a>
                                                 </template>
+
                                             </div>
                                         </td>
                                         <td class="td2" v-text="contratos.fraccionamiento"></td>

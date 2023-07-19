@@ -59,10 +59,11 @@
         >
             <template v-slot:body>
                 <RowModal :clsRow1="'col-md-9'" :label1="'Nombre de la campaña'">
-                    <input type="text" v-model="nombre" class="form-control" placeholder="Campaña">
+                    <input type="text" id="nombre" v-model="nombre" class="form-control" placeholder="Campaña">
                 </RowModal>
                 <RowModal :label1="'Presupuesto'" :clsRow2="'col-md-4'">
                     <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)"
+                                id="presupuesto"
                                 v-model="presupuesto" class="form-control" placeholder="Presupuesto">
                     <template v-slot:input2>
                         <p class="form-control"> ${{ $root.formatNumber(presupuesto) }}</p>

@@ -1090,6 +1090,10 @@
             Número oficial interior:&nbsp; {{($contrato->interior)?$contrato->interior:'N/A'}} <br>
             Superficie del lote o área privativa&nbsp; {{$contrato->sup_terreno}}m&sup2;<br>
             Superficie de construcción:&nbsp; {{$contrato->sup_construccion}}m&sup2;<br>
+            @if($contrato->area_jardin > 0)
+            Superficie de jardín:&nbsp; {{$contrato->area_jardin}}m&sup2;<br>
+            Superficie de estacionamiento: &nbsp; {{$contrato->area_estacionamiento}}m&sup2;<br>
+            @endif
             Indiviso:&nbsp; {{$contrato->indivisos}}
         </p>
         <p>

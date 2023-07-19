@@ -47,7 +47,7 @@ class ContratosVentaController extends Controller
                 'lotes.calle as calle_lote', 'lotes.numero as num_oficial', 'lotes.interior',
                 'lotes.clv_catastral', 'lotes.fin_obra', 'lotes.condiciones as estado_inmueble',
                 'lotes.indivisos', 'lotes.etapa_id', 'lotes.fraccionamiento_id',
-                'lotes.gas_nat',
+                'lotes.gas_nat', 'lotes.area_jardin', 'lotes.area_estacionamiento',
                 'entregas.fecha_program as entrega_program', 'entregas.fecha_entrega_real as entrega_real',
                 'l.avance','l.colindancias', 'l.num_escritura', 'l.num_notario',
                 'l.distrito_notario','l.folio_registro', 'l.date_escritura', 'l.date_birth',

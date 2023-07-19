@@ -11,7 +11,6 @@
                         <i class="fa fa-align-justify"></i> Reporte Digital Leads  &nbsp;&nbsp;
                         <a :href="'/reportes/digitalLeads?fecha1=' +b_fecha1 + '&fecha2=' + b_fecha2 +
                                 '&proyecto=' + b_proyecto + '&excel=1'"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
-
                     </div>
                     <div class="card-body">
                         <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
@@ -93,6 +92,14 @@
                                                     </td>
                                                 </template>
                                             </tr>
+                                            <!-- <tr>
+                                                <td class="td2" colspan="2">Total:</td>
+                                                <td class="td2" v-text="campanias.t_leads "></td>
+                                                <td class="td2" v-text="campanias.t_descartados"></td>
+                                                <td class="td2" v-text="campanias.t_canalizados"></td>
+                                                <td class="td2" v-text="campanias.t_desc_asesor"></td>
+                                                <td class="td2" v-text="campanias.t_venta"></td>
+                                            </tr> -->
 
                                         </tbody>
                                     </table>
@@ -136,6 +143,16 @@
                                                     <a @click="verLeads(asesor.removidos, 'Removidos')" href="#">{{asesor.n_removidos}}</a>
                                                 </td>
                                             </tr>
+                                            <!-- <tr>
+                                                <td class="td2">Total:</td>
+                                                <td class="td2" v-text="asesor.t_leads"></td>
+                                                <td class="td2" v-text="asesor.t_descartados"></td>
+                                                <td></td>
+                                                <td class="td2" v-text="asesor.t_verde"></td>
+                                                <td class="td2" v-text="asesor.t_rojo"></td>
+                                                <td class="td2" v-text="asesor.t_removidos"></td>
+                                            </tr> -->
+
 
                                         </tbody>
                                     </table>
@@ -240,6 +257,20 @@
                 leads:[],
                 ventasOrg : [],
                 n_ventasOrg : 0,
+                campanias:{
+                    t_leads : 0,
+                    t_descartados: 0,
+                    t_canalizados: 0,
+                    t_desc_asesor: 0,
+                    t_venta: 0
+                },
+                asesor:{
+                    t_leads: 0,
+                    t_descartados: 0,
+                    t_verde: 0,
+                    t_rojo: 0,
+                    t_removidos: 0
+                }
 
             }
         },
@@ -268,10 +299,52 @@
                     me.arrayAsesores.sort((b, a) => a.conteo - b.conteo);
                     //me.arrayVendedores.sort((b, a) => a.dif15 - b.dif15);
 
+                    me.setTotales();
+
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            setTotales(){
+                let me = this;
+                me.resetTotales();
+
+                me.arrayLeads.forEach(e => {
+                    me.campanias.t_leads+= e.conteo;
+                    me.campanias.t_descartados+= e.descartado;
+                    me.campanias.t_canalizados+= e.asesor;
+                    me.campanias.t_desc_asesor+= e.descAsesor;
+                    me.campanias.t_venta+= e.n_ventas;
+                });
+
+                me.arrayAsesores.forEach(e => {
+                    me.asesor.t_leads+= e.conteo;
+                    me.asesor.t_descartados+= e.descartado;
+                    me.asesor.t_verde+= e.amarillo;
+                    me.asesor.t_rojo+= e.rojo;
+                    me.asesor.t_removidos+= e.removidos;
+                });
+
+            },
+            resetTotales(){
+                let me = this;
+
+                me.campanias = {
+                    t_leads : 0,
+                    t_descartados: 0,
+                    t_canalizados: 0,
+                    t_desc_asesor: 0,
+                    t_venta: 0
+                };
+                me.asesor = {
+                    t_leads: 0,
+                    t_descartados: 0,
+                    t_verde: 0,
+                    t_rojo: 0,
+                    t_removidos: 0
+                };
             },
 
             selectFraccionamientos(){

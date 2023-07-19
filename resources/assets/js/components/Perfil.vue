@@ -192,7 +192,7 @@
                             <form method="post" @submit="formSubmit" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="cumbres">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Empresa
@@ -200,12 +200,13 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                    id="cumbres"
                                                   class="form-control" placeholder="Grupo Constructor Cumbres" readonly>
                                             <!---->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="usuario">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Usuario
@@ -213,17 +214,18 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                id="usuario"
                                                 placeholder="Usuario" class="form-control" v-model="usuario" readonly>
                                             <!---->
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
-                                        <div class="form-group"><label>
+                                        <div class="form-group"><label for="password">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">Contraseña</font>
                                                 </font>
-                                            </label><!----><input aria-describedby="addon-right addon-left" type="password"
+                                            </label><!----><input aria-describedby="addon-right addon-left" id="password" type="password"
                                                 autocomplete="off"
                                                 class="form-control" v-model="password">
                                             <!----></div>
@@ -231,7 +233,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="nombre">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Nombre(s)
@@ -239,12 +241,13 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                id="nombre"
                                                 placeholder="Nombre(s)" class="form-control" v-model="nombre">
                                             <!---->
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="apellidos">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Apellidos
@@ -252,6 +255,7 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                id="apellidos"
                                                 placeholder="Dirección" class="form-control" v-model="apellidos">
                                             <!---->
                                         </div>
@@ -259,7 +263,7 @@
                                 </div>
                                 <div class="row">
                                   <div class="col-md-4">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="f_nacimiento">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Fecha de nacimiento
@@ -267,16 +271,18 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="date"
-                                                placeholder="Dirección" class="form-control" v-model="f_nacimiento">
+                                                id="f_nacimiento"
+                                                placeholder="Fecha de nacimiento" class="form-control" v-model="f_nacimiento">
                                             <!---->
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="form-group"><label>
+                                        <div class="form-group"><label for="celular">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">Celular</font>
                                                 </font>
                                             </label><!----><input aria-describedby="addon-right addon-left" maxlength="10" type="text"
+                                                id="celular"
                                                 placeholder="Celular" class="form-control" v-model="celular">
                                             <!----></div>
                                     </div>
@@ -285,7 +291,7 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="direccion">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Dirección
@@ -293,12 +299,13 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                id="direccion"
                                                 placeholder="Dirección" class="form-control" v-model="direccion">
                                             <!---->
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="colonia">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Colonia
@@ -306,12 +313,13 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                id="colonia"
                                                 placeholder="Colonia" class="form-control" v-model="colonia">
                                             <!---->
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="cp">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Código postal
@@ -319,6 +327,7 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="text"
+                                                id="cp"
                                                 placeholder="Código postal" class="form-control" v-model="cp">
                                             <!---->
                                         </div>
@@ -326,7 +335,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <div class="form-group"><label class="control-label">
+                                        <div class="form-group"><label class="control-label" for="email">
                                                 <font style="vertical-align: inherit;">
                                                     <font style="vertical-align: inherit;">
                                                         Correo Electronico
@@ -334,6 +343,7 @@
                                                 </font>
                                             </label>
                                             <!----><input aria-describedby="addon-right addon-left" type="email"
+                                                id="email" autocomplete="email"
                                                 placeholder="Correo Electronico" class="form-control" v-model="email">
                                             <!---->
                                         </div>
@@ -439,8 +449,6 @@ export default {
 
   methods: {
     onImageChange(e) {
-      console.log(e.target.files[0]);
-
       this.foto_user = e.target.files[0];
       this.url = URL.createObjectURL(this.foto_user);
     },
@@ -561,7 +569,6 @@ export default {
     getReminder(){
         axios.get('/comments/reminder/').then(
             response => {
-                console.log(response);
                 this.arrayReminders = response.data;
             }
         ).catch(error => console.log(error));
@@ -570,7 +577,6 @@ export default {
     getAvisosGral(){
         axios.get('/notificacion/gral/').then(
             response => {
-                console.log(response);
                 this.arrayAvisosGral = response.data;
             }
         ).catch(error => console.log(error));
@@ -588,14 +594,6 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
-        // axios.get('/comments/reminderCommentarioLead/').then(
-        //     response => {
-        //         console.log(response);
-        //         var respuesta = response.data;
-        //         me.arrayRemindersLead = respuesta.reminders.data;
-        //         me.arrayRemindersLeadFecha = respuesta.reminders_fecha.data;
-        //     }
-        // ).catch(error => console.log(error));
     }
   },
   mounted() {

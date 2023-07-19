@@ -31,11 +31,11 @@
                                     <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                                 <div class="input-group" v-if="criterio2=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-6" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2"> 
+                                    <select class="form-control col-md-6" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2">
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
-                                  
+
 
                                 </div>
                                 <div class="input-group" v-if="criterio2=='lotes.fraccionamiento_id'">
@@ -54,12 +54,12 @@
                                     <button type="submit" @click="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th></th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
@@ -74,7 +74,7 @@
                                         <th>Status</th>
                                         <th>Recepción</th>
                                         <th>Observaciones</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,11 +100,11 @@
                                             <td class="td2" v-text="equipamientos.equipamiento"></td>
                                             <template>
                                                 <td v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td v-else class="td2" v-text="'Sin fecha'"></td>    
+                                                <td v-else class="td2" v-text="'Sin fecha'"></td>
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td v-else class="td2" v-text="'Sin fecha'"></td>    
+                                                <td v-else class="td2" v-text="'Sin fecha'"></td>
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.status == '0'" class="td2">
@@ -121,37 +121,37 @@
                                                 </td>
                                                 <td v-if="equipamientos.status == '4'" class="td2">
                                                     <span class="badge badge-success">Aprobado</span>
-                                                </td>  
+                                                </td>
                                                 <td v-if="equipamientos.status == '5'" class="td2">
                                                     <span class="badge badge-danger">Cancelado</span>
-                                                </td>   
+                                                </td>
                                             </template>
-                                            <td> 
-                                                <button v-if="equipamientos.recepcion == 1 && equipamientos.status == 3" title="Realizar recepcion" type="button" 
-                                                @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
-                                                    <i class="fa fa-check-square-o"></i> Realizar recepción
-                                                </button> 
-                                                <button v-else-if="equipamientos.recepcion == 0 && equipamientos.status == 3" title="Realizar recepcion" type="button" 
+                                            <td>
+                                                <button v-if="equipamientos.recepcion == 1 && equipamientos.status == 3" title="Realizar recepcion" type="button"
                                                 @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
                                                     <i class="fa fa-check-square-o"></i> Realizar recepción
                                                 </button>
-                                                <button v-else-if="equipamientos.recepcion == 1 && equipamientos.status == 4" title="Realizar recepcion" type="button" 
+                                                <button v-else-if="equipamientos.recepcion == 0 && equipamientos.status == 3 || equipamientos.recepcion == 0 && equipamientos.status == 4" title="Realizar recepcion" type="button"
+                                                @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
+                                                    <i class="fa fa-check-square-o"></i> Realizar recepción
+                                                </button>
+                                                <button v-else-if="equipamientos.recepcion == 1 && equipamientos.status == 4" title="Realizar recepcion" type="button"
                                                 @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
                                                     <i class="fa fa-check-square-o"></i> Ver recepción
-                                                </button> 
+                                                </button>
                                                 <span v-else-if="equipamientos.recepcion == 1 && equipamientos.status == 0" class="badge badge-danger">Corrigiendo detalles</span>
                                                 <span v-else class="badge badge-primary">Equipamiento sin instalarse</span>
                                             </td>
                                             <td>
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                     @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
-                                                </button> 
+                                                </button>
                                             </td>
-                                            
+
                                         </template>
                                     </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -174,13 +174,13 @@
                             </ul>
                         </nav>
                         <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
-                    </div>        
+                    </div>
                 </template>
                 <!-------------------  Fin Div historial equipamientos  --------------------->
 
                 <!-------------------  Div checklist recepcion  --------------------->
                 <template v-if="checklist == 1">
-                    <div class="card-body" v-if="tipoRecepcion == 1"> 
+                    <div class="card-body" v-if="tipoRecepcion == 1">
                         <h5 v-text="tituloRecepcion"></h5>
                             <div class="form-group row border">
                                 <div class="col-md-12">
@@ -201,9 +201,9 @@
                                                 <li class="nav-item" >
                                                     <a class="nav-link"> <input v-model="cubierta_acab_cortes" type="checkbox" value="1"/> Cortes</a>
                                                 </li>
-                                            </ul>                                       
+                                            </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group row border">
@@ -223,7 +223,7 @@
                                     <div class="form-group">
                                   <center> <h5>Revisión de puertas, alacenas y cajones</h5> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group row border">
@@ -248,9 +248,9 @@
                                                     <a class="nav-link"> <input v-model="puerta_gomas" type="checkbox" value="1"/> Gomas cierre</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group row border">
@@ -310,7 +310,7 @@
                                                     <a class="nav-link"> <input v-model="alacena_parches" type="checkbox" value="1"/> Parches tor.</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -318,7 +318,7 @@
                                     <div class="form-group">
                                   <center> <h5>Otras revisiones</h5> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group row border">
@@ -336,9 +336,9 @@
                                                 <li class="nav-item" >
                                                     <a class="nav-link"> <input v-model="estufa_danos" type="checkbox" value="1"/> Daños</a>
                                                 </li>
-                                            </ul>                                       
+                                            </ul>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group row border">
@@ -362,9 +362,9 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                </div> 
+                                </div>
 
-                                
+
                             </div>
 
                             <div class="form-group row">
@@ -382,11 +382,11 @@
                                 </div>
                             </div>
 
-                 
+
 
                     </div>
 
-                    <div class="card-body" v-if="tipoRecepcion == 2"> 
+                    <div class="card-body" v-if="tipoRecepcion == 2">
                         <h5 v-text="tituloRecepcion"></h5>
                             <div class="form-group row border">
                                 <div class="col-md-12">
@@ -437,9 +437,9 @@
                                                     <a class="nav-link"> <input v-model="c_parch_der" type="checkbox" value="1"/> Parches tor</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -483,7 +483,7 @@
                                                     <a class="nav-link"> <input v-model="c_parch_izq" type="checkbox" value="1"/> Parches tor</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -529,7 +529,7 @@
                                                     <a class="nav-link"> <input v-model="c_parch_princ" type="checkbox" value="1"/> Parches tor</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -575,7 +575,7 @@
                                                     <a class="nav-link"> <input v-model="c_parch_baja" type="checkbox" value="1"/> Parches tor</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -583,7 +583,7 @@
                                     <div class="form-group">
                                   <center> <h5>Supervisión de interiores</h5> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Administracion -->
                                 <div class="col-md-3">
@@ -634,9 +634,9 @@
                                                     <a class="nav-link"> <input v-model="c_visagras_der" type="checkbox" value="1"/> Visagras</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -686,7 +686,7 @@
                                                     <a class="nav-link"> <input v-model="c_visagras_izq" type="checkbox" value="1"/> Visagras</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>>
                                 </div>
 
@@ -738,7 +738,7 @@
                                                     <a class="nav-link"> <input v-model="c_visagras_princ" type="checkbox" value="1"/> Visagras</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -790,7 +790,7 @@
                                                     <a class="nav-link"> <input v-model="c_visagras_baja" type="checkbox" value="1"/> Visagras</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -798,7 +798,7 @@
                                     <div class="form-group">
                                   <center> <h5>Otras revisiones</h5> </center>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <!-- listado para privilegios del menu Administracion -->
                                 <div class="col-md-3">
@@ -837,9 +837,9 @@
                                                     <a class="nav-link"> <input v-model="clo_soporte_der" type="checkbox" value="1"/> Soport ajust</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -877,7 +877,7 @@
                                                     <a class="nav-link"> <input v-model="clo_soporte_izq" type="checkbox" value="1"/> Soport ajust</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -917,7 +917,7 @@
                                                     <a class="nav-link"> <input v-model="clo_soporte_princ" type="checkbox" value="1"/> Soport ajust</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -957,7 +957,7 @@
                                                     <a class="nav-link"> <input v-model="clo_soporte_baja" type="checkbox" value="1"/> Soport ajust</a>
                                                 </li>
                                             </ul>
-                                        
+
                                     </div>
                                 </div>
 
@@ -969,8 +969,8 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                </div> 
-                                
+                                </div>
+
                             </div>
 
                             <div class="form-group row">
@@ -988,11 +988,11 @@
                                 </div>
                             </div>
 
-                 
+
 
                     </div>
 
-                    <div class="card-body" v-if="tipoRecepcion == 0"> 
+                    <div class="card-body" v-if="tipoRecepcion == 0">
                         <h5 v-text="tituloRecepcion"></h5>
                             <div class="form-group row border">
 
@@ -1004,8 +1004,8 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                </div> 
-                                
+                                </div>
+
                             </div>
 
                             <div class="form-group row">
@@ -1023,7 +1023,7 @@
                                 </div>
                             </div>
 
-                 
+
 
                     </div>
 
@@ -1041,7 +1041,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
             <!--Inicio del modal para diversos llenados de tabla en historial -->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -1084,7 +1084,7 @@
                                     </div>
                                 </div>
 
-                                
+
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
@@ -1125,7 +1125,7 @@
 
                                 <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                    
+
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
@@ -1136,14 +1136,14 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                                
+
                                                 <td v-text="observacion.usuario" ></td>
                                                 <td v-text="observacion.comentario" ></td>
                                                 <td v-text="observacion.created_at"></td>
-                                            </tr>                               
+                                            </tr>
                                         </tbody>
                                     </table>
-                                    
+
                                 </form>
                             </div>
                             <!-- Botones del modal -->
@@ -1156,7 +1156,7 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
-            
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -1169,13 +1169,13 @@
                     </div>
                     <div class="modal-body">
                         <p>
-                            Dentro del modulo de obra podrá dar seguimiento al proceso de instalación de un equipamiento, 
-                            el listado que se muestra es de aquellas solicitudes que se realizaron con anterioridad 
+                            Dentro del modulo de obra podrá dar seguimiento al proceso de instalación de un equipamiento,
+                            el listado que se muestra es de aquellas solicitudes que se realizaron con anterioridad
                             (vea el módulo de <strong>“Ventas -> Solic. Equipamiento”</strong>).
                         </p>
                         <p>
-                            Una vez terminada la instalación dentro de la columna “Status” podrá ver la leyenda de 
-                            “En Revisión” lo cual le habilitará el botón de “Realizar recepción” donde podrá realizar 
+                            Una vez terminada la instalación dentro de la columna “Status” podrá ver la leyenda de
+                            “En Revisión” lo cual le habilitará el botón de “Realizar recepción” donde podrá realizar
                             la revisión de la instalación y en caso de ser necesario podrá además rechazar la instalación.
                         </p>
                     </div>
@@ -1185,7 +1185,7 @@
                     </div>
                 </div>
             </div>
-         
+
      </main>
 </template>
 
@@ -1224,14 +1224,14 @@
 
                 // Criterios para historial de equipamientos
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio2 : 'lotes.fraccionamiento_id', 
+                criterio2 : 'lotes.fraccionamiento_id',
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',
@@ -1240,7 +1240,7 @@
                 tipoAccion:0,
                 errorRevision:0,
                 errorMostrarMsjRevision:[],
-            /// SUPERVISION ACABADOS CLOSETS    
+            /// SUPERVISION ACABADOS CLOSETS
                 //Puertas alineados
                 p_ali_der:1, p_ali_izq:1, p_ali_princ:1, p_ali_baja:1,
                 //Puertas limpieza
@@ -1344,7 +1344,7 @@
                 //Tarja
                 tarja_danos:1,
                 tarja_pzas_extra:1,
-            
+
 
             //////////////////////////
 
@@ -1412,7 +1412,7 @@
 
         },
 
-        
+
         methods : {
 
             listarHistorial(page, buscar, b_etapa, b_manzana, b_lote, criterio){
@@ -1422,18 +1422,18 @@
                     var respuesta = response.data;
                     me.arrayHistorialEquipamientos = respuesta.equipamientos.data;
                     me.pagination2 = respuesta.pagination;
-                    
+
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
 
-            
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
-                
+
                 me.arrayFraccionamientos=[];
                 me.arrayFraccionamientos2=[];
                 var url = '/select_fraccionamiento';
@@ -1450,7 +1450,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.b_etapa=""
-                
+
                 me.arrayEtapas=[];
                 me.arrayEtapas2=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
@@ -1662,7 +1662,7 @@
                     console.log(error);
                 });
             },
-            
+
             cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1692,7 +1692,7 @@
                 axios.post('/equipamiento/registrarObservacion',{
                     'comentario' : this.observacion,
                     'solic_id':this.solicitud_id,
-                    
+
                 }).then(function (response){
                     me.listarObservacion(1,me.solicitud_id);
                     //window.alert("Cambios guardados correctamente");
@@ -1921,7 +1921,7 @@
                         'clo_soporte_izq': this.clo_soporte_izq,
                         'clo_soporte_princ': this.clo_soporte_princ,
                         'clo_soporte_baja': this.clo_soporte_baja,
-                        
+
                     }).then(function (response){
                         me.cerrarRecepcion();
                         me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2)
@@ -1943,7 +1943,7 @@
                 })
 
 
-                
+
             },
 
             actualizarRevision(resultado){
@@ -2156,7 +2156,7 @@
                     'clo_soporte_izq': this.clo_soporte_izq,
                     'clo_soporte_princ': this.clo_soporte_princ,
                     'clo_soporte_baja': this.clo_soporte_baja,
-                    
+
                 }).then(function (response){
                     me.cerrarRecepcion();
                     me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2)
@@ -2180,7 +2180,7 @@
 
             mostrarCheckList(data = []){
                 this.checklist = 1;
-                
+
                 this.tipoRecepcion = data['tipoRecepcion'];
                 if(this.tipoRecepcion == 1)
                     this.tituloRecepcion = 'Recepción de Cocina';
@@ -2194,7 +2194,7 @@
                 this.observacion = '';
                 this.solicitud_id = data['id'];
                 this.recibido = data['recepcion'];
-                if(this.recibido == 1)  
+                if(this.recibido == 1)
                     this.getResultados(this.solicitud_id);
             },
 
@@ -2405,7 +2405,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             validarRevision(){
@@ -2449,9 +2449,9 @@
                         }
                     }
                 }
-            
+
         },
-       
+
         mounted() {
             this.listarHistorial(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
             this.selectFraccionamientos();
@@ -2482,7 +2482,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -2531,5 +2531,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

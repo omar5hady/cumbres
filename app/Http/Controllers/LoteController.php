@@ -1198,8 +1198,10 @@ class LoteController extends Controller
                     'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
 
         if($request->tipo <= 2){//Filtro para casas o departamentos
-           $query = $query->where('fraccionamientos.tipo_proyecto','=',$request->tipo)->where('lotes.casa_renta','=',0);
-           $queryVendedores = $queryVendedores->where('fraccionamientos.tipo_proyecto','=',$request->tipo)->where('lotes.casa_renta','=',0);
+           $query = $query->where('etapas.tipo_proyecto','=',$request->tipo)
+                            ->where('lotes.casa_renta','=',0);
+           $queryVendedores = $queryVendedores->where('etapas.tipo_proyecto','=',$request->tipo)
+                            ->where('lotes.casa_renta','=',0);
             if(Auth::user()->rol_id == 2){
                 $vendedor = Vendedor::findOrFail(Auth::user()->id);
                 if($vendedor->tipo == 1)
