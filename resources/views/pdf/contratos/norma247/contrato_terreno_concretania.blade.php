@@ -263,8 +263,8 @@
             </li>
             @if(count($contrato->pagos) > 2)
             <li><template class="cuadrado">b)</template>
-                @for ($i = 1; $i < (count($contrato->pagos)-1); $i++)
                     La cantidad de $ {{$contrato->restoPago}} en las siguientes fechas: <br>
+                @for ($i = 1; $i < (count($contrato->pagos)-1); $i++)
                     {{$contrato->pagos[$i]->fecha_pago}},
                 @endfor
                 y con los siguientes importes respectivamente; <br>

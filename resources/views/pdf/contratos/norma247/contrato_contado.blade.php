@@ -384,7 +384,7 @@
                         En caso que el inmueble este sujeto al régimen de propiedad en condómino. El inmueble indicado está sujeto
                         al régimen de propiedad en condominio en términos de la escritura pública número: {{$contrato->num_escritura}}, otorgada en fecha
                         {{$contrato->date_escritura}} ante la fe del Notario Público número {{$contrato->num_notario}} con ejercicio en
-                        la &Tab; ciudad de San Luis Potosí, El {{$contrato->notaria->titular}}, y debidamente inscrita el día, mes y año con
+                        la &Tab; ciudad de San Luis Potosí, El {{$contrato->notaria ? $contrato->notaria->titular : '____________' }}, y debidamente inscrita el día, mes y año con
                         inscripción en el Registro Público de la Propiedad bajo el folio real N°.{{$contrato->folio_registro}}, instrumento en el cual están referidas las correspondientes
                         áreas de uso común y porcentaje de indiviso, lo cual ha sido debidamente exhibido y explicado a
                         <strong>EL PROMITENTE COMPRADOR.</strong>
@@ -1066,12 +1066,24 @@
         </p>
 
         <p>
-            <strong>DECIMA NOVENA.- <u>MODELO DE CONTRATO PROFECO.</u></strong> El modelo de contrato de adhesión que se utiliza para documentar la
-            presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el
-            número <strong>{{ $contrato->emp_constructora == 'CONCRETANIA' ? '________________' : '4446-2023' }}
-            de fecha <strong>{{ $contrato->emp_constructora == 'CONCRETANIA' ? '________________' : '02 DE MAYO DE 2023.' }}</strong> Asimismo, el contenido de   este contrato se incorporará en escritura pública sin importar el orden
-            y forma en que se citen y esto no se considerará como incumplimiento a la Ley, ni modificación al modelo de contrato registrado ante PROFECO.
-            Cualquier variación del contenido del presente contrato en perjuicio de <strong>“EL PROMITENTE COMPRADOR”</strong> se tendrá por no puesta.
+            <strong>DECIMA NOVENA.- <u>MODELO DE CONTRATO PROFECO.</u></strong>
+            @if($contrato->emp_constructora == 'CONCRETANIA' && $contrato->difProfeco > 0)
+                Este contrato fue presentado  a Registro ante la Procuraduría Federal del Consumidor bajo el número de procedimiento <u>159754</u>,
+                el pasado día 18 de MAYO de 2023; por lo que se entiende aprobado por esa dependencia en términos del artículo 87 de la Ley Federal de
+                Protección al Consumidor que en lo conducente indica que presentado un contrato a registro ante la Procuraduría, ésta
+                emitirá su resolución dentro de los treinta días hábiles siguientes a la fecha de presentación de esa solicitud.
+                Transcurrido dicho plazo sin haberse emitido la resolución correspondiente, el modelo de contrato se entenderá aprobado,
+                quedando en su caso como prueba de inscripción la solicitud de registro.
+            @else
+                El modelo de contrato de adhesión que se utiliza para documentar la
+                presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el
+                número <strong>{{ $contrato->emp_constructora == 'CONCRETANIA' ? '________________' : '4444-2023' }}</strong>
+                de fecha <strong>{{ $contrato->emp_constructora == 'CONCRETANIA' ? '________________' : '02 DE MAYO DE 2023.' }}</strong>
+                Asimismo, el contenido de este contrato se incorporará en escritura pública sin importar el orden
+                y forma en que se citen y esto no se considerará como incumplimiento a la Ley, ni modificación al modelo de contrato registrado ante PROFECO.
+                Cualquier variación del contenido del presente contrato en perjuicio de <strong>“EL PROMITENTE COMPRADOR”</strong> se tendrá por no puesta.
+
+            @endif
         </p>
 
         <p>

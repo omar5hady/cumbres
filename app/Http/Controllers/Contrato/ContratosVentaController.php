@@ -216,6 +216,17 @@ class ContratosVentaController extends Controller
         $contrato->precio_venta = NumerosEnLetras::convertir($contrato->precio_venta, 'Pesos', true, 'Centavos');
         $contrato->valor_terreno = NumerosEnLetras::convertir($contrato->valor_terreno, 'Pesos', true, 'Centavos');
 
+        $contrato->difProfeco = 0;
+
+        if($contrato->emp_terreno != $contrato->emp_constructora && $contrato->modelo != 'Terreno'){
+            $fechaProfeco =  new Carbon('2023-07-18');
+            $contrato->difProfeco = $fechaProfeco->diffInDays(new Carbon($contrato->fecha_contrato), false);
+        }
+        elseif($contrato->emp_constructora == 'CONCRETANIA'  && $contrato->modelo != 'Terreno'){
+            $fechaProfeco =  new Carbon('2023-07-03');
+            $contrato->difProfeco = $fechaProfeco->diffInDays(new Carbon($contrato->fecha_contrato), false);
+        }
+
         $contrato->fecha_contrato = new Carbon($contrato->fecha_contrato);
         $contrato->fecha_contrato = $contrato->fecha_contrato->formatLocalized('%d días del mes de %B del año %Y');
 

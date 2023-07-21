@@ -308,6 +308,7 @@ class FraccionamientoController extends Controller
         //if(!$request->ajax())return redirect('/');
         //Query principal
         $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
                     ->select('fraccionamientos.nombre','fraccionamientos.id')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.contrato','=',0); //Sin contrato
@@ -316,7 +317,7 @@ class FraccionamientoController extends Controller
                         $fraccionamientos = $fraccionamientos->where('lotes.casa_renta','=',1);
                     //Filtro por tipo de proyecto
                     if($request->tipo_proyecto != '')
-                        $fraccionamientos = $fraccionamientos->where('fraccionamientos.tipo_proyecto','=',$request->tipo_proyecto);
+                        $fraccionamientos = $fraccionamientos->where('etapas.tipo_proyecto','=',$request->tipo_proyecto);
 
                     $fraccionamientos = $fraccionamientos->orderBy('nombre','asc')
                     ->distinct()
