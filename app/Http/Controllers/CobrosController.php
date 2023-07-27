@@ -36,11 +36,12 @@ class CobrosController extends Controller
                 ->join('etapas as e','l.etapa_id','=','e.id')
                 ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
                 ->select('contratos.id', 'creditos.precio_venta', 'c.nombre', 'c.apellidos',
+                        'contratos.file_fg',
                         'creditos.porcentaje_terreno', 'l.emp_constructora', 'l.emp_terreno',
                         'creditos.email_fisc','creditos.tel_fisc','creditos.col_fisc',
                         'creditos.direccion_fisc','creditos.cp_fisc','creditos.rfc_fisc',
                         'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
-                        'contratos.fecha', 'creditos.valor_terreno',
+                        'contratos.fecha', 'creditos.valor_terreno', 'l.sit_fg',
                         'e.num_etapa as etapa',
                         'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
                         'expedientes.valor_escrituras',
@@ -212,12 +213,12 @@ class CobrosController extends Controller
         ->join('etapas as e','l.etapa_id','=','e.id')
         ->join('fraccionamientos as f','l.fraccionamiento_id','=','f.id')
         ->select('int_cobros.*',
-            'l.emp_constructora', 'l.emp_terreno',
+            'l.emp_constructora', 'l.emp_terreno', 'l.sit_fg',
             'creditos.email_fisc','creditos.tel_fisc','creditos.col_fisc',
             'creditos.direccion_fisc','creditos.cp_fisc','creditos.rfc_fisc',
             'l.manzana', 'l.num_lote', 'l.calle', 'l.numero', 'l.interior', 'f.nombre as proyecto',
             'contratos.fecha', 'c.email', 'c.telefono', 'c.direccion', 'c.colonia', 'c.rfc', 'c.homoclave', 'c.cp',
-            'expedientes.fecha_firma_esc',
+            'expedientes.fecha_firma_esc', 'contratos.file_fg',
             'e.num_etapa as etapa',
             'i.tipo_credito', 'i.institucion', 'i.monto_credito', 'i.segundo_credito',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) as nombre_completo"),

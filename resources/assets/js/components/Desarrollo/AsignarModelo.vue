@@ -867,13 +867,31 @@
                                 <label class="form-check-label" for="radio8">No </label>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Hidden para agregar el id de la empresa -->
+                    <hr>
 
-                        <div class="form-group row">
-                            <div class="col-md-4">
-                                <input type="hidden" value="1" v-model="empresa_id" class="form-control">
+                    <div class="form-group row">
+                        <label class="col-md-3 form-control-label" for="text-input">¿Falla geologica?</label>
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="sit_fg" id="radio9" type="radio" value="1" name="radios4">
+                                <label class="form-check-label" for="radio9">Si </label>
                             </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input class="form-check-input" v-model="sit_fg" id="radio10" type="radio" value="0" name="radios4">
+                                <label class="form-check-label" for="radio10">No </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden para agregar el id de la empresa -->
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <input type="hidden" value="1" v-model="empresa_id" class="form-control">
                         </div>
                     </div>
 
@@ -1009,6 +1027,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 credito_puente:'',
                 comentarios: '',
                 regimen:0,
+                sit_fg: 0,
                 extra:0,
                 extra_ext:0,
                 file: '',
@@ -1320,6 +1339,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                     'credito_puente':this.credito_puente,
                     'comentarios': this.comentarios,
                     'regimen':this.regimen,
+                    'sit_fg':this.sit_fg,
                     'fecha_termino_ventas' : this.fecha_termino_ventas,
                     'extra' : this.extra,
                     'extra_ext' : this.extra_ext,
@@ -1492,6 +1512,7 @@ import TableComponent from '../Componentes/TableComponent.vue'
                         this.credito_puente=data['credito_puente'];
                         this.comentarios=data['comentarios'];
                         this.regimen = data['regimen_condom'];
+                        this.sit_fg = data['sit_fg'];
                         this.fecha_termino_ventas = data['fecha_termino_ventas'];
 
                         this.casa_renta = data['casa_renta'];

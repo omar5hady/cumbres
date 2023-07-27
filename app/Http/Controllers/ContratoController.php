@@ -384,8 +384,10 @@ class ContratoController extends Controller
                     'contratos.exp_bono',
                     'contratos.constancia_fisc',
                     'contratos.fecha_archivo_fisc',
+                    'contratos.file_fg',
                     'lotes.fraccionamiento_id',
-                    'lotes.sublote'
+                    'lotes.sublote',
+                    'lotes.sit_fg'
         );
         return $contratos;
     }
@@ -2986,6 +2988,27 @@ class ContratoController extends Controller
         }
 
     	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    // Función para subir archivo falla geologica.
+    public function formSubmitFileFg(Request $request, $id){
+        $fileName = $request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/fallaGeologica/'), $fileName);
+
+        if($moved){
+            $contrato = Contrato::findOrFail($id);
+            $contrato->file_fg = $fileName;
+            $contrato->save(); //Insert
+        }
+
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    // Función que descarga el archivo falla geologica.
+    public function downloadFileFg($fileName)
+    {
+        $pathtoFile = public_path() . '/files/fallaGeologica/' . $fileName;
+        return response()->file($pathtoFile);
     }
 
     // Función que descarga el archivo fiscal de una venta.

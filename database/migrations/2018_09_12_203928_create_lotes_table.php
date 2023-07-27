@@ -82,6 +82,8 @@ class CreateLotesTable extends Migration
             $table->integer('puente_id')->nullable();
             $table->string('condiciones',100)->default('Nueva');
 
+            $table->booelan('sit_fg')->default(0);
+
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
             $table->foreign('etapa_id')->references('id')->on('etapas');
             $table->foreign('modelo_id')->references('id')->on('modelos');

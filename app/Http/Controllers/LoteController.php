@@ -412,6 +412,7 @@ class LoteController extends Controller
         $lote->casa_muestra = $request->casa_muestra;
         $lote->comentarios = $request->comentarios;
         $lote->regimen_condom = $request->regimen;
+        $lote->sit_fg = $request->sit_fg;
         $lote->fecha_termino_ventas = $request->fecha_termino_ventas;
         $lote->extra = $request->extra;
         $lote->extra_ext = $request->extra_ext;

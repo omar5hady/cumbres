@@ -679,9 +679,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/premios/getPremio','Premios\PremiosController@getPremio');
 
         Route::post('/contratos/formSubmitFisc/{id}','ContratoController@formSubmitFisc');
+        Route::post('/contratos/formSubmitFileFg/{id}','ContratoController@formSubmitFileFg');
         Route::post('/contratos/formSubmitConstFisc/{id}','ContratoController@formSubmitConstFisc');
         Route::get('/contratos/downloadFileFisc/{fileName}' , 'ContratoController@downloadFileFisc');
         Route::get('/contratos/downloadFileConstFisc/{fileName}' , 'ContratoController@downloadFileConstFisc');
+        Route::get('/contratos/downloadFileFg/{fileName}' , 'ContratoController@downloadFileFg');
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
         Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');

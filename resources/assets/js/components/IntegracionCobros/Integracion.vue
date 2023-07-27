@@ -576,7 +576,11 @@
                                         <template v-slot:tbody>
                                             <tr v-for="contrato in arrayContratos" :key="contrato.id">
                                                 <td>
-                                                    <button type="submit" @click="verDetalle(contrato,0)" class="btn btn-dark btn-sm" title="Seleccionar"><i class="fa fa-hand-o-right"></i></button>
+                                                    <button
+                                                        v-if="contrato.sit_fg == 0 || (contrato.sit_fg == 1 && contrato.file_fg != null)"
+                                                        type="button"
+                                                        @click="verDetalle(contrato,0)"
+                                                        class="btn btn-dark btn-sm" title="Seleccionar"><i class="fa fa-hand-o-right"></i></button>
                                                 </td>
                                                 <td v-text="contrato.id"></td>
                                                 <td class="td2" v-text="contrato.nombre + ' '+contrato.apellidos"></td>

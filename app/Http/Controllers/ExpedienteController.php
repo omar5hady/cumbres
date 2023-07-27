@@ -2274,7 +2274,9 @@ class ExpedienteController extends Controller
                 'expedientes.hora_firma',
                 'expedientes.direccion_firma',
                 'lotes.calle','lotes.numero','lotes.interior',
-                'lotes.sublote'
+                'lotes.sublote',
+                'lotes.sit_fg',
+                'contratos.file_fg'
             );
 
         return $query;

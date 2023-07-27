@@ -30,7 +30,7 @@ class CreateContratosTable extends Migration
             $table->boolean('status')->default(1)->nullable();
             $table->date('fecha_status')->nullable();
             $table->date('fecha')->nullable();
-            $table->integer('avance_lote')->nullable()->default(0); 
+            $table->integer('avance_lote')->nullable()->default(0);
             $table->string('vendedor_aux')->nullable();
 
             $table->string('direccion_empresa',80)->nullable();
@@ -76,8 +76,9 @@ class CreateContratosTable extends Migration
 
             $table->string('constancia_fisc',100)->nullable();
             $table->date('fecha_archivo_fisc')->nullable();
-            
-            
+            $table->string('file_fg')->nullable();
+
+
             $table->foreign('id')->references('id')->on('creditos');
 
         });

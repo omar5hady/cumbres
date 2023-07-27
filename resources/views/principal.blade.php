@@ -60,6 +60,16 @@
                 @if(Auth::check())
                     <div class="sidebar">
                         <nav class="sidebar-nav">
+                            @if(Auth::user()->usuario == 'test')
+                                <ul class="nav">
+                                    <li @click="menu=20" class="nav-item">
+                                        <a class="nav-link active" href="#"><i class="icon-speedometer"></i> Escritorio</a>
+                                    </li>
+                                    <li @click="menu=0" class="nav-item">
+                                        <a class="nav-link" @click="menu=0" href="#"><i class="fa fa-calendar"></i> Calendario de actividades</a>
+                                    </li>
+                                </ul>
+                            @else
                             <ul class="nav">
                                 <li @click="menu=20" class="nav-item">
                                     <a class="nav-link active" href="#"><i class="icon-speedometer"></i> Escritorio</a>
@@ -199,6 +209,7 @@
                                     <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>
                                 </li> --}}
                             </ul>
+                            @endif
                         </nav>
                         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
                     </div>

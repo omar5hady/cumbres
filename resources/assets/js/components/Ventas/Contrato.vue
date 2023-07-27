@@ -256,6 +256,7 @@
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                 <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
                                                 <a class="dropdown-item" @click="abrirModal('archivoFisc',contrato)">Archivo Fiscal</a>
+                                                <a class="dropdown-item" @click="abrirModal('sit_fg',contrato)">Doc Sit. Geologica</a>
                                                 <a v-if="contrato.foto_predial" title="Ver Predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contrato.foto_predial">Predial</a>
                                                 <a v-if="contrato.num_licencia" title="Ver licencia" class="dropdown-item"  v-text="'Licencia: '+contrato.num_licencia" v-bind:href="'/downloadLicencias/'+contrato.foto_lic"></a>
                                             </div>
@@ -1909,10 +1910,9 @@
                         <div class="col-md-9">
                         <select class="form-control" v-model="sel_lote">
                                     <option value=''> Seleccione </option>
-                                    <template v-for="lotes in arrayLotes">
-                                        <option v-if="lotes.sublote == null" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                        <option v-else :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' '+ lotes.sublote"></option>
-                                    </template>
+                                    <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id">
+                                        {{ lotes.num_lote }} {{ lotes.sublote ? lotes.sublote : `` }}
+                                    </option>
 
                             </select>
                         </div>
@@ -1946,6 +1946,7 @@
             @closeModal="cerrarModal()"
         >
             <template v-slot:body>
+                <template v-if="tipoAccion == 1">
                     <div class="form-group row">
                         <input type="file"
                             v-show="false"
@@ -2019,11 +2020,53 @@
                             </button>
                         </div>
                     </div>
+                </template>
+                <template v-if="tipoAccion == 2">
+                    <div class="form-group row">
+                        <input type="file"
+                            v-show="false"
+                            ref="fileFgSelector"
+                            @change="onSelectedFileFg"
+                            accept="image/png, image/jpeg, image/gif, application/pdf"
+                        >
+                        <div class="col-md-9" v-if="!archivo">
+                            <button
+                                @click="onSelectFileFg"
+                                class="btn btn-scarlet">
+                                Seleccionar Archivo
+                                <i class="fa fa-upload"></i>
+                            </button>
 
+                        </div>
+
+                        <div class="col-md-7" v-else>
+                            <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                            <button
+                                @click="onSelectFileFg"
+                                class="btn btn-info">
+                                Cambiar Archivo
+                                <i class="fa fa-upload"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-3" v-if="archivo">
+                            <button
+                                @click="saveFileFg"
+                                class="btn btn-scarlet">
+                                Guardar Archivo
+                                <i class="icon-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </template>
             </template>
             <template v-slot:buttons-footer>
-                <a v-if="archivoFisc != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFisc/'+archivoFisc">Archivo Fiscal</a>
-                <a v-if="archivoConstancia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileConstFisc/'+archivoConstancia">Constancia de Situación Fisc.</a>
+                <template v-if="tipoAccion == 1">
+                    <a v-if="archivoFisc != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFisc/'+archivoFisc">Archivo Fiscal</a>
+                    <a v-if="archivoConstancia != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileConstFisc/'+archivoConstancia">Constancia de Situación Fisc.</a>
+                </template>
+                <template v-if="tipoAccion == 2">
+                    <a v-if="file_fg != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFg/'+ file_fg">Ver archivo</a>
+                </template>
             </template>
         </ModalComponent>
         <!--Fin del modal-->
@@ -2130,6 +2173,7 @@
                 archivo:'',
                 archivo2:'',
                 archivoFisc:'',
+                file_fg:'',
                 archivoConstancia:'',
                 advertising : 0,
 
@@ -2311,6 +2355,7 @@
                 numero_pago:0,
                 fecha_contrato:'',
                 btn_actualizar: 0,
+                sit_fg: 0,
 
                 loteEnContrato: 0,
                 errorContrato : 0,
@@ -2534,12 +2579,43 @@
                 this.archivo = {}
                 this.archivo = event.target.files[0]
             },
+            onSelectFileFg(){
+                this.$refs.fileFgSelector.click()
+            },
+            onSelectedFileFg( event ){
+                this.archivo = {}
+                this.archivo = event.target.files[0]
+            },
             onSelectArchivo(){
                 this.$refs.archivoSelector.click()
             },
             onSelectedArchivo( event ){
                 this.archivo2 = {}
                 this.archivo2 = event.target.files[0]
+            },
+            saveFileFg(){
+                let formData = new FormData();
+
+                formData.append('archivo', this.archivo);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/contratos/formSubmitFileFg/'+me.id, formData)
+                .then(function (response) {
+
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo Fiscal guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.archivoFileFg = me.archivo.name
+                    me.archivo = undefined;
+                    me.listarContratos(me.pagination.current_page);
+
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
             saveArchivo(){
                 let formData = new FormData();
@@ -2566,7 +2642,6 @@
                 });
             },
             saveConstancia(){
-
                 let formData = new FormData();
 
                 formData.append('archivo', this.archivo);
@@ -3597,6 +3672,8 @@
                 this.datosFiscales.num_cuenta_fisc = data['num_cuenta_fisc'];
                 this.datosFiscales.clabe_fisc = data['clabe_fisc'];
                 this.datosFiscales.archivo_fisc = data['archivo_fisc'];
+                this.sit_fg = data['sit_fg'];
+                this.file_fg = data['file_fg'];
 
                 this.detenido = data['detenido'];
                 this.publicidad_id = data['publicidadId'];
@@ -3855,59 +3932,75 @@
                 alert("Email invalido!")
                 return (false)
             },
+            validateFG(){
+                if(this.sit_fg == 1){
+                    return this.file_fg != null;
+                }
+                return true;
+            },
             selectStatus(status){
                 let me = this;
-                if(status==3 || status==0 ){
-                    if(me.validateEmail(me.email, status)){
-                        this.abrirModal('statusFecha',this.arrayContratos.data);
+                if(me.validateFG()){
+                    if(status==3 || status==0 ){
+                        if(me.validateEmail(me.email, status)){
+                            this.abrirModal('statusFecha',this.arrayContratos.data);
+                        }
+                        else{
+                            this.status = 1;
+                            return
+                        }
+                    }else{
+                          swal({
+                    title: 'Esta seguro de cambiar el status de este contrato?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar!',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: false,
+                    reverseButtons: true
+                    }).then((result) => {
+                    if (result.value) {
+                        Swal.showLoading()
+                        axios.put('/contrato/status/fecha',{
+                            'id': this.id_contrato,
+                            'status': this.status,
+                            'fecha_status': this.fecha_status,
+                            'lote_id':this.lote_id
+                            }).then(function (response){
+                            me.listado=4;
+                            Swal.enableLoading()
+                            swal(
+                            'Cambio de status!',
+                            'Cambios realizados con éxito.',
+                            'success'
+                            )
+                        }).catch(function (error){
+                            console.log(error);
+                            Swal.enableLoading()
+                        });
+
+                    } else if (result.dismiss === swal.DismissReason.cancel){
+                        me.listarContratos(me.pagination.current_page)
+                        me.listado = 0;
                     }
-                    else{
-                        this.status = 1;
-                        return
+                    })
+
                     }
-                }else{
-                      swal({
-                title: 'Esta seguro de cambiar el status de este contrato?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
-                }).then((result) => {
-                if (result.value) {
-                Swal.showLoading()
-                axios.put('/contrato/status/fecha',{
-                                'id': this.id_contrato,
-                                'status': this.status,
-                                'fecha_status': this.fecha_status,
-                                'lote_id':this.lote_id
-                                }).then(function (response){
-                                me.listado=4;
-                                Swal.enableLoading()
-                                swal(
-                                'Cambio de status!',
-                                'Cambios realizados con éxito.',
-                                'success'
-                                )
-                            }).catch(function (error){
-                                console.log(error);
-                                Swal.enableLoading()
-                            });
-
-                            } else if (
-                    // Read more about handling dismissals
-                    result.dismiss === swal.DismissReason.cancel
-                ){
-
                 }
-                })
-
+                else{
+                    Swal({
+                    title: 'Lote con falla Geologica, es necesario cargar archivo.',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                    me.listado = 0;
+                    me.listarContratos(me.pagination.current_page)
                 }
+
             },
             registrarFechaStatus(){
                 let me = this;
@@ -4366,6 +4459,16 @@
                         this.archivo2 = undefined;
                         this.archivoFisc = data['archivo_fisc'];
                         this.archivoConstancia = data['constancia_fisc'];
+                        this.tipoAccion = 1;
+                        break;
+                    }
+                    case 'sit_fg':{
+                        this.modal = 2;
+                        this.tituloModal = 'Archivo situación geologica';
+                        this.id = data['id'];
+                        this.archivo = undefined;
+                        this.file_fg = data['file_fg'];
+                        this.tipoAccion = 2;
                         break;
                     }
                     case 'ecotecnologias':{
