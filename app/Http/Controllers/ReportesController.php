@@ -4003,8 +4003,8 @@ class ReportesController extends Controller
                     ->where('inst.tipo_credito','!=','Crédito Directo')
                     ->where('inst.elegido','=',1)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->whereBetween('expedientes.fecha_firma_esc', ['2020-01-01', '2023-06-30'])
-                    ->where('f.id','=',15)
+                    ->whereBetween('expedientes.fecha_firma_esc', [$request->fecha1, $request->fecha2])
+                    ->where('f.id','=',$request->proyecto)
                     ->get();
 
         $contado = Expediente::join('contratos as co','expedientes.id',         '=','co.id')
@@ -4025,102 +4025,111 @@ class ReportesController extends Controller
                     ->where('inst.tipo_credito','=','Crédito Directo')
                     ->where('inst.elegido','=',1)
                     ->where('expedientes.liquidado','=',1)
-                    ->whereBetween('expedientes.fecha_liquidacion', ['2020-01-01', '2023-06-30'])
-                    ->where('f.id','=',15)
+                    ->whereBetween('expedientes.fecha_liquidacion', [$request->fecha1, $request->fecha2])
+                    ->where('f.id','=',$request->proyecto)
                     ->get();
 
-        return Excel::create('Reporte Imperia', function($excel) use ($credito, $contado){
-            $excel->sheet('Individualizaciones', function($sheet) use ($credito, $contado){
+        if($request->excel == 0){
+            return [
+                'credito' => $credito,
+                'contado' => $contado
+            ];
+        }
+        else{
+            return Excel::create('Reporte', function($excel) use ($credito, $contado){
+                $excel->sheet('Individualizaciones', function($sheet) use ($credito, $contado){
 
-                $sheet->row(1, [
-                    'Nombre',
-                    'Fecha de cobranza/escrituras',
-                    'Dirección',
-                    'Modelo',
-                    'Sup. Const.',
-                    'Sup. Terreno',
-                    'Valor de escrituras',
-                    'Precio de venta',
-                    'Precio base',
-                    'Terreno extra',
-                    'Obra extra',
-                    'Sobreprecio',
-                    'Paquetes',
-                    'Descuentos'
-                ]);
+                    $sheet->row(1, [
+                        'Nombre',
+                        'Fecha de cobranza/escrituras',
+                        'Dirección',
+                        'Modelo',
+                        'Sup. Const.',
+                        'Sup. Terreno',
+                        'Valor de escrituras',
+                        'Precio de venta',
+                        'Precio base',
+                        'Terreno extra',
+                        'Obra extra',
+                        'Sobreprecio',
+                        'Paquetes',
+                        'Descuentos'
+                    ]);
 
-                $sheet->cells('A1:N1', function ($cells) {
-                    // Set font family
-                    $cells->setFontFamily('Calibri');
+                    $sheet->cells('A1:N1', function ($cells) {
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
 
-                    // Set font size
-                    $cells->setFontSize(12);
+                        // Set font size
+                        $cells->setFontSize(12);
 
-                    // Set font weight to bold
-                    $cells->setFontWeight('bold');
-                    $cells->setAlignment('center');
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $sheet->setColumnFormat(array(
+                        'G' => '$#,##0.00',
+                        'H' => '$#,##0.00',
+                        'I' => '$#,##0.00',
+                        'J' => '$#,##0.00',
+                        'K' => '$#,##0.00',
+                        'L' => '$#,##0.00',
+                        'M' => '$#,##0.00',
+                        'N' => '$#,##0.00',
+                    ));
+
+                    $renglon = 2;
+
+                    foreach($contado as $index => $venta) {
+                        $sheet->row($renglon, [
+                            $venta->nombre.' '.$venta->apellidos,
+                            $venta->fecha,
+                            $venta->calle.' Num.'.$venta->numero.' '.$venta->interior,
+                            $venta->modelo,
+                            $venta->construccion,
+                            $venta->terreno,
+                            $venta->valor_escrituras,
+                            $venta->precio_venta - $venta->desc_liquidacion,
+                            $venta->precio_base,
+                            $venta->precio_terreno_excedente,
+                            $venta->precio_obra_extra,
+                            $venta->sobreprecio,
+                            $venta->costo_paquete,
+                            $venta->descuento_cant + $venta->desc_liquidacion + $venta->descuento_promocion,
+                        ]);
+                        $renglon ++;
+                    }
+
+                    foreach($credito as $index => $venta) {
+                        $sheet->row($renglon, [
+                            $venta->nombre.' '.$venta->apellidos,
+                            $venta->fecha,
+                            $venta->calle.' Num.'.$venta->numero.' '.$venta->interior,
+                            $venta->modelo,
+                            $venta->construccion,
+                            $venta->terreno,
+                            $venta->valor_escrituras,
+                            $venta->precio_venta - $venta->desc_liquidacion,
+                            $venta->precio_base,
+                            $venta->precio_terreno_excedente,
+                            $venta->precio_obra_extra,
+                            $venta->sobreprecio,
+                            $venta->costo_paquete,
+                            $venta->descuento_cant + $venta->desc_liquidacion + $venta->descuento_promocion,
+                        ]);
+                        $renglon ++;
+                    }
+
+
+                    $num='A1:N' . $renglon;
+                    $sheet->setBorder($num, 'thin');
                 });
+            }
 
-                $sheet->setColumnFormat(array(
-                    'G' => '$#,##0.00',
-                    'H' => '$#,##0.00',
-                    'I' => '$#,##0.00',
-                    'J' => '$#,##0.00',
-                    'K' => '$#,##0.00',
-                    'L' => '$#,##0.00',
-                    'M' => '$#,##0.00',
-                    'N' => '$#,##0.00',
-                ));
-
-                $renglon = 2;
-
-                foreach($contado as $index => $venta) {
-                    $sheet->row($renglon, [
-                        $venta->nombre.' '.$venta->apellidos,
-                        $venta->fecha,
-                        $venta->calle.' Num.'.$venta->numero.' '.$venta->interior,
-                        $venta->modelo,
-                        $venta->construccion,
-                        $venta->terreno,
-                        $venta->valor_escrituras,
-                        $venta->precio_venta - $venta->desc_liquidacion,
-                        $venta->precio_base,
-                        $venta->precio_terreno_excedente,
-                        $venta->precio_obra_extra,
-                        $venta->sobreprecio,
-                        $venta->costo_paquete,
-                        $venta->descuento_cant + $venta->desc_liquidacion,
-                    ]);
-                    $renglon ++;
-                }
-
-                foreach($credito as $index => $venta) {
-                    $sheet->row($renglon, [
-                        $venta->nombre.' '.$venta->apellidos,
-                        $venta->fecha,
-                        $venta->calle.' Num.'.$venta->numero.' '.$venta->interior,
-                        $venta->modelo,
-                        $venta->construccion,
-                        $venta->terreno,
-                        $venta->valor_escrituras,
-                        $venta->precio_venta - $venta->desc_liquidacion,
-                        $venta->precio_base,
-                        $venta->precio_terreno_excedente,
-                        $venta->precio_obra_extra,
-                        $venta->sobreprecio,
-                        $venta->costo_paquete,
-                        $venta->descuento_cant + $venta->desc_liquidacion,
-                    ]);
-                    $renglon ++;
-                }
-
-
-                $num='A1:N' . $renglon;
-                $sheet->setBorder($num, 'thin');
-            });
+            )->download('xls');
         }
 
-        )->download('xls');
 
     }
 

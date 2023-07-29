@@ -176,6 +176,7 @@ Vue.component('reporte-detalles', require('./components/Reportes/ResumenDetalles
 Vue.component('reporte-leads', require('./components/Reportes/ReporteLeads.vue'));
 Vue.component('reporte-entregas', require('./components/Reportes/ReporteEntregas.vue'));
 Vue.component('reporte-prospectos', require('./components/Reportes/ReporteProspectos.vue'));
+Vue.component('reporte-individualizacion', require('./components/Reportes/ReporteIndividualizacion.vue'));
 
 
 Vue.component('avaluos', require('./components/Avaluos.vue'));
@@ -246,6 +247,7 @@ const app = new Vue({
         modelos : [],
         etapas: [],
         manzanas:[],
+        arrayGestores:[],
         lotes:[],
         empresas:[],
         arrayClaves: [],
@@ -275,6 +277,18 @@ const app = new Vue({
 
             window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
                 me.notifications.unshift(notification);
+            });
+        },
+        selectGestores(){
+            let me = this;
+            me.arrayGestores=[];
+            var url = '/select_gestores';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayGestores = respuesta.gestores;
+            })
+            .catch(function (error) {
+                console.log(error);
             });
         },
         getClavesLadas(){

@@ -12,7 +12,7 @@
 
                     </div>
                     <div class="card-body">
-                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
+                        <ul class="nav nav-tabs" id="myTab1" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active show" id="ingresar-tab" data-toggle="tab" href="#ingresar" role="tab" aria-controls="ingresar" aria-selected="true" v-text="'Por Ingresar (' + contadorIngresar +')'"></a>
                             </li>
@@ -32,7 +32,6 @@
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
-
                             <!-- Listado por ingresar -->
                             <div class="tab-pane fade active show" id="ingresar" role="tabpanel" aria-labelledby="ingresar-tab">
                                 <div class="form-group row">
@@ -49,31 +48,30 @@
                                     <div class="col-md-10">
                                         <div class="input-group">
                                             <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientos()">
+                                            <select class="form-control col-md-4" v-model="criterio">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
-
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
                                                 <option value="">Gestor</option>
-                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
 
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
 
                                         </div>
                                         <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                             <select class="form-control col-md-6"  v-model="b_etapa">
                                                 <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
                                         </div>
                                         <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
@@ -87,10 +85,11 @@
                                     <div class="col-md-10">
                                         <div class="input-group">
                                             <button type="submit"
-                                                @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)"
+                                                @click="listarAutorizados(1),
+                                                    listarLiquidacion(1),
+                                                    listarEnviados(1),
+                                                    listarIngresoExp(1),
+                                                    listarProgramacion(1)"
                                                 class="btn btn-primary"><i class="fa fa-search"></i> Buscar
                                             </button>
                                             <a :href="'/expediente/excelIngresarExp?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' +
@@ -100,123 +99,99 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
-                                                <th>Celular</th>
-                                                <th>Email</th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Asesor</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th># Lote</th>
-                                                <th>Modelo</th>
-                                                <th>Dirección</th>
-                                                <th>Avance obra</th>
-                                                <th>Firma Contrato</th>
-                                                <th>Resultado avaluo</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Ingresar expediente</th>
-                                                <th>Tipo de Crédito</th>
-                                                <th>Institución de Fin.</th>
-                                                <th>Valor de la vivienda</th>
-                                                <th>Crédito Puente</th>
-                                                <th>Fecha ultimo pagare</th>
-                                                <th>Saldo</th>
-                                                <th>Observaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id" v-bind:style="{ backgroundColor : !ingresar.detenido ? '#FFFFFF' : '#FF5F5F'}">
-                                                <td class="td2">
-                                                    <button v-if="ingresar.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)" title="Regresar expediente">
-                                                        <i class="fa fa-exclamation-triangle"></i>
-                                                    </button>
-                                                    <label v-else> DETENIDO </label>
-                                                </td>
-                                                <td class="td2">
-                                                    <button v-if="ingresar.detenido == 0" type="button" @click="detenerContrato(ingresar.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
-                                                        <i class="fa fa-hand-paper-o"></i>
-                                                    </button>
-                                                    <button v-if="ingresar.detenido == 1" type="button" @click="continuarContrato(ingresar.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
-                                                        <i class="fa fa-play"></i>
-                                                    </button>
-                                                </td>
+                                <TableComponent :cabecera="[
+                                        '','Detener','Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
+                                        '# Lote','Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo','Aviso preventivo',
+                                        'Ingresar expediente','Tipo de Crédito','Institución de Fin.','Valor de la vivienda','Crédito Puente',
+                                        'Fecha ultimo pagare','Saldo','Observaciones'
+                                    ]"
+                                >
+                                    <template v-slot:tbody>
+                                        <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id" v-bind:style="{ backgroundColor : !ingresar.detenido ? '#FFFFFF' : '#FF5F5F'}">
+                                            <td class="td2">
+                                                <button v-if="ingresar.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)" title="Regresar expediente">
+                                                    <i class="fa fa-exclamation-triangle"></i>
+                                                </button>
+                                                <label v-else> DETENIDO </label>
+                                            </td>
+                                            <td class="td2">
+                                                <button v-if="ingresar.detenido == 0" type="button" @click="detenerContrato(ingresar.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                    <i class="fa fa-hand-paper-o"></i>
+                                                </button>
+                                                <button v-if="ingresar.detenido == 1" type="button" @click="continuarContrato(ingresar.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                    <i class="fa fa-play"></i>
+                                                </button>
+                                            </td>
 
-                                                <td class="td2" >
-                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+ingresar.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+ingresar.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                </td>
-                                                <td class="td2" v-if="ingresar.email_institucional == null">
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email+ ';'+ingresar.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
+                                            <td class="td2" >
+                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+ingresar.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+ingresar.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                            </td>
+                                            <td class="td2" v-if="ingresar.email_institucional == null">
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2" v-else>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email+ ';'+ingresar.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
 
-                                                <td class="td2">
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a class="dropdown-item" v-if="ingresar.pdf != '' && ingresar.pdf != null"  v-bind:href="'/downloadAvaluo/'+ingresar.pdf">Avaluo</a>
-                                                        <a class="dropdown-item" @click="abrirPDF(ingresar)">Estado de cuenta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ ingresar.folio">Contrato de compra venta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ ingresar.folio">Carta de servicios</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ ingresar.folio">Servicios de telecomunición</a>
-                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ ingresar.folio">Reglamento de la etapa</a>
-                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(ingresar.folio)">Catalogo de especificaciones</a>
-                                                        <a v-if="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ ingresar.foto_predial">Predial</a>
-                                                        <a v-if="ingresar.num_licencia" class="dropdown-item"  v-text="'Licencia: '+ingresar.num_licencia" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic"></a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-bind:style="{ color : ingresar.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="ingresar.nombre_cliente"></td>
-                                                <td class="td2" v-text="ingresar.nombre_vendedor"></td>
-                                                <td class="td2" v-text="ingresar.proyecto"></td>
-                                                <td class="td2" v-text="ingresar.etapa"></td>
-                                                <td class="td2" v-text="ingresar.manzana"></td>
-                                                <td class="td2" >
-                                                    <a v-if="ingresar.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}}</a>
-                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}} {{ingresar.sublote}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a v-if ="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">Descargar predial</a>
-                                                        <a v-if ="ingresar.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic">Descargar licencia</a>
-                                                        <a v-if ="ingresar.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+ingresar.foto_acta">Descargar Acta de termino</a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-text="ingresar.modelo"></td>
-                                                <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
-                                                <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
-                                                <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
-                                                <td class="td2" v-text="ingresar.fecha_status"></td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-if="ingresar.pdf != '' && ingresar.pdf != null"  v-bind:href="'/downloadAvaluo/'+ingresar.pdf">Avaluo</a>
+                                                    <a class="dropdown-item" @click="abrirPDF(ingresar)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ ingresar.folio">Contrato de compra venta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ ingresar.folio">Carta de servicios</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ ingresar.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ ingresar.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(ingresar.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ ingresar.foto_predial">Predial</a>
+                                                    <a v-if="ingresar.num_licencia" class="dropdown-item"  v-text="'Licencia: '+ingresar.num_licencia" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic"></a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-bind:style="{ color : ingresar.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="ingresar.nombre_cliente"></td>
+                                            <td class="td2" v-text="ingresar.nombre_vendedor"></td>
+                                            <td class="td2" v-text="ingresar.proyecto"></td>
+                                            <td class="td2" v-text="ingresar.etapa"></td>
+                                            <td class="td2" v-text="ingresar.manzana"></td>
+                                            <td class="td2" >
+                                                <a v-if="ingresar.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}}</a>
+                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}} {{ingresar.sublote}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if ="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">Descargar predial</a>
+                                                    <a v-if ="ingresar.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic">Descargar licencia</a>
+                                                    <a v-if ="ingresar.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+ingresar.foto_acta">Descargar Acta de termino</a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-text="ingresar.modelo"></td>
+                                            <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
+                                            <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
+                                            <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
+                                            <td class="td2" v-text="ingresar.fecha_status"></td>
 
-                                                <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2">
-                                                    <span v-text="'$'+formatNumber(ingresar.resultado)"></span>
-                                                        <!-- <button type="button" @click="abrirModal('avaluo',ingresar)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                            <i class="fa fa-calendar-check-o"></i>
-                                                        </button> -->
-                                                </td>
-                                                <td v-if="ingresar.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                <span v-text="'$'+ $root.formatNumber(ingresar.resultado)"></span>
+                                                    <!-- <button type="button" @click="abrirModal('avaluo',ingresar)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <i class="fa fa-calendar-check-o"></i>
+                                                    </button> -->
+                                            </td>
+                                            <td v-if="ingresar.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && !ingresar.aviso_prev_venc && ingresar.aviso_prev!=null" class="td2" title="Doble click">
-                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(ingresar.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
-                                                </td>
+                                            <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && !ingresar.aviso_prev_venc && ingresar.aviso_prev!=null" class="td2" title="Doble click">
+                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(ingresar.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                            </td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-else-if="ingresar.aviso_prev!='0000-01-01' && ingresar.aviso_prev_venc" class="td2">
+                                            <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-else-if="ingresar.aviso_prev!='0000-01-01' && ingresar.aviso_prev_venc" class="td2">
 
-                                                    <span v-if = "ingresar.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "ingresar.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "ingresar.diferencia < 0 && ingresar.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "ingresar.diferencia < 0 && ingresar.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "ingresar.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "ingresar.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
+                                            </td>
 
                                             <td v-else-if="ingresar.aviso_prev=='0000-01-01' || ingresar.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
                                             <td>
@@ -227,19 +202,18 @@
                                             </td>
                                             <td class="td2" v-text="ingresar.tipo_credito"></td>
                                             <td class="td2" v-text="ingresar.institucion"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(ingresar.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(ingresar.precio_venta)"></td>
                                             <td class="td2" v-text="ingresar.credito_puente"></td>
                                             <td class="td2" v-text="this.moment(ingresar.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(ingresar.saldo)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(ingresar.saldo)"></td>
 
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                     @click="abrirModal3(ingresar.folio)">Ver Observaciones</button>
                                             </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                             </div>
 
                             <!-- Listado de autorizados -->
@@ -257,43 +231,32 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
-
                                             <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-5" v-model="criterio" @change="selectFraccionamientos()">
+                                            <select class="form-control col-md-5" v-model="criterio">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
-
-
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
                                                 <option value="">Gestor</option>
-                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
-
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
                                         </div>
                                         <div class="input-group">
-
                                             <select class="form-control col-md-6" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa">
                                                 <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
-
-
                                         </div>
                                         <div class="input-group">
-
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
                                         </div>
                                     </div>
                                 </div>
@@ -301,10 +264,11 @@
                                     <div class="col-md-10">
 
                                         <div class="input-group">
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)"
+                                            <button type="submit" @click="listarAutorizados(1),
+                                                    listarLiquidacion(1),
+                                                    listarIngresoExp(1),
+                                                    listarEnviados(1),
+                                                    listarProgramacion(1)"
                                                 class="btn btn-primary"><i class="fa fa-search"></i> Buscar
                                             </button>
                                             <a :href="'/expediente/excelAutorizados?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' +
@@ -316,177 +280,154 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
-                                                <th>Celular</th>
-                                                <th>Email</th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Asesor</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th># Lote</th>
-                                                <th>Modelo</th>
-                                                <th>Dirección</th>
-                                                <th>Avance obra</th>
-                                                <th>Firma Contrato</th>
-                                                <th>Resultado avaluo</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Tipo de Crédito</th>
-                                                <th>Institución de Fin.</th>
-                                                <th>Monto autorizado</th>
-                                                <th>Fecha vigencia</th>
-                                                <th>Valor de la vivienda</th>
-                                                <th>Valor escriturar</th>
-                                                <th>Crédito Puente</th>
-                                                <th>Fecha ultimo pagare</th>
-                                                <th>Saldo</th>
-                                                <th>Inscripción Infonavit</th>
-                                                <th>Observaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id" v-bind:style="{ backgroundColor : !preautorizados.detenido ? '#FFFFFF' : '#FF5F5F'}">
+                                <!-- A partir del 1ero de diciembre del 2022 se solicito que se hablara tema tecnico con los clientes de las privadas Villa del Rey y Alcazar -->
+                                <!-- A partir del 1ero de marzo del 2023 se solicito que se hablara tema tecnico con los clientes de privada Torino, Mzn 16 del Lote 1 al 19 y
+                                            Mzn 12 de lote y al 18 -->
+                                <!-- Lo anterior aplica para ventas o firmas de escritura a partir de la fecha -->
+                                <TableComponent :cabecera="[
+                                        '','Detener','Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
+                                        '# Lote','Modelo','Dirección','Avance obra','Firma Contrato',
+                                        'Resultado avaluo','Aviso preventivo','Tipo de Crédito','Institución de Fin.',
+                                        'Monto autorizado','Fecha vigencia','Valor de la vivienda','Valor escriturar','Crédito Puente',
+                                        'Fecha ultimo pagare','Saldo','Inscripción Infonavit','Observaciones'
+                                    ]"
+                                >
+                                    <template v-slot:tbody>
+                                        <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id" v-bind:style="{ backgroundColor : !preautorizados.detenido ? '#FFFFFF' : '#FF5F5F'}">
+                                            <td class="td2">
+                                                <button v-if="preautorizados.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(preautorizados.folio)">
+                                                    <i class="fa fa-exclamation-triangle"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2">
+                                                <button v-if="preautorizados.detenido == 0" type="button" @click="detenerContrato(preautorizados.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                    <i class="fa fa-hand-paper-o"></i>
+                                                </button>
+                                                <button v-if="preautorizados.detenido == 1" type="button" @click="continuarContrato(preautorizados.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                    <i class="fa fa-play"></i>
+                                                </button>
+                                            </td>
+
+                                            <td class="td2" >
+                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+preautorizados.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+preautorizados.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                            </td>
+                                            <td class="td2" v-if="preautorizados.email_institucional == null">
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2" v-else>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email+ ';'+preautorizados.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-if="preautorizados.pdf != '' && preautorizados.pdf != null"  v-bind:href="'/downloadAvaluo/'+preautorizados.pdf">Avaluo</a>
+                                                    <a class="dropdown-item" @click="abrirPDF(preautorizados)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ preautorizados.folio">Contrato de compra venta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ preautorizados.folio">Carta de servicios</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ preautorizados.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ preautorizados.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(preautorizados.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ preautorizados.foto_predial">Predial</a>
+                                                    <a v-if="preautorizados.num_licencia" class="dropdown-item"  v-text="'Licencia: '+preautorizados.num_licencia" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic"></a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-bind:style="{ color : preautorizados.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="preautorizados.nombre_cliente"></td>
+                                            <td class="td2" v-text="preautorizados.nombre_vendedor"></td>
+                                            <td class="td2" v-text="preautorizados.proyecto"></td>
+                                            <td class="td2" v-text="preautorizados.etapa"></td>
+                                            <td class="td2" v-text="preautorizados.manzana"></td>
+                                            <td class="td2" >
+                                                <a v-if="preautorizados.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}}</a>
+                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}} {{preautorizados.sublote}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if ="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">Descargar predial</a>
+                                                    <a v-if ="preautorizados.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic">Descargar licencia</a>
+                                                    <a v-if ="preautorizados.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+preautorizados.foto_acta">Descargar Acta de termino</a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-text="preautorizados.modelo"></td>
+                                            <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
+                                            <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
+                                            <td class="td2" v-text="preautorizados.fecha_status"></td>
+
+                                            <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                <span v-text="'$'+ $root.formatNumber(preautorizados.resultado)"></span>
+                                                    <!-- <button type="button" @click="abrirModal('avaluo',preautorizados)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <i class="fa fa-calendar-check-o"></i>
+                                                    </button> -->
+                                            </td>
+                                            <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+
+                                            <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc && preautorizados.aviso_prev!=null" class="td2" >
+                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                            </td>
+
+                                            <td  @dblclick="abrirModal('fecha_recibido',preautorizados)" v-else-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
+
+                                                <span v-if = "preautorizados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                <span v-if = "preautorizados.diferencia < 0 && preautorizados.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                <span v-if = "preautorizados.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                            </td>
+
+                                            <td v-else-if="preautorizados.aviso_prev=='0000-01-01' || preautorizados.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
+                                            <td class="td2" v-text="preautorizados.tipo_credito"></td>
+                                            <td class="td2" v-text="preautorizados.institucion"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.credito_solic)"></td>
+
+                                            <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
+
+                                                <span v-if="!preautorizados.fecha_vigencia"></span>
+                                                <span v-else-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                <span v-else-if = "preautorizados.vigencia <= 0 && preautorizados.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                <span v-else-if = "preautorizados.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                            </td>
+                                            <td class="td2" v-if="band==1">
+                                                <input type="date"  @keyup.esc="band=0" v-on:change="actualizarVigencia(preautorizados.folio,$event.target.value)" :id="preautorizados.folio" :value="preautorizados.fecha_vigencia" class="form-control Fields" >
+                                            </td>
+
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.valor_escrituras)"></td>
+                                            <td class="td2" v-text="preautorizados.credito_puente"></td>
+                                            <td class="td2" v-text="this.moment(preautorizados.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.saldo)"></td>
+
+                                            <template v-if="preautorizados.fecha_infonavit">
+                                                <td v-if="preautorizados.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(preautorizados.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-if="preautorizados.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            </template>
+                                            <template v-else>
                                                 <td class="td2">
-                                                    <button v-if="preautorizados.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(preautorizados.folio)">
-                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                    <button v-if="preautorizados.detenido == 0" type="button" @click="abrirModal('autorizado',preautorizados)" class="btn btn-success btn-sm" title="Inscribir Infonavit">
+                                                        <i class="fa fa-calendar-check-o"></i>
                                                     </button>
-                                                </td>
-                                                <td class="td2">
-                                                    <button v-if="preautorizados.detenido == 0" type="button" @click="detenerContrato(preautorizados.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
-                                                        <i class="fa fa-hand-paper-o"></i>
+                                                    <button v-if="preautorizados.detenido == 0" type="button" @click="noAplicaInfonavit(preautorizados.folio)" class="btn btn-danger btn-sm" title="No aplica">
+                                                        <i class="fa fa-times-circle"></i>
                                                     </button>
-                                                    <button v-if="preautorizados.detenido == 1" type="button" @click="continuarContrato(preautorizados.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
-                                                        <i class="fa fa-play"></i>
-                                                    </button>
+                                                    <label v-else> DETENIDO </label>
                                                 </td>
+                                            </template>
 
-                                                <td class="td2" >
-                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+preautorizados.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+preautorizados.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                </td>
-                                                <td class="td2" v-if="preautorizados.email_institucional == null">
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email+ ';'+preautorizados.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-
-                                                <td class="td2">
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a class="dropdown-item" v-if="preautorizados.pdf != '' && preautorizados.pdf != null"  v-bind:href="'/downloadAvaluo/'+preautorizados.pdf">Avaluo</a>
-                                                        <a class="dropdown-item" @click="abrirPDF(preautorizados)">Estado de cuenta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ preautorizados.folio">Contrato de compra venta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ preautorizados.folio">Carta de servicios</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ preautorizados.folio">Servicios de telecomunición</a>
-                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ preautorizados.folio">Reglamento de la etapa</a>
-                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(preautorizados.folio)">Catalogo de especificaciones</a>
-                                                        <a v-if="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ preautorizados.foto_predial">Predial</a>
-                                                        <a v-if="preautorizados.num_licencia" class="dropdown-item"  v-text="'Licencia: '+preautorizados.num_licencia" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic"></a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-bind:style="{ color : preautorizados.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="preautorizados.nombre_cliente"></td>
-                                                <td class="td2" v-text="preautorizados.nombre_vendedor"></td>
-                                                <td class="td2" v-text="preautorizados.proyecto"></td>
-                                                <td class="td2" v-text="preautorizados.etapa"></td>
-                                                <td class="td2" v-text="preautorizados.manzana"></td>
-                                                <td class="td2" >
-                                                    <a v-if="preautorizados.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}}</a>
-                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}} {{preautorizados.sublote}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a v-if ="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">Descargar predial</a>
-                                                        <a v-if ="preautorizados.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic">Descargar licencia</a>
-                                                        <a v-if ="preautorizados.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+preautorizados.foto_acta">Descargar Acta de termino</a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-text="preautorizados.modelo"></td>
-                                                <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
-                                                <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
-                                                <td class="td2" v-text="preautorizados.fecha_status"></td>
-
-                                                <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2">
-                                                    <span v-text="'$'+formatNumber(preautorizados.resultado)"></span>
-                                                        <!-- <button type="button" @click="abrirModal('avaluo',preautorizados)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                            <i class="fa fa-calendar-check-o"></i>
-                                                        </button> -->
-                                                </td>
-                                                <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-
-                                                <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc && preautorizados.aviso_prev!=null" class="td2" >
-                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
-                                                </td>
-
-                                                <td  @dblclick="abrirModal('fecha_recibido',preautorizados)" v-else-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
-
-                                                    <span v-if = "preautorizados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                    <span v-if = "preautorizados.diferencia < 0 && preautorizados.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                    <span v-if = "preautorizados.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                </td>
-
-                                                <td v-else-if="preautorizados.aviso_prev=='0000-01-01' || preautorizados.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
-                                                <td class="td2" v-text="preautorizados.tipo_credito"></td>
-                                                <td class="td2" v-text="preautorizados.institucion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(preautorizados.credito_solic)"></td>
-
-                                                <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
-
-                                                    <span v-if="!preautorizados.fecha_vigencia"></span>
-                                                    <span v-else-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                    <span v-else-if = "preautorizados.vigencia <= 0 && preautorizados.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                    <span v-else-if = "preautorizados.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                </td>
-                                                <td class="td2" v-if="band==1">
-                                                    <input type="date"  @keyup.esc="band=0" v-on:change="actualizarVigencia(preautorizados.folio,$event.target.value)" :id="preautorizados.folio" :value="preautorizados.fecha_vigencia" class="form-control Fields" >
-                                                </td>
-
-                                                <td class="td2" v-text="'$'+formatNumber(preautorizados.precio_venta)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(preautorizados.valor_escrituras)"></td>
-                                                <td class="td2" v-text="preautorizados.credito_puente"></td>
-                                                <td class="td2" v-text="this.moment(preautorizados.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(preautorizados.saldo)"></td>
-
-                                                <template v-if="preautorizados.fecha_infonavit">
-                                                    <td v-if="preautorizados.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(preautorizados.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td v-if="preautorizados.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                                </template>
-                                                <template v-else>
-                                                    <td class="td2">
-                                                        <button v-if="preautorizados.detenido == 0" type="button" @click="abrirModal('autorizado',preautorizados)" class="btn btn-success btn-sm" title="Inscribir Infonavit">
-                                                            <i class="fa fa-calendar-check-o"></i>
-                                                        </button>
-                                                        <button v-if="preautorizados.detenido == 0" type="button" @click="noAplicaInfonavit(preautorizados.folio)" class="btn btn-danger btn-sm" title="No aplica">
-                                                            <i class="fa fa-times-circle"></i>
-                                                        </button>
-                                                        <label v-else> DETENIDO </label>
-                                                    </td>
-                                                </template>
-
-                                                <td class="td2">
-                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                        @click="abrirModal3(preautorizados.folio)">Ver Observaciones</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                                    @click="abrirModal3(preautorizados.folio)">Ver Observaciones</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                             </div>
 
                             <!-- Listado de liquidacion -->
@@ -505,50 +446,42 @@
                                     <div class="col-md-10">
                                         <div class="input-group">
                                             <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-5" v-model="criterio" @change="selectFraccionamientos()">
+                                            <select class="form-control col-md-5" v-model="criterio">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
-
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
                                                 <option value="">Gestor</option>
-                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
-
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
                                         </div>
                                         <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
-
                                             <select class="form-control col-md-6" v-model="b_etapa">
                                                 <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
-
-
-
                                         </div>
                                         <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
-
                                             <input type="text" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)"
+                                            <button type="submit" @click="listarAutorizados(1),
+                                                    listarLiquidacion(1),
+                                                    listarIngresoExp(1),
+                                                    listarEnviados(1),
+                                                    listarProgramacion(1)"
                                                 class="btn btn-primary"><i class="fa fa-search"></i> Buscar
                                             </button>
                                             <a :href="'/expediente/excelLiquidacion?buscar=' + buscar + '&b_etapa=' + b_etapa +
@@ -559,182 +492,147 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
-                                                <th>Celular</th>
-                                                <th>Email</th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Asesor</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th># Lote</th>
-                                                <th>Modelo</th>
-                                                <th>Dirección</th>
-                                                <th>Avance obra</th>
-                                                <th>Firma Contrato</th>
-                                                <th>Resultado avaluo</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Tipo de Crédito</th>
-                                                <th>Institución de Fin.</th>
-                                                <th>Monto autorizado</th>
-                                                <th>Fecha vigencia</th>
-                                                <th>Valor de la vivienda</th>
-                                                <th>Valor escriturar</th>
-                                                <th>Crédito Puente</th>
-                                                <th>Fecha ultimo pagare</th>
-                                                <th>Saldo</th>
-                                                <th>Inscripción Infonavit</th>
-                                                <th>Liquidación</th>
-                                                <th>Entrega de vivienda</th>
-                                                <th>Observaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id" v-bind:style="{ backgroundColor : !liquidacion.detenido ? '#FFFFFF' : '#FF5F5F'}">
-                                                <td class="td2">
-                                                    <button v-if="!liquidacion.fecha_liquidacion && liquidacion.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(liquidacion.folio)">
-                                                        <i class="fa fa-exclamation-triangle"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="td2">
-                                                    <button v-if="liquidacion.detenido == 0" type="button" @click="detenerContrato(liquidacion.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
-                                                        <i class="fa fa-hand-paper-o"></i>
-                                                    </button>
-                                                    <button v-if="liquidacion.detenido == 1" type="button" @click="continuarContrato(liquidacion.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
-                                                        <i class="fa fa-play"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="td2" >
-                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+liquidacion.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+liquidacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                </td>
-                                                <td class="td2" v-if="liquidacion.email_institucional == null">
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+liquidacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+liquidacion.email+ ';'+liquidacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-                                                <td class="td2">
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a class="dropdown-item" v-if="liquidacion.pdf != '' && liquidacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+liquidacion.pdf">Avaluo</a>
-                                                        <a class="dropdown-item" @click="abrirPDF(liquidacion)">Estado de cuenta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ liquidacion.folio">Contrato de compra venta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ liquidacion.folio">Carta de servicios</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ liquidacion.folio">Servicios de telecomunición</a>
-                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ liquidacion.folio">Reglamento de la etapa</a>
-                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(liquidacion.folio)">Catalogo de especificaciones</a>
-                                                        <a v-if="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ liquidacion.foto_predial">Predial</a>
-                                                        <a v-if="liquidacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+liquidacion.num_licencia" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic"></a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-bind:style="{ color : liquidacion.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="liquidacion.nombre_cliente"></td>
-                                                <td class="td2" v-text="liquidacion.nombre_vendedor"></td>
-                                                <td class="td2" v-text="liquidacion.proyecto"></td>
-                                                <td class="td2" v-text="liquidacion.etapa"></td>
-                                                <td class="td2" v-text="liquidacion.manzana"></td>
-                                                <td class="td2" >
-                                                    <a v-if="liquidacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}}</a>
-                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}} {{liquidacion.sublote}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a v-if ="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+liquidacion.foto_predial">Descargar predial</a>
-                                                        <a v-if ="liquidacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic">Descargar licencia</a>
-                                                        <a v-if ="liquidacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+liquidacion.foto_acta">Descargar Acta de termino</a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-text="liquidacion.modelo"></td>
-                                                <td class="td2" v-text="liquidacion.calle + ' '+ liquidacion.numero + ' '+ liquidacion.interior"></td>
-                                                <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
-                                                <td class="td2" v-text="liquidacion.fecha_status"></td>
+                                <TableComponent :cabecera="['','Detener','Celular',
+                                        'Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana','# Lote',
+                                        'Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo','Aviso preventivo','Tipo de Crédito','Institución de Fin.',
+                                        'Monto autorizado','Fecha vigencia','Valor de la vivienda','Valor escriturar','Crédito Puente','Fecha ultimo pagare','Saldo','Inscripción Infonavit','Liquidación','Entrega de vivienda','Observaciones'
+                                    ]"
+                                >
+                                    <template v-slot:tbody>
+                                        <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id" v-bind:style="{ backgroundColor : !liquidacion.detenido ? '#FFFFFF' : '#FF5F5F'}">
+                                            <td class="td2">
+                                                <button v-if="!liquidacion.fecha_liquidacion && liquidacion.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(liquidacion.folio)">
+                                                    <i class="fa fa-exclamation-triangle"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2">
+                                                <button v-if="liquidacion.detenido == 0" type="button" @click="detenerContrato(liquidacion.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                    <i class="fa fa-hand-paper-o"></i>
+                                                </button>
+                                                <button v-if="liquidacion.detenido == 1" type="button" @click="continuarContrato(liquidacion.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                    <i class="fa fa-play"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2" >
+                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+liquidacion.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+liquidacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                            </td>
+                                            <td class="td2" v-if="liquidacion.email_institucional == null">
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+liquidacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2" v-else>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+liquidacion.email+ ';'+liquidacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-if="liquidacion.pdf != '' && liquidacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+liquidacion.pdf">Avaluo</a>
+                                                    <a class="dropdown-item" @click="abrirPDF(liquidacion)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ liquidacion.folio">Contrato de compra venta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ liquidacion.folio">Carta de servicios</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ liquidacion.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ liquidacion.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(liquidacion.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ liquidacion.foto_predial">Predial</a>
+                                                    <a v-if="liquidacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+liquidacion.num_licencia" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic"></a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-bind:style="{ color : liquidacion.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="liquidacion.nombre_cliente"></td>
+                                            <td class="td2" v-text="liquidacion.nombre_vendedor"></td>
+                                            <td class="td2" v-text="liquidacion.proyecto"></td>
+                                            <td class="td2" v-text="liquidacion.etapa"></td>
+                                            <td class="td2" v-text="liquidacion.manzana"></td>
+                                            <td class="td2" >
+                                                <a v-if="liquidacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}}</a>
+                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}} {{liquidacion.sublote}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if ="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+liquidacion.foto_predial">Descargar predial</a>
+                                                    <a v-if ="liquidacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic">Descargar licencia</a>
+                                                    <a v-if ="liquidacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+liquidacion.foto_acta">Descargar Acta de termino</a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-text="liquidacion.modelo"></td>
+                                            <td class="td2" v-text="liquidacion.calle + ' '+ liquidacion.numero + ' '+ liquidacion.interior"></td>
+                                            <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
+                                            <td class="td2" v-text="liquidacion.fecha_status"></td>
 
-                                                <td v-if="liquidacion.avaluo_preventivo!='0000-01-01' && liquidacion.avaluo_preventivo!=null" class="td2">
-                                                    <span v-text="'$'+formatNumber(liquidacion.resultado)"></span>
-                                                </td>
-                                                <td v-else class="td2" v-text="'No aplica'"></td>
+                                            <td v-if="liquidacion.avaluo_preventivo!='0000-01-01' && liquidacion.avaluo_preventivo!=null" class="td2">
+                                                <span v-text="'$'+ $root.formatNumber(liquidacion.resultado)"></span>
+                                            </td>
+                                            <td v-else class="td2" v-text="'No aplica'"></td>
 
-                                                <td v-if="liquidacion.aviso_prev=='0000-01-01' || liquidacion.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
+                                            <td v-if="liquidacion.aviso_prev=='0000-01-01' || liquidacion.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" title="Doble click">
-                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
-                                                </td>
+                                            <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" title="Doble click">
+                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                            </td>
 
 
-                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
+                                            <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
 
-                                                    <span v-if = "liquidacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "liquidacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "liquidacion.diferencia < 0 && liquidacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "liquidacion.diferencia < 0 && liquidacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "liquidacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "liquidacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
+                                            </td>
 
-                                                <td class="td2" v-text="liquidacion.tipo_credito"></td>
-                                                <td class="td2" v-text="liquidacion.institucion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(liquidacion.credito_solic)"></td>
+                                            <td class="td2" v-text="liquidacion.tipo_credito"></td>
+                                            <td class="td2" v-text="liquidacion.institucion"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(liquidacion.credito_solic)"></td>
 
-                                                <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
-                                                    <span v-if="!liquidacion.fecha_vigencia"></span>
-                                                    <span v-else-if = "liquidacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                            <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
+                                                <span v-if="!liquidacion.fecha_vigencia"></span>
+                                                <span v-else-if = "liquidacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-else-if = "liquidacion.vigencia <= 0 && liquidacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-else-if = "liquidacion.vigencia <= 0 && liquidacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-else-if = "liquidacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-else-if = "liquidacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
-                                                <td class="td2" v-if="band==1">
-                                                    <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(liquidacion.folio,$event.target.value)" :id="liquidacion.folio" :value="liquidacion.fecha_vigencia" class="form-control Fields" >
-                                                </td>
+                                            </td>
+                                            <td class="td2" v-if="band==1">
+                                                <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(liquidacion.folio,$event.target.value)" :id="liquidacion.folio" :value="liquidacion.fecha_vigencia" class="form-control Fields" >
+                                            </td>
 
-                                                <td class="td2" v-text="'$'+formatNumber(liquidacion.precio_venta)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(liquidacion.valor_escrituras)"></td>
-                                                <td class="td2" v-text="liquidacion.credito_puente"></td>
-                                                <td class="td2" v-text="this.moment(liquidacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(liquidacion.saldo)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(liquidacion.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(liquidacion.valor_escrituras)"></td>
+                                            <td class="td2" v-text="liquidacion.credito_puente"></td>
+                                            <td class="td2" v-text="this.moment(liquidacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(liquidacion.saldo)"></td>
 
 
-                                               <template v-if="liquidacion.fecha_infonavit">
-                                                    <td v-if="liquidacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(liquidacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td v-if="liquidacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                                </template>
-                                                <td class="td2">
-                                                    <button v-if="!liquidacion.fecha_liquidacion && liquidacion.detenido == 0" title="Generar liquidación" type="button" class="btn btn-danger pull-right"
-                                                        @click="abrirModal('liquidacion',liquidacion)">Generar</button>
-                                                    <button v-else-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion && liquidacion.detenido == 0" title="Intereses" type="button" class="btn btn-danger pull-right"
-                                                        @click="abrirModal('intereses',liquidacion)">Generar intereses</button>
-                                                    <label v-else> DETENIDO </label>
-
-                                                </td>
-                                                <td class="td2">
-                                                    <button v-if="liquidacion.postventa == 0 && liquidacion.detenido == 0" title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
-                                                        @click="abrirModal('solic_entrega',liquidacion)">Solicitar
-                                                    </button>
-                                                    <label v-else-if="liquidacion.postventa == 0 && liquidacion.detenido == 1">DETENIDO</label>
-                                                    <label v-else></label>
-                                                </td>
-                                                <td class="td2">
-                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                        @click="abrirModal3(liquidacion.folio)">Ver Observaciones</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <nav>
-
-                                </nav>
+                                            <template v-if="liquidacion.fecha_infonavit">
+                                                <td v-if="liquidacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(liquidacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-if="liquidacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            </template>
+                                            <td class="td2">
+                                                <button v-if="!liquidacion.fecha_liquidacion && liquidacion.detenido == 0" title="Generar liquidación" type="button" class="btn btn-danger pull-right"
+                                                    @click="abrirModal('liquidacion',liquidacion)">Generar</button>
+                                                <button v-else-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion && liquidacion.detenido == 0" title="Intereses" type="button" class="btn btn-danger pull-right"
+                                                    @click="abrirModal('intereses',liquidacion)">Generar intereses</button>
+                                                <label v-else> DETENIDO </label>
+                                            </td>
+                                            <td class="td2">
+                                                <button v-if="liquidacion.postventa == 0 && liquidacion.detenido == 0" title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
+                                                    @click="abrirModal('solic_entrega',liquidacion)">Solicitar
+                                                </button>
+                                                <label v-else-if="liquidacion.postventa == 0 && liquidacion.detenido == 1">DETENIDO</label>
+                                                <label v-else></label>
+                                            </td>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                                    @click="abrirModal3(liquidacion.folio)">Ver Observaciones</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                             </div>
 
                             <!-- Listado de programacion de firma -->
@@ -753,30 +651,26 @@
                                     <div class="col-md-10">
                                         <div class="input-group">
                                             <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-5" v-model="criterio" @change="selectFraccionamientos()">
+                                            <select class="form-control col-md-5" v-model="criterio">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
-
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
                                                 <option value="">Gestor</option>
-                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
-
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
                                         </div>
                                         <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                             <select class="form-control col-md-6"  v-model="b_etapa">
                                                 <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
                                         </div>
                                         <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
@@ -788,10 +682,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)"
+                                            <button type="submit" @click="listarAutorizados(1),
+                                                    listarLiquidacion(1),
+                                                    listarIngresoExp(1),
+                                                    listarEnviados(1),
+                                                    listarProgramacion(1)"
                                                 class="btn btn-primary"><i class="fa fa-search"></i> Buscar
                                             </button>
                                             <a :href="'/expediente/excelProgramacion?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana +
@@ -801,180 +696,147 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Celular</th>
-                                                <th>Email</th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Asesor</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th># Lote</th>
-                                                <th>Modelo</th>
-                                                <th>Dirección</th>
-                                                <th>Avance obra</th>
-                                                <th>Firma Contrato</th>
-                                                <th>Resultado avaluo</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Ingreso expediente</th>
-                                                <th>Tipo de Crédito</th>
-                                                <th>Institución de Fin.</th>
-                                                <th>Monto autorizado</th>
-                                                <th>Fecha vigencia</th>
-                                                <th>Valor de la vivienda</th>
-                                                <th>Valor escriturar</th>
-                                                <th>Inscripción Infonavit</th>
-                                                <th>Liquidación</th>
-                                                <th>Firma de Escrituras</th>
-                                                <th>Fecha ultimo pagare</th>
-                                                <th>Saldo</th>
-                                                <th>Entrega de vivienda</th>
-                                                <th>Proceso concluido</th>
-                                                <th>Observaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="programacion in arrayProgramacion" :key="programacion.id">
-                                                <td class="td2" >
-                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+programacion.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+programacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                </td>
-                                                <td class="td2" v-if="programacion.email_institucional == null">
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email+ ';'+programacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
+                                <TableComponent :cabecera="[
+                                    'Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
+                                    '# Lote','Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo',
+                                    'Aviso preventivo','Ingreso expediente','Tipo de Crédito','Institución de Fin.',
+                                    'Monto autorizado','Fecha vigencia','Valor de la vivienda','Valor escriturar',
+                                    'Inscripción Infonavit','Liquidación','Firma de Escrituras','Fecha ultimo pagare',
+                                    'Saldo','Entrega de vivienda','Proceso concluido','Observaciones',
+                                ]">
+                                    <template v-slot:tbody>
+                                        <tr v-for="programacion in arrayProgramacion" :key="programacion.id">
+                                            <td class="td2" >
+                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+programacion.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+programacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                            </td>
+                                            <td class="td2" v-if="programacion.email_institucional == null">
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2" v-else>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email+ ';'+programacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
 
-                                                <td class="td2">
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
-                                                        <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
-                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
-                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
-                                                        <a v-if="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ programacion.foto_predial">Predial</a>
-                                                        <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-bind:style="{ color : programacion.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="programacion.nombre_cliente"></td>
-                                                <td class="td2" v-text="programacion.nombre_vendedor"></td>
-                                                <td class="td2" v-text="programacion.proyecto"></td>
-                                                <td class="td2" v-text="programacion.etapa"></td>
-                                                <td class="td2" v-text="programacion.manzana"></td>
-                                                <td class="td2" >
-                                                    <a v-if="programacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
-                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}} {{programacion.sublote}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
-                                                        <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
-                                                        <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-text="programacion.modelo"></td>
-                                                <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
-                                                <td class="td2" v-text="programacion.avance_lote + '%'"></td>
-                                                <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
+                                                    <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ programacion.foto_predial">Predial</a>
+                                                    <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-bind:style="{ color : programacion.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="programacion.nombre_cliente"></td>
+                                            <td class="td2" v-text="programacion.nombre_vendedor"></td>
+                                            <td class="td2" v-text="programacion.proyecto"></td>
+                                            <td class="td2" v-text="programacion.etapa"></td>
+                                            <td class="td2" v-text="programacion.manzana"></td>
+                                            <td class="td2" >
+                                                <a v-if="programacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}} {{programacion.sublote}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
+                                                    <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
+                                                    <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-text="programacion.modelo"></td>
+                                            <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
+                                            <td class="td2" v-text="programacion.avance_lote + '%'"></td>
+                                            <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
 
-                                                <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
-                                                    <span v-text="'$'+formatNumber(programacion.resultado)"></span>
-                                                        <!-- <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                            <i class="fa fa-calendar-check-o"></i>
-                                                        </button> -->
-                                                </td>
-                                                <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                <span v-text="'$'+ $root.formatNumber(programacion.resultado)"></span>
+                                                    <!-- <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <i class="fa fa-calendar-check-o"></i>
+                                                    </button> -->
+                                            </td>
+                                            <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td v-if="programacion.aviso_prev=='0000-01-01' || programacion.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
-                                                <td @dblclick="abrirModal('fecha_recibido',programacion)" v-else-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" title="Doble click">
-                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
-                                                </td>
+                                            <td v-if="programacion.aviso_prev=='0000-01-01' || programacion.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
+                                            <td @dblclick="abrirModal('fecha_recibido',programacion)" v-else-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" title="Doble click">
+                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                            </td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-else-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
+                                            <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-else-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
 
-                                                    <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.diferencia < 0 && programacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "programacion.diferencia < 0 && programacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "programacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
+                                            </td>
 
-                                                <td class="td2" v-text="this.moment(programacion.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-text="programacion.tipo_credito"></td>
-                                                <td class="td2" v-text="programacion.institucion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.credito_solic)"></td>
+                                            <td class="td2" v-text="this.moment(programacion.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="programacion.tipo_credito"></td>
+                                            <td class="td2" v-text="programacion.institucion"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.credito_solic)"></td>
 
-                                                <td class="td2" v-if="band==0" @dblclick="band=1">
+                                            <td class="td2" v-if="band==0" @dblclick="band=1">
 
-                                                    <span v-if="!programacion.fecha_vigencia"></span>
-                                                    <span v-else-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if="!programacion.fecha_vigencia"></span>
+                                                <span v-else-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-else-if = "programacion.vigencia <= 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-else-if = "programacion.vigencia <= 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-else-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-else-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
-                                                <td class="td2" v-if="band==1">
-                                                    <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" >
-                                                </td>
+                                            </td>
+                                            <td class="td2" v-if="band==1">
+                                                <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" >
+                                            </td>
 
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.valor_escrituras)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.valor_escrituras)"></td>
 
-                                                <template>
-                                                    <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                                </template>
+                                            <template>
+                                                <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            </template>
 
-                                                <td class="td2">
-                                                  <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
-                                                </td>
+                                            <td class="td2">
+                                                <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
+                                            </td>
 
+                                            <td class="td2"  @click="abrirModal('firma_esc_act',programacion)" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-else>
+                                                <button title="Programar Firma" type="button" class="btn btn-warning pull-right"
+                                                @click="abrirModal('firma_esc',programacion)">Generar</button>
+                                            </td>
 
-                                                <td class="td2"  @click="abrirModal('firma_esc_act',programacion)" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-else>
-                                                    <button title="Programar Firma" type="button" class="btn btn-warning pull-right"
-                                                    @click="abrirModal('firma_esc',programacion)">Generar</button>
-                                                </td>
+                                            <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.saldo)"></td>
 
-                                                <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
+                                            <td class="td2">
+                                                <button v-if="programacion.entrega == 0"
+                                                    title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
+                                                    @click="abrirModal('solic_entrega',programacion)">Solicitar entrega
+                                                </button>
+                                            </td>
+                                            <!-- <td class="td2" v-else>Faltan Documentos
+                                            </td> -->
+                                            <td class="td2" v-if="programacion.saldo != 0" v-text="'Saldo Pendiente ó sin solicitud'"></td>
+                                            <td class="td2" v-else v-text="'Concluido'"></td>
 
-                                                <td class="td2">
-                                                    <button v-if="programacion.entrega == 0"
-                                                        title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
-                                                        @click="abrirModal('solic_entrega',programacion)">Solicitar entrega
-                                                    </button>
-                                                </td>
-                                                <!-- <td class="td2" v-else>Faltan Documentos
-                                                </td> -->
-                                                <td class="td2" v-if="programacion.saldo != 0" v-text="'Saldo Pendiente ó sin solicitud'"></td>
-                                                <td class="td2" v-else v-text="'Concluido'"></td>
-
-                                                <td class="td2">
-                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                        @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <nav>
-
-                                </nav>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                                    @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
                             </div>
 
                             <!-- Listado de Historial -->
@@ -992,231 +854,180 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
-                                            <select class="form-control col-md-5" v-model="criterio" @change="selectFraccionamientos()">
+                                            <select class="form-control col-md-5" v-model="criterio">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
-
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
                                                 <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
                                                 <option value="">Gestor</option>
-                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
-
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarEnviados(1),listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
                                         </div>
                                         <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-
                                             <select class="form-control col-md-6"  v-model="b_etapa">
                                                 <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
-
                                         </div>
                                         <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
-
                                             <input type="text" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
-                                            <button type="submit" @click="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
-                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)"
+                                            <button type="submit" @click="listarEnviados(1),
+                                                    listarAutorizados(1),
+                                                    listarLiquidacion(1),
+                                                    listarIngresoExp(1),
+                                                    listarProgramacion(1)"
                                                 class="btn btn-primary"><i class="fa fa-search"></i> Buscar
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Celular</th>
-                                                <th>Email</th>
-                                                <th># Ref</th>
-                                                <th>Cliente</th>
-                                                <th>Asesor</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th># Lote</th>
-                                                <th>Modelo</th>
-                                                <th>Dirección</th>
-                                                <th>Avance obra</th>
-                                                <th>Firma Contrato</th>
-                                                <th>Resultado avaluo</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Ingreso expediente</th>
-                                                <th>Tipo de Crédito</th>
-                                                <th>Institución de Fin.</th>
-                                                <th>Monto autorizado</th>
-                                                <th>Fecha vigencia</th>
-                                                <th>Valor de la vivienda</th>
-                                                <th>Valor escriturar</th>
-                                                <th>Inscripción Infonavit</th>
-                                                <th>Liquidación</th>
-                                                <th>Firma de Escrituras</th>
-                                                <th>Fecha ultimo pagare</th>
-                                                <th>Saldo</th>
-                                                <th>Observaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="programacion in arrayEnviados" :key="programacion.id">
-                                                <td class="td2" >
-                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+programacion.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+programacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                                </td>
-                                                <td class="td2" v-if="programacion.email_institucional == null">
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
-                                                <td class="td2" v-else>
-                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email+ ';'+programacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                                </td>
+                                <TableComponent :cabecera="[
+                                        'Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana','# Lote',
+                                        'Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo','Aviso preventivo',
+                                        'Ingreso expediente','Tipo de Crédito','Institución de Fin.','Monto autorizado',
+                                        'Fecha vigencia','Valor de la vivienda','Valor escriturar','Inscripción Infonavit',
+                                        'Liquidación','Firma de Escrituras','Fecha ultimo pagare','Saldo','Observaciones',
+                                    ]"
+                                >
+                                    <template v-slot:tbody>
+                                        <tr v-for="programacion in arrayEnviados" :key="programacion.id">
+                                            <td class="td2" >
+                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+programacion.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+programacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                            </td>
+                                            <td class="td2" v-if="programacion.email_institucional == null">
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2" v-else>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email+ ';'+programacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
 
-                                                <td class="td2">
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
-                                                        <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>
-                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
-                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
-                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
-                                                        <a v-if="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ programacion.foto_predial">Predial</a>
-                                                        <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
-                                                    </div>
-                                                </td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
+                                                    <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ programacion.foto_predial">Predial</a>
+                                                    <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
+                                                </div>
+                                            </td>
 
-                                                <td class="td2" v-text="programacion.nombre_cliente"></td>
-                                                <td class="td2" v-text="programacion.nombre_vendedor"></td>
-                                                <td class="td2" v-text="programacion.proyecto"></td>
-                                                <td class="td2" v-text="programacion.etapa"></td>
-                                                <td class="td2" v-text="programacion.manzana"></td>
-                                                <td class="td2" >
-                                                    <a v-if="programacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
-                                                    <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}} {{programacion.sublote}}</a>
-                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                        <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
-                                                        <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
-                                                        <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
-                                                    </div>
-                                                </td>
-                                                <td class="td2" v-text="programacion.modelo"></td>
-                                                <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
-                                                <td class="td2" v-text="programacion.avance_lote + '%'"></td>
-                                                <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="programacion.nombre_cliente"></td>
+                                            <td class="td2" v-text="programacion.nombre_vendedor"></td>
+                                            <td class="td2" v-text="programacion.proyecto"></td>
+                                            <td class="td2" v-text="programacion.etapa"></td>
+                                            <td class="td2" v-text="programacion.manzana"></td>
+                                            <td class="td2" >
+                                                <a v-if="programacion.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}} {{programacion.sublote}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
+                                                    <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
+                                                    <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-text="programacion.modelo"></td>
+                                            <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
+                                            <td class="td2" v-text="programacion.avance_lote + '%'"></td>
+                                            <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
 
-                                                <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
-                                                    <span v-text="'$'+formatNumber(programacion.resultado)"></span>
-                                                        <!-- <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                            <i class="fa fa-calendar-check-o"></i>
-                                                        </button> -->
-                                                </td>
-                                                <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                <span v-text="'$'+ $root.formatNumber(programacion.resultado)"></span>
+                                                    <!-- <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <i class="fa fa-calendar-check-o"></i>
+                                                    </button> -->
+                                            </td>
+                                            <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td v-if="programacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                                <td @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: '
-                                                + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td v-if="programacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: '
+                                            + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
+                                            <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
 
-                                                    <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.diferencia < 0 && programacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "programacion.diferencia < 0 && programacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if = "programacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
+                                            </td>
 
-                                                <td class="td2" v-text="this.moment(programacion.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-text="programacion.tipo_credito"></td>
-                                                <td class="td2" v-text="programacion.institucion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.credito_solic)"></td>
+                                            <td class="td2" v-text="this.moment(programacion.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="programacion.tipo_credito"></td>
+                                            <td class="td2" v-text="programacion.institucion"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.credito_solic)"></td>
 
-                                                <td class="td2" v-if="band==0" @dblclick="band=1">
-                                                    <span v-if="!programacion.fecha_vigencia"></span>
-                                                    <span v-else-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                            <td class="td2" v-if="band==0" @dblclick="band=1">
+                                                <span v-if="!programacion.fecha_vigencia"></span>
+                                                <span v-else-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-else-if = "programacion.vigencia <= 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-else-if = "programacion.vigencia <= 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-else-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-else-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                                                + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                </td>
-                                                <td class="td2" v-if="band==1">
-                                                    <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" >
-                                                </td>
+                                            </td>
+                                            <td class="td2" v-if="band==1">
+                                                <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" >
+                                            </td>
 
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.valor_escrituras)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.valor_escrituras)"></td>
 
-                                                <template>
-                                                    <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
-                                                    <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                                </template>
+                                            <template>
+                                                <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            </template>
 
-                                                <td class="td2">
-                                                  <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
-                                                </td>
+                                            <td class="td2">
+                                                <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
+                                            </td>
 
 
-                                                <td class="td2"  @click="abrirModal('firma_esc_act',programacion)" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-else>
-                                                    <button title="Programar Firma" type="button" class="btn btn-warning pull-right"
-                                                    @click="abrirModal('firma_esc',programacion)">Generar</button>
-                                                </td>
-                                                <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
+                                            <td class="td2"  @click="abrirModal('firma_esc_act',programacion)" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-else>
+                                                <button title="Programar Firma" type="button" class="btn btn-warning pull-right"
+                                                @click="abrirModal('firma_esc',programacion)">Generar</button>
+                                            </td>
+                                            <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-text="'$'+ $root.formatNumber(programacion.saldo)"></td>
 
-                                                <td class="td2">
-                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                        @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <nav>
-                                    <!--Botones de paginacion -->
-                                    <ul class="pagination">
-                                        <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,b_etapa,b_manzana,b_lote,criterio)">Inicio</a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination.current_page > 1">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Ant</a>
-                                        </li>
-                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio)" v-text="page"></a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Sig</a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,b_etapa,b_manzana,b_lote,criterio)">Ultimo</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
+                                                    @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </TableComponent>
+                                <Nav :current="pagination.current_page ? pagination.current_page : 1"
+                                    :last="pagination.last_page ? pagination.last_page : 1"
+                                    @changePage="cambiarPagina">
+                                </Nav>
                             </div>
                         </div>
                         <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
@@ -1224,7 +1035,6 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-
 
             <!--Inicio modal-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
@@ -1250,10 +1060,10 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Valor a escriturar</label>
                                         <div class="col-md-4">
-                                            <input type="text" maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                            <input type="text" maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="$root.isNumber($event)" class="form-control" placeholder="Monto">
                                         </div>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(valor_escrituras)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(valor_escrituras)"></h6>
                                         </div>
 
                                     </div>
@@ -1314,10 +1124,10 @@
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Valor</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="10" v-model="resultado" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                        <input type="text" maxlength="10" v-model="resultado" pattern="\d*" v-on:keypress="$root.isNumber($event)" class="form-control" placeholder="Monto">
                                     </div>
                                     <div class="col-md-3">
-                                        <h6 v-text="'$'+formatNumber(resultado)"></h6>
+                                        <h6 v-text="'$'+ $root.formatNumber(resultado)"></h6>
                                     </div>
                                 </div>
                             </form>
@@ -1416,23 +1226,23 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Valor de venta</label>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(valor_venta)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(valor_venta)"></h6>
                                         </div>
 
                                         <label class="col-md-2 form-control-label" for="text-input">Valor de escrituración</label>
                                         <div class="col-md-2">
-                                            <input maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                            <input maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="$root.isNumber($event)" class="form-control">
                                         </div>
 
                                         <div class="col-md-2">
-                                            <h6 v-text="'$'+formatNumber(valor_escrituras)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(valor_escrituras)"></h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row" v-if="intereses_terreno>0">
                                         <label class="col-md-2 form-control-label" for="text-input">Intereses</label>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(intereses_terreno)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(intereses_terreno)"></h6>
                                         </div>
                                     </div>
 
@@ -1441,7 +1251,7 @@
                                         <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
                                             <label class="col-md-2 form-control-label" for="text-input" v-text="gasto.concepto"></label>
                                             <div class="col-md-3">
-                                                <h6>${{ formatNumber(gasto.costo)}}</h6>
+                                                <h6>${{  $root.formatNumber(gasto.costo)}}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -1449,19 +1259,19 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Enganche</label>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(totalEnganghe)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(totalEnganghe)"></h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Pagado</label>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(pagado=pagos)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(pagado=pagos)"></h6>
                                         </div>
 
                                         <label v-if="avaluo" class="col-md-2 form-control-label" for="text-input">Resultado avaluo</label>
                                         <div class="col-md-2" v-if="avaluo">
-                                            <h6 v-text="'$'+formatNumber(avaluo)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(avaluo)"></h6>
                                         </div>
 
 
@@ -1470,11 +1280,11 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Descuento</label>
                                         <div class="col-md-2">
-                                            <input maxlength="10" v-model="descuento" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                            <input maxlength="10" v-model="descuento" pattern="\d*" v-on:keypress="$root.isNumber($event)" class="form-control">
                                         </div>
 
                                         <div class="col-md-2">
-                                            <h6 v-text="'$'+formatNumber(descuento)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(descuento)"></h6>
                                         </div>
                                     </div>
 
@@ -1488,37 +1298,37 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Credito autorizado</label>
                                         <div class="col-md-3">
-                                            <input v-model="monto_credito" @keyup.enter="updateMontoCredito()" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                            <input v-model="monto_credito" @keyup.enter="updateMontoCredito()" pattern="\d*" v-on:keypress="$root.isNumber($event)" class="form-control">
                                         </div>
                                         <div class="col-md-3">
-                                            <h6>${{ formatNumber(netoCredito)}}</h6>
+                                            <h6>${{  $root.formatNumber(netoCredito)}}</h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row" v-if="credito=='Alia2' || credito=='Respalda2' || credito=='INFONAVIT-FOVISSSTE' || credito == 'Fovissste para todos'">
                                         <label  class="col-md-2 form-control-label" for="text-input">Fovissste</label>
                                         <div class="col-md-2">
-                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
                                         </div>
                                         <div class="col-md-2">
-                                            <h6 v-text="'$'+formatNumber(fovissste)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(fovissste)"></h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row" v-if="credito=='Cofinavit' || credito == 'COFINAVIT I.A'">
                                         <label  class="col-md-2 form-control-label" for="text-input">Infonavit</label>
                                         <div class="col-md-2">
-                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
                                         </div>
                                         <div class="col-md-2">
-                                            <h6 v-text="'$'+formatNumber(infonavit)"></h6>
+                                            <h6 v-text="'$'+ $root.formatNumber(infonavit)"></h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input"><strong> Total a liquidar </strong></label>
                                         <div class="col-md-3">
-                                            <h6><strong> ${{ formatNumber(total_liquidar=totalLiquidar)}} </strong></h6>
+                                            <h6><strong> ${{  $root.formatNumber(total_liquidar=totalLiquidar)}} </strong></h6>
                                         </div>
                                     </div>
 
@@ -1615,7 +1425,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input"><strong> Total a liquidar </strong></label>
                                         <div class="col-md-3">
-                                            <h6><strong> ${{ formatNumber(total_liquidar1)}} </strong></h6>
+                                            <h6><strong> ${{  $root.formatNumber(total_liquidar1)}} </strong></h6>
                                         </div>
                                     </div>
 
@@ -1626,14 +1436,14 @@
                                         </div>
                                         <label class="col-md-4 form-control-label" for="text-input">Fecha de inicio de intereses</label>
                                         <div class="col-md-3">
-                                            <input type="date" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="fecha_ini_interes" class="form-control" >
+                                            <input type="date" pattern="\d*" maxlength="3" v-on:keypress="$root.isNumber($event)" v-model="fecha_ini_interes" class="form-control" >
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Intereses Moratorios (%)</label>
                                         <div class="col-md-2">
-                                            <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="int_moratorio" class="form-control" placeholder="%" >
+                                            <input type="text" pattern="\d*" maxlength="3" v-on:keypress="$root.isNumber($event)" v-model="int_moratorio" class="form-control" placeholder="%" >
                                         </div>
                                     </div>
 
@@ -1649,7 +1459,7 @@
                                 <div class="form-group row" v-if="fecha_pago!=''">
                                     <div class="col-md-12">
                                              <h6 style="text-align: right;">Restante: </h6>
-                                             <h4 style="text-align: right;"><strong>${{ formatNumber(restante_pago)}}</strong></h4>
+                                             <h4 style="text-align: right;"><strong>${{  $root.formatNumber(restante_pago)}}</strong></h4>
                                     </div>
                                 </div>
 
@@ -1665,11 +1475,11 @@
                                 <div class="form-group row" v-if="fecha_pago!=''">
                                     <label class="col-md-2 form-control-label" for="text-input">Monto pago</label>
                                         <div class="col-md-3">
-                                            <input  type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                            <input  type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
                                         </div>
                                         <div class="col-md-4">
                                             <h6 style="color:#2271b3;" ><strong> Monto pago </strong></h6>
-                                            <h6><strong>${{ formatNumber(monto_pago)}}</strong></h6>
+                                            <h6><strong>${{  $root.formatNumber(monto_pago)}}</strong></h6>
                                         </div>
                                 </div>
 
@@ -1749,7 +1559,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                         <div class="col-md-6">
-                                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="telefono_aval" class="form-control" placeholder="Telefono" >
+                                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)" v-model="telefono_aval" class="form-control" placeholder="Telefono" >
                                         </div>
                                     </div>
 
@@ -1778,7 +1588,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                         <div class="col-md-6">
-                                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="telefono_aval2" class="form-control" placeholder="Telefono" >
+                                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)" v-model="telefono_aval2" class="form-control" placeholder="Telefono" >
                                         </div>
                                     </div>
 
@@ -1926,35 +1736,35 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input"><strong> Valor de venta </strong></label>
                                         <div class="col-md-3">
-                                            <h6><strong> ${{ formatNumber(valor_venta)}} </strong></h6>
+                                            <h6><strong> ${{  $root.formatNumber(valor_venta)}} </strong></h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input"> Credito autorizado </label>
                                         <div class="col-md-3">
-                                            <h6> ${{ formatNumber(monto_credito)}} </h6>
+                                            <h6> ${{  $root.formatNumber(monto_credito)}} </h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row" v-if="infonavit!=0">
                                         <label class="col-md-2 form-control-label" for="text-input"> Infonavit </label>
                                         <div class="col-md-3">
-                                            <h6> ${{ formatNumber(infonavit)}} </h6>
+                                            <h6> ${{  $root.formatNumber(infonavit)}} </h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row" v-if="fovissste!=0">
                                         <label class="col-md-2 form-control-label" for="text-input"> Fovissste </label>
                                         <div class="col-md-3">
-                                            <h6> ${{ formatNumber(fovissste)}} </h6>
+                                            <h6> ${{  $root.formatNumber(fovissste)}} </h6>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input"> Diferencia </label>
                                         <div class="col-md-3">
-                                            <h6> ${{ formatNumber(diferencia)}} </h6>
+                                            <h6> ${{  $root.formatNumber(diferencia)}} </h6>
                                         </div>
                                     </div>
 
@@ -1982,10 +1792,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                             </form>
 
 
@@ -2191,9 +1997,17 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import ModalComponent from './Componentes/ModalComponent.vue';
+import TableComponent from './Componentes/TableComponent.vue';
+import Nav from './Componentes/NavComponent.vue'
     export default {
         props:{
             rolId:{type: String}
+        },
+        components:{
+            ModalComponent,
+            Nav,
+            TableComponent
         },
         data(){
             return{
@@ -2207,15 +2021,8 @@
                 arrayPagares:[],
                 totalEnganghe:[],
                 totalRestante:[],
-
-                arrayGestores:[],
-
                 arrayEnviados:[],
-
-                arrayFraccionamientos:[],
-                arrayEtapas:[],
                 arrayGastos:[],
-
                 arrayPagos: [],
                 arrayCiudades:[],
                 arrayNotarias:[],
@@ -2234,71 +2041,57 @@
 
                 //variables para filtros de Por ingresar
                 criterio:'lotes.fraccionamiento_id',
-                buscar:'',
-                b_etapa:'',
-                b_manzana:'',
-                b_lote:'',
+                buscar: '',
+                b_etapa: '',
+                b_manzana: '',
+                b_lote: '',
 
-                //variables para filtros de Preautorizados
-                criterio:'lotes.fraccionamiento_id',
-                buscar:'',
-                b_etapa:'',
-                b_manzana:'',
-                b_lote:'',
-
-                //variables para filtros de Rechazados
-                criterio_rechazados:'lotes.fraccionamiento_id',
-                buscar_rechazados:'',
-                b_etapa_rechazados:'',
-                b_manzana_rechazados:'',
-                b_lote_rechazados:'',
-
-                fecha_recibido:'',
-                id:0,
+                fecha_recibido: '',
+                id: 0,
                 tipoAccion: 0,
-                fecha_ingreso:'',
-                valor_escrituras:'',
-                valor_venta:'',
+                fecha_ingreso: '',
+                valor_escrituras: '',
+                valor_venta: '',
                 intereses_terreno : 0,
-                totalGastos:0,
-                totalIntOrd:0,
+                totalGastos: 0,
+                totalIntOrd: 0,
                 rest_real: 0,
 
-                fecha_infonavit:'',
-                fecha_liquidacion:'',
-                fecha_firma_contrato:'',
-                fecha_pagarefin:'',
-                monto_pagare:0,
-                cliente:'',
-                credito:'',
-                inst_fin:'',
-                proyecto:'',
-                etapa:'',
-                manzana:'',
-                lote:'',
-                descuento:0,
-                obs_descuento:'',
-                notas_liquidacion:'',
-                pagado:0,
-                monto_credito:0,
-                infonavit:0,
-                fovissste:0,
-                avaluo:0,
-                total_liquidar:0,
-                total_liquidar1:0,
+                fecha_infonavit: '',
+                fecha_liquidacion: '',
+                fecha_firma_contrato: '',
+                fecha_pagarefin: '',
+                monto_pagare: 0,
+                cliente: '',
+                credito: '',
+                inst_fin: '',
+                proyecto: '',
+                etapa: '',
+                manzana: '',
+                lote: '',
+                descuento: 0,
+                obs_descuento: '',
+                notas_liquidacion: '',
+                pagado: 0,
+                monto_credito: 0,
+                infonavit: 0,
+                fovissste: 0,
+                avaluo: 0,
+                total_liquidar: 0,
+                total_liquidar1: 0,
                 totalCredito: 0,
-                estado:'',
-                ciudad:'',
-                notaria_id:0,
-                notaria:'',
-                direccion_firma:'',
+                estado: '',
+                ciudad: '',
+                notaria_id: 0,
+                notaria: '',
+                direccion_firma: '',
                 fecha_firma_esc: '',
-                notario:'',
+                notario: '',
                 diferencia: 0,
-                hora_firma:'',
+                hora_firma: '',
 
-                int_oridinario:0,
-                int_moratorio:0,
+                int_oridinario: 0,
+                int_moratorio: 0,
                 fecha_ini_interes: '',
                 fecha_pago: '',
                 monto_pago: 0,
@@ -2315,15 +2108,14 @@
 
                 fecha_concluido: '',
                 resultado: 0,
-                avaluoId:0,
+                avaluoId: 0,
 
-
-                modal:0,
-                modal2:0,
-                modal3 :0,
-                modal4:0,
-                modal5:0,
-                modal6:0,
+                modal: 0,
+                modal2: 0,
+                modal3: 0,
+                modal4: 0,
+                modal5: 0,
+                modal6: 0,
                 tituloModal:'',
                 tituloModal3:'Observaciones',
                 observacion:'',
@@ -2332,8 +2124,7 @@
                 contadorLiquidacion : 0,
                 contadorProgramacion : 0,
                 contadorEnviados: 0,
-                pagos:0,
-
+                pagos: 0,
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -2342,9 +2133,9 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                offset : 3,
-                b_empresa:'',
-                empresas:[],
+                offset: 3,
+                b_empresa: '',
+                empresas: [],
 
             }
         },
@@ -2392,21 +2183,6 @@
 
 
         methods : {
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            },
-
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
-
             listarObservacion(buscar){
                 let me = this;
                 var url = '/observacionExpediente?folio=' + buscar ;
@@ -2447,19 +2223,6 @@
                 });
             },
 
-            selectGestores(){
-                let me = this;
-                me.arrayGestores=[];
-                var url = '/select_gestores';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayGestores = respuesta.gestores;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
             mostrarDatosNotaria(notaria){
                 let me = this;
                 me.arrayDatosNotaria=[];
@@ -2493,8 +2256,6 @@
                 else{
                     const win = window.open('/estadoCuenta/estadoPDF/'+contrato.folio, '_blank');
                 }
-
-
             },
 
             regresarExpediente(folio){
@@ -2514,14 +2275,14 @@
                 axios.delete('/expediente/regresarExpediente',
                         {params: {'folio': folio}}).then(function (response){
                         swal(
-                        'Listo!',
-                        'El expediente ha sido regresado a integración.',
-                        'success'
+                            'Listo!',
+                            'El expediente ha sido regresado a integración.',
+                            'success'
                         )
-                        me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarIngresoExp(1);
+                        me.listarAutorizados(1);
+                        me.listarLiquidacion(1);
+                        me.listarProgramacion(1);
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -2543,50 +2304,18 @@
                 });
             },
 
-            selectFraccionamientos(){
-                let me = this;
-                me.buscar=""
-
-                me.arrayFraccionamientos=[];
-                var url = '/select_fraccionamiento';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayFraccionamientos = respuesta.fraccionamientos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            selectEtapa(buscar){
-                let me = this;
-                me.buscar2=""
-
-                me.arrayEtapas=[];
-                var url = '/select_etapa_proyecto?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayEtapas = respuesta.etapas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
             detenerContrato(id,detenido){
-
                 let me = this;
-
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/contrato/cambiarProceso',{
                     'id':id,
                     'detenido' : detenido
 
                 }).then(function (response){
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -2602,20 +2331,17 @@
             },
 
             continuarContrato(id,detenido){
-
                 let me = this;
-
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/contrato/cambiarProceso',{
                     'id':id,
                     'detenido' : detenido
 
                 }).then(function (response){
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    //window.alert("Cambios guardados correctamente");
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -2642,10 +2368,10 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
 
                     const toast = Swal.mixin({
                     toast: true,
@@ -2677,18 +2403,17 @@
                     me.proceso=false;
                     me.listarObservacion(me.id);
                     me.observacion = '';
-                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
 
                     const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
                     });
 
                     toast({
-                    type: 'success',
-                    title: 'Observación Agregada Correctamente'
+                        type: 'success',
+                        title: 'Observación Agregada Correctamente'
                     })
                 }).catch(function (error){
                     console.log(error);
@@ -2773,19 +2498,19 @@
                     {
                         if(me.encuentraFecha(me.fecha_pago)){
                             swal({
-                            type: 'error',
-                            title: 'Error',
-                            text: 'La fecha de pago ya se enceuntra o es menor',
+                                type: 'error',
+                                title: 'Error',
+                                text: 'La fecha de pago ya se enceuntra o es menor',
                             })
                         }
                         else{
                             me.restante_pago = me.calcularRestante();
                             me.arrayPagos.push({
-                            monto_pago: me.monto_pago,
-                            fecha_pago: me.fecha_pago,
-                            restanteAnterior: me.restante_pago,
-                            dias: me.dias,
-                            restante: me.restante_pago - me.monto_pago,
+                                monto_pago: me.monto_pago,
+                                fecha_pago: me.fecha_pago,
+                                restanteAnterior: me.restante_pago,
+                                dias: me.dias,
+                                restante: me.restante_pago - me.monto_pago,
                             });
                             me.restante_pago -= me.monto_pago;
 
@@ -2793,7 +2518,6 @@
                         }
                     }
                 }
-
             },
 
             eliminarPago(index){
@@ -2801,66 +2525,66 @@
 
                 me.arrayPagos.splice(index,1);
 
-                    if(index != 0 ){
-                        if(me.arrayPagos.length > 1)
-                            for(var i=0;i<me.arrayPagos.length;i++){
-                                var b = me.arrayPagos[i].fecha_pago;
-                                var a = moment(me.arrayPagos[i+1].fecha_pago);
-                                me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
-                                var Restante = me.arrayPagos[i].restante;
-                                var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
-                                var interes1 = Math.round(intereses*100)/100;
-                                Restante += interes1;
-                                Restante = Math.round(Restante*100)/100;
-                                me.arrayPagos[i+1].restanteAnterior = Restante;
-                                me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
-                                me.restante_pago =  me.arrayPagos[i+1].restante;
-                            }
-                            else{
-                                me.restante_pago = me.arrayPagos[0].restante;
-                            }
-
-                    }else{
-                        if(me.arrayPagos.length == 0){
-                             var Restante = this.total_liquidar1;
-                            var a = moment(this.fecha_pago);
-                            var b = moment(this.fecha_ini_interes);
-                            this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
-                            var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
-                            this.interes = Math.round(intereses*100)/100;
-
-
-                            Restante += this.interes;
-                            Restante = Math.round(Restante*100)/100;
-                            me.restante_pago = Restante;
-                        }
-                        else{
-                            var b = me.fecha_ini_interes
-                            var a = moment(me.arrayPagos[0].fecha_pago);
-                            me.arrayPagos[0].dias = a.diff(b, 'days');
-                            var Restante = me.total_liquidar1;
-                            var intereses = (me.int_oridinario / 100) * (me.arrayPagos[0].dias/30) * (Restante);
+                if(index != 0 ){
+                    if(me.arrayPagos.length > 1)
+                        for(var i=0;i<me.arrayPagos.length;i++){
+                            var b = me.arrayPagos[i].fecha_pago;
+                            var a = moment(me.arrayPagos[i+1].fecha_pago);
+                            me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                            var Restante = me.arrayPagos[i].restante;
+                            var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
                             var interes1 = Math.round(intereses*100)/100;
                             Restante += interes1;
                             Restante = Math.round(Restante*100)/100;
-                            me.arrayPagos[0].restanteAnterior = Restante;
-                            me.arrayPagos[0].restante = me.arrayPagos[0].restanteAnterior - me.arrayPagos[0].monto_pago;
-
-                            for(var i=0;i<me.arrayPagos.length;i++){
-                                var b = me.arrayPagos[i].fecha_pago;
-                                var a = moment(me.arrayPagos[i+1].fecha_pago);
-                                me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
-                                var Restante = me.arrayPagos[i].restante;
-                                var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
-                                var interes1 = Math.round(intereses*100)/100;
-                                Restante += interes1;
-                                Restante = Math.round(Restante*100)/100;
-                                me.arrayPagos[i+1].restanteAnterior = Restante;
-                                me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
-                                me.restante_pago =  me.arrayPagos[i+1].restante;
-                            }
+                            me.arrayPagos[i+1].restanteAnterior = Restante;
+                            me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
+                            me.restante_pago =  me.arrayPagos[i+1].restante;
+                        }
+                        else{
+                            me.restante_pago = me.arrayPagos[0].restante;
                         }
 
+                }
+                else{
+                    if(me.arrayPagos.length == 0){
+                            var Restante = this.total_liquidar1;
+                        var a = moment(this.fecha_pago);
+                        var b = moment(this.fecha_ini_interes);
+                        this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                        var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
+                        this.interes = Math.round(intereses*100)/100;
+
+
+                        Restante += this.interes;
+                        Restante = Math.round(Restante*100)/100;
+                        me.restante_pago = Restante;
+                    }
+                    else{
+                        var b = me.fecha_ini_interes
+                        var a = moment(me.arrayPagos[0].fecha_pago);
+                        me.arrayPagos[0].dias = a.diff(b, 'days');
+                        var Restante = me.total_liquidar1;
+                        var intereses = (me.int_oridinario / 100) * (me.arrayPagos[0].dias/30) * (Restante);
+                        var interes1 = Math.round(intereses*100)/100;
+                        Restante += interes1;
+                        Restante = Math.round(Restante*100)/100;
+                        me.arrayPagos[0].restanteAnterior = Restante;
+                        me.arrayPagos[0].restante = me.arrayPagos[0].restanteAnterior - me.arrayPagos[0].monto_pago;
+
+                        for(var i=0;i<me.arrayPagos.length;i++){
+                            var b = me.arrayPagos[i].fecha_pago;
+                            var a = moment(me.arrayPagos[i+1].fecha_pago);
+                            me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                            var Restante = me.arrayPagos[i].restante;
+                            var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
+                            var interes1 = Math.round(intereses*100)/100;
+                            Restante += interes1;
+                            Restante = Math.round(Restante*100)/100;
+                            me.arrayPagos[i+1].restanteAnterior = Restante;
+                            me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
+                            me.restante_pago =  me.arrayPagos[i+1].restante;
+                        }
+                    }
                 }
 
             },
@@ -2868,14 +2592,8 @@
             encuentraFecha(fecha){
                 var sw=0;
                 for(var i=0;i<this.arrayPagos.length;i++)
-                {
                     if(this.arrayPagos[i].fecha_pago == fecha || this.arrayPagos[i].fecha_pago > fecha)
-                    {
                         sw=true;
-                    }
-
-                }
-
                 return sw;
             },
 
@@ -2894,10 +2612,10 @@
                 }).then(function (response){
 
                     me.cerrarModal();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -2925,10 +2643,10 @@
                         'fecha_vigencia': fecha_vigencia,
                     }).then(function (response){
 
-                        me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarIngresoExp(1);
+                        me.listarAutorizados(1);
+                        me.listarLiquidacion(1);
+                        me.listarProgramacion(1);
                         me.band = 0;
                         //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -2947,7 +2665,6 @@
                         console.log(error);
                     });
                 }
-
             },
 
             generarLiquidacion(){
@@ -2973,10 +2690,10 @@
                 }).then(function (response){
 
                     me.cerrarModal();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     Swal.enableLoading()
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -3015,10 +2732,10 @@
                 }).then(function (response){
 
                     me.cerrarModal5();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     Swal.enableLoading()
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -3061,10 +2778,10 @@
                 }).then(function (response){
 
                     me.cerrarModal4();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     Swal.enableLoading()
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -3097,10 +2814,10 @@
                 }).then(function (response){
 
                     me.cerrarModal();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -3117,10 +2834,12 @@
                 });
             },
 
-            listarIngresoExp(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+            listarIngresoExp(page){
                 let me = this;
-                var url = '/expediente/ingresarIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' +
-                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
+                var url = '/expediente/ingresarIndex?page=' + page +
+                    '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
+                    '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote +
+                    '&criterio=' + me.criterio + '&b_empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPorIngresar = respuesta.contratos;
@@ -3132,10 +2851,12 @@
 
             },
 
-            listarAutorizados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+            listarAutorizados(page){
                 let me = this;
-                var url = '/expediente/autorizadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' +
-                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
+                var url = '/expediente/autorizadosIndex?page=' + page +
+                    '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
+                    '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote +
+                    '&criterio=' + me.criterio + '&b_empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPreautorizados = respuesta.contratos;
@@ -3147,18 +2868,20 @@
 
             },
 
-            cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarEnviados(page,buscar, b_etapa, b_manzana, b_lote, criterio);
+                me.listarEnviados(page);
             },
 
-            listarEnviados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+            listarEnviados(page){
                 let me = this;
-                var url = '/expediente/enviadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' +
-                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
+                var url = '/expediente/enviadosIndex?page=' + page +
+                '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
+                '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote +
+                '&criterio=' + me.criterio+'&b_empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEnviados = respuesta.contratos.data;
@@ -3171,10 +2894,12 @@
 
             },
 
-            listarLiquidacion(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+            listarLiquidacion(page){
                 let me = this;
-                var url = '/expediente/liquidacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' +
-                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
+                var url = '/expediente/liquidacionIndex?page=' + page +
+                '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
+                '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote +
+                '&criterio=' + me.criterio +'&b_empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLiquidados = respuesta.contratos;
@@ -3186,10 +2911,12 @@
 
             },
 
-            listarProgramacion(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+            listarProgramacion(page){
                 let me = this;
-                var url = '/expediente/ProgramacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa +
-                '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
+                var url = '/expediente/ProgramacionIndex?page=' + page +
+                '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
+                '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote +
+                '&criterio=' + me.criterio +'&b_empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProgramacion = respuesta.contratos;
@@ -3319,10 +3046,10 @@
                         'folio': me.id
                     }).then(function (response) {
                         me.cerrarModal();
-                        me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                        me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarIngresoExp(1);
+                        me.listarAutorizados(1);
+                        me.listarLiquidacion(1);
+                        me.listarProgramacion(1);
                         swal(
                         'Hecho!',
                         'No aplica.',
@@ -3352,10 +3079,10 @@
 
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -3380,10 +3107,10 @@
                     'monto_credito' : this.monto_credito,
 
                 }).then(function (response){
-                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
-                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -3507,25 +3234,25 @@
                                 })
                         }
                         else{
-                        this.modal5 = 1;
-                        this.tipoAccion = 1;
-                        this.tituloModal='Instrucción Notarial';
-                        this.id = data['folio'];
-                        this.proyecto = data['proyecto'];
-                        this.etapa = data['etapa'];
-                        this.manzana = data['manzana'];
-                        this.lote = data['num_lote'];
-                        this.valor_venta = data['precio_venta'];
-                        this.monto_credito = data['credito_solic'];
-                        this.infonavit = data['infonavit'];
-                        this.fovissste = data['fovissste'];
-                        this.diferencia = parseFloat(this.valor_venta) - parseFloat(this.monto_credito) -
-                                            parseFloat(this.infonavit) - parseFloat(this.fovissste);
+                            this.modal5 = 1;
+                            this.tipoAccion = 1;
+                            this.tituloModal='Instrucción Notarial';
+                            this.id = data['folio'];
+                            this.proyecto = data['proyecto'];
+                            this.etapa = data['etapa'];
+                            this.manzana = data['manzana'];
+                            this.lote = data['num_lote'];
+                            this.valor_venta = data['precio_venta'];
+                            this.monto_credito = data['credito_solic'];
+                            this.infonavit = data['infonavit'];
+                            this.fovissste = data['fovissste'];
+                            this.diferencia = parseFloat(this.valor_venta) - parseFloat(this.monto_credito) -
+                                                parseFloat(this.infonavit) - parseFloat(this.fovissste);
 
-                        this.hora_firma = '';
-                        this.notaria_id = 0;
-                        this.estado = '';
-                        this.ciudad = '';
+                            this.hora_firma = '';
+                            this.notaria_id = 0;
+                            this.estado = '';
+                            this.ciudad = '';
                         }
 
 
@@ -3650,13 +3377,13 @@
         },
 
         mounted() {
-            this.selectFraccionamientos();
-            this.selectGestores();
-            this.listarIngresoExp(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
-            this.listarAutorizados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
-            this.listarLiquidacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
-            this.listarProgramacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
-            this.listarEnviados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
+            this.$root.selectFraccionamientos();
+            this.$root.selectGestores();
+            this.listarIngresoExp(1);
+            this.listarAutorizados(1);
+            this.listarLiquidacion(1);
+            this.listarProgramacion(1);
+            this.listarEnviados(1);
             this.getEmpresa();
         }
     }
@@ -3695,15 +3422,6 @@
         color: red !important;
         font-weight: bold;
     }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
 
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
@@ -3723,18 +3441,14 @@
     }
 
     @media (min-width: 300px){
-    .btnagregar{
+        .btnagregar{
             margin-top: 2rem;
-            }
-
-        .nav2 {
-            overflow-x: scroll;
         }
     }
     .td2 {
-    white-space: nowrap;
-    border-bottom: none;
-    color: rgb(20, 20, 20);
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
     }
 
     .td2:first-of-type, th:first-of-type {
@@ -3744,12 +3458,4 @@
     .td2:last-of-type, th:last-of-type {
     border-right: none;
     }
-    /* .nav2 {
-    display: -ms-flexbox;
-    display: flex;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style: none;
-    overflow-x: scroll;
-    } */
 </style>

@@ -569,5 +569,9 @@
                 user-id="{{  Auth::user()->id }}"
             ></listado-items>
         </template>
+        <template v-if="menu == 297">
+            <reporte-individualizacion
+            ></reporte-individualizacion>
+        </template>
     @endif
 @endsection

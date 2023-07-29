@@ -42,12 +42,17 @@
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
                         </li>
                     @endif
-                    @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
+                    @if(Auth::user()->rep_proy == 1)
+                        <li @click="menu=297" class="nav-item">
+                            <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de individualizaciones</a>
+                        </li>
+                    @endif
+                    @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 )
                         <li @click="menu=243" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de recursos propios</a>
                         </li>
                     @endif
-                    @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
+                    @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 )
                         <li @click="menu=244" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de casas con crédito puente</a>
                         </li>
@@ -104,7 +109,7 @@
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
                         </li>
                     @endif
-                    
+
                     @if(Auth::user()->rep_leads == 1)
                         <li @click="menu=280" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Prospectos</a>
@@ -137,7 +142,7 @@
                 </ul>
             </li>
         @endif
-        
+
         {{-- Postventa --}}
         @if( Auth::user()->rep_detalles_post == 1 || Auth::user()->rep_entregas == 1)
             <li class="nav-item nav-dropdown">
@@ -158,12 +163,12 @@
                 </ul>
             </li>
         @endif
-        
+
         @if(Auth::user()->rep_escrituras == 1)
             <li @click="menu=252" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de escrituras</a>
             </li>
         @endif
-        
+
     </ul>
 </li>

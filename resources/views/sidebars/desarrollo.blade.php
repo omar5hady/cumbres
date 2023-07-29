@@ -23,7 +23,7 @@
                             <a class="nav-link" href="#"><i class="icon-bag"></i> Prediales y actas</a>
                         </li>
                     @endif
-                    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 3 || Auth::user()->rol_id == 6)
+                    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 3  || Auth::user()->rol_id == 8 || Auth::user()->rol_id == 6)
                         <li @click="menu=287" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-bag"></i> Planos</a>
                         </li>

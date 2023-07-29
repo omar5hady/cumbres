@@ -289,6 +289,8 @@ class ExpedienteController extends Controller
                 'licencias.foto_acta',
                 'licencias.visita_avaluo',
                 'contratos.fecha_status',
+                'contratos.file_fg',
+                'lotes.sit_fg',
                 'i.tipo_credito',
                 'i.institucion',
                 'contratos.avaluo_preventivo',

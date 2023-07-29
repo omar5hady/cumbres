@@ -2347,6 +2347,7 @@ export default {
                             'beneficiario' : me.solicitudData.beneficiario
                         }).then(function (response){
                             me.cerrarModal();
+                            me.solicCheck = [];
                             me.cerrarFormulario();
                             me.indexSolicitudes(me.arraySolic.current_page); //se enlistan nuevamente los registros
                             //Se muestra mensaje Success
