@@ -3993,7 +3993,7 @@ class ReportesController extends Controller
                     ->join('fraccionamientos as f', 'l.fraccionamiento_id',     '=','f.id')
                     ->join('inst_seleccionadas as inst', 'cr.id',               '=', 'inst.credito_id')
                     ->select('co.id','co.status','expedientes.valor_escrituras','expedientes.fecha_firma_esc as fecha',
-                        'p.nombre', 'p.apellidos',
+                        'p.nombre', 'p.apellidos', 'expedientes.doc_escrituras',
                         'l.manzana', 'l.calle', 'l.numero', 'l.interior','l.terreno', 'mod.construccion',
                         'mod.nombre as modelo', 'cr.precio_base',  'l.sobreprecio',
                         'cr.precio_terreno_excedente','cr.precio_obra_extra','cr.descuento_promocion','cr.costo_paquete','cr.descuento_cant',
@@ -4015,7 +4015,7 @@ class ReportesController extends Controller
                     ->join('fraccionamientos as f', 'l.fraccionamiento_id',     '=','f.id')
                     ->join('inst_seleccionadas as inst', 'cr.id',               '=', 'inst.credito_id')
                     ->select('co.id','co.status','expedientes.valor_escrituras','expedientes.fecha_liquidacion as fecha',
-                        'p.nombre', 'p.apellidos',
+                        'p.nombre', 'p.apellidos', 'expedientes.doc_escrituras',
                         'l.manzana', 'l.calle', 'l.numero', 'l.interior','l.terreno', 'mod.construccion', 'l.sobreprecio',
                         'mod.nombre as modelo', 'cr.precio_base',
                         'cr.precio_terreno_excedente','cr.precio_obra_extra','cr.descuento_promocion','cr.costo_paquete','cr.descuento_cant',

@@ -48,6 +48,7 @@
                             </div>
                         </div>
                         <TableComponent :cabecera="[
+                            '',
                             'Nombre','Fecha de cobranza/escrituras','Dirección',
                             'Modelo','Sup. Const.','Sup. Terreno','Valor de escrituras',
                             'Precio de venta','Precio base','Terreno extra','Obra extra',
@@ -56,6 +57,12 @@
                         >
                             <template v-slot:tbody>
                                 <tr v-for="venta in data.contado" :key="venta.id">
+                                    <td class="td2">
+                                        <a title="Descargar escrituras"
+                                            class="btn btn-default btn-sm" v-if="venta.doc_escrituras"   v-bind:href="'expediente/downloadEscrituras/'+venta.doc_escrituras">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </td>
                                     <td class="td2"> {{ venta.nombre }} {{venta.apellidos}} </td>
                                     <td class="td2"> {{ venta.fecha }} </td>
                                     <td class="td2"> {{ venta.calle }} Num {{ venta.numero }} {{ venta.interior }} </td>
@@ -72,6 +79,12 @@
                                     <td class="td2"> ${{ $root.formatNumber(venta.descuento_cant + venta.desc_liquidacion + venta.descuento_promocion) }} </td>
                                 </tr>
                                 <tr v-for="venta in data.credito" :key="venta.id">
+                                    <td class="td2">
+                                        <a title="Descargar escrituras"
+                                            class="btn btn-default btn-sm" v-if="venta.doc_escrituras"   v-bind:href="'expediente/downloadEscrituras/'+venta.doc_escrituras">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </td>
                                     <td class="td2"> {{ venta.nombre }} {{venta.apellidos}} </td>
                                     <td class="td2"> {{ venta.fecha }} </td>
                                     <td class="td2"> {{ venta.calle }} Num {{ venta.numero }} {{ venta.interior }} </td>
@@ -88,7 +101,7 @@
                                     <td class="td2"> ${{ $root.formatNumber(venta.descuento_cant + venta.desc_liquidacion + venta.descuento_promocion) }} </td>
                                 </tr>
                                 <tr>
-                                    <th class="td2" style="text-align: left;" colspan="6">Total</th>
+                                    <th class="td2" style="text-align: left;" colspan="7">Total</th>
                                     <th class="td2"> ${{ $root.formatNumber(total1 = totalEscrituras) }}</th>
                                     <th class="td2"> ${{ $root.formatNumber(total2 = totalPrecioVenta) }} </th>
                                     <th class="td2"> ${{ $root.formatNumber(total3 = totalPrecioBase) }} </th>
