@@ -2082,7 +2082,7 @@ class ContratoController extends Controller
             //Guardar el costo del lote
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
+                            ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','etapas.tipo_proyecto','lotes.indivisos')
                 ->where('lotes.id', '=', $loteId)->get();
 
                 //Se obtiene el precio por m2 del terreno para esa etapa
@@ -2092,7 +2092,7 @@ class ContratoController extends Controller
 
                 if($precioT){
                     //Se calcula el valor de terreno para departamentos
-                    if($etapa[0]->tipo == 2){
+                    if($etapa[0]->tipo_proyecto == 2){
                         $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
                     }
                     //Se calcula el valor de terreno para vivienda

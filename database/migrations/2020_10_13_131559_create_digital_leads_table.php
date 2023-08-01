@@ -58,8 +58,12 @@ class CreateDigitalLeadsTable extends Migration
             $table->double('enganche')->nullable();
             $table->string('zona_interes',100)->nullable();
             $table->date('fecha_update')->nullable();
+            //Fecha en la que se asigna un asesor al lead
             $table->dateTime('fecha_asign')->nullable();
+            //Fecha en que el asesor hace el primer comentario/contacto
             $table->dateTime('fecha_contacto')->nullable();
+            //Fecha de ultimo seguimiento por los asesores digitales
+            $table->dateTime('fecha_seguimiento')->nullable();
             $table->string('prioridad',10)->nullable();
             $table->string('nombre_rec',50)->nullable();
             $table->string('apellidos_rec',80)->nullable();

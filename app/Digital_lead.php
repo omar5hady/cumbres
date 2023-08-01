@@ -45,6 +45,7 @@ class Digital_lead extends Model
         'fecha_update',
         'fecha_asign',
         'fecha_contacto',
+        'fecha_seguimiento',
         'messenger_id',
         'name_user',
         'last_name_user',

@@ -3932,15 +3932,15 @@
                 alert("Email invalido!")
                 return (false)
             },
-            validateFG(){
-                if(this.sit_fg == 1){
+            validateFG(status){
+                if(this.sit_fg == 1 && (status == 3 || status == 1)){
                     return this.file_fg != null;
                 }
                 return true;
             },
             selectStatus(status){
                 let me = this;
-                if(me.validateFG()){
+                if(me.validateFG(status)){
                     if(status==3 || status==0 ){
                         if(me.validateEmail(me.email, status)){
                             this.abrirModal('statusFecha',this.arrayContratos.data);

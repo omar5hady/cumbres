@@ -353,6 +353,7 @@ class DigitalLeadController extends Controller
             $lead->last_name_user = $request->apellidos;
             $lead->medio_contacto = 'Facebook Cumbres';
             $lead->messenger_id = $request->user_id;
+            $lead->fecha_seguimiento = $fecha;
             $lead->save();
 
             // Se crea un comentario para el lead indicando el registro.
@@ -428,6 +429,7 @@ class DigitalLeadController extends Controller
         $lead->rango2 = $request->rango2;
         $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
+        $lead->fecha_seguimiento = $fecha;
 
         $lead->curp = strtoupper( $request->curp );
         $lead->lugar_nacimiento = $request->lugar_nacimiento;
@@ -793,6 +795,17 @@ class DigitalLeadController extends Controller
         $lead->fecha_update = $fecha;
         if($lead->fecha_contacto == NULL && Auth::user()->id == $lead->vendedor_asign)
             $lead->fecha_contacto = $fecha;
+
+        if($lead->status == 1 &&
+            (   Auth::user()->usuario == 'edaly.z' ||
+                Auth::user()->usuario == 'alejandro.ort' ||
+                Auth::user()->usuario == 'dani.muñoz' ||
+                Auth::user()->usuario == 'ale.escobar'
+            )
+        ){
+            $lead->fecha_seguimiento = $fecha;
+        }
+
         $lead->save();
         // Se registra notificiación
         $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
