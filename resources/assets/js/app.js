@@ -177,6 +177,7 @@ Vue.component('reporte-leads', require('./components/Reportes/ReporteLeads.vue')
 Vue.component('reporte-entregas', require('./components/Reportes/ReporteEntregas.vue'));
 Vue.component('reporte-prospectos', require('./components/Reportes/ReporteProspectos.vue'));
 Vue.component('reporte-individualizacion', require('./components/Reportes/ReporteIndividualizacion.vue'));
+Vue.component('reporte-recepcion', require('./components/Reportes/ReporteRecepDigital.vue'));
 
 
 Vue.component('avaluos', require('./components/Avaluos.vue'));

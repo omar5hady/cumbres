@@ -31,14 +31,14 @@
 
         <li class="nav-item nav-dropdown">
             <a class="nav-link nav-dropdown-toggle" href="#">
-                <i class="fa fa-television"></i> Donativos
+                <i class="fa fa-television"></i> Proyecto Puente
             </a>
             <ul class="nav-dropdown-items nav-dropdown-items2">
                 <li @click="menu=295" class="nav-item">
                     <a class="nav-link" href="#"><i class="icon-bag"></i> Panel de control</a>
                 </li>
                 <li @click="menu=296" class="nav-item">
-                    <a class="nav-link" href="#"><i class="icon-bag"></i> Listado de Donaciones</a>
+                    <a class="nav-link" href="#"><i class="icon-bag"></i> Listado</a>
                 </li>
             </ul>
         </li>

@@ -34,17 +34,17 @@
                                         <option value="personal.nombre">Cliente</option>
                                         <option value="creditos.id"># Folio</option>
                                     </select>
-                                    
+
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar"  @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="form-control" placeholder="Texto a buscar">
-                                   
+
                                 </div>
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control" v-model="b_etapa"  @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" @change="selectManzanas(buscar,b_etapa)"> 
+                                    <select class="form-control" v-model="b_etapa"  @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" @change="selectManzanas(buscar,b_etapa)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -63,21 +63,21 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <button type="submit" @click="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/credito_devolucion/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + 
-                                            '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"  
+                                    <a :href="'/credito_devolucion/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana +
+                                            '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"
                                         class="btn btn-success"><i class="fa fa-file-text"></i> Excel
                                     </a>
-                                   
+
                                 </div>
                             </div>
                         </div>
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
-                                        
+                                    <tr>
+
                                         <th># Ref</th>
-                                        <th>Cliente</th> 
+                                        <th>Cliente</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -88,7 +88,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click"> 
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click">
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -106,12 +106,12 @@
                                         <td class="td2" v-else>Sin firmar</td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.saldo*(-1))"></td>
                                         <td class="td2">
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                         @click="abrirModal('observaciones',contratos)">Observaciones</button>
                                         </td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -154,7 +154,7 @@
                                         <option value="personal.nombre">Cliente</option>
                                         <option value="creditos.id"># Folio</option>
                                     </select>
-                                    
+
                                     <select class="form-control" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="buscar_d"  @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" @change="selectEtapa(buscar_d)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
@@ -162,7 +162,7 @@
                                     <input v-else type="text"  v-model="buscar_d" @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                                 <div class="input-group">
-                                    <select class="form-control" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="b_etapa_d"  @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" @change="selectManzanas(buscar_d,b_etapa_d)"> 
+                                    <select class="form-control" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="b_etapa_d"  @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" @change="selectManzanas(buscar_d,b_etapa_d)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -175,16 +175,16 @@
                                 <div class="input-group" v-if="criterio_d=='lotes.fraccionamiento_id'">
                                     <input type="text" v-model="b_lote_d" class="form-control" placeholder="Lote a buscar">
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/devoluciones_credito/excel?buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + 
+                                    <a :href="'/devoluciones_credito/excel?buscar=' + buscar_d + '&b_etapa=' + b_etapa_d +
                                             '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d+
-                                            '&b_empresa='+b_empresa"  
+                                            '&b_empresa='+b_empresa"
                                         class="btn btn-success"><i class="fa fa-file-text"></i> Excel
                                     </a>
                                 </div>
@@ -193,10 +193,10 @@
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
-                                        
+                                    <tr>
+
                                         <th># Ref</th>
-                                        <th>Cliente</th> 
+                                        <th>Cliente</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -210,9 +210,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id" v-on:dblclick="abrirModal('info',devoluciones)" title="Doble click"> 
+                                    <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id" v-on:dblclick="abrirModal('info',devoluciones)" title="Doble click">
                                     <template >
-                                        <td class="td2" v-text="devoluciones.id">
+                                        <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{devoluciones.id}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                 <a class="dropdown-item" @click="abrirPDF(devoluciones.id)">Estado de cuenta</a>
@@ -231,13 +231,13 @@
                                         <td class="td2" v-text="devoluciones.cheque"></td>
                                         <td class="td2" v-text="devoluciones.cuenta"></td>
                                         <td class="td2">
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
                                                         @click="abrirModal('observaciones',devoluciones)">Observaciones</button>
                                         </td>
                                     </template>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
-                            </table>  
+                            </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
@@ -263,7 +263,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-         
+
 
             <!--Inicio del modal -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
@@ -314,8 +314,8 @@
 
                                 <div class="form-group row line-separator"></div>
 
-                                
-                                
+
+
                                 <div class="form-group row">
                                     <div class="col-md-12" v-if="tipoAccion == 1">
                                         <h6 align="center"><strong> Cant. Maxima a devolver </strong></h6>
@@ -344,14 +344,14 @@
 
                                 <div class="form-group row line-separator"></div>
 
-                                <div class="form-group row"> 
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
                                     <div class="col-md-4">
                                         <input type="date" :disabled="tipoAccion==2" v-model="fecha_devolucion" class="form-control">
                                     </div>
                                 </div>
 
-                                <div class="form-group row"> 
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Cheque</label>
                                     <div class="col-md-4">
                                         <input type="text" :disabled="tipoAccion==2" v-model="cheque" class="form-control">
@@ -374,7 +374,7 @@
                                     <textarea :disabled="tipoAccion==2" rows="3" cols="30" v-model="observaciones" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
                                 </div>
-                                
+
                             </form>
                             <!-- fin del form solicitud de avaluo -->
 
@@ -399,7 +399,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal consulta-->
-            
+
             <!--Inicio del modal observaciones-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -423,7 +423,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <table class="table table-bordered table-striped table-sm" >
                                     <thead>
                                         <tr>
@@ -434,14 +434,14 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                            
+
                                             <td v-text="observacion.usuario" ></td>
                                             <td v-text="observacion.observacion" ></td>
                                             <td v-text="observacion.created_at"></td>
-                                        </tr>                               
+                                        </tr>
                                     </tbody>
                                 </table>
-                                
+
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -454,7 +454,7 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-         
+
      </main>
 </template>
 
@@ -468,7 +468,7 @@
             return{
                 proceso:false,
                 id: 0,
-                
+
                 gestor_id: 0,
 
                 arrayContratos : [],
@@ -502,14 +502,14 @@
 
                 errorDev:0,
                 errorMostrarMsjDev:[],
-                
+
                 tituloModal : '',
-           
+
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -517,7 +517,7 @@
                     'to' : 0,
                 },
                 pagination2 : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -526,7 +526,7 @@
                 },
                 offset : 3,
                 offset2 : 3,
-                criterio : 'lotes.fraccionamiento_id', 
+                criterio : 'lotes.fraccionamiento_id',
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
@@ -611,13 +611,13 @@
 
         },
 
-        
+
         methods : {
 
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/credito_devolucion/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                var url = '/credito_devolucion/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa +
                 '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -627,12 +627,12 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             listarDevoluciones(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d){
                 let me = this;
-                var url = '/credito_devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + 
+                var url = '/credito_devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d +
                 '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -642,7 +642,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             listarObservacion(buscar){
@@ -656,7 +656,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+
             },
 
             agregarComentario(){
@@ -669,7 +669,7 @@
                     me.listarObservacion(me.id);
                     me.observacion = '';
                     //me.cerrarModal3(); //al guardar el registro se cierra el modal
-                    
+
                     const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -705,14 +705,14 @@
                     return true;
                 }
             },
-        
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar="";
                 me.b_etapa="";
                 me.b_manzana="";
                 me.b_lote="";
-                
+
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -727,7 +727,7 @@
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2=""
-                
+
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -768,7 +768,7 @@
                 });
 
             },
-            
+
             generarDevolucion(){
                 if(this.validarDev()) //Se verifica si hay un error (campo vacio)
                 {
@@ -816,7 +816,7 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarDevoluciones(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d);
             },
-       
+
 
             cerrarModal(){
                 this.modal = 0;
@@ -840,7 +840,7 @@
                 this.observacion = '';
                 this.modal2 = 0;
                 this.arrayObservacion = [];
-                
+
             },
 
             validarDev(){
@@ -858,18 +858,18 @@
 
                 if(this.banco == '') //Si la variable departamento esta vacia
                     this.errorMostrarMsjDev.push("Seleccionar cuenta de banco.");
-              
+
                 if(this.errorMostrarMsjDev.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorDev = 1;
 
                 return this.errorDev;
             },
-        
-      
+
+
             abrirModal(accion,data =[]){
-                
+
                 switch(accion){
-                    
+
                     case 'devolucion':
                     {
                         this.modal =1;
@@ -888,8 +888,8 @@
 
                         this.selectCuenta();
                         break;
-                    }      
-                    
+                    }
+
                     case 'info':
                     {
                         this.modal =1;
@@ -910,8 +910,8 @@
 
                         this.selectCuenta();
                         break;
-                    }    
-                    
+                    }
+
                     case 'observaciones':{
                         this.modal2 = 1;
                         this.tituloModal='Observaciones';
@@ -936,7 +936,7 @@
                 });
             },
         },
-       
+
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
@@ -966,7 +966,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
-        
+
     }
     .div-error{
         display:flex;
@@ -1025,5 +1025,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

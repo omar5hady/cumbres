@@ -794,6 +794,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/reporteEntregas','ReportesController@reporteEntregas');
 
             Route::get('/reportes/digitalLeads','DigitalLeadController@reporteLeads');
+            Route::get('/reportes/reporteRecepcionDigital','DigitalLeadController@reporteRecepcionDigital');
+            Route::get('/reportes/getDataReporte','DigitalLeadController@getDataReporte');
             Route::get('/reportes/prospectos','DigitalLeadController@reportesProspectos');
             Route::get('/reportes/reporteAsesoresClasificacion','DigitalLeadController@reporteAsesoresClasificacion');
             Route::get('/excel/reportes/prospectos','DigitalLeadController@excelReportesProspectos');

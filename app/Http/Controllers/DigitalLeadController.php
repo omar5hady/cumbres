@@ -1761,4 +1761,132 @@ class DigitalLeadController extends Controller
         $obs->save();
     }
 
+    public function reporteRecepcionDigital(Request $request){
+        $leads = Digital_lead::select('digital_leads.*')->where('status','!=',4);
+        $descartados = Digital_lead::select('digital_leads.*')->where('status' ,'=', 0)->where('ini_dormir' ,'=', NULL);
+        $seguimiento = Digital_lead::select('digital_leads.*')->where('status' ,'=', 1)->where('ini_dormir' ,'=', NULL);
+        $potenciales = Digital_lead::select('digital_leads.*')->where('status' ,'=', 2)->where('ini_dormir' ,'=', NULL);
+        $env_prosp = Digital_lead::select('digital_leads.*')->where('status' ,'=', 3)->where('ini_dormir' ,'=', NULL);
+        $hibernando = Digital_lead::select('digital_leads.*')->where('ini_dormir' ,'!=', NULL);
+        $auditoria = Digital_lead::select('digital_leads.*')->where('f_audit','!=',NULL);
+
+        $verde = Digital_lead::select('digital_leads.*')->where('status','=',1)
+                    ->where('fecha_seguimiento','>=',Carbon::now()->subDays(7));
+        $amarillo = Digital_lead::select('digital_leads.*')->where('status','=',1)
+                    ->where('fecha_seguimiento','<=',Carbon::now()->subDays(7))
+                    ->where('fecha_seguimiento','>',Carbon::now()->subDays(15));
+
+        $rojo = Digital_lead::select('digital_leads.*')->where('status','=',1)
+                    ->where('fecha_seguimiento','<',Carbon::now()->subDays(16));
+
+        if($request->fecha1 != '' && $request->fecha2 != ''){
+            $leads = $leads->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $descartados = $descartados->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $seguimiento = $seguimiento->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $potenciales = $potenciales->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $env_prosp = $env_prosp->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $hibernando = $hibernando->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+
+            $verde = $verde->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $amarillo = $amarillo->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $rojo =  $rojo->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+            $auditoria = $auditoria->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
+        }
+
+        $leads = $leads->count();
+        $descartados = $descartados->count();
+        $seguimiento = $seguimiento->count();
+        $potenciales = $potenciales->count();
+        $env_prosp = $env_prosp->count();
+        $hibernando = $hibernando->count();
+
+        $verde = $verde->count();
+        $amarillo = $amarillo->count();
+        $rojo =  $rojo->count();
+        $auditoria = $auditoria->count();
+
+        return [
+            'leads' => $leads,
+            'descartados' => $descartados,
+            'seguimiento' => $seguimiento,
+            'potenciales' => $potenciales,
+            'env_prosp' => $env_prosp,
+            'hibernando' => $hibernando,
+
+
+            'verde' => $verde,
+            'amarillo' => $amarillo,
+            'rojo' =>  $rojo,
+            'auditoria' => $auditoria
+        ];
+    }
+
+    public function getDataReporte(Request $request){
+
+        $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+            ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+            ->select(
+                    'digital_leads.id',
+                    'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                    'digital_leads.fecha_update', 'digital_leads.created_at',
+                    'digital_leads.apellidos', 'digital_leads.status',
+                    'digital_leads.fecha_seguimiento', 'digital_leads.ini_dormir'
+            );
+
+        if($request->fecha1 != '' && $request->fecha2 != '')
+                $leads = $leads->whereBetween('digital_leads.created_at',[$request->fecha1,$request->fecha2]);
+
+        switch($request->opcion){
+            case 'total':{
+                $leads = $leads->where('status','!=',4);
+                break;
+            }
+            case 'seguimiento':{
+                $leads = $leads->where('status' ,'=', 1)->where('ini_dormir' ,'=', NULL);
+                break;
+            }
+            case 'potenciales':{
+                $leads = $leads->where('status' ,'=', 2)->where('ini_dormir' ,'=', NULL);
+                break;
+            }
+            case 'prospectos':{
+                $leads = $leads->where('status' ,'=', 3)->where('ini_dormir' ,'=', NULL);
+                break;
+            }
+            case 'descartados': {
+                $leads = $leads->where('status' ,'=', 0)->where('ini_dormir' ,'=', NULL);
+                break;
+            }
+            case 'hibernando':{
+                $leads = $leads->where('ini_dormir' ,'!=', NULL);
+                break;
+            }
+            case 'auditoria':{
+                $leads = $leads->where('f_audit','!=',NULL);
+                break;
+            }
+            case 'verde':{
+                $leads = $leads->where('status','=',1)
+                                ->where('fecha_seguimiento','>=',Carbon::now()->subDays(7));
+                break;
+            }
+            case 'amarillo':{
+                $leads = $leads->where('status','=',1)
+                                ->where('fecha_seguimiento','<=',Carbon::now()->subDays(7))
+                                ->where('fecha_seguimiento','>',Carbon::now()->subDays(15));
+                break;
+            }
+            case 'rojo':{
+                $leads = $leads->where('status','=',1)
+                                ->where('fecha_seguimiento','<',Carbon::now()->subDays(16));
+                break;
+            }
+        }
+
+        $leads = $leads->paginate(10);
+
+        return $leads;
+
+    }
+
 }

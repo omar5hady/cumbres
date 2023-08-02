@@ -108,6 +108,9 @@
                         <li @click="menu=258" class="nav-item">
                             <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
                         </li>
+                        <li @click="menu=298" class="nav-item">
+                            <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Recepción Digital</a>
+                        </li>
                     @endif
 
                     @if(Auth::user()->rep_leads == 1)

@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="card scroll-box">
                 <div class="card-header flex-md-column" >
-                    <i class="fa fa-align-justify"></i>Donaciones
+                    <i class="fa fa-align-justify"></i>Proyecto Puente
                     <Button btnClass="btn-info" icon="fa fa-plus-circle" @click="abrirModal('crear')"> Nueva Petición</Button>
                 </div>
                 <div class="card-body">

@@ -573,5 +573,9 @@
             <reporte-individualizacion
             ></reporte-individualizacion>
         </template>
+        <template v-if="menu == 298">
+            <reporte-recepcion
+            ></reporte-recepcion>
+        </template>
     @endif
 @endsection
