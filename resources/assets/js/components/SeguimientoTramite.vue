@@ -137,6 +137,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="ingresar.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',ingresar)">Doc Sit. Geologica</a>
                                                     <a class="dropdown-item" v-if="ingresar.pdf != '' && ingresar.pdf != null"  v-bind:href="'/downloadAvaluo/'+ingresar.pdf">Avaluo</a>
                                                     <a class="dropdown-item" @click="abrirPDF(ingresar)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ ingresar.folio">Contrato de compra venta</a>
@@ -322,6 +323,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="preautorizados.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',preautorizados)">Doc Sit. Geologica</a>
                                                     <a class="dropdown-item" v-if="preautorizados.pdf != '' && preautorizados.pdf != null"  v-bind:href="'/downloadAvaluo/'+preautorizados.pdf">Avaluo</a>
                                                     <a class="dropdown-item" @click="abrirPDF(preautorizados)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ preautorizados.folio">Contrato de compra venta</a>
@@ -526,6 +528,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="liquidacion.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',liquidacion)">Doc Sit. Geologica</a>
                                                     <a class="dropdown-item" v-if="liquidacion.pdf != '' && liquidacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+liquidacion.pdf">Avaluo</a>
                                                     <a class="dropdown-item" @click="abrirPDF(liquidacion)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ liquidacion.folio">Contrato de compra venta</a>
@@ -720,6 +723,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="programacion.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',programacion)">Doc Sit. Geologica</a>
                                                     <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
                                                     <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
@@ -919,6 +923,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="programacion.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',programacion)">Doc Sit. Geologica</a>
                                                     <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
                                                     <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
@@ -1037,7 +1042,7 @@
             </div>
 
             <!--Inicio modal-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal==1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -1899,6 +1904,55 @@
                 <!-- /.modal-dialog -->
             </div>
 
+            <!-- Inicio Modal Archivo Fiscal-->
+        <ModalComponent v-if="modal==2"
+            :titulo="tituloModal"
+            @closeModal="cerrarModal()"
+        >
+            <template v-slot:body>
+                <div class="form-group row">
+                    <input type="file"
+                        v-show="false"
+                        ref="fileFgSelector"
+                        @change="onSelectedFileFg"
+                        accept="image/png, image/jpeg, image/gif, application/pdf"
+                    >
+                    <div class="col-md-9" v-if="!archivo">
+                        <button
+                            @click="onSelectFileFg"
+                            class="btn btn-scarlet">
+                            Seleccionar Archivo
+                            <i class="fa fa-upload"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-7" v-else>
+                        <h6 style="color:#1e1d40;">Archivo seleccionado: {{archivo.name}}</h6>
+                        <button
+                            @click="onSelectFileFg"
+                            class="btn btn-info">
+                            Cambiar Archivo
+                            <i class="fa fa-upload"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-3" v-if="archivo">
+                        <button
+                            @click="saveFileFg"
+                            class="btn btn-scarlet">
+                            Guardar Archivo
+                            <i class="icon-check"></i>
+                        </button>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:buttons-footer>
+                <a v-if="file_fg != null" class="btn btn-primary btn-sm" target="_blank" v-bind:href="'/contratos/downloadFileFg/'+ file_fg">Ver archivo</a>
+            </template>
+        </ModalComponent>
+        <!--Fin del modal-->
+
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -2038,6 +2092,9 @@ import Nav from './Componentes/NavComponent.vue'
                 errorMostrarMsjProgramacion: [],
 
                 band: 0,
+
+                archivo:'',
+                file_fg:'',
 
                 //variables para filtros de Por ingresar
                 criterio:'lotes.fraccionamiento_id',
@@ -2353,6 +2410,41 @@ import Nav from './Componentes/NavComponent.vue'
                     console.log(error);
                 });
 
+            },
+            onSelectFileFg(){
+                this.$refs.fileFgSelector.click()
+            },
+            onSelectedFileFg( event ){
+                this.archivo = {}
+                this.archivo = event.target.files[0]
+            },
+            saveFileFg(){
+                let formData = new FormData();
+
+                formData.append('archivo', this.archivo);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/contratos/formSubmitFileFg/'+me.id, formData)
+                .then(function (response) {
+
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo Fiscal guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.archivoFileFg = me.archivo.name
+                    me.archivo = undefined;
+                    me.listarIngresoExp(1);
+                    me.listarAutorizados(1);
+                    me.listarLiquidacion(1);
+                    me.listarProgramacion(1);
+                    me.listarEnviados(1);
+
+                }).catch(function (error) {
+                    console.log(error);
+                });
             },
 
             SolicitarEntrega(){
@@ -3139,6 +3231,14 @@ import Nav from './Componentes/NavComponent.vue'
             abrirModal(accion,data =[]){
 
                 switch(accion){
+                    case 'sit_fg':{
+                        this.modal = 2;
+                        this.tituloModal = 'Archivo situación geologica';
+                        this.id = data['folio'];
+                        this.archivo = undefined;
+                        this.file_fg = data['file_fg'];
+                        break;
+                    }
                     case 'fecha_recibido':
                     {
                         this.modal = 1;

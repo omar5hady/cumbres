@@ -266,7 +266,7 @@
                                 </td>
                                 <td class="td2">
                                     <a v-if="lead.celular != null" title="Enviar whatsapp"
-                                        class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='">
+                                        class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone='+lead.clv_lada+lead.celular+'&text='">
                                         <i class="fa fa-whatsapp fa-lg"></i>
                                     </a>
                                 </td>

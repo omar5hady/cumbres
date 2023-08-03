@@ -1570,6 +1570,13 @@ class DigitalLeadController extends Controller
             return [
                 'vendedores' => $vendedores,
             ];
+
+            //LUIS DANIEL
+            //RUBEN ALFARO
+            //MANOFACTURAS CABRERA
+
+            //RAUL HERNANDEZ CONTRERAS
+
     }
 
     public function excelReportesProspectos(Request $request){
@@ -1773,11 +1780,11 @@ class DigitalLeadController extends Controller
         $verde = Digital_lead::select('digital_leads.*')->where('status','=',1)
                     ->where('fecha_seguimiento','>=',Carbon::now()->subDays(7));
         $amarillo = Digital_lead::select('digital_leads.*')->where('status','=',1)
-                    ->where('fecha_seguimiento','<=',Carbon::now()->subDays(7))
+                    ->where('fecha_seguimiento','<',Carbon::now()->subDays(7))
                     ->where('fecha_seguimiento','>',Carbon::now()->subDays(15));
 
         $rojo = Digital_lead::select('digital_leads.*')->where('status','=',1)
-                    ->where('fecha_seguimiento','<',Carbon::now()->subDays(16));
+                    ->where('fecha_seguimiento','<=',Carbon::now()->subDays(15));
 
         if($request->fecha1 != '' && $request->fecha2 != ''){
             $leads = $leads->whereBetween('created_at',[$request->fecha1,$request->fecha2]);
