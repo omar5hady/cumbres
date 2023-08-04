@@ -17,6 +17,8 @@
         @endif
         @if(Auth::user()->rol_id == 1 ||
             Auth::user()->usuario == 'uriel.al' ||
+            Auth::user()->usuario == 'meza.marco60' ||
+            Auth::user()->usuario == 'lupita.vidales' ||
             Auth::user()->usuario == 'Herlindo'
         )
             <li @click="menu=294" class="nav-item">

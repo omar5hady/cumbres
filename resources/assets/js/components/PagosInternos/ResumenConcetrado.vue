@@ -34,18 +34,27 @@
                                     <option value="">Seleccione</option>
                                     <option value="OFICINA">OFICINA</option>
                                     <option value="NUEVOS PROYECTOS">NUEVOS PROYECTOS</option>
+                                    <option value="FRACCIONAMIENTOS CAMPESTRES">FRACCIONAMIENTOS CAMPESTRES</option>
                                     <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-10"  v-if="(b_obra != 'OFICINA' && b_obra != 'NUEVOS PROYECTOS') && b_obra != ''">
+                        <div class="col-md-10" v-if="(b_obra != 'OFICINA' && b_obra != 'NUEVOS PROYECTOS') && b_obra != ''">
                             <div class="input-group">
                                 <input class="form-control col-md-2" type="text" disabled placeholder="Sub Obra:">
-                                <select class="form-control"
+                                <select class="form-control" v-if="b_obra != 'FRACCIONAMIENTOS CAMPESTRES'"
                                     v-model="b_sub_obra"
                                     >
                                     <option value="">Seleccione</option>
                                     <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
+                                </select>
+                                <select class="form-control" v-else
+                                    v-model="b_sub_obra">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="sub_obra in arrayCampestres"
+                                        :key="sub_obra" :value="sub_obra">
+                                        {{ sub_obra }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -156,6 +165,22 @@ export default {
     data() {
         return {
             empresas : [],
+            arrayCampestres:[
+                'FRACC. LOS ZAPOTES, EL JAGUEY, SAN NICOLAS TOLENTINO',
+                'FRACC. ORQUIDEAS, EL NARANJO, SLP.',
+                'FRACC. LA CEBADILLA 3, CARDENAS , SLP',
+                'FRACC. MESA DE LOS CEDROS, ARMADILLO, SLP',
+                'FRACC. LA CEBADILLA 4, CARDENAS , SLP',
+                'FRACC. EL SALITRILLO, CARDENAS, SLP',
+                'FRACC. PIEDRA REAL , LAGUNILLAS,SLP ',
+                'FRACC. LAS PRESAS, VENADO, SLP',
+                'BELEN DE GUADALUPE',
+                'FRACC. LA CEBADILLA 5, CARDENAS , SLP',
+                'FRACC. VALLE ALTO, TAMASOPO, SLP',
+                'FRACC. LA CEBADILLA , CARDENAS , SLP',
+                'FRACC. LA CEBADILLA 2, CARDENAS , SLP',
+                'FRACC. LA TINAJERA , VENADO , SLP.',
+            ],
             arrayConcentrado : [],
             arrayDetalle : [],
             detalle : 0,

@@ -796,6 +796,13 @@ class DigitalLeadController extends Controller
         if($lead->fecha_contacto == NULL && Auth::user()->id == $lead->vendedor_asign)
             $lead->fecha_contacto = $fecha;
 
+        if($lead->vendedor_asign && (
+            Auth::user()->usuario == 'yazmin' ||
+            Auth::user()->usuario == 'enrique' ||
+            Auth::user()->usuario == 'Axel'
+        ))
+            $lead->fecha_gerente = $fecha;
+
         if($lead->status == 1 &&
             (   Auth::user()->usuario == 'edaly.z' ||
                 Auth::user()->usuario == 'alejandro.ort' ||
@@ -895,6 +902,7 @@ class DigitalLeadController extends Controller
             $lead->vendedor_asign = $vendedor_asign['vendedor_elegido'];
             $lead->status = 2;// Se cambia estus para indicar que es un cliente potencial.
             $lead->fecha_asign = $fecha;
+            $lead->fecha_gerente = $fecha;
             $lead->fecha_contacto = NULL;
             $lead->save();
 
@@ -1117,7 +1125,6 @@ class DigitalLeadController extends Controller
         $fecha2 = $request->fecha2;
         $proyecto = $request->proyecto;
 
-        $today = Carbon::now()->subDays(14)->format('Y-m-d');
         // Se obtienen los asesores que tienen por lo menos un lead asignado.
         $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
                 ->select('personal.id','personal.nombre','personal.apellidos')
@@ -1149,6 +1156,26 @@ class DigitalLeadController extends Controller
             $asesor->descartados = $asesor->descartados->count();
             $asesor->sinAtender = 0;
 
+            $asesor->verde = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->select(
+                                'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.fecha_update', 'digital_leads.fecha_asign',
+                                'digital_leads.apellidos')
+                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                ->where('fecha_update','>=',Carbon::now()->subDays(7))
+                ->where('digital_leads.fecha_asign','!=',NULL)
+                ->where('status','!=',3)
+                ->where('status','!=',4)
+                ->where('status','!=',0);
+                if($fecha1 != '') // Fecha de registro
+                    $asesor->verde = $asesor->verde->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
+                if($proyecto != '')  // Proyecto de interes
+                    $asesor->verde = $asesor->verde->where('proyecto_interes', '=',$proyecto);
+                $asesor->verde = $asesor->verde->get();
+
+            $asesor->nVerde = $asesor->verde->count();
+
             $asesor->amarillo = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->select(
@@ -1156,7 +1183,8 @@ class DigitalLeadController extends Controller
                                 'digital_leads.fecha_update', 'digital_leads.fecha_asign',
                                 'digital_leads.apellidos')
                 ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
-                ->where('fecha_update','>',$today)
+                ->where('fecha_update','<',Carbon::now()->subDays(7))
+                ->where('fecha_update','>',Carbon::now()->subDays(15))
                 ->where('digital_leads.fecha_asign','!=',NULL)
                 ->where('status','!=',3)
                 ->where('status','!=',4)
@@ -1176,7 +1204,7 @@ class DigitalLeadController extends Controller
                                 'digital_leads.fecha_update', 'digital_leads.fecha_asign',
                                 'digital_leads.apellidos')
                     ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
-                    ->where('fecha_update','<=',$today)
+                    ->where('fecha_update','<=',Carbon::now()->subDays(15))
                     ->where('digital_leads.fecha_asign','!=',NULL)
                     ->where('status','!=',3)
                     ->where('status','!=',4)
@@ -1188,6 +1216,73 @@ class DigitalLeadController extends Controller
                     $asesor->rojo = $asesor->rojo->get();
 
             $asesor->nRojo = $asesor->rojo->count();
+
+
+
+
+            $asesor->gVerde = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->select(
+                                'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.fecha_update', 'digital_leads.fecha_asign',
+                                'digital_leads.apellidos')
+                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                ->where('fecha_gerente','>=',Carbon::now()->subDays(7))
+                ->where('digital_leads.fecha_asign','!=',NULL)
+                ->where('status','!=',3)
+                ->where('status','!=',4)
+                ->where('status','!=',0);
+                if($fecha1 != '') // Fecha de registro
+                    $asesor->gVerde = $asesor->gVerde->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
+                if($proyecto != '')  // Proyecto de interes
+                    $asesor->gVerde = $asesor->gVerde->where('proyecto_interes', '=',$proyecto);
+                $asesor->gVerde = $asesor->gVerde->get();
+
+            $asesor->nGVerde = $asesor->gVerde->count();
+
+            $asesor->gAmarillo = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->select(
+                                'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.fecha_update', 'digital_leads.fecha_asign',
+                                'digital_leads.apellidos')
+                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                ->where('fecha_gerente','<',Carbon::now()->subDays(7))
+                ->where('fecha_gerente','>',Carbon::now()->subDays(15))
+                ->where('digital_leads.fecha_asign','!=',NULL)
+                ->where('status','!=',3)
+                ->where('status','!=',4)
+                ->where('status','!=',0);
+                if($fecha1 != '') // Fecha de registro
+                    $asesor->gAmarillo = $asesor->gAmarillo->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
+                if($proyecto != '')  // Proyecto de interes
+                    $asesor->gAmarillo = $asesor->gAmarillo->where('proyecto_interes', '=',$proyecto);
+                $asesor->gAmarillo = $asesor->gAmarillo->get();
+
+            $asesor->nGAmarillo = $asesor->gAmarillo->count();
+
+            $asesor->gRojo = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->select(
+                                'c.nombre_campania','f.nombre as proyecto','digital_leads.nombre',
+                                'digital_leads.fecha_update', 'digital_leads.fecha_asign',
+                                'digital_leads.apellidos')
+                    ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                    ->where('fecha_gerente','<=',Carbon::now()->subDays(15))
+                    ->where('digital_leads.fecha_asign','!=',NULL)
+                    ->where('status','!=',3)
+                    ->where('status','!=',4)
+                    ->where('status','!=',0);
+                    if($fecha1 != '') // Fecha de registro
+                        $asesor->gRojo = $asesor->gRojo->whereBetween('digital_leads.created_at', [$fecha1, $fecha2]);
+                    if($proyecto != '')  // Proyecto de interes
+                        $asesor->gRojo = $asesor->gRojo->where('proyecto_interes', '=',$proyecto);
+                    $asesor->gRojo = $asesor->gRojo->get();
+
+            $asesor->nGRojo = $asesor->gRojo->count();
+
+
+
 
             $asesor->removidos = $this->getCastigados($asesor->id, $fecha1, $fecha2);
             $asesor->n_removidos = $asesor->removidos->count();
@@ -1741,6 +1836,7 @@ class DigitalLeadController extends Controller
             $lead->vendedor_asign = NULL;
             $lead->fecha_asign = NULL;
             $lead->fecha_contacto = NULL;
+            $lead->fecha_gerente = NULL;
             $lead->status = 1;
             $obs->usuario = Auth::user()->usuario;
             $obs->comentario = 'Lead Hibernando: '.$comentario;

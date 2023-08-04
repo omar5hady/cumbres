@@ -123,7 +123,7 @@
                                                 <th> # Leads asignados</th>
                                                 <th> Descartados</th>
                                                 <th></th>
-                                                <th colspan="2"></th>
+                                                <th colspan="3"></th>
                                                 <th> Removidos </th>
                                             </tr>
                                         </thead>
@@ -134,7 +134,10 @@
                                                 <td class="td2" v-text="asesor.descartados"></td>
                                                 <td></td>
                                                 <td class="table-success">
-                                                    <a @click="verLeads(asesor.amarillo,'Verde')" href="#">{{asesor.nAmarillo}}</a>
+                                                    <a @click="verLeads(asesor.verde,'Verde')" href="#">{{asesor.nVerde}}</a>
+                                                </td>
+                                                <td class="table-warning">
+                                                    <a @click="verLeads(asesor.amarillo,'Amarillo')" href="#">{{asesor.nAmarillo}}</a>
                                                 </td>
                                                 <td class="table-danger">
                                                     <a @click="verLeads(asesor.rojo, 'Rojo')" href="#">{{asesor.nRojo}}</a>
@@ -143,17 +146,6 @@
                                                     <a @click="verLeads(asesor.removidos, 'Removidos')" href="#">{{asesor.n_removidos}}</a>
                                                 </td>
                                             </tr>
-                                            <!-- <tr>
-                                                <td class="td2">Total:</td>
-                                                <td class="td2" v-text="asesor.t_leads"></td>
-                                                <td class="td2" v-text="asesor.t_descartados"></td>
-                                                <td></td>
-                                                <td class="td2" v-text="asesor.t_verde"></td>
-                                                <td class="td2" v-text="asesor.t_rojo"></td>
-                                                <td class="td2" v-text="asesor.t_removidos"></td>
-                                            </tr> -->
-
-
                                         </tbody>
                                     </table>
                                 </div>

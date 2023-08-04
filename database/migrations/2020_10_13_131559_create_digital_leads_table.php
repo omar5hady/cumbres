@@ -64,6 +64,8 @@ class CreateDigitalLeadsTable extends Migration
             $table->dateTime('fecha_contacto')->nullable();
             //Fecha de ultimo seguimiento por los asesores digitales
             $table->dateTime('fecha_seguimiento')->nullable();
+            //Fecha de ultimo seguimiento por gerente
+            $table->dateTime('fecha_gerente')->nullable();
             $table->string('prioridad',10)->nullable();
             $table->string('nombre_rec',50)->nullable();
             $table->string('apellidos_rec',80)->nullable();
