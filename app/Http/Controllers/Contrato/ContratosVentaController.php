@@ -226,6 +226,10 @@ class ContratosVentaController extends Controller
             $fechaProfeco =  new Carbon('2023-07-03');
             $contrato->difProfeco = $fechaProfeco->diffInDays(new Carbon($contrato->fecha_contrato), false);
         }
+        elseif($contrato->emp_constructora == 'CONCRETANIA'  && $contrato->modelo != 'Terreno' && $contrato->tipo_credito == 'Crédito Directo'){
+            $fechaProfeco =  new Carbon('2023-07-26');
+            $contrato->difProfeco = $fechaProfeco->diffInDays(new Carbon($contrato->fecha_contrato), false);
+        }
 
         $contrato->fecha_contrato = new Carbon($contrato->fecha_contrato);
         $contrato->fecha_contrato = $contrato->fecha_contrato->formatLocalized('%d días del mes de %B del año %Y');

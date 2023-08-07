@@ -1068,12 +1068,13 @@
         <p>
             <strong>DECIMA NOVENA.- <u>MODELO DE CONTRATO PROFECO.</u></strong>
             @if($contrato->emp_constructora == 'CONCRETANIA' && $contrato->difProfeco > 0)
-                Este contrato fue presentado  a Registro ante la Procuraduría Federal del Consumidor bajo el número de procedimiento <u>159754</u>,
-                el pasado día 18 de MAYO de 2023; por lo que se entiende aprobado por esa dependencia en términos del artículo 87 de la Ley Federal de
-                Protección al Consumidor que en lo conducente indica que presentado un contrato a registro ante la Procuraduría, ésta
-                emitirá su resolución dentro de los treinta días hábiles siguientes a la fecha de presentación de esa solicitud.
-                Transcurrido dicho plazo sin haberse emitido la resolución correspondiente, el modelo de contrato se entenderá aprobado,
-                quedando en su caso como prueba de inscripción la solicitud de registro.
+            El modelo de contrato de adhesión que se utiliza para documentar la
+            presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el
+            número <strong>6980-2023</strong>
+            de fecha <strong>26 de julio de 2023.</strong>
+            Asimismo, el contenido de este contrato se incorporará en escritura pública sin importar el orden
+            y forma en que se citen y esto no se considerará como incumplimiento a la Ley, ni modificación al modelo de contrato registrado ante PROFECO.
+            Cualquier variación del contenido del presente contrato en perjuicio de <strong>“EL PROMITENTE COMPRADOR”</strong> se tendrá por no puesta.
             @else
                 El modelo de contrato de adhesión que se utiliza para documentar la
                 presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el
