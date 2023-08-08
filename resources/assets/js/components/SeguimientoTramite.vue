@@ -285,6 +285,7 @@
                                 <!-- A partir del 1ero de marzo del 2023 se solicito que se hablara tema tecnico con los clientes de privada Torino, Mzn 16 del Lote 1 al 19 y
                                             Mzn 12 de lote y al 18 -->
                                 <!-- Lo anterior aplica para ventas o firmas de escritura a partir de la fecha -->
+                                <!-- Agregar fecha de venta y fecha de firma -->
                                 <TableComponent :cabecera="[
                                         '','Detener','Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
                                         '# Lote','Modelo','Dirección','Avance obra','Firma Contrato',

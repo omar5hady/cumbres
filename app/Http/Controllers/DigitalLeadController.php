@@ -232,6 +232,8 @@ class DigitalLeadController extends Controller
         $prioridad = $request->prioridad;
         $modelo = $request->modelo;
         $b_semaforo = $request->b_semaforo;
+        $b_semaforo_recepcion = $request->b_semaforo_recepcion;
+        $b_semaforo_gerente = $request->b_semaforo_gerente;
         //Query principal
         $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
@@ -295,10 +297,28 @@ class DigitalLeadController extends Controller
                     if($b_semaforo == 1)
                         $leads = $leads->where('fecha_update','>=',Carbon::now()->subDays(7));
                     if($b_semaforo == 2)
-                        $leads = $leads->where('fecha_update','<=',Carbon::now()->subDays(7))
+                        $leads = $leads->where('fecha_update','<',Carbon::now()->subDays(7))
                                         ->where('fecha_update','>',Carbon::now()->subDays(15));
                     if($b_semaforo == 3)
-                        $leads = $leads->where('fecha_update','<',Carbon::now()->subDays(16));
+                        $leads = $leads->where('fecha_update','<=',Carbon::now()->subDays(15));
+                }
+                if($b_semaforo_gerente != ''){
+                    if($b_semaforo_gerente == 1)
+                        $leads = $leads->where('fecha_gerente','>=',Carbon::now()->subDays(7));
+                    if($b_semaforo_gerente == 2)
+                        $leads = $leads->where('fecha_gerente','<',Carbon::now()->subDays(7))
+                                        ->where('fecha_gerente','>',Carbon::now()->subDays(15));
+                    if($b_semaforo_gerente == 3)
+                        $leads = $leads->where('fecha_gerente','<=',Carbon::now()->subDays(15));
+                }
+                if($b_semaforo_recepcion != ''){
+                    if($b_semaforo_recepcion == 1)
+                        $leads = $leads->where('fecha_seguimiento','>=',Carbon::now()->subDays(7));
+                    if($b_semaforo_recepcion == 2)
+                        $leads = $leads->where('fecha_seguimiento','<',Carbon::now()->subDays(7))
+                                        ->where('fecha_seguimiento','>',Carbon::now()->subDays(15));
+                    if($b_semaforo_recepcion == 3)
+                        $leads = $leads->where('fecha_seguimiento','<=',Carbon::now()->subDays(15));
                 }
                 if($request->b_cupon == 1){//Pendientes de envio de cupon
                     $cupones = Premios::select('lead_id as id')->get();

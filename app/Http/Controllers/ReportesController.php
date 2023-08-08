@@ -4133,5 +4133,29 @@ class ReportesController extends Controller
 
     }
 
+    public function reporteSitFG(Request $request){
+        $lotes = Contrato::join('creditos as cr','contratos.id','=','cr.id')
+                ->join('personal as p','cr.prospecto_id', '=', 'p.id')
+                ->join('lotes as l','cr.lote_id', '=', 'l.id')
+                ->join('etapas as e','l.etapa_id', '=', 'e.id')
+                ->join('fraccionamientos as f','l.fraccionamiento_id', '=', 'f.id')
+                ->leftJoin('expedientes as exp','contratos.id','=','exp.id')
+                ->select('p.nombre','p.apellidos', 'f.nombre as proyecto', 'e.num_etapa as etapa',
+                    'l.num_lote', 'l.sublote', 'l.manzana', 'l.sit_fg', 'contratos.file_fg',
+                    'contratos.fecha','contratos.status','exp.fecha_firma_esc',
+                    'contratos.id'
+                )
+                ->where('l.sit_fg','=',1)
+                ->where('contratos.file_fg','=',NULL)
+                ->where('contratos.status','=',3);
+                if($request->fecha1 != ''){
+                    $lotes = $lotes->whereBetween('contratos.fecha',[$request->fecha1, $request->fecha2]);
+                }
+                if($request->fecha3 != ''){
+                    $lotes = $lotes->whereBetween('exp.fecha_firma_esc',[$request->fecha3, $request->fecha4]);
+                }
+        return $lotes->paginate(10);
+    }
+
 
 }

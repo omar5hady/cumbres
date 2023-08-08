@@ -44,6 +44,7 @@
                                     v-model="b_apellidos" @keyup.enter="listarLeads(1)" placeholder="Apellidos" class="form-control col-sm-6">
                             </div>
                         </div>
+                        <!-- Buscador por nombre de usuario -->
                         <div class="col-md-8" v-if="rolId != 2">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Usuario" class="form-control col-sm-3">
@@ -61,20 +62,21 @@
                                     <option value="1">Pendientes</option>
                                     <option value="3">Finalizados</option>
                                 </select>
-
-                                <input type="text" v-if="b_motivo == 1" v-model="b_campania" @keyup.enter="listarLeads(1)" placeholder="Campaña publicitaria" class="form-control col-sm-6">
-                                <input type="text" v-if="b_motivo == 1" v-model="b_contacto" @keyup.enter="listarLeads(1)" placeholder="Medio de contacto" class="form-control col-sm-6">
+                                <!-- Busacador por campaña -->
+                                <template v-if="rolId != 2">
+                                    <input type="text" v-if="b_motivo == 1" v-model="b_campania" @keyup.enter="listarLeads(1)" placeholder="Campaña publicitaria" class="form-control col-sm-6">
+                                    <input type="text" v-if="b_motivo == 1" v-model="b_contacto" @keyup.enter="listarLeads(1)" placeholder="Medio de contacto" class="form-control col-sm-6">
+                                </template>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <div class="input-group" v-if="b_motivo == 1">
-                                <select class="form-control"  v-model="b_asesor"
-                                        v-if="rolId != 2">
+                        <div class="col-md-8" v-if="b_motivo == 1">
+                            <div class="input-group" >
+                                <select class="form-control" v-model="b_asesor" v-if="rolId != 2">
                                     <option value="">Vendedor asignado</option>
                                     <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                 </select>
                                 <!--Criterios para el listado de busqueda -->
-                                <select v-if="b_motivo == 1" class="form-control col-sm-4" v-model="b_status">
+                                <select class="form-control col-sm-4" v-model="b_status">
                                     <option value="">Status</option>
                                     <option value="1">En Seguimiento</option>
                                     <option value="0">Descartado</option>
@@ -112,7 +114,28 @@
                         <div class="col-md-6" v-if="b_motivo == 1">
                             <div class="input-group">
                                 <input type="text" readonly placeholder="Semaforo Atención:" class="form-control col-sm-3">
-                                <select class="form-control"  v-model="b_semaforo" >
+                                <select class="form-control"  v-model="b_semaforo" v-if="rolId==2" >
+                                    <option value="">Todos</option>
+                                    <option value="1">Al corriente</option>
+                                    <option value="2">7-15 dias</option>
+                                    <option value="3">+16 dias</option>
+                                </select>
+                                <select class="form-control"  v-model="b_semaforo_recepcion"
+                                v-if="userId == 25511 //Adrian
+                                    || userId == 28669 //Ashly
+                                    || userId == 28271 //Alejandro Ort
+                                    || userId == 28128 //Ale Escobar
+                                    || userId == 33095 //Dany muñoz
+                                    || rolId == 1" >
+                                    <option value="">Todos</option>
+                                    <option value="1">Al corriente</option>
+                                    <option value="2">7-15 dias</option>
+                                    <option value="3">+16 dias</option>
+                                </select>
+                                <select class="form-control"  v-model="b_semaforo_gerente"
+                                v-if="userId == 11 //Yas
+                                    || userId == 29692 //Alex Torres
+                                    || userId == 13" >
                                     <option value="">Todos</option>
                                     <option value="1">Al corriente</option>
                                     <option value="2">7-15 dias</option>
@@ -125,7 +148,7 @@
                                 <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-3">
                                 <select class="form-control" v-model="b_proyecto">
                                     <option value="">Seleccione</option>
-                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                    <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id"
                                         :value="proyecto.id" v-text="proyecto.nombre">
                                     </option>
                                 </select>
@@ -733,7 +756,7 @@
                             <div class="col-md-6">
                                 <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
                                     <option value="">Seleccione</option>
-                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                    <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id"
                                         :value="proyecto.id" v-text="proyecto.nombre">
                                     </option>
                                     <option value="0">Otro...</option>
@@ -821,7 +844,7 @@
                             <div class="col-md-3">
                                 <select  v-model="clv_lada"  class="form-control" >
                                     <option value="">Clave lada</option>
-                                    <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                    <option v-for="clave in $root.$data.arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -1190,7 +1213,7 @@
                             <div class="col-md-6">
                                 <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
                                     <option value="">Seleccione</option>
-                                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                                    <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id"
                                         :value="proyecto.id" v-text="proyecto.nombre">
                                     </option>
                                     <option value="0">Otro...</option>
@@ -1571,7 +1594,7 @@
                     <div class="col-md-6">
                         <select class="form-control" v-model="buscadores.fraccionamiento_id" v-on:change="$root.selectEtapa(buscadores.fraccionamiento_id)">
                             <option value="">Seleccione</option>
-                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id"
+                            <option v-for="proyecto in $root.$data.proyectos" :key="proyecto.id"
                                 :value="proyecto.id" v-text="proyecto.nombre">
                             </option>
                         </select>
@@ -1745,20 +1768,18 @@ export default {
             buscadores:{},
             inventario:[],
             inventarioFull:[],
-            datos : [],
-            arrayEmpresa: [],
             arrayColonias:[],
             arrayEstados:[],
             arrayCiudades:[],
             arrayCampanias:[],
-            arrayFraccionamientos:[],
             arrayModelos:[],
             arrayEmpresas:[],
             arrayCreditos:[],
             arrayObs:[],
             arrayAsesores:[],
-            arrayClaves:[],
             b_semaforo : '',
+            b_semaforo_recepcion: '',
+            b_semaforo_gerente: '',
 
             medio_contacto: '',
             medio_publicidad: '',
@@ -2226,19 +2247,6 @@ export default {
             });
 
         },
-        getClavesLadas(){
-            let me = this;
-            me.arrayClaves=[];
-            var url = '/getClavesLadas';
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayClaves = respuesta.claves;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        },
         listarLeads (page){
             let me = this;
             me.loading = true;
@@ -2256,7 +2264,10 @@ export default {
                 '&proyecto='+me.b_proyecto  + '&prioridad='+me.b_prioridad +
                 '&b_cupon='+me.b_cupon + '&hibernar=' + me.b_hibernar +
                 '&b_auditado=' + me.b_auditado +
-                '&modelo='+me.b_modelo      + '&page=' + page + '&b_semaforo=' + me.b_semaforo +
+                '&modelo='+me.b_modelo      + '&page=' + page +
+                '&b_semaforo=' + me.b_semaforo +
+                '&b_semaforo_gerente=' + me.b_semaforo_gerente +
+                '&b_semaforo_recepcion=' + me.b_semaforo_recepcion +
                 '&b_user_name='+me.b_user_name + '&b_user_lastname=' + me.b_user_lastname +
                 '&b_contacto='+me.b_contacto
             ).then(function(response){
@@ -2276,18 +2287,6 @@ export default {
                 var respuesta = response.data;
                 me.arrayEmpresas = respuesta.empresas.data;
 
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-        },
-        selectFraccionamientos(){
-            let me = this;
-            me.arrayFraccionamientos=[];
-            var url = '/select_fraccionamiento';
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayFraccionamientos = respuesta.fraccionamientos;
             })
             .catch(function (error) {
                 console.log(error);
@@ -2349,18 +2348,6 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
-        },
-        getDatosEmpresa(val1){
-            let me = this;
-            me.loading = true;
-            me.datos.empresa_coa = val1.nombre;
-            me.datos.empresaCoa_id = val1.id;
-        },
-        getDatosEmpresa2(val1){
-            let me = this;
-            me.loading = true;
-            me.datos.empresa_id = val1.id;
-            me.datos.empresa = val1.nombre;
         },
         getInventario(){
             let me = this;
@@ -2426,7 +2413,6 @@ export default {
             });
         },
         cerrarModal(){
-            this.datos = [];
             this.modal = 0;
             this.selectCampania(1);
             this.selectAsesores()
@@ -2849,9 +2835,9 @@ export default {
         this.b_cliente = this.$root.$data.buscar;
         this.listarLeads(1);
         this.selectCampania(1);
-        this.selectFraccionamientos();
+        this.$root.selectFraccionamientos();
         this.selectAsesores();
-        this.getClavesLadas();
+        this.$root.getClavesLadas();
         this.$root.$data.buscar = '';
     },
 };

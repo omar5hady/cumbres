@@ -763,6 +763,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estadisticas/publicidad','MedioPublicitarioController@estadisticas');
 
         /////////// REPORTES ////////////////
+            Route::get('/reprotes/reporteSitFG','ReportesController@reporteSitFG');
             Route::get('/reprotes/inventario','ReportesController@reporteInventario');
             Route::get('/reprotes/reporteEmpresas','ReportesController@reporteEmpresas');
             Route::get('/reprotes/reporteEmpresasExcel','ReportesController@reporteEmpresasExcel');

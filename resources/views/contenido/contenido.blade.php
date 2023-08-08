@@ -577,5 +577,9 @@
             <reporte-recepcion
             ></reporte-recepcion>
         </template>
+        <template v-if="menu == 299">
+            <reporte-sit-fg
+            ></reporte-sit-fg>
+        </template>
     @endif
 @endsection

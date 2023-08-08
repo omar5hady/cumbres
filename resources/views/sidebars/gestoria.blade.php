@@ -31,6 +31,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-usd"></i> Integracion de cobros</a>
             </li>
         @endif
-        
+        @if(Auth::user()->seg_tramite == 1)
+            <li @click="menu=299" class="nav-item">
+                <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte</a>
+            </li>
+        @endif
+
     </ul>
 </li>
