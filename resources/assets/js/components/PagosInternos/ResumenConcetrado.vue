@@ -113,6 +113,8 @@
                             'Monto',
                             'Solicitante',
                             'Proveedor',
+                            'Tipo de pago',
+                            'Forma de pago'
                         ]"
                     >
                         <template v-slot:tbody>
@@ -132,6 +134,20 @@
                                 </td>
                                 <td class="td2">
                                     {{ det.proveedor }}
+                                </td>
+                                <td v-if="det.tipo_pago =='0'" class="td2">
+                                   CF
+                                </td>
+                                <td v-else-if="det.tipo_pago =='1'" class="td2">
+                                   Banco
+                                </td>
+                                <td v-if="det.tipo_pago =='1' && det.forma_pago =='0'" class="td2">
+                                   Transferencia
+                                </td>
+                                <td v-else-if="det.tipo_pago =='1' && det.forma_pago =='1'" class="td2">
+                                   Cheque
+                                </td>
+                                <td v-else class="td2">
                                 </td>
                             </tr>
                         </template>

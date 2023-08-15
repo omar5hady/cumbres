@@ -41,6 +41,7 @@ class CreateIniObrasTable extends Migration
             $table->integer('num_casas')->default(0);
 
             $table->string('documento')->nullable();
+            $table->string('adendum')->nullable();
             $table->string('registro_obra')->nullable();
 
             $table->string('direccion_proy')->nullable();

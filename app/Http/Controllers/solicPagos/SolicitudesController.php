@@ -1015,7 +1015,7 @@ class SolicitudesController extends Controller
             $c->detalle = SpDetalle::join('sp_solicituds as solic','solic.id','=','sp_detalles.solic_id')
                 ->join('personal as pv','solic.proveedor_id','=','pv.id')
                 ->join('personal as user','solic.solicitante_id','=','user.id')
-                ->select('sp_detalles.*', 'solic.fecha_pago',
+                ->select('sp_detalles.*', 'solic.fecha_pago','solic.forma_pago','solic.tipo_pago',
                     DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante"),
                     DB::raw("CONCAT(pv.nombre,' ',pv.apellidos) AS proveedor")
                 )

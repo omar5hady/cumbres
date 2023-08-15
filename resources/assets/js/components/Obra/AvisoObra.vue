@@ -71,7 +71,13 @@
                                                 <button title="Subir contrato" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
                                                     <i class="icon-cloud-upload"></i>
                                                 </button>
+                                                <button title="Subir Adendum" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirAdendum',avisoObra)" class="btn btn-scarlet btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
+                                                </button>
                                                 <a title="Descargar contrato" class="btn btn-default btn-sm" v-if="avisoObra.documento != '' && avisoObra.documento != null"  v-bind:href="'/downloadContratoObra/'+avisoObra.documento">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                                <a title="Descargar adendum" class="btn btn-default btn-sm" v-if="avisoObra.adendum != '' && avisoObra.adendum != null"  v-bind:href="'/downloadAdendum/'+avisoObra.adendum">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
@@ -743,12 +749,22 @@
                                 <button type="submit" class="btn btn-success">Cargar</button>
                         </form>
                     </div>
-                    <div v-else>
+                    <div v-if="tipoAccion == 2">
                         <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
 
                             <strong>Seleccionar archivo</strong>
 
                             <input type="file" class="form-control" v-on:change="onImageChange2">
+                            <br/>
+                            <button type="submit" class="btn btn-success">Cargar</button>
+                        </form>
+                    </div>
+                    <div v-if="tipoAccion == 3">
+                        <form  method="post" @submit="saveAdendum" enctype="multipart/form-data">
+
+                            <strong>Seleccionar archivo</strong>
+
+                            <input type="file" class="form-control" v-on:change="onImageChange">
                             <br/>
                             <button type="submit" class="btn btn-success">Cargar</button>
                         </form>
@@ -1031,6 +1047,30 @@
 
                 formData.append('pdf', this.pdf);
                 axios.post('/formSubmitRegistroObra/'+this.id, formData)
+                .then(function (response) {
+
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+                })
+                .catch(function (error) {
+                    currentObj.output = error;
+                });
+            },
+            saveAdendum(e) {
+                e.preventDefault();
+                let currentObj = this;
+
+                let formData = new FormData();
+
+                formData.append('pdf', this.pdf);
+                axios.post('/formSubmitAdendum/'+this.id, formData)
                 .then(function (response) {
 
                     currentObj.success = response.data.success;
@@ -1587,6 +1627,15 @@
                         this.tituloModal='Subir registro de obra';
                         this.id=data['id'];
                         this.pdf=data['documento'];
+                        break;
+                    }
+                    case 'subirAdendum':
+                    {
+                        this.modal =1;
+                        this.tipoAccion = 3;
+                        this.tituloModal='Subir adendum';
+                        this.id=data['id'];
+                        this.pdf=data['adendum'];
                         break;
                     }
                 }

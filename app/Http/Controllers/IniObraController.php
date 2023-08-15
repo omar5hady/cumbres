@@ -36,7 +36,7 @@ class IniObraController extends Controller
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
             'ini_obras.total_superficie','ini_obras.emp_constructora', 'ini_obras.calle1', 'ini_obras.calle2', 'ini_obras.registro_obra',
-            'ini_obras.direccion_proy',
+            'ini_obras.direccion_proy', 'ini_obras.adendum',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
         if($request->tipo == 'Departamentos')
             $avisos = $avisos->where('ini_obras.tipo','=','Departamentos');
@@ -783,6 +783,35 @@ class IniObraController extends Controller
         )->download('xls');
 
     }
+    //Función para registrar y almacenar en el servidor el archivo del contrato.
+    public function formSubmitAdendum(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
+        //Se accede a la información del aviso de obra
+        $pdfAnterior = Ini_obra::select('adendum', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        //En caso de tener un archivo ya almacenado
+        if ($pdfAnterior->isEmpty() != 1) {
+            //Se elimina el archivo anterior
+            $pathAnterior = public_path() . '/files/contratos/obra/adendum/' . $pdfAnterior[0]->adendum;
+            File::delete($pathAnterior);
+        }
+        //Variable que almacena el nombre con el que se guardara el nuevo archivo
+        $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+        //Se almacena el archivo en el servidor
+        $moved =  $request->pdf->move(public_path('/files/contratos/obra/adendum/'), $fileName);
+        //Si se almacena correctamente
+        if ($moved) {
+            //Se registra el nombre del archivo en el registro del aviso de obra.
+            $documento = Ini_obra::findOrFail($request->id);
+            $documento->adendum = $fileName;
+            $documento->save(); //Insert
+
+        }
+
+        return back();
+    }
     ////////////////////////////////////////////////////////////////////////////////
     //Función para registrar y almacenar en el servidor el archivo del contrato.
     public function formSubmitContratoObra(Request $request, $id)
@@ -853,6 +882,12 @@ class IniObraController extends Controller
     {
 
         $pathtoFile = public_path() . '/files/contratos/registro_obra/' . $fileName;
+        return response()->file($pathtoFile);
+    }
+    public function downloadAdendum($fileName)
+    {
+
+        $pathtoFile = public_path() . '/files/contratos/obra/adendum/' . $fileName;
         return response()->file($pathtoFile);
     }
 

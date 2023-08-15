@@ -498,9 +498,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avisoObra/siroc','IniObraController@imprimirSiroc');
 
         Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
-        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra');
+        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
+        Route::post('/formSubmitAdendum/{id}','IniObraController@formSubmitAdendum');
         Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile');
         Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra');
+        Route::get('/downloadAdendum/{fileName}' , 'IniObraController@downloadAdendum');
 
     /////////////////////////// RUTAS ESTIMACIONES ////////////////
         Route::get('/estimaciones/getSinEstimaciones','IniObraController@getSinEstimaciones');

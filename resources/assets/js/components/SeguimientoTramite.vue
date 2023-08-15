@@ -1953,97 +1953,96 @@
         </ModalComponent>
         <!--Fin del modal-->
 
-
-            <!-- Manual -->
-            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+        <!-- Manual -->
+        <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Dentro del módulo de seguimiento de tramite usted podrá dar el seguimiento a la venta de un lote,
+                        además en caso de ser necesario usted podrá detener o regresar el registro de lote al modulo de
+                        "Expediente" en caso de que sea necesario con el uso de los botones
+                        <button type="button" class="btn btn-danger btn-sm" title="Detener solicitud">
+                            <i class="fa fa-hand-paper-o"></i>
                         </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Dentro del módulo de seguimiento de tramite usted podrá dar el seguimiento a la venta de un lote,
-                            además en caso de ser necesario usted podrá detener o regresar el registro de lote al modulo de
-                            "Expediente" en caso de que sea necesario con el uso de los botones
-                            <button type="button" class="btn btn-danger btn-sm" title="Detener solicitud">
-                                <i class="fa fa-hand-paper-o"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm">
-                                <i class="fa fa-exclamation-triangle"></i>
-                            </button>.
-                        </p>
-                        <p>
-                            <strong>Por ingresar:</strong> dentro de la pestaña de por ingresar podrá encontrar todos aquellos lotes que fueron
-                            enviados desde el módulo de expediente (vea modulo <strong>“Gestoría -> Expediente”</strong>), además,
-                            podrá realizar el cambio de la fecha del “aviso preventivo en caso de que así lo desee,
-                            también podrá ver o agregar observaciones e ingresar el expediente a la pestaña de
-                            “autorizados” con el botón de la columna “ingresar expediente” .
-                        </p>
-                        <p>
-                            <strong>Autorizados:</strong> dentro del módulo de autorizados usted podrá.
-                            <ul>
-                                <li>Actualizar la fecha de aviso preventivo.</li>
-                                <li>Cambiar la fecha de vigencia.</li>
-                                <li>Realizar la inscripción a Infonavit.</li>
-                                <li>Agregar observaciones.</li>
-                            </ul>
-                            Una vez que el lotea sea enviado tenga inscripción a Infonavit (en caso de que no
-                            aplique se debe indicar que no aplica) será enviado a la pestaña de “liquidación”.
-                        </p>
-                        <p>
-                            <strong>Liquidación:</strong> dentro del módulo de liquidación usted podrá.
-                            <ul>
-                                <li>Actualizar la fecha de aviso preventivo.</li>
-                                <li>Cambiar la fecha de vigencia.</li>
-                                <li>Liquidar</li>
-                                <li>Generar intereses.</li>
-                                <li>Solicitar la entrega de vivienda.</li>
-                                <li>Agregar observaciones.</li>
-                            </ul>
-                            En caso de que al generar la liquidación quede algún saldo pendiente debe tomar en
-                            cuenta que el sistema pedirá generar intereses (si aplica), para esto, aparecerá un
-                            botón con la leyenda “Generar Intereses” que le permitirá generar intereses por el
-                            adeudo pendiente (si aplica), al dar clic dentro del botón vera una ventana que le
-                            indicara el moto y le permitirá llenar los campos según sea necesario
-                            (en caso de que no genere intereses solo deje en 0% el interés), al finalizar el registro
-                            será enviado a la pestaña de programación de firma. <br>
-                            En caso de que el saldo pendiente sea 0, al generar la liquidación el registro del lote
-                             será enviado a la pestaña de programación de firma.
-                        </p>
-                        <p>
-                            <strong>Programación de firma:</strong> dentro del módulo de programación de firma usted podrá.
-                            <ul>
-                                <li>Actualizar la fecha de aviso preventivo.</li>
-                                <li>Cambiar la fecha de vigencia.</li>
-                                <li>Imprimir liquidación.</li>
-                                <li>Programar la fecha de firma de escritura.</li>
-                                <li>Solicitar la entrega de vivienda.</li>
-                                <li>Agregar observaciones.</li>
-                            </ul>
-                            Una vez que sea programado la fecha de la firma de escritura el registro del lote será
-                            enviado a la pestaña de Historial.
-                        </p>
-                        <p>
-                            <strong>Historial:</strong> dentro de la pestaña historial usted podrá.
-                            <ul>
-                                <li>Cambiar la fecha de vigencia.</li>
-                                <li>Imprimir liquidación.</li>
-                                <li>Agregar observaciones.</li>
-                            </ul>
-                            Adema podrá ver el historial a todos los registros de lotes que se entregaron con anterioridad,
-                            además podrá ver el registro del lote en el módulo de <strong>“Obra -> Viviendas por entregar”</strong>.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
+                        <button type="button" class="btn btn-danger btn-sm">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </button>.
+                    </p>
+                    <p>
+                        <strong>Por ingresar:</strong> dentro de la pestaña de por ingresar podrá encontrar todos aquellos lotes que fueron
+                        enviados desde el módulo de expediente (vea modulo <strong>“Gestoría -> Expediente”</strong>), además,
+                        podrá realizar el cambio de la fecha del “aviso preventivo en caso de que así lo desee,
+                        también podrá ver o agregar observaciones e ingresar el expediente a la pestaña de
+                        “autorizados” con el botón de la columna “ingresar expediente” .
+                    </p>
+                    <p>
+                        <strong>Autorizados:</strong> dentro del módulo de autorizados usted podrá.
+                        <ul>
+                            <li>Actualizar la fecha de aviso preventivo.</li>
+                            <li>Cambiar la fecha de vigencia.</li>
+                            <li>Realizar la inscripción a Infonavit.</li>
+                            <li>Agregar observaciones.</li>
+                        </ul>
+                        Una vez que el lotea sea enviado tenga inscripción a Infonavit (en caso de que no
+                        aplique se debe indicar que no aplica) será enviado a la pestaña de “liquidación”.
+                    </p>
+                    <p>
+                        <strong>Liquidación:</strong> dentro del módulo de liquidación usted podrá.
+                        <ul>
+                            <li>Actualizar la fecha de aviso preventivo.</li>
+                            <li>Cambiar la fecha de vigencia.</li>
+                            <li>Liquidar</li>
+                            <li>Generar intereses.</li>
+                            <li>Solicitar la entrega de vivienda.</li>
+                            <li>Agregar observaciones.</li>
+                        </ul>
+                        En caso de que al generar la liquidación quede algún saldo pendiente debe tomar en
+                        cuenta que el sistema pedirá generar intereses (si aplica), para esto, aparecerá un
+                        botón con la leyenda “Generar Intereses” que le permitirá generar intereses por el
+                        adeudo pendiente (si aplica), al dar clic dentro del botón vera una ventana que le
+                        indicara el moto y le permitirá llenar los campos según sea necesario
+                        (en caso de que no genere intereses solo deje en 0% el interés), al finalizar el registro
+                        será enviado a la pestaña de programación de firma. <br>
+                        En caso de que el saldo pendiente sea 0, al generar la liquidación el registro del lote
+                            será enviado a la pestaña de programación de firma.
+                    </p>
+                    <p>
+                        <strong>Programación de firma:</strong> dentro del módulo de programación de firma usted podrá.
+                        <ul>
+                            <li>Actualizar la fecha de aviso preventivo.</li>
+                            <li>Cambiar la fecha de vigencia.</li>
+                            <li>Imprimir liquidación.</li>
+                            <li>Programar la fecha de firma de escritura.</li>
+                            <li>Solicitar la entrega de vivienda.</li>
+                            <li>Agregar observaciones.</li>
+                        </ul>
+                        Una vez que sea programado la fecha de la firma de escritura el registro del lote será
+                        enviado a la pestaña de Historial.
+                    </p>
+                    <p>
+                        <strong>Historial:</strong> dentro de la pestaña historial usted podrá.
+                        <ul>
+                            <li>Cambiar la fecha de vigencia.</li>
+                            <li>Imprimir liquidación.</li>
+                            <li>Agregar observaciones.</li>
+                        </ul>
+                        Adema podrá ver el historial a todos los registros de lotes que se entregaron con anterioridad,
+                        además podrá ver el registro del lote en el módulo de <strong>“Obra -> Viviendas por entregar”</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
                 </div>
             </div>
+        </div>
      </main>
 </template>
 
