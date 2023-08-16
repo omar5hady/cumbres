@@ -21,6 +21,20 @@
                                 <input
                                     type="text"
                                     disabled
+                                    class="form-control col-md-4"
+                                    placeholder="Proyecto"
+                                />
+                                <select class="form-control" v-model="b_proyecto">
+                                    <option value="">Seleccione</option>
+                                    <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input
+                                    type="text"
+                                    disabled
                                     class="form-control"
                                     placeholder="Fecha de venta"
                                 />
@@ -85,7 +99,9 @@
                             'Manzana',
                             'Lote',
                             'Fecha de venta',
-                            'Fecha de firma'
+                            'Fecha de firma',
+                            'Vendedor',
+                            'Gestor'
                         ]"
                     >
                         <template v-slot:tbody>
@@ -108,17 +124,36 @@
                                 <td>{{ contrato.num_lote }}</td>
                                 <td>{{ contrato.fecha }}</td>
                                 <td>{{ contrato.fecha_firma_esc }}</td>
+                                <td>
+                                    {{ contrato.v_nombre }}
+                                    {{ contrato.v_apellidos }}
+                                </td>
+                                <td>
+                                    {{ contrato.g_nombre }}
+                                    {{ contrato.g_apellidos }}
+                                </td>
                             </tr>
                         </template>
                     </TableComponent>
-                    <NavComponent
-                        :current="
-                            reporte.current_page ? reporte.current_page : 1
-                        "
-                        :last="reporte.last_page ? reporte.last_page : 1"
-                        @changePage="listarReporte"
-                    >
-                    </NavComponent>
+                    <div class="container">
+                        <NavComponent
+                            :current="
+                                reporte.current_page ? reporte.current_page : 1
+                            "
+                            :last="reporte.last_page ? reporte.last_page : 1"
+                            @changePage="listarReporte"
+                        >
+                        </NavComponent>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <p>A partir del 1ero de diciembre del 2022 se solicito que se hablara tema tecnico con los clientes de las privadas Villa del Rey y Alcazar</p>
+                            <p>
+                                A partir del 27 de marzo del 2023 se solicito que se hablara tema tecnico con los clientes de privada Torino, Mzn 16 del Lote 1 al 19 y Mzn 12 de lote y al 18
+                            </p>
+                        </div>
+                    </div>
 
                     <hr />
                 </div>
@@ -197,6 +232,7 @@ export default {
             b_fecha2: "",
             b_fecha3: "",
             b_fecha4: "",
+            b_proyecto: "",
             archivo:'',
             id: '',
             modal: false,
@@ -246,6 +282,8 @@ export default {
                     me.b_fecha1
                 }&fecha2=${me.b_fecha2}&fecha3=${me.b_fecha3}&fecha4=${
                     me.b_fecha4
+                }&proyecto=${
+                    me.b_proyecto
                 }`;
                 const response = await axios.get(url);
                 if (response) me.reporte = response.data;
@@ -254,6 +292,7 @@ export default {
     },
     mounted() {
         this.listarReporte(1);
+        this.$root.selectFraccionamientos();
     }
 };
 </script>

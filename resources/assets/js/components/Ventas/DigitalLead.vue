@@ -2182,19 +2182,19 @@ export default {
             this.listarLeads(1);
         },
         selectRFC(rfc){
-            var url = '/select_rfcs?rfc=' + rfc;
+            const url = '/select_rfcs?rfc=' + rfc;
             let me = this;
             me.encuentraRFC=0;
             axios.get(url).then(function (response) {
-                var respuesta = response.data;
+                const respuesta = response.data;
                 me.encuentraRFC = respuesta.rfc1;
 
                 if(me.encuentraRFC==1) {
-                    var vendedorrfc = [];
-                    var nombrevendedor = '';
+                    let vendedorrfc = [];
                     vendedorrfc = respuesta.vendedor;
                     me.vendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
-                    me.vendedor_asign = vendedorrfc[0]['id'] ;
+                    if(vendedorrfc[0]['clasificacion'] != 5 && vendedorrfc[0]['clasificacion'] != 1 && vendedorrfc[0]['clasificacion'] != 6)
+                        me.vendedor_asign = vendedorrfc[0]['id'] ;
                     Swal({
                         title: 'Este RFC ya ha sido agregado por: ' + me.vendedor ,
                         animation: false,

@@ -4136,14 +4136,17 @@ class ReportesController extends Controller
     public function reporteSitFG(Request $request){
         $lotes = Contrato::join('creditos as cr','contratos.id','=','cr.id')
                 ->join('personal as p','cr.prospecto_id', '=', 'p.id')
+                ->join('personal as vendedor','cr.vendedor_id', '=', 'vendedor.id')
                 ->join('lotes as l','cr.lote_id', '=', 'l.id')
                 ->join('etapas as e','l.etapa_id', '=', 'e.id')
                 ->join('fraccionamientos as f','l.fraccionamiento_id', '=', 'f.id')
                 ->leftJoin('expedientes as exp','contratos.id','=','exp.id')
+                ->leftJoin('personal as g','exp.gestor_id', '=', 'g.id')
                 ->select('p.nombre','p.apellidos', 'f.nombre as proyecto', 'e.num_etapa as etapa',
                     'l.num_lote', 'l.sublote', 'l.manzana', 'l.sit_fg', 'contratos.file_fg',
                     'contratos.fecha','contratos.status','exp.fecha_firma_esc',
-                    'contratos.id'
+                    'contratos.id', 'vendedor.nombre as v_nombre', 'vendedor.apellidos as v_apellidos',
+                    'g.nombre as g_nombre', 'g.apellidos as g_apellidos'
                 )
                 ->where('l.sit_fg','=',1)
                 ->where('contratos.file_fg','=',NULL)
@@ -4152,7 +4155,10 @@ class ReportesController extends Controller
                     $lotes = $lotes->whereBetween('contratos.fecha',[$request->fecha1, $request->fecha2]);
                 }
                 if($request->fecha3 != ''){
-                    $lotes = $lotes->whereBetween('exp.fecha_firma_esc',[$request->fecha3, $request->fecha4]);
+                    $lotes = $lotes->whereBetween('exp.fecha_liquidacion',[$request->fecha3, $request->fecha4]);
+                }
+                if($request->proyecto != ''){
+                    $lotes = $lotes->where('f.id','=',$request->proyecto);
                 }
         return $lotes->paginate(10);
     }

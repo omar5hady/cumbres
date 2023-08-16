@@ -167,19 +167,19 @@ class PersonalController extends Controller
 
     public function selectRFC(Request $request){
         $rfc = $request->rfc;
-         $rfc1 = Personal::select('rfc')
-                          ->where('rfc','=',$rfc)->count(); // verifica si hay mas de una concidencia de RFC y los cuenta
+        $rfc1 = Personal::select('rfc')->where('rfc','=',$rfc)->count(); // verifica si hay mas de una concidencia de RFC y los cuenta
             if($rfc1==1){ // en caso de que exista solo una coincidencia  se selecciona el cliente y el vendedor relacionado a ese cliente
-                $personaid = Personal::select('rfc','id')
-                            ->where('rfc','=',$rfc)->get();
+                $personaid = Personal::select('rfc','id')->where('rfc','=',$rfc)->get();
+
                 $vendedor = Cliente::join('vendedores','clientes.vendedor_id','=','vendedores.id')
-                ->join('personal','vendedores.id','=','personal.id')
-                ->select('personal.nombre','personal.apellidos','personal.id')
-                ->where('clientes.id','=',$personaid[0]->id)->get();
+                    ->join('personal','vendedores.id','=','personal.id')
+                    ->select('personal.nombre','personal.apellidos','personal.id', 'clientes.clasificacion')
+                    ->where('clientes.id','=',$personaid[0]->id)->get();
+
                 return ['rfc1'=>$rfc1,'personaid' => $personaid, 'vendedor'=> $vendedor];
-                          }else{
-                            return ['rfc1'=>$rfc1];
-                          }
+            }else{
+                return ['rfc1'=>$rfc1];
+            }
     }
 
     // funcion para la consulta de los gestores activos
