@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Vehiculos
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
+                        <ButtonComponent @click="abrirModal('registrar')" btnClass="btn-secondary" icon="icon-plus" title="Nuevo vehiculo">
+                            Nuevo
+                        </ButtonComponent>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -43,19 +43,19 @@
                                         <option value="0">No</option>
                                         <option value="1">Si</option>
                                     </select>
-                                    <button type="submit" @click="listarVehiculos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <ButtonComponent @click="listarVehiculos(1)" icon="fa fa-search">Buscar</ButtonComponent>
                                 </div>
                             </div>
                         </div>
 
-                        <TableComponent 
+                        <TableComponent
                             :cabecera="['Opciones','Vehiculo','Marca','Modelo','Clave','# Serie','# Motor','# Placa','Responsable','Empresa']">
                             <template v-slot:tbody>
                                 <tr v-for="vehiculo in arrayVehiculos.data" :key="vehiculo.id">
                                     <td class="td2">
-                                        <button type="button" @click="abrirModal('actualizar',vehiculo)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                        </button>
+                                        <ButtonComponent @click="abrirModal('actualizar',vehiculo)" title="Editar"
+                                            btnClass="btn-warning" size="btn-sm" icon="icon-pencil">
+                                        </ButtonComponent>
                                     </td>
                                     <td class="td2" v-text="vehiculo.vehiculo"></td>
                                     <td class="td2" v-text="vehiculo.marca"></td>
@@ -66,179 +66,26 @@
                                     <td class="td2" v-text="vehiculo.placas"></td>
                                     <td class="td2" v-text="vehiculo.nombre + ' '+ vehiculo.apellidos"></td>
                                     <td class="td2" v-text="vehiculo.empresa"></td>
-                                </tr> 
+                                </tr>
                             </template>
                         </TableComponent>
-                        
-                        <nav>
-                            <!--Botones de paginacion -->
-                           <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="arrayVehiculos.current_page > 5" @click="listarVehiculos(1)">
-                                    <a class="page-link" href="#" >Inicio</a>
-                                </li>
-                                <li class="page-item" v-if="arrayVehiculos.current_page > 1"
-                                    @click="listarVehiculos(arrayVehiculos.current_page-1)">
-                                    <a class="page-link" href="#" >Ant</a>
-                                </li>
-
-                                <li class="page-item" v-if="arrayVehiculos.current_page-3 >= 1"
-                                    @click="listarVehiculos(arrayVehiculos.current_page-3)">
-                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page-3"></a>
-                                </li>
-                                <li class="page-item" v-if="arrayVehiculos.current_page-2 >= 1"
-                                    @click="listarVehiculos(arrayVehiculos.current_page-2)">
-                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page-2"></a>
-                                </li>
-                                <li class="page-item" v-if="arrayVehiculos.current_page-1 >= 1"
-                                    @click="listarVehiculos(arrayVehiculos.current_page-1)">
-                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page-1"></a>
-                                </li>
-                                <li class="page-item active" >
-                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page"></a>
-                                </li>
-                                <li class="page-item" 
-                                    v-if="arrayVehiculos.current_page+1 <= arrayVehiculos.last_page">
-                                    <a class="page-link" href="#" @click="listarVehiculos(arrayVehiculos.current_page+1)" 
-                                    v-text="arrayVehiculos.current_page+1"></a>
-                                </li>
-                                <li class="page-item" 
-                                    v-if="arrayVehiculos.current_page+2 <= arrayVehiculos.last_page">
-                                    <a class="page-link" href="#" @click="listarVehiculos(arrayVehiculos.current_page+2)"
-                                     v-text="arrayVehiculos.current_page+2"></a>
-                                </li>
-                                <li class="page-item" 
-                                    v-if="arrayVehiculos.current_page+3 <= arrayVehiculos.last_page">
-                                    <a class="page-link" href="#" @click="listarVehiculos(arrayVehiculos.current_page+3)"
-                                    v-text="arrayVehiculos.current_page+3"></a>
-                                </li>
-
-                                <li class="page-item" v-if="arrayVehiculos.current_page < arrayVehiculos.last_page"
-                                    @click="listarVehiculos(arrayVehiculos.current_page+1)">
-                                    <a class="page-link" href="#" >Sig</a>
-                                </li>
-                                <li class="page-item" v-if="arrayVehiculos.current_page < 5 && arrayVehiculos.last_page > 5" @click="listarVehiculos(arrayVehiculos.last_page)">
-                                    <a class="page-link" href="#" >Ultimo</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <NavComponent
+                            :current="arrayVehiculos.current_page ? arrayVehiculos.current_page : 1"
+                            :last="arrayVehiculos.last_page ? arrayVehiculos.last_page : 1"
+                            @changePage="listarVehiculos"
+                        ></NavComponent>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <ModalComponent v-if="modal"
+            <VehiculosModal v-if="modal"
+                @close="cerrarModal()"
                 :titulo="tituloModal"
-                @closeModal="cerrarModal()"
-            >
-                <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">
-                            Vehiculo <span style="color:red;" v-show="vehiculo==''">*</span>
-                        </label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="vehiculo" class="form-control" placeholder="Nombre de vehiculo">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">
-                            Marca <span style="color:red;" v-show="marca==''">*</span>
-                        </label>
-                        <div class="col-md-6">
-                            <select class="form-control" v-model="marca" >
-                                <option value="">Seleccione</option>
-                                <option v-for="marcas in marcasAutos" :key="marcas" :value="marcas" v-text="marcas"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input" >
-                            Modelo <span style="color:red;" v-show="modelo==''">*</span>
-                        </label>
-                        <div class="col-md-3">
-                            <input type="text" v-model="modelo" maxlength="4" v-on:keypress="isNumber($event)" class="form-control" placeholder="Modelo">
-                        </div>
-                    </div>
+                :vehiculo="data"
+                :tipoAccion="tipoAccion"
+            ></VehiculosModal>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Clave</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="clave" maxlength="10" class="form-control" placeholder="Clave">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Número de Serie</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="numero_serie" maxlength="20" class="form-control" placeholder="Número de serie">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Número de Motor</label>
-                        <div class="col-md-6">
-                            <input type="text" v-model="numero_motor" maxlength="11" class="form-control" placeholder="Número de motor">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">
-                            Número de Placa <span style="color:red;" v-show="placas==''">*</span>
-                        </label>
-                        <div class="col-md-5">
-                            <input type="text" v-model="placas" maxlength="7" class="form-control" placeholder="Número de placa">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">
-                            Responsable <span style="color:red;" v-show="responsable_id==''">*</span>
-                        </label>
-                        <div class="col-md-6">
-                            <input v-if="vista==2" disabled type="text" v-model="nombre" class="form-control col-md-8">
-                            <button v-if="vista == 2" class="form-control btn btn-sm btn-secondary col-md-4" @click="vista = 1, responsable_id = ''">Cambiar</button>
-                            <input v-if="vista==1" type="text" name="user" list="usersName" @keyup="selectUsuario(responsable_id)" @change="getNombre(responsable_id)"  class="form-control col-md-8" v-model="responsable_id">
-                            <datalist v-if="vista==1" id="usersName">
-                                <option value="">Seleccione</option>
-                                <option v-for="users in arrayUsers" :key="users.id" :value="users.id" v-text="users.nombre + ' '+ users.apellidos"></option>
-                            </datalist>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Comodato?</label>
-                        <div class="col-md-3">
-                            <select class="form-control" v-model="comodato" >
-                                <option value="0">No</option>
-                                <option value="1">Si</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                        <div class="col-md-9">
-                            <select class="form-control" v-model="empresa" >
-                                <option value="">Seleccione</option>
-                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <!-- Div para mostrar los errores que mande validerNotaria -->
-                    <div v-show="errorVehiculo" class="form-group row div-error">
-                        <div class="text-center text-error">
-                            <div v-for="error in errorMostrarMsjVehiculo" :key="error" v-text="error">
-
-                            </div>
-                        </div>
-                    </div>
-                </template>
-                <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrar()">Guardar</button>
-                    <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizar()">Actualizar</button>
-                </template>
-            </ModalComponent>
             <!--Fin del modal-->
         </main>
 </template>
@@ -248,27 +95,21 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
-    import ModalComponent from '../Componentes/ModalComponent.vue'
     import TableComponent from '../Componentes/TableComponent.vue'
+    import NavComponent from '../Componentes/NavComponent.vue'
+    import ButtonComponent from '../Componentes/ButtonComponent.vue'
+    import VehiculosModal from './modales/VehiculosModal.vue'
 
     export default {
         components:{
-            ModalComponent,
             TableComponent,
+            ButtonComponent,
+            NavComponent,
+            VehiculosModal,
+            VehiculosModal
         },
         data(){
             return{
-                id:'',
-                vehiculo : '',
-                responsable_id : '',
-                modelo : '',
-                marca: '',
-                clave: '',
-                placas: '',
-                comodato:0,
-                numero_serie : '',
-                numero_motor : '',
-                empresa : 'Grupo Constructor Cumbres',
                 arrayVehiculos : [],
                 arrayUsers : [],
                 empresas:[
@@ -278,23 +119,32 @@
                     'Magnacasa',
                     'Ing David'
                 ],
-
                 marcasAutos:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorVehiculo : 0,
-                errorMostrarMsjVehiculo : [],
                 buscar : '',
-                vista: 1,
-                nombre:'',
                 b_empresa : '',
                 b_marca:'',
-                b_comodato:''
+                b_comodato:'',
+                data:{
+                    id:'',
+                    vehiculo : '',
+                    responsable_id : '',
+                    modelo : '',
+                    marca: '',
+                    clave: '',
+                    placas: '',
+                    comodato:0,
+                    numero_serie : '',
+                    numero_motor : '',
+                    empresa : 'Grupo Constructor Cumbres',
+                    nombre:'',
+                }
             }
         },
         computed:{
-           
+
         },
         methods : {
             /**Metodo para mostrar los registros */
@@ -306,31 +156,6 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayVehiculos = respuesta;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            selectUsuario(buscar){
-                let me = this;
-                
-                me.arrayUsers=[];
-                var url = '/usuarios/selectUser?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayUsers = respuesta.data;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            getNombre(id){
-                let me = this;
-                var url = '/usuarios/getNombre?id=' + id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.nombre = respuesta.nombre + ' ' +respuesta.apellidos;
-                    me.vista = 2
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -348,123 +173,33 @@
                     console.log(error);
                 });
             },
-            /**Metodo para registrar  */
-            registrar(){
-                if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/vehiculos/store',{
-                    'vehiculo' : this.vehiculo,
-                    'modelo' : this.modelo,
-                    'marca' : this.marca,
-                    'clave' : this.clave,
-                    'placas' : this.placas,
-                    'numero_serie' : this.numero_serie,
-                    'numero_motor' : this.numero_motor,
-                    'responsable_id' : this.responsable_id,
-                    'empresa' : this.empresa,
-                    'comodato' : this.comodato
-                }).then(function (response){
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarVehiculos(1); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Vehiculo agregada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-            actualizar(){
-              
-               if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.put('/vehiculos/update',{
-                    'id' : this.id,
-                    'vehiculo' : this.vehiculo,
-                    'modelo' : this.modelo,
-                    'marca' : this.marca,
-                    'clave' : this.clave,
-                    'placas' : this.placas,
-                    'numero_serie' : this.numero_serie,
-                    'numero_motor' : this.numero_motor,
-                    'responsable_id' : this.responsable_id,
-                    'empresa' : this.empresa,
-                    'comodato' : this.comodato
-                }).then(function (response){
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarVehiculos(1); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Vehiculo actualizado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
-            validarRegistro(){
-                this.errorVehiculo=0;
-                this.errorMostrarMsjVehiculo=[];
-
-                if(!this.vehiculo) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjVehiculo.push("Nombre de vehiculo");
-
-                if(!this.responsable_id) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjVehiculo.push("Responsable.");
-
-                if(this.errorMostrarMsjVehiculo.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorVehiculo = 1;
-
-                return this.errorVehiculo;
+            limpiarVehiculo(){
+                this.data.vehiculo = '';
+                this.data.modelo = '';
+                this.data.marca = '';
+                this.data.clave = '';
+                this.data.placas = '';
+                this.data.numero_serie = '';
+                this.data.numero_motor = '';
+                this.data.responsable_id = '';
+                this.data.comodato = 0;
+                this.data.empresa = 'Grupo Constructor Cumbres';
             },
             cerrarModal(){
-               this.modal = 0;
-
+                this.modal = 0;
+                this.limpiarVehiculo()
+                this.listarVehiculos(1)
             },
-            
+
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(accion,data =[]){
                 switch(accion){
                     case 'registrar':
                     {
+                        this.limpiarVehiculo()
                         this.modal = 1;
                         this.tituloModal = 'Registrar Vehiculo';
-                        
                         this.tipoAccion = 1;
-                        this.vehiculo = '';
-                        this.modelo = '';
-                        this.marca = '';
-                        this.clave = '';
-                        this.placas = '';
-                        this.numero_serie = '';
-                        this.numero_motor = '';
-                        this.responsable_id = '';
-                        this.comodato = 0;
-                        this.empresa = 'Grupo Constructor Cumbres';
                         this.vista = 1;
                         break;
                     }
@@ -473,21 +208,9 @@
                         //console.log(data);
                         this.modal =1;
                         this.tituloModal='Actualizar Vehiculo';
-                        this.id = data['id'];
-                        this.vehiculo = data['vehiculo'];
-                        this.modelo = data['modelo'];
-                        this.marca = data['marca'];
-                        this.clave = data['clave'];
-                        this.placas = data['placas'];
-                        this.numero_serie = data['numero_serie'];
-                        this.numero_motor = data['numero_motor'];
-                        this.responsable_id = data['responsable_id'];
-                        this.empresa = data['empresa'];
-                        this.comodato = data['comodato'];
+                        this.data = data;
                         this.vista = 2;
-                        this.getNombre(this.responsable_id);
                         this.tipoAccion=2;
-                        
                         break;
                     }
                 }
@@ -496,20 +219,10 @@
         mounted() {
             this.listarVehiculos(1);
             this.getMarcas();
-            this.selectUsuario('');
         }
     }
 </script>
 <style>
-    .div-error{
-        display:flex;
-        justify-content: center;
-    }
-    .text-error{
-        color: red !important;
-        font-weight: bold;
-    }
-
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
@@ -527,5 +240,5 @@
 
     .td2:last-of-type, th:last-of-type {
        border-right: none;
-    } 
+    }
 </style>

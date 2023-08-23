@@ -16,12 +16,12 @@
             )
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
-                    <i class="fa fa-home"></i> Viviendas
+                    <i class="fa fa-home"></i> Control de obra
                 </a>
                 <ul class="nav-dropdown-items nav-dropdown-items2">
                     @if(Auth::user()->aviso_obra == 1)
                         <li @click="menu=54 "class="nav-item">
-                            <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Aviso de obra</a>
+                            <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Contratos</a>
                         </li>
                     @endif
                     @if(Auth::user()->partidas == 1)

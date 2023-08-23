@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Aviso de obra
+                        <i class="fa fa-align-justify"></i> Contratos
                         <!--   Boton Nuevo    -->
                         <button type="button" v-if="rolId!=9 && listado == 1" @click="mostrarDetalle()" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
