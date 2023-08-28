@@ -47,6 +47,8 @@ class CreateIniObrasTable extends Migration
             $table->string('direccion_proy')->nullable();
             $table->boolean('fin_estimaciones')->default(0);
 
+            $table->string('folio_siroc')->nullable();
+
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

@@ -1944,6 +1944,7 @@ export default {
                 'FRACC. LA CEBADILLA , CARDENAS , SLP',
                 'FRACC. LA CEBADILLA 2, CARDENAS , SLP',
                 'FRACC. LA TINAJERA , VENADO , SLP.',
+                'EL SALINERO, VENADO, SLP'
             ],
             solicCheck:[],
             arrayPendientes:[],

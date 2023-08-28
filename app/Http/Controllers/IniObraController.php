@@ -162,7 +162,7 @@ class IniObraController extends Controller
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-            'ini_obras.porc_garantia_ret', 'ini_obras.num_torres',
+            'ini_obras.porc_garantia_ret', 'ini_obras.num_torres', 'ini_obras.emp_constructora',
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga', 'ini_obras.direccion_proy',
             'ini_obras.iva','ini_obras.tipo','ini_obras.total_superficie')
         ->where('ini_obras.id','=',$id)
@@ -391,6 +391,7 @@ class IniObraController extends Controller
             $ini_obra->costo_indirecto_porcentaje = $request->costo_indirecto_porcentaje;
             $ini_obra->descripcion_larga = $request->descripcion_larga;
             $ini_obra->descripcion_corta = $request->descripcion_corta;
+            $ini_obra->emp_constructora = $request->emp_constructora;
             $ini_obra->tipo = $request->tipo;
             $ini_obra->iva = $request->iva;
             $ini_obra->total_superficie = $request->total_superficie;

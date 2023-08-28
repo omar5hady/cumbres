@@ -609,6 +609,9 @@ class DigitalLeadController extends Controller
                     ]
                 ];
 
+                $lead->ini_dormir = NULL;
+                $lead->fin_dormir = NULL;
+
                 $vendedorD = Personal::select('nombre','apellidos')->where('id','=',$request->vendedor_asign)->first();
 
                 $obs = new Obs_lead(); // Registra comentario con la asignación del lead.
@@ -924,6 +927,8 @@ class DigitalLeadController extends Controller
             $lead->fecha_asign = $fecha;
             $lead->fecha_gerente = $fecha;
             $lead->fecha_contacto = NULL;
+            $lead->ini_dormir = NULL;
+            $lead->fin_dormir = NULL;
             $lead->save();
 
             $vendedor = Vendedor::findOrFail($vendedor_asign['vendedor_elegido']);

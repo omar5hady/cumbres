@@ -579,6 +579,11 @@ class ClienteController extends Controller
 
         // Clasificación No viable.
         $cliente->clasificacion = 1;
+        if($cliente->coacreditado == 1)
+            $coa = Personal::select('id')->where('rfc','=',$cliente->rfc_coa)->first();
+            $c_coa = Cliente::findOrFail($coa->id);
+            $c_coa->clasificacion = 1;
+            $c_coa->save();
         $cliente->save();
     }
 

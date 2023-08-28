@@ -1019,8 +1019,13 @@ class SolicitudesController extends Controller
                     DB::raw("CONCAT(user.nombre,' ',user.apellidos) AS solicitante"),
                     DB::raw("CONCAT(pv.nombre,' ',pv.apellidos) AS proveedor")
                 )
-                ->where('sp_detalles.cargo','=',$c->cargo)
-                ->where('solic.status','=',4);
+                ->where('sp_detalles.cargo','=',$c->cargo);
+                if($request->b_por_pagar != ''){
+                    $c->detalle = $c->detalle->whereIn('solic.status',[3,4]);
+                }
+                else{
+                    $c->detalle = $c->detalle->where('solic.status','=',4);
+                }
                 if($request->empresa != ''){
                     $c->detalle = $c->detalle->where('solic.empresa_solic','=',$request->empresa);
                 }

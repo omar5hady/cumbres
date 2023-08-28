@@ -65,6 +65,16 @@
                                 <input type="date" class="form-control col-md-4" @keyup.enter="indexConcentrado(1)" v-model="b_fecha2">
                             </div>
                         </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input class="form-control col-md-2" type="text" disabled placeholder="¿Considerar por pagar?:">
+                                <select class="form-control" v-model="b_por_pagar">
+                                    <option value="">No</option>
+                                    <option value="1">Si</option>
+                                </select>
+                            </div>
+                        </div>
+
 
                         <div class="col-md-10">
                             <div class="input-group">
@@ -205,6 +215,7 @@ export default {
             b_empresa : '',
             b_obra : '',
             b_sub_obra : '',
+            b_por_pagar: '',
             arrayEtapas : []
         };
     },
@@ -247,6 +258,7 @@ export default {
                 + '&fecha2=' + me.b_fecha2
                 + '&obra=' + me.b_obra
                 + '&sub_obra=' + me.b_sub_obra
+                + '&b_por_pagar=' + me.b_por_pagar
                 +'&empresa='+ me.b_empresa;
             axios.get(url).then(function (response) {
                 me.arrayConcentrado = response.data;
