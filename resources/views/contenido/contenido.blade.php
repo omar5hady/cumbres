@@ -581,5 +581,8 @@
             <reporte-sit-fg
             ></reporte-sit-fg>
         </template>
+        <template v-if="menu==300">
+            <cat-equipamiento></cat-equipamiento>
+        </template>
     @endif
 @endsection

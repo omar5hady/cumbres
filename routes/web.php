@@ -1329,6 +1329,9 @@ Route::group(['middleware' => ['auth']],function(){
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/equip-lotes', Lotes\EquipLoteController::class);
 
+         /////////////////////// Rutas Catalogo de equipamientos
+         Route::resource('/cat-equipamiento', Modelo\EquipamientoController::class);
+
         //////////////////// RUTAS SOLICITUD DE PAGOS
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
         Route::resource('/files-solic', solicPagos\ArchivosController::class);

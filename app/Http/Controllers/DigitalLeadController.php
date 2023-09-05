@@ -1764,7 +1764,7 @@ class DigitalLeadController extends Controller
         $now = Carbon::now();
         $fin_castigo = Carbon::now()->addDay(30);
 
-        $leads = Digital_lead::select('id','fecha_asign','vendedor_asign')
+        $leads = Digital_lead::select('id','nombre', 'apellidos','fecha_asign','vendedor_asign')
             ->where('fecha_asign', '!=', NULL)
             ->where('fecha_contacto','=',NULL)
             ->where('vendedor_asign','!=',19)
@@ -1785,6 +1785,10 @@ class DigitalLeadController extends Controller
                     $castigo->lead_id = $lead->id;
                     $castigo->save();
 
+                    $msj = 'Suspención de envio de Leads por falta de seguimiento a: '.$lead->nombre.' '.$lead->apellidos;
+                    $aviso = new NotificacionesAvisosController();
+                    $aviso->store($lead->vendedor_asign,$msj);
+
                     $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
                     $obs->lead_id = $lead->id;
                     $obs->comentario = 'Lead removido!, se ha cambiado de asesor por falta de seguimiento inmediato. ';
@@ -1794,14 +1798,6 @@ class DigitalLeadController extends Controller
                     $this->setVendedorAleatorio($lead->id, 'Sistema');
                 }
             }
-
-        // return [
-        //     'leads' => $leads,
-        //     'now' => $now,
-        //     'fin_castigo' => $fin_castigo
-        // ];
-
-
     }
 
     public function setCuponEnviado(Request $request){

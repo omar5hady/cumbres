@@ -160,6 +160,7 @@
                                         <th>Obra extra</th>
                                         <th>Sobreprecios</th>
                                         <th>Precio venta</th>
+                                        <th>Precio c/ Equipamiento</th>
                                         <th>Equipamiento</th>
                                         <th>Promoción</th>
                                         <th>Fecha termino</th>
@@ -204,6 +205,11 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.obra_extra)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
                                         <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
+                                        <td class="td2" style="width:20%">
+                                            <a href="#" @click="abrirModal('lote', 'cotizacion', lote)">
+                                                <strong>{{'$'+formatNumber(lote.precio_c_equipamiento)}}</strong>
+                                            </a>
+                                        </td>
                                         <td>
                                             <button v-if="lote.equipamiento.length > 0" @click="verEquipamiento(lote.equipamiento)" class="btn btn-dark">Equipamiento incluido</button>
                                         </td>
@@ -324,6 +330,7 @@
                                         <th>Indiviso %</th>
                                         <th># Oficial</th>
                                         <th>Precio venta</th>
+                                        <th>Precio c/ Equipamiento</th>
                                         <th>Promoción</th>
                                         <th>Fecha termino</th>
                                         <th>Canal de venta</th>
@@ -368,6 +375,11 @@
                                             <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
                                             <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                         <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
+                                        <td class="td2" style="width:20%">
+                                            <a href="#" @click="abrirModal('lote', 'cotizacion', lote)">
+                                                <strong>{{'$'+formatNumber(lote.precio_c_equipamiento)}}</strong>
+                                            </a>
+                                        </td>
                                         <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
                                             <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>
                                         </td>
@@ -655,6 +667,12 @@
             </ModalComponent>
             <!--Fin del modal-->
 
+            <ModalCotizacion v-if="modal==2"
+                :titulo="tituloModal"
+                :catalogo="cotizacion"
+                @close="cerrarModal()"
+            ></ModalCotizacion>
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -691,11 +709,13 @@
 <script>
 import ModalComponent from '../Componentes/ModalComponent.vue';
 import TableComponent from '../Componentes/TableComponent.vue';
+import ModalCotizacion from './components/ModalCotizacion.vue';
 
     export default {
         components:{
             ModalComponent,
-            TableComponent
+            TableComponent,
+            ModalCotizacion
         },
         props:{
             rolId:{type: String},
@@ -749,7 +769,20 @@ import TableComponent from '../Componentes/TableComponent.vue';
                 b_empresa:'',
                 empresas:[],
                 tab:1,
-                equipamiento:[]
+                equipamiento:[],
+                cotizacion:{
+                    precio_venta: 0,
+                    cocina_tradicional: 0,
+                    vestidor: 0,
+                    closets: 0,
+                    canceles: 0,
+                    persianas: 0,
+                    calentador_paso: 0,
+                    calentador_solar: 0,
+                    espejos: 0,
+                    tanque_estacionario: 0,
+                    cocina: 0,
+                }
             }
         },
         computed:{
@@ -1071,6 +1104,21 @@ import TableComponent from '../Componentes/TableComponent.vue';
                 }
                 })
             },
+            limpiarCotizacion(){
+                this.cotizacion = {
+                    precio_venta: 0,
+                    cocina_tradicional: 0,
+                    vestidor: 0,
+                    closets: 0,
+                    canceles: 0,
+                    persianas: 0,
+                    calentador_paso: 0,
+                    calentador_solar: 0,
+                    espejos: 0,
+                    tanque_estacionario: 0,
+                    cocina: 0,
+                }
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -1116,6 +1164,16 @@ import TableComponent from '../Componentes/TableComponent.vue';
                                 this.apartado=data['apartado'];
                                 this.tipoAccion=3;
                                 break;
+                            }
+                            case 'cotizacion':{
+                                this.limpiarCotizacion()
+                                this.modal = 2;
+                                this.tituloModal = 'Cotización'
+                                const equipamiento = data['cat_equipamiento']
+                                if(data['cat_equipamiento'].length > 0){
+                                    this.cotizacion = {...equipamiento[0]}
+                                }
+                                this.cotizacion.precio_venta = data['precio_venta']
                             }
 
 

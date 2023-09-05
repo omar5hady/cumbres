@@ -19,7 +19,8 @@
             Auth::user()->usuario == 'uriel.al' ||
             Auth::user()->usuario == 'meza.marco60' ||
             Auth::user()->usuario == 'lupita.vidales' ||
-            Auth::user()->usuario == 'Herlindo'
+            Auth::user()->usuario == 'Herlindo' ||
+            Auth::user()->usuario == 'eli-hdz'
         )
             <li @click="menu=294" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Concentrado pagos</a>

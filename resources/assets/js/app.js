@@ -237,6 +237,9 @@ Vue.component('inv-proveedor', require('./components/Oficina/Proveedor.vue'));
 //Integración de cobros
 Vue.component('integracion-cobros', require('./components/IntegracionCobros/Integracion.vue'));
 
+//Catalogo de Equipamiento
+Vue.component('cat-equipamiento', require('./components/Precios/CatEquipamiento.vue'));
+
 
 //ENCUESTAS
 Vue.component('encuesta-venta', require('./components/Postventa/Encuestas/EncuestaVenta.vue'));

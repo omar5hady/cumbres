@@ -32,6 +32,7 @@ use App\Precio_puente;
 use Carbon\Carbon;
 use App\Specification;
 use App\SpecificationLote;
+use App\CatEquipamiento;
 use Session;
 use Excel;
 use File;
@@ -1124,6 +1125,18 @@ class LoteController extends Controller
             $lote->tipo = $tipo;//Se asigna el tipo para diferenciar de vendedor
             //Se calcula el precio de venta
             $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+
+            $lote->precio_c_equipamiento = $lote->precio_venta;
+
+            $lote->cat_equipamiento = CatEquipamiento::where('modelo_id','=',$lote->modelo_id)
+                ->where('status','=',1)
+                ->get();
+
+            if(sizeof($lote->cat_equipamiento)){
+                $lote->precio_c_equipamiento += $lote->cat_equipamiento[0]->cocina_tradicional;
+                $lote->precio_c_equipamiento += $lote->cat_equipamiento[0]->vestidor;
+                $lote->precio_c_equipamiento += $lote->cat_equipamiento[0]->closets;
+            }
             $promocion=[];
             //Se busca promoción activa para el lote
             $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')

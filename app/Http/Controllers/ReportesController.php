@@ -3917,7 +3917,7 @@ class ReportesController extends Controller
                 'lotes.manzana','lotes.num_lote','lotes.sublote','lotes.casa_muestra', 'licencias.avance',
                 'lotes.id'
             )
-            ->whereIn('contratos.status',[1,3])
+            ->whereIn('contratos.status',[3])
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->whereNotIn('lotes.id',$this->getContadoIndividualizados($empresa))
             ->whereNotIn('lotes.id',$this->getCreditoIndividualizados($empresa));
