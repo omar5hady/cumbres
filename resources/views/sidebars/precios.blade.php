@@ -26,9 +26,13 @@
                 <a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i> Paquetes</a>
             </li>
         @endif
-        @if(Auth::user()->paquetes == 1)
+        @if( Auth::user()->usuario == 'eli_hdz'
+            || Auth::user()->usuario == 'shady'
+            || Auth::user()->usuario == 'ana_alvarado'
+            || Auth::user()->usuario == 'mayra'
+            )
             <li @click="menu=300" class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i> Cat. de cat-equipamiento</a>
+                <a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i> Cat. de equipamiento</a>
             </li>
         @endif
         @if(Auth::user()->promociones == 1)

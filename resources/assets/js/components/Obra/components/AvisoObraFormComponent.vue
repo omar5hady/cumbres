@@ -183,7 +183,7 @@
                                 <td v-if="detalle.sublote == null" v-text="detalle.lote"></td>
                                 <td v-else v-text="detalle.lote + ' ' + detalle.sublote"></td>
                                 <td v-text="detalle.manzana"></td>
-                                <td v-text="detalle.superficie"></td>
+                                <td v-text="detalle.construccion"></td>
                                 <td>
                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                 </td>
@@ -203,7 +203,7 @@
 
                             <tr style="background-color: #CEECF5;">
 
-                            <td align="right" colspan="5"> <strong>{{ data.total_construccion=totalSuperficie}}</strong> </td>
+                                <td align="right" colspan="5"> <strong>{{ data.total_construccion=totalConstruccion}}</strong> </td>
                                 <td align="right"> <strong>{{ '$' +$root.formatNumber(data.total_costo_directo=totalCostoDirecto) }}</strong> </td>
                                 <td align="right"> <strong>{{ '$' +$root.formatNumber(data.total_costo_indirecto=totalCostoIndirecto) }}</strong> </td>
                                 <td align="right" colspan="2"> <strong>{{ '$' +$root.formatNumber(data.total_importe=totalImporte) }}</strong> </td>
@@ -522,7 +522,7 @@
                             lote_id: me.lote_id,
                             lote: me.lote,
                             sublote: me.sublote,
-                            superficie: me.construccion,
+                            construccion: me.construccion,
                             manzana: me.manzana,
                             descripcion: me.descripcion,
                             importe: me.importe,
@@ -563,7 +563,7 @@
                             'lote': this.lote,
                             'manzana' : this.manzana,
                             'modelo' : this.modelo,
-                            'superficie' : this.construccion,
+                            'construccion' : this.construccion,
                             'costo_directo' : this.costo_directo,
                             'costo_indirecto' : this.costo_indirecto,
                             'importe' : this.importe,

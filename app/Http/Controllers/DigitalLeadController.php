@@ -1785,13 +1785,13 @@ class DigitalLeadController extends Controller
                     $castigo->lead_id = $lead->id;
                     $castigo->save();
 
-                    $msj = 'Suspención de envio de Leads por falta de seguimiento a: '.$lead->nombre.' '.$lead->apellidos;
+                    $msj = 'Suspención de envio de Leads hasta el '.$fin_castigo.' por falta de seguimiento a: '.$lead->nombre.' '.$lead->apellidos;
                     $aviso = new NotificacionesAvisosController();
                     $aviso->store($lead->vendedor_asign,$msj);
 
                     $obs = new Obs_lead(); // Nuevo comentario al lead indicando que se asigno el Lead.
                     $obs->lead_id = $lead->id;
-                    $obs->comentario = 'Lead removido!, se ha cambiado de asesor por falta de seguimiento inmediato. ';
+                    $obs->comentario = 'Lead removido!, se ha cambiado de asesor por falta de seguimiento inmediato.';
                     $obs->usuario = 'Sistema';
                     $obs->save();
 

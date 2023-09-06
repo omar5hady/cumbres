@@ -27,6 +27,7 @@ class CreateCatEquipamientosTable extends Migration
             $table->double('tanque_estacionario',10,2)->default(0);
             $table->double('cocina',10,2)->default(0);
             $table->boolean('status')->default(1);
+            $table->string('usuario')->nullable();
             $table->foreign('modelo_id')->references('id')->on('modelos');
             $table->timestamps();
         });

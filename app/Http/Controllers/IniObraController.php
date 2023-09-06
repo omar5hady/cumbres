@@ -238,7 +238,7 @@ class IniObraController extends Controller
                 $lotes->lote = $det['lote'];
                 $lotes->manzana = $det['manzana'];
                 $lotes->modelo = $det['modelo'];
-                $lotes->construccion = $det['superficie'];
+                $lotes->construccion = $det['construccion'];
                 $lotes->costo_directo = $det['costo_directo'];
                 $lotes->costo_indirecto = $det['costo_indirecto'];
                 $lotes->importe = $det['importe'];
@@ -482,7 +482,7 @@ class IniObraController extends Controller
         $lotes->lote = $request->lote;
         $lotes->manzana = $request->manzana;
         $lotes->modelo = $request->modelo;
-        $lotes->construccion = $request->superficie;
+        $lotes->construccion = $request->construccion;
         $lotes->costo_directo = $request->costo_directo;
         $lotes->costo_indirecto = $request->costo_indirecto;
         $lotes->importe = $request->importe;

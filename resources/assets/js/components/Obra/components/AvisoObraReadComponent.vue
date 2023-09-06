@@ -137,7 +137,7 @@
                             <tr style="background-color: #CEECF5;">
                                 <td align="right" colspan="4">
                                     <strong>{{
-                                        $root.formatNumber(data.total_construccion)
+                                        $root.formatNumber(data.total_construccion = totalConstruccion)
                                     }}</strong>
                                 </td>
                                 <td align="right">

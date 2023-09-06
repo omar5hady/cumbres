@@ -76,17 +76,17 @@
                 >
             </RowModal>
 
-            <RowModal id1="calentador_paso" clsRow1="col-md-7"
+            <!-- <RowModal id1="calentador_paso" clsRow1="col-md-7"
                 label1="Calentador de paso">
                 <input type="text" id="calentador_paso" class="form-control"
                     v-model="catalogo.calentador_paso"
                     :disabled="tipoAccion==3"
                     v-on:keypress="$root.isNumber($event)"
                 >
-            </RowModal>
+            </RowModal> -->
 
             <RowModal id1="calentador_solar" clsRow1="col-md-7"
-                label1="Calentador Solar">
+                label1="Calentador Solar con calentador de paso">
                 <input type="text" id="calentador_solar" class="form-control"
                     v-model="catalogo.calentador_solar"
                     :disabled="tipoAccion==3"

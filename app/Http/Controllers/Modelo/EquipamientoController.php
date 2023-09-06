@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\Modelo;
 use App\CatEquipamiento;
+use Auth;
 
 class EquipamientoController extends Controller
 {
@@ -31,6 +32,7 @@ class EquipamientoController extends Controller
         $e->espejos = $request->espejos;
         $e->tanque_estacionario = $request->tanque_estacionario;
         $e->cocina = $request->cocina;
+        $e->usuario = Auth::user()->usuario;
         $e->save();
     }
 
@@ -51,6 +53,7 @@ class EquipamientoController extends Controller
         $e->espejos = $request->espejos;
         $e->tanque_estacionario = $request->tanque_estacionario;
         $e->cocina = $request->cocina;
+        $e->usuario = Auth::user()->usuario;
         $e->save();
     }
 

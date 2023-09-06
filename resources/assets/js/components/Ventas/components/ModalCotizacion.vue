@@ -9,7 +9,7 @@
 
             <div class="row">
                 <!-- Cocina Tradicional -->
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.cocina_tradicional > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Cocina Tradicional</h5>
@@ -23,7 +23,7 @@
                 </div>
 
                 <!-- Vestidor -->
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.vestidor > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Vestidor</h5>
@@ -37,7 +37,7 @@
                 </div>
 
                 <!-- Closets -->
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.closets > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Closets</h5>
@@ -56,7 +56,7 @@
             <h5 class="text-center" style="margin-bottom: 2rem;"> Otros paquetes</h5>
 
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.canceles > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Canceles</h5>
@@ -69,7 +69,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.persianas > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Persianas</h5>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm">
+                <!-- <div class="col-sm" v-if="catalogo.calentador_paso > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Calentador de Paso</h5>
@@ -93,12 +93,12 @@
                             />
                         </div>
                     </div>
-                </div>
+                </div> -->
 
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.calentador_solar > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Calentador solar</h5>
+                            <h5 class="card-title">Calentador solar con calentador de paso</h5>
                             <p class="card-text">{{ $root.formatNumber(catalogo.calentador_solar) }}</p>
                             <ButtonComponent :btnClass="active_calentador_solar ? 'btn-success' : 'btn-danger'"
                                 :icon="active_calentador_solar ? 'icon-check' : 'icon-close'"
@@ -108,7 +108,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.espejos > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Espejos</h5>
@@ -121,7 +121,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.tanque_estacionario > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Tanque Estacionario</h5>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm">
+                <div class="col-sm" v-if="catalogo.cocina > 0">
                     <div class="card text-center mb-2" style="width: 12rem;">
                         <div class="card-body">
                             <h5 class="card-title">Cocina como casa muestra</h5>
@@ -147,6 +147,10 @@
                     </div>
                 </div>
             </div>
+
+            <hr>
+
+            <h6 class="text-center">La presente cotización tiene vigencia al {{ this.moment().locale('es').format('DD/MMM/YYYY') }}</h6>
 
             <!-- Div para mostrar los errores que mande validerNotaria -->
         </template>
