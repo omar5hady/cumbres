@@ -213,7 +213,7 @@ class CreditoPuenteController extends Controller
                             ]
                         ];
 
-                        
+
                         $aviso = new NotificacionesAvisosController();
                         $user_proyectos = User::select('id')
                                             ->whereIn('usuario',['alemunoz','shady',
@@ -231,9 +231,9 @@ class CreditoPuenteController extends Controller
                                 $aviso->store($arquitecto[0]->arquitecto_id,$msj);
                                 User::findOrFail($arquitecto[0]->arquitecto_id)->notify(new NotifyAdmin($notif));
                             }
-                           
+
                         }
-                        
+
                         if(sizeof($user_proyectos))
                         foreach ($user_proyectos as $index => $user) {
                             $aviso->store($user->id,$msj);
@@ -255,7 +255,7 @@ class CreditoPuenteController extends Controller
             // Se cambia a estatus 5 el crédito puente para indicar como cancelado.
             $puente = Credito_puente::findOrFail($request->id);
             $puente->status = 5;
-            $puente->interes = 
+            $puente->interes =
             $puente->save();
 
             // Se buscan todos los lotes que perteneces a la solicitud a cancelar
@@ -283,7 +283,7 @@ class CreditoPuenteController extends Controller
                                 'titulo' => 'CANCELADO'
                             ]
                         ];
-                        
+
                         $aviso = new NotificacionesAvisosController();
                         $user_proyectos = User::select('id')
                                             ->whereIn('usuario',['alemunoz','shady',
@@ -425,7 +425,7 @@ class CreditoPuenteController extends Controller
 
     // Función para obtener los avances de lotes que figuran con un credito puente.
     public function indexCreditosAvances(Request $request){
-        // Llamada a la función privada para obtener los creditos puente 
+        // Llamada a la función privada para obtener los creditos puente
         $creditos = $this->getCreditosPuente($request);
         $creditos = $creditos->paginate(10);
 
@@ -494,7 +494,9 @@ class CreditoPuenteController extends Controller
 
         if(sizeof($modelos)){
             foreach($modelos as $index => $modelo){
-                $modelo->total = Lote_puente::where('modelo_id','=',$modelo->modelo_id)->count();
+                $modelo->total = Lote_puente::join('lotes', 'lotes_puente.lote_id', '=', 'lotes.id')
+                ->where('lotes_puente.solicitud_id','=',$request->id)
+                ->where('lotes.modelo_id','=',$modelo->modelo_id)->count();
             }
         }
 
@@ -770,7 +772,7 @@ class CreditoPuenteController extends Controller
                                 'titulo' => 'Cambio. Crédito Puente'
                             ]
                         ];
-                        
+
                         $aviso = new NotificacionesAvisosController();
                         $user_proyectos = User::select('id')
                                             ->whereIn('usuario',['alemunoz','shady',
@@ -787,9 +789,9 @@ class CreditoPuenteController extends Controller
                                 $aviso->store($arquitecto[0]->arquitecto_id,$msj);
                                 User::findOrFail($arquitecto[0]->arquitecto_id)->notify(new NotifyAdmin($notif));
                             }
-                           
+
                         }
-                        
+
                         if(sizeof($user_proyectos))
                         foreach ($user_proyectos as $index => $user) {
                             $aviso->store($user->id,$msj);
@@ -905,7 +907,7 @@ class CreditoPuenteController extends Controller
                 $t_cont += $m->cont = $lotes->count();
                 // % de incremento
                 $m->inc = round($m->precio_puente / $m->valor_venta, 2);
-                // Total de valor de venta 
+                // Total de valor de venta
                 $t_venta += ($m->precio_puente * $m->cont);
                 // Calculos para formatos
                 $t_adquisicion_terreno += $m->adquisicion_terreno = round($m->cont * ($m->int_pago_terreno + $m->valor_terreno + $m->escritura_gcc + $m->adicional_terreno) * $m->inc, 2);
@@ -1114,7 +1116,7 @@ class CreditoPuenteController extends Controller
 
         $credito = Credito_puente::findOrFail($request->id);
 
-        return ['pagos' => $pagos, 'ultimoAbono' => $fecha, 
+        return ['pagos' => $pagos, 'ultimoAbono' => $fecha,
                 'saldo' => $saldo, 'depCreditos' => $depCreditos,
                 'prestado' => $prestado,
                 'fecha_sig_int' => $credito->fecha_sig_int
@@ -1246,13 +1248,13 @@ class CreditoPuenteController extends Controller
             $fecha_inicial = new Carbon($primerCargo->fecha);
             $dia_ini = $fecha_inicial->day;
             $dia_fin = $fecha->day;
-            $diff = $dia_fin - $dia_ini;            
+            $diff = $dia_fin - $dia_ini;
 
             if($diff != 0)
                 $fecha = $fecha->subDays($diff);
             //ACCIONES AL CREDITO BANCARIO GENERAL
             $credito = Credito_puente::findOrFail($request->id);
-            
+
             $fecha = $fecha->addMonths(1);
             $band = true;
             while ($band == true) {
@@ -1293,11 +1295,11 @@ class CreditoPuenteController extends Controller
             $pago->fecha_interes = $request->fecha;
             $pago->monto_interes = $request->cantidad;
             $pago->save();
-            
+
             //ACCIONES AL CREDITO BANCARIO GENERAL
             $credito = Credito_puente::findOrFail($request->id);
             $fecha = new Carbon($credito->fecha_sig_int);
-            
+
             $fecha = $fecha->addMonths(1);
             $credito->fecha_sig_int = $fecha->format('Y-m-j');
             $credito->save();
@@ -1422,7 +1424,7 @@ class CreditoPuenteController extends Controller
                 }
                 $cargo->save();
             }
-            
+
         }
     }
 
@@ -1463,12 +1465,12 @@ class CreditoPuenteController extends Controller
                 ->where('liberado','=',0)
                 ->where('solicitud_id','=',$request->id)
                 ->get();
-                
+
         if(sizeof($lotes) == 0)
             $credito->status = 4;
 
         $credito->save();
-        
+
     }
 
     /// Función para guardar abonos en crédito BANCREA ////////
@@ -1539,7 +1541,7 @@ class CreditoPuenteController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $pago = Pago_puente::findOrFail($request->id);
- 
+
         //$fileName = time().$request->archivo->getClientOriginalName().'.'.$request->archivo->getClientOriginalExtension();
         $fileName = time().$request->archivo->getClientOriginalName();
         // Comprobante de pago
@@ -1548,7 +1550,7 @@ class CreditoPuenteController extends Controller
             File::delete($pathAnterior);
 
             $moved =  $request->archivo->move(public_path('/files/comprobantes/pagos'), $fileName);
- 
+
             if($moved){
                $pago->doc_pago = $fileName;
                $pago->save(); //Insert
@@ -1560,16 +1562,16 @@ class CreditoPuenteController extends Controller
             File::delete($pathAnterior);
 
             $moved =  $request->archivo->move(public_path('/files/comprobantes/interes'), $fileName);
- 
+
             if($moved){
                $pago->doc_interes = $fileName;
                $pago->save(); //Insert
            }
         }
-          
+
         return response()->json(['success'=>'You have successfully upload file.']);
     }
- 
+
     // Función para descargar los comprobantes de pago.
     public function downloadFile($tipo,$fileName){
         if($tipo == 1)
@@ -1632,7 +1634,7 @@ class CreditoPuenteController extends Controller
                 // Último dia del mes
                 $ultimoDiaMes = new Carbon($credito->fecha_sig_int);
                 $ultimoDiaMes = $ultimoDiaMes->endOfMonth();
-                
+
 
                 if($fechaAnt->lt($fechaPrimerCargo)){
                     $diff = $fechaPrimerCargo->diffInDays($fechaInteres);
@@ -1645,7 +1647,7 @@ class CreditoPuenteController extends Controller
 
                 $credito->fecha = collect([]);
 
-                for ($i=1; $i <= $diff; $i++) { 
+                for ($i=1; $i <= $diff; $i++) {
 
                     $fecha = new Carbon($fechaIniInt);
                     $fecha->addDays($i-1);

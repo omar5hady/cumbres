@@ -1174,6 +1174,8 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                                     this.cotizacion = {...equipamiento[0]}
                                 }
                                 this.cotizacion.precio_venta = data['precio_venta']
+                                this.cotizacion.lote_id = data['id']
+                                this.cotizacion.fraccionamiento_id=data['fraccionamiento_id'];
                             }
 
 

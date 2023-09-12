@@ -169,7 +169,11 @@ class PersonalController extends Controller
         $rfc = $request->rfc;
         $rfc1 = Personal::select('rfc')->where('rfc','=',$rfc)->count(); // verifica si hay mas de una concidencia de RFC y los cuenta
             if($rfc1==1){ // en caso de que exista solo una coincidencia  se selecciona el cliente y el vendedor relacionado a ese cliente
-                $personaid = Personal::select('rfc','id')->where('rfc','=',$rfc)->get();
+                $personaid = Personal::join('clientes','clientes.id','=','personal.id')
+                ->select('personal.rfc','personal.id', 'personal.nombre',
+                    'personal.apellidos','personal.celular', 'personal.telefono','personal.f_nacimiento', 'personal.email',
+                    'clientes.sexo','clientes.publicidad_id', 'clientes.edo_civil', 'clientes.vendedor_id'
+                )->where('personal.rfc','=',$rfc)->get();
 
                 $vendedor = Cliente::join('vendedores','clientes.vendedor_id','=','vendedores.id')
                     ->join('personal','vendedores.id','=','personal.id')

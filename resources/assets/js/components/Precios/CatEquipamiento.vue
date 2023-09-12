@@ -82,7 +82,9 @@
                             <!-- Catalogo Activo -->
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 1 }" v-if="b_status ===  1">
                                 <TableComponent
-                                    :cabecera="['Opciones','Proyecto','Modelo','','Cocina Tradicional','Vestidor','Closets','Fecha de alta']">
+                                    :cabecera="['Opciones','Proyecto','Modelo','','Cocina Tradicional','Vestidor','Closets',
+                                    'Cocina C.M.','Canceles', 'Persianas', 'Calentador Solar', 'Espejos', 'Tanque Estacionario',
+                                    'Fecha de alta']">
                                     <template v-slot:tbody>
                                         <tr v-for="catalogo in arrayCatalogo.data" :key="catalogo.id">
                                             <td class="td2">
@@ -96,6 +98,13 @@
                                             <td class="td2" v-text="$root.formatNumber(catalogo.cocina_tradicional)"></td>
                                             <td class="td2" v-text="$root.formatNumber(catalogo.vestidor)"></td>
                                             <td class="td2" v-text="$root.formatNumber(catalogo.closets)"></td>
+                                            <td></td>
+                                            <td class="td2" v-text="$root.formatNumber(catalogo.cocina)"></td>
+                                            <td class="td2" v-text="$root.formatNumber(catalogo.canceles)"></td>
+                                            <td class="td2" v-text="$root.formatNumber(catalogo.persianas)"></td>
+                                            <td class="td2" v-text="$root.formatNumber(catalogo.calentador_solar)"></td>
+                                            <td class="td2" v-text="$root.formatNumber(catalogo.espejos)"></td>
+                                            <td class="td2" v-text="$root.formatNumber(catalogo.tanque_estacionario)"></td>
                                             <td class="td2" v-text="catalogo.created_at"></td>
                                         </tr>
                                     </template>

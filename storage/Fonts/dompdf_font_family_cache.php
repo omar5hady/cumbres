@@ -86,4 +86,10 @@
   'glyphicons halflings' => array(
     'normal' => $fontDir . '/c47afe5539ba1b2094563d54dce2def7',
   ),
+  'avenirnextltpro' => array(
+    'normal' => $rootDir . '/lib/fonts/avenirnextltpro-normal_bf11512877ef2223afd06e89358ef2fc',
+  ),
+  'muli' => array(
+    'normal' => $fontDir . '/muli-normal_13573c3d941bc4a4ee58dd648314ca54',
+  ),
 ) ?>

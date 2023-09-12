@@ -1331,6 +1331,8 @@ Route::group(['middleware' => ['auth']],function(){
 
          /////////////////////// Rutas Catalogo de equipamientos
          Route::resource('/cat-equipamiento', Modelo\EquipamientoController::class);
+         Route::post('/cat-equipamiento/createCotizacion','Modelo\EquipamientoController@createCotizacion');
+         Route::get('/cotizacion/printCotizacion','Modelo\EquipamientoController@printCotizacion');
 
         //////////////////// RUTAS SOLICITUD DE PAGOS
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);
