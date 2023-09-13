@@ -239,6 +239,7 @@ Vue.component('integracion-cobros', require('./components/IntegracionCobros/Inte
 
 //Catalogo de Equipamiento
 Vue.component('cat-equipamiento', require('./components/Precios/CatEquipamiento.vue'));
+Vue.component('cat-cotizaciones', require('./components/Ventas/Cotizaciones.vue'));
 
 
 //ENCUESTAS

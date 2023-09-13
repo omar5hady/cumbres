@@ -92,6 +92,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-credit-card-alt"></i> Docs</a>
             </li>
         @endif
+        @if(Auth::user()->mis_prospectos == 1)
+            <li @click="menu=301" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-group"></i> Cotizaciones</a>
+            </li>
+        @endif
 
     </ul>
 </li>

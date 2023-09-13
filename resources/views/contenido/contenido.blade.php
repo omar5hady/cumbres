@@ -584,5 +584,8 @@
         <template v-if="menu==300">
             <cat-equipamiento></cat-equipamiento>
         </template>
+        <template v-if="menu==301">
+            <cat-cotizaciones></cat-cotizaciones>
+        </template>
     @endif
 @endsection

@@ -163,7 +163,41 @@ class EquipamientoController extends Controller
         return $cliente['id'];
     }
 
-    private function getCotizacion($id){
+    public function indexCotizaciones(Request $request){
+
+        $cotizaciones = $this->getCotizacion();
+
+        if($request->b_cliente != '')
+            $cotizaciones = $cotizaciones
+                ->where(DB::raw("CONCAT(cliente.nombre,' ',cliente.apellidos)"), 'like', '%'. $request->b_cliente . '%');
+
+        if($request->b_fecha1 != '')
+            $cotizaciones = $cotizaciones
+                ->whereBetween('cot_equipamientos.created_at',[$request->b_fecha1, $request->b_fecha2]);
+
+        if(Auth::user()->rol_id == 2){
+            $cotizaciones = $cotizaciones->where('cl.vendedor_id','=',Auth::user()->id);
+        }
+
+        $cotizaciones = $cotizaciones->paginate(10);
+
+        foreach($cotizaciones as $cotizacion){
+            $cotizacion->total = $cotizacion->precio_venta + $cotizacion->cocina_tradicional
+            +$cotizacion->cocina
+            +$cotizacion->vestidor
+            +$cotizacion->closets
+            +$cotizacion->canceles
+            +$cotizacion->persianas
+            +$cotizacion->calentador_solar
+            +$cotizacion->espejos
+            +$cotizacion->tanque_estacionario;
+        }
+
+        return $cotizaciones;
+
+    }
+
+    private function getCotizacion(){
 
         $cotizacion = CotEquipamiento::join('lotes as l','l.id','=','cot_equipamientos.lote_id')
             ->join('modelos as m','m.id','=', 'l.modelo_id')
@@ -181,15 +215,17 @@ class EquipamientoController extends Controller
                 'l.num_lote', 'l.sublote', 'l.manzana', 'l.terreno', 'l.construccion',
                 'l.emp_constructora','l.emp_terreno', 'users.usuario',
                 'm.nombre as modelo', 'f.nombre as proyecto', 'e.num_etapa as etapa'
-            )
-            ->where('cot_equipamientos.id','=',$id)->first();
+            );
+
 
             return $cotizacion;
 
     }
 
     public function printCotizacion(Request $request){
-        $cotizacion = $this->getCotizacion($request->id);
+        $cotizacion = $this->getCotizacion();
+
+        $cotizacion = $cotizacion->where('cot_equipamientos.id','=',$request->id)->first();
 
         setlocale(LC_TIME, 'es_MX.utf8');
         $fecha = new Carbon($cotizacion->created_at);
@@ -232,7 +268,7 @@ class EquipamientoController extends Controller
         if(sizeof($promocion))
             $cotizacion->promocion = $promocion[0]->nombre;
         else
-            $cotizacion->promocion = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid commodi, suscipit deleniti nostrum possimus porro quis consequatur nemo repellat, earum facere ratione modi asperiores similique eum fugit! Aliquid, sint repellat! Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid commodi, suscipit deleniti nostrum possimus porro quis consequatur nemo repellat, ear';
+            $cotizacion->promocion = '';
 
         // return $cotizacion;
 

@@ -1333,6 +1333,7 @@ Route::group(['middleware' => ['auth']],function(){
          Route::resource('/cat-equipamiento', Modelo\EquipamientoController::class);
          Route::post('/cat-equipamiento/createCotizacion','Modelo\EquipamientoController@createCotizacion');
          Route::get('/cotizacion/printCotizacion','Modelo\EquipamientoController@printCotizacion');
+         Route::get('/cotizacion/indexCotizaciones','Modelo\EquipamientoController@indexCotizaciones');
 
         //////////////////// RUTAS SOLICITUD DE PAGOS
         Route::resource('/solic-pagos', solicPagos\SolicitudesController::class);

@@ -119,7 +119,7 @@
                         </div>
 
                         <ul class="nav nav-tabs" id="myTab1" role="tablist">
-                            <li class="nav-item" v-if="usuario == 'shady' || usuario == 'uriel.al' || admin == 2">
+                            <li class="nav-item" v-if="usuario == 'shady' || usuario == 'uriel.al' || usuario == 'dora.m' || admin == 2">
                                 <a class="nav-link"
                                 @click="b_status = 5, b_vbgerente = '',  b_rechazado = '', b_vbdireccion = '', solicCheck = [],
                                     indexSolicitudes(1)"
