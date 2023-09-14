@@ -8,7 +8,7 @@
     <title>Cotización</title>
 </head>
 <style type="text/css">
-    @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+    /* @import url('https://fonts.googleapis.com/css?family=Muli&display=swap'); */
 
     @page{
         margin: .5cm .5cm .5cm .5cm;
@@ -559,7 +559,7 @@
                             <u>{{$cotizacion->asesor}}</u>
                         </p>
                         <img style="position: absolute; margin-top: -10px; margin-left: 250px;"
-                            src="img/cotizador/Asesores_pics/{{str_replace(' ', '', $cotizacion->usuario) }}.png" height="100px">
+                            src="img/cotizador/Asesores_pics/{{str_replace(' ', '', $cotizacion->usuario) }}.png" height="100px" alt="Asesor">
                     </div>
                 </div>
             </div>

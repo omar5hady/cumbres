@@ -166,6 +166,7 @@ class EquipamientoController extends Controller
     public function indexCotizaciones(Request $request){
 
         $cotizaciones = $this->getCotizacion();
+        $user_id = Auth::user()->id;
 
         if($request->b_cliente != '')
             $cotizaciones = $cotizaciones
@@ -176,7 +177,10 @@ class EquipamientoController extends Controller
                 ->whereBetween('cot_equipamientos.created_at',[$request->b_fecha1, $request->b_fecha2]);
 
         if(Auth::user()->rol_id == 2){
-            $cotizaciones = $cotizaciones->where('cl.vendedor_id','=',Auth::user()->id);
+            $cotizaciones = $cotizaciones->where(function($query) use ($user_id){
+                $query->where('cl.vendedor_id','=',$user_id);
+                $query->orWhere('cot_equipamientos.usuario','=',$user_id);
+            });
         }
 
         $cotizaciones = $cotizaciones->paginate(10);

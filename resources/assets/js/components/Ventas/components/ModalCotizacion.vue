@@ -338,7 +338,7 @@
                     cocina_tradicional: this.active_cocina_tradicional ? this.catalogo.cocina_tradicional : 0,
                     vestidor: this.active_vestidor ? this.catalogo.vestidor : 0,
                     closets: this.active_closets ? this.catalogo.closets : 0,
-                    canceles: this.active_canceles ? this.catalogo.canceactive_canceles : 0,
+                    canceles: this.active_canceles ? this.catalogo.canceles : 0,
                     persianas: this.active_persianas ? this.catalogo.persianas : 0,
                     calentador_solar: this.active_calentador_solar ? this.catalogo.calentador_solar : 0,
                     calentador_paso: this.active_calentador_paso ? this.catalogo.calentador_paso : 0,
