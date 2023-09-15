@@ -269,16 +269,15 @@
                 if(this.catalogo.modelo_id=='') //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjCatalogo.push("Elija un modelo");
 
-                if(this.catalogo.cocina_tradicional=='' ||
-                    this.catalogo.vestidor =='' ||
-                    this.catalogo.closets =='' ||
-                    this.catalogo.canceles =='' ||
-                    this.catalogo.persianas =='' ||
-                    this.catalogo.calentador_paso =='' ||
-                    this.catalogo.calentador_solar =='' ||
-                    this.catalogo.espejos =='' ||
-                    this.catalogo.tanque_estacionario =='' ||
-                    this.catalogo.cocina ==''
+                if(this.catalogo.cocina_tradicional==='' ||
+                    this.catalogo.vestidor ==='' ||
+                    this.catalogo.closets ==='' ||
+                    this.catalogo.canceles ==='' ||
+                    this.catalogo.persianas ==='' ||
+                    this.catalogo.calentador_solar ==='' ||
+                    this.catalogo.espejos ==='' ||
+                    this.catalogo.tanque_estacionario ==='' ||
+                    this.catalogo.cocina ===''
                 ) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjCatalogo.push("No dejar campos vacios");
 

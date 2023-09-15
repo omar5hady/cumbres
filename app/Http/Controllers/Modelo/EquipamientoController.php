@@ -13,6 +13,7 @@ use App\Lote_promocion;
 use App\Cliente;
 use App\Personal;
 use Auth;
+use Excel;
 use Carbon\Carbon;
 
 class EquipamientoController extends Controller
@@ -73,7 +74,7 @@ class EquipamientoController extends Controller
         $e->save();
     }
 
-    public function index(Request $request){
+    private function getCatalogo(Request $request){
         $catalogo = CatEquipamiento::join('modelos as m','cat_equipamientos.modelo_id','=','m.id')
             ->join('fraccionamientos as f','m.fraccionamiento_id','=','f.id')
             ->select('f.nombre as proyecto', 'f.id as proyecto_id', 'm.nombre as modelo','cat_equipamientos.*')
@@ -85,8 +86,88 @@ class EquipamientoController extends Controller
             if($request->b_fecha1 != '')
                 $catalogo = $catalogo->whereBetween('cat_equipamientos.created_at', [$request->b_fecha1, $request->b_fecha2]);
 
+        return $catalogo;
+    }
+
+    public function index(Request $request){
+        $catalogo = $this->getCatalogo($request);
+
         $catalogo = $catalogo->paginate(8);
         return $catalogo;
+    }
+
+    public function excelCatalogo(Request $request){
+
+        $catalogo = $this->getCatalogo($request);
+        $catalogo = $catalogo->get();
+
+        // Creación y retorno de excel.
+        return Excel::create('Equipamientos', function($excel) use ($catalogo){
+                $excel->sheet('Equipamientos', function($sheet) use ($catalogo){
+
+                    $sheet->row(1, [
+                        'Proyecto', 'Modelo','Cocina Tradicional','Vestidor','Closets',
+                        'Cocina C.M.','Canceles', 'Persianas', 'Calentador Solar',
+                        'Espejos', 'Tanque Estacionario',
+                        'Fecha de alta'
+                    ]);
+
+                    $sheet->cells('A1:L1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+                    $cont=1;
+
+                    $sheet->setColumnFormat(array(
+                        'C' => '$#,##0.00',
+                        'D' => '$#,##0.00',
+                        'E' => '$#,##0.00',
+                        'F' => '$#,##0.00',
+                        'G' => '$#,##0.00',
+                        'H' => '$#,##0.00',
+                        'I' => '$#,##0.00',
+                        'J' => '$#,##0.00',
+                        'K' => '$#,##0.00',
+                    ));
+
+                    foreach($catalogo as $index => $e) {
+                        $cont++;
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $fecha_firma_esc = new Carbon($e->created_at);
+
+                        $sheet->row($index+2, [
+                            $e->proyecto,
+                            $e->modelo,
+                            $e->cocina_tradicional,
+                            $e->vestidor,
+                            $e->closets,
+                            $e->cocina,
+                            $e->canceles,
+                            $e->persianas,
+                            $e->calentador_solar,
+                            $e->espejos,
+                            $e->tanque_estacionario,
+                            $e->created_at,
+                        ]);
+                    }
+                    $num='A1:L'.$cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+        )->download('xls');
+
+
+
     }
 
     public function createCotizacion(Request $request){
