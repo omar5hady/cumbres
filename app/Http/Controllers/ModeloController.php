@@ -28,7 +28,7 @@ class ModeloController extends Controller
         $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
             'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion', 'modelos.recorrido',
-            'modelos.archivo','modelos.id','espec_obra','modelos.ficha_tecnica')
+            'modelos.archivo','modelos.id','espec_obra','modelos.ficha_tecnica', 'modelos.cat_equipamiento')
             ->where('modelos.nombre', '!=','Por Asignar');//Diferente a modelo por asignar
         if($buscar != '')//Busqueda general
                 $modelos = $modelos->where($criterio, 'like', '%'. $buscar . '%');
@@ -481,6 +481,31 @@ class ModeloController extends Controller
     //Función para descargar el archivo de especificaciones de obra.
     public function downloadFileEspecObra($fileName){
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
+        return response()->file($pathtoFile);
+    }
+
+    //Función para subir el archivo de especificaciones de un modelo.
+    public function submitCatEquipamiento(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fileName = time().'.'.$request->archivo->getClientOriginalName();
+        $moved =  $request->archivo->move(public_path('/files/modelos/equipamiento'), $fileName);
+
+        if($moved){
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+            $modelo = Modelo::findOrFail($request->id);
+            if($modelo->cat_equipamiento != NULL){
+                $pathAnterior = public_path() . '/files/modelos/equipamiento/' . $modelo->cat_equipamiento;
+                File::delete($pathAnterior);
+            }
+            $modelo->cat_equipamiento = $fileName;
+            $modelo->save(); //Insert
+        }
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    public function downloadCatEquipamiento($fileName){
+        $pathtoFile = public_path().'/files/modelos/equipamiento/'.$fileName;
         return response()->file($pathtoFile);
     }
 }

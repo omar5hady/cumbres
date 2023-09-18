@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <TableComponent :cabecera="['Opciones','Tipo','Proyecto','Modelo',
-                            'Terreno mts&sup2;','Construcción mts&sup2;','Recorrido virtual','Ficha Tecn.','Especificaciónes',
+                            'Terreno mts&sup2;','Construcción mts&sup2;','Recorrido virtual','Ficha Tecn.','Especificaciónes', 'Equipamiento'
                         ]">
                             <template v-slot:tbody>
                                 <tr v-for="modelo in arrayModelo" :key="modelo.id">
@@ -77,6 +77,14 @@
                                             @click="abrirModal('modelo','especificaciones',modelo.especificaciones)" class="btn btn-default btn-sm">
                                             <i class="fa fa-cogs"></i>
                                         </button>
+                                    </td>
+                                    <td class="td2">
+                                        <a v-if="modelo.cat_equipamiento != null" title="Descargar catalogo"
+                                        :href="`/downloadCatEquipamiento/${modelo.cat_equipamiento}`"
+                                            target="_blank"
+                                            class="btn btn-success btn-sm">
+                                            <i class="icon-eye"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             </template>
@@ -206,6 +214,7 @@
                             <option class=" form-control " value="especifi">Catalogo de especificaciones. </option>
                             <option class=" form-control " @click="getVersiones(id)" value="new_especifi">Añadir nueva version especificaciones. </option>
                             <option class=" form-control " value="obra_especifi">Archivo especificaciones obra. </option>
+                            <option class=" form-control " value="cat_especificaciones">Catalogo de Equipamiento </option>
                         </select>
 
                         <div class="content-main">
@@ -428,6 +437,11 @@ import TableComponent from '../Componentes/TableComponent.vue'
 
                 if(this.formActive == 'ficha_tecnica'){
                     url = '/modelo/submitFichaTecnica'
+                    formData.append( 'id' , this.id);
+                }
+
+                if(this.formActive == 'cat_especificaciones'){
+                    url = '/modelo/catalogo/cat_especificaciones'
                     formData.append( 'id' , this.id);
                 }
 

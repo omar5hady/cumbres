@@ -81,13 +81,13 @@
                             :btnClass="'btn-success'"
                             :icon="'icon-plus'"
                             title="Añadir"
-                            @click="addMedio(medio_digital)"
+                            @click="addMedio(data.medio_digital)"
                         ></Button>
                     </template>
                 </RowModal>
 
                 <div>
-                    <div class="modal-header" v-if="medios">
+                    <div class="modal-header" v-if="medios.length>0">
                         <h5 class="modal-title">Medios elegidos</h5>
                     </div>
                     <table class="table table-bordered table-striped table-sm">
@@ -223,7 +223,7 @@ export default {
             axios
                 .post("/campanias/store", {
                     nombre: this.data.nombre_campania,
-                    medio_digital: this.data.medios,
+                    medio_digital: this.medios,
                     fecha_ini: this.data.fecha_ini,
                     fecha_fin: this.data.fecha_fin,
                     presupuesto: this.data.presupuesto
@@ -287,13 +287,13 @@ export default {
             this.errorCampania = 0;
             this.errorMostrarMsj = [];
 
-            if (!this.data.nombre)
+            if (this.data.nombre_campania === '')
                 //Si la variable departamento esta vacia
                 this.errorMostrarMsj.push(
                     "El nombre de la campaña no puede ir vacio."
                 );
 
-            if (this.data.medios.length == 0)
+            if (this.medios.length == 0)
                 //Si la variable departamento esta vacia
                 this.errorMostrarMsj.push("Elegir un medio digital.");
 
@@ -303,7 +303,7 @@ export default {
                     "Registrar la fecha de inico de la campaña."
                 );
 
-            if (!this.data.nombre)
+            if (!this.data.fecha_fin)
                 //Si la variable departamento esta vacia
                 this.errorMostrarMsj.push(
                     "Registrar la fecha de finalizacion de la campaña."

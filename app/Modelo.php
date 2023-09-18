@@ -14,7 +14,8 @@ class Modelo extends Model
                             'terreno','recorrido',
                             'ficha_tecnica',
                             'construccion',
-                            'archivo','espec_obra'
+                            'archivo','espec_obra',
+                            'cat_equipamiento'
                         ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function fraccionamiento(){

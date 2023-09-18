@@ -273,9 +273,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/modelo/eliminar','ModeloController@destroy');
         Route::post('/formSubmitModelo/{id}','ModeloController@formSubmit');
         Route::post('/modelo/submitFichaTecnica','ModeloController@submitFichaTecnica');
+        Route::post('/modelo/catalogo/cat_especificaciones','ModeloController@submitCatEquipamiento');
         Route::get('/downloadModelo/{fileName}' , 'ModeloController@downloadFile');
         Route::post('/formSubmitModelo/especificaciones/obra/{id}','ModeloController@formSubmitEspecObra');
         Route::get('/downloadModelo/obra/{fileName}' , 'ModeloController@downloadFileEspecObra');
+        Route::get('/downloadCatEquipamiento/{fileName}' , 'ModeloController@downloadCatEquipamiento');
 
     ////////////////////        RUTAS LOTES    /////////////////////////////////
         Route::get('/lote','LoteController@index');

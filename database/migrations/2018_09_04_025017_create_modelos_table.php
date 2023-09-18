@@ -24,6 +24,7 @@ class CreateModelosTable extends Migration
             $table->string('ficha_tecnica',255)->nullable();
             $table->string('espec_obra',50)->nullable();
             $table->string('recorrido',191)->nullable();
+            $table->string('cat_equipamiento')->nullable();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
 
