@@ -183,7 +183,7 @@ class ContratosVentaController extends Controller
 
         $contrato->diasTramites = $credito_sel->dias_nat;
 
-        if($contrato->avance_lote < 95){
+        if($contrato->avance_lote < 95 && $contrato->modelo != 'Terreno'){
             $contrato->diasTramites += $this->calcularDiasHabiles($contrato->fecha_contrato, $contrato->fin_obra);
         }
         $contrato->date_birth = new Carbon($contrato->date_birth);
@@ -219,7 +219,7 @@ class ContratosVentaController extends Controller
         $contrato->difProfeco = 0;
 
         if($contrato->emp_terreno != $contrato->emp_constructora && $contrato->modelo != 'Terreno'){
-            $fechaProfeco =  new Carbon('2023-07-18');
+            $fechaProfeco =  new Carbon('2022-12-01');
             $contrato->difProfeco = $fechaProfeco->diffInDays(new Carbon($contrato->fecha_contrato), false);
         }
         elseif($contrato->emp_constructora == 'CONCRETANIA'  && $contrato->modelo != 'Terreno'){

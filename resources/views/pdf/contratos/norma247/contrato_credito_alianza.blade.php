@@ -94,16 +94,17 @@
 
 </style>
 
+{{-- CONTRATO ALIANZA CONCRETANIA. --}}
 <body>
     <div>
         <strong>
             <p>
                 CONTRATO DE PROMESA DE COMPRAVENTA DE BIEN INMUEBLE DESTINADO A CASA HABITACIÓN QUE CELEBRAN, POR UNA PARTE LA SOCIEDAD MERCANTIL
                 DENOMINADA GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., REPRESENTADA EN ESTE ACTO POR LA SRA. MAYRA JAZMIN SALAZAR ALONSO
-                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO "CUMBRES"; LA DIVERSA SOCIEDAD DENOMINADA
+                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, SE LE DENOMINARÁ COMO CUMBRES; LA DIVERSA SOCIEDAD DENOMINADA
                 CONCRETANIA, S. A. DE. C.V,
                 REPRESENTADA EN ESTE ACTO POR LA SRA. ELIZABETH HERNÁNDEZ LOERA A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO,
-                SE LE DENOMINARA COMO "CONCRETANIA" Y A AMBAS PERSONAS MORALES CUANDO SE LES DESIGNE CONJUNTAMENTE SERA COMO
+                SE LE DENOMINARA COMO CONCRETANIA Y A AMBAS PERSONAS MORALES CUANDO SE LES DESIGNE CONJUNTAMENTE SERA COMO
                 "LOS PROMITENTES VENDEDORES" Y POR LA OTRA PARTE, POR SU PROPIO DERECHO
                 EL(A) SR(A).
                     {{ mb_strtoupper($contrato->c_nombre) }} {{ mb_strtoupper($contrato->c_apellidos) }}
@@ -112,12 +113,12 @@
                         {{ mb_strtoupper($contrato->apellidos_coa) }}
                     @endif
 
-                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO "EL PROMITENTE COMPRADOR",
+                A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO EL PROMITENTE COMPRADOR,
                 AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS.
             </p>
         </strong>
 
-        <h4 align="center">"D E C L A R A C I O N E S"</h4>
+        <h4 align="center">D E C L A R A C I O N E S</h4>
 
         <p>
             <strong>SI.- Declaran “LOS PROMITENTENTES VENDEDORES”:</strong>
@@ -174,7 +175,7 @@
             </li>
         </ol>
 
-        <p>
+        {{-- <p>
             Dicha documentación puede ser consultada por <strong>“EL PROMITENTE COMPRADOR”</strong> en el domicilio del <strong>“EL
             PROMITENTE VENDEDOR”<br>
             Calle: Manuel Gutiérrez Nájera
@@ -193,7 +194,7 @@
             inscripción en el Registro Público de la Propiedad bajo el folio real N°.{{$contrato->folio_registro}}, instrumento en el cual están referidas las correspondientes
             áreas de uso común y porcentaje de indiviso, lo cual ha sido debidamente exhibido y explicado a
             <strong>EL PROMITENTE COMPRADOR.</strong>
-        </p>
+        </p> --}}
 
 
         <p>II.- Declara <strong>"CONCRETANIA"</strong> por medio de su representante:</p>
@@ -209,10 +210,10 @@
                     es <strong>CON180725REA.</strong>
                 </li>
                 <li>
-                    Que  las facultades de su representante constan en la escritura pública número 1560 de fecha 07 de noviembre del 2022,
-                    otorgada ante el Notario Público número 19 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Alfredo Noyola Robles
+                    Que  las facultades de su representante legal constan en la escritura pública número 764 de fecha 25 de julio del 2018,
+                    otorgada ante el Notario Público número 4 del primer distrito judicial de la ciudad de San Luis Potosí, Lic. Octaviano Gómez y González
                     inscrita en el Registro Público de la Propiedad y del Comercio en San Luis Potosí, S.L.P, bajo el folio mercantil
-                    123507, mismas atribuciones que no le han sido revocadas a la fecha.
+                    N-2018073682, mismas atribuciones que no le han sido revocadas a la fecha.
                 </li>
                 <li>
                     Que su objeto social es la ejecución, administración, construcción, promoción, comercialización y arrendamiento de desarrollos
@@ -224,7 +225,7 @@
 
         <br>
 
-        <p>III.- Declaran conjuntamente <strong>"LOS PROMITENTES VENDEDORES"</strong></p>
+        <p>III.- Declaran conjuntamente <strong>LOS PROMITENTES VENDEDORES</strong></p>
 
         <ol>
             <li>
@@ -356,8 +357,9 @@
             partes, las cuales prometen celebrar un contrato de compraventa con las formalidades que para este tipo de acto
             jurídico exige la legislación aplicable, respecto del inmueble que se identifica con la superficie, características
             y especificaciones señaladas en el “Anexo A”, siempre y cuando se cumpla con la condición suspensiva referida en la
-            Cláusula Segunda siguiente. Corresponde a “CUMBRES” la celebración del contrato de compraventa del lote urbanizado
-            que se describe en el anexo en mención,  en tanto que “CONCRETANIA” lo hará respecto de la casa habitación ahí edificada.
+            Cláusula Segunda siguiente.
+            {{-- Corresponde a “CUMBRES” la celebración del contrato de compraventa del lote urbanizado
+            que se describe en el anexo en mención,  en tanto que “CONCRETANIA” lo hará respecto de la casa habitación ahí edificada. --}}
         </p>
 
         <p>
@@ -484,12 +486,16 @@
             <strong>TERCERA.- <u>PLAZO PARA CELEBRAR EL CONTRATO DE COMPRAVENTA.</u></strong>
             Las partes pactan que la firma del Contrato de Compraventa en escritura pública se llevará a cabo dentro del plazo de
             {{$contrato->diasTramites}} días hábiles
-            posteriores a la  fecha en que  se haya liquidado el importe total de la operación. Las partes podrán convenir las
-            prórrogas que estimen convenientes para la firma de escritura pública.
+            posteriores a la fecha en que la institución o en su caso instituciones acreditantes hayan notificado ya sea a
+            <strong>"EL PROMITENTE COMPRADOR"</strong> o a <strong>"LOS PROMITENTES VENDEDORES",</strong> según sea el caso,
+            que le fue aprobado y otorgado el crédito a <strong>"EL PROMIENTE COMPRADOR".</strong> Las partes podrán convenir
+            las prórrogas que estimen convenientes para la firma del contrato de compraventa respectivo.
+            {{-- en que  se haya liquidado el importe total de la operación. Las partes podrán convenir las
+            prórrogas que estimen convenientes para la firma de escritura pública. --}}
         </p>
 
         <p>
-            La firma de la escritura pública se llevará a cabo ante el Notario Público que designen las partes , debiendo respetar
+            La firma de la escritura pública se llevará a cabo ante el Notario Público que designen las partes, debiendo respetar
             el derecho de <strong>“EL PROMITENTE COMPRADOR”</strong> de poder elegir  a dicho notario público, siempre y
             cuando este se encuentre registrado en el padrón de notarios de la institución acreditante del crédito de vivienda.
             <strong>
@@ -539,14 +545,16 @@
                     derechos, cuotas de mantenimiento y servicios.
                 </li>
                 <li class="li-custom">
-                    <strong>"CUMBRES"</strong>  se obligará al saneamiento para el caso de evicción y <strong>"CONCRETANIA"</strong>
-                     a responder por los vicios ocultos en los términos de la legislación aplicable.
+                    <strong>"LOS PROMITENTES VENDEDORES"</strong> se obligarán al sanamiento para el caso de evicción y a responder por los
+                    vicions ocultos en los términos de la legislación aplicable.
+                    {{-- <strong>"CUMBRES"</strong>  se obligará al saneamiento para el caso de evicción y <strong>"CONCRETANIA"</strong>
+                     a responder por los vicios ocultos en los términos de la legislación aplicable. --}}
                 </li>
                 <li class="li-custom">
                     La entrega de la posesión del inmueble en ningún caso será mayor a 30 días naturales a partir de la fecha de la escritura pública.
                 </li>
                 <li class="li-custom">
-                    <strong>"CONCRETANIA"</strong>  otorgará a <strong>"EL PROMITENTE COMPRADOR"</strong> las garantías que en términos del artículo
+                    <strong>"LOS PROMITENTES VENDEDORES"</strong>  otorgarán a <strong>"EL PROMITENTE COMPRADOR"</strong> las garantías que en términos del artículo
                     73 Quáter de la Ley Federal del Consumidor deben considerarse.
                 </li>
                 <li class="li-custom">
@@ -569,7 +577,7 @@
 
         <p>
             En caso de retraso en la entrega del bien inmueble acordado en el presente contrato, dará lugar a la aplicación de la pena convencional
-            establecida en la Cláusula Décima Tercera o al reclamo de daños y perjuicios; lo anterior, salvo causas debidamente justificadas e imputables a
+            establecida en la Cláusula Décima Cuarta o al reclamo de daños y perjuicios; lo anterior, salvo causas debidamente justificadas e imputables a
             <strong>
                 “LOS PROMITENTES VENDEDORES”
             </strong> en cuyo caso las partes pudieran pactar una nueva fecha de entrega.
@@ -577,7 +585,7 @@
 
         <p>
             <strong>
-                SÉPTIMA.- <u>GARANTÍAS.</u> “CONCRETANIA”
+                SÉPTIMA.- <u>GARANTÍAS.</u> “LOS PROMITENTES VENDEDORES”
             </strong>
              otorgan a <strong>“EL PROMITENTE COMPRADOR”</strong> en cumplimiento al artículo 73 Quáter de la Ley Federal de Protección al Consumidor una
              Póliza de Garantía sobre el Inmueble objeto del presente contrato con una vigencia de cinco años para cuestiones estructurales, de tres años para impermeabilización,
@@ -630,7 +638,7 @@
         <p>
             En caso de que
             <strong>
-                “CONCRETANIA”
+                LOS PROMITENTES VENDEDORES
             </strong> contraten o cuenten con mecanismos coadyuvantes para hacer frente a la garantía del inmueble,
             no significará que
             <strong>
@@ -989,12 +997,11 @@
         <p>
             <strong>DECIMA NOVENA.- <u>MODELO DE CONTRATO PROFECO.</u></strong>
             @if($contrato->difProfeco > 0)
-                Este contrato fue presentado  a Registro ante la Procuraduría Federal del Consumidor bajo el número de procedimiento <u>160371</u>,
-                el pasado día 05 de JUNIO de 2023; por lo que se entiende aprobado por esa dependencia en términos del artículo 87 de la Ley Federal de
-                Protección al Consumidor que en lo conducente indica que presentado un contrato a registro ante la Procuraduría, ésta
-                emitirá su resolución dentro de los treinta días hábiles siguientes a la fecha de presentación de esa solicitud.
-                Transcurrido dicho plazo sin haberse emitido la resolución correspondiente, el modelo de contrato se entenderá aprobado,
-                quedando en su caso como prueba de inscripción la solicitud de registro.
+                El modelo de contrato de adhesión que se utiliza para documnetar la presente operación se encuentra aprobado y registrado
+                por la Procuraduría Federal del Consumidor bajo el numero 7719-2022 de fecha 1 de diciembre de 2022, Asimismo, el
+                contenido de este contrato se incorporará en escritura pública sin importar el orden y forma en que se citen y esto no se
+                considerará como incumplimiento a la Ley, ni modificación al modelo de contrato registrado ante PROFECO. Cualquier variación
+                del contenido del presente contrato en perjuicio de <strong>"EL PROMITENTE COMPRADOR"</strong> se tendra por no puesta.
             @else
                 El modelo de contrato de adhesión que se utiliza para documentar la
                 presente operación se encuentra aprobado y registrado por la Procuraduría Federal del Consumidor bajo el

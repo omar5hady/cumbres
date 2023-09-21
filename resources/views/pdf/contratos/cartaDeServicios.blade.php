@@ -47,17 +47,17 @@
     <div style="width: 100%; position: fixed; text-align: center;">
         @if ($datos[0]->modelo == 'Terreno')
             <img
-                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios2 }}" width="105%"
-                height="1020">
+                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios2 }}" width="100%"
+                >
         @else
             <img
-                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}" width="105%"
-                height="1020">
+                src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}" width="100%"
+                >
         @endif
         @if($datos[0]->proyecto != 'PRIVADA NEDEN')
-        <div style="margin-top: 200px; position: absolute; width: 100%; left:80px; right:80px;">
+        <div style="margin-top: 300px; position: absolute; width: 100%; left:80px; right:80px;">
         @else
-            <div style="margin-top: 200px; position: absolute; width: 100%; left:200px; right:60px;">
+            <div style="margin-top: 300px; position: absolute; width: 100%; left:200px; right:60px;">
         @endif
 
             <p align="right">México, San Luis Potosí, S.L.P, a <u>{{ $datos[0]->fecha_hoy }}</u></p>
@@ -75,7 +75,7 @@
                 <p align="center"> <b>¡Muchas felicidades por su nuevo Lote!</b> </p>
             @endif
 
-            @if ($datos[0]->num_etapa != 'EXTERIOR')
+            @if (!str_contains($datos[0]->num_etapa, 'EXTERIOR'))
                 <p align="justify">&nbsp; &nbsp; Queremos informarte por la presente que para mantener la Belleza,
                     Tranquilidad y Seguridad de la privada
                     se manejara una cuota de mantenimiento la cual tendrá como objetivo el solventar los gastos comunes

@@ -363,7 +363,7 @@
             <strong>“EL VENDEDOR”</strong> en ese lapso. Dicha devolución debe darse en un plazo de 5 a 15 días hábiles siguientes a la
             fecha en que le sea notificada al <strong>“EL VENDEDOR”</strong> por escrito. En caso de que dichas cantidades no fueren
             restituidas dentro del plazo establecido, <strong>“EL VENDEDOR”</strong> deberá pagar a <strong>“EL COMPRADOR”</strong> un interés
-            equivalente al   % (     por ciento) mensual por cada día transcurrido de retraso en dicha restitución.
+            equivalente al ____ % ( _________ por ciento) mensual por cada día transcurrido de retraso en dicha restitución.
         </p>
 
         <p>
@@ -373,7 +373,7 @@
 
         <p>
             <strong>QUINTA. FIRMA DE ESCRITURA PÚBLICA.- </strong>
-            Las partes acuerdan que dentro de los _____	días hábiles siguientes a la fecha de firma del presente Contrato de Compraventa,
+            Las partes acuerdan que dentro de los {{$contrato->notaria}}	días hábiles siguientes a la fecha de firma del presente Contrato de Compraventa,
             concurrirán ante el notario público que en su momento sea designado por <strong>“EL COMPRADOR”,</strong> en su caso con el fin de otorgar
             y formalizar la escritura pública de compraventa, acto en el cual <strong>“EL VENDEDOR”</strong> entregará a <strong>“EL COMPRADOR”</strong>
             todos aquellos documentos relativos al TERRENO que sea requerido a entregar de conformidad con la legislación
@@ -607,7 +607,8 @@
 
         <p>
             <strong>DÉCIMA SEXTA.- PRESCRIPCIÓN DE ACCIONES Y TRANSMISIÓN DE DERECHOS DE “EL COMPRADOR”.</strong>
-            Las acciones civiles derivadas de responsabilidad civil, vicios ocultos y en su caso evicción, se resolverán y determinarán con base
+            Las acciones civiles derivadas de responsabilidad civil por vicios ocultos de acuerdo al artículo 1982 en relación con lo
+            dispuesto en los arts. Del 1975 al 1981 y en su caso evicción según el artículo 1972, se resolverán y determinarán con base
             en las disposiciones legales vigentes del Código Civil del Estado de San Luis Potosí.
         </p>
 

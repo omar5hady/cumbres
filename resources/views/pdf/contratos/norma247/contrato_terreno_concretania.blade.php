@@ -171,7 +171,7 @@
             </li>
             <li><template class="cuadrado">f)</template>
                 El TERRENO cuenta con autorización de uso de suelo destinado para uso habitacional, de conformidad con la
-                licencia de uso de suelo expedida por	_________de fecha ____________ de _____.<br><br>
+                licencia de uso de suelo expedida por ______________________ de fecha ____________ de _____.<br><br>
             </li>
             <li><template class="cuadrado">g)</template>
                 El TERRENO objeto del contrato, no se encuentra sujeto algún régimen especial, se puede escriturar
@@ -349,7 +349,7 @@
             <strong>“EL VENDEDOR”</strong> en ese lapso. Dicha devolución debe darse en un plazo de 5 a 15 días hábiles siguientes a la
             fecha en que le sea notificada al <strong>“EL VENDEDOR”</strong> por escrito. En caso de que dichas cantidades no fueren
             restituidas dentro del plazo establecido, <strong>“EL VENDEDOR”</strong> deberá pagar a <strong>“EL COMPRADOR”</strong> un interés
-            equivalente al   % (     por ciento) mensual por cada día transcurrido de retraso en dicha restitución.
+            equivalente al ___ % ( _______ por ciento) mensual por cada día transcurrido de retraso en dicha restitución.
         </p>
 
         <p>
@@ -359,7 +359,7 @@
 
         <p>
             <strong>QUINTA. FIRMA DE ESCRITURA PÚBLICA.- </strong>
-            Las partes acuerdan que dentro de los _____	días hábiles siguientes a la fecha de firma del presente Contrato de Compraventa,
+            Las partes acuerdan que dentro de los {{$contrato->diasTramites}}	días hábiles siguientes a la fecha de firma del presente Contrato de Compraventa,
             concurrirán ante el notario público que en su momento sea designado por <strong>“EL COMPRADOR”,</strong> en su caso con el fin de otorgar
             y formalizar la escritura pública de compraventa, acto en el cual <strong>“EL VENDEDOR”</strong> entregará a <strong>“EL COMPRADOR”</strong>
             todos aquellos documentos relativos al TERRENO que sea requerido a entregar de conformidad con la legislación
@@ -443,7 +443,7 @@
         <p>
             <strong>OCTAVA. ENTREGA DE POSESIÓN Y RECEPCIÓN DEL TERRENO.- “EL VENDEDOR” </strong>
             se obliga a entregar a <strong>“EL COMPRADOR”,</strong> sus causahabientes o representantes legales, la propiedad y posesión material
-            del TERRENO libre de todo gravamen y limitación de dominio, a más tardar el día	de        de__        , salvo que
+            del TERRENO libre de todo gravamen y limitación de dominio, a más tardar el día ____ de __________ de ______  , salvo que
             acredite fehacientemente que por caso fortuito o fuerza mayor que la afectó directamente o al TERRENO no pudiera
             entregar el TERRENO en dicha fecha, caso en el cual las partes deberán pactar una nueva fecha de entrega.
             Del mismo modo, las partes podrán de común acuerdo pactar una nueva fecha de entrega del TERRENO por así convenir

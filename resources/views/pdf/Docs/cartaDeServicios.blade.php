@@ -32,9 +32,9 @@ ul{
 <div style="width: 100%; position: fixed; text-align: center;">
     <img src="files/etapas/plantillasCartaServicios/{{ $archivos[0]->plantilla_carta_servicios }}" width="105%">
     @if($archivos[0]->proyecto != 'PRIVADA NEDEN')
-        <div style="margin-top: 200px; position: absolute; width: 100%; left:80px; right:80px;">
+        <div style="margin-top: 300px; position: absolute; width: 100%; left:80px; right:80px;">
     @else
-        <div style="margin-top: 200px; position: absolute; width: 100%; left:200px; right:60px;">
+        <div style="margin-top: 300px; position: absolute; width: 100%; left:200px; right:60px;">
     @endif
 
         <p align="right">México, San Luis Potosí, S.L.P, a <u>{{$archivos[0]->fecha_hoy}}</u></p>
@@ -43,7 +43,7 @@ ul{
         <p align="center"><b>¡Muchas felicidades por tu nueva casa!</b></p>
 
         <p align="justify">&nbsp; &nbsp; Queremos informarte por la presente que para mantener la belleza, tranquilidad y seguridad
-        @if($archivos[0]->num_etapa == 'EXTERIOR')
+        @if(!str_contains($archivos[0]->num_etapa, 'EXTERIOR'))
             del fraccionamiento
         @else
             de la privada
