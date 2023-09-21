@@ -85,7 +85,9 @@
                                     </template>
                                     <template>
                                         <td v-if="archivos.archivo != null">
-                                            <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/catalogoEspecificaciones/'+archivos.modeloID">Descarga</a>
+                                            <button v-if="archivos.archivo != null" title="Descargar ficha tecnica" type="button" @click="fichaTecnica(archivos.archivo)" class="btn btn-danger">
+                                                Descargar
+                                            </button>
                                         </td>
                                         <td v-else>
                                             Aun sin cargar
@@ -201,6 +203,9 @@ import TableComponent from '../Componentes/TableComponent.vue'
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            fichaTecnica(archivo){
+                window.open('/files/modelos/ficha/'+archivo, '_blank')
             },
             cambiarPagina(page, b_fraccionamiento,b_etapa,b_modelo, criterio){
                 let me = this;
