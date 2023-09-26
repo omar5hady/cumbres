@@ -195,6 +195,8 @@ class RentasController extends Controller
     //Funcion para actualizar una renta
     public function updateRenta(Request $request){
         $datosRenta = $request->datosRenta;
+        $pagos = $datosRenta['pagares'];
+
 
         try {
             DB::beginTransaction();
@@ -230,6 +232,9 @@ class RentasController extends Controller
             //Datos contrato
             $renta->fecha_firma = $datosRenta['fecha_firma'];
             $renta->dep_garantia = $datosRenta['dep_garantia'];
+            $renta->fecha_ini = $datosRenta['fecha_ini'];
+            $renta->fecha_fin = $datosRenta['fecha_fin'];
+            $renta->num_meses = $datosRenta['num_meses'];
 
             $renta->muebles = $datosRenta['muebles'];
             $renta->adendum = $datosRenta['adendum'];
@@ -245,6 +250,14 @@ class RentasController extends Controller
             $lote = Lote::findOrFail($datosRenta['lote_id']);
             $lote->contrato = 1;
             $lote->save();
+
+            foreach($pagos as $pago){
+                //Llamada a la función privada que genera el pagare.
+                $this->updatePagare(
+                    $pago['fecha'],
+                    $pago['id']
+                );
+            }
         DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -260,11 +273,22 @@ class RentasController extends Controller
         $pago->saldo = $importe;
         $pago->save();
     }
+    private function updatePagare($fecha, $id){
+        $pago = Pago_renta::findOrFail($id);
+        $pago->fecha = $fecha;
+        $pago->save();
+    }
     //Funcion que retorna el listado de contratos de renta registrados
     public function indexRentas(Request $request){
+        $hoy =  new Carbon();
         $rentas = $this->getQueryRentas($request);
             $rentas = $rentas->orderBy('rentas.id','desc')->paginate(6);
-        return $rentas;       
+
+        foreach($rentas as $renta){
+
+            $renta->diff = $hoy->diffInDays(new Carbon($renta->fecha_fin), false);
+        }
+        return $rentas;
     }
     //Funcion privada que retorna la query para enlistar los contratos de renta registrados
     private function getQueryRentas(Request $request){
@@ -273,7 +297,7 @@ class RentasController extends Controller
                     ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('modelos','lotes.modelo_id','=','modelos.id')
                     ->join('licencias','lotes.id','=','licencias.id')
-                    ->join('arrendadores','licencias.duenio_id','arrendadores.id')
+                    ->leftjoin('arrendadores','licencias.duenio_id','arrendadores.id')
                     ->select('rentas.id','rentas.num_meses','rentas.fecha_fin', 'rentas.facturar',
                         'rentas.status', 'rentas.monto_renta', 'rentas.nombre_arrendatario',
                         'lotes.calle', 'lotes.numero', 'lotes.interior', 'etapas.num_etapa as etapa',
@@ -287,13 +311,13 @@ class RentasController extends Controller
                 if($request->b_direccion != '')//Busqueda por dirección oficial
                     $rentas = $rentas->where(DB::raw("CONCAT(lotes.calle,' Num',lotes.numero)"), 'like', '%'. $request->b_direccion . '%');
                 if($request->b_cliente != '')//Busqueda por arrendatarios
-                    $rentas = $rentas->where('rentas.nombre_arrendatario','like','%'.$request->b_cliente.'%');   
+                    $rentas = $rentas->where('rentas.nombre_arrendatario','like','%'.$request->b_cliente.'%');
                 if($request->b_arrendador != '')//Busqueda por arrendatarios
-                    $rentas = $rentas->where('arrendadores.nombre','like','%'.$request->b_arrendador.'%');   
+                    $rentas = $rentas->where('arrendadores.nombre','like','%'.$request->b_arrendador.'%');
                 if($request->b_status != '')//Busqueda por status
-                    $rentas = $rentas->where('rentas.status','=',$request->b_status);   
-                    
-        return $rentas;       
+                    $rentas = $rentas->where('rentas.status','=',$request->b_status);
+
+        return $rentas;
     }
     //Funcion que retorna los datos de un contrato
     public function getDatosRenta(Request $request){
@@ -441,7 +465,7 @@ class RentasController extends Controller
 
         //Se obtiene el formato de numero en letra
         $contrato->dep_garantia = NumerosEnLetras::convertir($contrato->dep_garantia, 'Pesos', true, 'Centavos');
-        
+
 
         $pdf = \PDF::loadview('pdf.rentas.depGarantia', [
             'contrato' => $contrato,
@@ -461,7 +485,7 @@ class RentasController extends Controller
 
         //Se obtiene el formato de numero en letra
         $contrato->dep_garantia = NumerosEnLetras::convertir($contrato->dep_garantia, 'Pesos', true, 'Centavos');
-        
+
 
         $pdf = \PDF::loadview('pdf.rentas.adendum', [
             'contrato' => $contrato,
@@ -487,7 +511,7 @@ class RentasController extends Controller
             $lote->archivo_esp = $fileName;
             $lote->save(); //Insert
         }
-        
+
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
     // Función para subir archivo contrato de la renta.
@@ -507,7 +531,7 @@ class RentasController extends Controller
             $renta->archivo_contrato = $fileName;
             $renta->save(); //Insert
         }
-        
+
     	return response()->json(['success'=>'You have successfully upload file.']);
     }
     public function getPagosPorVencer(Request $request){
@@ -543,7 +567,7 @@ class RentasController extends Controller
                 $contrato->motivo_cancel = $request->motivo_cancel;//Se captura el motivo de cancelación
                 $contrato->fecha_firma = $datosRenta['fecha_firma'];//Fecha en la que se cancela
 
-                $lote::findOrFail($contrato->lote_id);//Se accede al registro del lote
+                $lote= Lote::findOrFail($contrato->lote_id);//Se accede al registro del lote
                 $lote->contrato = 0;//Se libera el lote para que aparezca nuevamente en el inventario
                 $lote->apartado = 0;
                 $lote->save();
@@ -587,7 +611,7 @@ class RentasController extends Controller
                 //Se manda notificación sobre la renta.
                 $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
-                $msj = "Se ha cerrado la renta de la ubicación" . $lote->calle . " #" . $lote->numero . " en el fraccionamiento " . $lote->proyecto. 
+                $msj = "Se ha cerrado la renta de la ubicación" . $lote->calle . " #" . $lote->numero . " en el fraccionamiento " . $lote->proyecto.
                 " a nombre de ".$contrato->nombre_arrendatario;
                 $arregloAceptado = [
                     'notificacion' => [
@@ -604,7 +628,7 @@ class RentasController extends Controller
                 if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
-                    Mail::to($correo)->send(new NotificationReceived($msj));
+                    //Mail::to($correo)->send(new NotificationReceived($msj));
                     User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                 }
             }
@@ -617,7 +641,7 @@ class RentasController extends Controller
         $mensaje = 'Prueba SMS';
         User::findOrFail(3)->notify(new PhoneVerificationCreated($mensaje));
     }
-    
+
     //Funcion que retorna el listado de contratos de renta registrados para el modulo estado de cuenta.
     public function indexEdoCta(Request $request){
         $rentas = $this->getQueryRentas($request);
@@ -653,40 +677,40 @@ class RentasController extends Controller
                 $renta->ultimo = Pago_renta::select('fecha')->where('status','=',2)->orderBy('fecha','desc')->first();
             }
 
-        
+
             return Excel::create('Rentas', function($excel) use ($rentas){
-            
+
                 $excel->sheet('Ventas', function($sheet) use ($rentas){
-                    
+
                     $sheet->row(1, [
                         '#Folio', 'Cliente', 'Proyecto', 'Etapa', 'Modelo',
                         'Dirección', 'Renta mensual', 'IVA', 'Pagos pendientes',
                         'Saldo vencido',
                         'Ultimo mes pagado', 'Termino del contrato'
                     ]);
-    
+
                     $sheet->cells('A1:M1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
                         $cells->setFontFamily('Calibri');
-    
+
                         // Set font size
                         $cells->setFontSize(12);
-    
+
                         // Set font weight to bold
                         $cells->setFontWeight('bold');
                         $cells->setAlignment('center');
                     });
-      
+
                     $cont=1;
-    
+
                     $sheet->setColumnFormat(array(
                         'G' => '$#,##0.00',
                         'H' => '$#,##0.00',
                         'J' => '$#,##0.00',
                     ));
-    
+
                     foreach($rentas as $index => $renta) {
                         $cont++;
                         $dirección = $renta->calle.' Num. '.$renta->numero;
@@ -705,7 +729,7 @@ class RentasController extends Controller
                             $ultimo = new Carbon($renta->ultimo['fecha']);
                             $ultimo = $ultimo->formatLocalized('%d de %B de %Y');
                         }
-    
+
                         $sheet->row($index+2, [
                             $renta->id,
                             $renta->nombre_arrendatario,
@@ -720,15 +744,15 @@ class RentasController extends Controller
                             $ultimo,
                             $fin->formatLocalized('%d de %B de %Y'),
                             $status
-                        ]);	
+                        ]);
                     }
                     $num='A1:L' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }
-            
+
             )->download('xls');
-        
+
     }
 
     public function cambiarPagoAVencido(Request $request){
@@ -757,7 +781,7 @@ class RentasController extends Controller
                     ->orderBy('id','desc')
                     ->get();
     }
-    //Función para registrar un nuevo deposito 
+    //Función para registrar un nuevo deposito
     public function storeDeposito(Request $request){
         $datosDeposito = $request->datosDeposito;
 
@@ -775,7 +799,7 @@ class RentasController extends Controller
         //Llamada a la funcion que actualiza los status y saldos de los pagos del contrato
         $this->actualizarStatusPagares($deposito->renta_id);
     }
-    //Función para actualizar un deposito 
+    //Función para actualizar un deposito
     public function updateDeposito(Request $request){
         $datosDeposito = $request->datosDeposito;
 
@@ -806,7 +830,7 @@ class RentasController extends Controller
         $depositos = Dep_renta::select(DB::raw("SUM(monto_cap) as total"))->where('renta_id','=',$renta_id)->first();
         if($depositos->total == NULL)
             $depositos->total = 0;
-        
+
         $pagares = Pago_renta::select('id')->where('renta_id','=',$renta_id)->get();
         foreach($pagares as $p){
             $pago = Pago_renta::findOrFail($p->id);

@@ -17,9 +17,9 @@
                     </button>
                     <button type="button" @click="salir()" class="btn btn-success" v-if="listado > 1">
                         <i class="fa fa-mail-reply"></i>&nbsp;Regresar
-                    </button>      
+                    </button>
                 </div>
-                
+
 
                 <!----------------- Listado Contratos ------------------------------>
                 <!-- Div Card Body para listar -->
@@ -60,7 +60,7 @@
                                         + '&b_direccion=' + b_direccion
                                         + '&b_status=' + b_status
                                         + '&b_arrendador=' + b_arrendador
-                                        + '&b_cliente=' + b_cliente"  
+                                        + '&b_cliente=' + b_cliente"
                                     class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 </div>
                             </div>
@@ -106,13 +106,13 @@
                                         <td v-if="contrato.num_pendientes > 0" class="td2"
                                             style="text-align:center"
                                         >
-                                            <a v-on:dblclick="verPagares(contrato.id)" 
+                                            <a v-on:dblclick="verPagares(contrato.id)"
                                             title="Ver pagos pendientes"
                                             href="#" v-text="contrato.num_pendientes + ' de ' + contrato.num_meses"></a>
                                         </td>
                                         <td style="text-align:center" v-else class="td2" v-text="contrato.num_pendientes + ' de ' + contrato.num_meses"></td>
                                         <td class="td2" v-text="'$' +formatNumber(contrato.saldo_pendiente.suma)"></td>
-                                        <td v-if="contrato.ultimo.fecha != null" v-text="this.moment(contrato.ultimo.fecha).locale('es').format('MMM/YYYY')"></td>
+                                        <td v-if="contrato.ultimo != null" v-text="this.moment(contrato.ultimo.fecha).locale('es').format('MMM/YYYY')"></td>
                                         <td v-else></td>
                                         <td class="td2" v-text="this.moment(contrato.fecha_fin).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
@@ -151,17 +151,17 @@
                                 <li class="page-item active" >
                                     <a class="page-link" href="#" v-text="arrayContratos.current_page"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arrayContratos.current_page+1 <= arrayContratos.last_page">
-                                    <a class="page-link" href="#" @click="listarContratos(arrayContratos.current_page+1)" 
+                                    <a class="page-link" href="#" @click="listarContratos(arrayContratos.current_page+1)"
                                     v-text="arrayContratos.current_page+1"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arrayContratos.current_page+2 <= arrayContratos.last_page">
                                     <a class="page-link" href="#" @click="listarContratos(arrayContratos.current_page+2)"
                                      v-text="arrayContratos.current_page+2"></a>
                                 </li>
-                                <li class="page-item" 
+                                <li class="page-item"
                                     v-if="arrayContratos.current_page+3 <= arrayContratos.last_page">
                                     <a class="page-link" href="#" @click="listarContratos(arrayContratos.current_page+3)"
                                     v-text="arrayContratos.current_page+3"></a>
@@ -388,13 +388,13 @@
 
                     <div class="modal-body" v-if="modal == 4">
                         <!-- DATOS FISCALES -->
-                            <template> 
+                            <template>
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                     </div>
                                     <h5 style="text-align:center;">DATOS FISCALES</h5>
                                 </div>
-                                
+
 
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Correo Electrónico</label>
@@ -447,31 +447,31 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Régimen Fiscal del cliente</label>
                                     <div class="col-md-6">
-                                        <input disabled type="text" 
+                                        <input disabled type="text"
                                         v-model="datosRenta.regimen_fisc" class="form-control" placeholder="Régimen">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Banco</label>
                                     <div class="col-md-4">
-                                        <input disabled type="text" 
+                                        <input disabled type="text"
                                         v-model="datosRenta.banco_fisc" class="form-control" placeholder="Banco">
                                     </div>
                                     <label class="col-md-2 form-control-label" for="text-input">No. Cuenta</label>
                                     <div class="col-md-4">
-                                        <input disabled type="text" 
+                                        <input disabled type="text"
                                         v-model="datosRenta.num_cuenta_fisc" class="form-control" placeholder="# Cuenta">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Clabe</label>
                                     <div class="col-md-4">
-                                        <input disabled type="text" 
+                                        <input disabled type="text"
                                         v-model="datosRenta.clabe_fisc" class="form-control" placeholder="Clabe">
                                     </div>
                                 </div>
 
-                                
+
                             </template>
                     </div>
                     <!-- Botones del modal -->
@@ -483,7 +483,7 @@
                             <button type="button" class="btn btn-success" @click="verArchivo(datosRenta.archivo_contrato)">Ver Contrato</button>
                         </template>
                     </div>
-                </div> 
+                </div>
                 <!-- /.modal-content -->
             </div>
             <!-- /.modal-dialog -->
@@ -605,7 +605,7 @@ export default {
         selectEtapas(buscar){
             let me = this;
             me.b_etapa='';
-            
+
             me.arrayEtapas=[];
             var url = '/select_etapa_proyecto?buscar=' + buscar;
             axios.get(url).then(function (response) {
@@ -752,7 +752,7 @@ export default {
             confirmButtonText: 'Si, eliminar!'
             }).then((result) => {
             if (result.value) {
-                axios.delete('/rentas/deleteDeposito', 
+                axios.delete('/rentas/deleteDeposito',
                     { params: {'id': id}}).then(function (response){
                         swal(
                             'Borrado!',
