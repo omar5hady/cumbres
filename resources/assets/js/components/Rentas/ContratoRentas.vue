@@ -106,6 +106,18 @@
                                             <span v-if="contrato.status == 2" class="badge badge-success">Vigente</span>
                                             <span v-if="contrato.status == 3" class="badge badge-primary">Finalizado</span>
                                         </td>
+                                        <td v-if="contrato.diff<0 && contrato.status == 2">
+                                            <button class="btn btn-primary" title="Renovar"
+                                                @click="renovar(contrato)"
+                                            >
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                            <button class="btn btn-danger" title="Finalizar"
+                                                @click="finalizar(contrato.id)"
+                                            >
+                                                <i class="fa fa-check-square-o"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                             </template>
                         </TableComponent>
@@ -133,7 +145,7 @@
         </div>
 
         <!-- Inicio Modal -->
-        <ModalComponent v-if="modal>=1"
+        <ModalComponent v-if="modal>=1 && modal < 5"
             @closeModal="cerrarModal"
             :titulo="tituloModal"
         >
@@ -292,6 +304,11 @@
                 </template>
             </template>
         </ModalComponent>
+        <ModalRenovar v-if="modal==5"
+            @close="cerrarModal()"
+            :datosRenta="datosRenta"
+            :titulo="tituloModal"
+        ></ModalRenovar>
         <!--Fin del modal-->
 
     </main>
@@ -307,6 +324,7 @@ import Nav from '../Componentes/NavComponent.vue'
 import FormContrato from './Components/FormContrato.vue'
 import ModalComponent from '../Componentes/ModalComponent.vue';
 import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue';
+import ModalRenovar from './Components/ModalRenovar.vue';
 
 export default {
     components:{
@@ -314,7 +332,8 @@ export default {
         Nav,
         FormContrato,
         ModalComponent,
-        RowModal
+        RowModal,
+        ModalRenovar
     },
     props: {
         rolId: { type: String }
@@ -411,6 +430,8 @@ export default {
                 break;
                 case 4:
                     me.tituloModal = 'Subir contrato'
+                case 5:
+                    me.tituloModal = 'Renovar Contrato'
                 break;
             }
         },
@@ -419,6 +440,16 @@ export default {
                 this.getDatos(this.datosRenta.id)
             this.modal = 0
 
+        },
+        finalizar(id){
+            let me = this;
+            me.datosRenta.id = id
+            me.changeStatus(3)
+        },
+        renovar(contrato){
+            let me = this;
+            me.datosRenta = contrato
+            me.abrirModal(5)
         },
         formSubmitContrato(e) {
             e.preventDefault();

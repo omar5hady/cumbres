@@ -326,6 +326,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/rentas/pruebaSms','RentasController@pruebaSms');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
+        Route::post('/rentas/renovar','RentasController@renovar');
         Route::put('/rentas/updateRenta','RentasController@updateRenta');
         Route::post('/rentas/storeDeposito','RentasController@storeDeposito');
         Route::put('/rentas/updateDeposito','RentasController@updateDeposito');
