@@ -488,12 +488,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/iniobra/excelAvisos','IniObraController@excelAvisos');
         Route::post('/iniobra/registrar','IniObraController@store');
         Route::put('/iniobra/actualizar','IniObraController@ActualizarIniObra');
+        Route::put('/iniobra/changeStatus','IniObraController@changeStatus');
         Route::get('/iniobra/obtenerCabecera','IniObraController@obtenerCabecera');
         Route::get('/iniobra/obtenerDetalles','IniObraController@obtenerDetalles');
         Route::delete('/iniobra/contrato/eliminar','IniObraController@eliminarContrato');
         Route::post('/iniobra/lote/registrar','IniObraController@agregarIniObraLotes');
         Route::delete('/iniobra/lote/eliminar','IniObraController@eliminarIniObraLotes');
         Route::get('/iniobra/pdf','IniObraController@contratoObraPDF')->name('contratos.pdf');
+        Route::get('/iniobra/adendum','IniObraController@adendumPDF')->name('adendum.pdf');
         Route::get('/iniobra/relacion/excel/{id}','IniObraController@exportExcel');
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
         Route::get('/licencias/excelVisita','LicenciasController@excelVisita');
@@ -501,7 +503,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avisoObra/siroc','IniObraController@imprimirSiroc');
 
         Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
-        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
+        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra');
+        Route::post('/saveAcuseCierre','Contrato\ContratoObraController@store');
         Route::post('/formSubmitAdendum/{id}','IniObraController@formSubmitAdendum');
         Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile');
         Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra');

@@ -12,7 +12,7 @@ class Ini_obra extends Model
                            'total_costo_directo','total_costo_idirecto','total_importe','anticipo','total_anticipo',
                             'tipo','iva','descripcion_corta','descripcion_larga','total_superficie','documento',
                             'porc_garantia_ret','garantia_ret','num_casas', 'calle1', 'calle2' ,'registro_obra',
-                            'fin_estimaciones'
+                            'fin_estimaciones', 'total_original'
                         ];
 
     public function fraccionamiento(){
@@ -32,5 +32,5 @@ class Ini_obra extends Model
         return $this->hasMany('App\Estimaciones');
     }
 
-   
+
 }

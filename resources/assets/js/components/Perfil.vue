@@ -132,7 +132,7 @@
 
         <div class="row">
             <div class="col-xl-4 col-lg-5 col-md-6">
-                <div class="card2 card-user2">
+                <div class="card2 card-user2" style="background-color: #1C2B4C;">
                     <div class="card-image2">
                         <div><img src="/img/avatars/chuchito.png" alt="..."></div>
                     </div>
@@ -153,18 +153,19 @@
                                 <h4 class="title">
 
                                     <font style="vertical-align: inherit;">
-                                        <font v-text="nombre_completo" style="vertical-align: inherit;"></font>
+                                        <font v-text="nombre" style="vertical-align: inherit; color: #fff;"></font><br>
+                                        <font v-text="apellidos" style="vertical-align: inherit; color: #fff;"></font>
                                     </font><br><small>
                                             <font style="vertical-align: inherit;">
-                                                <font v-text="usuario" style="vertical-align: inherit;"></font>
+                                                <font v-text="usuario" style="vertical-align: inherit; color: #fff;"></font>
                                             </font>
                                         </small>
                                 </h4>
                             </div>
-                            <p class="description text-center">
+                            <p class="description text-center" style="color: #fff;">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">
-                                        "Soñamos casas, construimos sueños..."
+                                        "25 años de construcción... <br>25 años de <b>CONFIANZA</b>"
                                     </font>
                                 </font>
                             </p>

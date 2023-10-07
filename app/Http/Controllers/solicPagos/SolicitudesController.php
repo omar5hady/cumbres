@@ -659,7 +659,10 @@ class SolicitudesController extends Controller
         $solic->proveedor_id        = $solicitud['proveedor_id'];
         $solic->importe             = $solicitud['importe'];
         $solic->tipo_pago           = $solicitud['tipo_pago'];
-        $solic->forma_pago          = $solicitud['forma_pago'];
+        if($solic->tipo_pago == 1 &&  $solicitud['forma_pago'] == '')
+            $solic->forma_pago = 0;
+        else
+            $solic->forma_pago          = $solicitud['forma_pago'];
         $solic->extraordinario      = $solicitud['extraordinario'];
 
         $solic->convenio  = $solicitud['convenio'];

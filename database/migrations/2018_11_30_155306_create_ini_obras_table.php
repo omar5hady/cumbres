@@ -49,6 +49,13 @@ class CreateIniObrasTable extends Migration
 
             $table->string('folio_siroc')->nullable();
 
+            $table->boolean('status')->default(0);
+            $table->date('f_fin2')->nullable();
+            $table->double('total_original');
+
+            $table->string('acuse_contratista')->nullable();
+            $table->string('acuse_cierre')->nullable();
+
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

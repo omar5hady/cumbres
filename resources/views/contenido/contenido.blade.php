@@ -135,7 +135,10 @@
         </template>
 
         <template v-if="menu==54">
-            <aviso-obra rol-id="{{ Auth::user()->rol_id }}"></aviso-obra>
+            <aviso-obra
+                rol-id="{{ Auth::user()->rol_id }}"
+                usuario="{{ Auth::user()->usuario }}"
+            ></aviso-obra>
         </template>
 
         <template v-if="menu==55">

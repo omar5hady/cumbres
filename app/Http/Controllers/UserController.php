@@ -1085,6 +1085,7 @@ class UserController extends Controller
         if (!$request->ajax()) return redirect('/');
         $usuario = User::join('personal','users.id','=','personal.id')
             ->select('users.usuario','users.foto_user','users.id',
+            'personal.nombre', 'personal.apellidos',
             'personal.celular','personal.email','personal.colonia','personal.direccion',
             'personal.cp','personal.nombre','personal.apellidos','personal.f_nacimiento','users.password as pass',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
