@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ini_obra;
 use App\Ini_obra_lote;
+use App\ObsContratoObra;
 use App\Lote;
 use App\Licencia;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,16 @@ use App\Importe_extra;
 
 class IniObraController extends Controller
 {
+    public function storeObs(Request $request){
+        $obs = new ObsContratoObra();
+        $obs->comentario = $request->comentario;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->aviso_id = $request->aviso_id;
+        $obs->save();
+
+        return $obs;
+    }
+
     //Función privada que retorna la query para obtener los avisos de obra
     private function getQueryAvisos(Request $request){
         $buscar = $request->buscar;
@@ -81,6 +92,8 @@ class IniObraController extends Controller
         $ini_obra = $ini_obra->orderBy('ini_obras.id', 'desc')->paginate(8);
 
         foreach($ini_obra as $index => $contrato){
+
+            $contrato->obs = ObsContratoObra::where('aviso_id','=',$contrato->id)->get();
             $contrato->diferencia = 0;
             $now = Carbon::now();
 
@@ -552,10 +565,10 @@ class IniObraController extends Controller
         $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
         $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
         $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
-        $cabecera[0]->total_importe2 = number_format((float)$cabecera[0]->total_importe,2,'.',',');
+        $cabecera[0]->total_importe2 = number_format((float)$cabecera[0]->total_original,2,'.',',');
         //Alamacenamiento de cantidad en letra
         $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
-        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
+        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_original,'Pesos',true,'Centavos');
             //Creación de PDF
             $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
             //retorno de archivo.
@@ -590,9 +603,11 @@ class IniObraController extends Controller
         $cabecera[0]->apoderado = $request->apoderado;
         //Formato para fechas
         $tiempo2 = new Carbon($cabecera[0]->f_fin);
+        $tiempo3 = new Carbon($cabecera[0]->f_fin2);
         $hoy = new Carbon();
         $cabecera[0]->hoy = $hoy->formatLocalized('%d de %B de %Y');
         $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
+        $cabecera[0]->f_fin2 = $tiempo3->formatLocalized('%d de %B de %Y');
 
         //Alamacenamiento de cantidad en letra
         $cabecera[0]->totalOriginalLetra = NumerosEnLetras::convertir($cabecera[0]->total_original,'Pesos',true,'Centavos');

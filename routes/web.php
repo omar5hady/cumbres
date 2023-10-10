@@ -487,6 +487,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/iniobra','IniObraController@index');
         Route::get('/iniobra/excelAvisos','IniObraController@excelAvisos');
         Route::post('/iniobra/registrar','IniObraController@store');
+        Route::post('/obra/storeObs','IniObraController@storeObs');
         Route::put('/iniobra/actualizar','IniObraController@ActualizarIniObra');
         Route::put('/iniobra/changeStatus','IniObraController@changeStatus');
         Route::get('/iniobra/obtenerCabecera','IniObraController@obtenerCabecera');

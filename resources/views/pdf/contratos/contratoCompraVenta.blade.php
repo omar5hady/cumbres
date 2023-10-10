@@ -313,7 +313,7 @@
                         </div>
                         <div class="table-cell">N.S.S. <u>{{ $contratos[0]->nss_coa }}</u></div>
                     </div>
-                    <div class="table-row">
+                    {{-- <div class="table-row">
                         @if ($contratos[0]->edo_civil_coa == 1)
                             <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
                             <div class="table-cell"></div>
@@ -353,7 +353,7 @@
                             <div class="table-cell"></div>
                             <div class="table-cell" colspan="2"></div>
                         @endif
-                    </div>
+                    </div> --}}
                     <div class="table-row">
                         <div colspan="2" class="table-cell">DOMICILIO ACTUAL:
                             <u>{{ mb_strtoupper($contratos[0]->direccion_coa) }}</u></div>

@@ -242,6 +242,31 @@
             </div>
             <!--Fin del modal-->
 
+            <!--Inicio del modal observaciones-->
+            <ModalComponent v-if="modal == 3"
+                    :titulo="tituloModal"
+                    @closeModal="cerrarModal()"
+                >
+                    <template v-slot:body>
+                        <RowModal :label1="'Observacion'" :clsRow1="'col-md-6'" :clsRow2="'col-md-3'">
+                            <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                            <template v-slot:input2>
+                                <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs(id)" title="Guardar observación"></Button>
+                            </template>
+                        </RowModal>
+
+                        <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                            <template v-slot:tbody>
+                                <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                    <td v-text="observacion.usuario" ></td>
+                                    <td v-text="observacion.comentario" ></td>
+                                    <td v-text="observacion.created_at"></td>
+                                </tr>
+                            </template>
+                        </TableComponent>
+                    </template>
+                </ModalComponent>
+
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -293,6 +318,8 @@
 
 <script>
     import vSelect from 'vue-select';
+    import Button from '../Componentes/ButtonComponent.vue';
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
     import LoadingComponent from '../Componentes/LoadingComponent.vue';
     import ModalComponent from '../Componentes/ModalComponent.vue';
     import TableComponent from '../Componentes/TableComponent.vue';
@@ -333,12 +360,14 @@
                     descripcion_larga: '',
                     descripcion_corta: '',
                     total_construccion: 0,
-                    direccion_proy: ''
+                    direccion_proy: '',
                 },
+                arrayObs:[],
                 proceso:false,
                 arrayAvisoObra : [],
                 modal : 0,
                 pdf:'',
+                folio_siroc:'',
                 acuseContratista:0,
                 listado:1,
                 tituloModal : '',
@@ -364,17 +393,19 @@
             }
         },
         components:{
-    vSelect,
-    LoadingComponent,
-    ModalComponent,
-    TableComponent,
-    AvisoObraFormComponent,
-    AvisoObraReadComponent,
-    TablePendiente,
-    TablePorCerrar,
-    TableCerradas,
-    NavComponent,
-},
+            vSelect,
+            LoadingComponent,
+            ModalComponent,
+            TableComponent,
+            AvisoObraFormComponent,
+            AvisoObraReadComponent,
+            TablePendiente,
+            TablePorCerrar,
+            TableCerradas,
+            NavComponent,
+            Button,
+            RowModal
+        },
         computed:{
             isActived: function(){
                 return this.pagination.current_page;
@@ -677,6 +708,28 @@
                 }
                 })
             },
+            storeObs(id){
+            let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/obra/storeObs',{
+                    'aviso_id': id,
+                    'comentario' : me.comentario
+                }).then(function (response){
+                    me.listarAvisos(me.pagination.current_page); //se enlistan nuevamente los registros
+                    me.comentario = '';
+                    me.arrayObs.push(response.data)
+                    //me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Observación creada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                });
+            },
             mostrarDetalle(){
                 this.tipoForm='create';
                 this.limpiarDatos();
@@ -780,6 +833,14 @@
                         this.id=data['id'];
                         this.pdf='';
                         this.acuseContratista = 1;
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal = 3;
+                        this.tituloModal = 'Observaciones';
+                        this.arrayObs = data['obs'];
+                        this.id=data['id'];
+                        this.comentario = '';
                         break;
                     }
                 }

@@ -312,7 +312,7 @@ class LicenciasController extends Controller
     public function excelVisita(Request $request) //Index para modulo de licencias
     {
         //Llamada a la funcion privada que retorna la query principal
-        $lotes->getQueryVisitas($request);
+        $lotes = $this->getQueryVisitas($request);
         $lotes = $lotes->get();
 
         foreach ($lotes as $index => $lote) {

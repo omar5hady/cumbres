@@ -2,7 +2,7 @@
     <TableComponent
     :cabecera="[
         'Clave','Contratista','Fraccionamiento','Superficie total','Importe total',
-        'Fecha de inicio ','Fecha de termino',''
+        'Fecha de inicio ','Fecha de termino','Registro de obra', 'Obs'
     ]">
         <template v-slot:tbody>
             <tr v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id" title="Ver detalle">
@@ -28,6 +28,13 @@
                         title="Descargar registro de obra" class="btn btn-success btn-sm" :href="'/downloadRegistroObra/'+avisoObra.registro_obra">
                         <i class="fa fa-download"></i> {{ avisoObra.folio_siroc ? 'Registro: '+avisoObra.folio_siroc : 'Descargar Registro' }}
                     </a>
+                </td>
+                <td>
+                    <button class="btn btn-scarlet" title="Ver Comentarios"
+                        @click="$emit('abrirModal',{accion:'observaciones',data: avisoObra})"
+                    >
+                        <i class="icon-eye"></i>
+                    </button>
                 </td>
             </tr>
         </template>

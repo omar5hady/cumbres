@@ -636,8 +636,8 @@ export default {
     margin-bottom: 15px;
 }
 .card2 .avatar {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     overflow: hidden;
     border-radius: 50%;
     margin-right: 5px;

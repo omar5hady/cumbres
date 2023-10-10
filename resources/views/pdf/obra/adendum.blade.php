@@ -208,18 +208,22 @@
     </P>
 
     <ol>
-        <li>
-            EL IMPORTE DEL VALOR DE LAS OBRAS SERÁ DE
-            <b>
-                $ {{strToUpper($cabecera[0]->totalImporteLetra)}}.
-            </b>
-        </li>
+        @if($cabecera[0]->total_original != $cabecera[0]->total_importe)
+            <li>
+                EL IMPORTE DEL VALOR DE LAS OBRAS SERÁ DE
+                <b>
+                    $ {{strToUpper($cabecera[0]->totalImporteLetra)}}.
+                </b>
+            </li>
+        @endif
+        @if($cabecera[0]->f_fin != $cabecera[0]->f_fin2)
         <li>
             B)	EL PERIODO DE LA REALIZACIÓN DE LAS OBRAS SERÁ DEL
             <b>
-                {{strToUpper($cabecera[0]->f_ini)}} AL {{strToUpper($cabecera[0]->f_fin)}}.
+                {{strToUpper($cabecera[0]->f_ini)}} AL {{strToUpper($cabecera[0]->f_fin2)}}.
             </b>
         </li>
+        @endif
     </ol>
 
     <p>

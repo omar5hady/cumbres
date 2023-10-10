@@ -2,7 +2,7 @@
     <TableComponent
     :cabecera="[
         '','Clave','Contratista','Fraccionamiento','Superficie total','Importe total',
-        'Fecha de inicio ','Fecha de termino',''
+        'Fecha de inicio ','Fecha de termino','Registro Obra', 'Obs.'
     ]">
         <template v-slot:tbody>
             <tr :class="avisoObra.diferencia < 0 ? '' : 'table-danger'"
@@ -65,7 +65,7 @@
                 <td>
                     <a v-if="avisoObra.registro_obra != '' && avisoObra.registro_obra != null"
                         title="Descargar registro de obra" class="btn btn-success btn-sm"   v-bind:href="'/downloadRegistroObra/'+avisoObra.registro_obra">
-                        <i class="fa fa-download"></i>{{ avisoObra.folio_siroc ? 'Registro: '+avisoObra.folio_siroc : '' }}
+                        <i class="fa fa-download"></i>&nbsp;{{ avisoObra.folio_siroc ? 'Registro: '+avisoObra.folio_siroc : '' }}
                     </a>
                     <a v-else class="btn btn-success" v-bind:href="'/avisoObra/siroc?id='+ avisoObra.id">
                         <i class="fa fa-file-text"></i>&nbsp; SIROC
@@ -74,6 +74,13 @@
                         title="Subir registro de obra" type="button"
                         @click="$emit('abrirModal',{accion:'subirArchivo2',data:avisoObra})" class="btn btn-default btn-sm">
                         <i class="icon-cloud-upload"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-scarlet" title="Ver Comentarios"
+                        @click="$emit('abrirModal',{accion:'observaciones',data: avisoObra})"
+                    >
+                        <i class="icon-eye"></i>
                     </button>
                 </td>
             </tr>
