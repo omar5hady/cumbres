@@ -887,31 +887,44 @@ class ClienteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $publicidad = $request->b_publicidad;
+        $b_aux = $request->b_aux;
 
         $personas = $this->getQueryVendedor();
-        $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+        if($b_aux != '')
+            $personas = $personas->where('clientes.vendedor_aux','!=',NULL);
+        else
+            $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+
+        if ($buscar!=''){
+            switch($criterio){
+                case 'personal.nombre':
+                {
+                    $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
+                default:
+                {
+                    $personas = $personas->where($criterio, 'like', '%'. $buscar . '%');
+                    break;
+                }
+
+            }
+        }
 
         if($buscarC != '')
             $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
         else
             $personas = $personas->where('clientes.clasificacion', '!=', 7);
 
-        if($buscar != ''){
-            if($criterio == 'personal.nombre'){
-                $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-            }
-            else{
-                $personas = $personas->where($criterio, 'like', '%'. $buscar . '%');
-            }
-        }
-
         if($request->b_advertising != '')
             $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
 
+        if($publicidad != '')
+            $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-                        ->get();
+                    ->orderBy('personal.apellidos', 'asc')
+                    ->get();
 
 
         return Excel::create('resumen_cliente', function($excel) use ($personas){
@@ -1023,19 +1036,12 @@ class ClienteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $publicidad = $request->b_publicidad;
+        $b_aux = $request->b_aux;
+        $seguimiento = $request->seguimiento;
 
         $personas = $this->getQueryGen();
 
-        if($buscarC!='')
-            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
-        else
-            $personas = $personas->where('clientes.clasificacion', '!=', 7);
-
-        if($request->b_advertising != '')
-            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
-
-
-        if($buscar != '')
+        if($buscar != ''){
             switch($criterio){
                 case 'personal.nombre':
                 {
@@ -1044,9 +1050,22 @@ class ClienteController extends Controller
                 }
                 case 'clientes.vendedor_id':
                 {
+                    $fecha = Carbon::now()->subDays(180);
+                    $fecha2 = Carbon::now()->subDays(8);
                     $personas = $personas->where($criterio, '=',$buscar);
-                    if($buscar2 != '')
+                    if($buscar2!=''){
                         $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%');
+                    }
+
+                    if($seguimiento != ''){
+                        if($seguimiento == 1){ // Pendientes
+                            $personas = $personas->whereBetween('seguimiento',[$fecha,$fecha2]);
+                        }
+                        if($seguimiento == 0){ // Al dia
+                            $personas = $personas->whereBetween('seguimiento',[$fecha2,Carbon::now()]);
+                        }
+                    }
+
                     break;
                 }
                 case 'clientes.created_at':
@@ -1054,6 +1073,7 @@ class ClienteController extends Controller
                     $personas = $personas->whereBetween($criterio, [$buscar, $buscar2]);
                     if($buscar3 != '')
                         $personas = $personas->where('fraccionamientos.id','=',$buscar3);
+
                     break;
                 }
                 default:
@@ -1061,7 +1081,16 @@ class ClienteController extends Controller
                     $personas = $personas->where($criterio, 'like', '%'. $buscar . '%');
                     break;
                 }
+
             }
+        }
+        if($buscarC != '')
+            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
+        else
+            $personas = $personas->where('clientes.clasificacion', '!=', 7);
+
+        if($request->b_advertising != '')
+            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
 
         if($publicidad != '')
             $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
@@ -1327,6 +1356,13 @@ class ClienteController extends Controller
                 if($hora > 15){
                     $calendario = $calendario
                     ->orWhere('event_name','=','Descanso')
+                    ->where('proyecto_id','=',$tipo)
+                    ->whereDate('end_date','>=',$current->addDays(1))
+                    ->whereDate('start_date','>=',$current->addDays(1));
+                }
+                if($hora > 15){
+                    $calendario = $calendario
+                    ->orWhere('event_name','=','Vacaciones')
                     ->where('proyecto_id','=',$tipo)
                     ->whereDate('end_date','>=',$current->addDays(1))
                     ->whereDate('start_date','>=',$current->addDays(1));

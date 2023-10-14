@@ -1895,12 +1895,15 @@ class DigitalLeadController extends Controller
         $auditoria = Digital_lead::select('digital_leads.*')->where('f_audit','!=',NULL);
 
         $verde = Digital_lead::select('digital_leads.*')->where('status','=',1)
+                    ->where('fin_dormir','!=', NULL)
                     ->where('fecha_seguimiento','>=',Carbon::now()->subDays(7));
         $amarillo = Digital_lead::select('digital_leads.*')->where('status','=',1)
+                    ->where('fin_dormir','!=', NULL)
                     ->where('fecha_seguimiento','<',Carbon::now()->subDays(7))
                     ->where('fecha_seguimiento','>',Carbon::now()->subDays(15));
 
         $rojo = Digital_lead::select('digital_leads.*')->where('status','=',1)
+                    ->where('fin_dormir','!=', NULL)
                     ->where('fecha_seguimiento','<=',Carbon::now()->subDays(15));
 
         if($request->fecha1 != '' && $request->fecha2 != ''){

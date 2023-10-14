@@ -89,7 +89,7 @@ class IniObraController extends Controller
         if (!$request->ajax()) return redirect('/');
         //Llamada a la función privada que devuelve la query principal
         $ini_obra = $this->getQueryAvisos($request);
-        $ini_obra = $ini_obra->orderBy('ini_obras.id', 'desc')->paginate(8);
+        $ini_obra = $ini_obra->orderBy('ini_obras.f_fin2', 'desc')->paginate(8);
 
         foreach($ini_obra as $index => $contrato){
 

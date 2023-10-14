@@ -228,22 +228,29 @@
             </div>
 
             <div class="table-row">
-                <div colspan="7" class="table-cell1">
-                   <p class="modelo">MODELO</p>
-                   <p class="nombre-modelo">{{$cotizacion->modelo}}</p>
-                </div>
-                <div colspan="5" class="table-cell1">
-                    <img
-                    src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->modelo) }}/{{str_replace(' ', '', $cotizacion->modelo) }}.png" height="200px" alt="{{$cotizacion->modelo }}">
-                </div>
-                <div colspan="2" class="table-cell1">
-                    <img
-                    src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->modelo) }}/{{str_replace(' ', '', $cotizacion->modelo) }}_PB.png" height="200px" alt="{{$cotizacion->modelo }}">
-                </div>
-                <div colspan="2" class="table-cell1">
-                    <img
-                    src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->modelo) }}/{{str_replace(' ', '', $cotizacion->modelo) }}_PA.png" height="200px" alt="{{$cotizacion->modelo }}">
-                </div>
+                @if($cotizacion->tipo == 1)
+                    <div colspan="5" class="table-cell1">
+                        <img
+                        src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->modelo) }}/{{str_replace(' ', '', $cotizacion->modelo) }}.png" height="200px" alt="{{$cotizacion->modelo }}">
+                    </div>
+                    <div colspan="2" class="table-cell1">
+                        <img
+                        src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->modelo) }}/{{str_replace(' ', '', $cotizacion->modelo) }}_PB.png" height="200px" alt="{{$cotizacion->modelo }}">
+                    </div>
+                    <div colspan="2" class="table-cell1">
+                        <img
+                        src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->modelo) }}/{{str_replace(' ', '', $cotizacion->modelo) }}_PA.png" height="200px" alt="{{$cotizacion->modelo }}">
+                    </div>
+                @else
+                    <div colspan="10" class="table-cell1">
+                        <p class="modelo">MODELO</p>
+                        <p class="nombre-modelo">{{$cotizacion->modelo}}</p>
+                    </div>
+                    <div colspan="5" class="table-cell1">
+                        <img
+                        src="img/cotizador/Casas/{{ str_replace(' ', '', $cotizacion->etapa) }}/{{str_replace(' ', '', $cotizacion->etapa) }}.png" height="200px" alt="{{$cotizacion->modelo }}">
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -327,7 +334,7 @@
                 <div colspan="1" class="table-cell1 title-cabecera">
                     <div style="padding-top: 4px; margin-bottom:3px;">
                         <p style="font-size:7pt;">
-                            LOTE
+                            {{$cotizacion->tipo == 1 ? 'LOTE' : 'DEPARTAMENTO'}}
                         </p>
                     </div>
                 </div>

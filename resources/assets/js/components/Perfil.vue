@@ -162,13 +162,16 @@
                                         </small>
                                 </h4>
                             </div>
-                            <p class="description text-center" style="color: #fff;">
+                            <!-- <p class="description text-center" style="color: #fff;">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">
                                         "25 años de construcción... <br>25 años de <b>CONFIANZA</b>"
                                     </font>
                                 </font>
-                            </p>
+                            </p> -->
+                        </div>
+                        <div class="card-image2">
+                            <div><img src="/img/avatars/chuchito2.png" alt="..."></div>
                         </div>
 
 

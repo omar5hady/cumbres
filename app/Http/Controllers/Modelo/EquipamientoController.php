@@ -299,6 +299,7 @@ class EquipamientoController extends Controller
                 DB::raw("CONCAT(creator.nombre,' ',creator.apellidos) AS creator"),
                 'l.num_lote', 'l.sublote', 'l.manzana', 'l.terreno', 'l.construccion',
                 'l.emp_constructora','l.emp_terreno', 'users.usuario',
+                'e.tipo_proyecto as tipo',
                 'm.nombre as modelo', 'f.nombre as proyecto', 'e.num_etapa as etapa'
             );
 
@@ -316,6 +317,8 @@ class EquipamientoController extends Controller
         $fecha = new Carbon($cotizacion->created_at);
         $cotizacion->f_created = $fecha->formatLocalized('%d de %B del %Y %H:%m');
         $cotizacion->modelo = strtoupper($cotizacion->modelo);
+        $cotizacion->proyecto = strtoupper($cotizacion->proyecto);
+        $cotizacion->etapa = strtoupper($cotizacion->etapa);
         $array = [
                 array('titulo' => 'Cocina Tradicional', 'monto' => $cotizacion->cocina_tradicional),
                 array('titulo' => 'Cocina (Casa Muestra)', 'monto' => $cotizacion->cocina),

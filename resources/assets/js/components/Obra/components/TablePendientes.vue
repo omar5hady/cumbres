@@ -16,6 +16,10 @@
                         >
                             <i class="icon-check"></i> Por cerrar
                         </button>
+                        <button type="button" v-if="usuario == 'uriel.al'"
+                            class="btn btn-warning btn-sm" @click="$emit('actualizar',avisoObra.id)">
+                            <i class="icon-pencil"></i>
+                        </button>
                     </template>
                     <template v-else>
                         <button type="button" v-if="rolId!=9 && rolId != 11 && rolId!=13"
@@ -33,6 +37,7 @@
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{avisoObra.clave}}</a>
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                         <a class="dropdown-item" @click="$emit('ver',avisoObra.id)">Ver Detalle</a>
+                        <a class="dropdown-item" :href="'/estimaciones/excelEdoCuenta?clave='+avisoObra.id">Edo. Cuenta</a>
                         <template v-if="avisoObra.f_fin != avisoObra.f_fin2 || avisoObra.total_importe != avisoObra.total_original">
                             <a class="dropdown-item" v-if="rolId!=9 && rolId != 11 && rolId!=13"
                                 @click="$emit('abrirModal',{accion:'subirAdendum',data: avisoObra})">
