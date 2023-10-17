@@ -201,71 +201,83 @@
             <!--Fin del modal-->
 
             <!-- Modal para imprimir contrato -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Seleccionar apoderado legal</h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <div>
-                                <select class="form-control" v-model="apoderado">
-                                    <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
-                                    <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
-                                    <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <a
-                                v-if="tipoAccion==0"
-                                class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
-                                <i></i>Imprimir Contrato
-                            </a>
-                            <a
-                                v-else
-                                class="btn btn-primary" v-bind:href="'/iniobra/adendum?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
-                                <i></i>Imprimir Adendum
-                            </a>
-                        </div>
+            <ModalComponent v-if="modal==2"
+                titulo="Seleccionar apoderado legal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div>
+                        <select class="form-control" v-model="apoderado">
+                            <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
+                            <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
+                            <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
+                        </select>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <a
+                        v-if="tipoAccion==0"
+                        class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
+                        <i></i>Imprimir Contrato
+                    </a>
+                    <a
+                        v-else
+                        class="btn btn-primary" v-bind:href="'/iniobra/adendum?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
+                        <i></i>Imprimir Adendum
+                    </a>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
             <ModalComponent v-if="modal == 3"
-                    :titulo="tituloModal"
-                    @closeModal="cerrarModal()"
-                >
-                    <template v-slot:body>
-                        <RowModal :label1="'Observacion'" :clsRow1="'col-md-6'" :clsRow2="'col-md-3'">
-                            <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
-                            <template v-slot:input2>
-                                <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs(id)" title="Guardar observación"></Button>
-                            </template>
-                        </RowModal>
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <RowModal :label1="'Observacion'" :clsRow1="'col-md-6'" :clsRow2="'col-md-3'">
+                        <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                        <template v-slot:input2>
+                            <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs(id)" title="Guardar observación"></Button>
+                        </template>
+                    </RowModal>
 
-                        <TableComponent :cabecera="['Usuario','Observación','Fecha']">
-                            <template v-slot:tbody>
-                                <tr v-for="observacion in arrayObs" :key="observacion.id">
-                                    <td v-text="observacion.usuario" ></td>
-                                    <td v-text="observacion.comentario" ></td>
-                                    <td v-text="observacion.created_at"></td>
-                                </tr>
-                            </template>
-                        </TableComponent>
-                    </template>
-                </ModalComponent>
+                    <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.comentario" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
+
+            <ModalComponent v-if="modal==4"
+                @closeModal="cerrarModal"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <RowModal label1="Importe de cierre:" clsRow1="col-md-4" clsRow2="col-md-3" label2="">
+                        <input type="text" pattern="\d*" class="form-control" v-model="avisoObra.total_original" v-on:keypress="$root.isNumber($event)">
+                        <template v-slot:input2>
+                            <p class="form-control">{{ $root.formatNumber(avisoObra.total_original) }}</p>
+                        </template>
+                    </RowModal>
+                    <RowModal label1="Importe obra extra:" clsRow1="col-md-4" clsRow2="col-md-3" label2="">
+                        <input type="text" pattern="\d*" class="form-control" v-model="avisoObra.total_extra" v-on:keypress="$root.isNumber($event)">
+                        <template v-slot:input2>
+                            <p class="form-control">{{ $root.formatNumber(avisoObra.total_extra) }}</p>
+                        </template>
+                    </RowModal>
+                </template>
+                <template v-slot:buttons-footer>
+                    <Button icon="icon-check" @click="changeStatus(avisoObra.id,1)"></Button>
+                </template>
+            </ModalComponent>
+
+
 
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
@@ -348,6 +360,8 @@
                     calle1: '',
                     calle2: '',
                     total_importe : 0,
+                    total_original: 0,
+                    total_extra: 0,
                     total_costo_directo: 0,
                     total_costo_indirecto: 0,
                     anticipo: 0,
@@ -362,6 +376,7 @@
                     total_construccion: 0,
                     direccion_proy: '',
                 },
+                id: '',
                 arrayObs:[],
                 proceso:false,
                 arrayAvisoObra : [],
@@ -511,7 +526,9 @@
                     return;
                 }
 
-                this.changeStatus(contrato.id, 1)
+                this.abrirModal({accion:'porCerrar',data: contrato})
+
+                // this.changeStatus(contrato.id, 1)
             },
             changeStatus(id,status){
                 let me = this;
@@ -532,7 +549,9 @@
                         Swal.showLoading()
                         axios.put('/iniobra/changeStatus',{
                             'id': id,
-                            'status': status
+                            'status': status,
+                            'total_original': me.avisoObra.total_original ? me.avisoObra.total_original : 0,
+                            'total_extra': me.avisoObra.total_extra ? me.avisoObra.total_extra : 0,
                             }).then(function (response){
                             Swal.enableLoading()
                             swal(
@@ -541,6 +560,7 @@
                                 'success'
                             )
                             me.listarAvisos(1)
+                            me.cerrarModal()
                         }).catch(function (error){
                             Swal.enableLoading()
                         });
@@ -666,6 +686,8 @@
                     total_importe : 0,
                     total_costo_directo: 0,
                     total_costo_indirecto: 0,
+                    total_extra: 0,
+                    total_original: 0,
                     anticipo: 0,
                     total_anticipo: 0,
                     lotesContrato: [],
@@ -841,6 +863,15 @@
                         this.arrayObs = data['obs'];
                         this.id=data['id'];
                         this.comentario = '';
+                        break;
+                    }
+                    case 'porCerrar':{
+                        this.modal =4;
+                        this.tipoAccion = 4;
+                        this.tituloModal='Enviar a por cerrar';
+                        this.avisoObra.id=data['id'];
+                        this.avisoObra.total_original = data['total_original'];
+                        this.avisoObra.total_extra = 0;
                         break;
                     }
                 }

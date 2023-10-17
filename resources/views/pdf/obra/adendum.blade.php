@@ -194,7 +194,7 @@
     <P ALIGN=JUSTIFY>
         AMBAS PARTES DECLARAN QUE TIENEN CELEBRADO EL CONTRATO DE OBRA MENCIONADO CON UN MONTO DE
         <b>
-            $ {{strToUpper($cabecera[0]->totalOriginalLetra)}}
+            $ {{strToUpper($cabecera[0]->totalImporteLetra)}}
         </b>
         Y QUE A LA FECHA DE FIRMA DEL PRESENTE ADENDUM SE ENCUENTRA
         VIGENTE EN TODOS SUS TERMINOS DERECHOS Y OBLIGACIONES.
@@ -212,7 +212,7 @@
             <li>
                 EL IMPORTE DEL VALOR DE LAS OBRAS SERÁ DE
                 <b>
-                    $ {{strToUpper($cabecera[0]->totalImporteLetra)}}.
+                    $ {{strToUpper($cabecera[0]->totalOriginalLetra )}}.
                 </b>
             </li>
         @endif

@@ -148,6 +148,7 @@
                                     <img
                                         v-else-if="foto_user"
                                         :src="'/img/avatars/'+foto_user"
+                                        onerror="this.src='/img/avatars/default-image.gif'"
                                         class="avatar border-white"
                                     >
                                 <h4 class="title">

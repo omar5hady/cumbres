@@ -42,6 +42,7 @@ class CreateIniObrasTable extends Migration
 
             $table->string('documento')->nullable();
             $table->string('adendum')->nullable();
+            $table->string('adendum2')->nullable();
             $table->string('registro_obra')->nullable();
 
             $table->string('direccion_proy')->nullable();
@@ -52,6 +53,7 @@ class CreateIniObrasTable extends Migration
             $table->boolean('status')->default(0);
             $table->date('f_fin2')->nullable();
             $table->double('total_original');
+            $table->double('total_extra')->default(0);
 
             $table->string('acuse_contratista')->nullable();
             $table->string('acuse_cierre')->nullable();
