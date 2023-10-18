@@ -4,22 +4,36 @@
 <head>
     <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
     <TITLE>Contrato</TITLE>
-    <STYLE TYPE="text/css">
+    <style TYPE="text/css">
         @page {
-            size: 8.5in 11in;
-            margin-left: 0.78in;
-            margin-right: 0.78in;
-            margin-top: 200px;
-            margin-bottom: 100px
+            margin-left: 0.65in;
+            margin-right: 0.65in;
+            margin-top: 170px;
+            margin-bottom: 100px;
+            font-family: "Arial", serif;
+            font-size: 11pt;
         }
 
-        P {
+        p{
+            font-family: "Arial", serif;
             margin-bottom: 0in;
             direction: ltr;
             text-align: justify;
             widows: 2;
             orphans: 2;
-            padding: 0em;
+            padding: 0em;,
+            font-size: 10pt;
+        }
+
+        h5{
+            margin-top: 0in;
+            margin-bottom: 0in;
+            border: 1px solid #00000a;
+            padding: 0.01in 0.06in;
+            direction: ltr;
+            text-align: center;
+            widows: 2;
+            orphans: 2
         }
 
         ol {
@@ -37,53 +51,6 @@
             position: absolute;
             font-weight:bold;
             left: -28px;
-        }
-
-        H2 {
-            text-indent: 0.5in;
-            margin-top: 0in;
-            margin-bottom: 0in;
-            direction: ltr;
-            text-align: justify;
-            widows: 2;
-            orphans: 2
-        }
-
-        H2.western {
-            font-family: "Arial", serif;
-            font-size: 11pt;
-        }
-
-        H5 {
-            margin-top: 0in;
-            margin-bottom: 0in;
-            border: 1px solid #00000a;
-            padding: 0.01in 0.06in;
-            direction: ltr;
-            text-align: center;
-            widows: 2;
-            orphans: 2
-        }
-
-        H5.western {
-            font-family: "Times New Roman", serif;
-            font-size: 12pt;
-        }
-
-        H6 {
-            margin-left: 3.5in;
-            text-indent: -3.5in;
-            margin-top: 0in;
-            margin-bottom: 0in;
-            direction: ltr;
-            text-align: justify;
-            widows: 2;
-            orphans: 2
-        }
-
-        H6.western {
-            font-family: "Times New Roman", serif;
-            font-size: 10pt;
         }
 
         .table {
@@ -104,9 +71,9 @@
         #header {
             position: fixed;
             left: 0px;
-            top: -160px;
+            top: -150px;
             right: 0px;
-            height: 200px;
+            height: 160px;
             text-align: center;
         }
 
@@ -121,7 +88,7 @@
         #footer .page:after {
             content: counter(page, upper-roman);
         }
-    </STYLE>
+    </style>
 
 </head>
 
@@ -138,12 +105,9 @@
                             SRC="img/contratos/logoConcretaniaObra.png" ALIGN=BOTTOM STYLE="margin-top:2px"></div>
                 @endif
                 <div class="table-cell"><br><br><br>
-                    <FONT FACE="Arial Narrow, serif">
-                        <FONT SIZE=3><SPAN LANG="es-ES"><I><B>{{ $cabecera[0]->proyecto }}
-							&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							{{ $cabecera[0]->clave }}</B></I></SPAN>
-      					</FONT>
-     				</FONT>
+                        <I><B>{{ $cabecera[0]->proyecto }}
+                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ $cabecera[0]->clave }}</B></I>
     			</div>
   			</div>
             <div class="table-row">
@@ -151,17 +115,14 @@
                     &nbsp;
     			</div>
 
-                <div class="table-cell" style="text-align: right;">
-                    <FONT FACE="Arial Narrow, serif">
-                        <FONT SIZE=1><SPAN LANG="es-ES"><I>
+                <div class="table-cell" style="text-align: right; font-size: 9pt;">
+                        <I>
                             Contrato referente a {{ $cabecera[0]->descripcion_corta }},
                             Monto del Contrato ${{ $cabecera[0]->total_importe2 }}</I></SPAN>
-                        </FONT>
-                    </FONT>
     			</div>
   			</div>
  		</div>
-		<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png">
+		<hr style="color: darkblue;">
     </div>
 
 	<table style="margin-top: -15px;">
@@ -169,8 +130,8 @@
             <TD BGCOLOR="#c2c2c2"
                 STYLE="border: 1px solid #00000a; padding:10px;">
 
-                <P ALIGN=JUSTIFY
-                    STYLE="margin-top: 0in; margin-left: 0.05in">
+                <p ALIGN=JUSTIFY
+                    STYLE="margin-top: 0in; margin-left: 0.05in; font-size:11pt;">
                         ADENDUM DEL CONTRATO DE OBRA A PRECIO ALZADO, CELEBRADO ENTRE
                         @if ($cabecera[0]->emp_constructora == 'CONCRETANIA')
                             <B>CONCRETANIA, S.A. DE C.V.,</B>
@@ -184,35 +145,36 @@
                         <b>{{ mb_strtoupper($cabecera[0]->representante) }}</b>,
                         A QUIEN EN LO SUBSECUENTE SE LE IDENTIFICARA COMO <B>“LA CONTRATISTA”,</B>
                         EN LOS SIGUIENTES TERMINOS.
-                </P>
+                </p>
             </TD>
 		</tr>
 	</table>
 
 	<h5><br></h5>
 
-    <P ALIGN=JUSTIFY>
+    <p ALIGN=JUSTIFY>
         AMBAS PARTES DECLARAN QUE TIENEN CELEBRADO EL CONTRATO DE OBRA MENCIONADO CON UN MONTO DE
         <b>
             $ {{strToUpper($cabecera[0]->totalImporteLetra)}}
         </b>
         Y QUE A LA FECHA DE FIRMA DEL PRESENTE ADENDUM SE ENCUENTRA
         VIGENTE EN TODOS SUS TERMINOS DERECHOS Y OBLIGACIONES.
-    </P>
+    </p>
 
-    <P ALIGN=JUSTIFY>
+    <p ALIGN=JUSTIFY>
         QUE ES SU DESEO CELEBRAR EL PRESENTE ADENDUM QUE FORMARÁ PARTE INTEGRANTE DEL CONTRATO
         ANTERIORMENTE MENCIONADO CON EL FIN DE MODIFICAR
         @if($cabecera[0]->total_original != $cabecera[0]->total_importe && $cabecera[0]->f_fin != $cabecera[0]->f_fin2)
             LAS CLAUSULAS <b>NO.6</b> Y <b>NO. 7</b>
         @else
-            LA CLAUSULA
-            {{ ($cabecera[0]->total_original != $cabecera[0]->total_importe ?  <b>NO.6</b> : ''}}
-            {{ $cabecera[0]->f_fin != $cabecera[0]->f_fin2 ?  <b>NO.7</b> : ''}}
+            LA CLAUSULA <b>
+            {{ ($cabecera[0]->total_original != $cabecera[0]->total_importe) ?  'NO.6' : ''}}
+            {{ $cabecera[0]->f_fin != $cabecera[0]->f_fin2 ?  'NO.7' : ''}}
         @endif
+        </b>
         DEL CONTRATO DE OBRA A PRECIO ALZADO A EFECTO DE MODIFICAR EL IMPORTE Y LA FECHA DE TERMINO,
         QUEDANDO ACORDADO EN LA SIGUIENTE FORMA:
-    </P>
+    </p>
 
     <ol>
         @if($cabecera[0]->total_original != $cabecera[0]->total_importe)
@@ -225,7 +187,7 @@
         @endif
         @if($cabecera[0]->f_fin != $cabecera[0]->f_fin2)
         <li>
-            B)	EL PERIODO DE LA REALIZACIÓN DE LAS OBRAS SERÁ DEL
+            EL PERIODO DE LA REALIZACIÓN DE LAS OBRAS SERÁ DEL
             <b>
                 {{strToUpper($cabecera[0]->f_ini)}} AL {{strToUpper($cabecera[0]->f_fin2)}}.
             </b>
@@ -253,7 +215,6 @@
         APARECEN SUSCRIBEN EL PRESENTE CONVENIO EN LA CIUDAD DE SAN LUIS POTOSÍ, S.L.P.
         A <b>{{strToUpper($cabecera[0]->hoy)}}.</b>
     </p>
-
     <br><br>
 
 
@@ -263,8 +224,8 @@
             <div class="table-cell"><b>"EL CONTRATISTA"</b></div>
         </div>
         <div class="table-row" >
-            <div class="table-cell" style="padding-top: 100px;"><b>_________________________________</div>
-            <div class="table-cell" style="padding-top: 100px;"><b>_________________________________</div>
+            <div class="table-cell" style="padding-top: 60px;"><b>_________________________________</div>
+            <div class="table-cell" style="padding-top: 60px;"><b>_________________________________</div>
         </div>
         <div class="table-row">
             <div class="table-cell"> <b>{{ $cabecera[0]->apoderado }}</div>
@@ -276,17 +237,10 @@
         </div>
     </div>
 
-
-
-
-    <P CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 3.5in; text-indent: -3.5in">
-        <SPAN LANG="es-ES"><B> </B></SPAN>
-    </P>
-
     <div id="footer">
         <IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png">
         @if ($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
-            <P ALIGN=CENTER>
+            <p ALIGN=CENTER>
                 <FONT SIZE=1 STYLE="font-size: 8pt; text-align:center;">
                     <SPAN LANG="es-ES">
                         MANUEL GUTIERREZ NAJERA #190 COL
@@ -295,10 +249,10 @@
                         San Luis Potosí, S.L.P.
                     </SPAN>
                 </FONT>
-            </P>
+            </p>
         @endif
         @if ($cabecera[0]->emp_constructora == 'CONCRETANIA')
-            <P ALIGN=CENTER>
+            <p ALIGN=CENTER>
                 <FONT SIZE=1 STYLE="font-size: 8pt; text-align:center;">
                     <SPAN LANG="es-ES">
                         MANUEL GUTIERREZ NAJERA #180 COL
@@ -307,7 +261,7 @@
                         San Luis Potosí, S.L.P.
                     </SPAN>
                 </FONT>
-            </P>
+            </p>
         @endif
     </div>
 

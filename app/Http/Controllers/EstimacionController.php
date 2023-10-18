@@ -63,7 +63,7 @@ class EstimacionController extends Controller
             foreach ($contratos as $index => $contrato) {
                 $contrato->porcAnticipo = 0;
                 //Llamda a la funcion que retorna el historial de estimaciones por contrato
-                $anterior = $this->calculos($contrato->id);
+                $anterior = $this->calculos($contrato->id, $contrato->fin_estimaciones);
                 $contrato->estimadoAnt = $anterior['totalAnt']; // Total de estimaciones anteriores a la actual
                 $contrato->estimadoAct = $anterior['totalAct']; // Total estimación actual
                 $contrato->numEst = $anterior['num']; //Numero de estimaciones
@@ -606,6 +606,7 @@ class EstimacionController extends Controller
                 'ini_obras.num_casas',
                 'ini_obras.emp_constructora',
                 'ini_obras.emp_constructora',
+                'ini_obras.fin_estimaciones',
                 'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.num_casas','!=', 0)
             ->where('ini_obras.fraccionamiento_id','=',$fraccionamiento)
@@ -630,7 +631,7 @@ class EstimacionController extends Controller
     }
 
     // Función que retorna los calculas de las estimaciones por contrato
-    public function calculos($clave){
+    public function calculos($clave, $fin){
         // Numero de estimaciones y el total estimado del contrato actualmente.
         $est = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
                                 ->select('num_estimacion','total_estimacion')
@@ -663,6 +664,11 @@ class EstimacionController extends Controller
                 // Se suman cada total registrado.
                 $totalEstimacionAnt += $acum->total_estimacion;
             }
+        }
+
+        if($fin == 1){
+            $totalEstimacionAnt += $total_estimacion;
+            $total_estimacion = 0;
         }
 
         return ['totalAct'=> $total_estimacion,
