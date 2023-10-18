@@ -615,10 +615,10 @@ class IniObraController extends Controller
         $cabecera[0]->f_fin2 = $tiempo3->formatLocalized('%d de %B de %Y');
 
         //Alamacenamiento de cantidad en letra
-        $cabecera[0]->totalOriginalLetra = NumerosEnLetras::convertir($cabecera[0]->total_original,'Pesos',true,'Centavos');
+        $cabecera[0]->totalOriginalLetra = NumerosEnLetras::convertir(($cabecera[0]->total_original + $cabecera[0]->total_extra),'Pesos',true,'Centavos');
         $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
         //Formato de moneda
-        $cabecera[0]->total_original = number_format((float)$cabecera[0]->total_original,2,'.',',');
+        $cabecera[0]->total_original = number_format((float)($cabecera[0]->total_original + $cabecera[0]->total_extra),2,'.',',');
         $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.',',');
             //Creación de PDF
             $pdf = \PDF::loadview('pdf.obra.adendum',['cabecera' => $cabecera]);

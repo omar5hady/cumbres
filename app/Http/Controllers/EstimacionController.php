@@ -55,7 +55,7 @@ class EstimacionController extends Controller
         $contratos = $this->getContratos($contratista, $fraccionamiento, $constructora, $iniObras);
         // LLamada a la funcion que retorna los Fondos de Garantia para todos los contratos encontrados.
         $fondoGarantia = $this->getFG($iniObras);
-        
+
         $titulo = 'Resumen de estimaciones';
 
         if(sizeof($contratos)){
@@ -66,7 +66,7 @@ class EstimacionController extends Controller
                 $anterior = $this->calculos($contrato->id);
                 $contrato->estimadoAnt = $anterior['totalAnt']; // Total de estimaciones anteriores a la actual
                 $contrato->estimadoAct = $anterior['totalAct']; // Total estimación actual
-                $contrato->numEst = $anterior['num']; //Numero de estimaciones 
+                $contrato->numEst = $anterior['num']; //Numero de estimaciones
 
 
                 // LLamada a la funcion que retorna los Anticipos para todos los contratos encontrados.
@@ -90,11 +90,11 @@ class EstimacionController extends Controller
         // Creación y retorno en excel.
         return Excel::create($titulo , function($excel) use ($fondoGarantia, $contratos){
             $excel->sheet('Resumen', function($sheet) use ($fondoGarantia, $contratos){
-                
+
                 $sheet->mergeCells('A1:S1');
                 $sheet->mergeCells('A2:S2');
                 $sheet->mergeCells('A3:S3');
-                
+
                 $sheet->setSize('A1', 25, 80);
                 $sheet->setSize('A4', 25, 50);
                 $sheet->setSize('B1', 20, 20);
@@ -114,7 +114,7 @@ class EstimacionController extends Controller
                 $sheet->setSize('P1', 25, 20);
                 $sheet->setSize('Q1', 25, 20);
                 $sheet->setSize('R1', 25, 20);
-    
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 if($contratos[0]->emp_constructora == 'Grupo Constructor Cumbres')
                     $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
@@ -132,7 +132,7 @@ class EstimacionController extends Controller
                         $cell->setFontSize(16);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                 if($contratos[0]->emp_constructora == 'CONCRETANIA');
                     $sheet->cells('A1:A2', function($cell) {
@@ -141,7 +141,7 @@ class EstimacionController extends Controller
                         $cell->setFontSize(11);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                     $sheet->cells('A2:A3', function($cell) {
 
@@ -151,13 +151,13 @@ class EstimacionController extends Controller
                         $cell->setFontSize(16);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
-                
+
                 $sheet->row(1, [
                     'Periodo: '.$contratos[0]->fecha_ini.' - '.$contratos[0]->fecha_fin
                 ]);
-                 
+
                 $sheet->row(2, [
                     'Resumen de estimaciones Fraccionamiento '.'"'.$contratos[0]->proyecto.'"'
                 ]);
@@ -187,7 +187,7 @@ class EstimacionController extends Controller
                     $cells->setFontWeight('bold');
                     $cells->setAlignment('center');
                 });
-                    
+
                 $cont=6;
 
                 $sheet->setColumnFormat(array(
@@ -211,10 +211,10 @@ class EstimacionController extends Controller
                 $suma6 = $suma7 = $suma8 = $suma9 = $suma10 = $suma11 = $suma12 = $suma13 = 0;
 
                 $suma14 = $suma15 = $suma16 = $suma17 = 0;
-                
+
                 //////////////////// VIVIENDAS ///////////////////////
                     foreach($contratos as $index => $detalle) {
-                        
+
                         $amortAnt = $detalle->estimadoAnt*($detalle->anticipo/100);
                         $fondoG = $detalle->estimadoAnt*($detalle->porc_garantia_ret/100);
                         $netoPagado = $detalle->estimadoAnt - ($amortAnt + $fondoG);
@@ -245,21 +245,21 @@ class EstimacionController extends Controller
                         $suma13+=$netoAcum;
                         $suma16+=$porEstimar;
 
-                        $cont++;    
-                        
+                        $cont++;
+
                         $sheet->cells('J'.$cont.':N'.$cont, function ($cells) {
                             $cells->setFontWeight('bold');
                         });
 
 
                         $sheet->row($cont, [
-                            $detalle->clave, 
-                            $detalle->clave, 
-                            $detalle->num_casas, 
+                            $detalle->clave,
+                            $detalle->clave,
+                            $detalle->num_casas,
                             'Monto en Presup',
 
-                            $detalle->total_importe, 
-                            $detalle->estimadoAnt, 
+                            $detalle->total_importe,
+                            $detalle->estimadoAnt,
                             $amortAnt,
                             $fondoG,
                             $netoPagado,
@@ -273,21 +273,21 @@ class EstimacionController extends Controller
 
                             $importeAcum,
                             $amortAcum,
-                            $fgAcum, 
-                            $netoAcum, 
+                            $fgAcum,
+                            $netoAcum,
                             $porEstimar
-                        ]);	  
-                        
+                        ]);
+
                     }
                     $cont++;
                     $sheet->row($cont, [
-                        'Totales Vivienda', 
-                        '', 
-                        $suma0, 
+                        'Totales Vivienda',
+                        '',
+                        $suma0,
                         '',
 
-                        $suma1, 
-                        $suma2, 
+                        $suma1,
+                        $suma2,
                         $suma3,
                         $suma4,
                         $suma5,
@@ -301,10 +301,10 @@ class EstimacionController extends Controller
 
                         $suma10,
                         $suma11,
-                        $suma12, 
-                        $suma13, 
+                        $suma12,
+                        $suma13,
                         $suma16
-                    ]);	  
+                    ]);
 
                     $sheet->setBorder('A'.$ini.':S'.$cont, 'thin');
 
@@ -312,7 +312,7 @@ class EstimacionController extends Controller
                         // manipulate the cell
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                     $sheet->cells('K'.$cont.':S'.$cont, function ($cells) {
                         $cells->setFontWeight('bold');
@@ -326,16 +326,16 @@ class EstimacionController extends Controller
                     });
 
                     $sheet->row($cont, [
-                        '', '', '', '', '', '', '', '', '', 
+                        '', '', '', '', '', '', '', '', '',
                         '', '', '', '', '', '', '', '', '', ''
-                    ]);	  
+                    ]);
 
                     $cont++;
                     $sheet->row($cont, [
-                        'Total de Urbanización', 
+                        'Total de Urbanización',
                         '','','','','','','','','',
                         '','','','','','','','',''
-                    ]);	  
+                    ]);
 
                     $sheet->setBorder('A'.$ini.':S'.$cont, 'thin');
 
@@ -343,7 +343,7 @@ class EstimacionController extends Controller
                         // manipulate the cell
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
-                    
+
                     });
                     $sheet->cells('K'.$cont.':S'.$cont, function ($cells) {
                         $cells->setFontWeight('bold');
@@ -361,9 +361,9 @@ class EstimacionController extends Controller
                     });
 
                     $sheet->row($cont, [
-                        'TOTAL = ', '', '',  '', '',  '',  '', '', '', 
+                        'TOTAL = ', '', '',  '', '',  '',  '', '', '',
                         '', '', '', '', '', '', '', '',  '', ''
-                    ]);	
+                    ]);
 
                     $sheet->setBorder('A'.$cont.':S'.$cont, 'thin');
                     $cont+=2;
@@ -375,23 +375,23 @@ class EstimacionController extends Controller
                         $cell->setValue(  'INFORMACION ADICIONAL');
                         $cell->setFontSize(11);
                         $cell->setFontWeight('bold');
-                    
+
                     });
 
                 foreach($contratos as $index => $contrato) {
                     $suma14 = 0;
                     $suma17 = 0;
                     if(sizeOf($contrato->anticipos)){
-                        $cont++;  
+                        $cont++;
                         $ini = $cont;
                         $sheet->mergeCells('A'.$cont.':B'.$cont);
                         $sheet->mergeCells('C'.$cont.':E'.$cont);
                         $sheet->mergeCells('F'.$cont.':G'.$cont);
                         $sheet->cells('A'.$cont.':H'.$cont, function($cell) {
-                        
+
                             $cell->setFontWeight('bold');
                             $cell->setAlignment('center');
-                        
+
                         });
 
                         $sheet->row($cont, [
@@ -403,13 +403,13 @@ class EstimacionController extends Controller
                             'FECHA PAGO DEL ANTICIPO',
                             '',
                             $contrato->porcAnticipo.'%'
-                        ]);	 
+                        ]);
                         $ant = '';
                         $cont++;
 
                         foreach($contrato->anticipos as $index => $detalle) {
                             $suma14 += $detalle->monto_anticipo;
-                        
+
                             $sheet->mergeCells('C'.$cont.':E'.$cont);
                             $sheet->mergeCells('F'.$cont.':G'.$cont);
 
@@ -419,19 +419,19 @@ class EstimacionController extends Controller
                             ));
 
                             $sheet->row($cont, [
-                                '', 
-                                '', 
-                                $detalle->monto_anticipo, 
+                                '',
+                                '',
+                                $detalle->monto_anticipo,
                                 '',
                                 '',
                                 $detalle->fecha_anticipo
-                            ]);	
+                            ]);
                             $cont++;
                         }
 
                         $sheet->row($cont, [
                             '', '', $suma14, '','','','',''
-                        ]);	 
+                        ]);
 
                         $sheet->mergeCells('H'.$cont.':J'.$cont);
 
@@ -446,23 +446,23 @@ class EstimacionController extends Controller
                         });
 
                         $sheet->setBorder('A'.$ini.':H'.$cont, 'thin');
-                        
+
                     }
 
                     if(sizeOf($contrato->conceptosExtra)){
                         //////// OBRA EXTRA
 
-                        $cont++;  
+                        $cont++;
                         $ini = $cont;
                         $sheet->mergeCells('A'.$cont.':B'.$cont);
                         $sheet->mergeCells('C'.$cont.':E'.$cont);
                         $sheet->mergeCells('F'.$cont.':G'.$cont);
                         $sheet->mergeCells('H'.$cont.':I'.$cont);
                         $sheet->cells('C'.$cont.':I'.$cont, function($cell) {
-                        
+
                             $cell->setFontWeight('bold');
                             $cell->setAlignment('center');
-                        
+
                         });
 
                         $sheet->row($cont, [
@@ -473,13 +473,13 @@ class EstimacionController extends Controller
                             '',
                             'FECHA',
                             $contrato->porcAnticipo.'%'
-                        ]);	 
+                        ]);
                         $ant = '';
                         $cont++;
 
                         foreach($contrato->conceptosExtra as $index => $detalle) {
                             $suma17 += $detalle->importe;
-                        
+
                             $sheet->mergeCells('C'.$cont.':E'.$cont);
                             $sheet->mergeCells('F'.$cont.':G'.$cont);
 
@@ -489,19 +489,19 @@ class EstimacionController extends Controller
                             ));
 
                             $sheet->row($cont, [
-                                '', 
-                                '', 
-                                $detalle->importe, 
+                                '',
+                                '',
+                                $detalle->importe,
                                 '',
                                 '',
                                 $detalle->fecha
-                            ]);	
+                            ]);
                             $cont++;
                         }
 
                         $sheet->row($cont, [
                             '', '', $suma17, '','','','',''
-                        ]);	 
+                        ]);
 
                         $sheet->mergeCells('H'.$cont.':J'.$cont);
 
@@ -521,20 +521,20 @@ class EstimacionController extends Controller
 
                 ///////////// Fondo de Garantia
                 if(sizeOf($fondoGarantia)){
-                    $cont+=2;  
+                    $cont+=2;
                     $ini = $cont;
                     $sheet->mergeCells('A'.$cont.':B'.$cont);
                     $sheet->mergeCells('C'.$cont.':E'.$cont);
 
                     $sheet->row($cont, [
                         'Fecha de entrega','','','','','Monto'
-                    ]);	 
+                    ]);
                     $cont++;
 
                     foreach($fondoGarantia as $index => $detalle) {
 
                         $suma15 += $detalle->monto_fg;
-                        
+
                         $sheet->mergeCells('A'.$cont.':B'.$cont);
                         $sheet->mergeCells('C'.$cont.':E'.$cont);
 
@@ -544,14 +544,14 @@ class EstimacionController extends Controller
                         ));
 
                         $sheet->row($cont, [
-                            $detalle->fecha_fg, 
-                            '', 
-                            'Se entrego el Fondo de garantia del contrato '.$detalle->clave, 
+                            $detalle->fecha_fg,
+                            '',
+                            'Se entrego el Fondo de garantia del contrato '.$detalle->clave,
                             '',
                             '',
 
                             $detalle->monto_fg
-                        ]);	
+                        ]);
                         $cont++;
                     }
                    // $sheet->setBorder('A'.$ini.':I'.$cont, 'thin');
@@ -568,7 +568,7 @@ class EstimacionController extends Controller
             ->where('aviso_id','=',$aviso)
             ->orderBy('aviso_id','asc')
             ->orderBy('fecha_anticipo','asc')->get();
-        
+
         return $anticipos;
     }
 
@@ -588,7 +588,7 @@ class EstimacionController extends Controller
             ->whereIn('aviso_id',$aviso)
             ->orderBy('aviso_id','asc')
             ->orderBy('id','asc')->get();
-        
+
         return $fondos;
     }
 
@@ -598,7 +598,7 @@ class EstimacionController extends Controller
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave',
                 'ini_obras.total_costo_directo',
-                'ini_obras.total_costo_indirecto', 
+                'ini_obras.total_costo_indirecto',
                 'ini_obras.total_importe2 as total_importe',
                 'ini_obras.anticipo',
                 'ini_obras.garantia_ret',
@@ -672,8 +672,8 @@ class EstimacionController extends Controller
 
     // Función que retorna en excel el estado de cuenta por contratista.
     public function resumenEdoCuenta(Request $request){
-        //if (!$request->ajax()) 
- 
+        //if (!$request->ajax())
+
         $obraC = new IniObraController();
         $contratos = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
@@ -703,25 +703,25 @@ class EstimacionController extends Controller
                     $totalExtra = $contratos[$i]['datos']['totalExtra'];
 
                     $excel->sheet($contrato[0]->clave, function($sheet) use ($contrato, $number_est, $anticipos, $fg, $totalAnt , $totalFG, $totalEst, $conceptosExtra, $totalExtra){
-                    
+
                         $sheet->mergeCells('A1:J1');
                         $sheet->mergeCells('A3:J3');
                         $sheet->mergeCells('A4:J4');
                         $sheet->mergeCells('A5:J5');
-        
+
                         $sheet->mergeCells('A6:B6');
-                        
-                        
+
+
                         $sheet->setSize('A1', 20, 60);
                         $sheet->setSize('B1', 20, 60);
                         $sheet->setSize('C1', 20, 20);
-        
+
                         $sheet->setColumnFormat(array(
                             'C' => '$#,##0.00',
                             'B' => 'dd-mm-yyyy'
-                            
+
                         ));
-            
+
                         $objDrawing = new PHPExcel_Worksheet_Drawing;
                         if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
                             $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
@@ -729,92 +729,92 @@ class EstimacionController extends Controller
                             $objDrawing->setPath(public_path('img/contratos/logoConcretaniaObra.png')); //your image path
                         $objDrawing->setCoordinates('A2');
                         $objDrawing->setWorksheet($sheet);
-        
+
                         if($contrato[0]->emp_constructora == 'Grupo Constructor Cumbres')
                             $sheet->cell('A1', function($cell) {
-        
+
                                 // manipulate the cell
                                 $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
                                 $cell->setFontFamily('Arial Narrow');
                                 $cell->setFontSize(18);
                                 $cell->setFontWeight('bold');
                                 $cell->setAlignment('center');
-                            
+
                             });
                         if($contrato[0]->emp_constructora == 'CONCRETANIA');
                             $sheet->cell('A1', function($cell) {
-        
+
                                 // manipulate the cell
                                 $cell->setValue(  'CONCRETANIA, SA DE CV');
                                 $cell->setFontFamily('Arial Narrow');
                                 $cell->setFontSize(18);
                                 $cell->setFontWeight('bold');
                                 $cell->setAlignment('center');
-                            
+
                             });
-                            
+
                         $sheet->row(3, [
-                            'Resumen de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                            'Resumen de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave
                         ]);
                         $sheet->row(4, [
-                            'Contratista: '.$contrato[0]->contratista 
+                            'Contratista: '.$contrato[0]->contratista
                         ]);
-        
+
                         $sheet->cell('A3', function($cell) {
-        
+
                             // manipulate the cell
                             $cell->setFontFamily('Arial Narrow');
                             $cell->setFontSize(14);
                             $cell->setFontWeight('bold');
                             $cell->setAlignment('center');
-                        
+
                         });
                         $sheet->cell('A4', function($cell) {
-        
+
                             // manipulate the cell
                             $cell->setFontFamily('Arial Narrow');
                             $cell->setFontSize(14);
                         // $cell->setFontWeight('bold');
                             $cell->setAlignment('center');
-                        
+
                         });
-        
-        
+
+
                         $sheet->cells('A5:C10', function($cells) {
-        
+
                             // manipulate the cell
                             $cells->setFontFamily('Arial Narrow');
                             $cells->setFontSize(12);
                             $cells->setFontWeight('bold');
                             $cells->setAlignment('center');
-                        
+
                         });
-        
-        
-                        
+
+
+
                         $sheet->row(8, [
                             'Importe total: ', '',$contrato[0]->total_importe
                         ]);
-        
+
                         $renglon = 10;
-        
+
                         if(sizeof($anticipos)){
                             $sheet->row($renglon, [
-                                'Anticipos: ', 
+                                'Anticipos: ',
                             ]);
-            
+
                             $renglon ++;
-            
-                            foreach($anticipos as $index => $ant) {     
-            
+
+                            foreach($anticipos as $index => $ant) {
+
                                 $sheet->row($renglon, [
                                     '',
                                     $ant->fecha_anticipo,
                                     $ant->monto_anticipo
-                                ]);	  
+                                ]);
                                 $renglon++;
                             }
-            
+
                             $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                                 $cells->setFontWeight('bold');
                                 $cells->setAlignment('right');
@@ -823,39 +823,39 @@ class EstimacionController extends Controller
                                 '',
                                 'TOTAL:',
                                 $totalAnt
-                            ]);	 
-            
+                            ]);
+
                             $renglon+=2;
-        
+
                         }
-        
+
                         if(sizeof($anticipos)){
                             $sheet->cell('A'.$renglon, function($cell) {
-        
+
                                 // manipulate the cell
                                 $cell->setFontFamily('Arial Narrow');
                                 $cell->setFontSize(12);
                                 $cell->setFontWeight('bold');
                                 $cell->setAlignment('center');
-                            
+
                             });
-            
+
                             $sheet->row($renglon, [
-                                'Fondos de Garantia: ', 
+                                'Fondos de Garantia: ',
                             ]);
-            
+
                             $renglon++;
-            
-                            foreach($fg as $index => $f) {     
-            
+
+                            foreach($fg as $index => $f) {
+
                                 $sheet->row($renglon, [
                                     '',
                                     $f->fecha_fg,
                                     $f->monto_fg
-                                ]);	  
+                                ]);
                                 $renglon++;
                             }
-            
+
                             $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                                 $cells->setFontWeight('bold');
                                 $cells->setAlignment('right');
@@ -865,37 +865,37 @@ class EstimacionController extends Controller
                                 'TOTAL:',
                                 $totalFG
                             ]);
-            
+
                             $renglon+=2;
                         }
-        
+
                         if(sizeof($number_est)){
                             $sheet->cell('A'.$renglon, function($cell) {
-        
+
                                 // manipulate the cell
                                 $cell->setFontFamily('Arial Narrow');
                                 $cell->setFontSize(12);
                                 $cell->setFontWeight('bold');
                                 $cell->setAlignment('center');
-                            
+
                             });
-            
+
                             $sheet->row($renglon, [
-                                'Estimaciones: ', 
+                                'Estimaciones: ',
                             ]);
-            
+
                             $renglon++;
-            
-                            foreach($number_est as $index => $est) {     
-            
+
+                            foreach($number_est as $index => $est) {
+
                                 $sheet->row($renglon, [
                                     $est->num_estimacion,
                                     $est->ini,
                                     $est->total_pagado
-                                ]);	  
+                                ]);
                                 $renglon++;
                             }
-            
+
                             $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                                 $cells->setFontWeight('bold');
                                 $cells->setAlignment('right');
@@ -905,53 +905,53 @@ class EstimacionController extends Controller
                                 'TOTAL:',
                                 $totalEst
                             ]);
-            
+
                             $renglon+=2;
                         }
-        
+
                         $saldo = $totalFG + $totalAnt + $totalEst - $contrato[0]->total_importe;
-        
+
                         $sheet->mergeCells('A'.$renglon.':B'.$renglon);
                         $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                             $cells->setFontWeight('bold');
                             $cells->setAlignment('right');
                         });
-        
+
                         $sheet->row($renglon, [
                             'SALDO',
                             '',
                             $saldo
-                            
+
                         ]);
-                        
+
                         if(sizeof($conceptosExtra)){
                             $renglon+=2;
                             $sheet->cell('A'.$renglon, function($cell) {
-        
+
                                 // manipulate the cell
                                 $cell->setFontFamily('Arial Narrow');
                                 $cell->setFontSize(12);
                                 $cell->setFontWeight('bold');
                                 $cell->setAlignment('center');
-                            
+
                             });
-            
+
                             $sheet->row($renglon, [
-                                'Obra extra: ', 
+                                'Obra extra: ',
                             ]);
-            
+
                             $renglon++;
-            
-                            foreach($conceptosExtra as $index => $cext) {     
-            
+
+                            foreach($conceptosExtra as $index => $cext) {
+
                                 $sheet->row($renglon, [
                                     $cext->concepto,
                                     $cext->fecha,
                                     $cext->importe
-                                ]);	  
+                                ]);
                                 $renglon++;
                             }
-            
+
                             $sheet->cells('A'.$renglon.':C'.$renglon, function($cells) {
                                 $cells->setFontWeight('bold');
                                 $cells->setAlignment('right');
@@ -961,12 +961,12 @@ class EstimacionController extends Controller
                                 'TOTAL:',
                                 $totalExtra
                             ]);
-            
+
                             $renglon+=2;
                         }
-        
-        
-                    
+
+
+
                     });
                 }
             });
@@ -986,5 +986,5 @@ class EstimacionController extends Controller
         $obs->usuario = Auth::user()->usuario;
         $obs->save();
     }
- 
+
 }

@@ -952,7 +952,6 @@
             },
 
         },
-
         methods : {
             onImageChange(e){
                 console.log(e.target.files[0]);

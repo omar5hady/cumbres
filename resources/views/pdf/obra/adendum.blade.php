@@ -202,8 +202,15 @@
 
     <P ALIGN=JUSTIFY>
         QUE ES SU DESEO CELEBRAR EL PRESENTE ADENDUM QUE FORMARÁ PARTE INTEGRANTE DEL CONTRATO
-        ANTERIORMENTE MENCIONADO CON EL FIN DE MODIFICAR LAS CLAUSULAS <b>NO.6</b> Y <b>NO. 7</b> DEL
-        CONTRATO DE OBRA A PRECIO ALZADO A EFECTO DE MODIFICAR EL IMPORTE Y LA FECHA DE TERMINO,
+        ANTERIORMENTE MENCIONADO CON EL FIN DE MODIFICAR
+        @if($cabecera[0]->total_original != $cabecera[0]->total_importe && $cabecera[0]->f_fin != $cabecera[0]->f_fin2)
+            LAS CLAUSULAS <b>NO.6</b> Y <b>NO. 7</b>
+        @else
+            LA CLAUSULA
+            {{ ($cabecera[0]->total_original != $cabecera[0]->total_importe ?  <b>NO.6</b> : ''}}
+            {{ $cabecera[0]->f_fin != $cabecera[0]->f_fin2 ?  <b>NO.7</b> : ''}}
+        @endif
+        DEL CONTRATO DE OBRA A PRECIO ALZADO A EFECTO DE MODIFICAR EL IMPORTE Y LA FECHA DE TERMINO,
         QUEDANDO ACORDADO EN LA SIGUIENTE FORMA:
     </P>
 

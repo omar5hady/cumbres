@@ -25,7 +25,7 @@
                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                         <a class="dropdown-item" @click="$emit('ver',avisoObra.id)">Ver Detalle</a>
                         <a class="dropdown-item" :href="'/estimaciones/excelEdoCuenta?clave='+avisoObra.id">Edo. Cuenta</a>
-                        <template v-if="avisoObra.total_importe != avisoObra.total_original">
+                        <template v-if="avisoObra.total_importe != (avisoObra.total_original + avisoObra.total_extra)">
                             <a class="dropdown-item" v-if="rolId!=9 && rolId != 11 && rolId!=13"
                                 @click="$emit('abrirModal',{accion:'subirAdendum',data: avisoObra})">
                                 <i class="icon-cloud-upload"></i>
