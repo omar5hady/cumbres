@@ -9,20 +9,22 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Estimaciones &nbsp;
-                        <button v-if="listado == 1" type="button" @click="abrirModal('nuevo')" class="btn btn-primary">
-                            <i class="icon-plus"></i>&nbsp;Asignar Partidas
-                        </button>
-                        <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
-                            <i class="fa fa-mail-reply"></i> Regresar
-                        </button>
+                        <template v-if="rolId != 13">
+                            <button v-if="listado == 1" type="button" @click="abrirModal('nuevo')" class="btn btn-primary">
+                                <i class="icon-plus"></i>&nbsp;Asignar Partidas
+                            </button>
+                            <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
+                                <i class="fa fa-mail-reply"></i> Regresar
+                            </button>
 
-                        <button v-if="listado == 1" type="button" @click="abrirModal('resumen')" class="btn btn-dark">
-                            <i class="icon-share-alt"></i>&nbsp;Resumen de estimaciones
-                        </button>
+                            <button v-if="listado == 1" type="button" @click="abrirModal('resumen')" class="btn btn-dark">
+                                <i class="icon-share-alt"></i>&nbsp;Resumen de estimaciones
+                            </button>
 
-                        <button v-if="listado == 1" type="button" @click="abrirModal('reporte')" class="btn btn-dark">
-                            <i class="icon-share-alt"></i>&nbsp;Reporte de finalización de obra
-                        </button>
+                            <button v-if="listado == 1" type="button" @click="abrirModal('reporte')" class="btn btn-dark">
+                                <i class="icon-share-alt"></i>&nbsp;Reporte de finalización de obra
+                            </button>
+                        </template>
                     </div>
 
             <!----------------- Listado Contratos ------------------------------>
@@ -62,6 +64,7 @@
                             </div>
                             <TableEstimaciones
                                 :arrayEstimaciones="arrayEstimaciones"
+                                :rolId="rolId"
                                 @verDetalle="verDetalle"
                                 @finalizarEstimacion="finalizarEstimacion"
                             >
@@ -97,7 +100,7 @@
                                             $ {{$root.formatNumber(total_importe)}}
                                     </div>
                                     <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 0">
-                                            <a href="#" @dblclick="edit = 1, total_impAux = total_importe" title="Doble clic para editar">$ {{$root.formatNumber(total_importe)}}</a>
+                                            <a href="#" @dblclick="editarImporte()" title="Doble clic para editar">$ {{$root.formatNumber(total_importe)}}</a>
                                     </div>
                                     <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 1">
                                             <input type="text" pattern="\d*" @keyup.esc="cancel()" v-on:keypress="$root.isNumber($event)" v-model="total_impAux" @keyup.enter="updateTotal()">
@@ -160,19 +163,21 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
-                                            <button type="button" @click="nueva = 1"  class="btn btn-primary">
-                                                <i class="icon-plus"></i>&nbsp;Nueva estimación
-                                            </button>
-                                        </div>
+                                        <template v-if="rolId != 13">
+                                            <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
+                                                <button type="button" @click="nueva = 1"  class="btn btn-primary">
+                                                    <i class="icon-plus"></i>&nbsp;Nueva estimación
+                                                </button>
+                                            </div>
 
-                                        <div class="col-md-2" v-if="actual == numero &&
-                                            (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano' || userName == 'shady' )"
-                                        >
-                                            <button type="button" @click="editarEstimacion = 1, partidasAct()"  class="btn btn-warning">
-                                                <i class="icon-pencil"></i>&nbsp;Editar estimacioón
-                                            </button>
-                                        </div>
+                                            <div class="col-md-2" v-if="actual == numero &&
+                                                (userName == 'uriel.al' || userName == 'guadalupe.ff' || userName == 'pablo.torrescano' || userName == 'shady' )"
+                                            >
+                                                <button type="button" @click="editarEstimacion = 1, partidasAct()"  class="btn btn-warning">
+                                                    <i class="icon-pencil"></i>&nbsp;Editar estimacioón
+                                                </button>
+                                            </div>
+                                        </template>
 
                                         <div class="col-md-2">
                                             <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+num_casas"
@@ -422,7 +427,7 @@
                                                 <tr>
                                                     <th>Anticipo</th>
                                                     <th v-text="'$'+$root.formatNumber(total_anticipo)"></th>
-                                                    <th v-if="arrayNumEstim.length == 0">
+                                                    <th v-if="arrayNumEstim.length == 0 && rolId != 13">
                                                         <button title="Añadir" type="button" @click="abrirModal('anticipo')" class="btn btn-success btn-sm">
                                                             <i class="icon-plus"></i>
                                                         </button>
@@ -459,7 +464,8 @@
                                                 <tr>
                                                     <th colspan="4">Fondo de Garantia</th>
                                                     <th>
-                                                        <button title="Añadir" type="button" @click="abrirModal('fg')" class="btn btn-success btn-sm">
+                                                        <button v-if="rolId != 13"
+                                                            title="Añadir" type="button" @click="abrirModal('fg')" class="btn btn-success btn-sm">
                                                             <i class="icon-plus"></i>
                                                         </button>
                                                     </th>
@@ -500,7 +506,7 @@
                                                     </th>
 
                                                     <th v-else>
-                                                        <a href="#" @dblclick="edit2 = 1, total_impAux = impExtra"
+                                                        <a href="#" @dblclick="editarImpExtra()"
                                                             title="Doble clic para editar">$ {{$root.formatNumber(impExtra)}}</a>
                                                     </th>
 
@@ -529,7 +535,7 @@
                                                     <td class="td2"><strong>Fecha</strong> </td>
                                                     <td colspan="2" class="td2"><strong>Concepto</strong> </td>
                                                     <td class="td2"><strong>Importe</strong> </td>
-                                                        <button v-if="impExtra>0" title="Añadir" type="button" @click="abrirModal('extra')" class="btn btn-success btn-sm">
+                                                        <button v-if="impExtra>0 && rolId != 13" title="Añadir" type="button" @click="abrirModal('extra')" class="btn btn-success btn-sm">
                                                             <i class="icon-plus"></i>
                                                         </button>
                                                 </tr>
@@ -551,7 +557,8 @@
                                                 <tr>
                                                     <th colspan="2">Observaciones</th>
                                                     <th>
-                                                        <button title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
+                                                        <button v-if="rolId != 13"
+                                                            title="Añadir" type="button" @click="abrirModal('observacion')" class="btn btn-success btn-sm">
                                                             <i class="icon-plus"></i>
                                                         </button>
                                                     </th>
@@ -784,7 +791,8 @@
     import Button from '../Componentes/ButtonComponent.vue';
     export default {
         props:{
-            userName:{type: String}
+            userName:{type: String},
+            rolId:{type: String}
         },
         data(){
             return{
@@ -953,6 +961,18 @@
 
         },
         methods : {
+            editarImpExtra(){
+                if(this.rolId!=13){
+                    this.edit2 = 1
+                    this.total_impAux = this.impExtra
+                }
+            },
+            editarImporte(){
+                if(this.rolId!=13){
+                    this.edit = 1
+                    this.total_impAux = this.total_importe;
+                }
+            },
             onImageChange(e){
                 console.log(e.target.files[0]);
                 this.file = e.target.files[0];

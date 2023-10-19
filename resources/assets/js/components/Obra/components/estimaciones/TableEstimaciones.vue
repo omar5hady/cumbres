@@ -41,7 +41,7 @@
                     class="td2"
                     v-text="'$' + $root.formatNumber(contrato.garantia_ret)"
                 ></td>
-                <td v-if="contrato.fin_estimaciones == 0">
+                <td v-if="contrato.fin_estimaciones == 0 && rolId != 13">
                     <ButtonComponent
                         @click="$emit('finalizarEstimacion',contrato.id)"
                         btnClass="btn-danger"
@@ -59,7 +59,8 @@ import TableComponent from '../../../Componentes/TableComponent.vue';
 import ButtonComponent from '../../../Componentes/ButtonComponent.vue';
 export default {
     props:{
-        arrayEstimaciones:{type: Array}
+        arrayEstimaciones:{type: Array},
+        rolId:{type: String},
     },
     components:{
         TableComponent,

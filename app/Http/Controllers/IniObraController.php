@@ -1106,6 +1106,10 @@ class IniObraController extends Controller
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.total_importe2','!=',0)
             ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
+
+        if(Auth::user()->rol_id == 13)
+            $ini_obra = $ini_obra->where('ini_obras.contratista_id','=',Auth::user()->id);
+
         //Busqueda por proyecto
         if($request->proyecto != '')
             $ini_obra = $ini_obra->where('ini_obras.fraccionamiento_id','=',$request->proyecto);
