@@ -172,7 +172,13 @@
             {{ $cabecera[0]->f_fin != $cabecera[0]->f_fin2 ?  'NO.7' : ''}}
         @endif
         </b>
-        DEL CONTRATO DE OBRA A PRECIO ALZADO A EFECTO DE MODIFICAR EL IMPORTE Y LA FECHA DE TERMINO,
+        DEL CONTRATO DE OBRA A PRECIO ALZADO A EFECTO DE MODIFICAR
+        @if($cabecera[0]->total_original != $cabecera[0]->total_importe && $cabecera[0]->f_fin != $cabecera[0]->f_fin2)
+            EL IMPORTE Y LA FECHA DE TERMINO,
+        @else
+            {{ ($cabecera[0]->total_original != $cabecera[0]->total_importe) ?  'EL IMPORTE,' : ''}}
+            {{ $cabecera[0]->f_fin != $cabecera[0]->f_fin2 ?  'LA FECHA DE TERMINO,' : ''}}
+        @endif
         QUEDANDO ACORDADO EN LA SIGUIENTE FORMA:
     </p>
 

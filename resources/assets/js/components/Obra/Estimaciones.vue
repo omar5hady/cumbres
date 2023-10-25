@@ -9,12 +9,13 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Estimaciones &nbsp;
+                        <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
+                            <i class="fa fa-mail-reply"></i> Regresar
+                        </button>
+
                         <template v-if="rolId != 13">
                             <button v-if="listado == 1" type="button" @click="abrirModal('nuevo')" class="btn btn-primary">
                                 <i class="icon-plus"></i>&nbsp;Asignar Partidas
-                            </button>
-                            <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
-                                <i class="fa fa-mail-reply"></i> Regresar
                             </button>
 
                             <button v-if="listado == 1" type="button" @click="abrirModal('resumen')" class="btn btn-dark">

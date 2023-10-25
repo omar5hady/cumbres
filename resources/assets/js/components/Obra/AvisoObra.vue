@@ -99,6 +99,7 @@
                                             :rolId="rolId"
                                             :arrayAvisoObra="arrayAvisoObra"
                                             @abrirModal="abrirModal"
+                                            @print="print"
                                             @ver="verAviso"
                                         ></TablePorCerrar>
                                     </div>

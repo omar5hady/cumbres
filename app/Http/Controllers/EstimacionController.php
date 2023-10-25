@@ -12,6 +12,7 @@ use App\Ini_obra_lote;
 use App\Lote;
 use App\Estimacion;
 use App\Concepto_extra;
+use App\Importe_extra;
 use App\Fg_estimacion;
 use App\Anticipo_estimacion;
 use App\Hist_estimacion;
@@ -991,6 +992,63 @@ class EstimacionController extends Controller
         $obs->observacion = $request->observacion;
         $obs->usuario = Auth::user()->usuario;
         $obs->save();
+    }
+
+    public function getResumenPago(Request $request){
+        $fecha_inicio = new Carbon($request->fecha_pago);
+        // return $fecha_inicio = $fecha_inicio->subDays(6);
+        $estimaciones = Hist_estimacion::join('estimaciones as e','e.id','=','hist_estimaciones.estimacion_id')
+            ->join('ini_obras as a','a.id','=','e.aviso_id')
+            ->join('fraccionamientos as f','f.id','=','a.fraccionamiento_id')
+            ->select('f.id','f.nombre as fraccionamiento')
+            ->where('hist_estimaciones.fecha_pago','=',$request->fecha_pago)
+            ->where('a.contratista_id','=',$request->contratista)
+            ->distinct()
+            ->get();
+
+            foreach($estimaciones as $e){
+                $e->data = Hist_estimacion::join('estimaciones as e','e.id','=','hist_estimaciones.estimacion_id')
+                    ->join('ini_obras as a','a.id','=','e.aviso_id')
+                    ->join('fraccionamientos as f','f.id','=','a.fraccionamiento_id')
+                    ->select('a.clave', 'a.id','hist_estimaciones.total_pagado','hist_estimaciones.fecha_pago')
+                    ->where('hist_estimaciones.fecha_pago','=',$request->fecha_pago)
+                    ->where('f.id','=',$e->id)
+                    ->where('hist_estimaciones.ini','!=',NULL)
+                    ->distinct()
+                    ->get();
+
+                foreach($e->data as $contrato){
+                    $fg = Fg_estimacion::select('monto_fg')->where('aviso_id','=', $contrato->id)
+                        ->whereBetween('fecha_fg',[$fecha_inicio,$request->fecha_pago])
+                        ->get();
+                    $anticipo = Anticipo_estimacion::select('monto_anticipo')->where('aviso_id','=', $contrato->id)
+                        ->whereBetween('fecha_anticipo',[$fecha_inicio,$request->fecha_pago])
+                        ->get();
+                    $obra = Importe_extra::select('impExtra')->where('aviso_id','=', $contrato->id)
+                        ->whereBetween('fechaExtra',[$fecha_inicio,$request->fecha_pago])
+                        ->get();
+
+                    if(sizeof($fg))
+                        $contrato->fg = $fg[0]->monto_fg;
+                    else
+                        $contrato->fg = 0;
+
+                    if(sizeof($anticipo))
+                        $contrato->anticipo = $anticipo[0]->monto_anticipo;
+                    else
+                        $contrato->anticipo = 0;
+
+                    if(sizeof($obra))
+                        $contrato->extra = $obra[0]->impExtra;
+                    else
+                        $contrato->extra = 0;
+                }
+            }
+
+            return $estimaciones;
+
+
+
     }
 
 }

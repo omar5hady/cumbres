@@ -540,6 +540,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/storeObs','EstimacionController@storeObs');
 
         Route::get('/estimaciones/resumen','EstimacionController@resumen');
+        Route::get('/estimaciones/getResumenPago','EstimacionController@getResumenPago');
         Route::get('/estimaciones/excelEdoCuenta','IniObraController@excelEdoCuenta');
 
         Route::get('/estimaciones/resumenEdoCuenta','EstimacionController@resumenEdoCuenta');

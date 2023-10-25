@@ -680,7 +680,7 @@
                     'direccion_proy':this.data.direccion_proy
                 }).then(function (response){
                     me.proceso=false;
-                    this.$emit('close')
+                    me.$emit('close')
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',

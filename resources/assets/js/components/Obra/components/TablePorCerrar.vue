@@ -70,7 +70,6 @@
             </tr>
         </template>
     </TableComponent>
-
 </template>
 <script>
 import TableComponent from '../../Componentes/TableComponent.vue';
