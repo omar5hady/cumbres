@@ -86,6 +86,7 @@ Vue.component('iniobra', require('./components/Obra/IniObra.vue'));
 Vue.component('aviso-obra', require('./components/Obra/AvisoObra.vue'));
 Vue.component('partidas', require('./components/Obra/Partidas.vue'));
 Vue.component('avance', require('./components/Obra/Avance.vue'));
+Vue.component('resumen-pago', require('./components/Obra/ResumenPago.vue'));
 Vue.component('visita-avaluo', require('./components/Obra/VisitaAvaluo.vue'));
 Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamientos.vue'));
 Vue.component('uri-equipamiento', require('./components/Obra/EquipamientosUri.vue'));

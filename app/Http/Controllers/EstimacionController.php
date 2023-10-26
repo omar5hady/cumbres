@@ -10,6 +10,7 @@ use Auth;
 use App\Ini_obra;
 use App\Ini_obra_lote;
 use App\Lote;
+use App\Contratista;
 use App\Estimacion;
 use App\Concepto_extra;
 use App\Importe_extra;
@@ -995,14 +996,20 @@ class EstimacionController extends Controller
     }
 
     public function getResumenPago(Request $request){
+        if(Auth::user()->rol_id == 13)
+            $b_contratista = Auth::user()->id;
+        else
+            $b_contratista = $request->contratista;
+
         $fecha_inicio = new Carbon($request->fecha_pago);
+        $contratista = Contratista::select('nombre')->where('id','=',$b_contratista)->first();
         // return $fecha_inicio = $fecha_inicio->subDays(6);
         $estimaciones = Hist_estimacion::join('estimaciones as e','e.id','=','hist_estimaciones.estimacion_id')
             ->join('ini_obras as a','a.id','=','e.aviso_id')
             ->join('fraccionamientos as f','f.id','=','a.fraccionamiento_id')
             ->select('f.id','f.nombre as fraccionamiento')
             ->where('hist_estimaciones.fecha_pago','=',$request->fecha_pago)
-            ->where('a.contratista_id','=',$request->contratista)
+            ->where('a.contratista_id','=',$b_contratista)
             ->distinct()
             ->get();
 
@@ -1016,6 +1023,8 @@ class EstimacionController extends Controller
                     ->where('hist_estimaciones.ini','!=',NULL)
                     ->distinct()
                     ->get();
+
+                $e->total = 0;
 
                 foreach($e->data as $contrato){
                     $fg = Fg_estimacion::select('monto_fg')->where('aviso_id','=', $contrato->id)
@@ -1042,10 +1051,15 @@ class EstimacionController extends Controller
                         $contrato->extra = $obra[0]->impExtra;
                     else
                         $contrato->extra = 0;
+
+                    $e->total += $contrato->extra + $contrato->anticipo + $contrato->fg + $contrato->total_pagado;
                 }
             }
 
-            return $estimaciones;
+            return [
+                'contratista' => $contratista->nombre,
+                'resumen' => $estimaciones,
+            ];
 
 
 

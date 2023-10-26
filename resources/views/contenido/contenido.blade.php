@@ -590,5 +590,9 @@
         <template v-if="menu==301">
             <cat-cotizaciones></cat-cotizaciones>
         </template>
+        <template v-if="menu==302">
+            <resumen-pago rol-id = "{{ Auth::user()->rol_id }}"
+                usuario="{{ Auth::user()->usuario }}"></resumen-pago>
+        </template>
     @endif
 @endsection

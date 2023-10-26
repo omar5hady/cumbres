@@ -1395,7 +1395,7 @@ class ClienteController extends Controller
             ->whereNotIn('users.usuario',[
                 'may_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
-                'yasmin_ventas', 'ivan.mtz'
+                'yasmin_ventas', 'ivan.mtz', 'MARIAG'
             ])
 
             ->orderBy('vendedores.cont_leads','asc')
@@ -1429,7 +1429,7 @@ class ClienteController extends Controller
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
                         'ALEJANDROT',
-                        'yasmin_ventas', 'ivan.mtz'
+                        'yasmin_ventas', 'ivan.mtz',  'MARIAG'
                     ])
 
                     ->orderBy('vendedores.cont_leads','asc')
@@ -1450,7 +1450,7 @@ class ClienteController extends Controller
                     ->whereNotIn('users.id',$castigados)
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
-                        'Guadalupe', 'ALEJANDROT',
+                        'Guadalupe', 'ALEJANDROT',  'MARIAG',
                         'yasmin_ventas','lisseth_rios', 'ivan.mtz'
                     ])
                     ->orderBy('vendedores.cont_leads','asc')

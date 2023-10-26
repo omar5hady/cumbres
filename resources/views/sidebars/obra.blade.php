@@ -39,6 +39,11 @@
                             <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Estimaciones</a>
                         </li>
                     @endif
+                    @if(Auth::user()->estimaciones == 1)
+                        <li @click="menu=302" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-money"></i> Resumen de pago</a>
+                        </li>
+                    @endif
                 </ul>
             </li>
         @endif
