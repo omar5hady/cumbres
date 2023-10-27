@@ -26,6 +26,8 @@ class CreateIniObraLotesTable extends Migration
             $table->double('importe');
             $table->text('descripcion');
             $table->integer('lote_id')->nullable();
+
+            $table->string('observacion')->nullable();
             $table->timestamps();
 
             $table->foreign('ini_obra_id')->references('id')->on('ini_obras')->onDelete('cascade');

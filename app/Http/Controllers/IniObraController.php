@@ -222,6 +222,7 @@ class IniObraController extends Controller
             'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
             'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
             'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+            'ini_obra_lotes.observacion',
             'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.lote', 'desc')->get();
@@ -288,6 +289,7 @@ class IniObraController extends Controller
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
+                $lotes->observacion= $det['observacion'];
                 $lotes->save();
                 //Se verifica que la partida corresponda a un lote
                 if($det['lote_id']>0){
@@ -463,6 +465,7 @@ class IniObraController extends Controller
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
+                $lotes->observacion= $det['observacion'];
                 $lotes->save();
                 //Se verifica que la partida corresponda a un lote
                 if($det['lote_id']>0){
@@ -575,7 +578,10 @@ class IniObraController extends Controller
         $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
         $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_original,'Pesos',true,'Centavos');
             //Creación de PDF
-            $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
+            if($cabecera[0]->tipo == 'Urbanización' )
+                $pdf = \PDF::loadview('pdf.obra.contratoUrbanizacion',['cabecera' => $cabecera]);
+            else
+                $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
             //retorno de archivo.
             return $pdf->stream('contrato.pdf');
     }

@@ -81,7 +81,8 @@
                         'Costo Directo',
                         'Costo Indirecto',
                         'Obra extra',
-                        'Importe'
+                        'Importe',
+                        'Obs'
                     ]"
                 >
                     <template v-slot:tbody>
@@ -132,6 +133,7 @@
                                             )
                                     }}
                                 </td>
+                                <td v-text="detalle.observacion"></td>
                             </tr>
 
                             <tr style="background-color: #CEECF5;">

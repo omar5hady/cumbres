@@ -159,7 +159,7 @@
             <div class="col-md-12">
                 <TableComponent :cabecera="[
                     'Opciones','Descripcion','Lote','Manzana','M&sup2;','Costo Directo',
-                    'Costo Indirecto','Obra extra','Importe','Termino'
+                    'Costo Indirecto','Obra extra','Importe','Termino','Obs'
                 ]">
                     <template v-slot:tbody>
                         <template v-if="data.lotesContrato.length">
@@ -198,6 +198,9 @@
                                 </td>
                                 <td>
                                     <input type="date" v-model="detalle.fin_obra" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text" v-model="detalle.observacion" class="form-control">
                                 </td>
                             </tr>
 

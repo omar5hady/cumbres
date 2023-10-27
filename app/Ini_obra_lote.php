@@ -9,6 +9,7 @@ class Ini_obra_lote extends Model
     protected $table = 'ini_obra_lotes'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['ini_obra_id','lote','manzana','modelo','construccion','costo_directo',
+                            'observacion',
                             'costo_indirecto','importe','descripcion','lote_id','obra_extra'];
 
 

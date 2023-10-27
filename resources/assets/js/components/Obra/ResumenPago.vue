@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Resuemn de Pago
+                        <i class="fa fa-align-justify"></i> Resumen de Pago
                     </div>
                     <LoadingComponent v-if="loading"></LoadingComponent>
                     <template v-else>
@@ -36,9 +36,9 @@
                                     <div class="col-md-8">
                                         <div class="input-group">
                                             <button type="submit" @click="getResumen()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                            <a class="btn btn-success" :href="'/iniobra/excelAvisos?b_fecha=' + b_fecha" >
-                                                <i class="icon-pencil"></i>&nbsp;Excel
-                                            </a>
+                                            <!-- <a class="btn btn-scarlet" :href="'/iniobra/excelAvisos?b_fecha=' + b_fecha" >
+                                                <i class="fa fa-file-pdf-o"></i>&nbsp;
+                                            </a> -->
                                         </div>
                                     </div>
                                 </div>
