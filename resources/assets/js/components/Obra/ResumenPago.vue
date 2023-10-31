@@ -36,9 +36,11 @@
                                     <div class="col-md-8">
                                         <div class="input-group">
                                             <button type="submit" @click="getResumen()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                            <!-- <a class="btn btn-scarlet" :href="'/iniobra/excelAvisos?b_fecha=' + b_fecha" >
+                                            <a class="btn btn-scarlet" :href="'/estimaciones/getResumenPago?fecha_pago='+b_fecha+'&contratista='+b_contratista+'&print=1'"
+                                                target="_blank"
+                                            >
                                                 <i class="fa fa-file-pdf-o"></i>&nbsp;
-                                            </a> -->
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -54,6 +56,7 @@
                                     :usuario="usuario"
                                     :rolId="rolId"
                                     :arrayResumen="arrayResumen"
+                                    :iva="iva"
                                 ></TableResumen>
 
                             </div>
@@ -100,6 +103,7 @@
                 b_contratista: '',
 
                 loading:false,
+                iva: 0,
             }
         },
         components:{
@@ -112,11 +116,11 @@
             getTotal: function(){
                 let total = 0
                 this.arrayResumen.forEach(e => {
-                    total += e.total
+                    total += (e.total + e.monto_iva)
                 });
 
                 return total
-            }
+            },
         },
 
         methods : {
@@ -129,6 +133,7 @@
                     var respuesta = response.data;
                     me.arrayResumen = respuesta.resumen
                     me.contratista = respuesta.contratista
+                    me.iva = respuesta.iva
                     me.loading = false;
                 })
                 .catch(function (error) {

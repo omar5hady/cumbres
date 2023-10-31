@@ -530,6 +530,8 @@
                             descripcion: me.descripcion,
                             importe: me.importe,
                             modelo:me.modelo,
+                            observacion: '',
+                            fin_obra: '',
                             costo_directo: parseFloat(me.costo_directo),
                             costo_indirecto: parseFloat(me.costo_indirecto),
                             obra_extra:0,

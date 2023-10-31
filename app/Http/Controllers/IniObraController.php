@@ -573,10 +573,10 @@ class IniObraController extends Controller
         $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
         $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
         $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
-        $cabecera[0]->total_importe2 = number_format((float)$cabecera[0]->total_original,2,'.',',');
+        $cabecera[0]->total_importe2 = number_format((float)$cabecera[0]->total_importe,2,'.',',');
         //Alamacenamiento de cantidad en letra
         $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
-        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_original,'Pesos',true,'Centavos');
+        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
             //Creación de PDF
             if($cabecera[0]->tipo == 'Urbanización' )
                 $pdf = \PDF::loadview('pdf.obra.contratoUrbanizacion',['cabecera' => $cabecera]);

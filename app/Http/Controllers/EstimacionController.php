@@ -1001,6 +1001,8 @@ class EstimacionController extends Controller
         else
             $b_contratista = $request->contratista;
 
+        $iva = 0;
+
         $fecha_inicio = new Carbon($request->fecha_pago);
         $contratista = Contratista::select('nombre')->where('id','=',$b_contratista)->first();
         // return $fecha_inicio = $fecha_inicio->subDays(6);
@@ -1017,7 +1019,7 @@ class EstimacionController extends Controller
                 $e->data = Hist_estimacion::join('estimaciones as e','e.id','=','hist_estimaciones.estimacion_id')
                     ->join('ini_obras as a','a.id','=','e.aviso_id')
                     ->join('fraccionamientos as f','f.id','=','a.fraccionamiento_id')
-                    ->select('a.clave', 'a.id','hist_estimaciones.total_pagado','hist_estimaciones.fecha_pago')
+                    ->select('a.clave', 'a.id', 'a.iva','hist_estimaciones.total_pagado','hist_estimaciones.fecha_pago')
                     ->where('hist_estimaciones.fecha_pago','=',$request->fecha_pago)
                     ->where('f.id','=',$e->id)
                     ->where('hist_estimaciones.ini','!=',NULL)
@@ -1053,13 +1055,44 @@ class EstimacionController extends Controller
                         $contrato->extra = 0;
 
                     $e->total += $contrato->extra + $contrato->anticipo + $contrato->fg + $contrato->total_pagado;
+                    $e->iva = $contrato->iva;
+
+                }
+
+                $e->monto_iva = 0;
+
+                if($e->iva == 1){
+                    $e->monto_iva = $e->total / 1.16;
+                    $iva = 1;
                 }
             }
 
-            return [
-                'contratista' => $contratista->nombre,
-                'resumen' => $estimaciones,
-            ];
+            if($request->print == 1){
+                $total = 0;
+                foreach($estimaciones as $e){
+                    $total += $e->total;
+                    $iva = $e->iva;
+                }
+
+                $fecha = new Carbon($request->fecha_pago);
+
+                $pdf = \PDF::loadview('pdf.obra.resumenPago',[
+                    'contratista' => $contratista->nombre,
+                    'resumen' => $estimaciones,
+                    'total'=>$total,
+                    'iva' => $iva,
+                    'fecha' => $fecha->formatLocalized('%d-%B-%Y')
+                ])->setPaper('letter', 'landscape');
+
+                return $pdf->stream('resumenPago.pdf');
+            }
+            else{
+                return [
+                    'contratista' => $contratista->nombre,
+                    'resumen' => $estimaciones,
+                    'iva' => $iva
+                ];
+            }
 
 
 
