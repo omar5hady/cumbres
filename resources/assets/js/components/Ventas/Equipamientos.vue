@@ -343,7 +343,7 @@
                                             <template><!--Liquidacion-->
                                                 <td v-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 0"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 1" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
-                                                <td v-else-if="equipamientos.status == 4">
+                                                <td v-else-if="equipamientos.status  > 2">
                                                     <button title="Realizar recepcion" type="button"
                                                         @click="abrirModal('liquidacion', equipamientos)" class="btn btn-success pull-right">
                                                         <i class="fa fa-check-square-o"></i> Generar

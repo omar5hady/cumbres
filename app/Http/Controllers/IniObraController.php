@@ -83,6 +83,7 @@ class IniObraController extends Controller
         $contrato->status = $request->status;
         if($contrato->status == 1){
             $contrato->total_original = $request->total_original;
+            $contrato->f_fin2 = $request->f_fin2;
             $contrato->total_extra = $request->total_extra;
         }
         $contrato->save();

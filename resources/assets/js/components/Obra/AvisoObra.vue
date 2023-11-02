@@ -260,6 +260,9 @@
                 :titulo="tituloModal"
             >
                 <template v-slot:body>
+                    <RowModal label1="Fecha de Termino Real:" clsRow1="col-md-4">
+                        <input type="date" pattern="\d*" class="form-control" v-model="avisoObra.f_fin2">
+                    </RowModal>
                     <RowModal label1="Importe de cierre:" clsRow1="col-md-4" clsRow2="col-md-3" label2="">
                         <input type="text" pattern="\d*" class="form-control" v-model="avisoObra.total_original" v-on:keypress="$root.isNumber($event)">
                         <template v-slot:input2>
@@ -551,6 +554,7 @@
                         axios.put('/iniobra/changeStatus',{
                             'id': id,
                             'status': status,
+                            'f_fin2': me.avisoObra.f_fin2,
                             'total_original': me.avisoObra.total_original ? me.avisoObra.total_original : 0,
                             'total_extra': me.avisoObra.total_extra ? me.avisoObra.total_extra : 0,
                             }).then(function (response){
