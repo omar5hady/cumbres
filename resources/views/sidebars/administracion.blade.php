@@ -64,6 +64,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i>Asignacion de proyectos</a>
             </li>
         @endif
+        @if(Auth::user()->mis_asesores == 1)
+            <li @click="menu=303" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i>Inmobiliarias</a>
+            </li>
+        @endif
 
         @if(Auth::user()->cuenta == 1)
             <li @click="menu=8" class="nav-item">
@@ -84,4 +89,4 @@
         @endif
     </ul>
 </li>
-    
+

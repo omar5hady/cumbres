@@ -49,6 +49,7 @@ Vue.component('notarias', require('./components/Administracion/Notaria.vue'));
 Vue.component('proveedores', require('./components/Administracion/Proveedores.vue'));
 Vue.component('campanias', require('./components/Administracion/Campania.vue'));
 Vue.component('vehiculos', require('./components/Administracion/Vehiculos.vue'));
+Vue.component('inmobiliarias', require('./components/Administracion/Inmobiliarias.vue'));
 
 //Componentes Desarrollo
 Vue.component('fraccionamiento', require('./components/Desarrollo/Fraccionamiento.vue'));

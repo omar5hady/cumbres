@@ -176,6 +176,7 @@
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 5 }" v-if="b_status ===  5">
                                 <TableComponent :cabecera="[
                                     '',
+                                    'Folio',
                                     'Proveedor',
                                     'Solicitante',
                                     'Fecha solic',
@@ -190,6 +191,7 @@
                                                     :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                 ></Button>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -220,6 +222,7 @@
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === '' }" v-if="b_status ===  ''">
                                 <TableComponent :cabecera="[
                                     '',
+                                    'Folio',
                                     'Proveedor',
                                     'Solicitante',
                                     'Fecha solic',
@@ -242,6 +245,7 @@
                                                         :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -288,6 +292,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==0 }" v-if="b_vbgerente == 0">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -315,6 +320,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -353,6 +359,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==1 }" v-if="b_vbgerente == 1">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -374,6 +381,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -419,6 +427,7 @@
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status===1 }" v-if="b_status === 1">
                                 <TableComponent :cabecera="[
                                     '',
+                                    'Folio',
                                     'Proveedor',
                                     'Solicitante',
                                     'Fecha solic',
@@ -439,6 +448,7 @@
                                                     <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -501,6 +511,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==0 }" v-if="b_vbgerente == 0">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -528,6 +539,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -586,6 +598,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==1 }" v-if="b_vbgerente == 1">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -607,6 +620,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -678,6 +692,7 @@
                                         <tr>
                                             <th></th>
                                             <th></th>
+                                            <th>Folio</th>
                                             <th>Proveedor</th>
                                             <th>Solicitante</th>
                                             <th>Fecha solic</th>
@@ -711,6 +726,7 @@
                                                     <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -768,6 +784,7 @@
                                         <tr>
                                             <th></th>
                                             <th></th>
+                                            <th>Folio</th>
                                             <th>Proveedor</th>
                                             <th>Solicitante</th>
                                             <th>Fecha solic</th>
@@ -802,6 +819,7 @@
                                                     <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>

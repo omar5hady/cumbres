@@ -1315,6 +1315,10 @@ Route::group(['middleware' => ['auth']],function(){
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
 
+        //////////////////////// Rutas Asesores Externos
+        Route::resource('/inmobiliarias', Inmobiliaria\InmobiliariaController::class);
+        Route::resource('/asesores-externos', Inmobiliaria\AsesoresExternosController::class);
+
         /////////////////////// Rutas Ecotenologias
         Route::resource('/ecotecnologia', EcotecnologiaController::class);
         Route::resource('/ecotecnologias/contrato', Contrato\EcotecnologiasController::class);

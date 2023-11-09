@@ -340,7 +340,7 @@
                 lote:'',
                 sublote:'',
                 manzana:'',
-                construccion:'',
+                construccion: 0,
                 costo_directo:0,
                 costo_indirecto:0,
                 descripcion: '',
@@ -493,7 +493,9 @@
                 });
             },
             encuentra(id,emp_constructora){
+                console.log(id)
                 let sw=0;
+                if(id != 0)
                 for(var i=0;i<this.data.lotesContrato.length;i++)
                 {
                     if(this.data.lotesContrato[i].lote_id == id )
