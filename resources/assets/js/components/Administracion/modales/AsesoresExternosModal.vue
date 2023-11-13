@@ -75,6 +75,14 @@
             </div>
         </template>
         <template v-slot:buttons-footer>
+            <Button v-if="tipoAccion == 2"
+                :icon="'icon-trash'"
+                btnClass="btn-danger"
+                @click="deleteAsesor()"
+                title="Eliminar Asesor"
+                >
+                </Button
+            >
             <Button
                 :icon="'icon-check'"
                 @click="registrarAsesor()"
@@ -138,6 +146,34 @@ export default {
     methods: {
         onArchivo(e){
             this.archivo = e.target.files[0];
+        },
+        deleteAsesor(){
+            swal({
+            title: '¿Desea eliminar?',
+            text: "Esta acción no se puede revertir!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, eliminar!'
+            }).then((result) => {
+            if (result.value) {
+                let me = this;
+
+            axios.delete(`asesores-externos/${me.data.id}`,
+                    {params: {'id': me.data.id}}).then(function (response){
+                    swal(
+                    'Borrado!',
+                    'Asesor eliminado correctamente.',
+                    'success'
+                    )
+                    me.$emit('close')//se enlistan nuevamente los registros
+                }).catch(function (error){
+                    console.log(error);
+                });
+            }
+            })
         },
 
         /**Metodo para registrar  */

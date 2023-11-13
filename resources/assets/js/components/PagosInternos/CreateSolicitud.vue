@@ -844,7 +844,7 @@
                                                 </template>
                                             </td>
                                             <td class="td2">
-                                                <Button v-if="solic.fecha_pago && !solic.comprobante_pago"
+                                                <Button v-if="!solic.comprobante_pago"
                                                     :btnClass="'btn-info'" :size="'btn-sm'" :title="'Cargar comprobante de Pago'"
                                                     @click="abrirModal('comprobante', solic)" :icon="'fa fa-upload'"
                                                 ></Button>

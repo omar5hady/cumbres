@@ -10,11 +10,19 @@ use DB;
 class AsesoresExternosController extends Controller
 {
     public function index(Request $request){
-        $asesor = AsesorExterno::where('mobiliaria_id','=',$request->inmobiliaria_id)
+        $asesor = AsesorExterno::join('inmobiliarias as i', 'i.id', '=', 'asesor_externos.mobiliaria_id' )
+        ->select('asesor_externos.*', 'i.nombre as inmobiliaria', 'i.logo')
+        ->where('asesor_externos.mobiliaria_id','=',$request->inmobiliaria_id)
         ->where(
-            DB::raw("CONCAT(nombre,' ',apellido)"), 'like', '%'. $request->nombre . '%'
+            DB::raw("CONCAT(asesor_externos.nombre,' ',asesor_externos.apellido)"), 'like', '%'. $request->nombre . '%'
         )
         ->paginate(3);
+
+        foreach($asesor as $a){
+            $inmobiliaria = explode(' ', $a->inmobiliaria);
+            $a->inmobiliaria_1 = $inmobiliaria[0];
+            $a->inmobiliaria_2 = implode(' ', array_slice($inmobiliaria, 1));
+        }
 
         return $asesor;
     }

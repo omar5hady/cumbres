@@ -610,7 +610,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .modal-content {
   width: 100% !important;
   position: absolute !important;
