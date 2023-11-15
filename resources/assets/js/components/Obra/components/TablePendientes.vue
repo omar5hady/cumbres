@@ -16,7 +16,7 @@
                         >
                             <i class="icon-check"></i> Por cerrar
                         </button>
-                        <button type="button" v-if="usuario == 'uriel.al'"
+                        <button type="button" v-if="usuario == 'uriel.al' || usuario == 'lucy.hdz'"
                             class="btn btn-warning btn-sm" @click="$emit('actualizar',avisoObra.id)">
                             <i class="icon-pencil"></i>
                         </button>

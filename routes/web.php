@@ -1317,6 +1317,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////////// Rutas Asesores Externos
         Route::resource('/inmobiliarias', Inmobiliaria\InmobiliariaController::class);
+        Route::get('/selectInmobiliarias','Inmobiliaria\InmobiliariaController@selectInmobiliarias');
         Route::resource('/asesores-externos', Inmobiliaria\AsesoresExternosController::class);
 
         /////////////////////// Rutas Ecotenologias

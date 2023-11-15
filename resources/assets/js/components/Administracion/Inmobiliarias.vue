@@ -23,7 +23,7 @@
                     </Button>
                 </div>
                 <div class="card-body">
-                    <div class="form-group row">
+                    <div class="form-group row" v-if="rolId != 2">
                         <div class="col-md-6">
                             <div class="input-group">
                                 <input type="text" v-model="buscar" @keyup.enter="getData(1)" class="form-control" placeholder="Texto a buscar">
@@ -185,6 +185,12 @@
     import AsesoresExternosModal from './modales/AsesoresExternosModal.vue'
 
     export default {
+        props:{
+            rolId:{
+                type:String,
+                required:true
+            }
+        },
         components:{
             LoadingComponent,
             TableComponent,

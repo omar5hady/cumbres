@@ -6,12 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Inmobiliaria;
 use App\AsesorExterno;
+use App\Vendedor;
+use Auth;
 
 class InmobiliariaController extends Controller
 {
     public function index(Request $request){
-        $inmobiliarias = Inmobiliaria::where('nombre','like','%'.$request->buscar.'%')
-        ->orderBy('nombre','asc')->paginate(10);
+        $inmobiliarias = Inmobiliaria::select('*');
+
+        if(Auth::user()->rol_id == 2){
+            $vendedor = Vendedor::findOrFail(Auth::user()->id);
+            $inmobiliarias = $inmobiliarias->where('nombre','=',$vendedor->inmobiliaria);
+        }else{
+            $inmobiliarias = $inmobiliarias->where('nombre','like','%'.$request->buscar.'%');
+        }
+        $inmobiliarias = $inmobiliarias->orderBy('nombre','asc')->paginate(10);
+
 
         foreach($inmobiliarias as $i){
             $i->asesores = AsesorExterno::where('mobiliaria_id','=',$i->id)->count();
@@ -53,5 +63,9 @@ class InmobiliariaController extends Controller
             File::delete($pathAnterior);
         }
         $inmobiliaria->delete();
+    }
+
+    public function selectInmobiliarias(Request $request){
+        return Inmobiliaria::orderBy('nombre','asc')->get();
     }
 }

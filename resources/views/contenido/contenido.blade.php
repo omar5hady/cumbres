@@ -595,7 +595,7 @@
                 usuario="{{ Auth::user()->usuario }}"></resumen-pago>
         </template>
         <template v-if="menu==303">
-            <inmobiliarias></inmobiliarias>
+            <inmobiliarias rol-id = "{{ Auth::user()->rol_id }}"></inmobiliarias>
         </template>
     @endif
 @endsection
