@@ -47,7 +47,9 @@
             </RowModal>
             <hr>
             <center>Vigencia:</center>
-            <RowModal clsRow1="col-md-4" label1="Inicio:" clsRow2="col-md-4" label2="Termino">
+            <RowModal clsRow1="col-md-4" label1="Inicio:" clsRow2="col-md-4" label2="Termino"
+                v-if="rolId != 2"
+            >
                 <input
                     type="date"
                     id="f_ini"
@@ -102,6 +104,11 @@ import RowModal from "../../Componentes/ComponentesModal/RowModalComponent.vue";
 export default {
     props:{
         titulo:{
+            type: String,
+            default: '',
+            required: true
+        },
+        rolId:{
             type: String,
             default: '',
             required: true
@@ -232,11 +239,11 @@ export default {
                     "El apellido del asesor no puede ir vacio."
                 );
 
-            if (this.data.f_ini === '' || this.data.f_fin === '')
-                //Si la variable departamento esta vacia
-                this.errorMostrarMsj.push(
-                    "Indicar fecha de inicio y termino de la vigencia"
-                );
+            // if (this.data.f_ini === '' || this.data.f_fin === '')
+            //     //Si la variable departamento esta vacia
+            //     this.errorMostrarMsj.push(
+            //         "Indicar fecha de inicio y termino de la vigencia"
+            //     );
 
             if (this.errorMostrarMsj.length)
                 //Si el mensaje tiene almacenado algo en el array

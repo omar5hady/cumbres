@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\AsesorExterno;
 use DB;
+use Carbon\Carbon;
+use Auth;
 
 class AsesoresExternosController extends Controller
 {
@@ -28,7 +30,8 @@ class AsesoresExternosController extends Controller
     }
 
     public function store(Request $request){
-        if($request->id == 0){
+        $id = $request->id;
+        if($id == 0){
             $asesor = new AsesorExterno();
             if($request->photo != ''){
                 $fileName = uniqid().'.'.$request->foto->getClientOriginalExtension();
@@ -53,8 +56,14 @@ class AsesoresExternosController extends Controller
         $asesor->apellido=$request->apellido;
         $asesor->direccion=$request->direccion;
         $asesor->celular=$request->celular;
-        $asesor->f_ini = $request->f_ini;
-        $asesor->f_fin = $request->f_fin;
+        if(Auth::user()->rol_id == 2 && $id == 0){
+            $asesor->f_ini = Carbon::now();;
+            $asesor->f_fin = Carbon::now()->addMonth(6);
+        }
+        else{
+            $asesor->f_ini = $request->f_ini;
+            $asesor->f_fin = $request->f_fin;
+        }
 
         $asesor->save();
     }

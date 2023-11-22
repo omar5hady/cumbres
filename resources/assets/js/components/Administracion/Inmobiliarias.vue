@@ -76,84 +76,88 @@
                             :last="arrayAsesores.last_page ? arrayAsesores.last_page : 1"
                             @changePage="getData"
                         ></Nav>
-                        <div class="col-xl-4 col-lg-5 col-md-6"
-                            v-for="asesor in arrayAsesores.data" :key="asesor.id"
-                        >
-                            <div class="card2 card-user2" style="background-color: #1C2B4C;"
-                                title="Click para Editar"
-                                @click="abrirModal('actualizar-asesor',asesor)"
-                            >
-                                <div class="card-image2">
-                                    <center>
-                                        <h3 style="margin: 0; padding: 0; padding-top: 40px; font-size: 25pt;">
-                                            ASESOR EXTERNO <font style="color: yellow;">AUTORIZADO</font>
-                                        </h3>
-                                        <h5 style="margin: 0; padding: 0;padding-bottom: 40px; font-size: 18pt;">POR GRUPO CONSTRUCTOR <font style="color:#EC008C">CUMBRES</font></h5>
-                                    </center>
-                                </div>
-                                <!---->
-                                <div class="card-body">
-                                    <div class="author">
-                                        <img v-if="asesor.photo"
-                                            :src="`/img/externos/${asesor.photo}`"
-                                            style="width: 200px; height: 200px;"
-                                            class="avatar border-white"
-                                        >
-                                        <img v-else
-                                            :src="'/img/avatars/default-image.gif'"
-                                            onerror="this.src='/img/avatars/default-image.gif'"
-                                            class="avatar border-white"
-                                        >
 
+                        <div class="form-group row">
+                            <div class="col-xl-4 col-lg-5 col-md-6"
+                                v-for="asesor in arrayAsesores.data" :key="asesor.id"
+                            >
+                                <div class="card2 card-user2" style="background-color: #1C2B4C;"
+                                    title="Click para Editar"
+                                    @click="abrirModal('actualizar-asesor',asesor)"
+                                >
+                                    <div class="card-image2">
+                                        <center>
+                                            <h3 style="margin: 0; padding: 0; padding-top: 40px; font-size: 25pt;">
+                                                ASESOR EXTERNO <font style="color: yellow;">AUTORIZADO</font>
+                                            </h3>
+                                            <h5 style="margin: 0; padding: 0;padding-bottom: 40px; font-size: 18pt;">POR GRUPO CONSTRUCTOR <font style="color:#EC008C">CUMBRES</font></h5>
+                                        </center>
                                     </div>
-                                </div>
-                                <div class="card-data">
-                                    <div class="author">
-                                        <div class="name">
-                                            <h4 style="margin:0; font-size: 23pt;">
-                                                <strong>
-                                                    {{ asesor.nombre.toUpperCase() }}
-                                                </strong>
-                                            </h4>
-                                            <h4 style="font-weight: normal; font-size: 20pt; margin:0;">
-                                                {{ asesor.apellido.toUpperCase() }}
-                                            </h4>
-                                            <h6 style="font-weight: normal; margin:0; color: #EC008C;">ASESOR DE VENTAS</h6>
+                                    <!---->
+                                    <div class="card-body">
+                                        <div class="author">
+                                            <img v-if="asesor.photo"
+                                                :src="`/img/externos/${asesor.photo}`"
+                                                style="width: 200px; height: 200px;"
+                                                class="avatar border-white"
+                                            >
+                                            <img v-else
+                                                :src="'/img/avatars/default-image.gif'"
+                                                style="width: 200px; height: 200px;"
+                                                onerror="this.src='/img/avatars/default-image.gif'"
+                                                class="avatar border-white"
+                                            >
+
                                         </div>
-                                        <div class="logo-inmobiliaria">
-                                            <template v-if="asesor.logo">
-                                                <img
-                                                    :src="`/img/logos/${asesor.logo}`"
-                                                    style="width: 200px; height: 200px;"
-                                                    class="avatar border-white"
-                                                >
-                                            </template>
-                                            <template v-else>
-                                                <h4 style="margin:0; font-size: 30pt;">
+                                    </div>
+                                    <div class="card-data">
+                                        <div class="author">
+                                            <div class="name">
+                                                <h4 style="margin:0; font-size: 23pt;">
                                                     <strong>
-                                                        {{ asesor.inmobiliaria_1.toUpperCase() }}
+                                                        {{ asesor.nombre.toUpperCase() }}
                                                     </strong>
                                                 </h4>
-                                                <h4 style="font-weight: normal; font-size: 17pt; margin:0;">
-                                                    {{ asesor.inmobiliaria_2.toUpperCase() }}
+                                                <h4 style="font-weight: normal; font-size: 20pt; margin:0;">
+                                                    {{ asesor.apellido.toUpperCase() }}
                                                 </h4>
-                                            </template>
+                                                <h6 style="font-weight: normal; margin:0; color: #EC008C;">ASESOR DE VENTAS</h6>
+                                            </div>
+                                            <div class="logo-inmobiliaria">
+                                                <template v-if="asesor.logo">
+                                                    <img
+                                                        :src="`/img/logos/${asesor.logo}`"
+                                                        style="width: 200px; height: 200px;"
+                                                        class="avatar border-white"
+                                                    >
+                                                </template>
+                                                <template v-else>
+                                                    <h4 style="margin:0; font-size: 30pt;">
+                                                        <strong>
+                                                            {{ asesor.inmobiliaria_1.toUpperCase() }}
+                                                        </strong>
+                                                    </h4>
+                                                    <h4 style="font-weight: normal; font-size: 17pt; margin:0;">
+                                                        {{ asesor.inmobiliaria_2.toUpperCase() }}
+                                                    </h4>
+                                                </template>
+                                            </div>
+                                            <div class="footer-info">
+                                                <h6 style="font-size:15pt; margin:0; color: #EC008C;">
+                                                    ATENCIÓN <font style="color:#1C2B4C;">DE</font>
+                                                    QUEJAS: <font style="color:#1C2B4C;">444</font> 833 <font style="color:#1C2B4C;">46 83</font>
+                                                </h6>
+                                                <h6 style="font-size:15pt; margin:0; color: #EC008C;">
+                                                    VIGENCIA: <font style="color:#1C2B4C;">
+                                                        {{ this.moment(asesor.f_fin).locale('es').format('MMM YYYY') }}
+                                                    </font>
+                                                </h6>
+                                            </div>
                                         </div>
-                                        <div class="footer-info">
-                                            <h6 style="font-size:15pt; margin:0; color: #EC008C;">
-                                                ATENCIÓN <font style="color:#1C2B4C;">DE</font>
-                                                QUEJAS: <font style="color:#1C2B4C;">444</font> 833 <font style="color:#1C2B4C;">46 83</font>
-                                            </h6>
-                                            <h6 style="font-size:15pt; margin:0; color: #EC008C;">
-                                                VIGENCIA: <font style="color:#1C2B4C;">
-                                                    {{ this.moment(asesor.f_fin).locale('es').format('MMM YYYY') }}
-                                                </font>
-                                            </h6>
-                                        </div>
-                                    </div>
 
+                                    </div>
+                                    <!---->
                                 </div>
-                                <!---->
                             </div>
                         </div>
                     </template>
@@ -171,6 +175,7 @@
             :titulo="tituloModal"
             :tipoAccion="tipoAccion"
             :data="dataAsesor"
+            :rolId="rolId"
             @close="cerrarModal()"
         ></AsesoresExternosModal>
     </main>
