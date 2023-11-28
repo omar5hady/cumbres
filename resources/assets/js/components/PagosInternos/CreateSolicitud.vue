@@ -6,7 +6,8 @@
                 <strong><a style="color:#FFFFFF;" href="/">Home</a></strong>
             </li>
         </ol>
-        <div class="container-fluid">
+        <LoadingComponent v-if="loading"></LoadingComponent>
+        <div class="container-fluid" v-else>
             <!-- Ejemplo de tabla Listado -->
             <div class="card scroll-box">
                 <div class="card-header">
@@ -1921,13 +1922,15 @@ import Button from "../Componentes/ButtonComponent.vue";
 import Nav from "../Componentes/NavComponent.vue";
 import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue";
 import vSelect from 'vue-select';
+import LoadingComponent from '../Componentes/LoadingComponent.vue'
 
 export default {
     components: {
         ModalComponent,
         TableComponent,
         Button, RowModal,Nav,
-        vSelect
+        vSelect,
+        LoadingComponent
     },
     props: {
         encargado:{type: String},
@@ -2000,6 +2003,7 @@ export default {
             loading : false,
             id : '',
             comentario : '',
+            loading: true,
 
             modal: 0,
             tituloModal: "",
@@ -2882,6 +2886,7 @@ export default {
         /**Metodo para mostrar los registros */
         indexSolicitudes(page) {
             let me = this;
+            this.loading = true;
             me.arraySolic = [];
             var url =
                 "/solic-pagos?page=" + page
@@ -2905,9 +2910,11 @@ export default {
                     me.arraySolic = respuesta.solicitudes;
                     me.admin = respuesta.admin;
                     me.total = respuesta.total;
+                    me.loading = false;
                 })
                 .catch(function(error) {
                     console.log(error);
+                    me.loading = false;
                 });
         },
         getProveedores(search,loading){
