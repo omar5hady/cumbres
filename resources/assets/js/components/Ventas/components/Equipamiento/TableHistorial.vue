@@ -33,7 +33,7 @@
                 <td class="td2" v-text="equipamientos.proveedor"></td>
                 <td class="td2" v-text="equipamientos.equipamiento"></td>
                 <td class="td2" style="width:40%">
-                    <input type="text" pattern="\d*" @keyup.enter="actCosto(equipamientos.id,$event.target.value)" :id="equipamientos.id" :value="equipamientos.costo|currency" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
+                    <input type="text" pattern="\d*" @keyup.enter="actCosto(equipamientos.id,equipamientos.fecha_anticipo,$event.target.value)" :id="equipamientos.id" :value="equipamientos.costo|currency" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
                 </td>
                 <template>
                     <td v-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==0"
@@ -146,6 +146,33 @@ export default {
     components:{
         TableComponent,
         ButtonComponent
+    },
+    methods: {
+        actCosto(id,fecha_anticipo,costo){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/equipamiento/actCosto',{
+                    'fecha_anticipo':fecha_anticipo,
+                    'costo' : costo,
+                    'id':id,
+
+                }).then(function (response){
+                    me.$emit('closeModal')
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Datos guardados correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
     },
 
 }

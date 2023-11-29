@@ -146,6 +146,7 @@
                             :arrayData="arrayHistorialEquipamientos"
                             @abrirModal="abrirModal"
                             @cargaArchivo="cargaArchivo"
+                            @closeModal="cerrarModal"
                         ></TableHistorial>
                         <NavComponent
                             :current="pagination2.current_page ? pagination2.current_page : 1"
@@ -175,52 +176,19 @@
             <!--Fin del modal-->
 
             <!--Inicio del modal para diversos llenados de tabla en historial -->
-                <ModalComponent
+                <ModalAcciones
                     v-if="modal2"
                     :titulo="tituloModal"
+                    :tipoAccion="tipoAccion"
+                    :fecha_anticipo="fecha_anticipo"
+                    :anticipo="anticipo"
+                    :fecha_colocacion="fecha_colocacion"
+                    :fecha_liquidacion="fecha_liquidacion"
+                    :liquidacion="liquidacion"
+                    :solicitud_id="solicitud_id"
                     @closeModal="cerrarModal"
                 >
-                    <template v-slot:body>
-                        <template v-if="tipoAccion == 1">
-                            <RowModal label1="Fecha de anticipo" clsRow1="col-md-4">
-                                <input type="date" v-model="fecha_anticipo" class="form-control">
-                            </RowModal>
-
-                            <RowModal label1="$ Anticipo" clsRow1="col-md-4" clsRow2="col-md-4">
-                                <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)" v-model="anticipo" class="form-control">
-                                <template v-slot:input2>
-                                    <h6 v-text="'$'+$root.formatNumber(anticipo)"></h6>
-                                </template>
-                            </RowModal>
-                        </template>
-
-                        <template v-if="tipoAccion == 2">
-                            <RowModal label1="Fecha de colocacion" clsRow1="col-md-4">
-                                <input type="date" v-model="fecha_colocacion" class="form-control">
-                            </RowModal>
-                            <RowModal label1="Observación" clsRow1="col-md-8">
-                                <textarea v-model="observacion" class="form-control" cols="50" rows="4"></textarea>
-                            </RowModal>
-                        </template>
-
-                        <template v-if="tipoAccion == 3">
-                            <RowModal clsRow1="col-md-4" label1="Fecha de liquidación">
-                                <input type="date" v-model="fecha_liquidacion" class="form-control">
-                            </RowModal>
-                            <RowModal clsRow1="col-md-4" label1="$ Liquidación" clsRow2="col-md-4">
-                                <input type="text" pattern="\d*" maxlength="10" v-on:keypress="$root.isNumber($event)" v-model="liquidacion" class="form-control">
-                                <template v-slot:input2>
-                                    <h6 v-text="'$'+$root.formatNumber(liquidacion)"></h6>
-                                </template>
-                            </RowModal>
-                        </template>
-                    </template>
-                    <template v-slot:buttons-footer>
-                        <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="actAnticipo()">Guardar</button>
-                        <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
-                        <button type="button" v-if="tipoAccion == 3" class="btn btn-success" @click="actLiquidacion()">Guardar</button>
-                    </template>
-                </ModalComponent>
+                </ModalAcciones>
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
@@ -409,6 +377,7 @@ import TableHistorial from './components/Equipamiento/TableHistorial.vue'
 import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
 import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
+import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
 
     export default {
         components:{
@@ -420,7 +389,8 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
             ModalComponent,
             TableComponent,
 
-            ModalSolicEquip
+            ModalSolicEquip,
+            ModalAcciones
         },
         data(){
             return{
@@ -529,7 +499,6 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
             /**Metodo para mostrar los registros */
             listarContratos(page){
                 let me = this;
-                me.historial = 0;
                 var url = '/equipamiento/indexContrato?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa +
                     '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote +  '&criterio=' + me.criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
@@ -659,59 +628,9 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
                 })
             },
 
-            actCosto(id,costo){
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/equipamiento/actCosto',{
-                    'fecha_anticipo':this.fecha_anticipo,
-                    'costo' : costo,
-                    'id':id,
 
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarHistorial(me.pagination2.current_page);
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Datos guardados correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
 
-            actAnticipo(){
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/equipamiento/actAnticipo',{
-                    'fecha_anticipo':this.fecha_anticipo,
-                    'anticipo' : this.anticipo,
-                    'id':this.solicitud_id,
 
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarHistorial(me.pagination2.current_page);
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Datos guardados correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
 
             reubicar(){
                 let me = this;
@@ -740,32 +659,7 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
                 });
             },
 
-            actLiquidacion(){
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/equipamiento/actLiquidacion',{
-                    'fecha_liquidacion':this.fecha_liquidacion,
-                    'liquidacion' : this.liquidacion,
-                    'id':this.solicitud_id,
 
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarHistorial(me.pagination2.current_page);
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Datos guardados correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
 
             storeObservacion(){
                 let me = this;
@@ -792,32 +686,7 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
                 });
             },
 
-            actColocacion(){
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/equipamiento/actColocacion',{
-                    'fecha_colocacion':this.fecha_colocacion,
-                    'comentario' : this.observacion,
-                    'id':this.solicitud_id,
 
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarHistorial(me.pagination2.current_page);
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Datos guardados correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
 
             listarObservacion(page, buscar){
                 let me = this;
@@ -845,7 +714,7 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
                 this.id_reasig = '';
                 this.lote_reasignar = '';
                 this.listarContratos(this.pagination.current_page)
-                this.listarContratos2(this.pagination2.current_page)
+                this.listarHistorial(this.pagination2.current_page)
             },
 
             cargaArchivo(opciones){
@@ -879,12 +748,11 @@ import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
                         }
 
                         case 'colocacion':{
-                            this.modal2 =2;
+                            this.modal2 =1;
                             this.tituloModal='Colocación';
                             this.tipoAccion=2;
                             this.fecha_colocacion = data['fecha_colocacion'];
                             this.solicitud_id = data['id'];
-                            this.observacion = '';
                             break;
                         }
 
