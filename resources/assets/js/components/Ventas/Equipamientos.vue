@@ -108,7 +108,7 @@
 
                                     <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @change="selectEtapa(buscar2)">
                                         <option value="">Seleccione</option>
-                                        <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
+                                        <option v-for="fraccionamiento in arrayFraccionamientos" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
                                     </select>
 
                                     <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
@@ -192,98 +192,25 @@
             <!--Fin del modal-->
 
             <!--Inicio del modal observaciones-->
-                <ModalComponent
+                <ModalObservaciones
                     v-if="modal3"
+                    :solicitud_id="solicitud_id"
                     :titulo="tituloModal"
                     @closeModal="cerrarModal"
                 >
-                    <template v-slot:body>
-                        <RowModal label1="Nueva Observación" clsRow1="col-md-6" clsRow2="col-md-3">
-                            <input type="text" v-model="observacion" class="form-control">
-                            <template v-slot:input2>
-                                <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
-                            </template>
-                        </RowModal>
-
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Usuario</th>
-                                    <th>Observacion</th>
-                                    <th>Fecha</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="observacion in arrayObservacion" :key="observacion.id">
-                                    <td v-text="observacion.usuario" ></td>
-                                    <td v-text="observacion.comentario" ></td>
-                                    <td v-text="observacion.created_at"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </template>
-                </ModalComponent>
+                </ModalObservaciones>
             <!--Fin del modal-->
-
-            <!--Inicio del modal para reubicar -->
-                <ModalComponent
+                <ModalReubicar
                     v-if="modal4"
                     :titulo="tituloModal"
+                    :tipoAccion="tipoAccion"
+                    :solicitud_id="solicitud_id"
+                    :arrayFraccionamientos="arrayFraccionamientos"
                     @closeModal="cerrarModal"
                 >
-                    <template v-slot:body>
-                        <RowModal label1="Proyecto" clsRow1="col-md-4" clsRow2="col-md-4">
-                            <select class="form-control" v-model="contProy" @click="selectEtapa2(contProy)">
-                                <option value="">Proyecto</option>
-                                <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
-                            </select>
-                            <template v-slot:input2>
-                                <select class="form-control" v-model="contEtapa">
-                                    <option value="">Etapa</option>
-                                    <option v-for="etapa in arrayEtapas3" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
-                                </select>
-                            </template>
-                        </RowModal>
-                        <RowModal label1="" clsRow1="col-md-4" clsRow2="col-md-2">
-                            <input type="text" v-model="contManzana" class="form-control" placeholder="Manzana">
-                            <template v-slot:input2>
-                                <button type="submit" @click="listarContRea(contProy,contEtapa,contManzana)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                            </template>
-                        </RowModal>
-                        <table class="table2 table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Seleccionar</th>
-                                    <th># Ref</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Manzana</th>
-                                    <th>Lote</th>
-                                    <th>Paquete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="contReasig in arrayReasignar" :key="contReasig.id">
-                                    <td class="td2">
-                                        <button v-if="contReasig.id != id_reasig" title="Reasignar" type="button" @click="id_reasig = contReasig.id, lote_reasignar = contReasig.lote_id" class="btn btn-primary btn-sm">
-                                            <i class="fa fa-exchange"></i>
-                                        </button>
-                                            <i v-else class="btn btn-success btn-sm fa fa-check"></i>
-                                    </td>
-                                    <td class="td2" v-text="contReasig.id" ></td>
-                                    <td class="td2" v-text="contReasig.proyecto" ></td>
-                                    <td class="td2" v-text="contReasig.etapa"></td>
-                                    <td class="td2" v-text="contReasig.manzana"></td>
-                                    <td class="td2" v-text="contReasig.num_lote"></td>
-                                    <td class="td2" v-text="'Paquete: ' + contReasig.paquete + ' Promo: '+ contReasig.promocion"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </template>
-                    <template v-slot:buttons-footer>
-                        <button type="button" class="btn btn-success" @click="reubicar()">Reasignar</button>
-                    </template>
-                </ModalComponent>
+                </ModalReubicar>
+            <!--Inicio del modal para reubicar -->
+
             <!--Fin del modal-->
 
             <!-- carga de archivos -->
@@ -378,6 +305,8 @@ import ModalComponent from '../Componentes/ModalComponent.vue'
 import TableComponent from '../Componentes/TableComponent.vue'
 import ModalSolicEquip from './components/Equipamiento/ModalSolicEquip.vue'
 import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
+import ModalObservaciones from './components/Equipamiento/ModalObservaciones.vue'
+import ModalReubicar from './components/Equipamiento/ModalReubicar.vue'
 
     export default {
         components:{
@@ -390,19 +319,18 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
             TableComponent,
 
             ModalSolicEquip,
-            ModalAcciones
+            ModalAcciones,
+            ModalObservaciones,
+            ModalReubicar
         },
         data(){
             return{
-                observacion:'',
                 historial:0,
 
                 arrayContratos : [],
-                arrayObservacion : [],
 
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
-                arrayFraccionamientos2:[],
                 arrayEtapas2:[],
                 arrayProveedores:[],
 
@@ -435,15 +363,6 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
                 b_manzana: '',
                 b_lote: '',
 
-                contProy:'',
-                contEtapa:'',
-                contManzana:'',
-                id_reasig:'',
-                lote_reasignar:'',
-                arrayReasignar:[],
-
-                arrayEtapas3:[],
-
                 // Criterios para historial de equipamientos
                 pagination2 : {
                     'total' : 0,
@@ -465,9 +384,7 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
                 fecha_liquidacion:'',
                 liquidacion:0,
                 fecha_colocacion:'',
-                observacion:'',
                 status:'',
-
 
                 arrayHistorialEquipamientos : [],
                 b_empresa:'',
@@ -538,29 +455,15 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
                 });
             },
 
-            listarContRea(proyecto, etapa, manzana){
-                let me = this;
-                var url = '/equipamiento/contRea?proyecto=' + proyecto + '&etapa=' + etapa + '&manzana=' + manzana;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayReasignar = respuesta.contratos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
 
                 me.arrayFraccionamientos=[];
-                me.arrayFraccionamientos2=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
-                    me.arrayFraccionamientos2 = respuesta.fraccionamientos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -584,19 +487,6 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
                 });
             },
 
-            selectEtapa2(buscar){
-                let me = this;
-
-                me.arrayEtapas3=[];
-                var url = '/select_etapa_proyecto?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayEtapas3 = respuesta.etapas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             terminarSolicitud(id){
                 this.contrato_id=id;
                 //console.log(this.departamento_id);
@@ -628,79 +518,6 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
                 })
             },
 
-
-
-
-
-            reubicar(){
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/equipamiento/reubicar',{
-                    'id':this.solicitud_id,
-                    'contrato_id' : this.id_reasig,
-                    'lote_id':this.lote_reasignar,
-
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarHistorial(me.pagination2.current_page);
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Equipamiento reasignado'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-
-
-
-            storeObservacion(){
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.post('/equipamiento/registrarObservacion',{
-                    'comentario' : this.observacion,
-                    'solic_id':this.solicitud_id,
-
-                }).then(function (response){
-                    me.listarObservacion(1,me.solicitud_id);
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Observación guardada correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-
-
-
-            listarObservacion(page, buscar){
-                let me = this;
-                var url = '/equipamiento/indexObservacion?page=' + page + '&buscar=' + buscar ;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayObservacion = respuesta.observacion.data;
-                    console.log(url);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -710,9 +527,6 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
                 this.fecha_anticipo = '';
                 this.anticipo = '';
                 this.equipamiento = '';
-                this.arrayReasignar = [];
-                this.id_reasig = '';
-                this.lote_reasignar = '';
                 this.listarContratos(this.pagination.current_page)
                 this.listarHistorial(this.pagination2.current_page)
             },
@@ -724,67 +538,58 @@ import ModalAcciones from './components/Equipamiento/ModalAcciones.vue'
             },
 
             abrirModal(opciones){
-                    const {accion, data} = {...opciones}
-                    switch(accion){
-                        case 'solicitar':
-                        {
-                            this.modal =1;
-                            this.tituloModal='Solicitar equipamiento';
-                            this.tipoAccion=1;
-                            this.paquete = data['paquete'];
-                            this.promocion = data['promocion'];
-                            this.contrato_id = data['folio'];
-                            this.lote_id = data['lote_id'];
-                            break;
-                        }
-                        case 'anticipo':{
-                            this.modal2 =1;
-                            this.tituloModal='Anticipo';
-                            this.tipoAccion=1;
-                            this.fecha_anticipo = data['fecha_anticipo'];
-                            this.anticipo = data['anticipo'];
-                            this.solicitud_id = data['id'];
-                            break;
-                        }
-
-                        case 'colocacion':{
-                            this.modal2 =1;
-                            this.tituloModal='Colocación';
-                            this.tipoAccion=2;
-                            this.fecha_colocacion = data['fecha_colocacion'];
-                            this.solicitud_id = data['id'];
-                            break;
-                        }
-
-                        case 'liquidacion':{
-                            this.modal2 =1;
-                            this.tituloModal='Liquidación';
-                            this.tipoAccion=3;
-                            this.fecha_liquidacion = data['fecha_liquidacion'];
-                            this.liquidacion = data['liquidacion'];
-                            this.solicitud_id = data['id'];
-                            break;
-                        }
-
-                        case 'observaciones':{
-                            this.modal3 =1;
-                            this.tituloModal='Observaciones';
-                            this.solicitud_id = data['id'];
-                            this.observacion = '';
-
-                            this.listarObservacion(1, this.solicitud_id)
-                            break;
-                        }
-
-                        case 'reasignar':{
-                            this.modal4 =1;
-                            this.tituloModal='Reasignar equipamiento';
-                            this.solicitud_id = data['id'];
-                            this.lote_reasignar = '';
-                            this.id_reasig = '';
-                            break;
-                        }
+                const {accion, data} = {...opciones}
+                switch(accion){
+                    case 'solicitar':
+                    {
+                        this.modal =1;
+                        this.tituloModal='Solicitar equipamiento';
+                        this.tipoAccion=1;
+                        this.paquete = data['paquete'];
+                        this.promocion = data['promocion'];
+                        this.contrato_id = data['folio'];
+                        this.lote_id = data['lote_id'];
+                        break;
                     }
+                    case 'anticipo':{
+                        this.modal2 =1;
+                        this.tituloModal='Anticipo';
+                        this.tipoAccion=1;
+                        this.fecha_anticipo = data['fecha_anticipo'];
+                        this.anticipo = data['anticipo'];
+                        this.solicitud_id = data['id'];
+                        break;
+                    }
+                    case 'colocacion':{
+                        this.modal2 =1;
+                        this.tituloModal='Colocación';
+                        this.tipoAccion=2;
+                        this.fecha_colocacion = data['fecha_colocacion'];
+                        this.solicitud_id = data['id'];
+                        break;
+                    }
+                    case 'liquidacion':{
+                        this.modal2 =1;
+                        this.tituloModal='Liquidación';
+                        this.tipoAccion=3;
+                        this.fecha_liquidacion = data['fecha_liquidacion'];
+                        this.liquidacion = data['liquidacion'];
+                        this.solicitud_id = data['id'];
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal3 =1;
+                        this.tituloModal='Observaciones';
+                        this.solicitud_id = data['id'];
+                        break;
+                    }
+                    case 'reasignar':{
+                        this.modal4 =1;
+                        this.tituloModal='Reasignar equipamiento';
+                        this.solicitud_id = data['id'];
+                        break;
+                    }
+                }
             },
             getEmpresa(){
                 let me = this;

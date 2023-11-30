@@ -347,18 +347,21 @@ class EquipamientoController extends Controller
         +$cotizacion->espejos
         +$cotizacion->tanque_estacionario;
 
+        $fecha = new Carbon($cotizacion->created_at);
+
         $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
         ->select('promociones.nombre')
         ->where('lotes_promocion.lote_id','=',$cotizacion->lote_id)
-        ->where('promociones.v_ini','<=',$cotizacion->created_at)
-        ->where('promociones.v_fin','>=',$cotizacion->created_at)->get();
+        ->where('promociones.v_ini','<=',$fecha->format('Y-m-d'))
+        ->where('promociones.v_fin','>=',$fecha->format('Y-m-d'))
+        ->get();
 
         if(sizeof($promocion))
             $cotizacion->promocion = $promocion[0]->nombre;
         else
             $cotizacion->promocion = '';
 
-        // return $cotizacion;
+         //return $cotizacion;
 
         $pdf = \PDF::loadview('pdf.cotizador.cotizacionEquipamiento',['cotizacion' => $cotizacion]);
         return $pdf->stream('Cotizacion.pdf');
