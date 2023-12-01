@@ -993,6 +993,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/equipamiento/indexHistorial','SolEquipamientoController@indexHistorial');
         Route::post('/equipamiento/indexHistorial/upfile1','SolEquipamientoController@upComprPago1');
         Route::post('/equipamiento/indexHistorial/upfile2','SolEquipamientoController@upComprPago2');
+        Route::post('/equipamiento/indexHistorial/saveRender','SolEquipamientoController@saveRender');
         Route::get('/equipamiento/indexHistorial/downloadFile1/{fileName}','SolEquipamientoController@downloadPago1');
         Route::get('/equipamiento/indexHistorial/downloadFile2/{fileName}','SolEquipamientoController@downloadPago2');
         Route::get('/equipamiento/contRea','SolEquipamientoController@indexRea');

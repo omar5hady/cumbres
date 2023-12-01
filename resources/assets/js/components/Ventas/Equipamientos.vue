@@ -10,12 +10,12 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Solicitud de Equipamiento
                         <!--   Boton descargar excel    -->
-                            <button type="submit" v-if="historial == 0" class="btn btn-dark" @click="listarHistorial(1, buscar2, b_etapa2, b_manzana2, b_lote2, criterio2)">
+                            <button type="submit" v-if="historial == 0" class="btn btn-dark" @click="listarHistorial(1)">
                                 <i class="fa fa-list-alt"></i> Historial de equipamientos
                             </button>
                         <!---->
                         <!--   Boton regresar  -->
-                            <button type="submit" v-if="historial == 1" class="btn btn-light" @click="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)">
+                            <button type="submit" v-if="historial == 1" class="btn btn-light" @click="listarContratos(1)">
                                 <i class="icon-action-undo"></i> Regresar
                             </button>
                         <!---->
@@ -111,7 +111,7 @@
                                         <option v-for="fraccionamiento in arrayFraccionamientos" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
                                     </select>
 
-                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                             </div>
                             <div class="col-md-10">
@@ -137,7 +137,7 @@
                                         <option value="4">Aprobados</option>
                                         <option value="0">Rechazados</option>
                                     </select>
-                                    <button type="submit" @click="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="listarHistorial(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +218,9 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                         <div class="modal-header" style="color:white; background-color: #00ADEF;">
-                            <h5 class="modal-title" id="manualIdTitle" v-text="'Comprobante de pago '+upType+'.'"></h5>
+                            <h5 class="modal-title" id="manualIdTitle">
+                                {{ tituloModal }}
+                            </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
@@ -533,8 +535,12 @@ import ModalReubicar from './components/Equipamiento/ModalReubicar.vue'
 
             cargaArchivo(opciones){
                 console.log(opciones)
+                this.tituloModal = 'Comprobante de Pago'
                 this.generalId = opciones.generalId;
                 this.upType = opciones.upType;
+                if(this.upType == 3){
+                    this.tituloModal = 'Cargar Render'
+                }
             },
 
             abrirModal(opciones){
@@ -614,8 +620,10 @@ import ModalReubicar from './components/Equipamiento/ModalReubicar.vue'
 
                 if(this.upType == 1)
                     url = '/equipamiento/indexHistorial/upfile1';
-                else
+                if(this.upType == 2)
                     url = '/equipamiento/indexHistorial/upfile2';
+                if(this.upType == 3)
+                    url = '/equipamiento/indexHistorial/saveRender';
 
 
                 axios.post(url, formData).then(

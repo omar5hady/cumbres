@@ -31,7 +31,20 @@
                 </td>
                 <td class="td2" v-text="equipamientos.avance + '%'"></td>
                 <td class="td2" v-text="equipamientos.proveedor"></td>
-                <td class="td2" v-text="equipamientos.equipamiento"></td>
+                <td class="td2">
+                    {{ equipamientos.equipamiento }}
+                    <button v-if="!equipamientos.render" type="button"
+                        data-toggle="modal" data-target="#cargaPago1"
+                        class="btn btn-primary" title="Cargar Render"
+                        @click="$emit('cargaArchivo',{generalId:equipamientos.id, upType:3})">
+                        <i class="fa fa-cloud-upload"></i>
+                    </button>
+                    <a v-else
+                        class="btn btn-success" title="Descargar Render"
+                        :href="equipamientos.render" target="_blank">
+                        <i class="fa fa-cloud-download"></i>
+                    </a>
+                </td>
                 <td class="td2" style="width:40%">
                     <input type="text" pattern="\d*" @keyup.enter="actCosto(equipamientos.id,equipamientos.fecha_anticipo,$event.target.value)" :id="equipamientos.id" :value="equipamientos.costo|currency" maxlength="10" v-on:keypress="$root.isNumber($event)" class="form-control" >
                 </td>
