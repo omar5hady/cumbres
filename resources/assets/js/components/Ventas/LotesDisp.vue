@@ -670,6 +670,7 @@
             <ModalCotizacion v-if="modal==2"
                 :titulo="tituloModal"
                 :catalogo="cotizacion"
+                :doc_equipamiento="doc_equipamiento"
                 @close="cerrarModal()"
             ></ModalCotizacion>
 
@@ -770,6 +771,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 empresas:[],
                 tab:1,
                 equipamiento:[],
+                doc_equipamiento: '',
                 cotizacion:{
                     precio_venta: 0,
                     cocina_tradicional: 0,
@@ -1170,6 +1172,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                                 this.modal = 2;
                                 this.tituloModal = 'Cotización'
                                 const equipamiento = data['cat_equipamiento']
+                                this.doc_equipamiento = data['doc_equipamiento'];
                                 if(data['cat_equipamiento'].length > 0){
                                     this.cotizacion = {...equipamiento[0]}
                                 }

@@ -218,6 +218,12 @@
             </template>
         </template>
         <template v-slot:buttons-footer>
+            <a v-if="doc_equipamiento && vista == 0" title="Descargar catalogo"
+                :href="`/downloadCatEquipamiento/${doc_equipamiento}`"
+                    target="_blank"
+                    class="btn btn-scarlet">
+                    <i class="fa fa-file-pdf-o"></i>
+            </a>
             <ButtonComponent v-if="vista==0" icon="icon-check" btnClass="btn-success" @click="openSave()">Guardar cotización</ButtonComponent>
             <ButtonComponent v-if="vista==1" icon="icon-check" btnClass="btn-success" @click="printCotizacion()">Imprimir cotización</ButtonComponent>
         </template>
@@ -236,6 +242,11 @@
     export default {
         props:{
             titulo:{
+                type: String,
+                default: '',
+                required: true
+            },
+            doc_equipamiento:{
                 type: String,
                 default: '',
                 required: true

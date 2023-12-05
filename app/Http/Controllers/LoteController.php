@@ -1191,7 +1191,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                         'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.casa_renta', 'lotes.precio_renta', 'modelos.ficha_tecnica as archivo',
-                        'modelos.cat_equipamiento',
+                        'modelos.cat_equipamiento as doc_equipamiento',
                         'lotes.area_jardin', 'lotes.area_estacionamiento', 'lotes.indivisos',
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',

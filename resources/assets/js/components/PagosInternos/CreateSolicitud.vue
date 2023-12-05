@@ -2480,37 +2480,42 @@ export default {
             })
         },
         formSubmitFile(e) {
-            e.preventDefault();
-            let currentObj = this;
-            this.cargando = 1;
+            if(this.cargando == 0){
+                e.preventDefault();
+                let currentObj = this;
+                this.cargando = 1;
 
-            let formData = new FormData();
-            formData.append('file', this.newArchivo.file);
-            formData.append('id', this.solicitudData.id);
-            formData.append('tipo', this.newArchivo.tipo);
-            let me = this;
-            axios.post('/files-solic', formData)
-            .then(function (response) {
-                me.cerrarModal();
-                me.cargando = 0;
-                me.solicitudData.files = response.data.data;
-                me.newArchivo = {
-                    description: "",
-                    tipo: "",
-                    file: "",
-                    nom_archivo: 'Seleccione Archivo'
-                };
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Archivo guardado correctamente',
-                    showConfirmButton: false,
-                    timer: 2000
-                })
-            }).catch(function (error) {
-                currentObj.output = error;
-                me.cargando = 0;
-            });
+                let formData = new FormData();
+                formData.append('file', this.newArchivo.file);
+                formData.append('id', this.solicitudData.id);
+                formData.append('tipo', this.newArchivo.tipo);
+                let me = this;
+                axios.post('/files-solic', formData)
+                .then(function (response) {
+                    me.cerrarModal();
+                    me.cargando = 0;
+                    me.solicitudData.files = response.data.data;
+                    me.newArchivo = {
+                        description: "",
+                        tipo: "",
+                        file: "",
+                        nom_archivo: 'Seleccione Archivo'
+                    };
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }).catch(function (error) {
+                    currentObj.output = error;
+                    me.cargando = 0;
+                });
+            }
+            else{
+                return;
+            }
         },
         deleteDetalle(id){
             axios.delete(`/solic-detalles/deleteDetalle/${id}`,
