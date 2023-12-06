@@ -1265,6 +1265,10 @@ class LoteController extends Controller
         if($request->b_empresa != '')//Busqueda por empresa constructora
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
 
+        if ($request->rango1 != '' && $request->rango2 != '') {
+            $lotes = $lotes->whereBetween(DB::raw('lotes.precio_base + lotes.sobreprecio + lotes.excedente_terreno + lotes.obra_extra'), [$request->rango1, $request->rango2]);
+        }
+
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
                     ->orderBy('lotes.manzana','ASC')

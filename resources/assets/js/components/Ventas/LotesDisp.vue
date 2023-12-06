@@ -92,6 +92,10 @@
 
                                     </div>
                                     <div class="input-group">
+                                        <input type="text" v-model="b_rango1" @keypress="$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Desde: $">
+                                        <input type="text" v-model="b_rango2" @keypress="$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Hasta: $">
+                                    </div>
+                                    <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                             <option value="">Todos</option>
                                             <option value=0>Sin apartar</option>
@@ -765,6 +769,8 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
+                b_rango1: '',
+                b_rango2: '',
                 b_apartado : '',
                 casa_muestra : 0,
                 b_empresa:'',
@@ -822,6 +828,8 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 this.tab = vista;
                 this.criterio = 'lotes.fraccionamiento_id';
                 this.b_modelo = '';
+                this.b_rango1 = '';
+                this.b_rango2 = '';
                 this.selectFraccionamientos();
                 this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.criterio,this.rolId);
             },
@@ -830,6 +838,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 let me = this;
                 var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 +
                     '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio +
+                    '&rango1=' + this.b_rango1 + '&rango2=' + this.b_rango2 +
                     '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra +'&b_empresa='+this.b_empresa + '&tipo=' + this.tab;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;

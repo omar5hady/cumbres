@@ -25,7 +25,7 @@ use Auth;
 class ClienteController extends Controller
 {
     /* Función para obtener y retornar los clientes
-
+S
         La petición cambia segun el rol del usuario, para vendedores se busca solo los que
         el asesor de ventas tenga asignado para el.
 
@@ -63,7 +63,6 @@ class ClienteController extends Controller
             /* Getting the query generator. */
             $queryGen = $this->getQueryGen();
         }
-
 
         /* Checking if the user is logged in and if the user is an asesor. */
         if( Auth::user()->rol_id == 2){
@@ -453,6 +452,16 @@ class ClienteController extends Controller
             }
             $cliente->save();
 
+            if($request->clasificacion == 1 ){
+                $coacreditado =  Personal::select('id')->where('rfc','like','%'.$cliente->rfc_coa.'%')->first();
+
+                if($coacreditado){
+                    $c = Cliente::findOrFail($coacreditado->id);
+                    $c->clasificacion = 1;
+                    $c->save();
+                }
+            }
+
             $observacion = new Cliente_observacion();
             $observacion->cliente_id = $cliente->id;
             $observacion->comentario = $request->observacion;
@@ -823,6 +832,13 @@ class ClienteController extends Controller
             $observacion->cliente_id = $request->id;
             $observacion->comentario = 'Cliente reasignado del asesor '.$vendedorAnt[0]->nombre.' '.$vendedorAnt[0]->apellidos.' al asesor '.$vendedorNew[0]->nombre.' '.$vendedorNew[0]->apellidos;
             $observacion->usuario = Auth::user()->usuario;
+            $observacion->gerente = 1;
+            $observacion->save();
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->id;
+            $observacion->comentario = 'Cliente reasignado';
+            $observacion->usuario = 'Sistema';
             $observacion->save();
 
             // Se crea notificación para avisar del cambio al nuevo asesor de ventas.
@@ -869,6 +885,13 @@ class ClienteController extends Controller
             $observacion->cliente_id = $request->id;
             $observacion->comentario = $request->observacion;
             $observacion->usuario = Auth::user()->usuario;
+            $observacion->gerente = 1;
+            $observacion->save();
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->id;
+            $observacion->comentario = 'Cliente reasignado';
+            $observacion->usuario = 'Sistema';
             $observacion->save();
 
             DB::commit();
@@ -1737,7 +1760,5 @@ class ClienteController extends Controller
 
 
     }
-
-
 
 }
