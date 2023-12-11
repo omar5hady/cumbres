@@ -369,6 +369,8 @@ S
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
+        $clasificacion = $request->clasificacion;
+
         try{
             DB::beginTransaction();
             $cliente = Cliente::findOrFail($request->id);
@@ -417,7 +419,7 @@ S
             $cliente->precio_rango = $request->precio_rango;
             $cliente->ingreso = $request->ingreso;
             $cliente->coacreditado = $request->coacreditado;
-            $cliente->clasificacion = $request->clasificacion;
+            $cliente->clasificacion = $clasificacion;
 
             if($cliente->nombre_coa != $request->nombre_coa){
                 $cliente->sexo_coa = $request->sexo_coa;
@@ -450,17 +452,21 @@ S
                 }
 
             }
-            $cliente->save();
 
-            if($request->clasificacion == 1 ){
-                $coacreditado =  Personal::select('id')->where('rfc','like','%'.$cliente->rfc_coa.'%')->first();
+            $rfc_coa = $cliente->rfc_coa;
 
-                if($coacreditado){
-                    $c = Cliente::findOrFail($coacreditado->id);
+            if($clasificacion == 1 ){
+                $coacreditado = Personal::join('clientes','clientes.id','=','personal.id')
+                    ->select('clientes.id')->where('personal.rfc','like','%'.$rfc_coa.'%')->get();
+
+                if(sizeof($coacreditado)){
+                    $c = Cliente::findOrFail($coacreditado[0]->id);
                     $c->clasificacion = 1;
                     $c->save();
                 }
             }
+
+            $cliente->save();
 
             $observacion = new Cliente_observacion();
             $observacion->cliente_id = $cliente->id;
@@ -822,6 +828,7 @@ S
             DB::beginTransaction();
             $persona = Personal::findOrFail($request->id);
             $cliente = Cliente::findOrFail($request->id);
+            $cliente->seguimiento = Carbon::now();
             $vendedorAnt = Personal::select('id','nombre','apellidos')->where('id','=',$cliente->vendedor_id)->get();
             $vendedorNew = Personal::select('id','nombre','apellidos')->where('id','=',$request->asesor_id)->get();
             $cliente->vendedor_id = $request->asesor_id;
@@ -874,6 +881,7 @@ S
             DB::beginTransaction();
             //FindOrFail se utiliza para buscar lo que recibe de argumento
             $cliente = Cliente::findOrFail($request->id);
+            $cliente->seguimiento = Carbon::now();
             $cliente->vendedor_id = $request->asesor_id;
             if($cliente->clasificacion == 1 && Auth::user()->id == 28271 || $cliente->clasificacion == 1 && Auth::user()->id == 28270 || $cliente->clasificacion == 1 && Auth::user()->id == 28128)
                 return redirect('/');

@@ -13,7 +13,7 @@
                          <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' +
                                 buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+
                                 b_apartado +'&criterio=' + criterio + '&rolId=' + rolId + '&casa_muestra=' + casa_muestra+
-                                '&b_empresa='+b_empresa  + '&tipo=' + tab">
+                                '&b_empresa='+b_empresa  + '&tipo=' + tab + '&rango1=' + b_rango1 + '&rango2=' + b_rango2">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
                         </a>
                         <!---->

@@ -843,6 +843,93 @@ class SolicitudesController extends Controller
     }
 
     public function indexPendientes(Request $request){
+        $detalles = $this->getPendientes($request);
+        $detalles = $detalles->paginate(10);
+
+        return $detalles;
+    }
+
+    public function exportPendientes(Request $request){
+        $detalles = $this->getPendientes($request);
+        $detalles = $detalles->get();
+
+        return Excel::create('Pagos pendientes', function($excel) use ($detalles){
+            $excel->sheet('Pagos pendientes', function($sheet) use ($detalles){
+
+                $sheet->row(1, [
+                    'Proveedor', 'Solicitante', 'Obra', '', 'Cargo',
+                    'Subconcepto', 'Obs.', 'Fecha solic.', 'Saldo pendiente',
+                    'Status'
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'I' => '$#,##0.00',
+                ));
+
+
+                $sheet->cells('A1:J1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Helvetica');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+
+                $cont=1;
+
+                foreach($detalles as $index => $s) {
+                    $cont++;
+
+                    $status = 'Pagada';
+                    if($s->status == 0)
+                        $status = 'Nueva';
+                    if($s->status == 1)
+                        $status = 'En Proceso';
+                    if($s->status == 2)
+                        $status = 'Aprobada';
+                    if($s->status == 3)
+                        $status = 'Por pagar';
+
+                    $obra = $s->obra;
+                    if($s->sub_obra)
+                        $obra = $s->obra.' '.$s->sub_obra;
+
+                    $lote = '';
+                    if($s->lote_id){
+                        $lote = 'Mnz: '.$s->manzana.' Lote: '.$s->num_lote;
+                        if($s->sublote)
+                            $lote.= ' Sublote: '.$s->sublote;
+                    }
+
+
+                    $sheet->row($index+2, [
+                        $s->proveedor,
+                        $s->solicitante,
+                        $s->obra,
+                        $lote,
+                        $s->cargo,
+                        $s->concepto,
+                        $s->observacion,
+                        $s->created_at,
+                        $s->saldo,
+                        $status
+                    ]);
+                }
+                $num='A1:J' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+    }
+
+    private function getPendientes(Request $request){
         $admin = 0;
         $usuario = Auth::user()->usuario;
         if( $usuario == 'shady'
@@ -881,10 +968,9 @@ class SolicitudesController extends Controller
             if($request->empresa)
                 $detalles = $detalles->where('solic.empresa_solic','=',$request->empresa);
             $detalles = $detalles->where('sp_detalles.saldo','>',0)
-            ->where('sp_detalles.status','=',1)
-            ->paginate(10);
+            ->where('sp_detalles.status','=',1);
 
-        return $detalles;
+            return $detalles;
     }
 
     public function getDetallesPendientes(Request $request){
