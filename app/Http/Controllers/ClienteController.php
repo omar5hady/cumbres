@@ -1426,7 +1426,8 @@ S
             ->whereNotIn('users.usuario',[
                 'may_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
-                'yasmin_ventas', 'ivan.mtz', 'MARIAG'
+                'yasmin_ventas', 'ivan.mtz', 'MARIAG',
+                'aldo.alvarez'
             ])
 
             ->orderBy('vendedores.cont_leads','asc')
@@ -1459,7 +1460,7 @@ S
                     ->whereNotIn('users.id',$castigados)
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
-                        'ALEJANDROT',
+                        'ALEJANDROT', 'aldo.alvarez',
                         'yasmin_ventas', 'ivan.mtz',  'MARIAG'
                     ])
 
@@ -1482,7 +1483,8 @@ S
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
                         'Guadalupe', 'ALEJANDROT',  'MARIAG',
-                        'yasmin_ventas','lisseth_rios', 'ivan.mtz'
+                        'yasmin_ventas','lisseth_rios', 'ivan.mtz',
+                        'aldo.alvarez'
                     ])
                     ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();

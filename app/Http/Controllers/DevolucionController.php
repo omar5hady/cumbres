@@ -10,9 +10,11 @@ use App\Dev_virtual;
 use App\Pago_contrato;
 use App\Deposito_conc;
 use App\Deposito_gcc;
+use App\Deposito;
 use App\Cuenta;
 use App\Credito;
 use Carbon\Carbon;
+use NumerosEnLetras;
 use Excel;
 use Auth;
 use DB;
@@ -53,7 +55,7 @@ class DevolucionController extends Controller
                     $contrato->devolver = round($contrato->devolver,2);
                 }
             }
-        
+
         return [
             'pagination' => [
                 'total'         => $contratos->total(),
@@ -111,11 +113,11 @@ class DevolucionController extends Controller
                 'personal.nombre',
                 'personal.apellidos',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                
+
                 'v.nombre as vendedor_nombre',
                 'v.apellidos as vendedor_apellidos',
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                
+
                 'contratos.status',
                 'contratos.fecha_status'
         );
@@ -131,7 +133,7 @@ class DevolucionController extends Controller
                         $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
                     if($b_lote != '')
                         $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
- 
+
                     break;
                 }
                 case 'creditos.id':{
@@ -176,12 +178,12 @@ class DevolucionController extends Controller
                         ->where('depositos.fecha_ingreso_concretania','!=',NULL)
                         ->where('depositos.lote_id','=',$contrato->lote_id)
                         ->first();
-                    // Depositos reubicados 
+                    // Depositos reubicados
                     $transfGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as pagado"))
                         ->where('depositos_gcc.contrato_id','=',$contrato->id)
                         ->where('depositos_gcc.lote_id','=',$contrato->lote_id)
                         ->first();
-                    // Depositos reubicados 
+                    // Depositos reubicados
                     $transfConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as pagado"))
                         ->where('depositos_conc.contrato_id','=',$contrato->id)
                         ->where('depositos_conc.lote_id','=',$contrato->lote_id)
@@ -215,7 +217,7 @@ class DevolucionController extends Controller
                     }
                 }
             }
-        
+
         return [
             'contratos' => $contratos//, 'contadorContrato' => $contadorContratos
         ];
@@ -262,7 +264,7 @@ class DevolucionController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
 
     // Función para registrar una devolucion virtual para saldo pendiente de terreno en alianza.
@@ -291,7 +293,7 @@ class DevolucionController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
 
     // Función para retornar las devoluciones virtuales por contrato.
@@ -317,7 +319,7 @@ class DevolucionController extends Controller
                             'personal.nombre',
                             'personal.apellidos'
                         );
-                           
+
         if ($buscar != '') {
             switch ($criterio){// Filtros de busqueda
                 case 'lotes.fraccionamiento_id':{ // Busqueda por proyecto
@@ -346,7 +348,7 @@ class DevolucionController extends Controller
 
         $devoluciones = $devoluciones
             ->orderBy('id', 'desc')->paginate(10);
-        
+
         return [
             'pagination' => [
                 'total'         => $devoluciones->total(),
@@ -356,7 +358,7 @@ class DevolucionController extends Controller
                 'from'          => $devoluciones->firstItem(),
                 'to'            => $devoluciones->lastItem(),
             ], 'devoluciones' => $devoluciones//, 'contadorContrato' => $contadorContratos
-        ];                    
+        ];
     }
 
     // Función para retornar las devoluciones por cancelación por contrato.
@@ -369,7 +371,7 @@ class DevolucionController extends Controller
             ->where('contratos.status', '=', '0')
             ->where('contratos.devolucion', '=', '2')
             ->orderBy('id', 'desc')->paginate(8);
-        
+
         return [
             'pagination' => [
                 'total'         => $devoluciones->total(),
@@ -416,7 +418,7 @@ class DevolucionController extends Controller
         // Creación y retorno del excel.
         return Excel::create('Devoluciones pendientes por cancelación', function($excel) use ($contratos){
             $excel->sheet('cancelaciones', function($sheet) use ($contratos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Depositos', 'Pendiente a devolver', 'Fecha cancelación'
@@ -442,12 +444,12 @@ class DevolucionController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
                 $cont1=2;
 
                 foreach($contratos as $index => $devolucion) {
-                    
+
 
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($devolucion->fecha_status);
@@ -455,10 +457,10 @@ class DevolucionController extends Controller
 
                     $depositos = $devolucion->sumaPagares - $devolucion->sumaRestante;
                     $pendiente = $devolucion->sumaPagares - $devolucion->sumaRestante -  $devolucion->sumGastos;
-                    
+
                     if(($devolucion->devolver) > 0){
                         $sheet->row($cont1, [
-                            $devolucion->id, 
+                            $devolucion->id,
                             $devolucion->nombre_cliente,
                             $devolucion->proyecto,
                             $devolucion->etapa,
@@ -468,7 +470,7 @@ class DevolucionController extends Controller
                             $devolucion->devolver,
                             $devolucion->fecha_status
 
-                        ]);	
+                        ]);
                         $cont1++;
                         $cont++;
                     }
@@ -523,11 +525,11 @@ class DevolucionController extends Controller
                 'personal.rfc',
                 'personal.homoclave',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                
+
                 'v.nombre as vendedor_nombre',
                 'v.apellidos as vendedor_apellidos',
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                
+
                 'contratos.status',
                 'contratos.fecha_status',
                 'contratos.total_pagar',
@@ -540,7 +542,7 @@ class DevolucionController extends Controller
                 DB::raw("(SELECT SUM(devoluciones.devolver) FROM devoluciones
                             WHERE devoluciones.contrato_id = contratos.id
                             GROUP BY devoluciones.contrato_id) as sumaDev"),
-                
+
                 DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
                     WHERE gastos_admin.contrato_id = contratos.id
                     GROUP BY gastos_admin.contrato_id) as sumGastos")
@@ -549,7 +551,7 @@ class DevolucionController extends Controller
         if($request->b_empresa != ''){
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
-       
+
         if ($buscar != '') { // Filtros
             switch ($criterio){
                 case 'lotes.fraccionamiento_id':{ // Busqueda por proyecto
@@ -615,11 +617,11 @@ class DevolucionController extends Controller
                 'personal.rfc',
                 'personal.homoclave',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                
+
                 'v.nombre as vendedor_nombre',
                 'v.apellidos as vendedor_apellidos',
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                
+
 
                 'contratos.status',
                 'contratos.fecha_status',
@@ -639,14 +641,14 @@ class DevolucionController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                
+
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
         );
         if($request->b_empresa != '') // Busqueda por empresa constructora
             $devoluciones= $devoluciones->where('lotes.emp_constructora','=',$request->b_empresa);
-       
+
         if ($buscar != '') {
             switch ($criterio){
                 case 'lotes.fraccionamiento_id':{// Busqueda por proyecto
@@ -686,7 +688,7 @@ class DevolucionController extends Controller
         // Retorno de la devoluciones en excel.
         return Excel::create('devoluciones', function($excel) use ($devoluciones){
             $excel->sheet('devoluciones', function($sheet) use ($devoluciones){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Devuelto', 'Fecha cancelación', 'Fecha devolución',
@@ -712,7 +714,7 @@ class DevolucionController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 foreach($devoluciones as $index => $devolucion) {
@@ -725,7 +727,7 @@ class DevolucionController extends Controller
                     $devolucion->fecha_status = $fecha2->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $devolucion->id, 
+                        $devolucion->id,
                         $devolucion->nombre. ' ' . $devolucion->apellidos,
                         $devolucion->proyecto,
                         $devolucion->etapa,
@@ -737,13 +739,73 @@ class DevolucionController extends Controller
                         $devolucion->cheque,
                         $devolucion->cuenta,
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:K' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
+    }
+
+    private function getData(Request $request){
+        $data = Contrato::join('creditos as cr', 'cr.id','=','contratos.id')
+            ->join('inst_seleccionadas as i', 'i.credito_id','=','cr.id')
+            ->join('lotes as l', 'l.id', 'cr.lote_id')
+            ->join('fraccionamientos as f', 'f.id', '=', 'l.fraccionamiento_id')
+            ->join('etapas as e', 'e.id', '=', 'l.etapa_id')
+            ->join('personal as cl', 'cl.id', '=', 'cr.prospecto_id')
+            ->join('personal as g', 'g.id', '=', 'f.gerente_id')
+            ->join('personal as a', 'a.id', '=', 'cr.vendedor_id')
+            ->select(
+                'contratos.id', 'contratos.saldo', 'l.emp_constructora',
+                'contratos.status',
+                'l.num_lote', 'l.sublote', 'l.manzana', 'e.num_etapa as etapa',
+                'f.nombre as proyecto',
+                'cl.nombre as cl_nombre', 'cl.apellidos as cl_apellidos',
+                'g.nombre as g_nombre', 'g.apellidos as g_apellidos',
+                'a.nombre as a_nombre', 'a.apellidos as a_apellidos',
+                'contratos.fecha','contratos.fecha_status', 'i.tipo_credito'
+            )
+            ->where('i.elegido','=',1)
+            ->where('contratos.id', '=', $request->id)
+            ->first();
+
+            if($data){
+                $data->monto = number_format((float)$data->saldo*-1, 2, '.', ',');
+                $data->saldo = NumerosEnLetras::convertir($data->saldo*-1, 'Pesos', true, 'Centavos');
+                $data->hoy = Carbon::now()->formatLocalized('%d de %B de %Y');
+
+                $fecha = new Carbon($data->fecha);
+                $data->fecha = $fecha->formatLocalized('%d de %B de %Y');
+
+                $data->depositos = Deposito::join('pagos_contratos as p', 'p.id', '=', 'depositos.pago_id')
+                    ->select(
+                        DB::raw("SUM(depositos.cant_depo) as depositado")
+                    )->where('p.contrato_id','=',$data->id)
+                    ->first();
+
+                if($data->depositos){
+                    $data->monto_deposito = number_format((float)$data->depositos->depositado, 2, '.', ',');
+                    $data->depositado = NumerosEnLetras::convertir($data->depositos->depositado, 'Pesos', true, 'Centavos');
+                }
+            }
+
+            return $data;
+    }
+
+    public function printSolicCancelacion(Request $request){
+        $data = $this->getData($request);
+        $pdf = \PDF::loadview('pdf.devolucion.solicCancelacion', ['data'=> $data]);
+
+        return $pdf->stream('Solicitud_cancelacion.pdf');
+    }
+
+    public function printSolicDevolucion(Request $request){
+        $data = $this->getData($request);
+        $pdf = \PDF::loadview('pdf.devolucion.solicDevolucion', ['data'=> $data ,'tipo' => $request->tipo]);
+
+        return $pdf->stream('Solicitud_devolucion.pdf');
     }
 }

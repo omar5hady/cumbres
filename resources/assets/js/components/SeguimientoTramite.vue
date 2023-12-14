@@ -924,6 +924,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="programacion.saldo < 0" class="dropdown-item" :href="`/devoluciones/printSolicDevolucion?id=${programacion.folio}`" target="_blank">Solic. Devolución</a>
                                                     <a v-if="programacion.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',programacion)">Doc Sit. Geologica</a>
                                                     <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
                                                     <a class="dropdown-item" @click="abrirPDF(programacion)">Estado de cuenta</a>

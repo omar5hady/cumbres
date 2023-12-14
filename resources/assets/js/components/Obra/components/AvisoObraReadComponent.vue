@@ -124,12 +124,7 @@
                                     {{
                                         "$" +
                                             $root.formatNumber(
-                                                parseFloat(
-                                                    detalle.costo_directo
-                                                ) +
-                                                    parseFloat(
-                                                        detalle.costo_indirecto
-                                                    )
+                                                calculateIva(detalle.costo_directo,detalle.costo_indirecto)
                                             )
                                     }}
                                 </td>
@@ -286,6 +281,9 @@ export default {
                     parseFloat(this.data.lotesContrato[i].costo_directo) +
                     parseFloat(this.data.lotesContrato[i].costo_indirecto);
             }
+            if(this.data.iva == 1){
+                resultado_importe_total = resultado_importe_total*1.16;
+            }
             return Math.round(resultado_importe_total * 100) / 100;
         },
         totalConstruccion: function() {
@@ -309,7 +307,14 @@ export default {
     },
 
     methods: {
+        calculateIva(monto1, monto2){
+                let total = 0
+                total = parseFloat(monto1) + parseFloat(monto2);
+                if( this.data.iva == 1)
+                    return (total)*1.16;
+                return total
 
+            },
     },
     mounted() {
 

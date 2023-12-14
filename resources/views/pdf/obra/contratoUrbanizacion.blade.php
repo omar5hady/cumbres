@@ -206,9 +206,6 @@
         según presupuesto; de la obra “
         <b>
             {{ $cabecera[0]->proyecto }},
-            @if (!is_numeric($cabecera[0]->etapa->num_etapa))
-                {{ $cabecera[0]->etapa->num_etapa }},</B>
-            @endif
         </b>”. Ubicada en
         @if ($cabecera[0]->direccion_proy != '' && $cabecera[0]->direccion_proy != '')
             {{ $cabecera[0]->direccion_proy }},

@@ -194,7 +194,8 @@
                                     <input v-model="detalle.obra_extra" type="text" class="form-control">
                                 </td>
                                 <td>
-                                    {{'$' +$root.formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
+
+                                    {{'$' +$root.formatNumber(calculateIva(detalle.costo_directo, detalle.costo_indirecto)) }}
                                 </td>
                                 <td>
                                     <input type="date" v-model="detalle.fin_obra" class="form-control">
@@ -372,6 +373,9 @@
                 var resultado_importe_total =0.0;
                 for(var i=0;i<this.data.lotesContrato.length;i++){
                     resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.data.lotesContrato[i].costo_directo) + parseFloat(this.data.lotesContrato[i].costo_indirecto)
+                    if(this.data.iva == 1){
+                        resultado_importe_total = resultado_importe_total*1.16;
+                    }
                 }
                 return Math.round(resultado_importe_total*100)/100;
             },
@@ -392,6 +396,14 @@
         },
 
         methods : {
+            calculateIva(monto1, monto2){
+                let total = 0
+                total = parseFloat(monto1) + parseFloat(monto2);
+                if( this.data.iva == 1)
+                    return (total)*1.16;
+                return total
+
+            },
             getEmpresa(){
                 let me = this;
                 me.empresas=[];
