@@ -34,403 +34,12 @@
                         <div class="tab-content" id="myTab1Content">
                             <!-- Listado por ingresar -->
                             <div class="tab-pane fade active show" id="ingresar" role="tabpanel" aria-labelledby="ingresar-tab">
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <select class="form-control" v-model="b_empresa" >
-                                                <option value="">Empresa constructora</option>
-                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <div class="input-group">
-                                            <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-4" v-model="criterio">
-                                                <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                                <option value="c.nombre">Cliente</option>
-                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
-                                                <option value="contratos.id"># Folio</option>
-                                            </select>
 
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                            </select>
-
-                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
-                                                <option value="">Gestor</option>
-                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
-                                            </select>
-
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
-
-                                        </div>
-                                        <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                            <select class="form-control col-md-6"  v-model="b_etapa">
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-                                        </div>
-                                        <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                            <!--Criterios para el listado de busqueda -->
-                                            <input type="text" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <div class="input-group">
-                                            <button type="submit"
-                                                @click="listarAutorizados(1),
-                                                    listarLiquidacion(1),
-                                                    listarEnviados(1),
-                                                    listarIngresoExp(1),
-                                                    listarProgramacion(1)"
-                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
-                                            </button>
-                                            <a :href="'/expediente/excelIngresarExp?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' +
-                                                b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"  class="btn btn-success">
-                                                <i class="fa fa-file-text"></i> Excel
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <TableComponent :cabecera="[
-                                        '','Detener','Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
-                                        '# Lote','Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo','Aviso preventivo',
-                                        'Ingresar expediente','Tipo de Crédito','Institución de Fin.','Valor de la vivienda','Crédito Puente',
-                                        'Fecha ultimo pagare','Saldo','Observaciones'
-                                    ]"
-                                >
-                                    <template v-slot:tbody>
-                                        <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id" v-bind:style="{ backgroundColor : !ingresar.detenido ? '#FFFFFF' : '#FF5F5F'}">
-                                            <td class="td2">
-                                                <button v-if="ingresar.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)" title="Regresar expediente">
-                                                    <i class="fa fa-exclamation-triangle"></i>
-                                                </button>
-                                                <label v-else> DETENIDO </label>
-                                            </td>
-                                            <td class="td2">
-                                                <button v-if="ingresar.detenido == 0" type="button" @click="detenerContrato(ingresar.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
-                                                    <i class="fa fa-hand-paper-o"></i>
-                                                </button>
-                                                <button v-if="ingresar.detenido == 1" type="button" @click="continuarContrato(ingresar.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
-                                                    <i class="fa fa-play"></i>
-                                                </button>
-                                            </td>
-
-                                            <td class="td2" >
-                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+ingresar.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+ingresar.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                            </td>
-                                            <td class="td2" v-if="ingresar.email_institucional == null">
-                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-                                            <td class="td2" v-else>
-                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email+ ';'+ingresar.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-
-                                            <td class="td2">
-                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a v-if="ingresar.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',ingresar)">Doc Sit. Geologica</a>
-                                                    <a class="dropdown-item" v-if="ingresar.pdf != '' && ingresar.pdf != null"  v-bind:href="'/downloadAvaluo/'+ingresar.pdf">Avaluo</a>
-                                                    <a class="dropdown-item" @click="abrirPDF(ingresar)">Estado de cuenta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ ingresar.folio">Contrato de compra venta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ ingresar.folio">Carta de servicios</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ ingresar.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ ingresar.folio">Reglamento de la etapa</a>
-                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(ingresar.folio)">Catalogo de especificaciones</a>
-                                                    <a v-if="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ ingresar.foto_predial">Predial</a>
-                                                    <a v-if="ingresar.num_licencia" class="dropdown-item"  v-text="'Licencia: '+ingresar.num_licencia" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic"></a>
-                                                </div>
-                                            </td>
-                                            <td class="td2" v-bind:style="{ color : ingresar.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="ingresar.nombre_cliente"></td>
-                                            <td class="td2" v-text="ingresar.nombre_vendedor"></td>
-                                            <td class="td2" v-text="ingresar.proyecto"></td>
-                                            <td class="td2" v-text="ingresar.etapa"></td>
-                                            <td class="td2" v-text="ingresar.manzana"></td>
-                                            <td class="td2" >
-                                                <a v-if="ingresar.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}}</a>
-                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}} {{ingresar.sublote}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a v-if ="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">Descargar predial</a>
-                                                    <a v-if ="ingresar.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic">Descargar licencia</a>
-                                                    <a v-if ="ingresar.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+ingresar.foto_acta">Descargar Acta de termino</a>
-                                                </div>
-                                            </td>
-                                            <td class="td2" v-text="ingresar.modelo"></td>
-                                            <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
-                                            <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
-                                            <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
-                                            <td class="td2" v-text="ingresar.fecha_status"></td>
-
-                                            <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2">
-                                                <span v-text="'$'+ $root.formatNumber(ingresar.resultado)"></span>
-                                                    <!-- <button type="button" @click="abrirModal('avaluo',ingresar)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                        <i class="fa fa-calendar-check-o"></i>
-                                                    </button> -->
-                                            </td>
-                                            <td v-if="ingresar.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-
-                                            <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && !ingresar.aviso_prev_venc && ingresar.aviso_prev!=null" class="td2" title="Doble click">
-                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(ingresar.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
-                                            </td>
-
-                                            <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-else-if="ingresar.aviso_prev!='0000-01-01' && ingresar.aviso_prev_venc" class="td2">
-
-                                                <span v-if = "ingresar.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                <span v-if = "ingresar.diferencia < 0 && ingresar.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                <span v-if = "ingresar.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                            </td>
-
-                                            <td v-else-if="ingresar.aviso_prev=='0000-01-01' || ingresar.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
-                                            <td>
-                                                <button v-if="ingresar.detenido == 0" type="button" @click="abrirModal('ingresar',ingresar)" class="btn btn-primary btn-sm" title="Ingresar">
-                                                    <i class="fa fa-send-o"></i>
-                                                </button>
-                                                <label v-else> DETENIDO </label>
-                                            </td>
-                                            <td class="td2" v-text="ingresar.tipo_credito"></td>
-                                            <td class="td2" v-text="ingresar.institucion"></td>
-                                            <td class="td2" v-text="'$'+ $root.formatNumber(ingresar.precio_venta)"></td>
-                                            <td class="td2" v-text="ingresar.credito_puente"></td>
-                                            <td class="td2" v-text="this.moment(ingresar.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-text="'$'+ $root.formatNumber(ingresar.saldo)"></td>
-
-                                            <td class="td2">
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                    @click="abrirModal3(ingresar.folio)">Ver Observaciones</button>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </TableComponent>
                             </div>
 
                             <!-- Listado de autorizados -->
                             <div class="tab-pane fade" id="autorizado" role="tabpanel" aria-labelledby="autorizado-tab">
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <select class="form-control" v-model="b_empresa" >
-                                                <option value="">Empresa constructora</option>
-                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-10">
-                                        <div class="input-group">
-                                            <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-5" v-model="criterio">
-                                                <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                                <option value="c.nombre">Cliente</option>
-                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
-                                                <option value="contratos.id"># Folio</option>
-                                            </select>
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="$root.selectEtapa(buscar), b_etapa = ''">
-                                                <option value="">Seleccione</option>
-                                                <option v-for="fraccionamientos in $root.$data.proyectos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                            </select>
-                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar">
-                                                <option value="">Gestor</option>
-                                                <option v-for="gestor in $root.$data.arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
-                                            </select>
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1), listarLiquidacion(1), listarIngresoExp(1),listarProgramacion(1)" class="form-control" placeholder="Texto a buscar">
-                                        </div>
-                                        <div class="input-group">
-                                            <select class="form-control col-md-6" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa">
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-                                        </div>
-                                        <div class="input-group">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-10">
 
-                                        <div class="input-group">
-                                            <button type="submit" @click="listarAutorizados(1),
-                                                    listarLiquidacion(1),
-                                                    listarIngresoExp(1),
-                                                    listarEnviados(1),
-                                                    listarProgramacion(1)"
-                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
-                                            </button>
-                                            <a :href="'/expediente/excelAutorizados?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' +
-                                                b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"
-                                                class="btn btn-success">
-                                                <i class="fa fa-file-text"></i> Excel
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- A partir del 1ero de diciembre del 2022 se solicito que se hablara tema tecnico con los clientes de las privadas Villa del Rey y Alcazar -->
-                                <!-- A partir del 1ero de marzo del 2023 se solicito que se hablara tema tecnico con los clientes de privada Torino, Mzn 16 del Lote 1 al 19 y
-                                            Mzn 12 de lote y al 18 -->
-                                <!-- Lo anterior aplica para ventas o firmas de escritura a partir de la fecha -->
-                                <!-- Agregar fecha de venta y fecha de firma -->
-                                <TableComponent :cabecera="[
-                                        '','Detener','Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
-                                        '# Lote','Modelo','Dirección','Avance obra','Firma Contrato',
-                                        'Resultado avaluo','Aviso preventivo','Tipo de Crédito','Institución de Fin.',
-                                        'Monto autorizado','Fecha vigencia','Valor de la vivienda','Valor escriturar','Crédito Puente',
-                                        'Fecha ultimo pagare','Saldo','Inscripción Infonavit','Observaciones'
-                                    ]"
-                                >
-                                    <template v-slot:tbody>
-                                        <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id" v-bind:style="{ backgroundColor : !preautorizados.detenido ? '#FFFFFF' : '#FF5F5F'}">
-                                            <td class="td2">
-                                                <button v-if="preautorizados.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(preautorizados.folio)">
-                                                    <i class="fa fa-exclamation-triangle"></i>
-                                                </button>
-                                            </td>
-                                            <td class="td2">
-                                                <button v-if="preautorizados.detenido == 0" type="button" @click="detenerContrato(preautorizados.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
-                                                    <i class="fa fa-hand-paper-o"></i>
-                                                </button>
-                                                <button v-if="preautorizados.detenido == 1" type="button" @click="continuarContrato(preautorizados.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
-                                                    <i class="fa fa-play"></i>
-                                                </button>
-                                            </td>
-
-                                            <td class="td2" >
-                                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+preautorizados.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+preautorizados.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
-                                            </td>
-                                            <td class="td2" v-if="preautorizados.email_institucional == null">
-                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-                                            <td class="td2" v-else>
-                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email+ ';'+preautorizados.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                            </td>
-
-                                            <td class="td2">
-                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a v-if="preautorizados.sit_fg" class="dropdown-item" @click="abrirModal('sit_fg',preautorizados)">Doc Sit. Geologica</a>
-                                                    <a class="dropdown-item" v-if="preautorizados.pdf != '' && preautorizados.pdf != null"  v-bind:href="'/downloadAvaluo/'+preautorizados.pdf">Avaluo</a>
-                                                    <a class="dropdown-item" @click="abrirPDF(preautorizados)">Estado de cuenta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ preautorizados.folio">Contrato de compra venta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ preautorizados.folio">Carta de servicios</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ preautorizados.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ preautorizados.folio">Reglamento de la etapa</a>
-                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(preautorizados.folio)">Catalogo de especificaciones</a>
-                                                    <a v-if="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ preautorizados.foto_predial">Predial</a>
-                                                    <a v-if="preautorizados.num_licencia" class="dropdown-item"  v-text="'Licencia: '+preautorizados.num_licencia" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic"></a>
-                                                </div>
-                                            </td>
-                                            <td class="td2" v-bind:style="{ color : preautorizados.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="preautorizados.nombre_cliente"></td>
-                                            <td class="td2" v-text="preautorizados.nombre_vendedor"></td>
-                                            <td class="td2" v-text="preautorizados.proyecto"></td>
-                                            <td class="td2" v-text="preautorizados.etapa"></td>
-                                            <td class="td2" v-text="preautorizados.manzana"></td>
-                                            <td class="td2" >
-                                                <a v-if="preautorizados.sublote == null" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}}</a>
-                                                <a v-else class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}} {{preautorizados.sublote}}</a>
-                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a v-if ="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">Descargar predial</a>
-                                                    <a v-if ="preautorizados.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic">Descargar licencia</a>
-                                                    <a v-if ="preautorizados.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+preautorizados.foto_acta">Descargar Acta de termino</a>
-                                                </div>
-                                            </td>
-                                            <td class="td2" v-text="preautorizados.modelo"></td>
-                                            <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
-                                            <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
-                                            <td class="td2" v-text="preautorizados.fecha_status"></td>
-
-                                            <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2">
-                                                <span v-text="'$'+ $root.formatNumber(preautorizados.resultado)"></span>
-                                                    <!-- <button type="button" @click="abrirModal('avaluo',preautorizados)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                        <i class="fa fa-calendar-check-o"></i>
-                                                    </button> -->
-                                            </td>
-                                            <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-
-                                            <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc && preautorizados.aviso_prev!=null" class="td2" >
-                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
-                                            </td>
-
-                                            <td  @dblclick="abrirModal('fecha_recibido',preautorizados)" v-else-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
-
-                                                <span v-if = "preautorizados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                <span v-if = "preautorizados.diferencia < 0 && preautorizados.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                <span v-if = "preautorizados.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                            </td>
-
-                                            <td v-else-if="preautorizados.aviso_prev=='0000-01-01' || preautorizados.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
-                                            <td class="td2" v-text="preautorizados.tipo_credito"></td>
-                                            <td class="td2" v-text="preautorizados.institucion"></td>
-                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.credito_solic)"></td>
-
-                                            <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
-
-                                                <span v-if="!preautorizados.fecha_vigencia"></span>
-                                                <span v-else-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
-                                                + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                <span v-else-if = "preautorizados.vigencia <= 0 && preautorizados.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
-                                                + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                                <span v-else-if = "preautorizados.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
-                                                + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                                            </td>
-                                            <td class="td2" v-if="band==1">
-                                                <input type="date"  @keyup.esc="band=0" v-on:change="actualizarVigencia(preautorizados.folio,$event.target.value)" :id="preautorizados.folio" :value="preautorizados.fecha_vigencia" class="form-control Fields" >
-                                            </td>
-
-                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.precio_venta)"></td>
-                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.valor_escrituras)"></td>
-                                            <td class="td2" v-text="preautorizados.credito_puente"></td>
-                                            <td class="td2" v-text="this.moment(preautorizados.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-text="'$'+ $root.formatNumber(preautorizados.saldo)"></td>
-
-                                            <template v-if="preautorizados.fecha_infonavit">
-                                                <td v-if="preautorizados.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(preautorizados.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td v-if="preautorizados.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                            </template>
-                                            <template v-else>
-                                                <td class="td2">
-                                                    <button v-if="preautorizados.detenido == 0" type="button" @click="abrirModal('autorizado',preautorizados)" class="btn btn-success btn-sm" title="Inscribir Infonavit">
-                                                        <i class="fa fa-calendar-check-o"></i>
-                                                    </button>
-                                                    <button v-if="preautorizados.detenido == 0" type="button" @click="noAplicaInfonavit(preautorizados.folio)" class="btn btn-danger btn-sm" title="No aplica">
-                                                        <i class="fa fa-times-circle"></i>
-                                                    </button>
-                                                    <label v-else> DETENIDO </label>
-                                                </td>
-                                            </template>
-
-                                            <td class="td2">
-                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                    @click="abrirModal3(preautorizados.folio)">Ver Observaciones</button>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </TableComponent>
                             </div>
 
                             <!-- Listado de liquidacion -->
@@ -632,7 +241,7 @@
                                             </td>
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                    @click="abrirModal3(liquidacion.folio)">Ver Observaciones</button>
+                                                    @click="abrirObs(liquidacion.folio)">Ver Observaciones</button>
                                             </td>
                                         </tr>
                                     </template>
@@ -837,7 +446,7 @@
 
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                    @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
+                                                    @click="abrirObs(programacion.folio)">Ver Observaciones</button>
                                             </td>
                                         </tr>
                                     </template>
@@ -1026,7 +635,7 @@
 
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                    @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
+                                                    @click="abrirObs(programacion.folio)">Ver Observaciones</button>
                                             </td>
                                         </tr>
                                     </template>
@@ -1082,21 +691,17 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             </form>
 
 
                             <!-- form para captura de fecha recibido -->
                             <form v-if="tipoAccion == 3" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de recibido</label>
                                     <div class="col-md-4">
                                         <input type="date"  v-model="fecha_recibido" class="form-control" >
                                     </div>
                                 </div>
-
                             </form>
 
                             <!-- form para captura de fecha recibido -->
@@ -1382,10 +987,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-
-
                                     <!-- Div para mostrar los errores que mande validerDepartamento -->
                                 <div v-show="errorLiquidacion" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -1393,13 +994,7 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
                             </form>
-
-
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -2192,39 +1787,11 @@ import Nav from './Componentes/NavComponent.vue'
                     'from' : 0,
                     'to' : 0,
                 },
-                offset: 3,
                 b_empresa: '',
-                empresas: [],
 
             }
         },
         computed:{
-             isActived: function(){
-                return this.pagination.current_page;
-            },
-            //Calcula los elementos de la paginación
-            pagesNumber:function(){
-                if(!this.pagination.to){
-                    return [];
-                }
-
-                var from = this.pagination.current_page - this.offset;
-                if(from < 1){
-                    from = 1;
-                }
-
-                var to = from + (this.offset * 2);
-                if(to >= this.pagination.last_page){
-                    to = this.pagination.last_page;
-                }
-
-                var pagesArray = [];
-                while(from <= to){
-                    pagesArray.push(from);
-                    from++;
-                }
-                return pagesArray;
-            },
             totalLiquidar: function(){
                 var neto_credito =0;
                     neto_credito = parseFloat(this.valor_venta) + parseFloat(this.intereses_terreno) - parseFloat(this.descuento) + parseFloat(this.totalGastos) - parseFloat(this.monto_credito) -
@@ -2237,7 +1804,6 @@ import Nav from './Componentes/NavComponent.vue'
                     total = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.monto_credito);
                 return total;
             },
-
         },
 
 
@@ -2363,7 +1929,7 @@ import Nav from './Componentes/NavComponent.vue'
                 });
             },
 
-            detenerContrato(id,detenido){
+            cambiarProceso(id,detenido){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/contrato/cambiarProceso',{
@@ -3118,51 +2684,6 @@ import Nav from './Componentes/NavComponent.vue'
                 return this.errorProgramacionFirma;
             },
 
-            noAplicaInfonavit(id){
-                this.id = id;
-                swal({
-                title: '¿Esta seguro de que la inscripción de Infonavit no aplica para este registro?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
-
-                    axios.put('/expediente/InfonavitNoAplica',{
-                        'folio': me.id
-                    }).then(function (response) {
-                        me.cerrarModal();
-                        me.listarIngresoExp(1);
-                        me.listarAutorizados(1);
-                        me.listarLiquidacion(1);
-                        me.listarProgramacion(1);
-                        swal(
-                        'Hecho!',
-                        'No aplica.',
-                        'success'
-                        )
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-
-
-                } else if (
-                    // Read more about handling dismissals
-                    result.dismiss === swal.DismissReason.cancel
-                ) {
-
-                }
-                })
-            },
-
             setFechaConcluido(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -3221,7 +2742,7 @@ import Nav from './Componentes/NavComponent.vue'
                 });
             },
 
-            abrirModal3(folio){
+            abrirObs(folio){
                 this.modal3 =1;
                 this.tituloModal3='Observaciones';
                 this.observacion='';
@@ -3463,24 +2984,13 @@ import Nav from './Componentes/NavComponent.vue'
                 this.usuario = '';
                 this.observacion = '';
             },
-            getEmpresa(){
-                let me = this;
-                me.empresas=[];
-                var url = '/lotes/empresa/select';
-                axios.get(url).then(function (response) {
-                    var respuesta = response;
-                    me.empresas = respuesta.data.empresas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
 
         },
 
         mounted() {
             this.$root.selectFraccionamientos();
             this.$root.selectGestores();
+            this.$root.getEmpresa()
             this.listarIngresoExp(1);
             this.listarAutorizados(1);
             this.listarLiquidacion(1);
