@@ -195,6 +195,7 @@ class EquipamientoController extends Controller
             $cotizacion->tanque_estacionario = $equipamiento['tanque_estacionario'];
             $cotizacion->cocina = $equipamiento['cocina'];
             $cotizacion->usuario = Auth::user()->id;
+            $cotizacion->observacion = $cliente['observacion'];
             $cotizacion->save();
             DB::commit();
 

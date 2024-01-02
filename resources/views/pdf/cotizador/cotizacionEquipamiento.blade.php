@@ -511,8 +511,6 @@
 
         <div class="table">
             <div class="table-row">
-                <div colspan="1" class="table-cell1 cell-detalle">
-                </div>
                 <div colspan="1" class="table-cell1 title-cabecera" style="text-align: center; vertical-align: middle;">
                     <div style="padding-top: 4px; margin-bottom:3px;">
                         <p class="text-table text-11">
@@ -520,12 +518,10 @@
                         </p>
                     </div>
                 </div>
-                <div colspan="1" class="table-cell1 cell-detalle">
+                <div colspan="2" class="table-cell1 cell-detalle">
                 </div>
             </div>
             <div class="table-row">
-                <div colspan="1" class="table-cell1 cell-detalle">
-                </div>
                 <div colspan="1" class="table-cell1 title-cabecera" style="text-align: center; vertical-align: middle;">
                     <div class="info-cabecera" style="background-color: #fff; padding: 2px; border: 0.5pt solid #0C3456;">
                         <p class="text-table" style="margin-top:-5px; font-size:16pt;" >
@@ -533,7 +529,12 @@
                         </p>
                     </div>
                 </div>
-                <div colspan="1" class="table-cell1 cell-detalle">
+                <div colspan="2" class="table-cell1 cell-detalle">
+                    <div  style="padding-top: 4px;">
+                        <p style="font-size:7pt;"><strong style="font-size:9pt;">OBSERVACIONES: </strong>
+                            <u>{{$cotizacion->observacion ? $cotizacion->observacion : ''}}</u>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="table-row">

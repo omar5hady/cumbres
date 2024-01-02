@@ -27,6 +27,7 @@ class CreateCotEquipamientosTable extends Migration
             $table->double('espejos',10,2)->default(0);
             $table->double('tanque_estacionario',10,2)->default(0);
             $table->double('cocina',10,2)->default(0);
+            $table->string('observacion')->nullable();
             $table->unsignedInteger('cliente_id')->nullable();
             $table->integer('usuario')->nullable();
             $table->foreign('lote_id')->references('id')->on('lotes');
